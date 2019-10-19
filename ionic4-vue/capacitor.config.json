@@ -1,0 +1,7 @@
+{
+  "appId": "org.jtac.jtacApp",
+  "appName": "Jtac-app",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist"
+}
