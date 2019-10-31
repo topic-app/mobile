@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Jtac-app</string>
-    <string name="title_activity_main">Jtac-app</string>
-    <string name="package_name">org.jtac.jtacApp</string>
-    <string name="fileprovider_authority">org.jtac.jtacApp.fileprovider</string>
-    <string name="custom_url_scheme">org.jtac.jtacApp</string>
-</resources>
