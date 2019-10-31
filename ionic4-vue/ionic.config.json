@@ -1,7 +1,0 @@
-{
-  "name": "Jtac-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "vue"
-}
