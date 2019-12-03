@@ -105,3 +105,6 @@ public/
 
 # DynamoDB Local files
 .dynamodb/
+
+#expo files
+.expo/
