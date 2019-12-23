@@ -3,9 +3,9 @@ import { Platform, StyleSheet, Text, View, TextInput } from 'react-native';
 
 import { Button, Card, Avatar, Title, Paragraph } from 'react-native-paper';
 
-export default class ActuListeScreen extends React.Component {
+export default class CarteListScreen extends React.Component {
   static navigationOptions = {
-    title: 'Welcome',
+    title: 'Petitions',
   };
   render() {
     const {navigate} = this.props.navigation;
@@ -17,7 +17,7 @@ export default class ActuListeScreen extends React.Component {
             mode="contained"
             color="red"
             dark
-            onPress={() => navigate('ActuArticle', {title: 'Article1'})}
+            onPress={() => navigate('CarteDisplay', {title: 'Article1'})}
             style={{width: 200}}
           >
             Hello
@@ -29,7 +29,7 @@ export default class ActuListeScreen extends React.Component {
             mode="contained"
             color="red"
             dark
-            onPress={() => navigate('ActuArticle', {title: 'Article1'})}
+            onPress={() => navigate('CarteArticle', {title: 'Article1'})}
             style={{width: 200, margin: 10}}
           >
             Hello2
