@@ -1,17 +1,17 @@
+// eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
-import {createAppContainer} from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack'
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
-import DrawerNavigator from './src/main/index.js'
-import SettingsNavigator from './src/settings/index.js'
+import DrawerNavigator from './src/views/main/index';
+import SettingsNavigator from './src/views/settings/index';
 
 const RootNavigator = createStackNavigator({
   Main: DrawerNavigator,
   Settings: SettingsNavigator,
 }, {
   headerMode: 'none',
-})
+});
 
 const App = createAppContainer(RootNavigator);
 

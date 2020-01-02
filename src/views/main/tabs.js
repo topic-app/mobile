@@ -1,10 +1,11 @@
+// eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { MaterialCommunityIcons } from 'react-native-vector-icons'
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
-import ActuNavigator from './actus/index.js'
-import PetitionNavigator from './petitions/index.js'
-import CarteNavigator from './carte/index.js'
+import ActuNavigator from './actus/index';
+import PetitionNavigator from './petitions/index';
+import CarteNavigator from './carte/index';
 
 const TabsNavigator = createMaterialBottomTabNavigator(
   {
@@ -19,16 +20,16 @@ const TabsNavigator = createMaterialBottomTabNavigator(
     shifting: false,
     barStyle: { backgroundColor: '#ffffff' },
     defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, horizontal, tintColor }) => {
+      tabBarIcon: ({ tintColor }) => {
         const { routeName } = navigation.state;
-        let IconComponent = MaterialCommunityIcons;
+        const IconComponent = MaterialCommunityIcons;
         let iconName;
         if (routeName === 'Actus') {
-          iconName = `newspaper`;
+          iconName = 'newspaper';
         } else if (routeName === 'Petitions') {
-          iconName = `comment-check-outline`;
+          iconName = 'comment-check-outline';
         } else if (routeName === 'Carte') {
-          iconName = `map-outline`
+          iconName = 'map-outline';
         }
 
         // You can return any component that you like here!
@@ -39,7 +40,7 @@ const TabsNavigator = createMaterialBottomTabNavigator(
       activeTintColor: 'tomato',
       inactiveTintColor: 'gray',
     },
-  }
+  },
 );
 
-export default TabsNavigator
+export default TabsNavigator;
