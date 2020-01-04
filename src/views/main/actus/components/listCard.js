@@ -13,6 +13,8 @@ import {
   Paragraph,
 } from 'react-native-paper';
 
+import styles from '../../../../styles/Styles';
+
 export default class ActuComponentListCard extends React.Component {
   genTagIcon = (type) => {
     if (type === 'tag') {
@@ -30,24 +32,18 @@ export default class ActuComponentListCard extends React.Component {
   render() {
     const { article } = this.props;
     return (
-      <View style={{ marginTop: 10, marginLeft: 10, marginRight: 10 }}>
+      <View style={styles.container}>
         <Card
-          style={{
-            borderWidth: 0.7,
-            borderColor: 'lightgray',
-            elevation: 0,
-          }}
+          style={styles.card}
         >
 
           <Card.Content style={{ flexDirection: 'row' }}>
             <Image
               source={{ uri: article.thumbnailUrl }}
-              style={{
+              style={[styles.thumnail, {
                 width: 120,
-                height: 120,
-                backgroundColor: 'lightgray',
-                flex: 0,
-              }}
+                height: 120
+              }]}
             />
             <View style={{
               margin: 10,
@@ -56,8 +52,8 @@ export default class ActuComponentListCard extends React.Component {
               flex: 1,
             }}
             >
-              <Text style={{ fontSize: 25, fontWeight: '400', marginBottom: 5 }}>{article.title}</Text>
-              <Paragraph>{article.description}</Paragraph>
+              <Text style={styles.title}>{article.title}</Text>
+              <Paragraph style={styles.text}>{article.description}</Paragraph>
             </View>
           </Card.Content>
           <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
@@ -75,8 +71,12 @@ export default class ActuComponentListCard extends React.Component {
                     <Chip
                       mode="outlined"
                       icon={tag.avatar ? '' : this.genTagIcon(tag.type)}
+                      // TODO: Changer la couleur de l'icone
                       avatar={tag.avatar ? (<Avatar.Image size={24} source={{ uri: tag.avatar }} />) : ''}
-                      style={{ borderColor: tag.color || 'gray' }}
+                      style={[styles.tag, {
+                        borderColor: tag.color || '#ff6347',
+                      }]}
+                      textStyle={styles.text}
                     >
                       {tag.title}
                     </Chip>

@@ -7,6 +7,9 @@ import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
 import CarteNavigator from './carte/index';
 
+import styles from '../../styles/Styles';
+import colors from '../../utils/Colors';
+
 const TabsNavigator = createMaterialBottomTabNavigator(
   {
     Actus: ActuNavigator,
@@ -15,10 +18,10 @@ const TabsNavigator = createMaterialBottomTabNavigator(
   },
   {
     initialRouteName: 'Actus',
-    activeColor: '#63005e',
-    inactiveColor: '#666666',
+    activeColor: colors.primary,
+    inactiveColor: colors.inactiveTab,
     shifting: false,
-    barStyle: { backgroundColor: '#ffffff' },
+    barStyle: styles.barStyle,
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ tintColor }) => {
         const { routeName } = navigation.state;
