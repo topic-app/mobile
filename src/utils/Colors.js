@@ -1,5 +1,3 @@
-import { DrawerLayoutAndroidComponent } from 'react-native'
-
 // Todo: Define colors for each theme (dark, light, etc)
 // This should just return an object with theme -> category -> color
 
@@ -16,23 +14,27 @@ const themes = {
     secondary: cnodeSecondary,
     background: '#ffffff',
     text: '#000000',
-    highlight: '#e9e9e9',
+    highlight: '#fdfdfd',
 
-    cardBackground: '#f8f8f8',
-    tabBackground: '#e2e2e2',
-    inactiveTab: '#767676'
+    outline: '#e1e1e1',
+
+    cardBackground: '#fefefe',
+    tabBackground: '#f1f1f1',
+    inactiveTab: '#767676',
   },
   dark: {
     primary: cnodePrimary,
     secondary: cnodeSecondary,
     background: '#222222',
-    text: '#ffffff',
-    highlight: '#444444',
+    text: '#fafafa',
+    highlight: '#313131',
 
-    cardBackground: '#333333',
+    outline: '#434343',
+
+    cardBackground: '#2a2a2a',
     tabBackground: '#191919',
-    inactiveTab: '#767676'
-  }
-}
+    inactiveTab: '#767676',
+  },
+};
 
 module.exports = themes[selectedTheme];

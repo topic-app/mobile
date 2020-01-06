@@ -2,9 +2,18 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
 
+import colors from '../../../../utils/Colors';
+
 export default class PetitionListScreen extends React.Component {
   static navigationOptions = {
-    title: 'Petition',
+    title: 'Pétitions',
+    headerStyle: {
+      backgroundColor: colors.tabBackground,
+    },
+    headerTintColor: colors.text,
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
   };
 
   render() {

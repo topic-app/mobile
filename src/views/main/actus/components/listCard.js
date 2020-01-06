@@ -14,6 +14,7 @@ import {
 } from 'react-native-paper';
 
 import styles from '../../../../styles/Styles';
+import actusStyles from '../styles/Styles';
 
 export default class ActuComponentListCard extends React.Component {
   genTagIcon = (type) => {
@@ -42,7 +43,7 @@ export default class ActuComponentListCard extends React.Component {
               source={{ uri: article.thumbnailUrl }}
               style={[styles.thumnail, {
                 width: 120,
-                height: 120
+                height: 120,
               }]}
             />
             <View style={{
@@ -52,7 +53,7 @@ export default class ActuComponentListCard extends React.Component {
               flex: 1,
             }}
             >
-              <Text style={styles.title}>{article.title}</Text>
+              <Text style={actusStyles.title}>{article.title}</Text>
               <Paragraph style={styles.text}>{article.description}</Paragraph>
             </View>
           </Card.Content>

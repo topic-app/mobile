@@ -1,0 +1,152 @@
+ [{
+  "title": "Article 1",
+  "time": "Il y a 2 heures",
+  "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
+  "tags": [
+    {
+      "title": "Tag 1",
+      "color": "red",
+      "type": "tag",
+      "key": "item1"
+    }, {
+      "title": "Tag 2",
+      "color": "blue",
+      "type": "tag",
+      "key": "item2"
+    }, {
+      "title": "Tag 3",
+      "color": "green",
+      "type": "tag",
+      "key": "item3"
+    }, {
+      "title": "Auteur",
+      "type": "author",
+      "key": "item4"
+    }, {
+      "title": "Groupe avec un nom très long",
+      "type": "group",
+      "avatar": "https://picsum.photos/600",
+      "key": "item5"
+    }, {
+      "title": "Centre International de Valbonne",
+      "type": "location",
+      "key": "item6"
+    }
+  ],
+  "thumbnailUrl": "https://picsum.photos/700",
+  "key": "article1"
+},
+{
+  "title": "Article 2",
+  "time": "Il y a 5 heures",
+  "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
+  "tags": [
+    {
+      "title": "Tag 1",
+      "color": "red",
+      "type": "tag",
+      "key": "item1"
+    }, {
+      "title": "Tag 2",
+      "color": "blue",
+      "type": "tag",
+      "key": "item2"
+    }, {
+      "title": "Tag 3",
+      "color": "green",
+      "type": "tag",
+      "key": "item3"
+    }, {
+      "title": "Auteur",
+      "type": "author",
+      "key": "item4"
+    }, {
+      "title": "Groupe avec un nom très long",
+      "type": "group",
+      "avatar": "https://picsum.photos/600",
+      "key": "item5"
+    }, {
+      "title": "Centre International de Valbonne",
+      "type": "location",
+      "key": "item6"
+    }
+  ],
+  "thumbnailUrl": "https://picsum.photos/700",
+  "key": "article2"
+},
+{
+  "title": "Article 3",
+  "time": "Il y a 1 jour",
+  "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
+  "tags": [
+    {
+      "title": "Tag 1",
+      "color": "red",
+      "type": "tag",
+      "key": "item1"
+    }, {
+      "title": "Tag 2",
+      "color": "blue",
+      "type": "tag",
+      "key": "item2"
+    }, {
+      "title": "Tag 3",
+      "color": "green",
+      "type": "tag",
+      "key": "item3"
+    }, {
+      "title": "Auteur",
+      "type": "author",
+      "key": "item4"
+    }, {
+      "title": "Groupe avec un nom très long",
+      "type": "group",
+      "avatar": "https://picsum.photos/600",
+      "key": "item5"
+    }, {
+      "title": "Centre International de Valbonne",
+      "type": "location",
+      "key": "item6"
+    }
+  ],
+  "thumbnailUrl": "https://picsum.photos/700",
+  "key": "article3"
+},
+{
+  "title": "Article 4",
+  "time": "Il y a 1 semaine",
+  "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
+  "tags": [
+    {
+      "title": "Tag 1",
+      "color": "red",
+      "type": "tag",
+      "key": "item1"
+    }, {
+      "title": "Tag 2",
+      "color": "blue",
+      "type": "tag",
+      "key": "item2"
+    }, {
+      "title": "Tag 3",
+      "color": "green",
+      "type": "tag",
+      "key": "item3"
+    }, {
+      "title": "Auteur",
+      "type": "author",
+      "key": "item4"
+    }, {
+      "title": "Groupe avec un nom très long",
+      "type": "group",
+      "avatar": "https://picsum.photos/600",
+      "key": "item5"
+    }, {
+      "title": "Centre International de Valbonne",
+      "type": "location",
+      "key": "item6"
+    }
+  ],
+  "thumbnailUrl": "https://picsum.photos/700",
+  "key": "article4"
+}]
