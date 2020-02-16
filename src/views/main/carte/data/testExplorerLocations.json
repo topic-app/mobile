@@ -1,0 +1,74 @@
+{
+    "success": true,
+    "info": {
+        "results": 5,
+        "explorer": [
+            {
+                "name": "Centre Internationale de Valbonne",
+                "type": "school",
+                "coordinates": [43.6213888889, 7.04583333333],
+                "summary": "Ecole réputée des Alpes Maritimes pour sa diversification de culture et de langue",
+                "imgUrl": "https://www.portailrusse.fr/images/gmapfp/660__civlogo.jpg",
+                "verification": {
+                    "verified": true,
+                    "bot": {
+                        "score": 1
+                    }
+                }
+            },
+            {
+                "name": "Lycée Simone Veil",
+                "type": "school",
+                "coordinates": [43.6414, 7.034722222],
+                "summary": "Lycée moderne acceuillant plus de 1000 élèves.",
+                "imgUrl": "https://static.wixstatic.com/media/1f1d45_325e4709f1904784ad735a2183b8170c.jpg",
+                "verification": {
+                    "verified": true,
+                    "bot": {
+                        "score": 2
+                    }
+                }
+            },
+            {
+                "name": "Centre Internationalle de Valbonne",
+                "type": "school",
+                "coordinates": [43.6213889, 7.04583333],
+                "summary": "meilleur lycée du monde!!!",
+                "imgUrl": "https://www.portailrusse.fr/images/gmapfp/660__civlogo.jpg",
+                "verification": {
+                    "verified": false,
+                    "bot": {
+                        "score": 5
+                    }
+                }
+            },
+            {
+                "name": "Lycée Internationale François 1er",
+                "type": "school",
+                "coordinates": [48.4086, 2.695],
+                "summary": "Ecole internationale à Fontainebleu",
+                "imgUrl": "https://www.lyceefrancois1.websco.fr/ADI/files/bibliotheque/images_diaporama/CAMPUS.jpg",
+                "verification": {
+                    "verified": true,
+                    "bot": {
+                        "score": 1
+                    }
+                }
+            },
+            {
+                "name": "Musée National Fernand Léger",
+                "type": "museum",
+                "coordinates": [43,617777778, 7,108888889],
+                "summary": "Musée d'art moderne avec des oeuvres de Léger",
+                "imgUrl": "https://www.biot.fr/wp-content/uploads/2016/08/LEGER.jpg",
+                "verification": {
+                    "verified": true,
+                    "bot": {
+                        "score": 1
+                    }
+                }
+            }
+        ]
+    },
+    "error": false 
+}

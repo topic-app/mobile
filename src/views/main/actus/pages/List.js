@@ -5,18 +5,12 @@ import ActuComponentListCard from '../components/listCard';
 
 import data from '../data/testDataList.json';
 import actusStyles from '../styles/Styles';
-import colors from '../../../../utils/Colors';
+import { customStyles } from '../../../../styles/Styles';
 
 export default class ActuListScreen extends React.Component {
   static navigationOptions = {
     title: 'Actus et évènements',
-    headerStyle: {
-      backgroundColor: colors.tabBackground,
-    },
-    headerTintColor: colors.text,
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
+    ...customStyles.header,
   };
 
   render() {

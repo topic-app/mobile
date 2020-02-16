@@ -1,10 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
 import { Button } from 'react-native';
+import { customStyles } from '../../../../styles/Styles';
 
 export default class PetitionDisplayScreen extends React.Component {
   static navigationOptions = {
     title: 'Petitions: Display',
+    ...customStyles.header,
   };
 
   render() {

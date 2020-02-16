@@ -13,7 +13,7 @@ import {
   Paragraph,
 } from 'react-native-paper';
 
-import styles from '../../../../styles/Styles';
+import { styles } from '../../../../styles/Styles';
 import actusStyles from '../styles/Styles';
 
 export default class ActuComponentListCard extends React.Component {
