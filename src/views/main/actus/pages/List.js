@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Button } from 'react-native';
 
 import ActuComponentListCard from '../components/listCard';
 
@@ -10,13 +10,6 @@ import colors from '../../../../utils/Colors';
 export default class ActuListScreen extends React.Component {
   static navigationOptions = {
     title: 'Actus et évènements',
-    headerStyle: {
-      backgroundColor: colors.tabBackground,
-    },
-    headerTintColor: colors.text,
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
   };
 
   render() {
@@ -26,7 +19,12 @@ export default class ActuListScreen extends React.Component {
       <View style={actusStyles.page}>
         <FlatList
           data={data}
-          renderItem={(article) => (<ActuComponentListCard article={article.item} />)}
+          renderItem={(article) => (
+            <ActuComponentListCard
+              article={article.item}
+              navigate={() => navigate('ActuArticle', { id: article.id })}
+            />
+          )}
         />
       </View>
     );

@@ -1,5 +1,9 @@
 import React from 'react';
-import { Button } from 'react-native';
+import { Button, View, Text } from 'react-native';
+
+import data from '../data/testDataList.json';
+import actusStyles from '../styles/Styles';
+import colors from '../../../../utils/Colors';
 
 export default class ActuDisplayScreen extends React.Component {
   static navigationOptions = {
@@ -9,6 +13,10 @@ export default class ActuDisplayScreen extends React.Component {
   render() {
     // eslint-disable-next-line
     const { navigate } = this.props.navigation;
-    return <Button title="Retour" onPress={() => navigate('ActuList')} />;
+    return (
+      <View>
+        <Text>Test</Text>
+      </View>
+    );
   }
 }

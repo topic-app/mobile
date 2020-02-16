@@ -40,8 +40,8 @@ const TabsNavigator = createMaterialBottomTabNavigator(
       },
     }),
     tabBarOptions: {
-      activeTintColor: 'tomato',
-      inactiveTintColor: 'gray',
+      activeTintColor: colors.activeText,
+      inactiveTintColor: colors.inactiveText,
     },
   },
 );

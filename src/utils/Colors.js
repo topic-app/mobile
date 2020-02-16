@@ -13,10 +13,14 @@ const themes = {
     primary: cnodePrimary,
     secondary: cnodeSecondary,
     background: '#ffffff',
-    text: '#000000',
     highlight: '#fdfdfd',
 
+    text: '#000000',
+    activeText: '#fdfdfd',
+    inactiveText: '#222222',
+
     outline: '#e1e1e1',
+    highlightOutline: '#333333',
 
     cardBackground: '#fefefe',
     tabBackground: '#f1f1f1',
@@ -26,10 +30,14 @@ const themes = {
     primary: cnodePrimary,
     secondary: cnodeSecondary,
     background: '#222222',
-    text: '#fafafa',
     highlight: '#313131',
 
+    text: '#fafafa',
+    activeText: '#fdfdfd',
+    inactiveText: '#CCCCCC',
+
     outline: '#434343',
+    highlightOutline: '#cccccc',
 
     cardBackground: '#2a2a2a',
     tabBackground: '#191919',

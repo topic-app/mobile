@@ -5,6 +5,7 @@ import {
   FlatList,
   Text,
   Image,
+  TouchableNativeFeedback
 } from 'react-native';
 import {
   Card,
@@ -14,6 +15,7 @@ import {
 } from 'react-native-paper';
 
 import styles from '../../../../styles/Styles';
+import colors from '../../../../utils/Colors';
 import actusStyles from '../styles/Styles';
 
 export default class ActuComponentListCard extends React.Component {
@@ -31,31 +33,38 @@ export default class ActuComponentListCard extends React.Component {
   }
 
   render() {
-    const { article } = this.props;
+    const { article, navigate } = this.props;
     return (
       <View style={styles.container}>
         <Card
           style={styles.card}
         >
+          <Card.Content
 
-          <Card.Content style={{ flexDirection: 'row' }}>
-            <Image
-              source={{ uri: article.thumbnailUrl }}
-              style={[styles.thumnail, {
-                width: 120,
-                height: 120,
-              }]}
-            />
-            <View style={{
-              margin: 10,
-              marginTop: 0,
-              marginLeft: 15,
-              flex: 1,
-            }}
+          >
+            <TouchableNativeFeedback
+              onPress={() => navigate()}
             >
-              <Text style={actusStyles.title}>{article.title}</Text>
-              <Paragraph style={styles.text}>{article.description}</Paragraph>
-            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Image
+                source={{ uri: article.thumbnailUrl }}
+                style={[styles.thumnail, {
+                  width: 120,
+                  height: 120,
+                }]}
+              />
+              <View style={{
+                margin: 10,
+                marginTop: 0,
+                marginLeft: 15,
+                flex: 1,
+              }}
+              >
+                <Text style={actusStyles.title}>{article.title}</Text>
+                <Paragraph style={styles.text}>{article.description}</Paragraph>
+              </View>
+              </View>
+            </TouchableNativeFeedback>
           </Card.Content>
           <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
             <View style={{ marginTop: 10 }}>
@@ -75,7 +84,7 @@ export default class ActuComponentListCard extends React.Component {
                       // TODO: Changer la couleur de l'icone
                       avatar={tag.avatar ? (<Avatar.Image size={24} source={{ uri: tag.avatar }} />) : ''}
                       style={[styles.tag, {
-                        borderColor: tag.color || '#ff6347',
+                        borderColor: tag.color || colors.highlightOutline,
                       }]}
                       textStyle={styles.text}
                     >
