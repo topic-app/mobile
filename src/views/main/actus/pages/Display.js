@@ -1,9 +1,5 @@
 import React from 'react';
-import { Button, View, Text } from 'react-native';
-
-import data from '../data/testDataList.json';
-import actusStyles from '../styles/Styles';
-import colors from '../../../../utils/Colors';
+import { View, Text } from 'react-native';
 
 export default class ActuDisplayScreen extends React.Component {
   static navigationOptions = {

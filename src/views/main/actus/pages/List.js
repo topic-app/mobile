@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, FlatList, Button } from 'react-native';
+import { View, FlatList } from 'react-native';
 
 import ActuComponentListCard from '../components/listCard';
 
 import data from '../data/testDataList.json';
 import actusStyles from '../styles/Styles';
-import colors from '../../../../utils/Colors';
+// import { customStyles } from '../../../../styles/Styles';
 
 export default class ActuListScreen extends React.Component {
   static navigationOptions = {

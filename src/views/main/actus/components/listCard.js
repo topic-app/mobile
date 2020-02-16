@@ -5,7 +5,7 @@ import {
   FlatList,
   Text,
   Image,
-  TouchableNativeFeedback
+  TouchableNativeFeedback,
 } from 'react-native';
 import {
   Card,
@@ -14,8 +14,7 @@ import {
   Paragraph,
 } from 'react-native-paper';
 
-import styles from '../../../../styles/Styles';
-import colors from '../../../../utils/Colors';
+import { styles, colors } from '../../../../styles/Styles';
 import actusStyles from '../styles/Styles';
 
 export default class ActuComponentListCard extends React.Component {
@@ -39,30 +38,28 @@ export default class ActuComponentListCard extends React.Component {
         <Card
           style={styles.card}
         >
-          <Card.Content
-
-          >
+          <Card.Content>
             <TouchableNativeFeedback
               onPress={() => navigate()}
             >
-            <View style={{ flexDirection: 'row' }}>
-              <Image
-                source={{ uri: article.thumbnailUrl }}
-                style={[styles.thumnail, {
-                  width: 120,
-                  height: 120,
-                }]}
-              />
-              <View style={{
-                margin: 10,
-                marginTop: 0,
-                marginLeft: 15,
-                flex: 1,
-              }}
-              >
-                <Text style={actusStyles.title}>{article.title}</Text>
-                <Paragraph style={styles.text}>{article.description}</Paragraph>
-              </View>
+              <View style={{ flexDirection: 'row' }}>
+                <Image
+                  source={{ uri: article.thumbnailUrl }}
+                  style={[styles.thumnail, {
+                    width: 120,
+                    height: 120,
+                  }]}
+                />
+                <View style={{
+                  margin: 10,
+                  marginTop: 0,
+                  marginLeft: 15,
+                  flex: 1,
+                }}
+                >
+                  <Text style={actusStyles.title}>{article.title}</Text>
+                  <Paragraph style={styles.text}>{article.description}</Paragraph>
+                </View>
               </View>
             </TouchableNativeFeedback>
           </Card.Content>

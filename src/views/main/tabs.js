@@ -7,8 +7,7 @@ import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
 import CarteNavigator from './carte/index';
 
-import styles from '../../styles/Styles';
-import colors from '../../utils/Colors';
+import { styles, colors } from '../../styles/Styles';
 
 const TabsNavigator = createMaterialBottomTabNavigator(
   {

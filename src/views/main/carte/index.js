@@ -5,9 +5,15 @@ import { createStackNavigator } from 'react-navigation-stack';
 import CarteListScreen from './pages/List';
 import CarteDisplayScreen from './pages/Display';
 
+import { customStyles } from '../../../styles/Styles';
+
 const CarteNavigator = createStackNavigator({
   CarteListe: CarteListScreen,
   CarteArticle: CarteDisplayScreen,
+}, {
+  defaultNavigationOptions: {
+    ...customStyles.header,
+  },
 });
 
 export default CarteNavigator;

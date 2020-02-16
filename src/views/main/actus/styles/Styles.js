@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import colors from '../../../../utils/Colors';
+import { colors } from '../../../../styles/Styles';
 
-module.exports = StyleSheet.create({
+const styles = StyleSheet.create({
   page: {
     backgroundColor: colors.background,
   },
@@ -12,3 +12,5 @@ module.exports = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+export default styles;
