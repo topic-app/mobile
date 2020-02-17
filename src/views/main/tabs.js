@@ -18,7 +18,7 @@ const TabsNavigator = createMaterialBottomTabNavigator(
   {
     initialRouteName: 'Actus',
     activeColor: colors.primary,
-    inactiveColor: colors.inactiveTab,
+    inactiveColor: colors.disabled,
     shifting: false,
     barStyle: styles.barStyle,
     defaultNavigationOptions: ({ navigation }) => ({
@@ -38,10 +38,6 @@ const TabsNavigator = createMaterialBottomTabNavigator(
         return <IconComponent name={iconName} size={24} color={tintColor} />;
       },
     }),
-    tabBarOptions: {
-      activeTintColor: colors.activeText,
-      inactiveTintColor: colors.inactiveText,
-    },
   },
 );
 

@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
 import { WebViewLeaflet } from 'react-native-webview-leaflet';
-// import { customStyles } from '../../../../styles/Styles';
 
 export default class CarteListScreen extends React.Component {
   static navigationOptions = {

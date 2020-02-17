@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
+import { Provider as PaperProvider, DefaultTheme, DarkTheme } from 'react-native-paper';
 
 import DrawerNavigator from './src/views/main/index';
 import SettingsNavigator from './src/views/settings/index';
@@ -19,10 +19,10 @@ const RootNavigator = createStackNavigator({
 });
 
 const theme = {
-  ...DefaultTheme,
+  ...DarkTheme,
   roundness: 2,
   colors: {
-    ...DefaultTheme.colors,
+    ...DarkTheme.colors,
     primary: '#3498db',
     accent: '#f1c40f',
   },

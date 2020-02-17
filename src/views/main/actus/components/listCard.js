@@ -81,7 +81,7 @@ export default class ActuComponentListCard extends React.Component {
                       // TODO: Changer la couleur de l'icone
                       avatar={tag.avatar ? (<Avatar.Image size={24} source={{ uri: tag.avatar }} />) : ''}
                       style={[styles.tag, {
-                        borderColor: tag.color || colors.highlightOutline,
+                        borderColor: tag.color || colors.disabled,
                       }]}
                       textStyle={styles.text}
                     >

@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native';
+import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
 // TODO: Charger theme à partir de préférences utilisateur
-const selectedTheme = 'dark';
+const selectedTheme = 'light';
 
 // Deux couleurs primaires de C-Node
 const cnodePrimary = '#990092';
@@ -9,35 +10,25 @@ const cnodeSecondary = '#63005e';
 
 const themes = {
   light: {
-    primary: cnodePrimary,
-    secondary: cnodeSecondary,
-    background: '#ffffff',
-    text: '#000000',
+    ...DefaultTheme.colors,
     highlight: '#fdfdfd',
-
     outline: '#e1e1e1',
-
-    cardBackground: '#fefefe',
     tabBackground: '#f1f1f1',
-    inactiveTab: '#767676',
   },
   dark: {
-    primary: cnodePrimary,
-    secondary: cnodeSecondary,
-    background: '#202020',
-    text: '#fafafa',
+    ...DarkTheme.colors,
     highlight: '#303030',
-
     outline: '#434343',
-
-    cardBackground: '#252525',
     tabBackground: '#101010',
-    inactiveTab: '#767676',
   },
 };
 
 const colors = themes[selectedTheme];
 const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   barStyle: {
     backgroundColor: colors.tabBackground,
   },
@@ -48,7 +39,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   card: {
-    backgroundColor: colors.cardBackground,
+    backgroundColor: colors.surface,
     borderWidth: 0.8,
     borderColor: colors.outline,
     elevation: 0,
