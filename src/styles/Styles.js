@@ -5,8 +5,8 @@ import { DefaultTheme, DarkTheme } from 'react-native-paper';
 const selectedTheme = 'light';
 
 // Deux couleurs primaires de C-Node
-const cnodePrimary = '#990092';
-const cnodeSecondary = '#63005e';
+// const cnodePrimary = '#990092';
+// const cnodeSecondary = '#63005e';
 
 const themes = {
   light: {
@@ -14,12 +14,19 @@ const themes = {
     highlight: '#fdfdfd',
     outline: '#e1e1e1',
     tabBackground: '#f1f1f1',
+    background: '#ffffff',
+    surface: '#f4f4f4',
+    image: '#dddddd',
+    subtext: '#999999',
   },
   dark: {
     ...DarkTheme.colors,
     highlight: '#303030',
     outline: '#434343',
     tabBackground: '#101010',
+    surface: '#222222',
+    image: '#444444',
+    subtext: '#666666',
   },
 };
 
@@ -33,26 +40,51 @@ const styles = StyleSheet.create({
     backgroundColor: colors.tabBackground,
   },
   container: {
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 0,
     marginLeft: 10,
     marginRight: 10,
   },
+  contentContainer: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
+    marginRight: 20,
+  },
   card: {
     backgroundColor: colors.surface,
-    borderWidth: 0.8,
+    borderWidth: selectedTheme === 'dark' ? 0.8 : 0.0,
     borderColor: colors.outline,
     elevation: 0,
   },
   thumbnail: {
-    backgroundColor: colors.highlight,
+    backgroundColor: colors.image,
     flex: 0,
+  },
+  image: {
+    backgroundColor: colors.image,
   },
   text: {
     color: colors.text,
   },
+  cardTitle: {
+    color: colors.text,
+    fontSize: 25,
+    fontWeight: '400',
+    marginBottom: 5,
+  },
+  title: {
+    color: colors.text,
+    fontSize: 40,
+    fontWeight: '400',
+  },
+  subtitle: {
+    color: colors.subtext,
+    fontSize: 15,
+    fontWeight: '100',
+  },
   tag: {
-    backgroundColor: colors.highlight,
+    backgroundColor: 'transparent',
     color: colors.text,
     borderWidth: 1,
   },
