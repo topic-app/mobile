@@ -12,6 +12,14 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "ios": {
+      "bundleIdentifier": "com.jtac.topic",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.jtac.topic",
+      "versionCode": 1
+    }
   }
 }
