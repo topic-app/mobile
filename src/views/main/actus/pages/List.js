@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
+import { Button } from 'react-native-paper';
 
 import ActuComponentListCard from '../components/listCard';
 
@@ -12,16 +14,24 @@ export default class ActuListScreen extends React.Component {
   };
 
   render() {
-    // eslint-disable-next-line
-    const { navigate } = this.props.navigation;
+    const { navigation } = this.props;
+    const { navigate } = navigation;
     return (
       <View style={styles.page}>
         <FlatList
           data={data}
+          refreshing={false}
+          onRefresh={() => console.log('Refresh')}
+          keyExtractor={(article) => article.articleId}
+          ListFooterComponent={(
+            <View style={styles.container}>
+              <Button style={styles.text}>Retour en haut</Button>
+            </View>
+          )}
           renderItem={(article) => (
             <ActuComponentListCard
               article={article.item}
-              navigate={() => navigate('ActuArticle', { id: article.id })}
+              navigate={() => navigate('ActuArticle', { id: article.item.articleId })}
             />
           )}
         />
@@ -29,3 +39,9 @@ export default class ActuListScreen extends React.Component {
     );
   }
 }
+
+ActuListScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
