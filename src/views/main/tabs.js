@@ -1,6 +1,7 @@
-// eslint-disable-next-line no-unused-vars
-import React, { Component } from 'react';
+import React from 'react';
+import { Platform } from 'react-native';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
 import ActuNavigator from './actus/index';
@@ -9,7 +10,11 @@ import CarteNavigator from './carte/index';
 
 import { styles, colors } from '../../styles/Styles';
 
-const TabsNavigator = createMaterialBottomTabNavigator(
+const createPlatformTabNavigator = Platform.OS === 'ios'
+  ? createBottomTabNavigator
+  : createMaterialBottomTabNavigator;
+
+const TabsNavigator = createPlatformTabNavigator(
   {
     Actus: ActuNavigator,
     Petitions: PetitionNavigator,
@@ -17,6 +22,7 @@ const TabsNavigator = createMaterialBottomTabNavigator(
   },
   {
     initialRouteName: 'Actus',
+    color: colors.primary,
     activeColor: colors.primary,
     inactiveColor: colors.disabled,
     shifting: false,
