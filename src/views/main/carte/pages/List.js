@@ -1,6 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
-import { WebViewLeaflet } from 'react-native-webview-leaflet';
+import { WebViewLeaflet, AnimationType, INFINITE_ANIMATION_ITERATIONS, MapShapeType } from 'react-native-webview-leaflet';
+import { Card } from 'react-native-paper';
+import { Text } from 'react-native';
+
+import places from '../data/testExplorerLocations.json';
 
 export default class CarteListScreen extends React.Component {
   static navigationOptions = {
@@ -22,7 +26,7 @@ export default class CarteListScreen extends React.Component {
           type: 'TileLayer', // the type of layer as shown at https://react-leaflet.js.org/docs/en/components.html#raster-layers
           baseLayer: true,
           // url of tiles
-          url: 'https://92.222.77.88/maps/{z}/{x}/{y}.png', // TODO: DO NOT HARDCODE
+          url: 'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png', // TODO: DO NOT HARDCODE
           // attribution string to be shown for this layer
           attribution:
             '© OpenStreetMap contributors',
@@ -32,7 +36,32 @@ export default class CarteListScreen extends React.Component {
           lng: 7.0227,
         }}
         zoom={12}
-        // The rest of your props, see the list below
+        mapMarkers={[
+          {
+            id: '1',
+            position: { lat: 43.62, lng: 7.04 },
+            icon: "<div style=\"background-color: white; padding-top: 2px; padding-bottom: 3px; padding-left: 10px; padding-right: 10px; border-radius: 20px; box-shadow: 0 2px 8px 0 grey;\"><span style=\"font-size: 18px;\">CIV</span></div>"
+          },
+          {
+            id: '2',
+            position: { lat: 43.65, lng: 7.09 },
+            icon: "<div style=\"background-color: white; padding-top: 2px; padding-bottom: 2px; padding-left: 10px; padding-right: 10px; border-radius: 20px; box-shadow: 0 2px 8px 0 grey;\"><span style=\"font-size: 18px;\">Évènement</span></div>"
+          },
+          {
+            id: '3',
+            position: { lat: 43.66, lng: 7.085 },
+            icon: "<div style=\"background-color: white; padding-top: 2px; padding-bottom: 2px; padding-left: 10px; padding-right: 10px; border-radius: 20px; box-shadow: 0 2px 8px 0 grey;\"><span style=\"font-size: 18px;\">Bonjour</span></div>"
+          }
+        ]}
+        mapShapes={[
+  {
+    shapeType: MapShapeType.CIRCLE,
+    color: "#123123",
+    id: "1",
+    center: { lat: 34.225727, lng: -77.94471 },
+    radius: 2000
+  }
+]}
       />
     );
   }
