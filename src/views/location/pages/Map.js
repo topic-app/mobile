@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Button } from 'react-native';
 
 export default class LocationMapScreen extends React.Component {
   static navigationOptions = {
@@ -7,7 +8,8 @@ export default class LocationMapScreen extends React.Component {
   };
 
   render() {
-    const {navigate} = this.props.navigation;
+    const { navigation } = this.props;
+    const { navigate } = navigation;
     return (
       <Button
         title="Retour"
@@ -16,3 +18,9 @@ export default class LocationMapScreen extends React.Component {
     );
   }
 }
+
+LocationMapScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
