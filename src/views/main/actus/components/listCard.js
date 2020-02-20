@@ -33,7 +33,7 @@ export default class ActuComponentListCard extends React.Component {
   }
 
   genTagData = (article) => { // TODO: Messy code
-    let data = [];
+    const data = [];
     data.push({
       type: 'group',
       avatar: article.group.thumbnailUrl || '',
@@ -72,7 +72,7 @@ export default class ActuComponentListCard extends React.Component {
           icon: 'map-marker',
           text: article.location.schools[school].displayName,
           id: article.location.schools[school].schoolId,
-        })
+        });
       }
     }
     for (department in article.location.departments) {
@@ -82,7 +82,7 @@ export default class ActuComponentListCard extends React.Component {
           icon: 'map-marker',
           text: article.location.departments[department].displayName,
           id: article.location.departments[department].displayName,
-        })
+        });
       }
     }
     return data;
