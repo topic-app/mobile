@@ -36,16 +36,12 @@ export default class ActuDisplayScreen extends React.Component {
       text: article.author.displayName,
       id: article.author.userId,
     });
-    for (tag in article.tags) {
-      if (Object.prototype.hasOwnProperty.call(article.tags, tag)) {
-        data.push({
-          type: 'tag',
-          text: article.tags[tag].name,
-          color: article.tags[tag].color,
-          id: article.tags[tag].tagId,
-        });
-      }
-    }
+    data.concat(article.tags.map((tag) => ({
+      type: 'tag',
+      text: tag.name,
+      color: tag.color,
+      id: tag.tagId,
+    })));
     if (article.location.global) {
       data.push({
         type: 'global',
@@ -54,26 +50,18 @@ export default class ActuDisplayScreen extends React.Component {
         id: '',
       });
     }
-    for (school in article.location.schools) {
-      if (Object.prototype.hasOwnProperty.call(article.location.schools, school)) {
-        data.push({
-          type: 'school',
-          icon: 'map-marker',
-          text: article.location.schools[school].displayName,
-          id: article.location.schools[school].schoolId,
-        });
-      }
-    }
-    for (department in article.location.departments) {
-      if (Object.prototype.hasOwnProperty.call(article.location.departments, department)) {
-        data.push({
-          type: 'department',
-          icon: 'map-marker',
-          text: article.location.departments[department].displayName,
-          id: article.location.departments[department].displayName,
-        });
-      }
-    }
+    data.concat(article.location.schools.map((school) => ({
+      type: 'school',
+      icon: 'map-marker',
+      text: school.displayName,
+      id: school.schoolId,
+    })));
+    data.concat(article.location.departments.map((department) => ({
+      type: 'department',
+      icon: 'map-marker',
+      text: department.displayName,
+      id: department.departmentId,
+    })));
     return data;
   }
 
