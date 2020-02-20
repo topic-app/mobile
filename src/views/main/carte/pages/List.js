@@ -19,7 +19,7 @@ export default class CarteListScreen extends React.Component {
     return (
       <WebViewLeaflet
         styles={{ height: 300, width: 200 }}
-        ref={(component) => (this.webViewLeaflet = component)}
+        ref={(component) => { this.webViewLeaflet = component; }}
         onMessageReceived={() => {}}
         eventReceiver={this}
         mapLayers={[{
