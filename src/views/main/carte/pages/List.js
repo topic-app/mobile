@@ -6,6 +6,7 @@ import {
 import { Card } from 'react-native-paper';
 import { Text } from 'react-native';
 
+import MapView, { UrlTile } from 'react-native-maps';
 import places from '../data/testExplorerLocations.json';
 
 export default class CarteListScreen extends React.Component {
@@ -13,10 +14,33 @@ export default class CarteListScreen extends React.Component {
     title: 'Carte',
   };
 
+  onRegionChange(region) {
+    this.setState({ region });
+  }
+
   render() {
     // eslint-disable-next-line
     const { navigate } = this.props.navigation;
     return (
+      <MapView
+        style={{ height: '100%' }}
+        showsUserLocation
+        region={{
+          latitude: 43.6213888889,
+          longitude: 7.04583333333,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      >
+        {/*
+        <UrlTile
+          urlTemplate={'http://92.222.77.88/styles/klokantech-basic/{z}/{x}/{y}.png'}
+          maximumZ={19}
+          flipY={false}
+        />
+      */}
+      </MapView>
+      /*
       <WebViewLeaflet
         styles={{ height: 300, width: 200 }}
         ref={(component) => { this.webViewLeaflet = component; }}
@@ -64,7 +88,7 @@ export default class CarteListScreen extends React.Component {
             radius: 2000,
           },
         ]}
-      />
+      /> */
     );
   }
 }

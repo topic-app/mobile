@@ -67,7 +67,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Allow C-Node to use your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow C-Node to use your location</string>
+	<string>Allow C-Node to use your location to find yourself on the map</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow C-Node to access your microphone</string>
 	<key>NSMotionUsageDescription</key>
