@@ -22,7 +22,7 @@
     "global": false,
     "schools": [{
       "schoolId": "98",
-      "displayName": "Pasteur",
+      "displayName": "Pasteur"
     }],
     "departments": [{
       "departmentId": "11",
