@@ -1,18 +1,15 @@
-package com.cnodeapp;
+package com.topic;
 
 import android.app.Application;
 
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.cnodeapp.generated.BasePackageList;
-import com.swmansion.reanimated.ReanimatedPackage;
-import com.swmansion.rnscreens.RNScreensPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-
-import com.airbnb.android.react.maps.MapsPackage;
+import com.topic.generated.BasePackageList;
+//import com.mapbox.rctmgl.RCTMGLPackage;
 
 import org.unimodules.adapters.react.ReactAdapterPackage;
 import org.unimodules.adapters.react.ModuleRegistryAdapter;
@@ -40,14 +37,10 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-          new MapsPackage(),
-          new ReanimatedPackage(),
-          new RNGestureHandlerPackage(),
-          new RNScreensPackage(),
-          new ModuleRegistryAdapter(mModuleRegistryProvider)
-      );
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      packages.add(new ModuleRegistryAdapter(mModuleRegistryProvider));
+      //packages.add(new RCTMGLPackage());
+      return packages;
     }
 
     @Override

@@ -1,9 +1,9 @@
 {
-  "name": "cnodeapp",
-  "displayName": "C-Node",
+  "name": "Topic",
+  "displayName": "Topic",
   "expo": {
-    "name": "cnodeapp",
-    "slug": "expo-template-bare",
+    "name": "Topic",
+    "slug": "Topic",
     "privacy": "unlisted",
     "sdkVersion": "36.0.0",
     "version": "1.0.0",
@@ -12,14 +12,6 @@
       "ios",
       "android",
       "web"
-    ],
-    "ios": {
-      "bundleIdentifier": "com.jtac.topic",
-      "buildNumber": "1.0.0"
-    },
-    "android": {
-      "package": "com.jtac.topic",
-      "versionCode": 1
-    }
+    ]
   }
 }

@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "postinstall": "jetify && jetify",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",
@@ -8,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-mapbox-gl/maps": "^8.0.0-rc1",
     "@expo/vector-icons": "^10.0.0",
     "expo": "^36.0.0",
     "prop-types": "^15.7.2",
@@ -15,14 +15,12 @@
     "react-dom": "16.9.0",
     "react-native": "0.61.4",
     "react-native-gesture-handler": "~1.5.0",
-    "react-native-maps": "0.26.1",
     "react-native-paper": "^3.3.0",
     "react-native-reanimated": "~1.4.0",
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-unimodules": "0.7.0",
     "react-native-vector-icons": "^6.6.0",
     "react-native-web": "^0.11.7",
-    "react-native-webview-leaflet": "^5.0.2",
     "react-navigation": "^4.0.10",
     "react-navigation-drawer": "^2.3.3",
     "react-navigation-material-bottom-tabs": "^2.1.5",
@@ -32,13 +30,11 @@
     "redux": "^4.0.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.4",
-    "babel-jest": "24.9.0",
-    "jest": "24.9.0",
-    "jetifier": "^1.6.4",
-    "metro-react-native-babel-preset": "^0.57.0",
-    "react-test-renderer": "16.12.0",
-    "@react-native-community/eslint-config": "0.0.5",
+    "@babel/core": "~7.6.0",
+    "babel-jest": "~24.9.0",
+    "jest": "~24.9.0",
+    "metro-react-native-babel-preset": "~0.56.0",
+    "react-test-renderer": "~16.9.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.3",
     "babel-preset-airbnb": "^4.4.0",

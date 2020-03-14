@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>C-Node</string>
+	<string>Topic</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -57,26 +57,26 @@
 		</dict>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Allow C-Node to access your calendar</string>
+	<string>Allow Topic to access your calendar</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow C-Node to use the camera</string>
+	<string>Allow Topic to use the camera</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Allow C-Node experiences to access your contacts</string>
+	<string>Allow Topic experiences to access your contacts</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow C-Node to use your location</string>
+	<string>Allow Topic to use your location</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Allow C-Node to use your location</string>
+	<string>Allow Topic to use your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow C-Node to use your location to find yourself on the map</string>
+	<string>Allow Topic to use your location</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow C-Node to access your microphone</string>
+	<string>Allow Topic to access your microphone</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Allow C-Node to access your device's accelerometer</string>
+	<string>Allow Topic to access your device's accelerometer</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Give C-Node periences permission to save photos</string>
+	<string>Give Topic periences permission to save photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Give C-Node periences permission to access your photos</string>
+	<string>Give Topic periences permission to access your photos</string>
 	<key>NSRemindersUsageDescription</key>
-	<string>Allow C-Node to access your reminders</string>
+	<string>Allow Topic to access your reminders</string>
 </dict>
 </plist>
