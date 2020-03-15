@@ -101,5 +101,10 @@ const customStyles = {
   },
 };
 
-export { styles, colors, customStyles };
+export {
+  styles,
+  colors,
+  customStyles,
+  selectedTheme,
+};
 export default styles;

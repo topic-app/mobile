@@ -34,7 +34,7 @@ export default class PetitionComponentListCard extends React.Component {
 
   genTagData = (petition) => { // TODO: Messy code
     const data = [];
-    if (petition.publisher.type == "group") {
+    if (petition.publisher.type === 'group') {
       data.push({
         type: 'group',
         avatar: petition.publisher.group.thumbnailUrl || '',
@@ -42,7 +42,7 @@ export default class PetitionComponentListCard extends React.Component {
         text: petition.publisher.group.displayName,
         id: petition.publisher.group.groupId,
       });
-    } else if (petition.publisher.type == "user") {
+    } else if (petition.publisher.type === 'user') {
       data.push({
         type: 'author',
         icon: 'account',

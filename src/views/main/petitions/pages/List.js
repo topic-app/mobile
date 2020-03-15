@@ -16,8 +16,8 @@ export default class PetitionListScreen extends React.Component {
   };
 
   render() {
-    const { navigation } = this.props;
-    const { navigate } = navigation;
+    // eslint-disable-next-line
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.page}>
         <FlatList
@@ -38,6 +38,6 @@ export default class PetitionListScreen extends React.Component {
           )}
         />
       </View>
-    )
-  };
-};
+    );
+  }
+}

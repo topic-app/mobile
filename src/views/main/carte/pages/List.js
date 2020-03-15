@@ -1,11 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
 import places from '../data/testExplorerLocations.json';
+import { selectedTheme } from '../../../../styles/Styles';
 
-MapboxGL.setAccessToken('blabla');
+// To use MapboxGL, you have to set an access token
+// even if you never actually use it ¯\_(ツ)_/¯
+MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 
 const civ = [7.04583333, 43.6213889];
 const zoom = {
@@ -16,17 +19,13 @@ const zoom = {
   quarter: 14,
   zone: 16,
   precise: 18,
-  house: 20
-}
+  house: 20,
+};
 
 export default class CarteListScreen extends React.Component {
   static navigationOptions = {
     title: 'Carte',
   };
-
-  onRegionChange(region) {
-    this.setState({ region });
-  }
 
   render() {
     // eslint-disable-next-line
@@ -35,20 +34,23 @@ export default class CarteListScreen extends React.Component {
       <View style={{ flex: 1 }}>
         <MapboxGL.MapView
           style={{ flex: 1 }}
+          logoEnabled={false}
+          attributionEnabled={false}
           showUserLocation
-          styleURL="http://92.222.77.88/maps/styles/dark-custom/style.json"
+          styleURL={`http://92.222.77.88/maps/styles/${selectedTheme}/style.json`}
         >
           <MapboxGL.Camera
             ref={(c) => this._camera = c}
             defaultSettings={{
               centerCoordinate: civ,
-              zoomLevel: zoom.city
+              zoomLevel: zoom.city,
             }}
           />
           <MapboxGL.UserLocation
             visible
             animated
           />
+          
         </MapboxGL.MapView>
       </View>
     );
