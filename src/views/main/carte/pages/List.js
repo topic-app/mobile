@@ -3,13 +3,18 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+
 import places from '../data/testExplorerLocations.json';
 import { selectedTheme } from '../../../../styles/Styles';
 
 // To use MapboxGL, you have to set an access token
 // even if you never actually use it ¯\_(ツ)_/¯
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
+// MapboxGL.setTelemetryEnabled(false);
 
+const tileServerUrl = 'http://92.222.77.88/maps';
 const civ = [7.04583333, 43.6213889];
 const zoom = {
   country: 5,
@@ -23,6 +28,21 @@ const zoom = {
 };
 
 export default class CarteListScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this._getLocationAsync();
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      console.warn('Location Permission Denied');
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(JSON.stringify(location));
+  };
+
   static navigationOptions = {
     title: 'Carte',
   };
@@ -37,7 +57,7 @@ export default class CarteListScreen extends React.Component {
           logoEnabled={false}
           attributionEnabled={false}
           showUserLocation
-          styleURL={`http://92.222.77.88/maps/styles/${selectedTheme}/style.json`}
+          styleURL={`${tileServerUrl}/styles/${selectedTheme}/style.json`}
         >
           <MapboxGL.Camera
             ref={(c) => this._camera = c}
@@ -56,3 +76,4 @@ export default class CarteListScreen extends React.Component {
     );
   }
 }
+

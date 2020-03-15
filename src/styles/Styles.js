@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
 // TODO: Charger theme à partir de préférences utilisateur
-const selectedTheme = 'dark';
+const selectedTheme = 'light';
 
 // Deux couleurs primaires de C-Node
 // const cnodePrimary = '#990092';
