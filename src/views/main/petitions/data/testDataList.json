@@ -2,8 +2,10 @@
   {
     "petitionId": "1",
     "title": "pétition sur les pigeons",
-    "type": "objective like-dislike",
-    "status": "open close",
+    "type": "goal",
+    "nombreDeSignature": "170",
+    "objectif": "300",
+    "status": "open",
     "date": "aaaa-mm-jjThh-mm-ss",
     "duration": {
       "start": "aaaa-mm-jjThh-mm-ss",

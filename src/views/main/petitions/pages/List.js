@@ -1,7 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
-import { Text, View, FlatList } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, FlatList } from 'react-native';
+import { 
+  Button,
+  Text
+} from 'react-native-paper';
 
 import PetitionComponentListCard from '../components/listCard';
 

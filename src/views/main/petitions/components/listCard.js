@@ -14,6 +14,8 @@ import {
   Avatar,
   Chip,
   Paragraph,
+  ProgressBar,
+  Colors
 } from 'react-native-paper';
 
 import { styles, colors } from '../../../../styles/Styles';
@@ -89,6 +91,8 @@ export default class PetitionComponentListCard extends React.Component {
 
     const data = this.genTagData(petition);
 
+    console.log(petition)
+
     const Touchable = Platform.OS === 'ios'
       ? TouchableOpacity
       : TouchableNativeFeedback;
@@ -99,6 +103,10 @@ export default class PetitionComponentListCard extends React.Component {
           style={styles.card}
         >
           <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
+            <View style={{ marginTop: 10, marginHorizontal: 15}}>
+              <Text style={styles.text}>SALUT </Text>
+              <ProgressBar progress={petition.nombreDeSignature/petition.objectif} color="#4c3e8e"/>
+            </View>
             <View style={{ marginTop: 10 }}>
               <FlatList
                 horizontal
@@ -114,7 +122,6 @@ export default class PetitionComponentListCard extends React.Component {
                     <Chip
                       mode="outlined"
                       icon={tag.avatar ? '' : tag.icon}
-                      // TODO: Changer la couleur de l'icone
                       avatar={tag.avatar ? (<Avatar.Image size={24} source={{ uri: tag.avatar }} />) : ''}
                       style={[styles.tag, {
                         borderColor: tag.color || colors.disabled,
