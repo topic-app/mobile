@@ -1,15 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import { View, Image } from 'react-native';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-
-import ExplorerComponentDisplayIcons from '../components/displayIcons';
+import PropTypes from 'prop-types';
+import { SafeAreaView } from 'react-native';
+import ExplorerComponentShowMap from '../components/displayIcons';
 import { selectedTheme } from '../../../../styles/Styles';
 import places from '../data/testExplorerLocations.json';
 
 // To use MapboxGL, you have to set an access token
 // even if you never actually use it ¯\_(ツ)_/¯
-MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 
 const tileServerUrl = 'http://92.222.77.88/maps';
 const map = {
@@ -26,23 +24,26 @@ export default class CarteListScreen extends React.Component {
   };
 
   render() {
-    // eslint-disable-next-line
-    const { navigate } = this.props.navigation;
+    const { navigation } = this.props;
+    const { navigate } = navigation;
+
+    navigate('CarteDisplayScreen', { id: '1' });
 
     return (
-      <View style={{ flex: 1 }}>
-        <MapboxGL.MapView
-          style={{ flex: 1 }}
-          logoEnabled={false}
-          attributionEnabled
-          attributionPosition={{bottom: 8, right: 8}}
-          pitchEnabled={false}
-          showUserLocation
-          styleURL={`${tileServerUrl}/styles/${selectedTheme}/style.json`}
-        >
-          <ExplorerComponentDisplayIcons places={places} map={map} />
-        </MapboxGL.MapView>
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ExplorerComponentShowMap
+          tileServerUrl={`${tileServerUrl}/styles/${selectedTheme}/style.json`}
+          places={places}
+          map={map}
+          navigate={(id) => navigate('CarteArticle', id)}
+        />
+      </SafeAreaView>
     );
   }
 }
+
+CarteListScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};

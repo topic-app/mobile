@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import CarteListScreen from './pages/List';
 import CarteDisplayScreen from './pages/Display';
+import LocationModalContents from './components/locationModal';
 
 import { customStyles } from '../../../styles/Styles';
 

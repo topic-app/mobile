@@ -144,13 +144,9 @@ export default class PetitionComponentListCard extends React.Component {
 PetitionComponentListCard.propTypes = {
   petition: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    time: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    duration: PropTypes.string.isRequired,
     description: PropTypes.string,
-    content: PropTypes.shape({
-      parser: PropTypes.string.isRequired,
-      data: PropTypes.string.isRequired,
-    }).isRequired,
-
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };

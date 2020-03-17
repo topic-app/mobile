@@ -95,7 +95,7 @@ export default class ActuComponentListCard extends React.Component {
         >
           <Card.Content>
             <Touchable
-              onPress={() => navigate()}
+              onPress={navigate}
             >
               <View style={{ flexDirection: 'row' }}>
                 <Image

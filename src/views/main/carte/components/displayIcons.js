@@ -1,27 +1,44 @@
 import React from 'react';
-import { View } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
+import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import LocationModalContents from './locationModal';
 
 import pin from '../assets/location-pin.png';
+import { styles } from '../../../../styles/Styles';
+import carteStyles from '../styles/Styles';
 
-export default class ExplorerComponentDisplayIcons extends React.Component {
+MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
+
+export default class ExplorerComponentShowMap extends React.Component {
   constructor(props) {
     super(props);
-
     this.onIconPress = this.onIconPress.bind(this);
+    this.state = {
+      id: '',
+      isModalVisible: false,
+    };
+  }
+
+  async componentDidMount() {
     this.getLocationAsync();
   }
 
-  onIconPress({features, coordinates, point}) {
-    console.log('Marker pressed!', features, coordinates, point);
-    ExplorerComponentDisplayIcons.camera.moveTo([coordinates.longitude, coordinates.latitude], 100);
+  onIconPress({ features }) {
+    const feature = features[0];
+    const { coordinates } = feature.geometry;
+    ExplorerComponentShowMap.camera.moveTo(coordinates, 100);
+    this.setState({
+      id: feature.id,
+      isModalVisible: true,
+    });
   }
 
   goTo = (lng, lat, zoom, animationTime) => {
-    ExplorerComponentDisplayIcons.camera.setCamera({
+    ExplorerComponentShowMap.camera.setCamera({
       centerCoordinate: [lng, lat],
       zoomLevel: zoom,
       animationDuration: animationTime,
@@ -29,7 +46,7 @@ export default class ExplorerComponentDisplayIcons extends React.Component {
   }
 
   getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       console.warn('Location Permission Denied, skipping recenter of map.');
     } else {
@@ -38,13 +55,17 @@ export default class ExplorerComponentDisplayIcons extends React.Component {
     }
   };
 
+  hideModal = () => {
+    this.setState({ isModalVisible: false });
+  }
+
   render() {
     const featureCollection = {
       type: 'FeatureCollection',
       features: [],
     };
-
-    this.props.places.forEach((place) => {
+    const { places } = this.props;
+    places.forEach((place) => {
       featureCollection.features.push({
         type: 'Feature',
         id: place.id,
@@ -58,33 +79,57 @@ export default class ExplorerComponentDisplayIcons extends React.Component {
       });
     });
 
+    const { map, navigate, tileServerUrl } = this.props;
+    const { id, isModalVisible } = this.state;
+
     return (
-      <View>
-        <MapboxGL.Camera
-          ref={(c) => ExplorerComponentDisplayIcons.camera = c}
-          maxBounds={this.props.map.bounds}
-          minZoomLevel={this.props.map.minZoom}
-          maxZoomLevel={this.props.map.maxZoom}
-          defaultSettings={{ centerCoordinate: this.props.map.centerCoordinate, zoomLevel: this.props.map.defaultZoom }}
-        />
-        <MapboxGL.UserLocation
-          visible
-          animated
-        />
-        <MapboxGL.ShapeSource
-          id="markerShapeSource"
-          shape={featureCollection}
-          hitbox={{ width: 20, height: 20 }}
-          onPress={this.onIconPress}
+      <SafeAreaView style={{ flex: 1 }}>
+        <MapboxGL.MapView
+          style={{ flex: 1 }}
+          onPress={this.hideModal}
+          logoEnabled={false}
+          attributionEnabled
+          attributionPosition={{bottom: 8, right: 8}}
+          pitchEnabled={false}
+          showUserLocation
+          styleURL={tileServerUrl}
         >
-          <MapboxGL.SymbolLayer id="1" style={{ iconImage: pin, iconSize: 1.1 }} />
-        </MapboxGL.ShapeSource>
-      </View>
+          <MapboxGL.Camera
+            ref={(c) => ExplorerComponentShowMap.camera = c}
+            maxBounds={map.bounds}
+            minZoomLevel={map.minZoom}
+            maxZoomLevel={map.maxZoom}
+            defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
+          />
+          <MapboxGL.ShapeSource
+            id="markerShapeSource"
+            shape={featureCollection}
+            hitbox={{ width: 20, height: 20 }}
+            onPress={this.onIconPress}
+          >
+            <MapboxGL.SymbolLayer id="1" style={{ iconImage: pin, iconSize: 1.1, iconAnchor: 'bottom' }} />
+          </MapboxGL.ShapeSource>
+          <MapboxGL.UserLocation
+            visible
+            animated
+          />
+        </MapboxGL.MapView>
+        <Modal
+          isVisible={isModalVisible}
+          hasBackdrop={false}
+          onBackButtonPress={this.hideModal}
+          coverScreen={false}
+          animationOutTiming={400}
+          style={carteStyles.modal}
+        >
+          <LocationModalContents id={id} navigate={navigate} />
+        </Modal>
+      </SafeAreaView>
     );
   }
 }
 
-ExplorerComponentDisplayIcons.propTypes = {
+ExplorerComponentShowMap.propTypes = {
   places: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -108,4 +153,6 @@ ExplorerComponentDisplayIcons.propTypes = {
       sw: PropTypes.arrayOf(PropTypes.number).isRequired,
     }),
   }).isRequired,
+  navigate: PropTypes.func.isRequired,
+  tileServerUrl: PropTypes.string.isRequired,
 };

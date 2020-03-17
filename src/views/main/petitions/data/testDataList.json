@@ -7,10 +7,7 @@
     "objectif": "300",
     "status": "open",
     "date": "aaaa-mm-jjThh-mm-ss",
-    "duration": {
-      "start": "aaaa-mm-jjThh-mm-ss",
-      "end": "aaaa-mm-jjThh-mm-ss"
-    },
+    "duration": "10j",
     "location": {
       "global": false,
       "schools": [
