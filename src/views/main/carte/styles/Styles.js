@@ -1,13 +1,12 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../../../styles/Styles';
+import { styles, colors, selectedTheme } from '../../../../styles/Styles';
 
-console.log(colors.backdrop);
-
-const styles = StyleSheet.create({
+const carteStyles = StyleSheet.create({
   modal: {
     margin: 0,
   },
   modalContainer: {
+    flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderTopWidth: 1,
@@ -15,7 +14,6 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: colors.softContrast,
     backgroundColor: colors.background,
-    flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
@@ -63,6 +61,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
   },
+  attribution: {
+    fontSize: 12,
+  },
+  atributionMutedColor: {
+    color: colors.muted,
+  },
+  attributionContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    position: 'absolute',
+    backgroundColor: selectedTheme === 'dark' ? '#44444466' : '#ffffff66',
+    bottom: 0,
+    right: 0,
+  },
 });
 
-export default styles;
+export default carteStyles;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView } from 'react-navigation';
+import { View, Text, Linking } from 'react-native';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import * as Location from 'expo-location';
@@ -83,13 +83,12 @@ export default class ExplorerComponentShowMap extends React.Component {
     const { id, isModalVisible } = this.state;
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <MapboxGL.MapView
           style={{ flex: 1 }}
           onPress={this.hideModal}
           logoEnabled={false}
-          attributionEnabled
-          attributionPosition={{bottom: 8, right: 8}}
+          attributionEnabled={false}
           pitchEnabled={false}
           showUserLocation
           styleURL={tileServerUrl}
@@ -114,6 +113,24 @@ export default class ExplorerComponentShowMap extends React.Component {
             animated
           />
         </MapboxGL.MapView>
+        <View style={carteStyles.attributionContainer}>
+          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
+            {' '}
+            ©
+            {' '}
+          </Text>
+          <Text
+            onPress={() => Linking.openURL('https://www.openstreetmap.org/copyright')}
+            style={[styles.link, carteStyles.attribution]}
+          >
+            OpenStreetMap
+          </Text>
+          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
+            {' '}
+            contributors
+            {' '}
+          </Text>
+        </View>
         <Modal
           supportedOrientations={['portrait', 'landscape']}
           isVisible={isModalVisible}
@@ -125,7 +142,7 @@ export default class ExplorerComponentShowMap extends React.Component {
         >
           <LocationModalContents id={id} navigate={navigate} />
         </Modal>
-      </SafeAreaView>
+      </View>
     );
   }
 }

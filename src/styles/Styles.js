@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
 // TODO: Charger theme à partir de préférences utilisateur
-const selectedTheme = 'dark';
+const selectedTheme = 'light';
 
 // Deux couleurs primaires de C-Node
 const cnodePrimary = '#4c3e8e';
@@ -13,7 +13,7 @@ const themes = {
     ...DefaultTheme.colors,
     primary: cnodePrimary,
     secondary: cnodeSecondary,
-    softContrast: '#222222',
+    softContrast: '#999999',
     highlight: '#fdfdfd',
     outline: '#e1e1e1',
     tabBackground: '#f1f1f1',
@@ -94,6 +94,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     color: colors.text,
     borderWidth: 1,
+  },
+  link: {
+    color: '#005ccc',
+    textDecorationLine: 'underline',
   },
 });
 const customStyles = {

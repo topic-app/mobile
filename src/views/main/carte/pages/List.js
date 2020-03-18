@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { SafeAreaView } from 'react-native';
+import { View } from 'react-native';
 import ExplorerComponentShowMap from '../components/displayIcons';
 import { selectedTheme } from '../../../../styles/Styles';
 import places from '../data/testExplorerLocations.json';
@@ -31,14 +31,14 @@ export default class CarteListScreen extends React.Component {
     navigate('CarteDisplayScreen', { id: '1' });
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <ExplorerComponentShowMap
           tileServerUrl={`${tileServerUrl}/styles/${selectedTheme}/style.json`}
           places={places}
           map={map}
           navigate={(id) => navigate('CarteArticle', id)}
         />
-      </SafeAreaView>
+      </View>
     );
   }
 }

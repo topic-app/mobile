@@ -2,14 +2,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  Animated,
   View,
   Text,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import SwipeUpComponent from './bottomSheet';
 
-import { styles, colors } from '../../../../styles/Styles';
 import places from '../data/testQueryResults.json';
 import carteStyles from '../styles/Styles';
+
+const windowHeight = Dimensions.get('window').height;
+const SNAP_POINTS_FROM_TOP = [0, windowHeight * 0.5, windowHeight * 0.73];
 
 export default class LocationModalContents extends React.Component {
   genTagIcon = (type) => {
@@ -21,55 +26,54 @@ export default class LocationModalContents extends React.Component {
     return 'map-marker';
   };
 
-  truncate = (str, length, ending) => {
-    if (length == null) {
-      length = 100;
-    }
-    if (ending == null) {
-      ending = '...';
-    }
-    if (str.length > length) {
-      return str.substring(0, length - ending.length) + ending;
-    }
-    return str;
-  };
-
   render() {
     const { id } = this.props;
     const place = places[id];
 
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 4.5 }} />
-        <View style={carteStyles.modalContainer}>
-          <View style={carteStyles.pullUpTabContainer}>
-            <View style={carteStyles.pullUpTab} />
-          </View>
+        <SwipeUpComponent
+          timeout={100000}
+          snapPointsFromTop={SNAP_POINTS_FROM_TOP}
+        >
+          <View style={carteStyles.modalContainer}>
+            <View style={carteStyles.pullUpTabContainer}>
+              <View style={carteStyles.pullUpTab} />
+            </View>
 
-          <View style={carteStyles.modalTitleContainer}>
-            <Icon name={this.genTagIcon(place.type)} style={carteStyles.modalIcon} />
+            <View style={carteStyles.modalTitleContainer}>
+              <Icon name={this.genTagIcon(place.type)} style={carteStyles.modalIcon} />
+              <Text
+                style={carteStyles.modalTitle}
+                ellipsizeMode="tail"
+                adjustsFontSizeToFit
+                numberOfLines={1}
+              >
+                {place.name}
+              </Text>
+            </View>
+
+            <View style={carteStyles.horizontalLineContainer}>
+              <View style={carteStyles.horizontalLine} />
+            </View>
+
             <Text
-              style={carteStyles.modalTitle}
+              style={carteStyles.modalText}
+              numberOfLines={3}
               ellipsizeMode="tail"
-              adjustsFontSizeToFit
-              numberOfLines={1}
             >
-              {place.name}
+              {place.summary}
+            </Text>
+            <View style={carteStyles.horizontalLineContainer}>
+              <View style={carteStyles.horizontalLine} />
+            </View>
+            <Text
+              style={carteStyles.modalText}
+            >
+              {place.description}
             </Text>
           </View>
-
-          <View style={carteStyles.horizontalLineContainer}>
-            <View style={carteStyles.horizontalLine} />
-          </View>
-
-          <Text
-            style={carteStyles.modalText}
-            numberOfLines={3}
-            ellipsizeMode="tail"
-          >
-            {place.summary}
-          </Text>
-        </View>
+        </SwipeUpComponent>
       </View>
     );
   }
