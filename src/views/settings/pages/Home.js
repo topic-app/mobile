@@ -9,7 +9,7 @@ export default class SettingsHomeScreen extends React.Component {
   };
 
   render() {
-    const { navigation = {} } = this.props;
+    const { navigation } = this.props;
     const { navigate } = navigation;
     return (
       <Button

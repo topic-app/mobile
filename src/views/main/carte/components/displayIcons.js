@@ -115,6 +115,7 @@ export default class ExplorerComponentShowMap extends React.Component {
           />
         </MapboxGL.MapView>
         <Modal
+          supportedOrientations={['portrait', 'landscape']}
           isVisible={isModalVisible}
           hasBackdrop={false}
           onBackButtonPress={this.hideModal}

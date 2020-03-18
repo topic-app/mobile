@@ -21,6 +21,7 @@ const map = {
 export default class CarteListScreen extends React.Component {
   static navigationOptions = {
     title: 'Carte',
+    headerShown: false,
   };
 
   render() {

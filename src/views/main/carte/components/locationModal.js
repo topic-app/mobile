@@ -38,25 +38,36 @@ export default class LocationModalContents extends React.Component {
     const { id } = this.props;
     const place = places[id];
 
-
-
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 4.5 }} />
         <View style={carteStyles.modalContainer}>
+          <View style={carteStyles.pullUpTabContainer}>
+            <View style={carteStyles.pullUpTab} />
+          </View>
+
           <View style={carteStyles.modalTitleContainer}>
             <Icon name={this.genTagIcon(place.type)} style={carteStyles.modalIcon} />
-            <View>
-              <Text style={carteStyles.modalTitle}>
-                {place.name}
-              </Text>
-              <Text style={carteStyles.modalAddress}>
-                {place.address}
-              </Text>
-            </View>
+            <Text
+              style={carteStyles.modalTitle}
+              ellipsizeMode="tail"
+              adjustsFontSizeToFit
+              numberOfLines={1}
+            >
+              {place.name}
+            </Text>
           </View>
-          <Text style={carteStyles.modalText}>
-            {this.truncate(place.summary, 100, '...')}
+
+          <View style={carteStyles.horizontalLineContainer}>
+            <View style={carteStyles.horizontalLine} />
+          </View>
+
+          <Text
+            style={carteStyles.modalText}
+            numberOfLines={3}
+            ellipsizeMode="tail"
+          >
+            {place.summary}
           </Text>
         </View>
       </View>

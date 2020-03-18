@@ -5,12 +5,15 @@ import { DefaultTheme, DarkTheme } from 'react-native-paper';
 const selectedTheme = 'dark';
 
 // Deux couleurs primaires de C-Node
-// const cnodePrimary = '#990092';
-// const cnodeSecondary = '#63005e';
+const cnodePrimary = '#4c3e8e';
+const cnodeSecondary = '#9284D4';
 
 const themes = {
   light: {
     ...DefaultTheme.colors,
+    primary: cnodePrimary,
+    secondary: cnodeSecondary,
+    softContrast: '#222222',
     highlight: '#fdfdfd',
     outline: '#e1e1e1',
     tabBackground: '#f1f1f1',
@@ -21,9 +24,13 @@ const themes = {
   },
   dark: {
     ...DarkTheme.colors,
+    primary: cnodePrimary,
+    secondary: cnodeSecondary,
+    softContrast: '#434343',
     highlight: '#303030',
     outline: '#434343',
     tabBackground: '#080808',
+    background: '#0f0f0f',
     surface: '#222222',
     image: '#444444',
     subtext: '#666666',
