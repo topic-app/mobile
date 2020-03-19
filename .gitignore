@@ -91,7 +91,7 @@ typings/
 # nuxt.js build output
 .nuxt
 
-# react / gatsby 
+# react / gatsby
 public/
 
 # vuepress build output
@@ -192,3 +192,7 @@ lint/intermediates/
 lint/generated/
 lint/outputs/
 lint/tmp/
+
+# Android stuff
+android/.gradle/
+android/app/build/
