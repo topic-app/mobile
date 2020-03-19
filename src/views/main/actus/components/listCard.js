@@ -41,7 +41,7 @@ export default class ActuComponentListCard extends React.Component {
       text: article.group.displayName,
       id: article.group.groupId,
     });
-    data.concat(article.tags.map((tag) => ({
+    data.push(...article.tags.map((tag) => ({
       type: 'tag',
       text: tag.name,
       color: tag.color,
@@ -62,14 +62,14 @@ export default class ActuComponentListCard extends React.Component {
       });
     }
 
-    data.concat(article.location.schools.map((school) => ({
+    data.push(...article.location.schools.map((school) => ({
       type: 'school',
       icon: 'map-marker',
       text: school.displayName,
       id: school.schoolId,
     })));
 
-    data.concat(article.location.departments.map((department) => ({
+    data.push(...article.location.departments.map((department) => ({
       type: 'department',
       icon: 'map-marker',
       text: department.displayName,
