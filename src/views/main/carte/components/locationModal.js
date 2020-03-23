@@ -11,7 +11,7 @@ import SwipeUpComponent from './bottomSheet';
 
 import places from '../data/testQueryResults.json';
 import carteStyles from '../styles/Styles';
-import { markerColors } from '../utils/getImageFromType';
+import { markerColors } from '../utils/getAssetColor';
 
 const windowHeight = Dimensions.get('window').height;
 const SNAP_POINTS_FROM_TOP = [0, windowHeight * 0.5, windowHeight * 0.73];

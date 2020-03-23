@@ -67,7 +67,6 @@ export default class ExplorerComponentShowMap extends React.Component {
     };
     const { places } = this.props;
     places.forEach((place) => {
-      console.log(place);
       featureCollection.features.push({
         type: 'Feature',
         id: place.id,
@@ -84,6 +83,18 @@ export default class ExplorerComponentShowMap extends React.Component {
 
     const { map, navigate, tileServerUrl } = this.props;
     const { id, isModalVisible } = this.state;
+
+    const secret = {
+      type: 'Feature',
+      properties: {
+        pinIcon: getImageName('pin', 'secret'),
+        circleIcon: getImageName('circle', 'secret'),
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [7.0432442, 43.6193543],
+      },
+    };
 
     return (
       <View style={{ flex: 1 }}>
@@ -112,13 +123,23 @@ export default class ExplorerComponentShowMap extends React.Component {
             onPress={this.onIconPress}
           >
             <MapboxGL.SymbolLayer
-              maxZoomLevel={9}
               id="1"
+              maxZoomLevel={9}
               style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.5 }}
             />
             <MapboxGL.SymbolLayer
-              minZoomLevel={9}
               id="2"
+              minZoomLevel={9}
+              style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
+            />
+          </MapboxGL.ShapeSource>
+          <MapboxGL.ShapeSource
+            id="secretShapeSource"
+            shape={secret}
+          >
+            <MapboxGL.SymbolLayer
+              id="3"
+              minZoomLevel={19}
               style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
             />
           </MapboxGL.ShapeSource>

@@ -2,8 +2,8 @@
   {
     "id": "1",
     "name": "Centre Internationale de Valbonne",
-    "type": "secret",
-    "position": {"lat": 43.6213888889, "lng": 7.04583333333},
+    "type": "school",
+    "position": {"lat": 43.6215017, "lng": 7.0416363},
     "summary": "Ecole réputée des Alpes Maritimes pour sa diversification de culture et de langue",
     "imgUrl": "https://www.portailrusse.fr/images/gmapfp/660__civlogo.jpg"
   },
@@ -19,7 +19,7 @@
     "id": "3",
     "name": "Centre Internationalle de Valbonne",
     "type": "school",
-    "position": {"lat": 43.6213888889, "lng": 7.04583333333},
+    "position": {"lat": 44.6213888889, "lng": 7.04583333333},
     "summary": "meilleur lycée du monde!!!",
     "imgUrl": "https://www.portailrusse.fr/images/gmapfp/660__civlogo.jpg"
   },
