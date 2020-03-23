@@ -143,18 +143,7 @@ class BottomSheet extends React.Component {
                   waitFor={this.masterdrawer}
                   simultaneousHandlers={this.drawer}
                 >
-                  <Animated.ScrollView
-                    style={{ marginBottom: snapPointsFromTop[0] }}
-                    bounces={false}
-                    onScrollBeginDrag={this.onRegisterLastScroll}
-                    scrollEventThrottle={1}
-                    contentContainerStyle={{
-                      flexGrow: 1,
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    {children}
-                  </Animated.ScrollView>
+                  {children}
                 </NativeViewGestureHandler>
               </Animated.View>
             </PanGestureHandler>

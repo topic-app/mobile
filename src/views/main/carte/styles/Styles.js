@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { styles, colors, selectedTheme } from '../../../../styles/Styles';
+import { colors, selectedTheme } from '../../../../styles/Styles';
 
 const carteStyles = StyleSheet.create({
   modal: {
@@ -19,14 +19,12 @@ const carteStyles = StyleSheet.create({
   },
   modalTitle: {
     paddingHorizontal: 8,
-    color: colors.primary,
     fontWeight: 'bold',
     fontSize: 20,
     textAlignVertical: 'center',
     flex: 1,
   },
   modalIcon: {
-    color: colors.primary,
     textAlignVertical: 'center',
     fontSize: 22,
   },

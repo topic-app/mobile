@@ -2,7 +2,7 @@
   {
     "id": "1",
     "name": "Centre Internationale de Valbonne",
-    "type": "school",
+    "type": "secret",
     "position": {"lat": 43.6213888889, "lng": 7.04583333333},
     "summary": "Ecole réputée des Alpes Maritimes pour sa diversification de culture et de langue",
     "imgUrl": "https://www.portailrusse.fr/images/gmapfp/660__civlogo.jpg"
@@ -26,7 +26,7 @@
   {
     "id": "4",
     "name": "Lycée Internationale François 1er",
-    "type": "school",
+    "type": "event",
     "position": {"lat": 48.4086, "lng": 2.695},
     "summary": "Ecole internationale à Fontainebleu",
     "imgUrl": "https://www.lyceefrancois1.websco.fr/ADI/files/bibliotheque/images_diaporama/CAMPUS.jpg"

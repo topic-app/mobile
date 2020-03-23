@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Animated,
   View,
   Text,
   Dimensions,
@@ -12,23 +11,47 @@ import SwipeUpComponent from './bottomSheet';
 
 import places from '../data/testQueryResults.json';
 import carteStyles from '../styles/Styles';
+import { markerColors } from '../utils/getImageFromType';
 
 const windowHeight = Dimensions.get('window').height;
 const SNAP_POINTS_FROM_TOP = [0, windowHeight * 0.5, windowHeight * 0.73];
 
 export default class LocationModalContents extends React.Component {
-  genTagIcon = (type) => {
+  genTagDecoration = (type) => {
     if (type === 'school') {
-      return 'school';
-    } if (type === 'museum') {
-      return 'bank';
+      return {
+        icon: 'school',
+        color: markerColors.purple,
+      };
     }
-    return 'map-marker';
+    if (type === 'museum') {
+      return {
+        icon: 'bank',
+        color: markerColors.red,
+      };
+    }
+    if (type === 'event') {
+      return {
+        icon: 'calendar',
+        color: markerColors.green,
+      };
+    }
+    if (type === 'secret') {
+      return {
+        icon: 'robot',
+        color: markerColors.gold,
+      };
+    }
+    return {
+      icon: 'map-marker',
+      color: markerColors.red,
+    };
   };
 
   render() {
     const { id } = this.props;
     const place = places[id];
+    const { icon, color } = this.genTagDecoration(place.type);
 
     return (
       <View style={{ flex: 1 }}>
@@ -42,9 +65,9 @@ export default class LocationModalContents extends React.Component {
             </View>
 
             <View style={carteStyles.modalTitleContainer}>
-              <Icon name={this.genTagIcon(place.type)} style={carteStyles.modalIcon} />
+              <Icon name={icon} style={[{ color }, carteStyles.modalIcon]} />
               <Text
-                style={carteStyles.modalTitle}
+                style={[{ color }, carteStyles.modalTitle]}
                 ellipsizeMode="tail"
                 adjustsFontSizeToFit
                 numberOfLines={1}

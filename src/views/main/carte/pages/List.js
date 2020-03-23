@@ -2,14 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import ExplorerComponentShowMap from '../components/displayIcons';
 import { selectedTheme } from '../../../../styles/Styles';
 import places from '../data/testExplorerLocations.json';
+import ExplorerComponentShowMap from '../components/mapMarkers';
 
 // To use MapboxGL, you have to set an access token
 // even if you never actually use it ¯\_(ツ)_/¯
 
-const tileServerUrl = 'http://92.222.77.88/maps';
+const tileServerUrl = 'http://maps.topicapp.fr';
 const map = {
   minZoom: 4.25,
   maxZoom: 19,

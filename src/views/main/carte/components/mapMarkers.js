@@ -5,9 +5,10 @@ import PropTypes from 'prop-types';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import LocationModalContents from './locationModal';
 
-import pin from '../assets/location-pin.png';
+import LocationModalContents from './locationModal';
+import { getImageName, markerImages } from '../utils/getAssetColor';
+
 import { styles } from '../../../../styles/Styles';
 import carteStyles from '../styles/Styles';
 
@@ -66,11 +67,13 @@ export default class ExplorerComponentShowMap extends React.Component {
     };
     const { places } = this.props;
     places.forEach((place) => {
+      console.log(place);
       featureCollection.features.push({
         type: 'Feature',
         id: place.id,
         properties: {
-          icon: place.imgUrl,
+          pinIcon: getImageName('pin', place.type),
+          circleIcon: getImageName('circle', place.type),
         },
         geometry: {
           type: 'Point',
@@ -100,13 +103,24 @@ export default class ExplorerComponentShowMap extends React.Component {
             maxZoomLevel={map.maxZoom}
             defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
           />
+          <MapboxGL.Images
+            images={markerImages}
+          />
           <MapboxGL.ShapeSource
             id="markerShapeSource"
             shape={featureCollection}
-            hitbox={{ width: 20, height: 20 }}
             onPress={this.onIconPress}
           >
-            <MapboxGL.SymbolLayer id="1" style={{ iconImage: pin, iconSize: 1.1, iconAnchor: 'bottom' }} />
+            <MapboxGL.SymbolLayer
+              maxZoomLevel={9}
+              id="1"
+              style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.5 }}
+            />
+            <MapboxGL.SymbolLayer
+              minZoomLevel={9}
+              id="2"
+              style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
+            />
           </MapboxGL.ShapeSource>
           <MapboxGL.UserLocation
             visible
@@ -137,7 +151,7 @@ export default class ExplorerComponentShowMap extends React.Component {
           hasBackdrop={false}
           onBackButtonPress={this.hideModal}
           coverScreen={false}
-          animationOutTiming={400}
+          animationOutTiming={600}
           style={carteStyles.modal}
         >
           <LocationModalContents id={id} navigate={navigate} />
