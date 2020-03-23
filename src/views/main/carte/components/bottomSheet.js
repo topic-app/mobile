@@ -100,17 +100,9 @@ class BottomSheet extends React.Component {
         friction: 11,
         toValue: destSnapPoint,
         useNativeDriver: true,
-      }).start(this.onFinishAnimation);
+      }).start();
     }
   };
-
-  onFinishAnimation = ({ finished }) => {
-    const { destSnap } = this.state;
-    const { snapPointsFromTop } = this.props;
-    if (finished && destSnap === snapPointsFromTop[0]) {
-      console.log('Final point reached!');
-    }
-  }
 
   render() {
     const { children, timeout, snapPointsFromTop } = this.props;

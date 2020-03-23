@@ -7,6 +7,7 @@ const markerImages = {
   pinRed: require('../assets/location-pin-red.png'),
   pinGreen: require('../assets/location-pin-green.png'),
   pinGold: require('../assets/location-pin-gold.png'),
+  secret: require('../assets/easter-egg.png'),
 };
 
 const markerColors = {
@@ -17,15 +18,16 @@ const markerColors = {
 };
 
 const getImageName = (markerType, placeType) => {
-  let color = 'red';
+  if (markerType === 'secret') {
+    return 'secret';
+  }
+  let color = 'Red';
   if (placeType === 'school') {
     color = 'Purple';
   } else if (placeType === 'museum') {
     color = 'Red';
   } else if (placeType === 'event') {
     color = 'Green';
-  } else if (placeType === 'secret') {
-    color = 'Gold';
   }
   if (markerType === 'circle') {
     return `circle${color}`;

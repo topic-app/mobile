@@ -20,6 +20,7 @@ export default class ExplorerComponentShowMap extends React.Component {
     this.onIconPress = this.onIconPress.bind(this);
     this.state = {
       id: '',
+      name: '',
       isModalVisible: false,
     };
   }
@@ -34,6 +35,7 @@ export default class ExplorerComponentShowMap extends React.Component {
     ExplorerComponentShowMap.camera.moveTo(coordinates, 100);
     this.setState({
       id: feature.id,
+      name: feature.properties.name,
       isModalVisible: true,
     });
   }
@@ -71,6 +73,7 @@ export default class ExplorerComponentShowMap extends React.Component {
         type: 'Feature',
         id: place.id,
         properties: {
+          name: place.name,
           pinIcon: getImageName('pin', place.type),
           circleIcon: getImageName('circle', place.type),
         },
@@ -82,13 +85,12 @@ export default class ExplorerComponentShowMap extends React.Component {
     });
 
     const { map, navigate, tileServerUrl } = this.props;
-    const { id, isModalVisible } = this.state;
+    const { id, name, isModalVisible } = this.state;
 
     const secret = {
       type: 'Feature',
       properties: {
-        pinIcon: getImageName('pin', 'secret'),
-        circleIcon: getImageName('circle', 'secret'),
+        icon: getImageName('secret'),
       },
       geometry: {
         type: 'Point',
@@ -136,11 +138,12 @@ export default class ExplorerComponentShowMap extends React.Component {
           <MapboxGL.ShapeSource
             id="secretShapeSource"
             shape={secret}
+            onPress={() => Linking.openURL('https://www.firstuk.org/')}
           >
             <MapboxGL.SymbolLayer
               id="3"
               minZoomLevel={19}
-              style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
+              style={{ iconImage: ['get', 'icon'], iconSize: 1 }}
             />
           </MapboxGL.ShapeSource>
           <MapboxGL.UserLocation
@@ -151,6 +154,17 @@ export default class ExplorerComponentShowMap extends React.Component {
         <View style={carteStyles.attributionContainer}>
           <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
             {' '}
+            ©
+            {' '}
+          </Text>
+          <Text
+            onPress={() => Linking.openURL('https://openmaptiles.org/')}
+            style={[styles.link, carteStyles.attribution]}
+          >
+            OpenMapTiles
+          </Text>
+          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
+            {' and '}
             ©
             {' '}
           </Text>
@@ -175,7 +189,7 @@ export default class ExplorerComponentShowMap extends React.Component {
           animationOutTiming={600}
           style={carteStyles.modal}
         >
-          <LocationModalContents id={id} navigate={navigate} />
+          <LocationModalContents id={id} name={name} />
         </Modal>
       </View>
     );
@@ -192,8 +206,6 @@ ExplorerComponentShowMap.propTypes = {
         lat: PropTypes.number.isRequired,
         lng: PropTypes.number.isRequired,
       }).isRequired,
-      summary: PropTypes.string.isRequired,
-      imgUrl: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
   map: PropTypes.shape({

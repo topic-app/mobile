@@ -36,12 +36,6 @@ export default class LocationModalContents extends React.Component {
         color: markerColors.green,
       };
     }
-    if (type === 'secret') {
-      return {
-        icon: 'robot',
-        color: markerColors.gold,
-      };
-    }
     return {
       icon: 'map-marker',
       color: markerColors.red,
@@ -50,13 +44,18 @@ export default class LocationModalContents extends React.Component {
 
   render() {
     const { id } = this.props;
+    let { name } = this.props;
     const place = places[id];
     const { icon, color } = this.genTagDecoration(place.type);
+
+    if (name === '' || name === undefined) {
+      name = place.name;
+    }
 
     return (
       <View style={{ flex: 1 }}>
         <SwipeUpComponent
-          timeout={100000}
+          allowDissmissSwipe
           snapPointsFromTop={SNAP_POINTS_FROM_TOP}
         >
           <View style={carteStyles.modalContainer}>
@@ -72,7 +71,7 @@ export default class LocationModalContents extends React.Component {
                 adjustsFontSizeToFit
                 numberOfLines={1}
               >
-                {place.name}
+                {name}
               </Text>
             </View>
 
@@ -104,4 +103,5 @@ export default class LocationModalContents extends React.Component {
 
 LocationModalContents.propTypes = {
   id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
