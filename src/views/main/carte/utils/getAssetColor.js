@@ -15,13 +15,14 @@ const markerColors = {
   green: '#0e6300',
   red: '#d00000',
   gold: '#e59500',
+  secret: '#b90007',
 };
 
 const getImageName = (markerType, placeType) => {
+  let color = 'Red';
   if (markerType === 'secret') {
     return 'secret';
   }
-  let color = 'Red';
   if (placeType === 'school') {
     color = 'Purple';
   } else if (placeType === 'museum') {

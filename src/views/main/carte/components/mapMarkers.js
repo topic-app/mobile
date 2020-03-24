@@ -19,8 +19,11 @@ export default class ExplorerComponentShowMap extends React.Component {
     super(props);
     this.onIconPress = this.onIconPress.bind(this);
     this.state = {
-      id: '',
-      name: '',
+      data: {
+        id: '',
+        type: '',
+        name: '',
+      },
       isModalVisible: false,
     };
   }
@@ -34,8 +37,11 @@ export default class ExplorerComponentShowMap extends React.Component {
     const { coordinates } = feature.geometry;
     ExplorerComponentShowMap.camera.moveTo(coordinates, 100);
     this.setState({
-      id: feature.id,
-      name: feature.properties.name,
+      data: {
+        id: feature.id,
+        type: feature.properties.type,
+        name: feature.properties.name,
+      },
       isModalVisible: true,
     });
   }
@@ -67,36 +73,43 @@ export default class ExplorerComponentShowMap extends React.Component {
       type: 'FeatureCollection',
       features: [],
     };
+    let secret = {};
     const { places } = this.props;
     places.forEach((place) => {
-      featureCollection.features.push({
-        type: 'Feature',
-        id: place.id,
-        properties: {
-          name: place.name,
-          pinIcon: getImageName('pin', place.type),
-          circleIcon: getImageName('circle', place.type),
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [place.position.lng, place.position.lat],
-        },
-      });
+      if (place.type !== 'secret') {
+        featureCollection.features.push({
+          type: 'Feature',
+          id: place.id,
+          properties: {
+            name: place.name,
+            type: place.type,
+            pinIcon: getImageName('pin', place.type),
+            circleIcon: getImageName('circle', place.type),
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [place.position.lng, place.position.lat],
+          },
+        });
+      } else {
+        secret = {
+          type: 'Feature',
+          id: place.id,
+          properties: {
+            name: place.name,
+            type: place.type,
+            icon: getImageName('secret'),
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [7.0432442, 43.6193543],
+          },
+        };
+      }
     });
 
-    const { map, navigate, tileServerUrl } = this.props;
-    const { id, name, isModalVisible } = this.state;
-
-    const secret = {
-      type: 'Feature',
-      properties: {
-        icon: getImageName('secret'),
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: [7.0432442, 43.6193543],
-      },
-    };
+    const { map, tileServerUrl } = this.props;
+    const { data, isModalVisible } = this.state;
 
     return (
       <View style={{ flex: 1 }}>
@@ -138,7 +151,7 @@ export default class ExplorerComponentShowMap extends React.Component {
           <MapboxGL.ShapeSource
             id="secretShapeSource"
             shape={secret}
-            onPress={() => Linking.openURL('https://www.firstuk.org/')}
+            onPress={this.onIconPress}
           >
             <MapboxGL.SymbolLayer
               id="3"
@@ -164,7 +177,7 @@ export default class ExplorerComponentShowMap extends React.Component {
             OpenMapTiles
           </Text>
           <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
-            {' and '}
+            {' '}
             ©
             {' '}
           </Text>
@@ -189,7 +202,7 @@ export default class ExplorerComponentShowMap extends React.Component {
           animationOutTiming={600}
           style={carteStyles.modal}
         >
-          <LocationModalContents id={id} name={name} />
+          <LocationModalContents data={data} hideModal={this.hideModal} />
         </Modal>
       </View>
     );

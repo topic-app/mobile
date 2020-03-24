@@ -60,7 +60,7 @@ const carteStyles = StyleSheet.create({
     paddingVertical: 10,
   },
   attribution: {
-    fontSize: 9,
+    fontSize: 10,
   },
   atributionMutedColor: {
     color: colors.muted,

@@ -4,17 +4,15 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
-  Dimensions,
+  Linking,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import SwipeUpComponent from './bottomSheet';
+import { Button } from 'react-native-paper';
 
+import SwipeUpComponent from './bottomSheet';
 import places from '../data/testQueryResults.json';
 import carteStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
-
-const windowHeight = Dimensions.get('window').height;
-const SNAP_POINTS_FROM_TOP = [0, windowHeight * 0.5, windowHeight * 0.73];
 
 export default class LocationModalContents extends React.Component {
   genTagDecoration = (type) => {
@@ -36,28 +34,43 @@ export default class LocationModalContents extends React.Component {
         color: markerColors.green,
       };
     }
+    if (type === 'secret') {
+      return {
+        icon: 'egg-easter',
+        color: markerColors.secret,
+      };
+    }
     return {
       icon: 'map-marker',
       color: markerColors.red,
     };
   };
 
-  render() {
-    const { id } = this.props;
-    let { name } = this.props;
-    const place = places[id];
-    const { icon, color } = this.genTagDecoration(place.type);
-
-    if (name === '' || name === undefined) {
-      name = place.name;
+  checkSecret = (type, color, link) => {
+    if (type === 'secret') {
+      return (
+        <Button
+          icon="youtube"
+          mode="text"
+          compact
+          color={color}
+          onPress={() => Linking.openURL(link)}
+        >
+          Video de Démonstration
+        </Button>
+      );
     }
+    return null;
+  }
+
+  render() {
+    const { data, hideModal } = this.props;
+    const place = places[data.id];
+    const { icon, color } = this.genTagDecoration(data.type);
 
     return (
       <View style={{ flex: 1 }}>
-        <SwipeUpComponent
-          allowDissmissSwipe
-          snapPointsFromTop={SNAP_POINTS_FROM_TOP}
-        >
+        <SwipeUpComponent hideModal={hideModal}>
           <View style={carteStyles.modalContainer}>
             <View style={carteStyles.pullUpTabContainer}>
               <View style={carteStyles.pullUpTab} />
@@ -71,7 +84,7 @@ export default class LocationModalContents extends React.Component {
                 adjustsFontSizeToFit
                 numberOfLines={1}
               >
-                {name}
+                {data.name}
               </Text>
             </View>
 
@@ -94,6 +107,7 @@ export default class LocationModalContents extends React.Component {
             >
               {place.description}
             </Text>
+            {this.checkSecret(data.type, color, place.link)}
           </View>
         </SwipeUpComponent>
       </View>
@@ -102,6 +116,10 @@ export default class LocationModalContents extends React.Component {
 }
 
 LocationModalContents.propTypes = {
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
+  data: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  hideModal: PropTypes.func.isRequired,
 };

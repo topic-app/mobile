@@ -28,5 +28,11 @@
     "name": "Musée National Fernand Léger",
     "type": "museum",
     "position": {"lat": 43.617777778, "lng": 7.108888889},
+  },
+  {
+    "id": "6",
+    "name": "FTC CIV",
+    "type": "secret",
+    "position": {"lat": 43.6193543, "lng": 7.0432442}
   }
 ]

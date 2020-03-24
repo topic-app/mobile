@@ -49,5 +49,17 @@
     "summary": "Musée d'art moderne avec des oeuvres de Léger",
     "description": "le chat d'alex est grave mignon",
     "imgUrl": "https://www.biot.fr/wp-content/uploads/2016/08/LEGER.jpg"
+  },
+  "6": {
+    "shortName": "FTC CIV",
+    "name": "FTC CIV",
+    "type": "secret",
+    "position": {"lat": 43.6193543, "lng": 7.0432442},
+    "address": "190 Rue Frédéric Mistral, 06560 Valbonne",
+    "link": "https://www.firstuk.org/",
+    "summary": "Club de Robotique FTC",
+    "description": "It’s way more than building robots. FIRST Tech Challenge teams (up to 15 team members, grades 7-12) are challenged to design, build, program, and operate robots to compete in a head-to-head challenge in an alliance format. Guided by adult coaches and mentors, students develop STEM skills and practice engineering principles, while realizing the value of hard work, innovation, and working as a team. The robot kit is reusable from year to year and can be coded using a variety of levels of Java-based programming. Teams design and build robots, raise funds, design and market their team brand, and do community outreach to earn specific awards. Participants are eligible to apply for $80M+ in college scholarships. Each season concludes with regional championship events and an exciting FIRST Championship.",
+    "imgUrl": "https://seekvectorlogo.net/wp-content/uploads/2019/03/first-tech-challenge-vector-logo.png",
+    "link": "https://www.youtube.com/watch?v=q-f1CKK5T8A"
   }
 } 

@@ -3,6 +3,7 @@ import {
   Animated,
   StyleSheet,
   View,
+  Dimensions,
 } from 'react-native';
 import {
   PanGestureHandler,
@@ -12,6 +13,9 @@ import {
 } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
+
+const initWindowHeight = Dimensions.get('window').height;
+const SNAP_POINTS_FROM_TOP = [0, initWindowHeight * 0.5, initWindowHeight * 0.73, initWindowHeight];
 
 const styles = StyleSheet.create({
   container: {
@@ -30,12 +34,13 @@ class BottomSheet extends React.Component {
 
   constructor(props) {
     super(props);
-    const { snapPointsFromTop } = this.props;
-    const START = snapPointsFromTop[0];
-    const END = snapPointsFromTop[snapPointsFromTop.length - 1];
+    const START = SNAP_POINTS_FROM_TOP[0];
+    const END = SNAP_POINTS_FROM_TOP[SNAP_POINTS_FROM_TOP.length - 1];
+    const lastSnap = SNAP_POINTS_FROM_TOP[SNAP_POINTS_FROM_TOP.length - 2];
 
     this.state = {
-      lastSnap: END,
+      snapPointsFromTop: SNAP_POINTS_FROM_TOP,
+      lastSnap,
     };
 
     this.lastScrollYValue = 0;
@@ -59,7 +64,7 @@ class BottomSheet extends React.Component {
       this.lastScrollY,
     );
 
-    this.translateYOffset = new Animated.Value(END);
+    this.translateYOffset = new Animated.Value(lastSnap);
     this.translateY = Animated.add(
       this.translateYOffset,
       Animated.add(this.dragY, this.reverseLastScrollY),
@@ -76,8 +81,7 @@ class BottomSheet extends React.Component {
       let { velocityY, translationY } = nativeEvent;
       translationY -= this.lastScrollYValue;
       const dragToss = 0.05;
-      const { lastSnap } = this.state;
-      const { snapPointsFromTop } = this.props;
+      const { lastSnap, snapPointsFromTop } = this.state;
       const endOffsetY = lastSnap + translationY + dragToss * velocityY;
 
       let destSnapPoint = snapPointsFromTop[0];
@@ -89,7 +93,7 @@ class BottomSheet extends React.Component {
         }
       }
       this.setState({ lastSnap: destSnapPoint });
-      this.setState({ destSnap: destSnapPoint });
+      this.checkVisible(destSnapPoint);
       this.translateYOffset.extractOffset();
       this.translateYOffset.setValue(translationY);
       this.translateYOffset.flattenOffset();
@@ -104,16 +108,45 @@ class BottomSheet extends React.Component {
     }
   };
 
+  checkVisible = (snap) => {
+    const { snapPointsFromTop } = this.state;
+    if (snap === snapPointsFromTop[snapPointsFromTop.length - 1]) {
+      const { hideModal } = this.props;
+      hideModal();
+    }
+  }
+
+  onLayout = (e) => {
+    /*
+    const { height } = Dimensions.get('window');
+    const snapPointsFromTop = [0, height * 0.5, height * 0.73];
+    const START = snapPointsFromTop[0];
+    const END = snapPointsFromTop[snapPointsFromTop.length - 1];
+    this.setState({
+      snapPointsFromTop,
+      lastSnap: END,
+    });
+    this.translateY = Animated.add(
+      this.translateYOffset,
+      Animated.add(this.dragY, this.reverseLastScrollY),
+    ).interpolate({
+      inputRange: [START, END],
+      outputRange: [START, END],
+      extrapolate: 'clamp',
+    });
+    */
+  }
+
   render() {
-    const { children, timeout, snapPointsFromTop } = this.props;
-    const { lastSnap } = this.state;
+    const { children, timeout } = this.props;
+    const { lastSnap, snapPointsFromTop } = this.state;
     return (
       <TapGestureHandler
         ref={this.masterdrawer}
         maxDurationMs={timeout}
         maxDeltaY={lastSnap - snapPointsFromTop[0]}
       >
-        <View style={StyleSheet.absoluteFillObject} pointerEvents="box-none">
+        <View style={StyleSheet.absoluteFillObject} onLayout={this.onLayout} pointerEvents="box-none">
           <Animated.View
             style={[
               StyleSheet.absoluteFillObject,
@@ -153,7 +186,7 @@ BottomSheet.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
-  snapPointsFromTop: PropTypes.arrayOf(PropTypes.number).isRequired,
+  hideModal: PropTypes.func.isRequired,
   timeout: PropTypes.number,
 };
 
