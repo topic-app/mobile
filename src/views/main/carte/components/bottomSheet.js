@@ -14,14 +14,19 @@ import {
 import PropTypes from 'prop-types';
 import { withNavigation } from 'react-navigation';
 
-const initWindowHeight = Dimensions.get('window').height;
-const SNAP_POINTS_FROM_TOP = [0, initWindowHeight * 0.5, initWindowHeight * 0.73, initWindowHeight];
+const { height, width } = Dimensions.get('window');
+let lastOrientation = (height > width) ? 'portrait' : 'landscape';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+let SNAP_POINTS_FROM_TOP = {
+  portrait: [0, height * 0.5, height * 0.73, height],
+  landscape: [0, width * 0.4, width],
+};
+if (lastOrientation === 'landscape') {
+  SNAP_POINTS_FROM_TOP = {
+    portrait: [0, width * 0.5, width * 0.73, width],
+    landscape: [0, height * 0.4, height],
+  };
+}
 
 class BottomSheet extends React.Component {
   drawer = React.createRef();
@@ -34,15 +39,19 @@ class BottomSheet extends React.Component {
 
   constructor(props) {
     super(props);
-    const START = SNAP_POINTS_FROM_TOP[0];
-    const END = SNAP_POINTS_FROM_TOP[SNAP_POINTS_FROM_TOP.length - 1];
-    const lastSnap = SNAP_POINTS_FROM_TOP[SNAP_POINTS_FROM_TOP.length - 2];
-
+    const SP = SNAP_POINTS_FROM_TOP[lastOrientation];
+    const lastSnap = SP[SP.length - 2];
     this.state = {
-      snapPointsFromTop: SNAP_POINTS_FROM_TOP,
+      snapPointsFromTop: SP,
       lastSnap,
     };
+    this.initializeSheet(lastSnap, SP);
+  }
 
+  initializeSheet = (startSnap, SP) => {
+    const START = SP[0];
+    const END = SP[SP.length - 1];
+    console.log(SP, startSnap);
     this.lastScrollYValue = 0;
     this.lastScrollY = new Animated.Value(0);
     this.onRegisterLastScroll = Animated.event(
@@ -64,7 +73,7 @@ class BottomSheet extends React.Component {
       this.lastScrollY,
     );
 
-    this.translateYOffset = new Animated.Value(lastSnap);
+    this.translateYOffset = new Animated.Value(startSnap);
     this.translateY = Animated.add(
       this.translateYOffset,
       Animated.add(this.dragY, this.reverseLastScrollY),
@@ -74,7 +83,6 @@ class BottomSheet extends React.Component {
       extrapolate: 'clamp',
     });
   }
-
 
   onHandlerStateChange = ({ nativeEvent }) => {
     if (nativeEvent.oldState === State.ACTIVE) {
@@ -106,35 +114,41 @@ class BottomSheet extends React.Component {
         useNativeDriver: true,
       }).start();
     }
-  };
+  }
 
   checkVisible = (snap) => {
     const { snapPointsFromTop } = this.state;
     if (snap === snapPointsFromTop[snapPointsFromTop.length - 1]) {
       const { hideModal } = this.props;
-      hideModal();
+      this.setState({ lastSnap: snapPointsFromTop[snapPointsFromTop.length - 2] });
+      setTimeout(hideModal, 150);
     }
   }
 
+  getDeviceOrientation = () => {
+    const { height, width } = Dimensions.get('window');
+    return (height > width) ? 'portrait' : 'landscape';
+  }
+
   onLayout = (e) => {
-    /*
-    const { height } = Dimensions.get('window');
-    const snapPointsFromTop = [0, height * 0.5, height * 0.73];
-    const START = snapPointsFromTop[0];
-    const END = snapPointsFromTop[snapPointsFromTop.length - 1];
-    this.setState({
-      snapPointsFromTop,
-      lastSnap: END,
-    });
-    this.translateY = Animated.add(
-      this.translateYOffset,
-      Animated.add(this.dragY, this.reverseLastScrollY),
-    ).interpolate({
-      inputRange: [START, END],
-      outputRange: [START, END],
-      extrapolate: 'clamp',
-    });
-    */
+    // Detect if device has changed rotation
+    console.log(lastOrientation);
+    const orientation = this.getDeviceOrientation();
+    if (orientation !== lastOrientation) {
+      const { lastSnap, snapPointsFromTop } = this.state;
+      const SP = SNAP_POINTS_FROM_TOP[orientation];
+      let LS = SP[SP.length - 2];
+      if (lastSnap === snapPointsFromTop[0]) {
+        // If pull-up menu is in fullscreen, then keep fullscreen after rotation
+        [LS] = SP; // equivalent to LS = SP[0]
+      }
+      lastOrientation = orientation;
+      this.setState({
+        snapPointsFromTop: SP,
+        lastSnap: LS,
+      });
+      this.initializeSheet(LS, SP);
+    }
   }
 
   render() {
@@ -162,7 +176,7 @@ class BottomSheet extends React.Component {
               onGestureEvent={this.onGestureEvent}
               onHandlerStateChange={this.onHandlerStateChange}
             >
-              <Animated.View style={styles.container}>
+              <Animated.View style={{ flex: 1 }}>
                 <NativeViewGestureHandler
                   ref={this.scroll}
                   waitFor={this.masterdrawer}

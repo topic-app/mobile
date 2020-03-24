@@ -46,17 +46,17 @@ export default class LocationModalContents extends React.Component {
     };
   };
 
-  checkSecret = (type, color, link) => {
-    if (type === 'secret') {
+  checkLink = (link, color) => {
+    if (link !== undefined && link !== '') {
       return (
         <Button
-          icon="youtube"
+          icon="link-variant"
           mode="text"
           compact
           color={color}
           onPress={() => Linking.openURL(link)}
         >
-          Video de Démonstration
+          En savoir plus
         </Button>
       );
     }
@@ -104,10 +104,12 @@ export default class LocationModalContents extends React.Component {
             </View>
             <Text
               style={carteStyles.modalText}
+              numberOfLines={(place.link !== undefined && place.link !== '') ? 25 : 27}
+              ellipsizeMode="tail"
             >
               {place.description}
             </Text>
-            {this.checkSecret(data.type, color, place.link)}
+            {this.checkLink(place.link, color)}
           </View>
         </SwipeUpComponent>
       </View>
