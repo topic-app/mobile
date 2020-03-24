@@ -51,7 +51,6 @@ class BottomSheet extends React.Component {
   initializeSheet = (startSnap, SP) => {
     const START = SP[0];
     const END = SP[SP.length - 1];
-    console.log(SP, startSnap);
     this.lastScrollYValue = 0;
     this.lastScrollY = new Animated.Value(0);
     this.onRegisterLastScroll = Animated.event(
@@ -132,7 +131,6 @@ class BottomSheet extends React.Component {
 
   onLayout = (e) => {
     // Detect if device has changed rotation
-    console.log(lastOrientation);
     const orientation = this.getDeviceOrientation();
     if (orientation !== lastOrientation) {
       const { lastSnap, snapPointsFromTop } = this.state;

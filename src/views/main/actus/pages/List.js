@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, withTheme } from 'react-native-paper';
 
 import ActuComponentListCard from '../components/listCard';
 
 import data from '../data/testDataList.json';
 import { styles } from '../../../../styles/Styles';
 
-export default class ActuListScreen extends React.Component {
+class ActuListScreen extends React.Component {
   static navigationOptions = {
     title: 'Actus et évènements',
   };
@@ -16,6 +16,8 @@ export default class ActuListScreen extends React.Component {
   render() {
     const { navigation } = this.props;
     const { navigate } = navigation;
+    console.log(this.props.theme);
+
     return (
       <View style={styles.page}>
         <FlatList
@@ -39,6 +41,8 @@ export default class ActuListScreen extends React.Component {
     );
   }
 }
+
+export default withTheme(ActuListScreen);
 
 ActuListScreen.propTypes = {
   navigation: PropTypes.shape({

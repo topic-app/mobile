@@ -18,7 +18,7 @@ import {
 
 import { styles, colors } from '../../../../styles/Styles';
 
-export default class ActuComponentListCard extends React.Component {
+class ActuComponentListCard extends React.Component {
   genTagIcon = (type) => {
     if (type === 'tag') {
       return 'tag';
@@ -153,6 +153,8 @@ export default class ActuComponentListCard extends React.Component {
     );
   }
 }
+
+export default ActuComponentListCard;
 
 ActuComponentListCard.propTypes = {
   article: PropTypes.shape({

@@ -2,12 +2,14 @@
 import React, { Component } from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Provider as PaperProvider, DefaultTheme, DarkTheme } from 'react-native-paper';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import DrawerNavigator from './src/views/main/index';
 import SettingsNavigator from './src/views/settings/index';
 import AuthNavigator from './src/views/auth/index';
 import LocationNavigator from './src/views/location/index';
+
+import Theme from './src/styles/Theme';
 
 const RootNavigator = createStackNavigator({
   Main: DrawerNavigator,
@@ -18,24 +20,13 @@ const RootNavigator = createStackNavigator({
   headerMode: 'none',
 });
 
-const theme = {
-  ...DarkTheme,
-  roundness: 2,
-  colors: {
-    ...DarkTheme.colors,
-    primary: '#3498db',
-    accent: '#f1c40f',
-  },
-};
-
-
 const Navigation = createAppContainer(RootNavigator);
 
 // Render the app container component with the provider around it
 export default class App extends React.Component {
   render() {
     return (
-      <PaperProvider theme={theme}>
+      <PaperProvider theme={Theme}>
         <Navigation />
       </PaperProvider>
     );

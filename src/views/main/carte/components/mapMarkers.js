@@ -36,7 +36,6 @@ export default class ExplorerComponentShowMap extends React.Component {
     const feature = features[0];
     const { coordinates } = feature.geometry;
     ExplorerComponentShowMap.camera.moveTo(coordinates, 100);
-    console.log('Attempting to open modal, previous state:', this.state.isModalVisible);
     this.setState({
       data: {
         id: feature.id,
@@ -66,7 +65,6 @@ export default class ExplorerComponentShowMap extends React.Component {
   };
 
   hideModal = () => {
-    console.log('Modal hidden!');
     this.setState({ isModalVisible: false });
   }
 
