@@ -12,5 +12,14 @@
       "android",
       "web"
     ]
+  },
+  "config": {
+    "api": {
+      "url": "https://api.topicapp.fr",
+      "retryTime": "10"
+    },
+    "defaults": {
+      "theme": "light"
+    }
   }
 }
