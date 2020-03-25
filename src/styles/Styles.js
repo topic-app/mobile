@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import Theme, { selectedTheme } from './Theme';
-
-const { colors } = Theme;
+import { selectedTheme, colors } from './Theme';
 
 const styles = StyleSheet.create({
   page: {
@@ -66,6 +64,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
 });
+
 const customStyles = {
   header: {
     headerStyle: {

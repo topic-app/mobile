@@ -14,9 +14,8 @@ import {
   Chip,
   ProgressBar,
 } from 'react-native-paper';
-import { useTheme } from '@react-navigation/native';
 
-import { styles } from '../../../../styles/Styles';
+import { styles, colors } from '../../../../styles/Styles';
 
 function genTagIcon(type) {
   if (type === 'tag') {
@@ -85,7 +84,6 @@ function genTagData(petition) { // TODO: Messy code
 
 function PetitionComponentListCard({ navigate, petition }) {
   const data = genTagData(petition);
-  const { colors } = useTheme();
 
   console.log(petition);
 

@@ -52,7 +52,7 @@ export default class App extends React.Component {
     return (
       <ReduxProvider store={Store}>
         <PaperProvider theme={Theme}>
-          <NavigationContainer theme={Theme}>
+          <NavigationContainer>
             <RootNavigator />
           </NavigationContainer>
         </PaperProvider>

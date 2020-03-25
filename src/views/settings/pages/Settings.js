@@ -3,10 +3,11 @@ import { Button } from 'react-native';
 import PropTypes from 'prop-types';
 
 function SettingsHomeScreen({ navigation }) {
+  console.log(navigation);
   return (
     <Button
       title="Retour"
-      onPress={() => navigation.navigate('ActuList')}
+      onPress={() => navigation.navigate('Main', { screen: 'Menu Principal' })}
     />
   );
 }

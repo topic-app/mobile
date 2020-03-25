@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colors, selectedTheme } from '../../../../styles/Styles';
+import { selectedTheme, colors } from '../../../../styles/Styles';
 
 const carteStyles = StyleSheet.create({
   modal: {
