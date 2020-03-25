@@ -17,10 +17,6 @@ import articles from '../data/testDataList.json';
 import { styles, colors } from '../../../../styles/Styles';
 
 export default class ActuDisplayScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Actus et évènements',
-  };
-
   genTagData = (article) => { // TODO: Messy code
     const data = [];
     data.push({
@@ -79,9 +75,8 @@ export default class ActuDisplayScreen extends React.Component {
   }
 
   render() {
-    const { navigation } = this.props;
-    const { state } = navigation;
-    const { id } = state.params;
+    const { route } = this.props;
+    const { id } = route.params;
     const article = articles[id - 1];
 
     const data = this.genTagData(article);
@@ -145,11 +140,9 @@ export default class ActuDisplayScreen extends React.Component {
 }
 
 ActuDisplayScreen.propTypes = {
-  navigation: PropTypes.shape({
-    state: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-      }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };

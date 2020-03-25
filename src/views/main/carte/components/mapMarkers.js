@@ -14,7 +14,7 @@ import carteStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 
-export default class ExplorerComponentShowMap extends React.Component {
+class ExplorerComponentShowMap extends React.Component {
   constructor(props) {
     super(props);
     this.onIconPress = this.onIconPress.bind(this);
@@ -208,6 +208,8 @@ export default class ExplorerComponentShowMap extends React.Component {
     );
   }
 }
+
+export default ExplorerComponentShowMap;
 
 ExplorerComponentShowMap.propTypes = {
   places: PropTypes.arrayOf(

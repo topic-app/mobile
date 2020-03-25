@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'react-native';
 import PropTypes from 'prop-types';
 
-function LocationMapScreen({ navigation }) {
+function SettingsHomeScreen({ navigation }) {
   return (
     <Button
       title="Retour"
@@ -11,9 +11,9 @@ function LocationMapScreen({ navigation }) {
   );
 }
 
-export default LocationMapScreen;
+export default SettingsHomeScreen;
 
-LocationMapScreen.propTypes = {
+SettingsHomeScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

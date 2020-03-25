@@ -1,13 +1,34 @@
 // eslint-disable-next-line no-unused-vars
-import React, { Component } from 'react';
-import { createStackNavigator } from 'react-navigation-stack';
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import LocationMapScreen from './pages/Map';
 import LocationSearchScreen from './pages/Search';
 
-const LocationNavigator = createStackNavigator({
-  Map: LocationMapScreen,
-  Search: LocationSearchScreen,
-});
+const Stack = createStackNavigator();
+
+function LocationNavigator() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Map"
+      screenOptions={{ gestureEnabled: false }}
+    >
+      <Stack.Screen
+        name="Map"
+        component={LocationMapScreen}
+        options={{
+          title: 'Recherche d\'établissement',
+        }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={LocationSearchScreen}
+        options={{
+          title: 'Recherche d\'établissement',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 export default LocationNavigator;

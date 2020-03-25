@@ -12,7 +12,6 @@ import {
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
-import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get('window');
 let lastOrientation = (height > width) ? 'portrait' : 'landscape';
@@ -191,7 +190,7 @@ class BottomSheet extends React.Component {
   }
 }
 
-export default withNavigation(BottomSheet);
+export default BottomSheet;
 
 BottomSheet.propTypes = {
   children: PropTypes.oneOfType([

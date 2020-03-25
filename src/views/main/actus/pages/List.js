@@ -16,7 +16,6 @@ class ActuListScreen extends React.Component {
   render() {
     const { navigation } = this.props;
     const { navigate } = navigation;
-    console.log(this.props.theme);
 
     return (
       <View style={styles.page}>

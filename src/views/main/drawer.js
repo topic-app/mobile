@@ -1,23 +1,17 @@
 import React from 'react';
 import { ScrollView, SafeAreaView, Text } from 'react-native';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import TabsNavigator from './tabs';
 
-const DrawerComponent = () => (
-  <ScrollView>
-    <SafeAreaView
-      forceInset={{ top: 'always', horizontal: 'never' }}
-    >
-      <Text>Hello</Text>
-    </SafeAreaView>
-  </ScrollView>
-);
+const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = createDrawerNavigator({
-  Main: TabsNavigator,
-}, {
-  contentComponent: DrawerComponent,
-});
+function DrawerNavigator() {
+  return (
+    <Drawer.Navigator initialRouteName="Main">
+      <Drawer.Screen name="Main" component={TabsNavigator} />
+    </Drawer.Navigator>
+  );
+}
 
 export default DrawerNavigator;

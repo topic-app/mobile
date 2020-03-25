@@ -1,13 +1,34 @@
 // eslint-disable-next-line no-unused-vars
-import React, { Component } from 'react';
-import { createStackNavigator } from 'react-navigation-stack';
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import AuthLoginScreen from './pages/Login';
 import AuthCreateScreen from './pages/Create';
 
-const SettingsNavigator = createStackNavigator({
-  Login: AuthLoginScreen,
-  Create: AuthCreateScreen,
-});
+const Stack = createStackNavigator();
 
-export default SettingsNavigator;
+function AuthNavigator() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Login"
+      screenOptions={{ gestureEnabled: false }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={AuthLoginScreen}
+        options={{
+          title: 'Se connecter',
+        }}
+      />
+      <Stack.Screen
+        name="Create"
+        component={AuthCreateScreen}
+        options={{
+          title: 'Créer un compte',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+export default AuthNavigator;

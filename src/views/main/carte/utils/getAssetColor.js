@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const markerImages = {
   circlePurple: require('../assets/location-circle-purple.png'),
   circleRed: require('../assets/location-circle-red.png'),
