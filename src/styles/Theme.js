@@ -47,5 +47,8 @@ const themes = {
   },
 };
 
-export { selectedTheme };
-export default themes[selectedTheme];
+const theme = themes[selectedTheme];
+const { colors } = theme;
+
+export { theme, colors, selectedTheme };
+export default theme;

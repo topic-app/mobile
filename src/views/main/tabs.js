@@ -3,13 +3,12 @@ import { Platform } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
-import { useTheme } from '@react-navigation/native';
 
 import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
 import CarteNavigator from './carte/index';
 
-import { styles } from '../../styles/Styles';
+import { styles, colors } from '../../styles/Styles';
 
 const createPlatformTabNavigator = Platform.OS === 'ios'
   ? createBottomTabNavigator
@@ -18,8 +17,6 @@ const createPlatformTabNavigator = Platform.OS === 'ios'
 const Tab = createPlatformTabNavigator();
 
 function TabsNavigator() {
-  const { colors } = useTheme();
-
   if (Platform.OS !== 'ios') {
     return (
       <Tab.Navigator
@@ -31,6 +28,7 @@ function TabsNavigator() {
 
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => {
+
             let iconName;
             if (route.name === 'Actus') {
               // Note: We could render a different map icon when the map is selected

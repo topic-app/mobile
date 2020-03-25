@@ -10,7 +10,7 @@ import SettingsNavigator from './src/views/settings/index';
 import AuthNavigator from './src/views/auth/index';
 import LocationNavigator from './src/views/location/index';
 
-import Theme from './src/styles/Theme';
+import { theme } from './src/styles/Theme';
 
 const Stack = createStackNavigator();
 
@@ -44,8 +44,8 @@ function RootNavigator() {
 export default class App extends React.Component {
   render() {
     return (
-      <PaperProvider theme={Theme}>
-        <NavigationContainer theme={Theme}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer>
           <RootNavigator />
         </NavigationContainer>
       </PaperProvider>
