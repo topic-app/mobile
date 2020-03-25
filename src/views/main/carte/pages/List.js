@@ -18,30 +18,20 @@ const map = {
   bounds: { ne: [-6, 51.5], sw: [10, 41] },
 };
 
-export default class CarteListScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Carte',
-    headerShown: false,
-  };
-
-  render() {
-    const { navigation } = this.props;
-    const { navigate } = navigation;
-
-    navigate('CarteDisplayScreen', { id: '1' });
-
-    return (
-      <View style={{ flex: 1 }}>
-        <ExplorerComponentShowMap
-          tileServerUrl={`${tileServerUrl}/styles/${selectedTheme}/style.json`}
-          places={places}
-          map={map}
-          navigate={(id) => navigate('CarteArticle', id)}
-        />
-      </View>
-    );
-  }
+function CarteListScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1 }}>
+      <ExplorerComponentShowMap
+        tileServerUrl={`${tileServerUrl}/styles/${selectedTheme}/style.json`}
+        places={places}
+        map={map}
+        navigate={(id) => navigation.navigate('CarteArticle', id)}
+      />
+    </View>
+  );
 }
+
+export default CarteListScreen;
 
 CarteListScreen.propTypes = {
   navigation: PropTypes.shape({

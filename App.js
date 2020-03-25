@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
-import React, { Component } from 'react';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import 'react-native-gesture-handler';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 
 import DrawerNavigator from './src/views/main/index';
@@ -11,23 +12,43 @@ import LocationNavigator from './src/views/location/index';
 
 import Theme from './src/styles/Theme';
 
-const RootNavigator = createStackNavigator({
-  Main: DrawerNavigator,
-  Settings: SettingsNavigator,
-  Auth: AuthNavigator,
-  Location: LocationNavigator,
-}, {
-  headerMode: 'none',
-});
+const Stack = createStackNavigator();
 
-const Navigation = createAppContainer(RootNavigator);
+function RootNavigator() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Main"
+      screenOptions={{ gestureEnabled: false }}
+      headerMode="none"
+    >
+      <Stack.Screen
+        name="Main"
+        component={DrawerNavigator}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsNavigator}
+      />
+      <Stack.Screen
+        name="Auth"
+        component={AuthNavigator}
+      />
+      <Stack.Screen
+        name="Location"
+        component={LocationNavigator}
+      />
+    </Stack.Navigator>
+  );
+}
 
 // Render the app container component with the provider around it
 export default class App extends React.Component {
   render() {
     return (
       <PaperProvider theme={Theme}>
-        <Navigation />
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
       </PaperProvider>
     );
   }

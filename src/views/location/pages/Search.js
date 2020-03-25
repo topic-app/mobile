@@ -1,23 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Button } from 'react-native';
+import PropTypes from 'prop-types';
 
-export default class LocationSearchScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Settings',
-  };
-
-  render() {
-    const { navigation } = this.props;
-    const { navigate } = navigation;
-    return (
-      <Button
-        title="Retour"
-        onPress={() => navigate('ActuList')}
-      />
-    );
-  }
+function LocationSearchScreen({ navigation }) {
+  return (
+    <Button
+      title="Retour"
+      onPress={() => navigation.navigate('ActuList')}
+    />
+  );
 }
+
+export default LocationSearchScreen;
 
 LocationSearchScreen.propTypes = {
   navigation: PropTypes.shape({

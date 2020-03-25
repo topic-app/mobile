@@ -14,108 +14,107 @@ import places from '../data/testQueryResults.json';
 import carteStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
 
-export default class LocationModalContents extends React.Component {
-  genTagDecoration = (type) => {
-    if (type === 'school') {
-      return {
-        icon: 'school',
-        color: markerColors.purple,
-      };
-    }
-    if (type === 'museum') {
-      return {
-        icon: 'bank',
-        color: markerColors.red,
-      };
-    }
-    if (type === 'event') {
-      return {
-        icon: 'calendar',
-        color: markerColors.green,
-      };
-    }
-    if (type === 'secret') {
-      return {
-        icon: 'egg-easter',
-        color: markerColors.secret,
-      };
-    }
+function genTagDecoration(type) {
+  if (type === 'school') {
     return {
-      icon: 'map-marker',
+      icon: 'school',
+      color: markerColors.purple,
+    };
+  }
+  if (type === 'museum') {
+    return {
+      icon: 'bank',
       color: markerColors.red,
     };
-  };
-
-  checkLink = (link, color) => {
-    if (link !== undefined && link !== '') {
-      return (
-        <Button
-          icon="link-variant"
-          mode="text"
-          compact
-          color={color}
-          onPress={() => Linking.openURL(link)}
-        >
-          En savoir plus
-        </Button>
-      );
-    }
-    return null;
   }
+  if (type === 'event') {
+    return {
+      icon: 'calendar',
+      color: markerColors.green,
+    };
+  }
+  if (type === 'secret') {
+    return {
+      icon: 'egg-easter',
+      color: markerColors.secret,
+    };
+  }
+  return {
+    icon: 'map-marker',
+    color: markerColors.red,
+  };
+}
 
-  render() {
-    const { data, hideModal } = this.props;
-    const place = places[data.id];
-    const { icon, color } = this.genTagDecoration(data.type);
-
+function checkLink(link, color) {
+  if (link !== undefined && link !== '') {
     return (
-      <View style={{ flex: 1 }}>
-        <SwipeUpComponent hideModal={hideModal}>
-          <View style={carteStyles.modalContainer}>
-            <View style={carteStyles.pullUpTabContainer}>
-              <View style={carteStyles.pullUpTab} />
-            </View>
-
-            <View style={carteStyles.modalTitleContainer}>
-              <Icon name={icon} style={[{ color }, carteStyles.modalIcon]} />
-              <Text
-                style={[{ color }, carteStyles.modalTitle]}
-                ellipsizeMode="tail"
-                adjustsFontSizeToFit
-                numberOfLines={1}
-              >
-                {data.name}
-              </Text>
-            </View>
-
-            <View style={carteStyles.horizontalLineContainer}>
-              <View style={carteStyles.horizontalLine} />
-            </View>
-
-            <Text
-              style={carteStyles.modalText}
-              numberOfLines={3}
-              ellipsizeMode="tail"
-            >
-              {place.summary}
-            </Text>
-            <View style={carteStyles.horizontalLineContainer}>
-              <View style={carteStyles.horizontalLine} />
-            </View>
-            <Text
-              style={carteStyles.modalText}
-              numberOfLines={(place.link !== undefined && place.link !== '') ? 25 : 27}
-              ellipsizeMode="tail"
-            >
-              {place.description}
-            </Text>
-            {this.checkLink(place.link, color)}
-          </View>
-        </SwipeUpComponent>
-      </View>
+      <Button
+        icon="link-variant"
+        mode="text"
+        compact
+        color={color}
+        onPress={() => Linking.openURL(link)}
+      >
+        En savoir plus
+      </Button>
     );
   }
+  return null;
 }
+
+function LocationModalContents({ data, hideModal }) {
+  const place = places[data.id];
+  const { icon, color } = genTagDecoration(data.type);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <SwipeUpComponent hideModal={hideModal}>
+        <View style={carteStyles.modalContainer}>
+          <View style={carteStyles.pullUpTabContainer}>
+            <View style={carteStyles.pullUpTab} />
+          </View>
+
+          <View style={carteStyles.modalTitleContainer}>
+            <Icon name={icon} style={[{ color }, carteStyles.modalIcon]} />
+            <Text
+              style={[{ color }, carteStyles.modalTitle]}
+              ellipsizeMode="tail"
+              adjustsFontSizeToFit
+              numberOfLines={1}
+            >
+              {data.name}
+            </Text>
+          </View>
+
+          <View style={carteStyles.horizontalLineContainer}>
+            <View style={carteStyles.horizontalLine} />
+          </View>
+
+          <Text
+            style={carteStyles.modalText}
+            numberOfLines={3}
+            ellipsizeMode="tail"
+          >
+            {place.summary}
+          </Text>
+          <View style={carteStyles.horizontalLineContainer}>
+            <View style={carteStyles.horizontalLine} />
+          </View>
+          <Text
+            style={carteStyles.modalText}
+            numberOfLines={(place.link !== undefined && place.link !== '') ? 25 : 27}
+            ellipsizeMode="tail"
+          >
+            {place.description}
+          </Text>
+          {checkLink(place.link, color)}
+        </View>
+      </SwipeUpComponent>
+    </View>
+  );
+}
+
+export default LocationModalContents;
 
 LocationModalContents.propTypes = {
   data: PropTypes.shape({
