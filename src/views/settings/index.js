@@ -10,7 +10,6 @@ function SettingsNavigator() {
   return (
     <Stack.Navigator
       initialRouteName="Settings"
-      screenOptions={{ gestureEnabled: false }}
     >
       <Stack.Screen
         name="Settings"

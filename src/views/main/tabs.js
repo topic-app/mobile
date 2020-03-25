@@ -3,12 +3,13 @@ import { Platform } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
+import { useTheme } from '@react-navigation/native';
 
 import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
 import CarteNavigator from './carte/index';
 
-import { styles, colors } from '../../styles/Styles';
+import { styles } from '../../styles/Styles';
 
 const createPlatformTabNavigator = Platform.OS === 'ios'
   ? createBottomTabNavigator
@@ -17,6 +18,8 @@ const createPlatformTabNavigator = Platform.OS === 'ios'
 const Tab = createPlatformTabNavigator();
 
 function TabsNavigator() {
+  const { colors } = useTheme();
+
   if (Platform.OS !== 'ios') {
     return (
       <Tab.Navigator

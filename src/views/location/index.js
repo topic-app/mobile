@@ -11,7 +11,6 @@ function LocationNavigator() {
   return (
     <Stack.Navigator
       initialRouteName="Map"
-      screenOptions={{ gestureEnabled: false }}
     >
       <Stack.Screen
         name="Map"

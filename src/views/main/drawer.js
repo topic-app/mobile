@@ -1,5 +1,4 @@
 import React from 'react';
-import { ScrollView, SafeAreaView, Text } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import TabsNavigator from './tabs';

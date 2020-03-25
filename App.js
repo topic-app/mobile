@@ -18,7 +18,6 @@ function RootNavigator() {
   return (
     <Stack.Navigator
       initialRouteName="Main"
-      screenOptions={{ gestureEnabled: false }}
       headerMode="none"
     >
       <Stack.Screen
@@ -46,7 +45,7 @@ export default class App extends React.Component {
   render() {
     return (
       <PaperProvider theme={Theme}>
-        <NavigationContainer>
+        <NavigationContainer theme={Theme}>
           <RootNavigator />
         </NavigationContainer>
       </PaperProvider>
