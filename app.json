@@ -15,7 +15,7 @@
   },
   "config": {
     "api": {
-      "url": "https://api.topicapp.fr",
+      "url": "https://api.topicapp.fr/v1/",
       "retryTime": "10"
     },
     "defaults": {
