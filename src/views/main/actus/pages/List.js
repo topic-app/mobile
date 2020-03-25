@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import ActuComponentListCard from '../components/listCard';
 
-import data from '../data/testDataList.json';
 import { styles } from '../../../../styles/Styles';
 
-function ActuListScreen({ navigation }) {
+function ActuListScreen({ navigation, articles }) {
   return (
     <View style={styles.page}>
       <FlatList
-        data={data}
+        data={articles}
         refreshing={false}
         onRefresh={() => console.log('Refresh')}
         keyExtractor={(article) => article.articleId}
@@ -32,10 +32,27 @@ function ActuListScreen({ navigation }) {
   );
 }
 
-export default ActuListScreen;
+const mapStateToProps = (state) => {
+  const { articles } = state;
+  return { articles };
+};
+
+export default connect(mapStateToProps)(ActuListScreen);
 
 ActuListScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  articles: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      time: PropTypes.string.isRequired,
+      thumbnailUrl: PropTypes.string,
+      description: PropTypes.string,
+      content: PropTypes.shape({
+        parser: PropTypes.string.isRequired,
+        data: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
+  ).isRequired,
 };

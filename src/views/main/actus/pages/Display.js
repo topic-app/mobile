@@ -11,8 +11,7 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-
-import articles from '../data/testDataList.json';
+import { connect } from 'react-redux';
 
 import { styles, colors } from '../../../../styles/Styles';
 
@@ -73,9 +72,9 @@ function genTagIcon(type) {
   return '';
 }
 
-function ActuDisplayScreen({ route }) {
+function ActuDisplayScreen({ route, articles }) {
   const { id } = route.params;
-  const article = articles[id - 1];
+  const article = articles.find((t) => t.articleId === id);
 
   const data = genTagData(article);
 
@@ -136,7 +135,12 @@ function ActuDisplayScreen({ route }) {
   );
 }
 
-export default ActuDisplayScreen;
+const mapStateToProps = (state) => {
+  const { articles } = state;
+  return { articles };
+};
+
+export default connect(mapStateToProps)(ActuDisplayScreen);
 
 ActuDisplayScreen.propTypes = {
   route: PropTypes.shape({
@@ -144,4 +148,19 @@ ActuDisplayScreen.propTypes = {
       id: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  articles: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      time: PropTypes.string.isRequired,
+      thumbnailUrl: PropTypes.string,
+      description: PropTypes.string,
+      content: PropTypes.shape({
+        parser: PropTypes.string.isRequired,
+        data: PropTypes.string.isRequired,
+      }).isRequired,
+      group: PropTypes.shape({
+        displayName: PropTypes.string,
+      }),
+    }).isRequired,
+  ).isRequired,
 };
