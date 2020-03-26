@@ -85,7 +85,7 @@ function genTagData(petition) { // TODO: Messy code
 function PetitionComponentListCard({ navigate, petition }) {
   const data = genTagData(petition);
 
-  console.log(petition);
+  // console.log(petition);
 
   const Touchable = Platform.OS === 'ios'
     ? TouchableOpacity

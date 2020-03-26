@@ -1,11 +1,12 @@
-// eslint-disable-next-line no-unused-vars
-import React, { Component } from 'react';
+import React from 'react';
+import { IconButton } from 'react-native-paper';
+
 import { createStackNavigator } from '@react-navigation/stack';
 
 import PetitionListScreen from './pages/List';
 import PetitionDisplayScreen from './pages/Display';
 
-import { customStyles } from '../../../styles/Styles';
+import { colors, customStyles } from '../../../styles/Styles';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,14 @@ function PetitionNavigator() {
         component={PetitionListScreen}
         options={{
           title: 'Pétitions',
+          headerLeft: () => (
+            <IconButton
+              onPress={() => navigation.openDrawer()}
+              icon="menu"
+              color={colors.text}
+              size={28}
+            />
+          ),
         }}
       />
       <Stack.Screen
