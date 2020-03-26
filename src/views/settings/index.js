@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { IconButton } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 import SettingsHomeScreen from './pages/SettingsList';
 import SettingsGeneralScreen from './pages/SettingsGeneral';
@@ -40,7 +41,7 @@ function SettingsNavigator({ navigation }) {
           title: 'General',
           headerLeft: () => (
             <IconButton
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate('SettingsList')}
               icon="arrow-left"
               color={colors.text}
               size={28}
@@ -56,7 +57,7 @@ function SettingsNavigator({ navigation }) {
           title: 'Behavior',
           headerLeft: () => (
             <IconButton
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate('SettingsList')}
               icon="arrow-left"
               color={colors.text}
               size={28}
@@ -72,7 +73,7 @@ function SettingsNavigator({ navigation }) {
           title: 'Appearance',
           headerLeft: () => (
             <IconButton
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate('SettingsList')}
               icon="arrow-left"
               color={colors.text}
               size={28}
@@ -86,3 +87,10 @@ function SettingsNavigator({ navigation }) {
 }
 
 export default SettingsNavigator;
+
+SettingsNavigator.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
+};

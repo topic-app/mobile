@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 
 function SettingsBehaviorScreen({ navigation }) {
   return (
-    <Button
-      title="Retour"
-      onPress={() => navigation.goBack()}
-    />
+    <Button onPress={() => navigation.navigate('SettingsList')}>
+      Retour
+    </Button>
   );
 }
 
@@ -15,6 +14,6 @@ export default SettingsBehaviorScreen;
 
 SettingsBehaviorScreen.propTypes = {
   navigation: PropTypes.shape({
-    goBack: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
   }).isRequired,
 };
