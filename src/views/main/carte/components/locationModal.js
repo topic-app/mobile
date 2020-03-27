@@ -1,11 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Text,
-  Linking,
-} from 'react-native';
+import { View, Text, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from 'react-native-paper';
 
@@ -90,11 +86,7 @@ function LocationModalContents({ data, hideModal }) {
             <View style={carteStyles.horizontalLine} />
           </View>
 
-          <Text
-            style={carteStyles.modalText}
-            numberOfLines={3}
-            ellipsizeMode="tail"
-          >
+          <Text style={carteStyles.modalText} numberOfLines={3} ellipsizeMode="tail">
             {place.summary}
           </Text>
           <View style={carteStyles.horizontalLineContainer}>
@@ -102,7 +94,7 @@ function LocationModalContents({ data, hideModal }) {
           </View>
           <Text
             style={carteStyles.modalText}
-            numberOfLines={(place.link !== undefined && place.link !== '') ? 25 : 27}
+            numberOfLines={place.link !== undefined && place.link !== '' ? 25 : 27}
             ellipsizeMode="tail"
           >
             {place.description}

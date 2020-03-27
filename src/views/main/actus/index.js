@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -11,10 +12,7 @@ const Stack = createStackNavigator();
 
 function ActuNavigator({ navigation }) {
   return (
-    <Stack.Navigator
-      initialRouteName="ActuListe"
-      screenOptions={customStyles.header}
-    >
+    <Stack.Navigator initialRouteName="ActuListe" screenOptions={customStyles.header}>
       <Stack.Screen
         name="ActuListe"
         component={ActuListScreen}
@@ -42,3 +40,9 @@ function ActuNavigator({ navigation }) {
 }
 
 export default ActuNavigator;
+
+ActuNavigator.propTypes = {
+  navigation: PropTypes.shape({
+    openDrawer: PropTypes.func.isRequired,
+  }).isRequired,
+};

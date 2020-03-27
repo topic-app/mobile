@@ -3,12 +3,7 @@ import { Button } from 'react-native';
 import PropTypes from 'prop-types';
 
 function AuthLoginScreen({ navigation }) {
-  return (
-    <Button
-      title="Retour"
-      onPress={() => navigation.navigate('ActuList')}
-    />
-  );
+  return <Button title="Retour" onPress={() => navigation.navigate('ActuList')} />;
 }
 
 export default AuthLoginScreen;

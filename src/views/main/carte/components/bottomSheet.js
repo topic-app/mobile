@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Animated,
-  StyleSheet,
-  View,
-  Dimensions,
-} from 'react-native';
+import { Animated, StyleSheet, View, Dimensions } from 'react-native';
 import {
   PanGestureHandler,
   NativeViewGestureHandler,
@@ -13,8 +8,8 @@ import {
 } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
 
-const { height, width } = Dimensions.get('window');
-let lastOrientation = (height > width) ? 'portrait' : 'landscape';
+let { height, width } = Dimensions.get('window');
+let lastOrientation = height > width ? 'portrait' : 'landscape';
 
 let SNAP_POINTS_FROM_TOP = {
   portrait: [0, height * 0.5, height * 0.73, height],
@@ -61,15 +56,11 @@ class BottomSheet extends React.Component {
     });
 
     this.dragY = new Animated.Value(0);
-    this.onGestureEvent = Animated.event(
-      [{ nativeEvent: { translationY: this.dragY } }],
-      { useNativeDriver: true },
-    );
+    this.onGestureEvent = Animated.event([{ nativeEvent: { translationY: this.dragY } }], {
+      useNativeDriver: true,
+    });
 
-    this.reverseLastScrollY = Animated.multiply(
-      new Animated.Value(-1),
-      this.lastScrollY,
-    );
+    this.reverseLastScrollY = Animated.multiply(new Animated.Value(-1), this.lastScrollY);
 
     this.translateYOffset = new Animated.Value(startSnap);
     this.translateY = Animated.add(
@@ -80,11 +71,12 @@ class BottomSheet extends React.Component {
       outputRange: [START, END],
       extrapolate: 'clamp',
     });
-  }
+  };
 
   onHandlerStateChange = ({ nativeEvent }) => {
     if (nativeEvent.oldState === State.ACTIVE) {
-      let { velocityY, translationY } = nativeEvent;
+      const { velocityY } = nativeEvent;
+      let { translationY } = nativeEvent;
       translationY -= this.lastScrollYValue;
       const dragToss = 0.05;
       const { lastSnap, snapPointsFromTop } = this.state;
@@ -112,23 +104,24 @@ class BottomSheet extends React.Component {
         useNativeDriver: true,
       }).start();
     }
-  }
+  };
 
-  checkVisible = (snap) => {
+  checkVisible = snap => {
     const { snapPointsFromTop } = this.state;
     if (snap === snapPointsFromTop[snapPointsFromTop.length - 1]) {
       const { hideModal } = this.props;
       this.setState({ lastSnap: snapPointsFromTop[snapPointsFromTop.length - 2] });
       setTimeout(hideModal, 150);
     }
-  }
+  };
 
   getDeviceOrientation = () => {
-    const { height, width } = Dimensions.get('window');
-    return (height > width) ? 'portrait' : 'landscape';
-  }
+    height = Dimensions.get('window').height;
+    width = Dimensions.get('window').width;
+    return height > width ? 'portrait' : 'landscape';
+  };
 
-  onLayout = (e) => {
+  onLayout = () => {
     // Detect if device has changed rotation
     const orientation = this.getDeviceOrientation();
     if (orientation !== lastOrientation) {
@@ -146,7 +139,7 @@ class BottomSheet extends React.Component {
       });
       this.initializeSheet(LS, SP);
     }
-  }
+  };
 
   render() {
     const { children, timeout } = this.props;
@@ -157,7 +150,11 @@ class BottomSheet extends React.Component {
         maxDurationMs={timeout}
         maxDeltaY={lastSnap - snapPointsFromTop[0]}
       >
-        <View style={StyleSheet.absoluteFillObject} onLayout={this.onLayout} pointerEvents="box-none">
+        <View
+          style={StyleSheet.absoluteFillObject}
+          onLayout={this.onLayout}
+          pointerEvents="box-none"
+        >
           <Animated.View
             style={[
               StyleSheet.absoluteFillObject,
@@ -193,10 +190,7 @@ class BottomSheet extends React.Component {
 export default BottomSheet;
 
 BottomSheet.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).isRequired,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   hideModal: PropTypes.func.isRequired,
   timeout: PropTypes.number,
 };

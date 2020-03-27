@@ -1,21 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Chip,
-  Avatar,
-} from 'react-native-paper';
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  ScrollView,
-} from 'react-native';
+import { Chip, Avatar } from 'react-native-paper';
+import { View, Text, Image, FlatList, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
 import { styles, colors } from '../../../../styles/Styles';
 
-function genTagData(article) { // TODO: Messy code
+function genTagData(article) {
+  // TODO: Messy code
   const data = [];
   data.push({
     type: 'group',
@@ -30,12 +22,14 @@ function genTagData(article) { // TODO: Messy code
     text: article.author.displayName,
     id: article.author.userId,
   });
-  data.push(...article.tags.map((tag) => ({
-    type: 'tag',
-    text: tag.name,
-    color: tag.color,
-    id: tag.tagId,
-  })));
+  data.push(
+    ...article.tags.map((tag) => ({
+      type: 'tag',
+      text: tag.name,
+      color: tag.color,
+      id: tag.tagId,
+    })),
+  );
   if (article.location.global) {
     data.push({
       type: 'global',
@@ -44,29 +38,36 @@ function genTagData(article) { // TODO: Messy code
       id: '',
     });
   }
-  data.push(...article.location.schools.map((school) => ({
-    type: 'school',
-    icon: 'map-marker',
-    text: school.displayName,
-    id: school.schoolId,
-  })));
-  data.push(...article.location.departments.map((department) => ({
-    type: 'department',
-    icon: 'map-marker',
-    text: department.displayName,
-    id: department.departmentId,
-  })));
+  data.push(
+    ...article.location.schools.map((school) => ({
+      type: 'school',
+      icon: 'map-marker',
+      text: school.displayName,
+      id: school.schoolId,
+    })),
+  );
+  data.push(
+    ...article.location.departments.map((department) => ({
+      type: 'department',
+      icon: 'map-marker',
+      text: department.displayName,
+      id: department.departmentId,
+    })),
+  );
   return data;
 }
 
 function genTagIcon(type) {
   if (type === 'tag') {
     return 'tag';
-  } if (type === 'author') {
+  }
+  if (type === 'author') {
     return 'account';
-  } if (type === 'group') {
+  }
+  if (type === 'group') {
     return 'newspaper';
-  } if (type === 'location') {
+  }
+  if (type === 'location') {
     return 'map-marker';
   }
   return '';
@@ -81,20 +82,11 @@ function ActuDisplayScreen({ route, articles }) {
   return (
     <View style={styles.page}>
       <ScrollView>
-        <Image
-          source={{ uri: article.thumbnailUrl }}
-          style={[styles.image, { height: 250 }]}
-        />
+        <Image source={{ uri: article.thumbnailUrl }} style={[styles.image, { height: 250 }]} />
         <View style={styles.contentContainer}>
-          <Text style={styles.title}>
-            {article.title}
-          </Text>
+          <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
-            {article.time}
-            {' '}
-            par
-            {' '}
-            {article.group.displayName}
+            {article.time} par {article.group.displayName}
           </Text>
         </View>
         <View>
@@ -104,19 +96,23 @@ function ActuDisplayScreen({ route, articles }) {
             data={data}
             keyExtractor={(tag) => tag.type + tag.id}
             renderItem={({ item: tag, index: tagIndex }) => (
-              <View style={{
-                marginLeft: tagIndex === 0 ? 15 : 5,
-                marginRight: tagIndex === data.length - 1 ? 15 : 5,
-              }}
+              <View
+                style={{
+                  marginLeft: tagIndex === 0 ? 15 : 5,
+                  marginRight: tagIndex === data.length - 1 ? 15 : 5,
+                }}
               >
                 <Chip
                   mode="outlined"
                   icon={tag.avatar ? '' : tag.icon}
                   // TODO: Changer la couleur de l'icone
-                  avatar={tag.avatar ? (<Avatar.Image size={24} source={{ uri: tag.avatar }} />) : ''}
-                  style={[styles.tag, {
-                    borderColor: tag.color || colors.disabled,
-                  }]}
+                  avatar={tag.avatar ? <Avatar.Image size={24} source={{ uri: tag.avatar }} /> : ''}
+                  style={[
+                    styles.tag,
+                    {
+                      borderColor: tag.color || colors.disabled,
+                    },
+                  ]}
                   textStyle={styles.text}
                 >
                   {tag.text}
@@ -126,9 +122,7 @@ function ActuDisplayScreen({ route, articles }) {
           />
         </View>
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>
-            {article.content.data}
-          </Text>
+          <Text style={styles.text}>{article.content.data}</Text>
         </View>
       </ScrollView>
     </View>

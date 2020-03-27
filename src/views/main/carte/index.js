@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -11,10 +12,7 @@ const Stack = createStackNavigator();
 
 function CarteNavigator({ navigation }) {
   return (
-    <Stack.Navigator
-      initialRouteName="CarteListe"
-      screenOptions={customStyles.header}
-    >
+    <Stack.Navigator initialRouteName="CarteListe" screenOptions={customStyles.header}>
       <Stack.Screen
         name="CarteListe"
         component={CarteListScreen}
@@ -44,3 +42,9 @@ function CarteNavigator({ navigation }) {
 }
 
 export default CarteNavigator;
+
+CarteNavigator.propTypes = {
+  navigation: PropTypes.shape({
+    openDrawer: PropTypes.func.isRequired,
+  }).isRequired,
+};

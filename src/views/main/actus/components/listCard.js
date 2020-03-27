@@ -9,29 +9,28 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
 } from 'react-native';
-import {
-  Card,
-  Avatar,
-  Chip,
-  Paragraph,
-} from 'react-native-paper';
+import { Card, Avatar, Chip, Paragraph } from 'react-native-paper';
 
 import { styles, colors } from '../../../../styles/Styles';
 
 function genTagIcon(type) {
   if (type === 'tag') {
     return 'tag';
-  } if (type === 'author') {
+  }
+  if (type === 'author') {
     return 'account';
-  } if (type === 'group') {
+  }
+  if (type === 'group') {
     return 'newspaper';
-  } if (type === 'location') {
+  }
+  if (type === 'location') {
     return 'map-marker';
   }
   return '';
 }
 
-function genTagData(article) { // TODO: Messy code
+function genTagData(article) {
+  // TODO: Messy code
   const data = [];
   data.push({
     type: 'group',
@@ -40,12 +39,14 @@ function genTagData(article) { // TODO: Messy code
     text: article.group.displayName,
     id: article.group.groupId,
   });
-  data.push(...article.tags.map((tag) => ({
-    type: 'tag',
-    text: tag.name,
-    color: tag.color,
-    id: tag.tagId,
-  })));
+  data.push(
+    ...article.tags.map((tag) => ({
+      type: 'tag',
+      text: tag.name,
+      color: tag.color,
+      id: tag.tagId,
+    })),
+  );
   data.push({
     type: 'author',
     icon: 'account',
@@ -61,54 +62,55 @@ function genTagData(article) { // TODO: Messy code
     });
   }
 
-  data.push(...article.location.schools.map((school) => ({
-    type: 'school',
-    icon: 'map-marker',
-    text: school.displayName,
-    id: school.schoolId,
-  })));
+  data.push(
+    ...article.location.schools.map((school) => ({
+      type: 'school',
+      icon: 'map-marker',
+      text: school.displayName,
+      id: school.schoolId,
+    })),
+  );
 
-  data.push(...article.location.departments.map((department) => ({
-    type: 'department',
-    icon: 'map-marker',
-    text: department.displayName,
-    id: department.departmentId,
-  })));
+  data.push(
+    ...article.location.departments.map((department) => ({
+      type: 'department',
+      icon: 'map-marker',
+      text: department.displayName,
+      id: department.departmentId,
+    })),
+  );
 
   return data;
 }
 
 function ActuComponentListCard({ article, navigate }) {
-
   const data = genTagData(article);
 
-  const Touchable = Platform.OS === 'ios'
-    ? TouchableOpacity
-    : TouchableNativeFeedback;
+  const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
   return (
     <View style={styles.container}>
-      <Card
-        style={styles.card}
-      >
+      <Card style={styles.card}>
         <Card.Content>
-          <Touchable
-            onPress={navigate}
-          >
+          <Touchable onPress={navigate}>
             <View style={{ flexDirection: 'row' }}>
               <Image
                 source={{ uri: article.thumbnailUrl }}
-                style={[styles.thumbnail, {
-                  width: 120,
-                  height: 120,
-                }]}
+                style={[
+                  styles.thumbnail,
+                  {
+                    width: 120,
+                    height: 120,
+                  },
+                ]}
               />
-              <View style={{
-                margin: 10,
-                marginTop: 0,
-                marginLeft: 15,
-                flex: 1,
-              }}
+              <View
+                style={{
+                  margin: 10,
+                  marginTop: 0,
+                  marginLeft: 15,
+                  flex: 1,
+                }}
               >
                 <Text style={styles.cardTitle}>{article.title}</Text>
                 <Paragraph style={styles.text}>{article.description}</Paragraph>
@@ -124,19 +126,25 @@ function ActuComponentListCard({ article, navigate }) {
               data={data} // TODO: Use location, group author instead of tags
               keyExtractor={(tag) => tag.type + tag.id}
               renderItem={({ item: tag, index: tagIndex }) => (
-                <View style={{
-                  marginLeft: tagIndex === 0 ? 15 : 5,
-                  marginRight: tagIndex === data.length - 1 ? 15 : 5,
-                }}
+                <View
+                  style={{
+                    marginLeft: tagIndex === 0 ? 15 : 5,
+                    marginRight: tagIndex === data.length - 1 ? 15 : 5,
+                  }}
                 >
                   <Chip
                     mode="outlined"
                     icon={tag.avatar ? '' : tag.icon}
                     // TODO: Changer la couleur de l'icone
-                    avatar={tag.avatar ? (<Avatar.Image size={24} source={{ uri: tag.avatar }} />) : ''}
-                    style={[styles.tag, {
-                      borderColor: tag.color || colors.disabled,
-                    }]}
+                    avatar={
+                      tag.avatar ? <Avatar.Image size={24} source={{ uri: tag.avatar }} /> : ''
+                    }
+                    style={[
+                      styles.tag,
+                      {
+                        borderColor: tag.color || colors.disabled,
+                      },
+                    ]}
                     textStyle={styles.text}
                   >
                     {tag.text}
@@ -163,7 +171,6 @@ ActuComponentListCard.propTypes = {
       parser: PropTypes.string.isRequired,
       data: PropTypes.string.isRequired,
     }).isRequired,
-
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };

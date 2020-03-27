@@ -52,21 +52,21 @@ class ExplorerComponentShowMap extends React.Component {
       zoomLevel: zoom,
       animationDuration: animationTime,
     });
-  }
+  };
 
   getLocationAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       console.warn('Location Permission Denied, skipping recenter of map.');
     } else {
-      let location = await Location.getCurrentPositionAsync({});
+      const location = await Location.getCurrentPositionAsync({});
       this.goTo(location.coords.longitude, location.coords.latitude, 11, 0);
     }
   };
 
   hideModal = () => {
     this.setState({ isModalVisible: false });
-  }
+  };
 
   render() {
     const featureCollection = {
@@ -75,7 +75,7 @@ class ExplorerComponentShowMap extends React.Component {
     };
     let secret = {};
     const { places } = this.props;
-    places.forEach((place) => {
+    places.forEach(place => {
       if (place.type !== 'secret') {
         featureCollection.features.push({
           type: 'Feature',
@@ -123,15 +123,15 @@ class ExplorerComponentShowMap extends React.Component {
           styleURL={tileServerUrl}
         >
           <MapboxGL.Camera
-            ref={(c) => ExplorerComponentShowMap.camera = c}
+            ref={c => {
+              ExplorerComponentShowMap.camera = c;
+            }}
             maxBounds={map.bounds}
             minZoomLevel={map.minZoom}
             maxZoomLevel={map.maxZoom}
             defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
           />
-          <MapboxGL.Images
-            images={markerImages}
-          />
+          <MapboxGL.Images images={markerImages} />
           <MapboxGL.ShapeSource
             id="markerShapeSource"
             shape={featureCollection}
@@ -148,39 +148,24 @@ class ExplorerComponentShowMap extends React.Component {
               style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
             />
           </MapboxGL.ShapeSource>
-          <MapboxGL.ShapeSource
-            id="secretShapeSource"
-            shape={secret}
-            onPress={this.onIconPress}
-          >
+          <MapboxGL.ShapeSource id="secretShapeSource" shape={secret} onPress={this.onIconPress}>
             <MapboxGL.SymbolLayer
               id="3"
               minZoomLevel={19}
               style={{ iconImage: ['get', 'icon'], iconSize: 1 }}
             />
           </MapboxGL.ShapeSource>
-          <MapboxGL.UserLocation
-            visible
-            animated
-          />
+          <MapboxGL.UserLocation visible animated />
         </MapboxGL.MapView>
         <View style={carteStyles.attributionContainer}>
-          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
-            {' '}
-            ©
-            {' '}
-          </Text>
+          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}> © </Text>
           <Text
             onPress={() => Linking.openURL('https://openmaptiles.org/')}
             style={[styles.link, carteStyles.attribution]}
           >
             OpenMapTiles
           </Text>
-          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
-            {' '}
-            ©
-            {' '}
-          </Text>
+          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}> © </Text>
           <Text
             onPress={() => Linking.openURL('https://www.openstreetmap.org/copyright')}
             style={[styles.link, carteStyles.attribution]}
@@ -189,8 +174,7 @@ class ExplorerComponentShowMap extends React.Component {
           </Text>
           <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
             {' '}
-            contributors
-            {' '}
+            contributors{' '}
           </Text>
         </View>
         <Modal

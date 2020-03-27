@@ -10,9 +10,8 @@ import CarteNavigator from './carte/index';
 
 import { styles, colors } from '../../styles/Styles';
 
-const createPlatformTabNavigator = Platform.OS === 'ios'
-  ? createBottomTabNavigator
-  : createMaterialBottomTabNavigator;
+const createPlatformTabNavigator =
+  Platform.OS === 'ios' ? createBottomTabNavigator : createMaterialBottomTabNavigator;
 
 const Tab = createPlatformTabNavigator();
 
@@ -25,10 +24,8 @@ function TabsNavigator() {
         inactiveColor={colors.disabled}
         barStyle={styles.barStyle}
         shifting={false}
-
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => {
-
             let iconName;
             if (route.name === 'Actus') {
               // Note: We could render a different map icon when the map is selected
@@ -67,7 +64,8 @@ function TabsNavigator() {
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
       })}
-      tabBarOptions={{ // This is for ios
+      tabBarOptions={{
+        // This is for ios
         shifting: false,
         style: styles.barStyle,
         activeTintColor: colors.primary,

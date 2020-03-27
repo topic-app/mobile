@@ -16,11 +16,11 @@ function ActuListScreen({ navigation, articles }) {
         refreshing={false}
         onRefresh={() => console.log('Refresh')}
         keyExtractor={(article) => article.articleId}
-        ListFooterComponent={(
+        ListFooterComponent={
           <View style={styles.container}>
             <Button style={styles.text}>Retour en haut</Button>
           </View>
-        )}
+        }
         renderItem={(article) => (
           <ActuComponentListCard
             article={article.item}

@@ -1,4 +1,5 @@
-function genTagData(article) { // TODO: Messy code
+function genTagData(article) {
+  // TODO: Messy code
   const data = [];
   data.push({
     type: 'group',
@@ -7,12 +8,14 @@ function genTagData(article) { // TODO: Messy code
     text: article.group.displayName,
     id: article.group.groupId,
   });
-  data.push(...article.tags.map((tag) => ({
-    type: 'tag',
-    text: tag.name,
-    color: tag.color,
-    id: tag.tagId,
-  })));
+  data.push(
+    ...article.tags.map((tag) => ({
+      type: 'tag',
+      text: tag.name,
+      color: tag.color,
+      id: tag.tagId,
+    })),
+  );
   data.push({
     type: 'author',
     icon: 'account',
@@ -28,19 +31,23 @@ function genTagData(article) { // TODO: Messy code
     });
   }
 
-  data.push(...article.location.schools.map((school) => ({
-    type: 'school',
-    icon: 'map-marker',
-    text: school.displayName,
-    id: school.schoolId,
-  })));
+  data.push(
+    ...article.location.schools.map((school) => ({
+      type: 'school',
+      icon: 'map-marker',
+      text: school.displayName,
+      id: school.schoolId,
+    })),
+  );
 
-  data.push(...article.location.departments.map((department) => ({
-    type: 'department',
-    icon: 'map-marker',
-    text: department.displayName,
-    id: department.departmentId,
-  })));
+  data.push(
+    ...article.location.departments.map((department) => ({
+      type: 'department',
+      icon: 'map-marker',
+      text: department.displayName,
+      id: department.departmentId,
+    })),
+  );
 
   return data;
 }

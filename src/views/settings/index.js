@@ -14,10 +14,7 @@ const Stack = createStackNavigator();
 
 function SettingsNavigator({ navigation }) {
   return (
-    <Stack.Navigator
-      initialRouteName="SettingsList"
-      screenOptions={customStyles.header}
-    >
+    <Stack.Navigator initialRouteName="SettingsList" screenOptions={customStyles.header}>
       <Stack.Screen
         name="SettingsList"
         component={SettingsHomeScreen}
