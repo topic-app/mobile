@@ -49,7 +49,7 @@ function genTagData(petition) {
   }
 
   data.concat(
-    petition.tags.map(tag => ({
+    petition.tags.map((tag) => ({
       type: 'tag',
       text: tag.name,
       color: tag.color,
@@ -67,7 +67,7 @@ function genTagData(petition) {
   }
 
   data.concat(
-    petition.location.schools.map(school => ({
+    petition.location.schools.map((school) => ({
       type: 'school',
       icon: 'map-marker',
       text: school.displayName,
@@ -76,7 +76,7 @@ function genTagData(petition) {
   );
 
   data.concat(
-    petition.location.departments.map(department => ({
+    petition.location.departments.map((department) => ({
       type: 'department',
       icon: 'map-marker',
       text: department.displayName,
@@ -110,7 +110,7 @@ function PetitionComponentListCard({ navigate, petition }) {
               horizontal
               showsHorizontalScrollIndicator={false}
               data={data} // TODO: Use location, group author instead of tags
-              keyExtractor={tag => tag.type + tag.id}
+              keyExtractor={(tag) => tag.type + tag.id}
               renderItem={({ item: tag, index: tagIndex }) => (
                 <View
                   style={{
@@ -152,8 +152,8 @@ PetitionComponentListCard.propTypes = {
     date: PropTypes.string.isRequired,
     duration: PropTypes.string.isRequired,
     description: PropTypes.string,
-    objectif: PropTypes.number,
-    nombreDeSignature: PropTypes.number,
+    objectif: PropTypes.string,
+    nombreDeSignature: PropTypes.string,
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };

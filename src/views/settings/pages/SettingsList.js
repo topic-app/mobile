@@ -2,11 +2,10 @@ import React from 'react';
 import { List } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import { styles } from '../../../styles/Styles';
 
 function SettingsHomeScreen({ navigation }) {
   return (
-    <View style={styles.page}>
+    <View style={{ flex: 1 }}>
       <List.Section>
         <List.Item
           title="General"

@@ -9,7 +9,11 @@ const Stack = createStackNavigator();
 
 function AuthNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Login" screenOptions={{ gestureEnabled: false }}>
+    <Stack.Navigator
+      initialRouteName="Login"
+      screenOptions={{ gestureEnabled: false }}
+      headerMode="none"
+    >
       <Stack.Screen
         name="Login"
         component={AuthLoginScreen}

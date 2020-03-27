@@ -75,7 +75,7 @@ class ExplorerComponentShowMap extends React.Component {
     };
     let secret = {};
     const { places } = this.props;
-    places.forEach(place => {
+    places.forEach((place) => {
       if (place.type !== 'secret') {
         featureCollection.features.push({
           type: 'Feature',
@@ -123,7 +123,7 @@ class ExplorerComponentShowMap extends React.Component {
           styleURL={tileServerUrl}
         >
           <MapboxGL.Camera
-            ref={c => {
+            ref={(c) => {
               ExplorerComponentShowMap.camera = c;
             }}
             maxBounds={map.bounds}
@@ -183,7 +183,7 @@ class ExplorerComponentShowMap extends React.Component {
           hasBackdrop={false}
           onBackButtonPress={this.hideModal}
           coverScreen={false}
-          animationOutTiming={600}
+          animationOutTiming={1} // We want it to dissapear instantly
           style={carteStyles.modal}
         >
           <LocationModalContents data={data} hideModal={this.hideModal} />

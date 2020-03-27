@@ -16,13 +16,13 @@ function PetitionListScreen({ navigation }) {
         data={data}
         refreshing={false}
         onRefresh={() => console.log('Refresh: Need to make server request')}
-        keyExtractor={petition => petition.petitionId}
+        keyExtractor={(petition) => petition.petitionId}
         ListFooterComponent={
           <View style={styles.container}>
             <Button style={styles.text}>Retour en haut</Button>
           </View>
         }
-        renderItem={petition => (
+        renderItem={(petition) => (
           <PetitionComponentListCard
             petition={petition.item}
             navigate={() => navigation.navigate('petition', { id: petition.item.petitionId })}

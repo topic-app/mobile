@@ -106,7 +106,7 @@ class BottomSheet extends React.Component {
     }
   };
 
-  checkVisible = snap => {
+  checkVisible = (snap) => {
     const { snapPointsFromTop } = this.state;
     if (snap === snapPointsFromTop[snapPointsFromTop.length - 1]) {
       const { hideModal } = this.props;

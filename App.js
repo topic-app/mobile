@@ -22,26 +22,10 @@ const Store = createStore(Reducer);
 
 function RootNavigator() {
   return (
-    <Stack.Navigator
-      initialRouteName="Main"
-      headerMode="none"
-    >
-      <Stack.Screen
-        name="Main"
-        component={DrawerNavigator}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsNavigator}
-      />
-      <Stack.Screen
-        name="Auth"
-        component={AuthNavigator}
-      />
-      <Stack.Screen
-        name="Location"
-        component={LocationNavigator}
-      />
+    <Stack.Navigator initialRouteName="Main" headerMode="none">
+      <Stack.Screen name="Main" component={DrawerNavigator} />
+      <Stack.Screen name="Auth" component={AuthNavigator} />
+      <Stack.Screen name="Location" component={LocationNavigator} />
     </Stack.Navigator>
   );
 }
