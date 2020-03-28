@@ -9,6 +9,7 @@ import SwipeUpComponent from './bottomSheet';
 import places from '../data/testQueryResults.json';
 import carteStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
+import { HLine } from '../../../components/Tools';
 
 function genTagDecoration(type) {
   if (type === 'school') {
@@ -81,17 +82,11 @@ function LocationModalContents({ data, hideModal }) {
               {data.name}
             </Text>
           </View>
-
-          <View style={carteStyles.horizontalLineContainer}>
-            <View style={carteStyles.horizontalLine} />
-          </View>
-
+          <HLine />
           <Text style={carteStyles.modalText} numberOfLines={3} ellipsizeMode="tail">
             {place.summary}
           </Text>
-          <View style={carteStyles.horizontalLineContainer}>
-            <View style={carteStyles.horizontalLine} />
-          </View>
+          <HLine />
           <Text
             style={carteStyles.modalText}
             numberOfLines={place.link !== undefined && place.link !== '' ? 25 : 27}

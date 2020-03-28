@@ -8,7 +8,7 @@ import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
 import CarteNavigator from './carte/index';
 
-import { styles, colors } from '../../styles/Styles';
+import { navigatorStyles, colors } from '../../styles/navigatorStyles';
 
 const createPlatformTabNavigator =
   Platform.OS === 'ios' ? createBottomTabNavigator : createMaterialBottomTabNavigator;
@@ -22,7 +22,7 @@ function TabsNavigator() {
         initialRouteName="Actus"
         activeColor={colors.primary}
         inactiveColor={colors.disabled}
-        barStyle={styles.barStyle}
+        barStyle={navigatorStyles.barStyle}
         shifting={false}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => {
@@ -67,7 +67,7 @@ function TabsNavigator() {
       tabBarOptions={{
         // This is for ios
         shifting: false,
-        style: styles.barStyle,
+        style: navigatorStyles.barStyle,
         activeTintColor: colors.primary,
         inactiveTintColor: colors.disabled,
       }}

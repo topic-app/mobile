@@ -54,7 +54,7 @@ function DrawerNavigator() {
       initialRouteName="Menu Principal"
       drawerContent={CustomDrawerContent}
       drawerStyle={navigatorStyles.drawerStyle}
-      edgeWidth={100}
+      edgeWidth={90}
     >
       <Drawer.Screen
         name="Menu Principal"

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { selectedTheme, colors } from './Theme';
+import { colors } from './Theme';
 
 const navigatorStyles = StyleSheet.create({
   profileIconContainer: {
@@ -17,6 +17,13 @@ const navigatorStyles = StyleSheet.create({
     color: colors.text,
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  headerStyle: {
+    elevation: 4,
+  },
+  barStyle: {
+    backgroundColor: colors.tabBackground,
+    elevation: 4,
   },
 });
 

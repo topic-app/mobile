@@ -3,6 +3,7 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import { IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
+import { CustomHeaderBar } from '../components/Tools';
 import SettingsHomeScreen from './pages/SettingsList';
 import SettingsGeneralScreen from './pages/SettingsGeneral';
 import SettingsBehaviorScreen from './pages/SettingsBehavior';
@@ -14,19 +15,14 @@ const Stack = createStackNavigator();
 
 function SettingsNavigator({ navigation }) {
   return (
-    <Stack.Navigator initialRouteName="SettingsList" screenOptions={customStyles.header}>
+    <Stack.Navigator initialRouteName="SettingsList">
       <Stack.Screen
         name="SettingsList"
         component={SettingsHomeScreen}
         options={{
           title: 'Paramètres',
-          headerLeft: () => (
-            <IconButton
-              onPress={() => navigation.goBack()}
-              icon="arrow-left"
-              color={colors.text}
-              size={28}
-            />
+          header: ({ scene, previous, navigation }) => (
+            <CustomHeaderBar drawer scene={scene} previous={previous} navigation={navigation} />
           ),
           ...TransitionPresets.SlideFromRightIOS,
         }}
@@ -36,13 +32,8 @@ function SettingsNavigator({ navigation }) {
         component={SettingsGeneralScreen}
         options={{
           title: 'General',
-          headerLeft: () => (
-            <IconButton
-              onPress={() => navigation.navigate('SettingsList')}
-              icon="arrow-left"
-              color={colors.text}
-              size={28}
-            />
+          header: ({ scene, previous, navigation }) => (
+            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
           ),
           ...TransitionPresets.SlideFromRightIOS,
         }}
@@ -52,13 +43,8 @@ function SettingsNavigator({ navigation }) {
         component={SettingsBehaviorScreen}
         options={{
           title: 'Behavior',
-          headerLeft: () => (
-            <IconButton
-              onPress={() => navigation.navigate('SettingsList')}
-              icon="arrow-left"
-              color={colors.text}
-              size={28}
-            />
+          header: ({ scene, previous, navigation }) => (
+            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
           ),
           ...TransitionPresets.SlideFromRightIOS,
         }}
@@ -68,13 +54,8 @@ function SettingsNavigator({ navigation }) {
         component={SettingsAppearanceScreen}
         options={{
           title: 'Appearance',
-          headerLeft: () => (
-            <IconButton
-              onPress={() => navigation.navigate('SettingsList')}
-              icon="arrow-left"
-              color={colors.text}
-              size={28}
-            />
+          header: ({ scene, previous, navigation }) => (
+            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
           ),
           ...TransitionPresets.SlideFromRightIOS,
         }}

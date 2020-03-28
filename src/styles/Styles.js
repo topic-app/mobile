@@ -7,9 +7,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  barStyle: {
-    backgroundColor: colors.tabBackground,
-  },
   container: {
     marginTop: 10,
     marginBottom: 0,
@@ -24,9 +21,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: colors.surface,
-    borderWidth: selectedTheme === 'dark' ? 0.8 : 0.0,
-    borderColor: colors.outline,
-    elevation: 0,
+    elevation: 2,
   },
   thumbnail: {
     backgroundColor: colors.image,
@@ -65,22 +60,5 @@ const styles = StyleSheet.create({
   },
 });
 
-const customStyles = {
-  header: {
-    headerStyle: {
-      backgroundColor: colors.tabBackground,
-    },
-    headerTintColor: colors.text,
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
-  },
-};
-
-export {
-  styles,
-  colors,
-  customStyles,
-  selectedTheme,
-};
+export { styles, colors, selectedTheme };
 export default styles;

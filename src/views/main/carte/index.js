@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { View } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { CustomHeaderBar } from '../../components/Tools';
 import CarteListScreen from './pages/List';
 import CarteDisplayScreen from './pages/Display';
 
@@ -12,7 +14,7 @@ const Stack = createStackNavigator();
 
 function CarteNavigator({ navigation }) {
   return (
-    <Stack.Navigator initialRouteName="CarteListe" screenOptions={customStyles.header}>
+    <Stack.Navigator initialRouteName="CarteListe">
       <Stack.Screen
         name="CarteListe"
         component={CarteListScreen}
@@ -21,12 +23,14 @@ function CarteNavigator({ navigation }) {
           headerTransparent: true,
           gestureEnabled: false,
           headerLeft: () => (
-            <IconButton
-              onPress={() => navigation.openDrawer()}
-              icon="menu"
-              color={colors.text}
-              size={28}
-            />
+            <View style={{ paddingLeft: 3 }}>
+              <IconButton
+                onPress={() => navigation.openDrawer()}
+                icon="menu"
+                color={colors.text}
+                size={25}
+              />
+            </View>
           ),
         }}
       />
@@ -35,6 +39,9 @@ function CarteNavigator({ navigation }) {
         component={CarteDisplayScreen}
         options={{
           title: 'Carte:  Display',
+          header: ({ scene, previous, navigation }) => (
+            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
+          ),
         }}
       />
     </Stack.Navigator>

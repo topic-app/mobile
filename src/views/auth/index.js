@@ -1,24 +1,37 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { StatusBar } from 'react-native';
+import { Appbar } from 'react-native-paper';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
-import AuthLoginScreen from './pages/Login';
-import AuthCreateScreen from './pages/Create';
+import AuthWelcomeScreen from './pages/Welcome';
+import AuthLoginScreen from './pages/Create';
+import AuthCreateScreen from './pages/Login';
+
+import { CustomHeaderBar } from '../components/Tools';
 
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
   return (
-    <Stack.Navigator
-      initialRouteName="Login"
-      screenOptions={{ gestureEnabled: false }}
-      headerMode="none"
-    >
+    <Stack.Navigator initialRouteName="Welcome" screenOptions={{ gestureEnabled: false }}>
+      <Stack.Screen
+        name="Welcome"
+        component={AuthWelcomeScreen}
+        options={{
+          title: 'Bienvenue',
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="Login"
         component={AuthLoginScreen}
         options={{
           title: 'Se connecter',
+          header: ({ scene, previous, navigation }) => (
+            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
+          ),
+          ...TransitionPresets.SlideFromRightIOS,
         }}
       />
       <Stack.Screen
@@ -26,6 +39,10 @@ function AuthNavigator() {
         component={AuthCreateScreen}
         options={{
           title: 'Créer un compte',
+          header: ({ scene, previous, navigation }) => (
+            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
+          ),
+          ...TransitionPresets.SlideFromRightIOS,
         }}
       />
     </Stack.Navigator>

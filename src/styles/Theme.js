@@ -3,10 +3,10 @@ import { DefaultTheme, DarkTheme } from 'react-native-paper';
 const selectedTheme = 'dark';
 
 const common = {
-  roundness: 2,
+  roundness: 7,
   colors: {
-    primary: '#4c3e8e',
-    secondary: '#9284d4',
+    primary: '#592989',
+    secondary: '#892989',
   },
 };
 
@@ -22,7 +22,7 @@ const themes = {
       outline: '#e1e1e1',
       tabBackground: '#f1f1f1',
       background: '#ffffff',
-      surface: '#f4f4f4',
+      surface: '#f5f5f5',
       image: '#dddddd',
       subtext: '#999999',
       muted: '#444444',
@@ -35,12 +35,13 @@ const themes = {
     colors: {
       ...DarkTheme.colors,
       ...common.colors,
+      text: '#f9f9f9',
       softContrast: '#434343',
       highlight: '#303030',
-      outline: '#434343',
-      tabBackground: '#080808',
-      background: '#0f0f0f',
-      surface: '#222222',
+      outline: '#343434',
+      tabBackground: '#191919',
+      background: '#080808',
+      surface: '#121212',
       image: '#444444',
       subtext: '#666666',
       muted: '#999999',

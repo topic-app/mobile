@@ -1,21 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, StatusBar } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import ActuComponentListCard from '../components/listCard';
 
-import { styles, selectedTheme } from '../../../../styles/Styles';
+import { styles } from '../../../../styles/Styles';
 
 function ActuListScreen({ navigation, articles }) {
   return (
     <View style={styles.page}>
-      <StatusBar
-        barStyle={`${selectedTheme === 'light' ? 'dark' : 'light'}-content`}
-        translucent
-        backgroundColor="transparent"
-      />
       <FlatList
         data={articles}
         refreshing={false}

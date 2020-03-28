@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Linking } from 'react-native';
+import { View, Text, Linking, StatusBar } from 'react-native';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import * as Location from 'expo-location';
@@ -121,6 +121,10 @@ class ExplorerComponentShowMap extends React.Component {
           pitchEnabled={false}
           showUserLocation
           styleURL={tileServerUrl}
+          compassViewMargins={{
+            x: 10,
+            y: StatusBar.currentHeight * 1.5 + 10,
+          }}
         >
           <MapboxGL.Camera
             ref={(c) => {

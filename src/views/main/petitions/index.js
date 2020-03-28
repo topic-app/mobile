@@ -1,30 +1,25 @@
 import React from 'react';
-import { IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { CustomHeaderBar } from '../../components/Tools';
 import PetitionListScreen from './pages/List';
 import PetitionDisplayScreen from './pages/Display';
 
-import { colors, customStyles } from '../../../styles/Styles';
+import { customStyles } from '../../../styles/Styles';
 
 const Stack = createStackNavigator();
 
 function PetitionNavigator({ navigation }) {
   return (
-    <Stack.Navigator initialRouteName="PetitionListe" screenOptions={customStyles.header}>
+    <Stack.Navigator initialRouteName="PetitionListe">
       <Stack.Screen
         name="PetitionListe"
         component={PetitionListScreen}
         options={{
           title: 'Pétitions',
-          headerLeft: () => (
-            <IconButton
-              onPress={() => navigation.openDrawer()}
-              icon="menu"
-              color={colors.text}
-              size={28}
-            />
+          header: ({ scene, previous, navigation }) => (
+            <CustomHeaderBar drawer scene={scene} previous={previous} navigation={navigation} />
           ),
         }}
       />
