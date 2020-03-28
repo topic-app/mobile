@@ -114,6 +114,14 @@ android {
             include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
+    signingConfigs {
+        release {
+            storeFile file('topic.keystore')
+            storePassword 'pourlajeunesse'
+            keyAlias 'topic'
+            keyPassword 'pourlajeunesse'
+        }
+   }
     buildTypes {
         release {
             minifyEnabled enableProguardInReleaseBuilds
