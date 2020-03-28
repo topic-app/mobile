@@ -38,7 +38,7 @@ const carteStyles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   pullUpTab: {
-    width: 40,
+    width: 70,
     height: 5,
     backgroundColor: colors.outline,
     borderRadius: 20,
@@ -46,7 +46,7 @@ const carteStyles = StyleSheet.create({
   pullUpTabContainer: {
     width: '100%',
     alignItems: 'center',
-    paddingBottom: 10,
+    paddingBottom: 15,
   },
   horizontalLine: {
     width: '100%',

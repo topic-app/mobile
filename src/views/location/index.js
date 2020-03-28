@@ -9,21 +9,19 @@ const Stack = createStackNavigator();
 
 function LocationNavigator() {
   return (
-    <Stack.Navigator
-      initialRouteName="Map"
-    >
+    <Stack.Navigator initialRouteName="Map">
       <Stack.Screen
         name="Map"
         component={LocationMapScreen}
         options={{
-          title: 'Recherche d\'établissement',
+          title: "Recherche d'établissement",
         }}
       />
       <Stack.Screen
         name="Search"
         component={LocationSearchScreen}
         options={{
-          title: 'Recherche d\'établissement',
+          title: "Recherche d'établissement",
         }}
       />
     </Stack.Navigator>

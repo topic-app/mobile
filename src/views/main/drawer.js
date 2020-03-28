@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
 import {
   createDrawerNavigator,
@@ -7,13 +8,15 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import TabsNavigator from './tabs';
 import SettingsNavigator from '../settings/index';
+
 import { navigatorStyles, colors } from '../../styles/navigatorStyles';
 
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent({ descriptors, navigation, state}) {
+function CustomDrawerContent({ descriptors, navigation, state }) {
   return (
     <DrawerContentScrollView>
       <View style={navigatorStyles.profileIconContainer}>
@@ -24,7 +27,9 @@ function CustomDrawerContent({ descriptors, navigation, state}) {
         label="Compte"
         onPress={() => console.log('Compte')}
         inactiveTintColor={colors.text}
-        icon={({ color, size }) => <MaterialIcons name="account-circle" color={color} size={size} />}
+        icon={({ color, size }) => (
+          <MaterialIcons name="account-circle" color={color} size={size} />
+        )}
       />
       <DrawerItemList
         descriptors={descriptors}
@@ -62,7 +67,7 @@ function DrawerNavigator() {
         name="Paramètres"
         component={SettingsNavigator}
         options={{
-          drawerIcon: ({color, size}) => {
+          drawerIcon: ({ color, size }) => {
             return <MaterialIcons name="settings" color={color} size={size} />;
           },
         }}
@@ -72,3 +77,14 @@ function DrawerNavigator() {
 }
 
 export default DrawerNavigator;
+
+CustomDrawerContent.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  descriptors: PropTypes.object.isRequired,
+  state: PropTypes.shape({
+    type: PropTypes.string.isRequired,
+  }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};

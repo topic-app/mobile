@@ -1,27 +1,33 @@
-// eslint-disable-next-line no-unused-vars
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import CarteListScreen from './pages/List';
 import CarteDisplayScreen from './pages/Display';
 
-import { customStyles } from '../../../styles/Styles';
+import { colors, customStyles } from '../../../styles/Styles';
 
 const Stack = createStackNavigator();
 
-function CarteNavigator() {
+function CarteNavigator({ navigation }) {
   return (
-    <Stack.Navigator
-      initialRouteName="CarteListe"
-      screenOptions={customStyles.header}
-    >
+    <Stack.Navigator initialRouteName="CarteListe" screenOptions={customStyles.header}>
       <Stack.Screen
         name="CarteListe"
         component={CarteListScreen}
         options={{
-          title: 'Carte',
-          headerShown: false,
+          title: '',
+          headerTransparent: true,
           gestureEnabled: false,
+          headerLeft: () => (
+            <IconButton
+              onPress={() => navigation.openDrawer()}
+              icon="menu"
+              color={colors.text}
+              size={28}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -36,3 +42,9 @@ function CarteNavigator() {
 }
 
 export default CarteNavigator;
+
+CarteNavigator.propTypes = {
+  navigation: PropTypes.shape({
+    openDrawer: PropTypes.func.isRequired,
+  }).isRequired,
+};

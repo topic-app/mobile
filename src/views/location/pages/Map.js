@@ -3,12 +3,7 @@ import { Button } from 'react-native';
 import PropTypes from 'prop-types';
 
 function LocationMapScreen({ navigation }) {
-  return (
-    <Button
-      title="Retour"
-      onPress={() => navigation.navigate('ActuList')}
-    />
-  );
+  return <Button title="Retour" onPress={() => navigation.navigate('ActuList')} />;
 }
 
 export default LocationMapScreen;

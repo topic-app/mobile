@@ -4,12 +4,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-native';
 
 function PetitionDisplayScreen({ navigation }) {
-  return (
-    <Button
-      title="Retour"
-      onPress={() => navigation.navigate('PetitionList')}
-    />
-  );
+  return <Button title="Retour" onPress={() => navigation.navigate('PetitionList')} />;
 }
 
 export default PetitionDisplayScreen;

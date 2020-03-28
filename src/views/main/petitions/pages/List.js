@@ -17,11 +17,11 @@ function PetitionListScreen({ navigation }) {
         refreshing={false}
         onRefresh={() => console.log('Refresh: Need to make server request')}
         keyExtractor={(petition) => petition.petitionId}
-        ListFooterComponent={(
+        ListFooterComponent={
           <View style={styles.container}>
             <Button style={styles.text}>Retour en haut</Button>
           </View>
-        )}
+        }
         renderItem={(petition) => (
           <PetitionComponentListCard
             petition={petition.item}

@@ -1,12 +1,12 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
-const selectedTheme = 'light';
+const selectedTheme = 'dark';
 
 const common = {
   roundness: 2,
   colors: {
     primary: '#4c3e8e',
-    secondary: '#9284D4',
+    secondary: '#9284d4',
   },
 };
 
@@ -26,6 +26,7 @@ const themes = {
       image: '#dddddd',
       subtext: '#999999',
       muted: '#444444',
+      valid: '#3dc33c',
     },
   },
   dark: {
@@ -43,6 +44,7 @@ const themes = {
       image: '#444444',
       subtext: '#666666',
       muted: '#999999',
+      valid: '#28a127',
     },
   },
 };

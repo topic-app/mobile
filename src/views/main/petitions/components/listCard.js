@@ -8,29 +8,28 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
 } from 'react-native';
-import {
-  Card,
-  Avatar,
-  Chip,
-  ProgressBar,
-} from 'react-native-paper';
+import { Card, Avatar, Chip, ProgressBar } from 'react-native-paper';
 
 import { styles, colors } from '../../../../styles/Styles';
 
 function genTagIcon(type) {
   if (type === 'tag') {
     return 'tag';
-  } if (type === 'author') {
+  }
+  if (type === 'author') {
     return 'account';
-  } if (type === 'group') {
+  }
+  if (type === 'group') {
     return 'newspaper';
-  } if (type === 'location') {
+  }
+  if (type === 'location') {
     return 'map-marker';
   }
   return '';
 }
 
-function genTagData(petition) { // TODO: Messy code
+function genTagData(petition) {
+  // TODO: Messy code
   const data = [];
   if (petition.publisher.type === 'group') {
     data.push({
@@ -49,12 +48,14 @@ function genTagData(petition) { // TODO: Messy code
     });
   }
 
-  data.concat(petition.tags.map((tag) => ({
-    type: 'tag',
-    text: tag.name,
-    color: tag.color,
-    id: tag.tagId,
-  })));
+  data.concat(
+    petition.tags.map((tag) => ({
+      type: 'tag',
+      text: tag.name,
+      color: tag.color,
+      id: tag.tagId,
+    })),
+  );
 
   if (petition.location.global) {
     data.push({
@@ -65,19 +66,23 @@ function genTagData(petition) { // TODO: Messy code
     });
   }
 
-  data.concat(petition.location.schools.map((school) => ({
-    type: 'school',
-    icon: 'map-marker',
-    text: school.displayName,
-    id: school.schoolId,
-  })));
+  data.concat(
+    petition.location.schools.map((school) => ({
+      type: 'school',
+      icon: 'map-marker',
+      text: school.displayName,
+      id: school.schoolId,
+    })),
+  );
 
-  data.concat(petition.location.departments.map((department) => ({
-    type: 'department',
-    icon: 'map-marker',
-    text: department.displayName,
-    id: department.departmentId,
-  })));
+  data.concat(
+    petition.location.departments.map((department) => ({
+      type: 'department',
+      icon: 'map-marker',
+      text: department.displayName,
+      id: department.departmentId,
+    })),
+  );
 
   return data;
 }
@@ -85,21 +90,20 @@ function genTagData(petition) { // TODO: Messy code
 function PetitionComponentListCard({ navigate, petition }) {
   const data = genTagData(petition);
 
-  console.log(petition);
+  // console.log(petition);
 
-  const Touchable = Platform.OS === 'ios'
-    ? TouchableOpacity
-    : TouchableNativeFeedback;
+  const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
   return (
     <View style={styles.container}>
-      <Card
-        style={styles.card}
-      >
+      <Card style={styles.card}>
         <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
           <View style={{ marginTop: 10, marginHorizontal: 15 }}>
             <Text style={styles.text}>SALUT </Text>
-            <ProgressBar progress={petition.nombreDeSignature / petition.objectif} color="#4c3e8e" />
+            <ProgressBar
+              progress={petition.nombreDeSignature / petition.objectif}
+              color="#4c3e8e"
+            />
           </View>
           <View style={{ marginTop: 10 }}>
             <FlatList
@@ -108,18 +112,24 @@ function PetitionComponentListCard({ navigate, petition }) {
               data={data} // TODO: Use location, group author instead of tags
               keyExtractor={(tag) => tag.type + tag.id}
               renderItem={({ item: tag, index: tagIndex }) => (
-                <View style={{
-                  marginLeft: tagIndex === 0 ? 15 : 5,
-                  marginRight: tagIndex === data.length - 1 ? 15 : 5,
-                }}
+                <View
+                  style={{
+                    marginLeft: tagIndex === 0 ? 15 : 5,
+                    marginRight: tagIndex === data.length - 1 ? 15 : 5,
+                  }}
                 >
                   <Chip
                     mode="outlined"
                     icon={tag.avatar ? '' : tag.icon}
-                    avatar={tag.avatar ? (<Avatar.Image size={24} source={{ uri: tag.avatar }} />) : ''}
-                    style={[styles.tag, {
-                      borderColor: tag.color || colors.disabled,
-                    }]}
+                    avatar={
+                      tag.avatar ? <Avatar.Image size={24} source={{ uri: tag.avatar }} /> : ''
+                    }
+                    style={[
+                      styles.tag,
+                      {
+                        borderColor: tag.color || colors.disabled,
+                      },
+                    ]}
                     textStyle={styles.text}
                   >
                     {tag.text}
@@ -142,8 +152,8 @@ PetitionComponentListCard.propTypes = {
     date: PropTypes.string.isRequired,
     duration: PropTypes.string.isRequired,
     description: PropTypes.string,
-    objectif: PropTypes.number,
-    nombreDeSignature: PropTypes.number,
+    objectif: PropTypes.string,
+    nombreDeSignature: PropTypes.string,
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };

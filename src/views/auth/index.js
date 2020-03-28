@@ -12,6 +12,7 @@ function AuthNavigator() {
     <Stack.Navigator
       initialRouteName="Login"
       screenOptions={{ gestureEnabled: false }}
+      headerMode="none"
     >
       <Stack.Screen
         name="Login"
