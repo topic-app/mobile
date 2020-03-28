@@ -18,12 +18,16 @@ const navigatorStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  headerStyle: {
-    elevation: 4,
-  },
   barStyle: {
     backgroundColor: colors.tabBackground,
+    shadowColor: '#000',
     elevation: 4,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
   },
 });
 

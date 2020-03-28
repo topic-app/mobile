@@ -3,8 +3,6 @@ import { View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-import { TranslucentStatusBar } from '../../components/Tools';
-
 import { styles, colors } from '../../../styles/Styles';
 import { theme } from '../../../styles/Theme';
 import { authStyles } from '../styles/Styles';

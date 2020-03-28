@@ -8,7 +8,7 @@ import { CustomHeaderBar } from '../../components/Tools';
 import CarteListScreen from './pages/List';
 import CarteDisplayScreen from './pages/Display';
 
-import { colors, customStyles } from '../../../styles/Styles';
+import { colors } from '../../../styles/Styles';
 
 const Stack = createStackNavigator();
 
@@ -23,12 +23,12 @@ function CarteNavigator({ navigation }) {
           headerTransparent: true,
           gestureEnabled: false,
           headerLeft: () => (
-            <View style={{ paddingLeft: 3 }}>
+            <View style={{ paddingLeft: 4, paddingTop: 1.5 }}>
               <IconButton
                 onPress={() => navigation.openDrawer()}
                 icon="menu"
                 color={colors.text}
-                size={25}
+                size={24}
               />
             </View>
           ),

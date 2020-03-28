@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { selectedTheme, colors } from '../../../../styles/Styles';
+import { isDark, colors } from '../../../../styles/Styles';
 
 const carteStyles = StyleSheet.create({
   modal: {
@@ -9,9 +9,15 @@ const carteStyles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
     borderColor: colors.softContrast,
     backgroundColor: colors.background,
     paddingVertical: 10,
@@ -72,7 +78,7 @@ const carteStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     position: 'absolute',
-    backgroundColor: selectedTheme === 'dark' ? '#44444466' : '#ffffff66',
+    backgroundColor: isDark ? '#44444466' : '#ffffff66',
     bottom: 0,
     right: 0,
   },

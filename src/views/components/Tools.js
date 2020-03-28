@@ -1,30 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StatusBar, View } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { Appbar, Surface } from 'react-native-paper';
 
-import { selectedTheme, colors } from '../../styles/Styles';
-import { navigatorStyles } from '../../styles/navigatorStyles';
+import { theme, colors } from '../../styles/Theme';
 
-function TranslucentStatusBar({ contentThemeName, backgroundColor }) {
+function TranslucentStatusBar({ contentThemeName }) {
+  let translucent = false;
+  if (theme.statusBarTranslucent) {
+    translucent = true;
+  }
   return (
     <StatusBar
-      translucent
-      backgroundColor={backgroundColor}
+      translucent={translucent}
+      backgroundColor={colors.statusBar}
       barStyle={`${contentThemeName}-content`}
     />
   );
 }
-
-TranslucentStatusBar.propTypes = {
-  contentThemeName: PropTypes.string,
-  backgroundColor: PropTypes.string,
-};
-
-TranslucentStatusBar.defaultProps = {
-  contentThemeName: selectedTheme === 'light' ? 'dark' : 'light',
-  backgroundColor: 'transparent',
-};
 
 function CustomHeaderBar({ scene, previous, navigation, drawer }) {
   const { options } = scene.descriptor;
@@ -42,22 +35,39 @@ function CustomHeaderBar({ scene, previous, navigation, drawer }) {
     subtitle = options.subtitle;
   }
 
-  let { headerStyle } = navigatorStyles;
-  if (options.headerStyle !== undefined) {
-    headerStyle = options.headerStyle;
-  }
+  const elevation = theme.headerElevation;
+  const surfaceStyle = elevation !== undefined ? { elevation } : undefined;
 
   return (
-    <View>
-      <TranslucentStatusBar backgroundColor="rgba(0,0,0,0.3)" />
-      <Appbar.Header style={headerStyle} statusBarHeight={StatusBar.currentHeight}>
+    <Surface style={surfaceStyle}>
+      <TranslucentStatusBar />
+      <Appbar.Header
+        style={{ backgroundColor: colors.appBar, elevation: 0 }}
+        statusBarHeight={StatusBar.currentHeight}
+      >
         {drawer ? <Appbar.Action icon="menu" onPress={navigation.openDrawer} /> : undefined}
         {!drawer && previous ? <Appbar.BackAction onPress={navigation.goBack} /> : undefined}
         <Appbar.Content title={title} subtitle={subtitle} />
       </Appbar.Header>
+    </Surface>
+  );
+}
+
+function HLine({ width, height, color, paddingVertical, borderRadius }) {
+  return (
+    <View style={{ width: '100%', alignItems: 'center', paddingVertical }}>
+      <View style={{ width, height, borderRadius, backgroundColor: color }} />
     </View>
   );
 }
+
+TranslucentStatusBar.propTypes = {
+  contentThemeName: PropTypes.string,
+};
+
+TranslucentStatusBar.defaultProps = {
+  contentThemeName: theme.dark === true ? 'light' : 'dark',
+};
 
 CustomHeaderBar.propTypes = {
   scene: PropTypes.shape({
@@ -90,14 +100,6 @@ CustomHeaderBar.defaultProps = {
   previous: undefined,
   drawer: false,
 };
-
-function HLine({ width, height, color, paddingVertical, borderRadius }) {
-  return (
-    <View style={{ width: '100%', alignItems: 'center', paddingVertical }}>
-      <View style={{ width, height, borderRadius, backgroundColor: color }} />
-    </View>
-  );
-}
 
 HLine.defaultProps = {
   width: '100%',

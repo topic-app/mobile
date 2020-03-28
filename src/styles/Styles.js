@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { selectedTheme, colors } from './Theme';
+import { isDark, colors } from './Theme';
 
 const styles = StyleSheet.create({
   page: {
@@ -21,7 +21,14 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: colors.surface,
-    elevation: 2,
+    elevation: 2, // Note: Android only looks at elevation for shadows
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
   },
   thumbnail: {
     backgroundColor: colors.image,
@@ -60,5 +67,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export { styles, colors, selectedTheme };
+export { styles, colors, isDark };
 export default styles;

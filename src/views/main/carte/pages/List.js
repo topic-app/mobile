@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import places from '../data/testExplorerLocations.json';
 import ExplorerComponentShowMap from '../components/mapMarkers';
 
-import { selectedTheme } from '../../../../styles/Styles';
+import { isDark } from '../../../../styles/Styles';
 
 const tileServerUrl = 'https://maps.topicapp.fr';
 
@@ -22,7 +22,7 @@ function CarteListScreen({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <ExplorerComponentShowMap
-        tileServerUrl={`${tileServerUrl}/styles/${selectedTheme}/style.json`}
+        tileServerUrl={`${tileServerUrl}/styles/${isDark ? 'dark' : 'light'}/style.json`}
         places={places}
         map={map}
         navigate={(id) => navigation.navigate('CarteArticle', id)}

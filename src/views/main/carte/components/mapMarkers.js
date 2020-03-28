@@ -187,7 +187,7 @@ class ExplorerComponentShowMap extends React.Component {
           hasBackdrop={false}
           onBackButtonPress={this.hideModal}
           coverScreen={false}
-          animationOutTiming={1} // We want it to dissapear instantly
+          animationOutTiming={200} // We want it to dissapear fast
           style={carteStyles.modal}
         >
           <LocationModalContents data={data} hideModal={this.hideModal} />

@@ -1,27 +1,50 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
-const selectedTheme = 'dark';
+const selectedTheme = 'light';
 
 const common = {
   roundness: 7,
+  headerElevation: 4,
+  statusBarTranslucent: true,
   colors: {
     primary: '#592989',
     secondary: '#892989',
+    statusBar: 'transparent',
   },
 };
 
 const themes = {
+  purple: {
+    ...DefaultTheme,
+    ...common,
+    colors: {
+      ...DefaultTheme.colors,
+      ...common.colors,
+      appBar: common.colors.primary,
+      background: '#ffffff',
+      softContrast: '#999999',
+      highlight: '#fdfdfd',
+      outline: '#e1e1e1',
+      tabBackground: '#f1f1f1',
+      surface: '#f5f5f5',
+      image: '#dddddd',
+      subtext: '#999999',
+      muted: '#444444',
+      valid: '#3dc33c',
+    },
+  },
   light: {
     ...DefaultTheme,
     ...common,
     colors: {
       ...DefaultTheme.colors,
       ...common.colors,
+      appBar: '#f1f1f1',
+      tabBackground: '#f1f1f1',
+      background: '#ffffff',
       softContrast: '#999999',
       highlight: '#fdfdfd',
       outline: '#e1e1e1',
-      tabBackground: '#f1f1f1',
-      background: '#ffffff',
       surface: '#f5f5f5',
       image: '#dddddd',
       subtext: '#999999',
@@ -35,11 +58,12 @@ const themes = {
     colors: {
       ...DarkTheme.colors,
       ...common.colors,
+      appBar: '#191919',
+      tabBackground: '#191919',
       text: '#f9f9f9',
       softContrast: '#434343',
       highlight: '#303030',
       outline: '#343434',
-      tabBackground: '#191919',
       background: '#080808',
       surface: '#121212',
       image: '#444444',
@@ -52,6 +76,7 @@ const themes = {
 
 const theme = themes[selectedTheme];
 const { colors } = theme;
+const isDark = theme.dark === true;
 
-export { theme, colors, selectedTheme };
+export { theme, colors, isDark };
 export default theme;
