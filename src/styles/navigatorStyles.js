@@ -18,6 +18,13 @@ const navigatorStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  header: {
+    backgroundColor: colors.appBar,
+    elevation: 0,
+  },
+  headerSurface: {
+    elevation: 4,
+  },
   barStyle: {
     backgroundColor: colors.tabBackground,
     shadowColor: '#000',

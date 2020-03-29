@@ -4,13 +4,11 @@ import { View, Text } from 'react-native';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
-  DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import TabsNavigator from './tabs';
-import SettingsNavigator from '../settings/index';
 
 import { navigatorStyles, colors } from '../../styles/navigatorStyles';
 
@@ -31,12 +29,14 @@ function CustomDrawerContent({ descriptors, navigation, state }) {
           <MaterialIcons name="account-circle" color={color} size={size} />
         )}
       />
-      <DrawerItemList
-        descriptors={descriptors}
-        state={state}
-        navigation={navigation}
-        activeTintColor={colors.primary}
+      <DrawerItem
+        label="Paramètres"
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('Settings', { screen: 'SettingsList' });
+        }}
         inactiveTintColor={colors.text}
+        icon={({ color, size }) => <MaterialIcons name="settings" color={color} size={size} />}
       />
       <DrawerItem
         label="Se Déconnecter"
@@ -51,25 +51,16 @@ function CustomDrawerContent({ descriptors, navigation, state }) {
 function DrawerNavigator() {
   return (
     <Drawer.Navigator
-      initialRouteName="Menu Principal"
+      initialRouteName="Home"
       drawerContent={CustomDrawerContent}
       drawerStyle={navigatorStyles.drawerStyle}
       edgeWidth={90}
     >
       <Drawer.Screen
-        name="Menu Principal"
+        name="Home"
         component={TabsNavigator}
         options={{
           drawerIcon: ({ color, size }) => <MaterialIcons name="home" color={color} size={size} />,
-        }}
-      />
-      <Drawer.Screen
-        name="Paramètres"
-        component={SettingsNavigator}
-        options={{
-          drawerIcon: ({ color, size }) => {
-            return <MaterialIcons name="settings" color={color} size={size} />;
-          },
         }}
       />
     </Drawer.Navigator>
@@ -86,5 +77,6 @@ CustomDrawerContent.propTypes = {
   }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    closeDrawer: PropTypes.func,
   }).isRequired,
 };

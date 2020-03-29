@@ -18,7 +18,8 @@ const carteStyles = StyleSheet.create({
     shadowRadius: 4.65,
 
     elevation: 7,
-    borderColor: colors.softContrast,
+    borderColor: colors.outline,
+    borderWidth: isDark ? 0.5 : 0,
     backgroundColor: colors.background,
     paddingVertical: 10,
     paddingHorizontal: 15,

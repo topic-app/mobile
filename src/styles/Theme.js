@@ -4,12 +4,11 @@ const selectedTheme = 'light';
 
 const common = {
   roundness: 7,
-  headerElevation: 4,
   statusBarTranslucent: true,
   colors: {
+    statusBar: 'transparent',
     primary: '#592989',
     secondary: '#892989',
-    statusBar: 'transparent',
   },
 };
 
@@ -58,14 +57,13 @@ const themes = {
     colors: {
       ...DarkTheme.colors,
       ...common.colors,
-      appBar: '#191919',
-      tabBackground: '#191919',
-      text: '#f9f9f9',
+      appBar: '#242529',
+      tabBackground: '#242529',
       softContrast: '#434343',
       highlight: '#303030',
       outline: '#343434',
-      background: '#080808',
-      surface: '#121212',
+      background: '#151618',
+      surface: '#202125',
       image: '#444444',
       subtext: '#666666',
       muted: '#999999',

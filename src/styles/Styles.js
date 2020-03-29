@@ -21,14 +21,17 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: colors.surface,
-    elevation: 2, // Note: Android only looks at elevation for shadows
+    borderColor: colors.outline,
+    borderWidth: isDark ? 0.5 : 0,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+
+    elevation: 1,
   },
   thumbnail: {
     backgroundColor: colors.image,
