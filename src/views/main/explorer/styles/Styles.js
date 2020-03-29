@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { isDark, colors } from '../../../../styles/Styles';
 
-const carteStyles = StyleSheet.create({
+const explorerStyles = StyleSheet.create({
   modal: {
     margin: 0,
   },
@@ -85,4 +85,4 @@ const carteStyles = StyleSheet.create({
   },
 });
 
-export default carteStyles;
+export default explorerStyles;

@@ -10,7 +10,7 @@ import LocationModalContents from './locationModal';
 import { getImageName, markerImages } from '../utils/getAssetColor';
 
 import { styles } from '../../../../styles/Styles';
-import carteStyles from '../styles/Styles';
+import explorerStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 
@@ -161,22 +161,22 @@ class ExplorerComponentShowMap extends React.Component {
           </MapboxGL.ShapeSource>
           <MapboxGL.UserLocation visible animated />
         </MapboxGL.MapView>
-        <View style={carteStyles.attributionContainer}>
-          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}> © </Text>
+        <View style={explorerStyles.attributionContainer}>
+          <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
           <Text
             onPress={() => Linking.openURL('https://openmaptiles.org/')}
-            style={[styles.link, carteStyles.attribution]}
+            style={[styles.link, explorerStyles.attribution]}
           >
             OpenMapTiles
           </Text>
-          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}> © </Text>
+          <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
           <Text
             onPress={() => Linking.openURL('https://www.openstreetmap.org/copyright')}
-            style={[styles.link, carteStyles.attribution]}
+            style={[styles.link, explorerStyles.attribution]}
           >
             OpenStreetMap
           </Text>
-          <Text style={[carteStyles.attribution, carteStyles.atributionMutedColor]}>
+          <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}>
             {' '}
             contributors{' '}
           </Text>
@@ -188,7 +188,7 @@ class ExplorerComponentShowMap extends React.Component {
           onBackButtonPress={this.hideModal}
           coverScreen={false}
           animationOutTiming={200} // We want it to dissapear fast
-          style={carteStyles.modal}
+          style={explorerStyles.modal}
         >
           <LocationModalContents data={data} hideModal={this.hideModal} />
         </Modal>

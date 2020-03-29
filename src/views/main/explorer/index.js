@@ -5,19 +5,19 @@ import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { CustomHeaderBar } from '../../components/Tools';
-import CarteListScreen from './pages/List';
-import CarteDisplayScreen from './pages/Display';
+import ExplorerListScreen from './pages/List';
+import ExplorerDisplayScreen from './pages/Display';
 
 import { colors } from '../../../styles/Styles';
 
 const Stack = createStackNavigator();
 
-function CarteNavigator({ navigation }) {
+function ExplorerNavigator({ navigation }) {
   return (
-    <Stack.Navigator initialRouteName="CarteListe">
+    <Stack.Navigator initialRouteName="ExplorerListe">
       <Stack.Screen
-        name="CarteListe"
-        component={CarteListScreen}
+        name="ExplorerListe"
+        component={ExplorerListScreen}
         options={{
           title: '',
           headerTransparent: true,
@@ -35,10 +35,10 @@ function CarteNavigator({ navigation }) {
         }}
       />
       <Stack.Screen
-        name="CarteArticle"
-        component={CarteDisplayScreen}
+        name="ExplorerArticle"
+        component={ExplorerDisplayScreen}
         options={{
-          title: 'Carte:  Display',
+          title: 'Explorer:  Display',
           header: ({ scene, previous, navigation }) => (
             <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
           ),
@@ -48,9 +48,9 @@ function CarteNavigator({ navigation }) {
   );
 }
 
-export default CarteNavigator;
+export default ExplorerNavigator;
 
-CarteNavigator.propTypes = {
+ExplorerNavigator.propTypes = {
   navigation: PropTypes.shape({
     openDrawer: PropTypes.func.isRequired,
   }).isRequired,

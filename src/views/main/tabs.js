@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
 import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
-import CarteNavigator from './carte/index';
+import ExplorerNavigator from './explorer/index';
 
 import { navigatorStyles, colors } from '../../styles/navigatorStyles';
 
@@ -32,7 +32,7 @@ function TabsNavigator() {
               iconName = 'newspaper';
             } else if (route.name === 'Petitions') {
               iconName = 'comment-check-outline';
-            } else if (route.name === 'Carte') {
+            } else if (route.name === 'Explorer') {
               iconName = 'map-outline';
             }
 
@@ -42,7 +42,7 @@ function TabsNavigator() {
       >
         <Tab.Screen name="Actus" component={ActuNavigator} />
         <Tab.Screen name="Petitions" component={PetitionNavigator} />
-        <Tab.Screen name="Carte" component={CarteNavigator} />
+        <Tab.Screen name="Explorer" component={ExplorerNavigator} />
       </Tab.Navigator>
     );
   }
@@ -57,7 +57,7 @@ function TabsNavigator() {
             iconName = 'newspaper';
           } else if (route.name === 'Petitions') {
             iconName = 'comment-check-outline';
-          } else if (route.name === 'Carte') {
+          } else if (route.name === 'Explorer') {
             iconName = 'map-outline';
           }
 
@@ -74,7 +74,7 @@ function TabsNavigator() {
     >
       <Tab.Screen name="Actus" component={ActuNavigator} />
       <Tab.Screen name="Petitions" component={PetitionNavigator} />
-      <Tab.Screen name="Carte" component={CarteNavigator} />
+      <Tab.Screen name="Explorer" component={ExplorerNavigator} />
     </Tab.Navigator>
   );
 }
