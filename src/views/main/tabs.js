@@ -6,7 +6,6 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
 import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
-import CarteNavigator from './carte/index';
 import EvenementNavigator from './evenement/index';
 import ExplorerNavigator from './explorer/index';
 
@@ -46,7 +45,6 @@ function TabsNavigator() {
       >
         <Tab.Screen name="Actus" component={ActuNavigator} />
         <Tab.Screen name="Petitions" component={PetitionNavigator} />
-        <Tab.Screen name="Carte" component={CarteNavigator} />
         <Tab.Screen name="Evenement" component={EvenementNavigator} />
         <Tab.Screen name="Explorer" component={ExplorerNavigator} />
       </Tab.Navigator>
