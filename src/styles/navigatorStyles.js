@@ -6,7 +6,7 @@ const navigatorStyles = StyleSheet.create({
   profileIconContainer: {
     flex: 1,
     flexDirection: 'row',
-    padding: 3,
+    padding: 3, 
     alignItems: 'center',
   },
   drawerStyle: {
