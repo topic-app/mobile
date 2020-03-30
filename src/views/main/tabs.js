@@ -6,10 +6,8 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
 import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
-import CarteNavigator from './carte/index';
-import EvenementNavigator from './evenement/index';
 import ExplorerNavigator from './explorer/index';
-
+import EvenementNavigator from './evenement/index';
 import { navigatorStyles, colors } from '../../styles/navigatorStyles';
 
 const createPlatformTabNavigator =
@@ -46,9 +44,8 @@ function TabsNavigator() {
       >
         <Tab.Screen name="Actus" component={ActuNavigator} />
         <Tab.Screen name="Petitions" component={PetitionNavigator} />
-        <Tab.Screen name="Carte" component={CarteNavigator} />
-        <Tab.Screen name="Evenement" component={EvenementNavigator} />
         <Tab.Screen name="Explorer" component={ExplorerNavigator} />
+        <Tab.Screen name="Evenement" component={EvenementNavigator} />
       </Tab.Navigator>
     );
   }
@@ -81,9 +78,8 @@ function TabsNavigator() {
     >
       <Tab.Screen name="Actus" component={ActuNavigator} />
       <Tab.Screen name="Petitions" component={PetitionNavigator} />
-      <Tab.Screen name="Carte" component={CarteNavigator} />
-      <Tab.Screen name="Evenement" component={EvenementNavigator} />
       <Tab.Screen name="Explorer" component={ExplorerNavigator} />
+      <Tab.Screen name="Evenement" component={EvenementNavigator} />
     </Tab.Navigator>
   );
 }
