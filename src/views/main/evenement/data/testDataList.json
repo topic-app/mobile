@@ -1,0 +1,164 @@
+[
+  {
+    "evenementId": "1",
+    "title": "Fête de la Science",
+    "duration": {
+      "start": "10/05/2020",
+      "end": "10/13/2020"
+    },
+    "location": "48°17'55.9-N 6°56'50.2E",
+    "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
+    "author": {
+      "userId": "53",
+      "displayName": "Jean Dupond"
+    },
+    "group": {
+      "groupId": "145",
+      "displayName": "Sollaris"
+    },
+    "members": [{ "membersid": "7" }, { "membersid": "12" }],
+    "imageUrl": "https://picsum.photos/600",
+    "sumary": "Grande Fête de la Science ouvert à toute et tous",
+    "description": "La Fête de la Science 2020 se déroule du 5 au 13 octobre en métropole, et du 9 au 17 novembre en outre-mer et à l'international.",
+    "tags": [
+      {
+        "name": "Tag 1",
+        "color": "red",
+        "tagId": "item1"
+      },
+      {
+        "name": "Tag 2",
+        "color": "brown",
+        "tagId": "item4"
+      }
+    ],
+    "program": [
+      {
+        "time": "de 8h00 à 12h00",
+        "subject": "decouverte des techniques Anciennes"
+      },
+      {
+        "time": "de 14h00 à 17h30",
+        "subject": "decouverte des techniques Modernes"
+      }
+    ],
+    "contact": {
+      "user": {
+        "userId": "53",
+        "displayName": "Jean Dupond"
+      },
+      "email": "jean.dupond@ac-region.fr",
+      "phone": "0601020304",
+      "other": "twitter : @lpoGB"
+    },
+    "cache": { "followers": 178 }
+  },
+  {
+    "evenementId": "1",
+    "title": "journé des evenements",
+    "duration": {
+      "start": "05/04/2020",
+      "end": "06/04/2020"
+    },
+    "location": "48°17'55.9-N 6°56'50.2E",
+    "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
+    "author": {
+      "userId": "53",
+      "displayName": "Jean Dupond"
+    },
+    "group": {
+      "groupId": "145",
+      "displayName": "Sollaris"
+    },
+    "members": [{ "membersid": "7" }, { "membersid": "12" }],
+    "imageUrl": "https://picsum.photos/700",
+    "sumary": "Grande Fête de la Science ouvert à toute et tous",
+    "description": "En littérature, la description constitue une pause dans le récit, où elle peut former un ensemble autonome, bien que le plus souvent elle prenne place dans la narration.",
+    "tags": [
+      {
+        "name": "Tag 1",
+        "color": "red",
+        "tagId": "item1"
+      },
+      {
+        "name": "Tag 2",
+        "color": "brown",
+        "tagId": "item4"
+      }
+    ],
+    "program": [
+      {
+        "time": "de 8h00 à 12h00",
+        "subject": "decouverte des techniques Anciennes"
+      },
+      {
+        "time": "de 14h00 à 17h30",
+        "subject": "decouverte des techniques Modernes"
+      }
+    ],
+    "contact": {
+      "user": {
+        "userId": "53",
+        "displayName": "Jean Dupond"
+      },
+      "email": "jean.dupond@ac-region.fr",
+      "phone": "0601020304",
+      "other": "twitter : @lpoGB"
+    },
+    "cache": { "followers": 178 }
+  },
+  {
+    "evenementId": "1",
+    "title": "Fête de la Science",
+    "duration": {
+      "start": "05/04/2020",
+      "end": "06/04/2020"
+    },
+    "location": "48°17'55.9-N 6°56'50.2E",
+    "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
+    "author": {
+      "userId": "53",
+      "displayName": "Jean Dupond"
+    },
+    "group": {
+      "groupId": "145",
+      "displayName": "Sollaris"
+    },
+    "members": [{ "membersid": "7" }, { "membersid": "12" }],
+    "imageUrl": "https://picsum.photos/800",
+    "sumary": "Grande Fête de la Science ouvert à toute et tous",
+    "description": "cette année toute les classe de premierre et de terminal des classes technologique et general du lpo GB ont decider de vous faire decouvrir les sciences",
+    "tags": [
+      {
+        "name": "Tag 1",
+        "color": "red",
+        "tagId": "item1"
+      },
+      {
+        "name": "Tag 2",
+        "color": "brown",
+        "tagId": "item4"
+      }
+    ],
+    "program": [
+      {
+        "time": "de 8h00 à 12h00",
+        "subject": "decouverte des techniques Anciennes"
+      },
+      {
+        "time": "de 14h00 à 17h30",
+        "subject": "decouverte des techniques Modernes"
+      }
+    ],
+    "contact": {
+      "user": {
+        "userId": "53",
+        "displayName": "Jean Dupond"
+      },
+      "email": "jean.dupond@ac-region.fr",
+      "phone": "0601020304",
+      "other": "twitter : @lpoGB"
+    },
+    "cache": { "followers": 178 }
+  }
+]
