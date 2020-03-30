@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { selectedTheme, colors } from './Theme';
+import { isDark, colors } from './Theme';
 
 const styles = StyleSheet.create({
   page: {
@@ -21,7 +21,17 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: colors.surface,
-    elevation: 2,
+    borderColor: colors.outline,
+    borderWidth: isDark ? 0.5 : 0,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+
+    elevation: 1,
   },
   thumbnail: {
     backgroundColor: colors.image,
@@ -60,5 +70,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export { styles, colors, selectedTheme };
+export { styles, colors, isDark };
 export default styles;

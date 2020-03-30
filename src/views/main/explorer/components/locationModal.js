@@ -7,7 +7,7 @@ import { Button } from 'react-native-paper';
 
 import SwipeUpComponent from './bottomSheet';
 import places from '../data/testQueryResults.json';
-import carteStyles from '../styles/Styles';
+import explorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
 import { HLine } from '../../../components/Tools';
 
@@ -66,15 +66,15 @@ function LocationModalContents({ data, hideModal }) {
   return (
     <View style={{ flex: 1 }}>
       <SwipeUpComponent hideModal={hideModal}>
-        <View style={carteStyles.modalContainer}>
-          <View style={carteStyles.pullUpTabContainer}>
-            <View style={carteStyles.pullUpTab} />
+        <View style={explorerStyles.modalContainer}>
+          <View style={explorerStyles.pullUpTabContainer}>
+            <View style={explorerStyles.pullUpTab} />
           </View>
 
-          <View style={carteStyles.modalTitleContainer}>
-            <Icon name={icon} style={[{ color }, carteStyles.modalIcon]} />
+          <View style={explorerStyles.modalTitleContainer}>
+            <Icon name={icon} style={[{ color }, explorerStyles.modalIcon]} />
             <Text
-              style={[{ color }, carteStyles.modalTitle]}
+              style={[{ color }, explorerStyles.modalTitle]}
               ellipsizeMode="tail"
               adjustsFontSizeToFit
               numberOfLines={1}
@@ -83,12 +83,12 @@ function LocationModalContents({ data, hideModal }) {
             </Text>
           </View>
           <HLine />
-          <Text style={carteStyles.modalText} numberOfLines={3} ellipsizeMode="tail">
+          <Text style={explorerStyles.modalText} numberOfLines={3} ellipsizeMode="tail">
             {place.summary}
           </Text>
           <HLine />
           <Text
-            style={carteStyles.modalText}
+            style={explorerStyles.modalText}
             numberOfLines={place.link !== undefined && place.link !== '' ? 25 : 27}
             ellipsizeMode="tail"
           >

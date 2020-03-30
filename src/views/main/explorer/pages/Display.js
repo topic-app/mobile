@@ -5,7 +5,7 @@ import { View, Text } from 'react-native';
 
 import places from '../data/testQueryResults.json';
 
-function CarteDisplayScreen({ navigation, route }) {
+function ExplorerDisplayScreen({ navigation, route }) {
   const { id } = route.params;
   const place = places[id];
 
@@ -19,9 +19,9 @@ function CarteDisplayScreen({ navigation, route }) {
   );
 }
 
-export default CarteDisplayScreen;
+export default ExplorerDisplayScreen;
 
-CarteDisplayScreen.propTypes = {
+ExplorerDisplayScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

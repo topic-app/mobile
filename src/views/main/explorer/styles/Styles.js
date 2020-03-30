@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { selectedTheme, colors } from '../../../../styles/Styles';
+import { isDark, colors } from '../../../../styles/Styles';
 
-const carteStyles = StyleSheet.create({
+const explorerStyles = StyleSheet.create({
   modal: {
     margin: 0,
   },
@@ -9,10 +9,17 @@ const carteStyles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: colors.softContrast,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
+    borderColor: colors.outline,
+    borderWidth: isDark ? 0.5 : 0,
     backgroundColor: colors.background,
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -72,10 +79,10 @@ const carteStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     position: 'absolute',
-    backgroundColor: selectedTheme === 'dark' ? '#44444466' : '#ffffff66',
+    backgroundColor: isDark ? '#44444466' : '#ffffff66',
     bottom: 0,
     right: 0,
   },
 });
 
-export default carteStyles;
+export default explorerStyles;

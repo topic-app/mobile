@@ -7,7 +7,8 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
 import CarteNavigator from './carte/index';
-import EvenementNavigator from './evenement/index'; //modif
+import EvenementNavigator from './evenement/index';
+import ExplorerNavigator from './explorer/index';
 
 import { navigatorStyles, colors } from '../../styles/navigatorStyles';
 
@@ -33,10 +34,9 @@ function TabsNavigator() {
               iconName = 'newspaper';
             } else if (route.name === 'Petitions') {
               iconName = 'comment-check-outline';
-            } else if (route.name === 'Carte') {
+            } else if (route.name === 'Explorer') {
               iconName = 'map-outline';
             } else if (route.name === 'Evenement') {
-              //modif
               iconName = 'calendar';
             }
 
@@ -48,6 +48,7 @@ function TabsNavigator() {
         <Tab.Screen name="Petitions" component={PetitionNavigator} />
         <Tab.Screen name="Carte" component={CarteNavigator} />
         <Tab.Screen name="Evenement" component={EvenementNavigator} />
+        <Tab.Screen name="Explorer" component={ExplorerNavigator} />
       </Tab.Navigator>
     );
   }
@@ -58,11 +59,10 @@ function TabsNavigator() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
           if (route.name === 'Actus') {
-            // Note: We could render a different map icon when the map is selected
             iconName = 'newspaper';
           } else if (route.name === 'Petitions') {
             iconName = 'comment-check-outline';
-          } else if (route.name === 'Carte') {
+          } else if (route.name === 'Explorer') {
             iconName = 'map-outline';
           } else if (route.name === 'Evenement') {
             iconName = 'calendar';
@@ -83,6 +83,7 @@ function TabsNavigator() {
       <Tab.Screen name="Petitions" component={PetitionNavigator} />
       <Tab.Screen name="Carte" component={CarteNavigator} />
       <Tab.Screen name="Evenement" component={EvenementNavigator} />
+      <Tab.Screen name="Explorer" component={ExplorerNavigator} />
     </Tab.Navigator>
   );
 }

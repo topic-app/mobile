@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-import { IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 import { CustomHeaderBar } from '../components/Tools';
@@ -8,8 +7,6 @@ import SettingsHomeScreen from './pages/SettingsList';
 import SettingsGeneralScreen from './pages/SettingsGeneral';
 import SettingsBehaviorScreen from './pages/SettingsBehavior';
 import SettingsAppearanceScreen from './pages/SettingsAppearance';
-
-import { colors, customStyles } from '../../styles/Styles';
 
 const Stack = createStackNavigator();
 
@@ -22,7 +19,14 @@ function SettingsNavigator({ navigation }) {
         options={{
           title: 'Paramètres',
           header: ({ scene, previous, navigation }) => (
-            <CustomHeaderBar drawer scene={scene} previous={previous} navigation={navigation} />
+            <CustomHeaderBar
+              scene={scene}
+              customRoute={[
+                'Main',
+                { screen: 'Home', params: { screen: 'Actus', params: { screen: 'ActuListe' } } },
+              ]}
+              navigation={navigation}
+            />
           ),
           ...TransitionPresets.SlideFromRightIOS,
         }}

@@ -5,40 +5,40 @@ import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { CustomHeaderBar } from '../../components/Tools';
-import CarteListScreen from './pages/List';
-import CarteDisplayScreen from './pages/Display';
+import ExplorerListScreen from './pages/List';
+import ExplorerDisplayScreen from './pages/Display';
 
-import { colors, customStyles } from '../../../styles/Styles';
+import { colors } from '../../../styles/Styles';
 
 const Stack = createStackNavigator();
 
-function CarteNavigator({ navigation }) {
+function ExplorerNavigator({ navigation }) {
   return (
-    <Stack.Navigator initialRouteName="CarteListe">
+    <Stack.Navigator initialRouteName="ExplorerListe">
       <Stack.Screen
-        name="CarteListe"
-        component={CarteListScreen}
+        name="ExplorerListe"
+        component={ExplorerListScreen}
         options={{
           title: '',
           headerTransparent: true,
           gestureEnabled: false,
           headerLeft: () => (
-            <View style={{ paddingLeft: 3 }}>
+            <View style={{ paddingLeft: 4, paddingTop: 1.5 }}>
               <IconButton
                 onPress={() => navigation.openDrawer()}
                 icon="menu"
                 color={colors.text}
-                size={25}
+                size={24}
               />
             </View>
           ),
         }}
       />
       <Stack.Screen
-        name="CarteArticle"
-        component={CarteDisplayScreen}
+        name="ExplorerArticle"
+        component={ExplorerDisplayScreen}
         options={{
-          title: 'Carte:  Display',
+          title: 'Explorer:  Display',
           header: ({ scene, previous, navigation }) => (
             <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
           ),
@@ -48,9 +48,9 @@ function CarteNavigator({ navigation }) {
   );
 }
 
-export default CarteNavigator;
+export default ExplorerNavigator;
 
-CarteNavigator.propTypes = {
+ExplorerNavigator.propTypes = {
   navigation: PropTypes.shape({
     openDrawer: PropTypes.func.isRequired,
   }).isRequired,

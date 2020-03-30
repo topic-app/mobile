@@ -1,32 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StatusBar, View } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { Appbar, Surface } from 'react-native-paper';
 
-import { selectedTheme, colors } from '../../styles/Styles';
+import { theme, colors } from '../../styles/Theme';
 import { navigatorStyles } from '../../styles/navigatorStyles';
 
-function TranslucentStatusBar({ contentThemeName, backgroundColor }) {
+function TranslucentStatusBar({ contentThemeName }) {
+  let translucent = false;
+  if (theme.statusBarTranslucent) {
+    translucent = true;
+  }
   return (
     <StatusBar
-      translucent
-      backgroundColor={backgroundColor}
+      translucent={translucent}
+      backgroundColor={colors.statusBar}
       barStyle={`${contentThemeName}-content`}
     />
   );
 }
 
-TranslucentStatusBar.propTypes = {
-  contentThemeName: PropTypes.string,
-  backgroundColor: PropTypes.string,
-};
-
-TranslucentStatusBar.defaultProps = {
-  contentThemeName: selectedTheme === 'light' ? 'dark' : 'light',
-  backgroundColor: 'transparent',
-};
-
-function CustomHeaderBar({ scene, previous, navigation, drawer }) {
+function CustomHeaderBar({ scene, previous, navigation, drawer, customRoute }) {
   const { options } = scene.descriptor;
   let title = scene.route.name;
   if (options.headerTitle !== undefined) {
@@ -42,22 +36,44 @@ function CustomHeaderBar({ scene, previous, navigation, drawer }) {
     subtitle = options.subtitle;
   }
 
-  let { headerStyle } = navigatorStyles;
-  if (options.headerStyle !== undefined) {
-    headerStyle = options.headerStyle;
+  const { header, headerSurface } = navigatorStyles;
+  const headerStyle = options.headerStyle !== undefined ? options.headerStyle : header;
+
+  let element;
+  if (customRoute !== undefined) {
+    element = <Appbar.BackAction onPress={() => navigation.navigate(...customRoute)} />;
+  } else if (drawer) {
+    element = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
+  } else if (previous !== undefined) {
+    element = <Appbar.BackAction onPress={navigation.goBack} />;
   }
 
   return (
-    <View>
-      <TranslucentStatusBar backgroundColor="rgba(0,0,0,0.3)" />
+    <Surface style={headerSurface}>
+      <TranslucentStatusBar />
       <Appbar.Header style={headerStyle} statusBarHeight={StatusBar.currentHeight}>
-        {drawer ? <Appbar.Action icon="menu" onPress={navigation.openDrawer} /> : undefined}
-        {!drawer && previous ? <Appbar.BackAction onPress={navigation.goBack} /> : undefined}
+        {element}
         <Appbar.Content title={title} subtitle={subtitle} />
       </Appbar.Header>
+    </Surface>
+  );
+}
+
+function HLine({ width, height, color, paddingVertical, borderRadius }) {
+  return (
+    <View style={{ width: '100%', alignItems: 'center', paddingVertical }}>
+      <View style={{ width, height, borderRadius, backgroundColor: color }} />
     </View>
   );
 }
+
+TranslucentStatusBar.propTypes = {
+  contentThemeName: PropTypes.string,
+};
+
+TranslucentStatusBar.defaultProps = {
+  contentThemeName: theme.dark === true ? 'light' : 'dark',
+};
 
 CustomHeaderBar.propTypes = {
   scene: PropTypes.shape({
@@ -80,24 +96,19 @@ CustomHeaderBar.propTypes = {
     route: PropTypes.object,
   }),
   navigation: PropTypes.shape({
+    navigate: PropTypes.func,
     openDrawer: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
   drawer: PropTypes.bool,
+  customRoute: PropTypes.arrayOf(PropTypes.string, PropTypes.object),
 };
 
 CustomHeaderBar.defaultProps = {
   previous: undefined,
   drawer: false,
+  customRoute: undefined,
 };
-
-function HLine({ width, height, color, paddingVertical, borderRadius }) {
-  return (
-    <View style={{ width: '100%', alignItems: 'center', paddingVertical }}>
-      <View style={{ width, height, borderRadius, backgroundColor: color }} />
-    </View>
-  );
-}
 
 HLine.defaultProps = {
   width: '100%',

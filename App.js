@@ -2,7 +2,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as ReduxProvider } from 'react-redux';
 import { createStore } from 'redux';
@@ -26,6 +26,11 @@ function RootNavigator() {
       <Stack.Screen name="Main" component={DrawerNavigator} />
       <Stack.Screen name="Auth" component={AuthNavigator} />
       <Stack.Screen name="Location" component={LocationNavigator} />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsNavigator}
+        options={{ ...TransitionPresets.SlideFromRightIOS }}
+      />
     </Stack.Navigator>
   );
 }

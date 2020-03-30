@@ -13,12 +13,12 @@ let lastOrientation = height > width ? 'portrait' : 'landscape';
 
 let SNAP_POINTS_FROM_TOP = {
   portrait: [0, height * 0.5, height * 0.73, height],
-  landscape: [0, width * 0.4, width],
+  landscape: [0, width * 0.65, width],
 };
 if (lastOrientation === 'landscape') {
   SNAP_POINTS_FROM_TOP = {
     portrait: [0, width * 0.5, width * 0.73, width],
-    landscape: [0, height * 0.4, height],
+    landscape: [0, height * 0.65, height],
   };
 }
 

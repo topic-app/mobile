@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import places from '../data/testExplorerLocations.json';
 import ExplorerComponentShowMap from '../components/mapMarkers';
 
-import { selectedTheme } from '../../../../styles/Styles';
+import { isDark } from '../../../../styles/Styles';
 
 const tileServerUrl = 'https://maps.topicapp.fr';
 
@@ -18,22 +18,22 @@ const map = {
   bounds: { ne: [-6, 51.5], sw: [10, 41] },
 };
 
-function CarteListScreen({ navigation }) {
+function ExplorerListScreen({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <ExplorerComponentShowMap
-        tileServerUrl={`${tileServerUrl}/styles/${selectedTheme}/style.json`}
+        tileServerUrl={`${tileServerUrl}/styles/${isDark ? 'dark' : 'light'}/style.json`}
         places={places}
         map={map}
-        navigate={(id) => navigation.navigate('CarteArticle', id)}
+        navigate={(id) => navigation.navigate('ExplorerArticle', id)}
       />
     </View>
   );
 }
 
-export default CarteListScreen;
+export default ExplorerListScreen;
 
-CarteListScreen.propTypes = {
+ExplorerListScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
