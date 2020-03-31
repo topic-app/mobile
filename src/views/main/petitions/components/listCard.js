@@ -95,7 +95,7 @@ function PetitionComponentListCard({ navigate, petition }) {
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
   return (
-    <View style={styles.container}>
+    <View>
       <Card style={styles.card}>
         <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
           <View style={{ marginTop: 10, marginHorizontal: 15 }}>

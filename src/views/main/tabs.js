@@ -44,8 +44,8 @@ function TabsNavigator() {
       >
         <Tab.Screen name="Actus" component={ActuNavigator} />
         <Tab.Screen name="Petitions" component={PetitionNavigator} />
-        <Tab.Screen name="Explorer" component={ExplorerNavigator} />
         <Tab.Screen name="Evenement" component={EvenementNavigator} />
+        <Tab.Screen name="Explorer" component={ExplorerNavigator} />
       </Tab.Navigator>
     );
   }

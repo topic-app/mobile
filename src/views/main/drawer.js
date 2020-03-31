@@ -22,14 +22,6 @@ function CustomDrawerContent({ descriptors, navigation, state }) {
         <Text style={navigatorStyles.title}>Profile Name</Text>
       </View>
       <DrawerItem
-        label="Compte"
-        onPress={() => console.log('Compte')}
-        inactiveTintColor={colors.text}
-        icon={({ color, size }) => (
-          <MaterialIcons name="account-circle" color={color} size={size} />
-        )}
-      />
-      <DrawerItem
         label="Paramètres"
         onPress={() => {
           navigation.closeDrawer();

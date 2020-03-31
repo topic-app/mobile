@@ -3,10 +3,28 @@
     "evenementId": "1",
     "title": "Fête de la Science",
     "duration": {
-      "start": "10/05/2020",
-      "end": "10/13/2020"
+      "start": "2020-03-30T18:25:43.511Z",
+      "end": "2020-03-30T19:25:43.511Z"
     },
-    "location": "48°17'55.9-N 6°56'50.2E",
+    "location": {
+      "global": false,
+      "schools": [
+        {
+          "schoolId": "98",
+          "displayName": "CIV"
+        },
+        {
+          "schoolId": "97",
+          "displayName": "Simone Veil"
+        }
+      ],
+      "departments": [
+        {
+          "departmentId": "11",
+          "displayName": "Paca"
+        }
+      ]
+    },
     "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
     "author": {
       "userId": "53",
@@ -17,8 +35,8 @@
       "displayName": "Sollaris"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
-    "imageUrl": "https://picsum.photos/600",
-    "sumary": "Grande Fête de la Science ouvert à toute et tous",
+    "thumbnailUrl": "https://picsum.photos/600",
+    "summary": "Grande Fête de la Science ouvert à toute et tous",
     "description": "La Fête de la Science 2020 se déroule du 5 au 13 octobre en métropole, et du 9 au 17 novembre en outre-mer et à l'international.",
     "tags": [
       {
@@ -54,13 +72,27 @@
     "cache": { "followers": 178 }
   },
   {
-    "evenementId": "1",
+    "evenementId": "2",
     "title": "journé des evenements",
     "duration": {
-      "start": "05/04/2020",
-      "end": "06/04/2020"
+      "start": "2020-04-07T18:25:43.511Z",
+      "end": "2020-04-08T18:25:43.511Z"
     },
-    "location": "48°17'55.9-N 6°56'50.2E",
+    "location": {
+      "global": false,
+      "schools": [
+        {
+          "schoolId": "107",
+          "displayName": "Saint-dié-des-Vosges"
+        }
+      ],
+      "departments": [
+        {
+          "departmentId": "12",
+          "displayName": "Vosges"
+        }
+      ]
+    },
     "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
     "author": {
       "userId": "53",
@@ -71,8 +103,8 @@
       "displayName": "Sollaris"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
-    "imageUrl": "https://picsum.photos/700",
-    "sumary": "Grande Fête de la Science ouvert à toute et tous",
+    "thumbnailUrl": "https://picsum.photos/700",
+    "summary": "Grande Fête de la Science ouvert à toute et tous",
     "description": "En littérature, la description constitue une pause dans le récit, où elle peut former un ensemble autonome, bien que le plus souvent elle prenne place dans la narration.",
     "tags": [
       {
@@ -108,13 +140,27 @@
     "cache": { "followers": 178 }
   },
   {
-    "evenementId": "1",
+    "evenementId": "3",
     "title": "Fête de la Science",
     "duration": {
-      "start": "05/04/2020",
-      "end": "06/04/2020"
+      "start": "2020-04-01T12:25:43.511Z",
+      "end": "2020-04-01T20:25:43.511Z"
     },
-    "location": "48°17'55.9-N 6°56'50.2E",
+    "location": {
+      "global": false,
+      "schools": [
+        {
+          "schoolId": "98",
+          "displayName": "CIV"
+        }
+      ],
+      "departments": [
+        {
+          "departmentId": "12",
+          "displayName": "Paca"
+        }
+      ]
+    },
     "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
     "author": {
       "userId": "53",
@@ -125,8 +171,8 @@
       "displayName": "Sollaris"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
-    "imageUrl": "https://picsum.photos/800",
-    "sumary": "Grande Fête de la Science ouvert à toute et tous",
+    "thumbnailUrl": "https://picsum.photos/800",
+    "summary": "Grande Fête de la Science ouvert à toute et tous",
     "description": "cette année toute les classe de premierre et de terminal des classes technologique et general du lpo GB ont decider de vous faire decouvrir les sciences",
     "tags": [
       {
@@ -156,6 +202,78 @@
         "displayName": "Jean Dupond"
       },
       "email": "jean.dupond@ac-region.fr",
+      "phone": "0601020304",
+      "other": "twitter : @lpoGB"
+    },
+    "cache": { "followers": 178 }
+  },
+  {
+    "evenementId": "4",
+    "title": "On acceuille les pigeons",
+    "duration": {
+      "start": "2020-03-31T18:25:43.511Z",
+      "end": "2020-03-31T20:25:43.511Z"
+    },
+    "location": {
+      "global": true,
+      "schools": [
+        {
+          "schoolId": "98",
+          "displayName": "CIV"
+        }
+      ],
+      "departments": [
+        {
+          "departmentId": "12",
+          "displayName": "Paca"
+        }
+      ]
+    },
+    "address": "48, Quelque part en bord de mer Nice",
+    "author": {
+      "userId": "69",
+      "displayName": "Marquis Louis-Christophe de Pigeonville"
+    },
+    "group": {
+      "groupId": "420",
+      "displayName": "Love Pigeons"
+    },
+    "members": [{ "membersid": "7" }, { "membersid": "12" }],
+    "thumbnailUrl": "https://picsum.photos/900",
+    "summary": "On va nourrir les pigeons et faire une fête pour l'arrivée de nos chers amis les pigeons.",
+    "description": "On va aller au bord de mer acceullir les pigeons qui reviennent d'Afrique après un long voyage pour revenir nous voir. On a ammené des graines de tournesol car c'est leur nourriture préférs mais aussi une batte de baseball au cas ou l'un d'entre eux se rebelle. Il y aura un petit gouté avec les pigeons après. SVP ne dites pas à la police, j'ai déjà 3 contraventions à cause de ce coronatruc. Venez nous joindre! <3",
+    "tags": [
+      {
+        "name": "Tag 1",
+        "color": "red",
+        "tagId": "pigeon"
+      },
+      {
+        "name": "Tag 2",
+        "color": "brown",
+        "tagId": "fete"
+      }
+    ],
+    "program": [
+      {
+        "time": "de 8h00 à 12h00",
+        "subject": "on nourrit les pigeons"
+      },
+      {
+        "time": "de 14h00 à 17h30",
+        "subject": "on mange"
+      },
+      {
+        "time": "de 17h30 à 18h45",
+        "subject": "on mange les pigeons"
+      }
+    ],
+    "contact": {
+      "author": {
+        "userId": "69",
+        "displayName": "Marquis Louis-Christophe de Pigeonville"
+      },
+      "email": "legrandmarquislouischristophedepigeonville@pigeons.com",
       "phone": "0601020304",
       "other": "twitter : @lpoGB"
     },

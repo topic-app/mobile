@@ -1,10 +1,10 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Button, Card, Title } from 'react-native-paper';
-import { View, StyleSheet, Text, FlatList } from 'react-native';
-import styles from '../../../../styles/Styles';
-import Item from '../components/listCard';
+import { Button } from 'react-native-paper';
+import { View, FlatList } from 'react-native';
+import { styles } from '../../../../styles/Styles';
+import EvenementComponentListCard from '../components/listCard';
 
 function VirtualizedListExample({ navigation, evenements }) {
   return (
@@ -20,7 +20,7 @@ function VirtualizedListExample({ navigation, evenements }) {
           </View>
         }
         renderItem={(evenement) => (
-          <Item
+          <EvenementComponentListCard
             evenement={evenement.item}
             navigate={() =>
               navigation.navigate('ActuEvenement', { id: evenement.item.evenementId })
@@ -47,11 +47,13 @@ VirtualizedListExample.propTypes = {
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       duration: PropTypes.shape({
-        start: PropTypes.instanceOf(Date).isRequired,
-        end: PropTypes.instanceOf(Date).isRequired,
+        // start: PropTypes.instanceOf(Date).isRequired,
+        // end: PropTypes.instanceOf(Date).isRequired,
+        start: PropTypes.string.isRequired,
+        end: PropTypes.string.isRequired,
       }).isRequired,
       description: PropTypes.string.isRequired,
-      imageUrl: PropTypes.string.isRequired,
+      thumbnailUrl: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
 };

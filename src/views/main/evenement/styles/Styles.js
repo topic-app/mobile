@@ -11,7 +11,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 15,
     color: colors.text,
-    marginBottom: 9,
   },
 });
 

@@ -23,7 +23,10 @@ function SettingsNavigator({ navigation }) {
               scene={scene}
               customRoute={[
                 'Main',
-                { screen: 'Home', params: { screen: 'Actus', params: { screen: 'ActuListe' } } },
+                {
+                  screen: 'Home',
+                  params: { screen: 'Actus', params: { screen: 'ActuListe' } },
+                },
               ]}
               navigation={navigation}
             />

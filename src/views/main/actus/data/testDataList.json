@@ -106,7 +106,6 @@
     "articleId": "3",
     "title": "Article 3",
     "time": "Il y a 1 jour",
-    "group": "L'Aiglon",
     "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
     "content": {
       "parser": "markdown",
@@ -163,7 +162,6 @@
     "articleId": "4",
     "title": "Article 4",
     "time": "Il y a 1 semaine",
-    "group": "L'Aiglon",
     "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
     "content": {
       "parser": "markdown",
@@ -211,7 +209,6 @@
     "articleId": "5",
     "title": "Article 5",
     "time": "Il y a 1 semaine",
-    "group": "L'Aiglon",
     "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
     "content": {
       "parser": "markdown",

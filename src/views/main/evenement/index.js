@@ -4,8 +4,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import EvenementList from './pages/List';
 import { CustomHeaderBar } from '../../components/Tools';
 
-import { customStyles } from '../../../styles/Styles';
-
 const Stack = createStackNavigator();
 
 function EvenementNavigator({ navigation }) {

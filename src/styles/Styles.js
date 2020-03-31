@@ -8,21 +8,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   container: {
-    marginTop: 10,
-    marginBottom: 0,
-    marginLeft: 10,
-    marginRight: 10,
+    margin: 10,
   },
   contentContainer: {
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 20,
-    marginRight: 20,
+    marginVertical: 10,
+    marginHorizontal: 20,
   },
   card: {
     backgroundColor: colors.surface,
-    borderColor: colors.outline,
-    borderWidth: isDark ? 0.5 : 0,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -30,8 +23,9 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
-
     elevation: 1,
+    marginTop: 10,
+    marginHorizontal: 10,
   },
   thumbnail: {
     backgroundColor: colors.image,
@@ -61,8 +55,10 @@ const styles = StyleSheet.create({
   },
   tag: {
     backgroundColor: 'transparent',
-    color: colors.text,
     borderWidth: 1,
+  },
+  tagContent: {
+    color: colors.placeholder,
   },
   link: {
     color: '#005ccc',
