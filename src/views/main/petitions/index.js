@@ -24,7 +24,7 @@ function PetitionNavigator({ navigation }) {
         }}
       />
       <Stack.Screen
-        name="PetitionArticle"
+        name="PetitionDisplay"
         component={PetitionDisplayScreen}
         options={{
           title: 'Petitions: Display',
