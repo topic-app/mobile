@@ -6,7 +6,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as ReduxProvider } from 'react-redux';
-import { createStore } from 'redux';
 
 import DrawerNavigator from './src/views/main/drawer';
 import SettingsNavigator from './src/views/settings/index';
@@ -14,15 +13,13 @@ import AuthNavigator from './src/views/auth/index';
 import LocationNavigator from './src/views/location/index';
 import SearchScreen from './src/views/components/Search';
 
-import Reducer from './src/reducers/index';
+import Store from './src/redux/store';
 
 import Theme from './src/styles/Theme';
 
 enableScreens();
 
 const Stack = createStackNavigator();
-
-const Store = createStore(Reducer);
 
 function RootNavigator() {
   return (

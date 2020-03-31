@@ -5,11 +5,10 @@ const initialState = data;
 function articleReducer(state = initialState, action) {
   switch (action.type) {
     case 'UPDATE_ARTICLES':
-      //
-      console.log(state);
-      return state;
+      return action.data;
     case 'CLEAR_DATABASE':
-      return ['bye'];
+      return [];
+
     default:
       return state;
   }
