@@ -47,7 +47,7 @@ function ActuComponentListCard({ article, navigate }) {
       </Card.Content>
       <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
         <View style={{ marginTop: 10 }}>
-          <TagFlatlist item={article} />
+        
         </View>
       </Card.Content>
     </Card>

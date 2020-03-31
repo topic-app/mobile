@@ -5,6 +5,7 @@ import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import ActuComponentListCard from '../components/listCard';
+import { updateArticles } from '../../../../redux/actions/articles';
 
 import { styles } from '../../../../styles/Styles';
 
@@ -14,7 +15,7 @@ function ActuListScreen({ navigation, articles }) {
       <FlatList
         data={articles}
         refreshing={false}
-        onRefresh={() => console.log('Refresh')}
+        onRefresh={() => {console.log("Refresh"); updateArticles()}}
         keyExtractor={(article) => article.articleId}
         ListFooterComponent={
           <View style={styles.container}>

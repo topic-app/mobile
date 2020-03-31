@@ -5,20 +5,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as ReduxProvider } from 'react-redux';
-import { createStore } from 'redux';
 
 import DrawerNavigator from './src/views/main/index';
 import SettingsNavigator from './src/views/settings/index';
 import AuthNavigator from './src/views/auth/index';
 import LocationNavigator from './src/views/location/index';
 
-import Reducer from './src/reducers/index';
+import Store from './src/redux/store';
 
 import Theme from './src/styles/Theme';
 
 const Stack = createStackNavigator();
-
-const Store = createStore(Reducer);
 
 function RootNavigator() {
   return (
