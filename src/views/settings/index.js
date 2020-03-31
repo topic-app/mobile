@@ -22,7 +22,7 @@ function SettingsNavigator({ navigation }) {
             <CustomHeaderBar
               scene={scene}
               customRoute={[
-                'Main',
+                'Root',
                 {
                   screen: 'Home',
                   params: { screen: 'Actus', params: { screen: 'ActuListe' } },

@@ -8,7 +8,7 @@ import 'moment/locale/fr';
 
 import TagFlatlist from '../../../components/Tags';
 import { styles, colors } from '../../../../styles/Styles';
-import evenementStyles from '../styles/Styles';
+import eventStyles from '../styles/Styles';
 
 function buildDateString(start, end) {
   moment.updateLocale('fr');
@@ -29,30 +29,29 @@ function buildDateString(start, end) {
   return `Prévu - ${startDate.calendar()} (${startDate.fromNow()})`;
 }
 
-function EvenementComponentListCard({ evenement, navigate }) {
-  const startDate = new Date(evenement.duration.start);
-  const endDate = new Date(evenement.duration.end);
+function EventComponentListCard({ event, navigate }) {
+  const { start, end } = event.duration;
 
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
   return (
     <Card style={styles.card}>
       <Touchable onPress={navigate}>
-        <View style={{ paddingVertical: 15 }}>
+        <View>
           <Card.Title
-            title={evenement.title}
-            subtitle={buildDateString(startDate, endDate)}
+            title={event.title}
+            subtitle={buildDateString(start, end)}
             left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
           />
           <Card.Content>
-            <Text style={evenementStyles.text}>{evenement.summary}</Text>
+            <Text style={eventStyles.text}>{event.summary}</Text>
           </Card.Content>
           <Card.Content style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
             <View style={{ marginTop: 10 }}>
-              <TagFlatlist item={evenement} />
+              <TagFlatlist item={event} />
             </View>
           </Card.Content>
-          <Card.Cover source={{ uri: evenement.thumbnailUrl }} />
+          <Card.Cover source={{ uri: event.thumbnailUrl }} />
           <Card.Actions>
             <IconButton icon="star-outline" color={colors.disabled} />
           </Card.Actions>
@@ -62,10 +61,10 @@ function EvenementComponentListCard({ evenement, navigate }) {
   );
 }
 
-export default EvenementComponentListCard;
+export default EventComponentListCard;
 
-EvenementComponentListCard.propTypes = {
-  evenement: PropTypes.shape({
+EventComponentListCard.propTypes = {
+  event: PropTypes.shape({
     title: PropTypes.string.isRequired,
     duration: PropTypes.shape({
       // start: PropTypes.instanceOf(Date).isRequired,

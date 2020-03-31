@@ -6,8 +6,6 @@ import { CustomHeaderBar } from '../../components/Tools';
 import PetitionListScreen from './pages/List';
 import PetitionDisplayScreen from './pages/Display';
 
-import { customStyles } from '../../../styles/Styles';
-
 const Stack = createStackNavigator();
 
 function PetitionNavigator({ navigation }) {

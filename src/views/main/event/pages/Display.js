@@ -1,60 +1,59 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, ScrollView } from 'react-native';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 import TagFlatlist from '../../../components/Tags';
 import { styles } from '../../../../styles/Styles';
 
-import evenements from '../data/testDataList.json';
-
-function EvenementDisplayScreen({ route /* evenements */ }) {
+function EventDisplayScreen({ route, events }) {
   const { id } = route.params;
-  const evenement = evenements.find((t) => t.evenementId === id);
+  const event = events.find((t) => t.eventId === id);
+  const { start, end } = event.duration;
 
   return (
     <View style={styles.page}>
       <ScrollView>
-        <Image source={{ uri: evenement.thumbnailUrl }} style={[styles.image, { height: 250 }]} />
+        <Image source={{ uri: event.thumbnailUrl }} style={[styles.image, { height: 250 }]} />
         <View style={styles.contentContainer}>
-          <Text style={styles.title}>{evenement.title}</Text>
+          <Text style={styles.title}>{event.title}</Text>
           <Text style={styles.subtitle}>
-            {evenement.time} par {evenement.group.displayName}
+            du {moment(start).format('DD/MM/YYYY')} aux {moment(end).format('DD/MM/YYYY')}
           </Text>
         </View>
         <View>
-          <TagFlatlist item={evenement} />
+          <TagFlatlist item={event} />
         </View>
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>{evenement.description}</Text>
+          <Text style={styles.text}>{event.description}</Text>
         </View>
       </ScrollView>
     </View>
   );
 }
 
-export default EvenementDisplayScreen;
+const mapStateToProps = (state) => {
+  const { events } = state;
+  return { events };
+};
 
-EvenementDisplayScreen.propTypes = {
+export default connect(mapStateToProps)(EventDisplayScreen);
+
+EventDisplayScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  /*
-  evenements: PropTypes.arrayOf(
+  events: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
-      time: PropTypes.string.isRequired,
       thumbnailUrl: PropTypes.string,
       description: PropTypes.string,
-      content: PropTypes.shape({
-        parser: PropTypes.string.isRequired,
-        data: PropTypes.string.isRequired,
-      }).isRequired,
       group: PropTypes.shape({
         displayName: PropTypes.string,
       }),
     }).isRequired,
   ).isRequired,
-  */
 };

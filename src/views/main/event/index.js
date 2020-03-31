@@ -2,20 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import EvenementList from './pages/List';
-import EvenementDisplay from './pages/Display';
+import EventList from './pages/List';
+import EventDisplay from './pages/Display';
 import { CustomHeaderBar } from '../../components/Tools';
 
 const Stack = createStackNavigator();
 
-function EvenementNavigator({ navigation }) {
+function EventNavigator({ navigation }) {
   return (
-    <Stack.Navigator initialRouteName="EvenementListe">
+    <Stack.Navigator initialRouteName="EventListe">
       <Stack.Screen
-        name="Evenementiste"
-        component={EvenementList}
+        name="Eventiste"
+        component={EventList}
         options={{
-          title: 'Evènements',
+          title: 'Évènements',
           header: ({ scene, previous, navigation }) => (
             <CustomHeaderBar drawer scene={scene} previous={previous} navigation={navigation} />
           ),
@@ -27,10 +27,10 @@ function EvenementNavigator({ navigation }) {
         }}
       />
       <Stack.Screen
-        name="EvenementDisplay"
-        component={EvenementDisplay}
+        name="EventDisplay"
+        component={EventDisplay}
         options={({ route }) => ({
-          title: 'Evènements',
+          title: 'Évènements',
           subtitle: route.params.title,
           header: ({ scene, previous, navigation }) => (
             <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
@@ -41,9 +41,9 @@ function EvenementNavigator({ navigation }) {
   );
 }
 
-export default EvenementNavigator;
+export default EventNavigator;
 
-EvenementNavigator.propTypes = {
+EventNavigator.propTypes = {
   navigation: PropTypes.shape({
     openDrawer: PropTypes.func.isRequired,
   }).isRequired,

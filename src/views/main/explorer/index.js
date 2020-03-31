@@ -35,7 +35,7 @@ function ExplorerNavigator({ navigation }) {
         }}
       />
       <Stack.Screen
-        name="ExplorerArticle"
+        name="ExplorerDisplay"
         component={ExplorerDisplayScreen}
         options={{
           title: 'Explorer:  Display',

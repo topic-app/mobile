@@ -1,9 +1,9 @@
-import data from '../views/main/evenement/data/testDataList.json';
+import data from '../views/main/event/data/testDataList.json';
 
 const initialState = data;
 
-function evenementReducer(state = initialState, evenement) {
-  switch (evenement.type) {
+function eventReducer(state = initialState, event) {
+  switch (event.type) {
     case 'UPDATE_ARTICLES':
       //
       console.log(state);
@@ -15,4 +15,4 @@ function evenementReducer(state = initialState, evenement) {
   }
 }
 
-export default evenementReducer;
+export default eventReducer;

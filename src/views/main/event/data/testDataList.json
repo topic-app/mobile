@@ -1,6 +1,6 @@
 [
   {
-    "evenementId": "1",
+    "eventId": "1",
     "title": "Fête de la Science",
     "duration": {
       "start": "2020-03-30T18:25:43.511Z",
@@ -72,8 +72,8 @@
     "cache": { "followers": 178 }
   },
   {
-    "evenementId": "2",
-    "title": "journé des evenements",
+    "eventId": "2",
+    "title": "journé des events",
     "duration": {
       "start": "2020-04-07T18:25:43.511Z",
       "end": "2020-04-08T18:25:43.511Z"
@@ -140,7 +140,7 @@
     "cache": { "followers": 178 }
   },
   {
-    "evenementId": "3",
+    "eventId": "3",
     "title": "Fête de la Science",
     "duration": {
       "start": "2020-04-01T12:25:43.511Z",
@@ -208,7 +208,7 @@
     "cache": { "followers": 178 }
   },
   {
-    "evenementId": "4",
+    "eventId": "4",
     "title": "On acceuille les pigeons",
     "duration": {
       "start": "2020-03-31T18:25:43.511Z",

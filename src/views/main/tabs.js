@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import ActuNavigator from './actus/index';
 import PetitionNavigator from './petitions/index';
 import ExplorerNavigator from './explorer/index';
-import EvenementNavigator from './evenement/index';
+import EventNavigator from './event/index';
 import { navigatorStyles, colors } from '../../styles/navigatorStyles';
 
 const createPlatformTabNavigator =
@@ -19,6 +19,7 @@ function TabsNavigator() {
   if (Platform.OS !== 'ios') {
     return (
       <Tab.Navigator
+        shifting={false}
         initialRouteName="Actus"
         activeColor={colors.primary}
         inactiveColor={colors.disabled}
@@ -33,7 +34,7 @@ function TabsNavigator() {
               iconName = 'comment-check-outline';
             } else if (route.name === 'Explorer') {
               iconName = 'map-outline';
-            } else if (route.name === 'Evenement') {
+            } else if (route.name === 'Event') {
               iconName = 'calendar';
             }
 
@@ -43,7 +44,7 @@ function TabsNavigator() {
       >
         <Tab.Screen name="Actus" component={ActuNavigator} />
         <Tab.Screen name="Petitions" component={PetitionNavigator} />
-        <Tab.Screen name="Evenement" component={EvenementNavigator} />
+        <Tab.Screen name="Event" component={EventNavigator} />
         <Tab.Screen name="Explorer" component={ExplorerNavigator} />
       </Tab.Navigator>
     );
@@ -60,7 +61,7 @@ function TabsNavigator() {
             iconName = 'comment-check-outline';
           } else if (route.name === 'Explorer') {
             iconName = 'map-outline';
-          } else if (route.name === 'Evenement') {
+          } else if (route.name === 'Event') {
             iconName = 'calendar';
           }
 
@@ -78,7 +79,7 @@ function TabsNavigator() {
       <Tab.Screen name="Actus" component={ActuNavigator} />
       <Tab.Screen name="Petitions" component={PetitionNavigator} />
       <Tab.Screen name="Explorer" component={ExplorerNavigator} />
-      <Tab.Screen name="Evenement" component={EvenementNavigator} />
+      <Tab.Screen name="Event" component={EventNavigator} />
     </Tab.Navigator>
   );
 }

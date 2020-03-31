@@ -4,28 +4,28 @@ import { connect } from 'react-redux';
 import { Button } from 'react-native-paper';
 import { View, FlatList } from 'react-native';
 import { styles } from '../../../../styles/Styles';
-import EvenementComponentListCard from '../components/listCard';
+import EventComponentListCard from '../components/listCard';
 
-function EvenementListScreen({ navigation, evenements }) {
+function EventListScreen({ navigation, events }) {
   return (
     <View style={styles.page}>
       <FlatList
-        data={evenements}
+        data={events}
         refreshing={false}
         onRefresh={() => console.log('Refresh')}
-        keyExtractor={(evenement) => evenement.evenementId}
+        keyExtractor={(event) => event.eventId}
         ListFooterComponent={
           <View style={styles.container}>
             <Button style={styles.text}>Retour en haut</Button>
           </View>
         }
-        renderItem={(evenement) => (
-          <EvenementComponentListCard
-            evenement={evenement.item}
+        renderItem={(event) => (
+          <EventComponentListCard
+            event={event.item}
             navigate={() =>
-              navigation.navigate('EvenementDisplay', {
-                id: evenement.item.evenementId,
-                title: evenement.item.title,
+              navigation.navigate('EventDisplay', {
+                id: event.item.eventId,
+                title: event.item.title,
               })
             }
           />
@@ -36,17 +36,17 @@ function EvenementListScreen({ navigation, evenements }) {
 }
 
 const mapStateToProps = (state) => {
-  const { evenements } = state;
-  return { evenements };
+  const { events } = state;
+  return { events };
 };
 
-export default connect(mapStateToProps)(EvenementListScreen);
+export default connect(mapStateToProps)(EventListScreen);
 
-EvenementListScreen.propTypes = {
+EventListScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
-  evenements: PropTypes.arrayOf(
+  events: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       duration: PropTypes.shape({
