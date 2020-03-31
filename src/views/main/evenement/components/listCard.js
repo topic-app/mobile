@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Text, View, Platform } from 'react-native';
+import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import { Avatar, Card, IconButton } from 'react-native-paper';
-import { Text, View } from 'react-native';
 import moment from 'moment';
 import 'moment/locale/fr';
 
@@ -28,29 +29,35 @@ function buildDateString(start, end) {
   return `Prévu - ${startDate.calendar()} (${startDate.fromNow()})`;
 }
 
-function EvenementComponentListCard({ evenement }) {
+function EvenementComponentListCard({ evenement, navigate }) {
   const startDate = new Date(evenement.duration.start);
   const endDate = new Date(evenement.duration.end);
 
+  const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
+
   return (
     <Card style={styles.card}>
-      <Card.Title
-        title={evenement.title}
-        subtitle={buildDateString(startDate, endDate)}
-        left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
-      />
-      <Card.Content>
-        <Text style={evenementStyles.text}>{evenement.summary}</Text>
-      </Card.Content>
-      <Card.Content style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
-        <View style={{ marginTop: 10 }}>
-          <TagFlatlist item={evenement} />
+      <Touchable onPress={navigate}>
+        <View style={{ paddingVertical: 15 }}>
+          <Card.Title
+            title={evenement.title}
+            subtitle={buildDateString(startDate, endDate)}
+            left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
+          />
+          <Card.Content>
+            <Text style={evenementStyles.text}>{evenement.summary}</Text>
+          </Card.Content>
+          <Card.Content style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
+            <View style={{ marginTop: 10 }}>
+              <TagFlatlist item={evenement} />
+            </View>
+          </Card.Content>
+          <Card.Cover source={{ uri: evenement.thumbnailUrl }} />
+          <Card.Actions>
+            <IconButton icon="star-outline" color={colors.disabled} />
+          </Card.Actions>
         </View>
-      </Card.Content>
-      <Card.Cover source={{ uri: evenement.thumbnailUrl }} />
-      <Card.Actions>
-        <IconButton icon="star-outline" color={colors.disabled} />
-      </Card.Actions>
+      </Touchable>
     </Card>
   );
 }

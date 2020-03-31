@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { isDark, colors } from './Theme';
+import { isDark, colors, theme } from './Theme';
 
 const styles = StyleSheet.create({
   page: {
@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     marginTop: 10,
     marginHorizontal: 10,
+    overflow: 'hidden',
   },
   thumbnail: {
     backgroundColor: colors.image,

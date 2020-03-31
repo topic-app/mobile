@@ -6,7 +6,7 @@ import { View, FlatList } from 'react-native';
 import { styles } from '../../../../styles/Styles';
 import EvenementComponentListCard from '../components/listCard';
 
-function VirtualizedListExample({ navigation, evenements }) {
+function EvenementListScreen({ navigation, evenements }) {
   return (
     <View style={styles.page}>
       <FlatList
@@ -23,7 +23,10 @@ function VirtualizedListExample({ navigation, evenements }) {
           <EvenementComponentListCard
             evenement={evenement.item}
             navigate={() =>
-              navigation.navigate('ActuEvenement', { id: evenement.item.evenementId })
+              navigation.navigate('EvenementDisplay', {
+                id: evenement.item.evenementId,
+                title: evenement.item.title,
+              })
             }
           />
         )}
@@ -37,9 +40,9 @@ const mapStateToProps = (state) => {
   return { evenements };
 };
 
-export default connect(mapStateToProps)(VirtualizedListExample);
+export default connect(mapStateToProps)(EvenementListScreen);
 
-VirtualizedListExample.propTypes = {
+EvenementListScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

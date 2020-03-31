@@ -6,8 +6,6 @@ import { CustomHeaderBar } from '../../components/Tools';
 import ActuListScreen from './pages/List';
 import ActuDisplayScreen from './pages/Display';
 
-import { customStyles } from '../../../styles/Styles';
-
 const Stack = createStackNavigator();
 
 function ActuNavigator({ navigation }) {
@@ -24,15 +22,15 @@ function ActuNavigator({ navigation }) {
         }}
       />
       <Stack.Screen
-        name="ActuArticle"
+        name="ActuDisplay"
         component={ActuDisplayScreen}
-        options={{
+        options={({ route }) => ({
           title: 'Actus et évènements',
-          subtitle: 'Article',
+          subtitle: route.params.title,
           header: ({ scene, previous, navigation }) => (
             <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
           ),
-        }}
+        })}
       />
     </Stack.Navigator>
   );

@@ -1,13 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Platform,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-} from 'react-native';
+import { Platform, View, Text, Image } from 'react-native';
+import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import { Card, Paragraph } from 'react-native-paper';
 import TagFlatlist from '../../../components/Tags';
 
@@ -18,38 +12,38 @@ function ActuComponentListCard({ article, navigate }) {
 
   return (
     <Card style={styles.card}>
-      <Card.Content>
-        <Touchable onPress={navigate}>
-          <View style={{ flexDirection: 'row' }}>
-            <Image
-              source={{ uri: article.thumbnailUrl }}
-              style={[
-                styles.thumbnail,
-                {
-                  width: 120,
-                  height: 120,
-                },
-              ]}
-            />
-            <View
-              style={{
-                margin: 10,
-                marginTop: 0,
-                marginLeft: 15,
-                flex: 1,
-              }}
-            >
-              <Text style={styles.cardTitle}>{article.title}</Text>
-              <Paragraph style={styles.text}>{article.description}</Paragraph>
+      <Touchable onPress={navigate}>
+        <View style={{ paddingVertical: 15 }}>
+          <Card.Content>
+            <View style={{ flexDirection: 'row' }}>
+              <Image
+                source={{ uri: article.thumbnailUrl }}
+                style={[
+                  styles.thumbnail,
+                  {
+                    width: 120,
+                    height: 120,
+                  },
+                ]}
+              />
+              <View
+                style={{
+                  margin: 10,
+                  marginTop: 0,
+                  marginLeft: 15,
+                  flex: 1,
+                }}
+              >
+                <Text style={styles.cardTitle}>{article.title}</Text>
+                <Paragraph style={styles.text}>{article.description}</Paragraph>
+              </View>
             </View>
-          </View>
-        </Touchable>
-      </Card.Content>
-      <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
-        <View style={{ marginTop: 10 }}>
-          <TagFlatlist item={article} />
+          </Card.Content>
+          <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
+            <TagFlatlist item={article} />
+          </Card.Content>
         </View>
-      </Card.Content>
+      </Touchable>
     </Card>
   );
 }

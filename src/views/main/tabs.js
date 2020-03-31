@@ -23,7 +23,6 @@ function TabsNavigator() {
         activeColor={colors.primary}
         inactiveColor={colors.disabled}
         barStyle={navigatorStyles.barStyle}
-        shifting={false}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => {
             let iconName;
