@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import TagFlatlist from '../../../components/Tags';
 import { styles } from '../../../../styles/Styles';
+import Content from '../../../components/Content';
 
 function ActuDisplayScreen({ route, articles }) {
   const { id } = route.params;
@@ -13,7 +14,7 @@ function ActuDisplayScreen({ route, articles }) {
   return (
     <View style={styles.page}>
       <ScrollView>
-        <Image source={{ uri: article.thumbnailUrl }} style={[styles.image, { height: 250 }]} />
+        {article.imageUrl ? (<Image source={{ uri: article.imageUrl }} style={[styles.image, { height: 250 }]} />) : null}
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
@@ -22,7 +23,7 @@ function ActuDisplayScreen({ route, articles }) {
         </View>
         <TagFlatlist item={article} />
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>{article.content.data}</Text>
+          <Content data={article.content.data} parser={article.content.parser} />
         </View>
       </ScrollView>
     </View>

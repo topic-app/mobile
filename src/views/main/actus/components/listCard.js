@@ -16,7 +16,7 @@ function ActuComponentListCard({ article, navigate }) {
         <View style={{ paddingTop: 15, paddingBottom: 5 }}>
           <Card.Content>
             <View style={{ flexDirection: 'row' }}>
-              <Image
+              { article.thumbnailUrl ? (<Image
                 source={{ uri: article.thumbnailUrl }}
                 style={[
                   styles.thumbnail,
@@ -25,7 +25,12 @@ function ActuComponentListCard({ article, navigate }) {
                     height: 120,
                   },
                 ]}
-              />
+              />) : (
+                <View style={{
+                  width: 120,
+                  height: 120,
+                }} />
+              )}
               <View
                 style={{
                   margin: 10,
