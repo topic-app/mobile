@@ -13,7 +13,7 @@ function ActuComponentListCard({ article, navigate }) {
   return (
     <Card style={styles.card}>
       <Touchable onPress={navigate}>
-        <View style={{ paddingVertical: 15 }}>
+        <View style={{ paddingTop: 15, paddingBottom: 5 }}>
           <Card.Content>
             <View style={{ flexDirection: 'row' }}>
               <Image

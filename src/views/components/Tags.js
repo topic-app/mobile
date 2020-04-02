@@ -79,6 +79,7 @@ function TagFlatlist({ item }) {
 
   return (
     <FlatList
+      style={{ paddingVertical: 7 }}
       horizontal
       showsHorizontalScrollIndicator={false}
       data={data} // TODO: Use location, group author instead of tags

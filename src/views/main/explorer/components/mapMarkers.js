@@ -25,6 +25,7 @@ class ExplorerComponentShowMap extends React.Component {
         name: '',
       },
       isModalVisible: false,
+      userLocation: false,
     };
   }
 
@@ -59,6 +60,7 @@ class ExplorerComponentShowMap extends React.Component {
     if (status !== 'granted') {
       console.warn('Location Permission Denied, skipping recenter of map.');
     } else {
+      this.setState({ userLocation: true });
       const location = await Location.getCurrentPositionAsync({});
       this.goTo(location.coords.longitude, location.coords.latitude, 11, 0);
     }
@@ -109,7 +111,7 @@ class ExplorerComponentShowMap extends React.Component {
     });
 
     const { map, tileServerUrl } = this.props;
-    const { data, isModalVisible } = this.state;
+    const { data, isModalVisible, userLocation } = this.state;
 
     return (
       <View style={{ flex: 1 }}>
@@ -159,7 +161,7 @@ class ExplorerComponentShowMap extends React.Component {
               style={{ iconImage: ['get', 'icon'], iconSize: 1 }}
             />
           </MapboxGL.ShapeSource>
-          <MapboxGL.UserLocation visible animated />
+          {userLocation ? <MapboxGL.UserLocation visible animated /> : null}
         </MapboxGL.MapView>
         <View style={explorerStyles.attributionContainer}>
           <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
