@@ -7,14 +7,16 @@ import TagFlatlist from '../../../components/Tags';
 import { styles } from '../../../../styles/Styles';
 import Content from '../../../components/Content';
 
-function ActuDisplayScreen({ route, articles }) {
+function ArticleDisplayScreen({ route, articles }) {
   const { id } = route.params;
   const article = articles.find((t) => t.articleId === id);
 
   return (
     <View style={styles.page}>
       <ScrollView>
-        {article.imageUrl ? (<Image source={{ uri: article.imageUrl }} style={[styles.image, { height: 250 }]} />) : null}
+        {article.imageUrl ? (
+          <Image source={{ uri: article.imageUrl }} style={[styles.image, { height: 250 }]} />
+        ) : null}
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
@@ -35,9 +37,9 @@ const mapStateToProps = (state) => {
   return { articles };
 };
 
-export default connect(mapStateToProps)(ActuDisplayScreen);
+export default connect(mapStateToProps)(ArticleDisplayScreen);
 
-ActuDisplayScreen.propTypes = {
+ArticleDisplayScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,

@@ -11,6 +11,7 @@ import DrawerNavigator from './src/views/main/drawer';
 import SettingsNavigator from './src/views/settings/index';
 import AuthNavigator from './src/views/auth/index';
 import LocationNavigator from './src/views/location/index';
+import SearchScreen from './src/views/components/Search';
 
 import Reducer from './src/reducers/index';
 
@@ -31,6 +32,7 @@ function RootNavigator() {
         component={SettingsNavigator}
         options={{ ...TransitionPresets.SlideFromRightIOS }}
       />
+      <Stack.Screen name="Search" component={SearchScreen} />
     </Stack.Navigator>
   );
 }

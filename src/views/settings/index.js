@@ -18,18 +18,9 @@ function SettingsNavigator({ navigation }) {
         component={SettingsHomeScreen}
         options={{
           title: 'Paramètres',
+          primary: () => navigation.pop(),
           header: ({ scene, previous, navigation }) => (
-            <CustomHeaderBar
-              scene={scene}
-              customRoute={[
-                'Root',
-                {
-                  screen: 'Home',
-                  params: { screen: 'Actus', params: { screen: 'ActuListe' } },
-                },
-              ]}
-              navigation={navigation}
-            />
+            <CustomHeaderBar scene={scene} navigation={navigation} previous={previous} />
           ),
           ...TransitionPresets.SlideFromRightIOS,
         }}

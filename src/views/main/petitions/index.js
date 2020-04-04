@@ -16,8 +16,16 @@ function PetitionNavigator({ navigation }) {
         component={PetitionListScreen}
         options={{
           title: 'Pétitions',
+          drawer: true,
+          actions: [
+            {
+              icon: 'magnify',
+              onPress: () => navigation.navigate('Search', { initialSelected: 'Petition' }),
+            },
+          ],
+          overflow: [{ title: 'More', onPress: () => console.log('more') }],
           header: ({ scene, previous, navigation }) => (
-            <CustomHeaderBar drawer scene={scene} previous={previous} navigation={navigation} />
+            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
           ),
         }}
       />

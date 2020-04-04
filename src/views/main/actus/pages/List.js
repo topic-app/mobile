@@ -25,7 +25,7 @@ function ActuListScreen({ navigation, articles }) {
           <ActuComponentListCard
             article={article.item}
             navigate={() =>
-              navigation.navigate('ActuDisplay', {
+              navigation.navigate('ArticleDisplay', {
                 id: article.item.articleId,
                 title: article.item.title,
               })

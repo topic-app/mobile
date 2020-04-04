@@ -6,17 +6,15 @@ const navigatorStyles = StyleSheet.create({
   profileIconContainer: {
     flex: 1,
     flexDirection: 'row',
-    padding: 3, 
+    padding: 10,
     alignItems: 'center',
   },
   drawerStyle: {
     backgroundColor: colors.background,
   },
   title: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     color: colors.text,
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   header: {
     backgroundColor: colors.appBar,
