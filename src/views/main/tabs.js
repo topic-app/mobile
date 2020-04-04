@@ -4,7 +4,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
-import ActuNavigator from './actus/index';
+import ActuNavigator from './article/index';
 import PetitionNavigator from './petitions/index';
 import ExplorerNavigator from './explorer/index';
 import EventNavigator from './event/index';

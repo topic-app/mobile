@@ -13,23 +13,27 @@ function ActuComponentListCard({ article, navigate }) {
   return (
     <Card style={styles.card}>
       <Touchable onPress={navigate}>
-        <View style={{ paddingTop: 15, paddingBottom: 5 }}>
+        <View style={{ paddingTop: 10, paddingBottom: 5 }}>
           <Card.Content>
-            <View style={{ flexDirection: 'row' }}>
-              { article.thumbnailUrl ? (<Image
-                source={{ uri: article.thumbnailUrl }}
-                style={[
-                  styles.thumbnail,
-                  {
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {article.thumbnailUrl ? (
+                <Image
+                  source={{ uri: article.thumbnailUrl }}
+                  style={[
+                    styles.thumbnail,
+                    {
+                      width: 120,
+                      height: 120,
+                    },
+                  ]}
+                />
+              ) : (
+                <View
+                  style={{
                     width: 120,
                     height: 120,
-                  },
-                ]}
-              />) : (
-                <View style={{
-                  width: 120,
-                  height: 120,
-                }} />
+                  }}
+                />
               )}
               <View
                 style={{

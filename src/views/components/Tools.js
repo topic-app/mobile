@@ -124,7 +124,7 @@ CustomHeaderBar.propTypes = {
         title: PropTypes.string,
         subtitle: PropTypes.string,
         headerStyle: PropTypes.object,
-        primaryRoute: PropTypes.array,
+        primary: PropTypes.func,
         searchRoute: PropTypes.array,
         drawer: PropTypes.bool,
         overflow: PropTypes.arrayOf(PropTypes.object),

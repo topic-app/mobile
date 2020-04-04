@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -22,16 +22,19 @@ function ExplorerNavigator({ navigation }) {
           title: '',
           headerTransparent: true,
           gestureEnabled: false,
-          headerLeft: () => (
-            <View style={{ paddingLeft: 4, paddingTop: 1.5 }}>
-              <IconButton
-                onPress={() => navigation.openDrawer()}
-                icon="menu"
-                color={colors.text}
-                size={24}
-              />
-            </View>
-          ),
+          headerLeft:
+            Platform.OS !== 'ios'
+              ? () => (
+                  <View style={{ paddingLeft: 4, paddingTop: 1.5 }}>
+                    <IconButton
+                      onPress={() => navigation.openDrawer()}
+                      icon="menu"
+                      color={colors.text}
+                      size={24}
+                    />
+                  </View>
+                )
+              : undefined,
         }}
       />
       <Stack.Screen

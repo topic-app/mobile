@@ -4,34 +4,34 @@ import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { CustomHeaderBar } from '../../components/Tools';
-import PetitionListScreen from './pages/List';
-import PetitionDisplayScreen from './pages/Display';
+import ActuListScreen from './pages/List';
+import ArticleDisplayScreen from './pages/Display';
 
 import { styles } from '../../../styles/Styles';
 import { navigatorStyles } from '../../../styles/navigatorStyles';
 
 const Stack = createStackNavigator();
 
-function PetitionNavigator({ navigation }) {
+function ActuNavigator({ navigation }) {
   return (
-    <Stack.Navigator initialRouteName="PetitionListe">
+    <Stack.Navigator initialRouteName="ArticleList">
       <Stack.Screen
-        name="PetitionListe"
-        component={PetitionListScreen}
+        name="ArticleList"
+        component={ActuListScreen}
         options={
           Platform.OS === 'ios'
             ? {
-                title: 'Pétitions',
+                title: 'Actualités',
                 headerStyle: navigatorStyles.header,
                 headerTitleStyle: styles.text,
               }
             : {
-                title: 'Pétitions',
+                title: 'Actus',
                 drawer: true,
                 actions: [
                   {
                     icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialSelected: 'Petition' }),
+                    onPress: () => navigation.navigate('Search', { initialSelected: 'Article' }),
                   },
                 ],
                 overflow: [{ title: 'More', onPress: () => console.log('more') }],
@@ -42,8 +42,8 @@ function PetitionNavigator({ navigation }) {
         }
       />
       <Stack.Screen
-        name="PetitionDisplay"
-        component={PetitionDisplayScreen}
+        name="ArticleDisplay"
+        component={ArticleDisplayScreen}
         options={
           Platform.OS === 'ios'
             ? ({ route }) => ({
@@ -53,7 +53,7 @@ function PetitionNavigator({ navigation }) {
                 headerBackTitleStyle: styles.text,
               })
             : ({ route }) => ({
-                title: 'Pétitions',
+                title: 'Actus',
                 subtitle: route.params.title,
                 header: ({ scene, previous, navigation }) => (
                   <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
@@ -65,10 +65,10 @@ function PetitionNavigator({ navigation }) {
   );
 }
 
-export default PetitionNavigator;
+export default ActuNavigator;
 
-PetitionNavigator.propTypes = {
+ActuNavigator.propTypes = {
   navigation: PropTypes.shape({
-    openDrawer: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
   }).isRequired,
 };

@@ -1,4 +1,4 @@
-import data from '../views/main/actus/data/testDataList.json';
+import data from '../views/main/article/data/testDataList.json';
 
 const initialState = data;
 

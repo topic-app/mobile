@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '../../../../styles/Styles';
 
-const actusStyles = StyleSheet.create({
+const articleStyles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: 25,
@@ -10,4 +10,4 @@ const actusStyles = StyleSheet.create({
   },
 });
 
-export default actusStyles;
+export default articleStyles;
