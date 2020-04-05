@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import 'react-native-gesture-handler';
 import React from 'react';
+import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -16,6 +17,8 @@ import SearchScreen from './src/views/components/Search';
 import Reducer from './src/reducers/index';
 
 import Theme from './src/styles/Theme';
+
+enableScreens();
 
 // NOTE: Update @react-native-mapbox-gl to get rid of warning
 console.disableYellowBox = ['Animated:'];
