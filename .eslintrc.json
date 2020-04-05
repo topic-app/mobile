@@ -8,6 +8,7 @@
     "no-undef": ["error"],
     "react/sort-comp": ["off"],
     "react/prefer-stateless-function": ["off"],
-    "no-unused-vars": ["warn"]
+    "no-unused-vars": ["warn"],
+    "no-underscore-dangle": ["off"]
   }
 }

@@ -6,10 +6,17 @@ import { connect } from 'react-redux';
 
 import TagFlatlist from '../../../components/Tags';
 import { styles } from '../../../../styles/Styles';
+
+import { fetchArticle } from '../../../../redux/actions/articles';
 import Content from '../../../components/Content';
 
 function ArticleDisplayScreen({ route, articles }) {
   const { id } = route.params;
+  React.useEffect(() => {
+    console.log('componentDidMount');
+    fetchArticle(id);
+  }, []);
+
   const article = articles.find((t) => t.articleId === id);
 
   return (
@@ -21,7 +28,7 @@ function ArticleDisplayScreen({ route, articles }) {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
-            {article.time} par {article.group.displayName}
+            {article.time} par {/* article.group.displayName*/ article.content}
           </Text>
         </View>
         <TagFlatlist item={article} />
@@ -35,7 +42,8 @@ function ArticleDisplayScreen({ route, articles }) {
 
 const mapStateToProps = (state) => {
   const { articles } = state;
-  return { articles };
+  console.log(articles)
+  return { articles: articles.data, state: articles.state };
 };
 
 export default connect(mapStateToProps)(ArticleDisplayScreen);

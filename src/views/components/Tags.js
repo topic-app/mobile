@@ -22,54 +22,63 @@ function genTagIcon(type) {
 }
 
 function genTagData(item) {
+  // TEMP: if to check for undefineds
   const data = [];
-  data.push({
-    type: 'group',
-    avatar: item.group.thumbnailUrl || '',
-    icon: 'newspaper', // Just in case thumbnail url is undefined
-    text: item.group.displayName,
-    id: item.group.groupId,
-  });
-  data.push(
-    ...item.tags.map((tag) => ({
-      type: 'tag',
-      text: tag.name,
-      color: tag.color,
-      id: tag.tagId,
-    })),
-  );
-  data.push({
-    type: 'author',
-    icon: 'account',
-    text: item.author.displayName,
-    id: item.author.userId,
-  });
-  if (item.location.global) {
+  if (item.group) {
     data.push({
-      type: 'global',
-      icon: 'map-marker',
-      text: 'France',
-      id: '',
+      type: 'group',
+      avatar: item.group.thumbnailUrl || '',
+      icon: 'newspaper', // Just in case thumbnail url is undefined
+      text: item.group.displayName,
+      id: item.group.groupId,
     });
   }
+  if (item.tags) {
+    data.push(
+      ...item.tags.map((tag) => ({
+        type: 'tag',
+        text: tag.name,
+        color: tag.color,
+        id: tag.tagId,
+      })),
+    );
+  }
+  if (item.author) {
+    data.push({
+      type: 'author',
+      icon: 'account',
+      text: item.author.displayName,
+      id: item.author.userId,
+    });
+  }
+  if (item.location) {
+    if (item.location.global) {
+      data.push({
+        type: 'global',
+        icon: 'map-marker',
+        text: 'France',
+        id: '',
+      });
+    }
 
-  data.push(
-    ...item.location.schools.map((school) => ({
-      type: 'school',
-      icon: 'map-marker',
-      text: school.displayName,
-      id: school.schoolId,
-    })),
-  );
+    data.push(
+      ...item.location.schools.map((school) => ({
+        type: 'school',
+        icon: 'map-marker',
+        text: school.displayName,
+        id: school.schoolId,
+      })),
+    );
 
-  data.push(
-    ...item.location.departments.map((department) => ({
-      type: 'department',
-      icon: 'map-marker',
-      text: department.displayName,
-      id: department.departmentId,
-    })),
-  );
+    data.push(
+      ...item.location.departments.map((department) => ({
+        type: 'department',
+        icon: 'map-marker',
+        text: department.displayName,
+        id: department.departmentId,
+      })),
+    );
+  }
 
   return data;
 }

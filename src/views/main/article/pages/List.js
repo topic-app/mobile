@@ -3,19 +3,24 @@ import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import ActuComponentListCard from '../components/listCard';
 import { updateArticles } from '../../../../redux/actions/articles';
 
 import { styles } from '../../../../styles/Styles';
 
-function ActuListScreen({ navigation, articles }) {
+function ActuListScreen({ navigation, articles, state }) {
+  React.useEffect(() => {
+    updateArticles();
+  }, []);
+
   return (
     <View style={styles.page}>
       <FlatList
         data={articles}
-        refreshing={false}
-        onRefresh={() => {console.log("Refresh"); updateArticles()}}
+        refreshing={state.refreshing}
+        onRefresh={() => {console.log(updateArticles());}}
         keyExtractor={(article) => article.articleId}
         ListFooterComponent={
           <View style={styles.container}>
@@ -40,7 +45,7 @@ function ActuListScreen({ navigation, articles }) {
 
 const mapStateToProps = (state) => {
   const { articles } = state;
-  return { articles };
+  return { articles: articles.data, state: articles.state };
 };
 
 export default connect(mapStateToProps)(ActuListScreen);
@@ -61,4 +66,8 @@ ActuListScreen.propTypes = {
       }).isRequired,
     }).isRequired,
   ).isRequired,
+  state: PropTypes.shape({
+    refreshing: PropTypes.bool.isRequired,
+    success: PropTypes.bool,
+  }).isRequired,
 };
