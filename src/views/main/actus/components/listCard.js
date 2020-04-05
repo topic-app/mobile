@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Platform, View, Text, Image } from 'react-native';
 import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import { Card, Paragraph } from 'react-native-paper';
-import TagFlatlist from '../../../components/Tags';
+import moment from 'moment';
+
+import TagFlatlist from '../../../components/Tags'
 
 import { styles } from '../../../../styles/Styles';
 
@@ -35,12 +37,13 @@ function ActuComponentListCard({ article, navigate }) {
                 }}
               >
                 <Text style={styles.cardTitle}>{article.title}</Text>
+                <Text style={styles.subtitle}>Publié {moment(article.date).fromNow()}</Text>
                 <Paragraph style={styles.text}>{article.description}</Paragraph>
               </View>
             </View>
           </Card.Content>
           <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-            {/* Commented because server does not give this info <TagFlatlist item={article} /> */}
+            <TagFlatlist item={article} />
           </Card.Content>
         </View>
       </Touchable>
@@ -53,7 +56,7 @@ export default ActuComponentListCard;
 ActuComponentListCard.propTypes = {
   article: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    time: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
     thumbnailUrl: PropTypes.string,
     description: PropTypes.string,
     content: PropTypes.shape({

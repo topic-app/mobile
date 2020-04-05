@@ -1,6 +1,6 @@
 import data from '../../views/main/actus/data/testDataList.json';
 
-const initialState = data;
+const initialState = {data: [], state: { success: null, refreshing: false, error: null }};
 
 function articleReducer(state = initialState, action) {
   switch (action.type) {

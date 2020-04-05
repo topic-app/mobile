@@ -1,7 +1,8 @@
-[
+{ "data": [
   {
     "articleId": "1",
     "title": "Article 1",
+    "date": "2019-03-30T18:25:43.511Z",
     "time": "Il y a 2 heures",
     "description": "Cat 1 sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
     "content": {
@@ -49,6 +50,7 @@
   {
     "articleId": "2",
     "title": "Article 2",
+    "date": "2020-01-30T18:25:43.511Z",
     "time": "Il y a 5 heures",
     "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
     "content": {
@@ -105,6 +107,7 @@
   {
     "articleId": "3",
     "title": "Article 3",
+    "date": "2020-03-30T18:25:43.511Z",
     "time": "Il y a 1 jour",
     "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
     "content": {
@@ -161,6 +164,7 @@
   {
     "articleId": "4",
     "title": "Article 4",
+    "date": "2020-04-05T06:25:43.511Z",
     "time": "Il y a 1 semaine",
     "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
     "content": {
@@ -208,6 +212,7 @@
   {
     "articleId": "5",
     "title": "Article 5",
+    "date": "2020-04-05T09:03:43.511Z",
     "time": "Il y a 1 semaine",
     "description": "Cat sit like bread toilet paper attack claws fluff everywhere meow miao french ciao litterbox for run off table persian cat jump...",
     "content": {
@@ -261,4 +266,8 @@
     },
     "thumbnailUrl": "https://picsum.photos/700"
   }
-]
+],
+"state": {
+  "refreshing": false,
+  "success": null,
+}}

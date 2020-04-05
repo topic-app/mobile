@@ -5,9 +5,16 @@ import { connect } from 'react-redux';
 
 import TagFlatlist from '../../../components/Tags';
 import { styles } from '../../../../styles/Styles';
+import { fetchArticle } from '../../../../redux/actions/articles';
+
 
 function ActuDisplayScreen({ route, articles }) {
   const { id } = route.params;
+  React.useEffect(() => {
+    console.log('componentDidMount');
+    fetchArticle(id);
+  }, []);
+
   const article = articles.find((t) => t.articleId === id);
 
   return (
@@ -17,13 +24,13 @@ function ActuDisplayScreen({ route, articles }) {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
-            {article.time} par {article.group.displayName}
+            {article.time} par {/*article.group.displayName*/ article.content}
           </Text>
         </View>
-        <TagFlatlist item={article} />
+        {/*<TagFlatlist item={article} />
         <View style={styles.contentContainer}>
           <Text style={styles.text}>{article.content.data}</Text>
-        </View>
+        </View>*/}
       </ScrollView>
     </View>
   );
@@ -31,7 +38,8 @@ function ActuDisplayScreen({ route, articles }) {
 
 const mapStateToProps = (state) => {
   const { articles } = state;
-  return { articles };
+  console.log(articles)
+  return { articles: articles.data, state: articles.state };
 };
 
 export default connect(mapStateToProps)(ActuDisplayScreen);
