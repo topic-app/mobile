@@ -18,7 +18,7 @@ import Reducer from './src/reducers/index';
 import Theme from './src/styles/Theme';
 
 // NOTE: Update @react-native-mapbox-gl to get rid of warning
-console.disableYellowBox = ['useNativeDriver'];
+console.disableYellowBox = ['Animated:'];
 
 const Stack = createStackNavigator();
 

@@ -18,7 +18,7 @@ class SearchScreen extends React.Component {
 
   render() {
     const { navigation, route } = this.props;
-    const { initialSelected } = route.params;
+    const { initialCategory } = route.params;
     const { searchQuery } = this.state;
 
     return (
@@ -30,7 +30,7 @@ class SearchScreen extends React.Component {
             onChangeText={this.onChangeSearch}
             value={searchQuery}
           />
-          <Text>Recherche: {initialSelected}</Text>
+          <Text>Recherche: {initialCategory}</Text>
           <Button onPress={() => navigation.navigate('Home')}>Retour</Button>
         </View>
       </View>
@@ -46,7 +46,7 @@ SearchScreen.propTypes = {
   }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      initialCategory: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };

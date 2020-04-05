@@ -31,7 +31,7 @@ function EventNavigator({ navigation }) {
                 actions: [
                   {
                     icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialSelected: 'Event' }),
+                    onPress: () => navigation.navigate('Search', { initialCategory: 'Event' }),
                   },
                 ],
                 overflow: [{ title: 'More', onPress: () => console.log('more') }],

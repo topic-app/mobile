@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from 'react-native-paper';
 
 import SwipeUpComponent from './bottomSheet';
-import places from '../data/testQueryResults.json';
+import places from '../data/testExplorerLocations.json';
 import explorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
 import { HLine } from '../../../components/Tools';
@@ -60,7 +60,7 @@ function checkLink(link, color) {
 }
 
 function LocationModalContents({ data, hideModal }) {
-  const place = places[data.id];
+  const place = places.find((t) => t.id === data.id);
   const { icon, color } = genTagDecoration(data.type);
 
   return (

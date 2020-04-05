@@ -31,7 +31,7 @@ function PetitionNavigator({ navigation }) {
                 actions: [
                   {
                     icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialSelected: 'Petition' }),
+                    onPress: () => navigation.navigate('Search', { initialCategory: 'Petition' }),
                   },
                 ],
                 overflow: [{ title: 'More', onPress: () => console.log('more') }],

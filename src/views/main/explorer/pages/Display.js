@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
 
-import places from '../data/testQueryResults.json';
+import places from '../data/testExplorerLocations.json';
 
 function ExplorerDisplayScreen({ navigation, route }) {
   const { id } = route.params;

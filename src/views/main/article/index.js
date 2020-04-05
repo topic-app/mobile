@@ -31,7 +31,7 @@ function ActuNavigator({ navigation }) {
                 actions: [
                   {
                     icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialSelected: 'Article' }),
+                    onPress: () => navigation.navigate('Search', { initialCategory: 'Article' }),
                   },
                 ],
                 overflow: [{ title: 'More', onPress: () => console.log('more') }],
