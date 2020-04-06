@@ -29,7 +29,7 @@ const lightBase = {
     subtext: '#999999',
     muted: '#444444',
     valid: '#3dc33c',
-    text: '#555555',
+    text: '#111111',
   },
 };
 
