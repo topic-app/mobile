@@ -7,7 +7,7 @@ import { CustomHeaderBar } from '../../components/Tools';
 import ActuListScreen from './pages/List';
 import ArticleDisplayScreen from './pages/Display';
 
-import { styles, isDark } from '../../../styles/Styles';
+import { styles } from '../../../styles/Styles';
 import { navigatorStyles } from '../../../styles/navigatorStyles';
 
 const zoomInTransitionPreset = {
@@ -107,7 +107,7 @@ const slideRightTransitionPreset = {
             scale: next
               ? next.progress.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [1, 0.9],
+                  outputRange: [1, 0.95],
                 })
               : 1,
           },
@@ -116,7 +116,7 @@ const slideRightTransitionPreset = {
       overlayStyle: {
         opacity: current.progress.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, isDark ? 0.7 : 0.5],
+          outputRange: [0, 0.9],
         }),
       },
     };
@@ -148,6 +148,8 @@ function ActuNavigator({ navigation }) {
                   },
                 ],
                 ...slideRightTransitionPreset,
+                // ...zoomInTransitionPreset,
+                // ...TransitionPresets.SlideFromRightIOS,
                 overflow: [{ title: 'More', onPress: () => console.log('more') }],
                 header: ({ scene, previous, navigation }) => (
                   <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
@@ -170,6 +172,8 @@ function ActuNavigator({ navigation }) {
                 title: 'Actus',
                 subtitle: route.params.title,
                 ...slideRightTransitionPreset,
+                // ...zoomInTransitionPreset,
+                // ...TransitionPresets.SlideFromRightIOS,
                 header: ({ scene, previous, navigation }) => (
                   <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
                 ),
