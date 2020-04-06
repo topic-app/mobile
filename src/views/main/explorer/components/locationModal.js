@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Linking } from 'react-native';
+import { View, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button, Divider } from 'react-native-paper';
+import { Button, Divider, Text } from 'react-native-paper';
 
 import SwipeUpComponent from './bottomSheet';
 import places from '../data/testQueryResults.json';

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Platform, View, Text, Image } from 'react-native';
+import { Platform, View, Image } from 'react-native';
+import { Card, Paragraph, Text } from 'react-native-paper';
 import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
-import { Card, Paragraph } from 'react-native-paper';
 import TagFlatlist from '../../../components/Tags';
 
 import { styles } from '../../../../styles/Styles';

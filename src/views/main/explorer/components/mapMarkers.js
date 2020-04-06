@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Linking, StatusBar } from 'react-native';
+import { View, Linking, StatusBar } from 'react-native';
+import { Text } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import * as Location from 'expo-location';
