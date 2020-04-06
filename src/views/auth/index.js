@@ -8,7 +8,7 @@ import AuthWelcomeScreen from './pages/Welcome';
 import AuthLoginScreen from './pages/Create';
 import AuthCreateScreen from './pages/Login';
 
-import { CustomHeaderBar } from '../components/Tools';
+import { CustomHeaderBar } from '../components/Headers';
 
 const Stack = createStackNavigator();
 

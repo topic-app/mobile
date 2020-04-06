@@ -5,6 +5,7 @@ import { Appbar, Menu } from 'react-native-paper';
 
 import { theme, colors } from '../../styles/Theme';
 import { navigatorStyles } from '../../styles/navigatorStyles';
+import { styles } from '../../styles/Styles';
 
 function TranslucentStatusBar({ contentThemeName }) {
   let translucent = false;
@@ -101,14 +102,6 @@ class CustomHeaderBar extends React.Component {
   }
 }
 
-function HLine({ width, height, color, paddingVertical, borderRadius }) {
-  return (
-    <View style={{ width: '100%', alignItems: 'center', paddingVertical }}>
-      <View style={{ width, height, borderRadius, backgroundColor: color }} />
-    </View>
-  );
-}
-
 TranslucentStatusBar.propTypes = {
   contentThemeName: PropTypes.string,
 };
@@ -151,20 +144,151 @@ CustomHeaderBar.defaultProps = {
   previous: undefined,
 };
 
-HLine.defaultProps = {
-  width: '100%',
-  height: 1.5,
-  color: colors.outline,
-  paddingVertical: 10,
-  borderRadius: 20,
+/*
+const nativeZoomInPreset = {
+  gestureDirection: 'horizontal',
+  transitionSpec: {
+    open: {
+      animation: 'spring',
+      config: {
+        damping: 1000,
+        mass: 2,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+        stiffness: 900,
+      },
+    },
+    close: {
+      animation: 'spring',
+      config: {
+        damping: 1000,
+        mass: 2,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+        stiffness: 900,
+      },
+    },
+  },
+  cardStyleInterpolator: (p) => {
+    const { current, next } = p;
+    return {
+      cardStyle: {
+        transform: [
+          {
+            scale: current.progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.85, 1],
+            }),
+          },
+          {
+            scale: next
+              ? next.progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, 1.1],
+                })
+              : 1,
+          },
+        ],
+        opacity: current.progress.interpolate({
+          inputRange: [0, 0.1, 0.1, 1],
+          outputRange: [0, 0, 1, 1],
+        }),
+      },
+      overlayStyle: {
+        opacity: current.progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 0.5],
+        }),
+      },
+    };
+  },
+};
+*/
+
+const SlideFromRightTransition = {
+  gestureDirection: 'horizontal',
+  transitionSpec: {
+    open: {
+      animation: 'spring',
+      config: {
+        damping: 1000,
+        mass: 3,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+        stiffness: 900,
+      },
+    },
+    close: {
+      animation: 'spring',
+      config: {
+        damping: 1000,
+        mass: 3,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+        stiffness: 900,
+      },
+    },
+  },
+  cardStyleInterpolator: ({ current, next, layouts }) => {
+    return {
+      cardStyle: {
+        transform: [
+          {
+            translateX: current.progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [layouts.screen.width, 0],
+            }),
+          },
+          {
+            scale: next
+              ? next.progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, 0.95],
+                })
+              : 1,
+          },
+        ],
+      },
+      overlayStyle: {
+        opacity: current.progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 0.9],
+        }),
+      },
+    };
+  },
 };
 
-HLine.propTypes = {
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  color: PropTypes.string,
-  paddingVertical: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  borderRadius: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+const androidListHeaderConfig = {
+  header: ({ scene, previous, navigation }) => (
+    <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
+  ),
 };
 
-export { HLine, TranslucentStatusBar, CustomHeaderBar };
+const iosListHeaderConfig = {
+  headerStyle: navigatorStyles.header,
+  headerTitleStyle: styles.text,
+  headerBackTitleStyle: styles.text,
+};
+
+const androidDisplayHeaderConfig = {
+  ...SlideFromRightTransition,
+  header: ({ scene, previous, navigation }) => (
+    <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
+  ),
+};
+
+const iosDisplayHeaderConfig = iosListHeaderConfig;
+
+export {
+  TranslucentStatusBar,
+  CustomHeaderBar,
+  androidListHeaderConfig,
+  iosListHeaderConfig,
+  androidDisplayHeaderConfig,
+  iosDisplayHeaderConfig,
+};

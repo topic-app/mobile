@@ -3,13 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button } from 'react-native-paper';
+import { Button, Divider } from 'react-native-paper';
 
 import SwipeUpComponent from './bottomSheet';
 import places from '../data/testQueryResults.json';
 import explorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
-import { HLine } from '../../../components/Tools';
+import { styles } from '../../../../styles/Styles';
 
 function genTagDecoration(type) {
   if (type === 'school') {
@@ -82,11 +82,11 @@ function LocationModalContents({ data, hideModal }) {
               {data.name}
             </Text>
           </View>
-          <HLine />
+          <Divider style={styles.divider} />
           <Text style={explorerStyles.modalText} numberOfLines={3} ellipsizeMode="tail">
             {place.summary}
           </Text>
-          <HLine />
+          <Divider style={styles.divider} />
           <Text
             style={explorerStyles.modalText}
             numberOfLines={place.link !== undefined && place.link !== '' ? 25 : 27}

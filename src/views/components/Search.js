@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StatusBar } from 'react-native';
-import { Searchbar, Button } from 'react-native-paper';
+import { View, StatusBar } from 'react-native';
+import { Text, Searchbar, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 import { styles } from '../../styles/Styles';

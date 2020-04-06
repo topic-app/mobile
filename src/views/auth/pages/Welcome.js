@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, View } from 'react-native';
-import { TranslucentStatusBar } from '../../components/Tools';
+import { TranslucentStatusBar } from '../../components/Headers';
 
 function AuthWelcomeScreen({ navigation }) {
   return (
