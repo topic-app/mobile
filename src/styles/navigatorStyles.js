@@ -18,10 +18,7 @@ const navigatorStyles = StyleSheet.create({
   },
   header: {
     backgroundColor: colors.appBar,
-    elevation: 0,
-  },
-  headerSurface: {
-    elevation: 4,
+    elevation: 1,
   },
   barStyle: {
     backgroundColor: colors.tabBackground,
