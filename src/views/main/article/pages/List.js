@@ -57,13 +57,9 @@ ActuListScreen.propTypes = {
   articles: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
-      time: PropTypes.string.isRequired,
+      date: PropTypes.string.isRequired,
       thumbnailUrl: PropTypes.string,
       description: PropTypes.string,
-      content: PropTypes.shape({
-        parser: PropTypes.string.isRequired,
-        data: PropTypes.string.isRequired,
-      }).isRequired,
     }).isRequired,
   ).isRequired,
   state: PropTypes.shape({

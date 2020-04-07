@@ -13,7 +13,7 @@ import Content from '../../../components/Content';
 function ArticleDisplayScreen({ route, articles }) {
   const { id } = route.params;
   React.useEffect(() => {
-    console.log('componentDidMount');
+    console.log('componentDidMount display');
     fetchArticle(id);
   }, []);
 
@@ -28,7 +28,11 @@ function ArticleDisplayScreen({ route, articles }) {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
+<<<<<<< HEAD:src/views/main/article/pages/Display.js
             {article.time} par {/* article.group.displayName*/ article.content}
+=======
+            {article.date} par {/*article.group.displayName*/ article.content}
+>>>>>>> Change time into date:src/views/main/actus/pages/Display.js
           </Text>
         </View>
         <TagFlatlist item={article} />
@@ -57,7 +61,7 @@ ArticleDisplayScreen.propTypes = {
   articles: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
-      time: PropTypes.string.isRequired,
+      date: PropTypes.string.isRequired,
       thumbnailUrl: PropTypes.string,
       description: PropTypes.string,
       content: PropTypes.shape({
