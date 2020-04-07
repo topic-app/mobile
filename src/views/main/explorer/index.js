@@ -4,7 +4,7 @@ import { View, Platform } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { androidListHeaderConfig, iosListHeaderConfig } from '../../components/Headers';
+import { ListHeaderConfig } from '../../components/Headers';
 import ExplorerListScreen from './pages/List';
 import ExplorerDisplayScreen from './pages/Display';
 
@@ -34,31 +34,24 @@ function ExplorerNavigator({ navigation }) {
                     />
                   </View>
                 )
-              : undefined,
+              : null,
         }}
       />
       <Stack.Screen
         name="ExplorerDisplay"
         component={ExplorerDisplayScreen}
-        options={
-          Platform.OS === 'ios'
-            ? {
-                ...iosListHeaderConfig,
-                title: 'Explorer:  Display',
-              }
-            : {
-                ...androidListHeaderConfig,
-                title: 'Explorer:  Display',
-                drawer: true,
-                actions: [
-                  {
-                    icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialCategory: 'Explorer' }),
-                  },
-                ],
-                overflow: [{ title: 'More', onPress: () => console.log('more') }],
-              }
-        }
+        options={{
+          ...ListHeaderConfig,
+          title: 'Explorer:  Display',
+          drawer: true,
+          actions: [
+            {
+              icon: 'magnify',
+              onPress: () => navigation.navigate('Search', { initialCategory: 'Explorer' }),
+            },
+          ],
+          overflow: [{ title: 'More', onPress: () => console.log('more') }],
+        }}
       />
     </Stack.Navigator>
   );

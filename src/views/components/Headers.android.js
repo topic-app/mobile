@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StatusBar, View, Platform } from 'react-native';
 import { Appbar, Menu } from 'react-native-paper';
+import { TransitionPresets } from '@react-navigation/stack';
 
 import { theme, colors } from '../../styles/Theme';
 import { navigatorStyles } from '../../styles/navigatorStyles';
-import { styles } from '../../styles/Styles';
 
 function TranslucentStatusBar({ contentThemeName }) {
   let translucent = false;
@@ -207,31 +207,23 @@ const nativeZoomInPreset = {
 };
 */
 
-const SlideFromRightTransition = {
+const springConfig = {
+  animation: 'spring',
+  config: {
+    damping: 1000,
+    mass: 3,
+    overshootClamping: true,
+    restDisplacementThreshold: 0.01,
+    restSpeedThreshold: 0.01,
+    stiffness: 900,
+  },
+};
+
+const SlideRightAndScaleTransition = {
   gestureDirection: 'horizontal',
   transitionSpec: {
-    open: {
-      animation: 'spring',
-      config: {
-        damping: 1000,
-        mass: 3,
-        overshootClamping: true,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
-        stiffness: 900,
-      },
-    },
-    close: {
-      animation: 'spring',
-      config: {
-        damping: 1000,
-        mass: 3,
-        overshootClamping: true,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
-        stiffness: 900,
-      },
-    },
+    open: springConfig,
+    close: springConfig,
   },
   cardStyleInterpolator: ({ current, next, layouts }) => {
     return {
@@ -263,32 +255,18 @@ const SlideFromRightTransition = {
   },
 };
 
-const androidListHeaderConfig = {
+const ListHeaderConfig = {
   header: ({ scene, previous, navigation }) => (
     <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
   ),
 };
 
-const iosListHeaderConfig = {
-  headerStyle: navigatorStyles.header,
-  headerTitleStyle: styles.text,
-  headerBackTitleStyle: styles.text,
-};
-
-const androidDisplayHeaderConfig = {
-  ...SlideFromRightTransition,
+const DisplayHeaderConfig = {
+  // ...SlideRightAndScaleTransition,
+  ...TransitionPresets.SlideFromRightIOS,
   header: ({ scene, previous, navigation }) => (
     <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
   ),
 };
 
-const iosDisplayHeaderConfig = iosListHeaderConfig;
-
-export {
-  TranslucentStatusBar,
-  CustomHeaderBar,
-  androidListHeaderConfig,
-  iosListHeaderConfig,
-  androidDisplayHeaderConfig,
-  iosDisplayHeaderConfig,
-};
+export { TranslucentStatusBar, ListHeaderConfig, DisplayHeaderConfig };

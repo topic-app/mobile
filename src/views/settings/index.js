@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 
-import { androidListHeaderConfig } from '../components/Headers';
+import { ListHeaderConfig } from '../components/Headers';
 import SettingsHomeScreen from './pages/SettingsList';
 import SettingsGeneralScreen from './pages/SettingsGeneral';
 import SettingsBehaviorScreen from './pages/SettingsBehavior';
@@ -17,7 +17,7 @@ function SettingsNavigator({ navigation }) {
         name="SettingsList"
         component={SettingsHomeScreen}
         options={{
-          ...androidListHeaderConfig,
+          ...ListHeaderConfig,
           title: 'Paramètres',
           primary: () => navigation.pop(),
           ...TransitionPresets.SlideFromRightIOS,
@@ -27,7 +27,7 @@ function SettingsNavigator({ navigation }) {
         name="SettingsGeneral"
         component={SettingsGeneralScreen}
         options={{
-          ...androidListHeaderConfig,
+          ...ListHeaderConfig,
           title: 'General',
           ...TransitionPresets.SlideFromRightIOS,
         }}
@@ -36,7 +36,7 @@ function SettingsNavigator({ navigation }) {
         name="SettingsBehavior"
         component={SettingsBehaviorScreen}
         options={{
-          ...androidListHeaderConfig,
+          ...ListHeaderConfig,
           title: 'Behavior',
           ...TransitionPresets.SlideFromRightIOS,
         }}
@@ -45,7 +45,7 @@ function SettingsNavigator({ navigation }) {
         name="SettingsAppearance"
         component={SettingsAppearanceScreen}
         options={{
-          ...androidListHeaderConfig,
+          ...ListHeaderConfig,
           title: 'Appearance',
           ...TransitionPresets.SlideFromRightIOS,
         }}

@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import {
-  androidListHeaderConfig,
-  iosListHeaderConfig,
-  androidDisplayHeaderConfig,
-  iosDisplayHeaderConfig,
-} from '../../components/Headers';
+import { ListHeaderConfig, DisplayHeaderConfig } from '../../components/Headers';
 import PetitionListScreen from './pages/List';
 import PetitionDisplayScreen from './pages/Display';
 
@@ -20,25 +15,18 @@ function PetitionNavigator({ navigation }) {
       <Stack.Screen
         name="PetitionListe"
         component={PetitionListScreen}
-        options={
-          Platform.OS === 'ios'
-            ? {
-                ...iosListHeaderConfig,
-                title: 'Pétitions',
-              }
-            : {
-                ...androidListHeaderConfig,
-                title: 'Pétitions',
-                drawer: true,
-                actions: [
-                  {
-                    icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialCategory: 'Petition' }),
-                  },
-                ],
-                overflow: [{ title: 'More', onPress: () => console.log('more') }],
-              }
-        }
+        options={{
+          ...ListHeaderConfig,
+          title: 'Pétitions',
+          drawer: true,
+          actions: [
+            {
+              icon: 'magnify',
+              onPress: () => navigation.navigate('Search', { initialCategory: 'Petition' }),
+            },
+          ],
+          overflow: [{ title: 'More', onPress: () => console.log('more') }],
+        }}
       />
       <Stack.Screen
         name="PetitionDisplay"
@@ -46,11 +34,11 @@ function PetitionNavigator({ navigation }) {
         options={
           Platform.OS === 'ios'
             ? ({ route }) => ({
-                ...iosDisplayHeaderConfig,
+                ...DisplayHeaderConfig,
                 title: route.params.title,
               })
             : ({ route }) => ({
-                ...androidDisplayHeaderConfig,
+                ...DisplayHeaderConfig,
                 title: 'Pétitions',
                 subtitle: route.params.title,
               })

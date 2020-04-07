@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import {
-  androidListHeaderConfig,
-  iosListHeaderConfig,
-  androidDisplayHeaderConfig,
-  iosDisplayHeaderConfig,
-} from '../../components/Headers';
+import { ListHeaderConfig, DisplayHeaderConfig } from '../../components/Headers';
 import ActuListScreen from './pages/List';
 import ArticleDisplayScreen from './pages/Display';
 
@@ -20,25 +15,18 @@ function ActuNavigator({ navigation }) {
       <Stack.Screen
         name="ArticleList"
         component={ActuListScreen}
-        options={
-          Platform.OS === 'ios'
-            ? {
-                ...iosListHeaderConfig,
-                title: 'Actualités',
-              }
-            : {
-                ...androidListHeaderConfig,
-                title: 'Actus',
-                drawer: true,
-                actions: [
-                  {
-                    icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialCategory: 'Article' }),
-                  },
-                ],
-                overflow: [{ title: 'More', onPress: () => console.log('more') }],
-              }
-        }
+        options={{
+          ...ListHeaderConfig,
+          title: Platform.OS === 'ios' ? 'Actualités' : 'Actus',
+          drawer: true,
+          actions: [
+            {
+              icon: 'magnify',
+              onPress: () => navigation.navigate('Search', { initialCategory: 'Article' }),
+            },
+          ],
+          overflow: [{ title: 'More', onPress: () => console.log('more') }],
+        }}
       />
       <Stack.Screen
         name="ArticleDisplay"
@@ -46,11 +34,11 @@ function ActuNavigator({ navigation }) {
         options={
           Platform.OS === 'ios'
             ? ({ route }) => ({
-                ...iosDisplayHeaderConfig,
+                ...DisplayHeaderConfig,
                 title: route.params.title,
               })
             : ({ route }) => ({
-                ...androidDisplayHeaderConfig,
+                ...DisplayHeaderConfig,
                 title: 'Actus',
                 subtitle: route.params.title,
               })

@@ -3,12 +3,7 @@ import { Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import {
-  androidListHeaderConfig,
-  iosListHeaderConfig,
-  androidDisplayHeaderConfig,
-  iosDisplayHeaderConfig,
-} from '../../components/Headers';
+import { ListHeaderConfig, DisplayHeaderConfig } from '../../components/Headers';
 import EventListScreen from './pages/List';
 import EventDisplayScreen from './pages/Display';
 
@@ -20,25 +15,18 @@ function EventNavigator({ navigation }) {
       <Stack.Screen
         name="EventList"
         component={EventListScreen}
-        options={
-          Platform.OS === 'ios'
-            ? {
-                ...iosListHeaderConfig,
-                title: 'Évènements',
-              }
-            : {
-                ...androidListHeaderConfig,
-                title: 'Évènements',
-                drawer: true,
-                actions: [
-                  {
-                    icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialCategory: 'Event' }),
-                  },
-                ],
-                overflow: [{ title: 'More', onPress: () => console.log('more') }],
-              }
-        }
+        options={{
+          ...ListHeaderConfig,
+          title: 'Évènements',
+          drawer: true,
+          actions: [
+            {
+              icon: 'magnify',
+              onPress: () => navigation.navigate('Search', { initialCategory: 'Event' }),
+            },
+          ],
+          overflow: [{ title: 'More', onPress: () => console.log('more') }],
+        }}
       />
       <Stack.Screen
         name="EventDisplay"
@@ -46,11 +34,11 @@ function EventNavigator({ navigation }) {
         options={
           Platform.OS === 'ios'
             ? ({ route }) => ({
-                ...iosDisplayHeaderConfig,
+                ...DisplayHeaderConfig,
                 title: route.params.title,
               })
             : ({ route }) => ({
-                ...androidDisplayHeaderConfig,
+                ...DisplayHeaderConfig,
                 title: 'Évènements',
                 subtitle: route.params.title,
               })
