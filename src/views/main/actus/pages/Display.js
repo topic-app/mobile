@@ -11,7 +11,7 @@ import { fetchArticle } from '../../../../redux/actions/articles';
 function ActuDisplayScreen({ route, articles }) {
   const { id } = route.params;
   React.useEffect(() => {
-    console.log('componentDidMount');
+    console.log('componentDidMount display');
     fetchArticle(id);
   }, []);
 
@@ -24,7 +24,7 @@ function ActuDisplayScreen({ route, articles }) {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
-            {article.time} par {/*article.group.displayName*/ article.content}
+            {article.date} par {/*article.group.displayName*/ article.content}
           </Text>
         </View>
         {/*<TagFlatlist item={article} />
@@ -53,7 +53,7 @@ ActuDisplayScreen.propTypes = {
   articles: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
-      time: PropTypes.string.isRequired,
+      date: PropTypes.string.isRequired,
       thumbnailUrl: PropTypes.string,
       description: PropTypes.string,
       content: PropTypes.shape({
