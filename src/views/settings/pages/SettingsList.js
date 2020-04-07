@@ -1,38 +1,57 @@
 import React from 'react';
-import { List } from 'react-native-paper';
+import { List, Divider } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { View, Switch } from 'react-native';
 
 import { styles } from '../../../styles/Styles';
+import { settingsStyles } from '../styles/Styles';
 
-function SettingsHomeScreen({ navigation }) {
-  return (
-    <View style={styles.page}>
-      <List.Section>
-        <List.Item
-          title="General"
-          left={() => <List.Icon icon="settings" />}
-          onPress={() => navigation.navigate('SettingsGeneral')}
-        />
-        <List.Item
-          title="Appearance"
-          left={() => <List.Icon icon="palette" />}
-          onPress={() => navigation.navigate('SettingsAppearance')}
-        />
-        <List.Item
-          title="Behavior"
-          left={() => <List.Icon icon="emoticon" />}
-          onPress={() => navigation.navigate('SettingsBehavior')}
-        />
-      </List.Section>
-    </View>
-  );
+class SettingsHomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={styles.page}>
+        <List.Section>
+          <List.Subheader>Apparence</List.Subheader>
+          <Divider />
+          <List.Item
+            title="Theme"
+            description="Clair"
+            left={() => <List.Icon icon="brightness-6" />}
+            onPress={() => console.log('Theme')}
+            style={settingsStyles.listItem}
+          />
+          <List.Item
+            title="Animations"
+            description="iOS"
+            left={() => <List.Icon icon="transition" />}
+            onPress={() => console.log('Animations')}
+            style={settingsStyles.listItem}
+          />
+          <List.Item
+            title="Qualité d'Images"
+            description="Haute, Moyenne, Basse"
+            left={() => <List.Icon icon="image-outline" />}
+            onPress={() => console.log('Animations')}
+            style={settingsStyles.listItem}
+          />
+          <List.Item
+            title="Notifications"
+            description="Push, Email"
+            left={() => <List.Icon icon="bell-outline" />}
+            onPress={() => console.log('Notification')}
+            style={settingsStyles.listItem}
+          />
+          <List.Item
+            title="Autre"
+            description="Version, Crédits, licenses etc"
+            left={() => <List.Icon icon="help-circle-outline" />}
+            onPress={() => console.log('Other')}
+            style={settingsStyles.listItem}
+          />
+        </List.Section>
+      </View>
+    );
+  }
 }
 
 export default SettingsHomeScreen;
-
-SettingsHomeScreen.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-};

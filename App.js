@@ -20,9 +20,6 @@ import Theme from './src/styles/Theme';
 
 enableScreens();
 
-// NOTE: Update @react-native-mapbox-gl to get rid of warning
-console.disableYellowBox = ['Animated:'];
-
 const Stack = createStackNavigator();
 
 const Store = createStore(Reducer);

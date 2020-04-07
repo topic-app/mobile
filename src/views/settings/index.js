@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 
 import { ListHeaderConfig } from '../components/Headers';
 import SettingsHomeScreen from './pages/SettingsList';
-import SettingsGeneralScreen from './pages/SettingsGeneral';
-import SettingsBehaviorScreen from './pages/SettingsBehavior';
-import SettingsAppearanceScreen from './pages/SettingsAppearance';
 
 const Stack = createStackNavigator();
 
@@ -20,33 +17,6 @@ function SettingsNavigator({ navigation }) {
           ...ListHeaderConfig,
           title: 'Paramètres',
           primary: () => navigation.pop(),
-          ...TransitionPresets.SlideFromRightIOS,
-        }}
-      />
-      <Stack.Screen
-        name="SettingsGeneral"
-        component={SettingsGeneralScreen}
-        options={{
-          ...ListHeaderConfig,
-          title: 'General',
-          ...TransitionPresets.SlideFromRightIOS,
-        }}
-      />
-      <Stack.Screen
-        name="SettingsBehavior"
-        component={SettingsBehaviorScreen}
-        options={{
-          ...ListHeaderConfig,
-          title: 'Behavior',
-          ...TransitionPresets.SlideFromRightIOS,
-        }}
-      />
-      <Stack.Screen
-        name="SettingsAppearance"
-        component={SettingsAppearanceScreen}
-        options={{
-          ...ListHeaderConfig,
-          title: 'Appearance',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />

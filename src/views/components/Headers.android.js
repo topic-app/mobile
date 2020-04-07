@@ -71,14 +71,14 @@ class CustomHeaderBar extends React.Component {
       ));
     }
 
-    const MORE_ICON = Platform === 'ios' ? 'dots-horizontal' : 'dots-vertical';
-
     const overflowAction =
       overflow !== undefined ? (
         <Menu
           visible={menuVisible}
           onDismiss={this.closeMenu}
-          anchor={<Appbar.Action icon={MORE_ICON} onPress={this.openMenu} color={colors.text} />}
+          anchor={
+            <Appbar.Action icon="dots-vertical" onPress={this.openMenu} color={colors.text} />
+          }
           statusBarHeight={StatusBar.currentHeight}
         >
           {overflow.map((item, key) => (
@@ -213,8 +213,8 @@ const springConfig = {
     damping: 1000,
     mass: 3,
     overshootClamping: true,
-    restDisplacementThreshold: 0.01,
-    restSpeedThreshold: 0.01,
+    restDisplacementThreshold: 10,
+    restSpeedThreshold: 10,
     stiffness: 900,
   },
 };

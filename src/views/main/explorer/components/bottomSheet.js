@@ -98,8 +98,8 @@ class BottomSheet extends React.Component {
       this.dragY.setValue(0);
       Animated.spring(this.translateYOffset, {
         velocity: velocityY,
-        tension: 68,
-        friction: 11,
+        tension: 50,
+        friction: 8,
         toValue: destSnapPoint,
         useNativeDriver: true,
       }).start();
