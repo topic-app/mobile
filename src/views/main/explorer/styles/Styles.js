@@ -16,8 +16,7 @@ const explorerStyles = StyleSheet.create({
     },
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
-
-    elevation: 4,
+    elevation: 5,
     backgroundColor: colors.background,
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -80,6 +79,14 @@ const explorerStyles = StyleSheet.create({
     backgroundColor: isDark ? '#44444466' : '#ffffff66',
     bottom: 0,
     right: 0,
+  },
+  fab: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    marginBottom: 25,
+    marginRight: 15,
+    elevation: 3,
   },
 });
 

@@ -65,6 +65,11 @@ const styles = StyleSheet.create({
     color: '#005ccc',
     textDecorationLine: 'underline',
   },
+  divider: {
+    height: 1.5,
+    marginVertical: 10,
+    borderRadius: 20,
+  },
 });
 
 export { styles, colors, isDark };

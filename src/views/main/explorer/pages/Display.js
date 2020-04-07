@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import { Text } from 'react-native-paper';
 
 import places from '../data/testExplorerLocations.json';
 

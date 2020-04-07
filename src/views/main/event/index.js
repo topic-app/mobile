@@ -3,12 +3,9 @@ import { Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { ListHeaderConfig, DisplayHeaderConfig } from '../../components/Headers';
 import EventListScreen from './pages/List';
 import EventDisplayScreen from './pages/Display';
-import { CustomHeaderBar } from '../../components/Tools';
-
-import { styles } from '../../../styles/Styles';
-import { navigatorStyles } from '../../../styles/navigatorStyles';
 
 const Stack = createStackNavigator();
 
@@ -18,28 +15,18 @@ function EventNavigator({ navigation }) {
       <Stack.Screen
         name="EventList"
         component={EventListScreen}
-        options={
-          Platform.OS === 'ios'
-            ? {
-                title: 'Évènements',
-                headerStyle: navigatorStyles.header,
-                headerTitleStyle: styles.text,
-              }
-            : {
-                title: 'Évènements',
-                drawer: true,
-                actions: [
-                  {
-                    icon: 'magnify',
-                    onPress: () => navigation.navigate('Search', { initialCategory: 'Event' }),
-                  },
-                ],
-                overflow: [{ title: 'More', onPress: () => console.log('more') }],
-                header: ({ scene, previous, navigation }) => (
-                  <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
-                ),
-              }
-        }
+        options={{
+          ...ListHeaderConfig,
+          title: 'Évènements',
+          drawer: true,
+          actions: [
+            {
+              icon: 'magnify',
+              onPress: () => navigation.navigate('Search', { initialCategory: 'Event' }),
+            },
+          ],
+          overflow: [{ title: 'More', onPress: () => console.log('more') }],
+        }}
       />
       <Stack.Screen
         name="EventDisplay"
@@ -47,17 +34,13 @@ function EventNavigator({ navigation }) {
         options={
           Platform.OS === 'ios'
             ? ({ route }) => ({
+                ...DisplayHeaderConfig,
                 title: route.params.title,
-                headerStyle: navigatorStyles.header,
-                headerTitleStyle: styles.text,
-                headerBackTitleStyle: styles.text,
               })
             : ({ route }) => ({
+                ...DisplayHeaderConfig,
                 title: 'Évènements',
                 subtitle: route.params.title,
-                header: ({ scene, previous, navigation }) => (
-                  <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
-                ),
               })
         }
       />
@@ -70,5 +53,6 @@ export default EventNavigator;
 EventNavigator.propTypes = {
   navigation: PropTypes.shape({
     openDrawer: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
   }).isRequired,
 };

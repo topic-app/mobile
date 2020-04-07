@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 
-import { CustomHeaderBar } from '../components/Tools';
+import { ListHeaderConfig } from '../components/Headers';
 import SettingsHomeScreen from './pages/SettingsList';
 import SettingsGeneralScreen from './pages/SettingsGeneral';
 import SettingsBehaviorScreen from './pages/SettingsBehavior';
@@ -17,11 +17,9 @@ function SettingsNavigator({ navigation }) {
         name="SettingsList"
         component={SettingsHomeScreen}
         options={{
+          ...ListHeaderConfig,
           title: 'Paramètres',
           primary: () => navigation.pop(),
-          header: ({ scene, previous, navigation }) => (
-            <CustomHeaderBar scene={scene} navigation={navigation} previous={previous} />
-          ),
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -29,10 +27,8 @@ function SettingsNavigator({ navigation }) {
         name="SettingsGeneral"
         component={SettingsGeneralScreen}
         options={{
+          ...ListHeaderConfig,
           title: 'General',
-          header: ({ scene, previous, navigation }) => (
-            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
-          ),
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -40,10 +36,8 @@ function SettingsNavigator({ navigation }) {
         name="SettingsBehavior"
         component={SettingsBehaviorScreen}
         options={{
+          ...ListHeaderConfig,
           title: 'Behavior',
-          header: ({ scene, previous, navigation }) => (
-            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
-          ),
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -51,10 +45,8 @@ function SettingsNavigator({ navigation }) {
         name="SettingsAppearance"
         component={SettingsAppearanceScreen}
         options={{
+          ...ListHeaderConfig,
           title: 'Appearance',
-          header: ({ scene, previous, navigation }) => (
-            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
-          ),
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -68,5 +60,6 @@ SettingsNavigator.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
+    pop: PropTypes.func.isRequired,
   }).isRequired,
 };

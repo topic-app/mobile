@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Linking, StatusBar } from 'react-native';
+import { View, Linking, StatusBar } from 'react-native';
+import { Text, FAB } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import * as Location from 'expo-location';
@@ -17,7 +18,7 @@ MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 class ExplorerComponentShowMap extends React.Component {
   constructor(props) {
     super(props);
-    this.onIconPress = this.onIconPress.bind(this);
+    this.onMarkerPress = this.onMarkerPress.bind(this);
     this.state = {
       data: {
         id: '',
@@ -33,7 +34,7 @@ class ExplorerComponentShowMap extends React.Component {
     this.getLocationAsync();
   }
 
-  onIconPress({ features }) {
+  onMarkerPress({ features }) {
     const feature = features[0];
     const { coordinates } = feature.geometry;
     ExplorerComponentShowMap.camera.moveTo(coordinates, 100);
@@ -141,7 +142,7 @@ class ExplorerComponentShowMap extends React.Component {
           <MapboxGL.ShapeSource
             id="markerShapeSource"
             shape={featureCollection}
-            onPress={this.onIconPress}
+            onPress={this.onMarkerPress}
           >
             <MapboxGL.SymbolLayer
               id="1"
@@ -154,7 +155,7 @@ class ExplorerComponentShowMap extends React.Component {
               style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
             />
           </MapboxGL.ShapeSource>
-          <MapboxGL.ShapeSource id="secretShapeSource" shape={secret} onPress={this.onIconPress}>
+          <MapboxGL.ShapeSource id="secretShapeSource" shape={secret} onPress={this.onMarkerPress}>
             <MapboxGL.SymbolLayer
               id="3"
               minZoomLevel={19}
@@ -163,26 +164,6 @@ class ExplorerComponentShowMap extends React.Component {
           </MapboxGL.ShapeSource>
           {userLocation ? <MapboxGL.UserLocation visible animated /> : null}
         </MapboxGL.MapView>
-        <View style={explorerStyles.attributionContainer}>
-          <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
-          <Text
-            onPress={() => Linking.openURL('https://openmaptiles.org/')}
-            style={[styles.link, explorerStyles.attribution]}
-          >
-            OpenMapTiles
-          </Text>
-          <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
-          <Text
-            onPress={() => Linking.openURL('https://www.openstreetmap.org/copyright')}
-            style={[styles.link, explorerStyles.attribution]}
-          >
-            OpenStreetMap
-          </Text>
-          <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}>
-            {' '}
-            contributors{' '}
-          </Text>
-        </View>
         <Modal
           supportedOrientations={['portrait', 'landscape']}
           isVisible={isModalVisible}
@@ -194,9 +175,40 @@ class ExplorerComponentShowMap extends React.Component {
         >
           <LocationModalContents data={data} hideModal={this.hideModal} />
         </Modal>
+        <FAB
+          style={explorerStyles.fab}
+          icon="crosshairs-gps"
+          onPress={() => console.log('Pressed')}
+        />
+        <ExplorerAttribution />
       </View>
     );
   }
+}
+
+function ExplorerAttribution() {
+  return (
+    <View style={explorerStyles.attributionContainer}>
+      <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
+      <Text
+        onPress={() => Linking.openURL('https://openmaptiles.org/')}
+        style={[styles.link, explorerStyles.attribution]}
+      >
+        OpenMapTiles
+      </Text>
+      <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
+      <Text
+        onPress={() => Linking.openURL('https://www.openstreetmap.org/copyright')}
+        style={[styles.link, explorerStyles.attribution]}
+      >
+        OpenStreetMap
+      </Text>
+      <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}>
+        {' '}
+        contributors{' '}
+      </Text>
+    </View>
+  );
 }
 
 export default ExplorerComponentShowMap;
@@ -223,6 +235,5 @@ ExplorerComponentShowMap.propTypes = {
       sw: PropTypes.arrayOf(PropTypes.number).isRequired,
     }),
   }).isRequired,
-  navigate: PropTypes.func.isRequired,
   tileServerUrl: PropTypes.string.isRequired,
 };

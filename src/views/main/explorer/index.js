@@ -4,7 +4,7 @@ import { View, Platform } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { CustomHeaderBar } from '../../components/Tools';
+import { ListHeaderConfig } from '../../components/Headers';
 import ExplorerListScreen from './pages/List';
 import ExplorerDisplayScreen from './pages/Display';
 
@@ -34,17 +34,23 @@ function ExplorerNavigator({ navigation }) {
                     />
                   </View>
                 )
-              : undefined,
+              : null,
         }}
       />
       <Stack.Screen
         name="ExplorerDisplay"
         component={ExplorerDisplayScreen}
         options={{
+          ...ListHeaderConfig,
           title: 'Explorer:  Display',
-          header: ({ scene, previous, navigation }) => (
-            <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
-          ),
+          drawer: true,
+          actions: [
+            {
+              icon: 'magnify',
+              onPress: () => navigation.navigate('Search', { initialCategory: 'Explorer' }),
+            },
+          ],
+          overflow: [{ title: 'More', onPress: () => console.log('more') }],
         }}
       />
     </Stack.Navigator>
@@ -56,5 +62,6 @@ export default ExplorerNavigator;
 ExplorerNavigator.propTypes = {
   navigation: PropTypes.shape({
     openDrawer: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
   }).isRequired,
 };

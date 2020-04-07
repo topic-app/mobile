@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, ScrollView } from 'react-native';
+import { View, Image, ScrollView } from 'react-native';
+import { Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -26,7 +27,7 @@ function EventDisplayScreen({ route, events }) {
           <TagFlatlist item={event} />
         </View>
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>{event.description}</Text>
+          <Text>{event.description}</Text>
         </View>
       </ScrollView>
     </View>
