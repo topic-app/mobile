@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Linking, StatusBar } from 'react-native';
+import { View, Linking, StatusBar, Platform } from 'react-native';
 import { Text, FAB } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import RNLocation from 'react-native-location';
 
 import LocationModalContents from './locationModal';
 import { getImageName, markerImages } from '../utils/getAssetColor';
@@ -14,8 +15,13 @@ import { styles } from '../../../../styles/Styles';
 import explorerStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
+RNLocation.configure({
+  androidProvider: 'standard',
+});
 
 class ExplorerComponentShowMap extends React.Component {
+  camera = React.createRef();
+
   constructor(props) {
     super(props);
     this.onMarkerPress = this.onMarkerPress.bind(this);
@@ -27,17 +33,38 @@ class ExplorerComponentShowMap extends React.Component {
       },
       isModalVisible: false,
       userLocation: false,
+      fabVisible: false,
     };
-  }
 
-  async componentDidMount() {
-    this.getLocationAsync();
+    // Check if Location is requestable
+    // If it is, then show the FAB to go to location
+    check(
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    )
+      .then((result) => {
+        switch (result) {
+          case RESULTS.GRANTED: // Location granted
+            this.setState({ fabVisible: true });
+            this.setState({ userLocation: true });
+            break;
+          case RESULTS.DENIED: // Location not yet requested / can still ask
+            this.setState({ fabVisible: true });
+            break;
+          default:
+            console.warn('Location unavailable / blocked');
+        }
+      })
+      .catch((error) => {
+        console.error('Error while checking location\n', error);
+      });
   }
 
   onMarkerPress({ features }) {
     const feature = features[0];
     const { coordinates } = feature.geometry;
-    ExplorerComponentShowMap.camera.moveTo(coordinates, 100);
+    this.camera.current.moveTo(coordinates, 100);
     this.setState({
       data: {
         id: feature.id,
@@ -48,23 +75,30 @@ class ExplorerComponentShowMap extends React.Component {
     });
   }
 
-  goTo = (lng, lat, zoom, animationTime) => {
-    ExplorerComponentShowMap.camera.setCamera({
-      centerCoordinate: [lng, lat],
-      zoomLevel: zoom,
-      animationDuration: animationTime,
-    });
-  };
-
-  getLocationAsync = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      console.warn('Location Permission Denied, skipping recenter of map.');
-    } else {
-      this.setState({ userLocation: true });
-      const location = await Location.getCurrentPositionAsync({});
-      this.goTo(location.coords.longitude, location.coords.latitude, 11, 0);
-    }
+  requestUserLocation = () => {
+    request(
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    )
+      .then((result) => {
+        if (result === RESULTS.GRANTED) {
+          this.setState({ userLocation: true });
+          RNLocation.getLatestLocation({ timeout: 60000 }).then((location) => {
+            const { longitude, latitude } = location;
+            this.camera.current.setCamera({
+              centerCoordinate: [longitude, latitude],
+              zoomLevel: 11,
+              animationDuration: 700,
+            });
+          });
+        } else {
+          this.setState({ fabVisible: false });
+        }
+      })
+      .catch((error) => {
+        console.error('Error while requesting location\n', error);
+      });
   };
 
   hideModal = () => {
@@ -112,7 +146,7 @@ class ExplorerComponentShowMap extends React.Component {
     });
 
     const { map, tileServerUrl } = this.props;
-    const { data, isModalVisible, userLocation } = this.state;
+    const { data, isModalVisible, userLocation, fabVisible } = this.state;
 
     return (
       <View style={{ flex: 1 }}>
@@ -130,9 +164,7 @@ class ExplorerComponentShowMap extends React.Component {
           }}
         >
           <MapboxGL.Camera
-            ref={(c) => {
-              ExplorerComponentShowMap.camera = c;
-            }}
+            ref={this.camera}
             maxBounds={map.bounds}
             minZoomLevel={map.minZoom}
             maxZoomLevel={map.maxZoom}
@@ -162,7 +194,7 @@ class ExplorerComponentShowMap extends React.Component {
               style={{ iconImage: ['get', 'icon'], iconSize: 1 }}
             />
           </MapboxGL.ShapeSource>
-          {userLocation ? <MapboxGL.UserLocation visible animated /> : null}
+          <MapboxGL.UserLocation visible={userLocation} animated />
         </MapboxGL.MapView>
         <Modal
           supportedOrientations={['portrait', 'landscape']}
@@ -175,11 +207,24 @@ class ExplorerComponentShowMap extends React.Component {
         >
           <LocationModalContents data={data} hideModal={this.hideModal} />
         </Modal>
-        <FAB
-          style={explorerStyles.fab}
-          icon="crosshairs-gps"
-          onPress={() => console.log('Pressed')}
-        />
+
+        {fabVisible ? (
+          <View
+            style={{
+              zIndex: 0,
+              position: 'absolute',
+              right: 0,
+              bottom: 0,
+            }}
+          >
+            <FAB
+              style={explorerStyles.fab}
+              icon="crosshairs-gps"
+              onPress={this.requestUserLocation}
+            />
+          </View>
+        ) : null}
+
         <ExplorerAttribution />
       </View>
     );
