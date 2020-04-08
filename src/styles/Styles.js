@@ -24,9 +24,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
     elevation: 1,
+    // borderWidth: 0.5,
+    borderColor: colors.outline,
     marginTop: 10,
     marginHorizontal: 10,
     overflow: 'hidden',
+    margin: 0,
   },
   thumbnail: {
     backgroundColor: colors.image,

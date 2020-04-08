@@ -11,8 +11,8 @@ import RNLocation from 'react-native-location';
 import LocationModalContents from './locationModal';
 import { getImageName, markerImages } from '../utils/getAssetColor';
 
-import { styles } from '../../../../styles/Styles';
-import explorerStyles from '../styles/Styles';
+import { styles, colors } from '../../../../styles/Styles';
+import { explorerStyles } from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 RNLocation.configure({
@@ -219,6 +219,7 @@ class ExplorerComponentShowMap extends React.Component {
           >
             <FAB
               style={explorerStyles.fab}
+              color={colors.primary}
               icon="crosshairs-gps"
               onPress={this.requestUserLocation}
             />

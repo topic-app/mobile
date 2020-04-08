@@ -5,15 +5,15 @@ import { colors } from './Theme';
 const navigatorStyles = StyleSheet.create({
   profileIconContainer: {
     flex: 1,
-    flexDirection: 'row',
-    padding: 10,
-    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   drawerStyle: {
     backgroundColor: colors.background,
   },
   title: {
-    paddingHorizontal: 15,
+    marginRight: 60,
+    marginTop: 5,
     color: colors.text,
   },
   header: {
