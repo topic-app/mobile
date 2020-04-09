@@ -16,7 +16,7 @@ function SettingsNavigator({ navigation }) {
         options={{
           ...ListHeaderConfig,
           title: 'Paramètres',
-          primary: () => navigation.pop(),
+          primary: () => navigation.goBack(),
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />

@@ -27,7 +27,7 @@ function TabsNavigator() {
           } else if (route.name === 'Petitions') {
             iconName = 'comment-check-outline';
           } else if (route.name === 'Explorer') {
-            iconName = 'compass';
+            iconName = 'compass-outline';
           } else if (route.name === 'Event') {
             iconName = 'calendar';
           }

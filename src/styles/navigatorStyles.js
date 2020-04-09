@@ -1,20 +1,11 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, StatusBar } from 'react-native';
 
-import { colors } from './Theme';
+import { colors } from './Styles';
 
 const navigatorStyles = StyleSheet.create({
-  profileIconContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  drawerStyle: {
-    backgroundColor: colors.background,
-  },
   title: {
-    marginRight: 60,
     marginTop: 5,
-    color: colors.text,
+    color: colors.onDrawerBackground,
   },
   header: {
     backgroundColor: colors.appBar,
@@ -30,6 +21,23 @@ const navigatorStyles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
+  },
+
+  // Drawer styles
+  profileIconContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  profileBackground: {
+    backgroundColor: colors.drawerBackground,
+    paddingTop: StatusBar.currentHeight,
+  },
+  drawerStyle: {
+    backgroundColor: colors.surface,
+  },
+  avatar: {
+    elevation: 3,
   },
 });
 
