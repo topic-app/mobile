@@ -21,7 +21,7 @@ function ArticleListScreen({ navigation, articles, state }) {
         data={articles}
         refreshing={state.refreshing}
         onRefresh={() => updateArticles()}
-        keyExtractor={(article) => article.articleId}
+        keyExtractor={(article) => article._id}
         ListFooterComponent={
           <View style={styles.container}>
             <Button style={styles.text}>Retour en haut</Button>
