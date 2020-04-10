@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Platform, View, Image } from 'react-native';
 import { Card, Paragraph, Text } from 'react-native-paper';
 import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
-import TagFlatlist from '../../../components/Tags';
+import moment from 'moment';
 
+import TagFlatlist from '../../../components/Tags';
 import { styles } from '../../../../styles/Styles';
 
 function ActuComponentListCard({ article, navigate }) {
@@ -44,6 +45,7 @@ function ActuComponentListCard({ article, navigate }) {
                 }}
               >
                 <Text style={styles.cardTitle}>{article.title}</Text>
+                <Text style={styles.subtitle}>Publié {moment(article.date).fromNow()}</Text>
                 <Paragraph style={styles.text}>{article.summary}</Paragraph>
               </View>
             </View>
@@ -62,9 +64,9 @@ export default ActuComponentListCard;
 ActuComponentListCard.propTypes = {
   article: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    time: PropTypes.string.isRequired,
     thumbnailUrl: PropTypes.string,
     summary: PropTypes.string,
+    date: PropTypes.string.isRequired,
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };
