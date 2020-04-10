@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StatusBar, View, Platform } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { Appbar, Menu } from 'react-native-paper';
 import { TransitionPresets } from '@react-navigation/stack';
 
