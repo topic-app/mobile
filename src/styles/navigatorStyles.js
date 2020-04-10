@@ -3,10 +3,6 @@ import { StyleSheet, StatusBar } from 'react-native';
 import { colors } from './Styles';
 
 const navigatorStyles = StyleSheet.create({
-  title: {
-    marginTop: 5,
-    color: colors.onDrawerBackground,
-  },
   header: {
     backgroundColor: colors.appBar,
     elevation: 1,
@@ -24,6 +20,10 @@ const navigatorStyles = StyleSheet.create({
   },
 
   // Drawer styles
+  title: {
+    marginTop: 5,
+    color: colors.drawerContent,
+  },
   profileIconContainer: {
     paddingHorizontal: 20,
     paddingTop: 20,

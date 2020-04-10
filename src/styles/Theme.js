@@ -1,6 +1,6 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
-const selectedTheme = 'dark';
+const selectedTheme = 'light';
 
 const common = {
   roundness: 5,
@@ -23,7 +23,7 @@ const lightBase = {
     appBar: '#ffffff',
     tabBackground: '#ffffff',
     drawerBackground: '#ffffff',
-    onDrawerBackground: '#000000',
+    drawerContent: '#000000',
     background: '#fcfcfc',
     softContrast: '#999999',
     highlight: '#fdfdfd',
@@ -46,7 +46,7 @@ const darkBase = {
     appBar: '#242529',
     tabBackground: '#242529',
     drawerBackground: '#242529',
-    onDrawerBackground: '#ffffff',
+    drawerContent: '#ffffff',
     softContrast: '#434343',
     highlight: '#303030',
     outline: '#343434',
@@ -67,7 +67,7 @@ const themes = {
       appBar: common.colors.primary,
       // Optional: defines text color on drawer background, default is
       drawerBackground: common.colors.primaryLighter,
-      onDrawerBackground: darkBase.colors.text,
+      drawerContent: darkBase.colors.text,
     },
   },
   light: lightBase,
