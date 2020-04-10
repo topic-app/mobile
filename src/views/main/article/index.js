@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { ListHeaderConfig, DisplayHeaderConfig } from '../../components/Headers';
-import ActuListScreen from './pages/List';
+import ArticleListScreen from './pages/List';
 import ArticleDisplayScreen from './pages/Display';
 
 const Stack = createStackNavigator();
@@ -14,7 +14,7 @@ function ActuNavigator({ navigation }) {
     <Stack.Navigator initialRouteName="ArticleList">
       <Stack.Screen
         name="ArticleList"
-        component={ActuListScreen}
+        component={ArticleListScreen}
         options={{
           ...ListHeaderConfig,
           title: Platform.OS === 'ios' ? 'Actualités' : 'Actus',

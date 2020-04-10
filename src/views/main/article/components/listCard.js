@@ -44,7 +44,7 @@ function ActuComponentListCard({ article, navigate }) {
                 }}
               >
                 <Text style={styles.cardTitle}>{article.title}</Text>
-                <Paragraph style={styles.text}>{article.description}</Paragraph>
+                <Paragraph style={styles.text}>{article.summary}</Paragraph>
               </View>
             </View>
           </Card.Content>
@@ -64,11 +64,7 @@ ActuComponentListCard.propTypes = {
     title: PropTypes.string.isRequired,
     time: PropTypes.string.isRequired,
     thumbnailUrl: PropTypes.string,
-    description: PropTypes.string,
-    content: PropTypes.shape({
-      parser: PropTypes.string.isRequired,
-      data: PropTypes.string.isRequired,
-    }).isRequired,
+    summary: PropTypes.string,
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };

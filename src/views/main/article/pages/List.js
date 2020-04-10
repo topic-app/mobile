@@ -3,18 +3,24 @@ import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
-import ActuComponentListCard from '../components/listCard';
+import ArticleComponentListCard from '../components/listCard';
+import { updateArticles } from '../../../../redux/actions/articles';
 
 import { styles } from '../../../../styles/Styles';
 
-function ActuListScreen({ navigation, articles }) {
+function ArticleListScreen({ navigation, articles, state }) {
+  React.useEffect(() => {
+    updateArticles();
+  }, []);
+
   return (
     <View style={styles.page}>
       <FlatList
         data={articles}
-        refreshing={false}
-        onRefresh={() => console.log('Refresh')}
+        refreshing={state.refreshing}
+        onRefresh={() => updateArticles()}
         keyExtractor={(article) => article.articleId}
         ListFooterComponent={
           <View style={styles.container}>
@@ -22,11 +28,11 @@ function ActuListScreen({ navigation, articles }) {
           </View>
         }
         renderItem={(article) => (
-          <ActuComponentListCard
+          <ArticleComponentListCard
             article={article.item}
             navigate={() =>
               navigation.navigate('ArticleDisplay', {
-                id: article.item.articleId,
+                id: article.item._id,
                 title: article.item.title,
               })
             }
@@ -39,25 +45,25 @@ function ActuListScreen({ navigation, articles }) {
 
 const mapStateToProps = (state) => {
   const { articles } = state;
-  return { articles };
+  return { articles: articles.data, state: articles.state };
 };
 
-export default connect(mapStateToProps)(ActuListScreen);
+export default connect(mapStateToProps)(ArticleListScreen);
 
-ActuListScreen.propTypes = {
+ArticleListScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
   articles: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
-      time: PropTypes.string.isRequired,
+      date: PropTypes.string.isRequired,
       thumbnailUrl: PropTypes.string,
       description: PropTypes.string,
-      content: PropTypes.shape({
-        parser: PropTypes.string.isRequired,
-        data: PropTypes.string.isRequired,
-      }).isRequired,
     }).isRequired,
   ).isRequired,
+  state: PropTypes.shape({
+    refreshing: PropTypes.bool.isRequired,
+    success: PropTypes.bool,
+  }).isRequired,
 };

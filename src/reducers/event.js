@@ -6,7 +6,7 @@ function eventReducer(state = initialState, event) {
   switch (event.type) {
     case 'UPDATE_ARTICLES':
       //
-      console.log(state);
+      //console.log(state);
       return state;
     case 'CLEAR_DATABASE':
       return ['bye'];
