@@ -24,6 +24,34 @@ function genTagIcon(type) {
 function genTagData(item) {
   // TEMP: if to check for undefineds
   const data = [];
+
+  if (item.author) {
+    data.push({
+      type: 'author',
+      icon: 'account',
+      text: item.author.displayName,
+      id: item.author.userId,
+    });
+  } else if (item.publisher) {
+    const { type, user, group } = item.publisher;
+    if (type === 'group') {
+      data.push({
+        type: 'group',
+        avatar: group.thumbnailUrl || '',
+        icon: 'newspaper',
+        text: group.displayName,
+        id: group.groupId,
+      });
+    } else if (type === 'user') {
+      data.push({
+        type: 'author',
+        icon: 'account',
+        text: user.displayName,
+        id: user.userId,
+      });
+    }
+  }
+
   if (item.group) {
     data.push({
       type: 'group',
@@ -43,14 +71,7 @@ function genTagData(item) {
       })),
     );
   }
-  if (item.author) {
-    data.push({
-      type: 'author',
-      icon: 'account',
-      text: item.author.displayName,
-      id: item.author.userId,
-    });
-  }
+
   if (item.location) {
     if (item.location.global) {
       data.push({
@@ -148,7 +169,19 @@ TagFlatlist.propTypes = {
     author: PropTypes.shape({
       userId: PropTypes.string.isRequired,
       displayName: PropTypes.string.isRequired,
-    }).isRequired,
+    }),
+    publisher: PropTypes.shape({
+      type: PropTypes.string,
+      user: PropTypes.shape({
+        userId: PropTypes.string,
+        displayName: PropTypes.string,
+      }),
+      group: PropTypes.shape({
+        groupId: PropTypes.string,
+        displayName: PropTypes.string,
+        thumbnailUrl: PropTypes.string,
+      }),
+    }),
   }).isRequired,
 };
 

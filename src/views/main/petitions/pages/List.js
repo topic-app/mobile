@@ -3,17 +3,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import PetitionComponentListCard from '../components/listCard';
 
-import data from '../data/testDataList.json';
 import { styles } from '../../../../styles/Styles';
 
-function PetitionListScreen({ navigation }) {
+function PetitionListScreen({ navigation, petitions }) {
   return (
     <View style={styles.page}>
       <FlatList
-        data={data}
+        data={petitions}
         refreshing={false}
         onRefresh={() => console.log('Refresh: Need to make server request')}
         keyExtractor={(petition) => petition.petitionId}
@@ -25,7 +25,9 @@ function PetitionListScreen({ navigation }) {
         renderItem={(petition) => (
           <PetitionComponentListCard
             petition={petition.item}
-            navigate={() => navigation.navigate('petition', { id: petition.item.petitionId })}
+            navigate={() =>
+              navigation.navigate('PetitionDisplay', { id: petition.item.petitionId })
+            }
           />
         )}
       />
@@ -33,10 +35,16 @@ function PetitionListScreen({ navigation }) {
   );
 }
 
-export default PetitionListScreen;
+const mapStateToProps = (state) => {
+  const { petitions } = state;
+  return { petitions };
+};
+
+export default connect(mapStateToProps)(PetitionListScreen);
 
 PetitionListScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  petitions: PropTypes.arrayOf(PropTypes.shape() /* A faire */).isRequired,
 };
