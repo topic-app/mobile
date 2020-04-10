@@ -1,17 +1,7 @@
-import data from '../views/main/event/data/testDataList.json';
+import data from '../../views/main/event/data/testDataList.json';
 
 const initialState = data;
 
-<<<<<<< HEAD
-function eventReducer(state = initialState, event) {
-  switch (event.type) {
-    case 'UPDATE_ARTICLES':
-      //
-      //console.log(state);
-      return state;
-    case 'CLEAR_DATABASE':
-      return ['bye'];
-=======
 /**
  * @docs reducers
  * Reducer pour les evenements
@@ -27,7 +17,6 @@ function eventReducer(state = initialState, event) {
       return event.data;
     case 'CLEAR_EVENTS':
       return { events: [], state: state.state };
->>>>>>> Add docs to reducers
     default:
       return state;
   }

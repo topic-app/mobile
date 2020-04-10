@@ -5,12 +5,12 @@ import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import ActuComponentListCard from '../components/listCard';
+import ArticleComponentListCard from '../components/listCard';
 import { updateArticles } from '../../../../redux/actions/articles';
 
 import { styles } from '../../../../styles/Styles';
 
-function ActuListScreen({ navigation, articles, state }) {
+function ArticleListScreen({ navigation, articles, state }) {
   React.useEffect(() => {
     updateArticles();
   }, []);
@@ -20,7 +20,7 @@ function ActuListScreen({ navigation, articles, state }) {
       <FlatList
         data={articles}
         refreshing={state.refreshing}
-        onRefresh={() => {console.log(updateArticles());}}
+        onRefresh={() => updateArticles()}
         keyExtractor={(article) => article.articleId}
         ListFooterComponent={
           <View style={styles.container}>
@@ -28,10 +28,10 @@ function ActuListScreen({ navigation, articles, state }) {
           </View>
         }
         renderItem={(article) => (
-          <ActuComponentListCard
+          <ArticleComponentListCard
             article={article.item}
             navigate={() =>
-              navigation.navigate('ActuDisplay', {
+              navigation.navigate('ArticleDisplay', {
                 id: article.item._id,
                 title: article.item.title,
               })
@@ -48,9 +48,9 @@ const mapStateToProps = (state) => {
   return { articles: articles.data, state: articles.state };
 };
 
-export default connect(mapStateToProps)(ActuListScreen);
+export default connect(mapStateToProps)(ArticleListScreen);
 
-ActuListScreen.propTypes = {
+ArticleListScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

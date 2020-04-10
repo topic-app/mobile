@@ -1,4 +1,4 @@
-import data from '../views/main/article/data/testDataList.json';
+import data from '../../views/main/article/data/testDataList.json';
 
 const initialState = {data: [], state: { success: null, refreshing: false, error: null }};
 
