@@ -28,11 +28,7 @@ function ArticleDisplayScreen({ route, articles }) {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
-<<<<<<< HEAD:src/views/main/article/pages/Display.js
-            {article.time} par {/* article.group.displayName*/ article.content}
-=======
             {article.date} par {/*article.group.displayName*/ article.content}
->>>>>>> Change time into date:src/views/main/actus/pages/Display.js
           </Text>
         </View>
         <TagFlatlist item={article} />
