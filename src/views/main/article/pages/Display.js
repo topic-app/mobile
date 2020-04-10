@@ -1,40 +1,56 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Image, ScrollView } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, ProgressBar } from 'react-native-paper';
+import { View, ImageBackground, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
 import TagFlatlist from '../../../components/Tags';
 import { styles } from '../../../../styles/Styles';
-
 import { fetchArticle } from '../../../../redux/actions/articles';
+
 import Content from '../../../components/Content';
 
 function ArticleDisplayScreen({ route, articles }) {
   const { id } = route.params;
+  let article = {}
   React.useEffect(() => {
     console.log('componentDidMount display');
     fetchArticle(id);
   }, []);
 
-  const article = articles.find((t) => t.articleId === id);
+  article = articles.find((t) => t._id === id);
 
+  if (!article) { // This is when article has not been loaded in list, so we have absolutely no info
+    return (
+      <View style={styles.page}>
+        <Text>Loading</Text>
+      </View>
+    )
+  }
   return (
     <View style={styles.page}>
       <ScrollView>
         {article.imageUrl ? (
-          <Image source={{ uri: article.imageUrl }} style={[styles.image, { height: 250 }]} />
-        ) : null}
+          <ImageBackground source={{ uri: article.thumbnailUrl }} style={[styles.image, { height: 250 }]}>
+            { article.preload && (
+              <ProgressBar indeterminate />
+            )}
+          </ImageBackground>
+        ) : (article.preload && (
+          <ProgressBar indeterminate />
+        ))}
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
-            {article.date} par {/*article.group.displayName*/ article.content}
+            {article.date} par {article.group.displayName}
           </Text>
         </View>
         <TagFlatlist item={article} />
-        <View style={styles.contentContainer}>
-          <Content data={article.content.data} parser={article.content.parser} />
-        </View>
+        { !article.preload && (
+          <View style={styles.contentContainer}>
+            <Content data={article.content.data} parser={article.content.parser} />
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -42,7 +58,6 @@ function ArticleDisplayScreen({ route, articles }) {
 
 const mapStateToProps = (state) => {
   const { articles } = state;
-  console.log(articles)
   return { articles: articles.data, state: articles.state };
 };
 
