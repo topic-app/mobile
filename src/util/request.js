@@ -2,7 +2,7 @@ import axios from './axiosInstance';
 
 async function request(endpoint, method, params = {}, auth = false) {
   if (method === 'get') {
-    const res = await axios.get(endpoint)
+    const res = await axios.get(endpoint, { params })
     if (res.status === 200) {
       if (res.data.success === true) {
         return {

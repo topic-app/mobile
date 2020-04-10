@@ -32,7 +32,7 @@ function ActuListScreen({ navigation, articles, state }) {
             article={article.item}
             navigate={() =>
               navigation.navigate('ActuDisplay', {
-                id: article.item.articleId,
+                id: article.item._id,
                 title: article.item.title,
               })
             }

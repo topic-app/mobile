@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, ScrollView } from 'react-native';
+import { View, Text, ImageBackground, ScrollView } from 'react-native';
+import { ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import TagFlatlist from '../../../components/Tags';
@@ -10,27 +11,39 @@ import { fetchArticle } from '../../../../redux/actions/articles';
 
 function ActuDisplayScreen({ route, articles }) {
   const { id } = route.params;
+  let article = {};
   React.useEffect(() => {
-    console.log('componentDidMount display');
     fetchArticle(id);
   }, []);
 
-  const article = articles.find((t) => t.articleId === id);
-
+  article = articles.find((t) => t._id === id);
+  if (!article) { // This is when article has not been loaded in list, so we have absolutely no info
+    return (
+      <View style={styles.page}>
+        <Text>Loading</Text>
+      </View>
+    )
+  }
   return (
     <View style={styles.page}>
       <ScrollView>
-        <Image source={{ uri: article.thumbnailUrl }} style={[styles.image, { height: 250 }]} />
+        <ImageBackground source={{ uri: article.thumbnailUrl }} style={[styles.image, { height: 250 }]}>
+          { article.preload && (
+            <ProgressBar indeterminate />
+          )}
+        </ImageBackground>
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
-            {article.date} par {/*article.group.displayName*/ article.content}
+            {article.date} par {article.group.displayName}
           </Text>
         </View>
-        {/*<TagFlatlist item={article} />
-        <View style={styles.contentContainer}>
-          <Text style={styles.text}>{article.content.data}</Text>
-        </View>*/}
+        <TagFlatlist item={article} />
+        { !article.preload && (
+          <View style={styles.contentContainer}>
+            <Text style={styles.text}>{article.content.data}</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -38,7 +51,6 @@ function ActuDisplayScreen({ route, articles }) {
 
 const mapStateToProps = (state) => {
   const { articles } = state;
-  console.log(articles)
   return { articles: articles.data, state: articles.state };
 };
 
