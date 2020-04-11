@@ -152,7 +152,7 @@
       "type": "multiple",
       "opinions": [
         { "title": "Frites", "votes": 400 },
-        { "title": "Carrotes", "votes": 0 },
+        { "title": "Carottes", "votes": 0 },
         { "title": "Ferrari", "votes": 69 },
         { "title": "Glace", "votes": 7 }
       ]

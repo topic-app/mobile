@@ -62,19 +62,19 @@ function PetitionOpinion({ petition }) {
         <Text style={styles.cardTitle}>{petition.title}</Text>
       </View>
       <View>
-        <View>
-          <View style={{ marginTop: 10, marginHorizontal: 15, marginRight: 40 }}>
+        <View style={{ flexDirection: 'row', marginVertical: 4 }}>
+          <View style={{ marginLeft: 15 }}>
             <ProgressBar
               progress={petition.voteData.for / (petition.voteData.for + petition.voteData.against)}
               color="green"
             />
           </View>
-          <View style={{ marginTop: -14, marginLeft: 340 }}>
-            <Text style={styles.text}> {petition.votes} </Text>
+          <View style={{ marginTop: -8 }}>
+            <Text style={styles.text}> {petition.voteData.for} </Text>
           </View>
         </View>
-        <View>
-          <View style={{ marginTop: 10, marginHorizontal: 15, marginRight: 40 }}>
+        <View style={{ flexDirection: 'row', marginVertical: 4 }}>
+          <View style={{ marginLeft: 15 }}>
             <ProgressBar
               progress={
                 petition.voteData.against / (petition.voteData.for + petition.voteData.against)
@@ -82,8 +82,8 @@ function PetitionOpinion({ petition }) {
               color="red"
             />
           </View>
-          <View style={{ marginTop: -14, marginLeft: 340 }}>
-            <Text style={styles.text}> {petition.votes} </Text>
+          <View style={{ marginTop: -7 }}>
+            <Text style={styles.text}> {petition.voteData.against} </Text>
           </View>
         </View>
       </View>
@@ -92,16 +92,28 @@ function PetitionOpinion({ petition }) {
 }
 
 function PetitionMultiple({ petition }) {
+  let total = 0;
+  petition.voteData.opinions.forEach((opinion) => {
+    total += opinion.votes;
+  });
   return (
     <View>
       <View style={{ marginLeft: 15 }}>
         <Text style={styles.cardTitle}>{petition.title}</Text>
       </View>
-      <View style={{ marginTop: 10, marginHorizontal: 15, marginRight: 40 }}>
-        <ProgressBar progress={petition.votes / petition.objective} color="#4c3e8e" />
-      </View>
-      <View style={{ marginTop: -14, marginLeft: 340 }}>
-        <Text style={styles.text}> {petition.votes} </Text>
+      <View>
+        <View>
+          {petition.voteData.opinions.map((opinion, key) => (
+            <View style={{ flexDirection: 'row' }}>
+              <View>
+                <Text style={styles.text}>{opinion.title}</Text>
+              </View>
+              <View>
+                <ProgressBar key={key} progress={opinion.votes / total} />
+              </View>
+            </View>
+          ))}
+        </View>
       </View>
     </View>
   );
