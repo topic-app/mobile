@@ -12,7 +12,7 @@ import Content from '../../../components/Content';
 
 function ArticleDisplayScreen({ route, articles }) {
   const { id } = route.params;
-  let article = {}
+  let article = {};
   React.useEffect(() => {
     console.log('componentDidMount display');
     fetchArticle(id);
@@ -20,33 +20,35 @@ function ArticleDisplayScreen({ route, articles }) {
 
   article = articles.find((t) => t._id === id);
 
-  if (!article) { // This is when article has not been loaded in list, so we have absolutely no info
+  if (!article) {
+    // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
         <Text>Loading</Text>
       </View>
-    )
+    );
   }
   return (
     <View style={styles.page}>
       <ScrollView>
         {article.imageUrl ? (
-          <ImageBackground source={{ uri: article.thumbnailUrl }} style={[styles.image, { height: 250 }]}>
-            { article.preload && (
-              <ProgressBar indeterminate />
-            )}
+          <ImageBackground
+            source={{ uri: article.thumbnailUrl }}
+            style={[styles.image, { height: 250 }]}
+          >
+            {article.preload && <ProgressBar indeterminate />}
           </ImageBackground>
-        ) : (article.preload && (
-          <ProgressBar indeterminate />
-        ))}
+        ) : (
+          article.preload && <ProgressBar indeterminate />
+        )}
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>
             {article.date} par {article.group.displayName}
           </Text>
         </View>
-        <TagFlatlist item={article} />
-        { !article.preload && (
+        <TagFlatlist type="article" item={article} />
+        {!article.preload && (
           <View style={styles.contentContainer}>
             <Content data={article.content.data} parser={article.content.parser} />
           </View>

@@ -24,7 +24,7 @@ function EventDisplayScreen({ route, events }) {
           </Text>
         </View>
         <View>
-          <TagFlatlist item={event} />
+          <TagFlatlist type="event" item={event} />
         </View>
         <View style={styles.contentContainer}>
           <Text>{event.description}</Text>

@@ -48,7 +48,7 @@ function EventComponentListCard({ event, navigate }) {
           </Card.Content>
           <Card.Content style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
             <View style={{ marginTop: 10 }}>
-              <TagFlatlist item={event} />
+              <TagFlatlist type="event" item={event} />
             </View>
           </Card.Content>
           <Card.Cover source={{ uri: event.thumbnailUrl }} />

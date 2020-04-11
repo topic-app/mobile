@@ -113,7 +113,7 @@ function PetitionComponentListCard({ navigate, petition }) {
       <Touchable onPress={navigate}>
         <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
           <View>{renderPetition(petition)}</View>
-          <TagFlatlist item={petition} />
+          <TagFlatlist type="petition" item={petition} />
           <View style={{ marginBottom: 10, marginLeft: 15 }}>
             <Text style={styles.text}> Fin dans {petition.duration} </Text>
           </View>
