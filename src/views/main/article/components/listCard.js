@@ -16,7 +16,11 @@ function ActuComponentListCard({ article, navigate }) {
       <Touchable onPress={navigate}>
         <View style={{ paddingTop: 10, paddingBottom: 5 }}>
           <Card.Content>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={styles.cardTitle}>{article.title}</Text>
+            <Text style={styles.subtitle}>Publié {moment(article.date).fromNow()}</Text>
+          </Card.Content>
+          <Card.Content style={{ marginTop: 10 }}>
+            <View style={{ flexDirection: 'row' }}>
               {article.thumbnailUrl ? (
                 <Image
                   source={{ uri: article.thumbnailUrl }}
@@ -44,8 +48,6 @@ function ActuComponentListCard({ article, navigate }) {
                   flex: 1,
                 }}
               >
-                <Text style={styles.cardTitle}>{article.title}</Text>
-                <Text style={styles.subtitle}>Publié {moment(article.date).fromNow()}</Text>
                 <Paragraph style={styles.text}>{article.summary}</Paragraph>
               </View>
             </View>
