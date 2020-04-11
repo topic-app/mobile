@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import TagFlatlist from '../../../components/Tags';
+import TagList from '../../../../components/TagList';
 import { styles } from '../../../../styles/Styles';
 
 function EventDisplay({ route, events }) {
@@ -24,7 +24,7 @@ function EventDisplay({ route, events }) {
           </Text>
         </View>
         <View>
-          <TagFlatlist item={event} />
+          <TagList type="event" item={event} />
         </View>
         <View style={styles.contentContainer}>
           <Text>{event.description}</Text>

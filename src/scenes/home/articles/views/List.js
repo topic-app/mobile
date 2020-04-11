@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
-import ArticleComponentListCard from '../components/listCard';
+import ArticleCard from '../components/Card';
 import { updateArticles } from '../../../../redux/actions/articles';
-
 import { styles } from '../../../../styles/Styles';
 
 function ArticleList({ navigation, articles, state }) {
@@ -21,14 +19,14 @@ function ArticleList({ navigation, articles, state }) {
         data={articles}
         refreshing={state.refreshing}
         onRefresh={() => updateArticles()}
-        keyExtractor={(article) => article.articleId}
+        keyExtractor={(article) => article._id}
         ListFooterComponent={
           <View style={styles.container}>
             <Button style={styles.text}>Retour en haut</Button>
           </View>
         }
         renderItem={(article) => (
-          <ArticleComponentListCard
+          <ArticleCard
             article={article.item}
             navigate={() =>
               navigation.navigate('ArticleDisplay', {

@@ -1,8 +1,13 @@
 import React from 'react';
+import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 function ImageDisplay() {
-  return <Text>Hello! I'm the Image Display!</Text>;
+  return (
+    <View>
+      <Text>Image Display!</Text>
+    </View>
+  );
 }
 
 export default ImageDisplay;

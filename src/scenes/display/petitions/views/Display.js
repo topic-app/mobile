@@ -1,7 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
 
 import { styles } from '../../../../styles/Styles';

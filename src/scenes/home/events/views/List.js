@@ -1,12 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button } from 'react-native-paper';
 import { View, FlatList } from 'react-native';
 import { styles } from '../../../../styles/Styles';
-import EventComponentListCard from '../components/listCard';
+import EventCard from '../components/Card';
 
-function EventListScreen({ navigation, events }) {
+function EventList({ navigation, events }) {
   return (
     <View style={styles.page}>
       <FlatList
@@ -20,7 +20,7 @@ function EventListScreen({ navigation, events }) {
           </View>
         }
         renderItem={(event) => (
-          <EventComponentListCard
+          <EventCard
             event={event.item}
             navigate={() =>
               navigation.navigate('EventDisplay', {
@@ -40,9 +40,9 @@ const mapStateToProps = (state) => {
   return { events };
 };
 
-export default connect(mapStateToProps)(EventListScreen);
+export default connect(mapStateToProps)(EventList);
 
-EventListScreen.propTypes = {
+EventList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

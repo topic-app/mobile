@@ -6,7 +6,7 @@ import { Avatar, Card, IconButton } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/fr';
 
-import TagFlatlist from '../../../components/Tags';
+import TagList from '../../../../components/TagList';
 import { styles, colors } from '../../../../styles/Styles';
 import eventStyles from '../styles/Styles';
 
@@ -29,7 +29,7 @@ function buildDateString(start, end) {
   return `Prévu - ${startDate.calendar()} (${startDate.fromNow()})`;
 }
 
-function EventComponentListCard({ event, navigate }) {
+function EventCard({ event, navigate }) {
   const { start, end } = event.duration;
 
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
@@ -48,7 +48,7 @@ function EventComponentListCard({ event, navigate }) {
           </Card.Content>
           <Card.Content style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
             <View style={{ marginTop: 10 }}>
-              <TagFlatlist item={event} />
+              <TagList type="event" item={event} />
             </View>
           </Card.Content>
           <Card.Cover source={{ uri: event.thumbnailUrl }} />
@@ -61,9 +61,9 @@ function EventComponentListCard({ event, navigate }) {
   );
 }
 
-export default EventComponentListCard;
+export default EventCard;
 
-EventComponentListCard.propTypes = {
+EventCard.propTypes = {
   event: PropTypes.shape({
     title: PropTypes.string.isRequired,
     duration: PropTypes.shape({

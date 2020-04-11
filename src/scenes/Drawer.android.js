@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Linking, FlatList } from 'react-native';
-
+import { View, Linking } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { Drawer, Avatar, Title } from 'react-native-paper';
 
-import TabsNavigator from './tabs.android';
+import BottomTabsNavigator from './home/BottomTabs';
 
-import { navigatorStyles } from '../../styles/navigatorStyles';
+import { navigatorStyles } from '../styles/NavStyles';
 
 const DrawerNav = createDrawerNavigator();
 
@@ -105,7 +104,7 @@ function DrawerNavigator() {
       drawerStyle={navigatorStyles.drawerStyle}
       edgeWidth={90}
     >
-      <DrawerNav.Screen name="Home" component={TabsNavigator} />
+      <DrawerNav.Screen name="Home" component={BottomTabsNavigator} />
     </DrawerNav.Navigator>
   );
 }

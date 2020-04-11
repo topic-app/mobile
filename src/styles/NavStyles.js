@@ -41,4 +41,5 @@ const navigatorStyles = StyleSheet.create({
   },
 });
 
-export { navigatorStyles, colors };
+export { navigatorStyles };
+export default navigatorStyles;

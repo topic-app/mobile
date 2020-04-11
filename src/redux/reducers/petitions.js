@@ -1,4 +1,4 @@
-import data from '../../views/main/petitions/data/testDataList.json';
+import data from '../../data/petitionListData.json';
 
 const initialState = data;
 

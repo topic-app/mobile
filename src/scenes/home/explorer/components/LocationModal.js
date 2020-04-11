@@ -5,9 +5,9 @@ import { View, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button, Divider, Text } from 'react-native-paper';
 
-import SwipeUpComponent from './bottomSheet';
-import places from '../data/testQueryResults.json';
-import explorerStyles from '../styles/Styles';
+import BottomSheet from './BottomSheet';
+import places from '../../../../data/explorerDisplayData.json';
+import { explorerStyles } from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
 import { styles } from '../../../../styles/Styles';
 
@@ -59,13 +59,13 @@ function checkLink(link, color) {
   return null;
 }
 
-function LocationModalContents({ data, hideModal }) {
+function LocationModal({ data, hideModal }) {
   const { icon, color } = genTagDecoration(data.type);
   const place = places[data.id];
 
   return (
     <View style={{ flex: 1 }}>
-      <SwipeUpComponent hideModal={hideModal}>
+      <BottomSheet hideModal={hideModal}>
         <View style={explorerStyles.modalContainer}>
           <View style={explorerStyles.pullUpTabContainer}>
             <View style={explorerStyles.pullUpTab} />
@@ -96,14 +96,14 @@ function LocationModalContents({ data, hideModal }) {
           </Text>
           {checkLink(place.link, color)}
         </View>
-      </SwipeUpComponent>
+      </BottomSheet>
     </View>
   );
 }
 
-export default LocationModalContents;
+export default LocationModal;
 
-LocationModalContents.propTypes = {
+LocationModal.propTypes = {
   data: PropTypes.shape({
     id: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,

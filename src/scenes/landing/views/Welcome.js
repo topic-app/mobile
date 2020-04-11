@@ -1,20 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, View } from 'react-native';
-import { TranslucentStatusBar } from '../../components/Headers';
+import { View } from 'react-native';
+import { Text } from 'react-native-paper';
+import { TranslucentStatusBar } from '../../../components/Header';
 
-function LandingWelcomeSearch({ navigation }) {
+function LandingWelcome({ navigation }) {
   return (
     <View>
       <TranslucentStatusBar />
-      <Button title="Login" onPress={() => navigation.navigate('Login')} />
+      <Text>Welcome to Topic!</Text>
     </View>
   );
 }
 
-export default LandingWelcomeSearch;
+export default LandingWelcome;
 
-LandingWelcomeSearch.propTypes = {
+LandingWelcome.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

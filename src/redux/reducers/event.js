@@ -1,4 +1,4 @@
-import data from '../../views/main/event/data/testDataList.json';
+import data from '../../data/eventListData.json';
 
 const initialState = data;
 

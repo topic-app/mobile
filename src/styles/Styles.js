@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { isDark, colors, theme } from './Theme';
+import { isDark, colors } from './Theme';
 
 const styles = StyleSheet.create({
   page: {

@@ -4,11 +4,10 @@ import { Text, ProgressBar } from 'react-native-paper';
 import { View, ImageBackground, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
-import TagFlatlist from '../../../components/Tags';
+import Content from '../../../../components/Content';
+import TagList from '../../../../components/TagList';
 import { styles } from '../../../../styles/Styles';
 import { fetchArticle } from '../../../../redux/actions/articles';
-
-import Content from '../../../components/Content';
 
 function ArticleDisplay({ route, articles }) {
   const { id } = route.params;
@@ -47,7 +46,7 @@ function ArticleDisplay({ route, articles }) {
             {article.date} par {article.group.displayName}
           </Text>
         </View>
-        <TagFlatlist item={article} />
+        <TagList type="article" item={article} />
         {!article.preload && (
           <View style={styles.contentContainer}>
             <Content data={article.content.data} parser={article.content.parser} />

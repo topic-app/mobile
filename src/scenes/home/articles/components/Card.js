@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Platform, View, Image } from 'react-native';
 import { Card, Paragraph, Text } from 'react-native-paper';
 import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
-import TagFlatlist from '../../../components/Tags';
+import moment from 'moment';
 
+import TagList from '../../../../components/TagList';
 import { styles } from '../../../../styles/Styles';
 
 function ActuComponentListCard({ article, navigate }) {
@@ -15,7 +16,10 @@ function ActuComponentListCard({ article, navigate }) {
       <Touchable onPress={navigate}>
         <View style={{ paddingTop: 10, paddingBottom: 5 }}>
           <Card.Content>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={styles.cardTitle}>{article.title}</Text>
+          </Card.Content>
+          <Card.Content style={{ marginTop: 5 }}>
+            <View style={{ flexDirection: 'row' }}>
               {article.thumbnailUrl ? (
                 <Image
                   source={{ uri: article.thumbnailUrl }}
@@ -43,13 +47,13 @@ function ActuComponentListCard({ article, navigate }) {
                   flex: 1,
                 }}
               >
-                <Text style={styles.cardTitle}>{article.title}</Text>
+                <Text style={styles.subtitle}>Publié {moment(article.date).fromNow()}</Text>
                 <Paragraph style={styles.text}>{article.summary}</Paragraph>
               </View>
             </View>
           </Card.Content>
           <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-            <TagFlatlist item={article} />
+            <TagList type="article" item={article} />
           </Card.Content>
         </View>
       </Touchable>
@@ -62,9 +66,9 @@ export default ActuComponentListCard;
 ActuComponentListCard.propTypes = {
   article: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    time: PropTypes.string.isRequired,
     thumbnailUrl: PropTypes.string,
     summary: PropTypes.string,
+    date: PropTypes.string.isRequired,
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };

@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StatusBar } from 'react-native';
 
-import { theme, colors } from '../../styles/Theme';
-import { navigatorStyles } from '../../styles/navigatorStyles';
-import { styles } from '../../styles/Styles';
+import { theme, colors } from '../styles/Theme';
+import { navigatorStyles } from '../styles/NavStyles';
+import { styles } from '../styles/Styles';
 
 function TranslucentStatusBar({ contentThemeName }) {
   let translucent = false;

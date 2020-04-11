@@ -4,11 +4,10 @@ import { Text, FAB } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import RNLocation from 'react-native-location';
 
-import LocationModalContents from './locationModal';
+import LocationModal from '../components/LocationModal';
 import { getImageName, markerImages } from '../utils/getAssetColor';
 
 import { styles, colors } from '../../../../styles/Styles';
@@ -19,7 +18,7 @@ RNLocation.configure({
   androidProvider: 'standard',
 });
 
-class ExplorerComponentShowMap extends React.Component {
+class ExplorerMap extends React.Component {
   camera = React.createRef();
 
   constructor(props) {
@@ -205,7 +204,7 @@ class ExplorerComponentShowMap extends React.Component {
           animationOutTiming={200} // We want it to dissapear fast
           style={explorerStyles.modal}
         >
-          <LocationModalContents data={data} hideModal={this.hideModal} />
+          <LocationModal data={data} hideModal={this.hideModal} />
         </Modal>
 
         {fabVisible ? (
@@ -257,9 +256,9 @@ function ExplorerAttribution() {
   );
 }
 
-export default ExplorerComponentShowMap;
+export default ExplorerMap;
 
-ExplorerComponentShowMap.propTypes = {
+ExplorerMap.propTypes = {
   places: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,

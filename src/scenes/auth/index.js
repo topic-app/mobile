@@ -1,23 +1,20 @@
 import React from 'react';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 
-import AuthLoginScreen from './pages/Create';
-import AuthCreateScreen from './pages/Login';
-
-import { ListHeaderConfig } from '../components/Headers';
+import AuthLoginScreen from './views/Create';
+import AuthCreateScreen from './views/Login';
+import AuthResetPasswordScreen from './views/ResetPassword';
 
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Login" screenOptions={{ gestureEnabled: false }}>
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="Login"
         component={AuthLoginScreen}
         options={{
           title: 'Se connecter',
-          ...ListHeaderConfig,
-          ...TransitionPresets.SlideFromRightIOS,
         }}
       />
       <Stack.Screen
@@ -25,8 +22,13 @@ function AuthNavigator() {
         component={AuthCreateScreen}
         options={{
           title: 'Créer un compte',
-          ...ListHeaderConfig,
-          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="ResetPassword"
+        component={AuthResetPasswordScreen}
+        options={{
+          title: 'Réinitialiser le mot de passe',
         }}
       />
     </Stack.Navigator>

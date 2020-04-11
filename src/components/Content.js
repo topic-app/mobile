@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Markdown from 'react-native-markdown-display';
 import MarkdownIt from 'react-native-markdown-display/src/MarkdownIt';
 
-import { styles } from '../../styles/Styles';
+import { styles } from '../styles/Styles';
 
 function Content({ parser, data }) {
   if (parser === 'markdown') {

@@ -3,7 +3,7 @@ import { View, StatusBar } from 'react-native';
 import { Text, Searchbar, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-import { styles } from '../../styles/Styles';
+import { styles } from '../../../styles/Styles';
 
 class Search extends React.Component {
   constructor(props) {

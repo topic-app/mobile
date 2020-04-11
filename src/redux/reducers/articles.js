@@ -1,6 +1,6 @@
-import data from '../../views/main/article/data/testDataList.json';
+import data from '../../data/articleListData.json';
 
-const initialState = {data: [], state: { success: null, refreshing: false, error: null }};
+const initialState = { data: [], state: { success: null, refreshing: false, error: null } };
 
 /**
  * @docs reducers

@@ -3,8 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
-import places from '../data/testExplorerLocations.json';
-import ExplorerComponentShowMap from '../components/mapMarkers';
+import places from '../../../../data/explorerListData.json';
+import ExplorerMap from './Map';
 
 import { isDark } from '../../../../styles/Styles';
 
@@ -18,10 +18,10 @@ const map = {
   bounds: { ne: [-6, 51.5], sw: [10, 41] },
 };
 
-function ExplorerListScreen({ navigation }) {
+function ExplorerList({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
-      <ExplorerComponentShowMap
+      <ExplorerMap
         tileServerUrl={`${tileServerUrl}/styles/${isDark ? 'dark' : 'light'}/style.json`}
         places={places}
         map={map}
@@ -31,9 +31,9 @@ function ExplorerListScreen({ navigation }) {
   );
 }
 
-export default ExplorerListScreen;
+export default ExplorerList;
 
-ExplorerListScreen.propTypes = {
+ExplorerList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

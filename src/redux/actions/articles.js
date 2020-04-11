@@ -1,5 +1,5 @@
 import Store from '../store';
-import request from '../../util/request'
+import request from '../../utils/request';
 
 /**
  * @docs actionCreators
@@ -18,62 +18,64 @@ function updateArticlesCreator(lastId = undefined) {
           loading: false,
           success: null,
           error: null,
+        },
+      },
+    });
+    request('articles/list', 'get', { lastId })
+      .then((result) => {
+        // console.log(`Result, ${JSON.stringify(result)}`)
+        const { data } = getState().articles; // The old articles, in redux db
+        result.data.articles.forEach((a) => {
+          const article = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = article;
+          } else {
+            data.push(article);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        if (result.success) {
+          return dispatch({
+            type: 'UPDATE_ARTICLES',
+            data: {
+              data,
+              state: {
+                refreshing: false,
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
         }
-      }
-    })
-    request('articles/list', 'get', { lastId }).then(result => {
-      // console.log(`Result, ${JSON.stringify(result)}`)
-      const { data } = getState().articles; // The old articles, in redux db
-      result.data.articles.forEach(a => {
-        const article = {...a, preload: true};
-        if (data.some(p => p._id === a._id)) {
-          data[data.map(p => p._id).indexOf(a._id)] = article;
-        } else {
-          data.push(article)
-        }
-      });
-      data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-      if (result.success) {
+        console.log(`Error, ${result}`);
         return dispatch({
           type: 'UPDATE_ARTICLES',
           data: {
-            data,
+            data: getState().articles.data,
             state: {
               refreshing: false,
               loading: false,
-              success: true,
-              error: null,
-            }
+              success: false,
+              error: 'server',
+            },
           },
         });
-      }
-      console.log(`Error, ${result}`);
-      return dispatch({
-        type: 'UPDATE_ARTICLES',
-        data: {
-          data: getState().articles.data,
-          state: {
-            refreshing: false,
-            loading: false,
-            success: false,
-            error: 'server'
-          }
-        }
+      })
+      .catch((err) => {
+        return dispatch({
+          type: 'UPDATE_ARTICLES',
+          data: {
+            data: getState().articles.data,
+            state: {
+              refreshing: false,
+              success: false,
+              loading: false,
+              error: err,
+            },
+          },
+        });
       });
-    }).catch((err) => {
-      return dispatch({
-        type: 'UPDATE_ARTICLES',
-        data: {
-          data: getState().articles.data,
-          state: {
-            refreshing: false,
-            success: false,
-            loading: false,
-            error: err,
-          }
-        }
-      });
-    })
   };
 }
 
@@ -94,61 +96,63 @@ function fetchArticleCreator(articleId) {
           loading: true,
           success: null,
           error: null,
+        },
+      },
+    });
+    request('articles/info', 'get', { articleId })
+      .then((result) => {
+        const { articles } = result.data;
+        const article = articles[0];
+        const { data } = getState().articles; // The old articles, in redux db
+        if (data.some((p) => p._id === article._id)) {
+          data[data.map((p) => p._id).indexOf(article._id)] = article;
+        } else {
+          data.push(article);
         }
-      }
-    })
-    request('articles/info', 'get', { articleId }).then(result => {
-      const { articles } = result.data;
-      const article = articles[0];
-      const { data } = getState().articles; // The old articles, in redux db
-      if (data.some(p => p._id === article._id)) {
-        data[data.map(p => p._id).indexOf(article._id)] = article;
-      } else {
-        data.push(article)
-      }
-      data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-      if (result.success) {
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        if (result.success) {
+          return dispatch({
+            type: 'UPDATE_ARTICLES',
+            data: {
+              data,
+              state: {
+                refreshing: false,
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+        }
+        console.log(`ERROR: ${result}`);
         return dispatch({
           type: 'UPDATE_ARTICLES',
           data: {
-            data,
+            data: getState().articles.data,
             state: {
               refreshing: false,
               loading: false,
-              success: true,
-              error: null,
-            }
+              success: false,
+              error: 'server',
+            },
           },
         });
-      }
-      console.log(`ERROR: ${result}`);
-      return dispatch({
-        type: 'UPDATE_ARTICLES',
-        data: {
-          data: getState().articles.data,
-          state: {
-            refreshing: false,
-            loading: false,
-            success: false,
-            error: 'server'
-          }
-        }
+      })
+      .catch((err) => {
+        console.log(`ERROR: ${err}`);
+        return dispatch({
+          type: 'UPDATE_ARTICLES',
+          data: {
+            data: getState().articles.data,
+            state: {
+              refreshing: false,
+              loading: false,
+              success: false,
+              error: err,
+            },
+          },
+        });
       });
-    }).catch((err) => {
-      console.log(`ERROR: ${err}`);
-      return dispatch({
-        type: 'UPDATE_ARTICLES',
-        data: {
-          data: getState().articles.data,
-          state: {
-            refreshing: false,
-            loading: false,
-            success: false,
-            error: err,
-          }
-        }
-      });
-    })
   };
 }
 
@@ -159,8 +163,8 @@ function fetchArticleCreator(articleId) {
  */
 function clearArticlesCreator() {
   return {
-    type: 'CLEAR_DATABASE'
-  }
+    type: 'CLEAR_DATABASE',
+  };
 }
 
 /**
@@ -168,7 +172,7 @@ function clearArticlesCreator() {
  * @param lastId L'id du dernier article, par ordre chronologique, de la liste d'articles/database redux
  */
 function updateArticles() {
-  console.log("Update articles")
+  console.log('Update articles');
   return Store.dispatch(updateArticlesCreator());
 }
 
@@ -177,7 +181,7 @@ function updateArticles() {
  * @param articleId L'id de l'article à récuperer
  */
 function fetchArticle(articleId) {
-  console.log(`Fetch article ${articleId}`)
+  console.log(`Fetch article ${articleId}`);
   return Store.dispatch(fetchArticleCreator(articleId));
 }
 
@@ -185,7 +189,7 @@ function fetchArticle(articleId) {
  * Vide la database redux complètement
  */
 function clearArticles() {
-  console.log("Clear articles")
+  console.log('Clear articles');
   return Store.dispatch(clearArticlesCreator());
 }
 

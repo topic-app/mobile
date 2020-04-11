@@ -1,35 +1,18 @@
 import React from 'react';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-import PropTypes from 'prop-types';
+import { createStackNavigator } from '@react-navigation/stack';
 
-import { ListHeaderConfig } from '../components/Headers';
-import SettingsHomeScreen from './pages/SettingsList';
+import SettingsList from './views/List';
+import SettingsThemeCreator from './views/ThemeCreator';
 
 const Stack = createStackNavigator();
 
-function SettingsNavigator({ navigation }) {
+function SettingsStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="SettingsList">
-      <Stack.Screen
-        name="SettingsList"
-        component={SettingsHomeScreen}
-        options={{
-          ...ListHeaderConfig,
-          title: 'Paramètres',
-          primary: () => navigation.goBack(),
-          ...TransitionPresets.SlideFromRightIOS,
-        }}
-      />
+    <Stack.Navigator initialRouteName="List" headerMode="none">
+      <Stack.Screen name="List" component={SettingsList} />
+      <Stack.Screen name="ThemeCreator" component={SettingsThemeCreator} />
     </Stack.Navigator>
   );
 }
 
-export default SettingsNavigator;
-
-SettingsNavigator.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-    pop: PropTypes.func.isRequired,
-  }).isRequired,
-};
+export default SettingsStackNavigator;
