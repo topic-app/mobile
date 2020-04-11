@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Platform, View, Text, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
 import { Card, ProgressBar } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import moment from 'moment';
 
 import TagFlatlist from '../../../components/Tags';
 import { styles } from '../../../../styles/Styles';
@@ -11,16 +12,16 @@ function PetitionGoalStatus({ petition: { objective, votes, title } }) {
   if (votes < objective) {
     return (
       <View style={{ marginTop: 10, marginHorizontal: 15 }}>
-        <Text style={styles.petitionCardTitle}>{title}</Text>
+        <Text style={styles.cardTitle}>{title}</Text>
       </View>
     );
   }
   return (
     <View>
-      <View style={{ marginTop: 10, marginHorizontal: 15, marginLeft: 30 }}>
-        <Text style={styles.petitionCardTitle}>{title}</Text>
+      <View style={{ marginTop: 10, marginHorizontal: 15, marginLeft: 40 }}>
+        <Text style={styles.cardTitle}>{title}</Text>
       </View>
-      <View style={{ marginTop: -23, marginLeft: 15 }}>
+      <View style={{ marginTop: -29, marginLeft: 15 }}>
         <MaterialCommunityIcons name="check" color="green" size={20} />
       </View>
     </View>
@@ -30,11 +31,11 @@ function PetitionGoalStatus({ petition: { objective, votes, title } }) {
 function PetitionSign({ petition }) {
   return (
     <View>
-      <View>
-        <Text style={styles.text}>{petition.title}</Text>
+      <View style={{ marginLeft: 15 }}>
+        <Text style={styles.cardTitle}>{petition.title}</Text>
       </View>
-      <View>
-        <Text style={styles.text}>{petition.voteData.votes}</Text>
+      <View style={{ marginLeft: 10 }}>
+        <Text style={styles.text}> Nombre de signatures: {petition.voteData.votes}</Text>
       </View>
     </View>
   );
@@ -45,7 +46,7 @@ function PetitionGoal({ petition }) {
     <View>
       <PetitionGoalStatus petition={petition} />
       <View style={{ marginTop: 10, marginHorizontal: 15, marginRight: 40 }}>
-        <ProgressBar progress={petition.votes / petition.objective} color="#4c3e8e" />
+        <ProgressBar progress={petition.voteData.votes / petition.voteData.goal} color="#4c3e8e" />
       </View>
       <View style={{ marginTop: -14, marginLeft: 340 }}>
         <Text style={styles.text}> {petition.votes} </Text>
@@ -57,8 +58,8 @@ function PetitionGoal({ petition }) {
 function PetitionOpinion({ petition }) {
   return (
     <View>
-      <View style={{ marginTop: 10, marginHorizontal: 15 }}>
-        <Text style={styles.petitionCardTitle}> {petition.title} </Text>
+      <View style={{ marginLeft: 15 }}>
+        <Text style={styles.cardTitle}>{petition.title}</Text>
       </View>
       <View>
         <View>
@@ -75,7 +76,9 @@ function PetitionOpinion({ petition }) {
         <View>
           <View style={{ marginTop: 10, marginHorizontal: 15, marginRight: 40 }}>
             <ProgressBar
-              progress={petition.voteData.for / (petition.voteData.for + petition.voteData.against)}
+              progress={
+                petition.voteData.against / (petition.voteData.for + petition.voteData.against)
+              }
               color="red"
             />
           </View>
@@ -83,6 +86,22 @@ function PetitionOpinion({ petition }) {
             <Text style={styles.text}> {petition.votes} </Text>
           </View>
         </View>
+      </View>
+    </View>
+  );
+}
+
+function PetitionMultiple({ petition }) {
+  return (
+    <View>
+      <View style={{ marginLeft: 15 }}>
+        <Text style={styles.cardTitle}>{petition.title}</Text>
+      </View>
+      <View style={{ marginTop: 10, marginHorizontal: 15, marginRight: 40 }}>
+        <ProgressBar progress={petition.votes / petition.objective} color="#4c3e8e" />
+      </View>
+      <View style={{ marginTop: -14, marginLeft: 340 }}>
+        <Text style={styles.text}> {petition.votes} </Text>
       </View>
     </View>
   );
@@ -96,6 +115,8 @@ function renderPetition(petition) {
       return <PetitionGoal petition={petition} />;
     case 'opinion':
       return <PetitionOpinion petition={petition} />;
+    case 'multiple':
+      return <PetitionMultiple petition={petition} />;
     default:
       return (
         <View>
@@ -113,9 +134,9 @@ function PetitionComponentListCard({ navigate, petition }) {
       <Touchable onPress={navigate}>
         <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
           <View>{renderPetition(petition)}</View>
-          <TagFlatlist item={petition} />
+          <TagFlatlist type="petition" item={petition} />
           <View style={{ marginBottom: 10, marginLeft: 15 }}>
-            <Text style={styles.text}> Fin dans {petition.duration} </Text>
+            <Text style={styles.text}> Fin {moment(petition.duration.end).fromNow()}</Text>
           </View>
         </Card.Content>
       </Touchable>
@@ -156,3 +177,4 @@ PetitionOpinion.propTypes = { petition: petitionPropType.isRequired };
 PetitionGoal.propTypes = { petition: petitionPropType.isRequired };
 PetitionSign.propTypes = { petition: petitionPropType.isRequired };
 PetitionGoalStatus.propTypes = { petition: petitionPropType.isRequired };
+PetitionMultiple.propTypes = { petition: petitionPropType.isRequired };

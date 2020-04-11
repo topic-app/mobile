@@ -21,46 +21,50 @@ function genTagIcon(type) {
   return '';
 }
 
-function genTagData(item) {
+function genTagData(item, type) {
   // TEMP: if to check for undefineds
   const data = [];
 
-  if (item.author) {
-    data.push({
-      type: 'author',
-      icon: 'account',
-      text: item.author.displayName,
-      id: item.author.userId,
-    });
-  } else if (item.publisher) {
-    const { type, user, group } = item.publisher;
-    if (type === 'group') {
-      data.push({
-        type: 'group',
-        avatar: group.thumbnailUrl || '',
-        icon: 'newspaper',
-        text: group.displayName,
-        id: group.groupId,
-      });
-    } else if (type === 'user') {
+  if (type === 'petition') {
+    if (item.publisher) {
+      const { type: voteType, user, group } = item.publisher;
+      if (voteType === 'group') {
+        data.push({
+          type: 'group',
+          avatar: group.thumbnailUrl || '',
+          icon: 'newspaper',
+          text: group.displayName,
+          id: group.groupId,
+        });
+      } else if (voteType === 'user') {
+        data.push({
+          type: 'author',
+          icon: 'account',
+          text: user.displayName,
+          id: user.userId,
+        });
+      }
+    }
+  } else {
+    if (item.author) {
       data.push({
         type: 'author',
         icon: 'account',
-        text: user.displayName,
-        id: user.userId,
+        text: item.author.displayName,
+        id: item.author.userId,
+      });
+    }
+    if (item.group) {
+      data.push({
+        type: 'group',
+        avatar: item.group.thumbnailUrl || '',
+        icon: 'newspaper', // Just in case thumbnail url is undefined
+        text: item.group.displayName,
+        id: item.group.groupId,
       });
     }
   }
 
-  if (item.group) {
-    data.push({
-      type: 'group',
-      avatar: item.group.thumbnailUrl || '',
-      icon: 'newspaper', // Just in case thumbnail url is undefined
-      text: item.group.displayName,
-      id: item.group.groupId,
-    });
-  }
   if (item.tags) {
     data.push(
       ...item.tags.map((tag) => ({
@@ -104,8 +108,8 @@ function genTagData(item) {
   return data;
 }
 
-function TagFlatlist({ item }) {
-  const data = genTagData(item);
+function TagFlatlist({ item, type }) {
+  const data = genTagData(item, type);
 
   return (
     <FlatList
@@ -143,6 +147,7 @@ function TagFlatlist({ item }) {
 }
 
 TagFlatlist.propTypes = {
+  type: PropTypes.string.isRequired,
   item: PropTypes.shape({
     tags: PropTypes.arrayOf(
       PropTypes.shape({
