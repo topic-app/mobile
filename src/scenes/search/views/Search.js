@@ -31,7 +31,7 @@ class Search extends React.Component {
             value={searchQuery}
           />
           <Text>Recherche: {initialCategory}</Text>
-          <Button onPress={() => navigation.navigate('Home')}>Retour</Button>
+          <Button onPress={() => navigation.goBack()}>Retour</Button>
         </View>
       </View>
     );
@@ -43,6 +43,7 @@ export default Search;
 Search.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
   }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({

@@ -4,16 +4,10 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import { Text } from 'react-native-paper';
 
 import DisplayStackNavigator from './display/index';
-import ProfileStackNavigator from './profile/index';
+import MoreStackNavigator from './more/index';
 import SearchStackNavigator from './search/index';
-import SettingsStackNavigator from './settings/index';
-import UserContentStackNavigator from './userContent/index';
-import DrawerList from './Drawer';
 
-import ArticleList from './home/articles/views/List';
-import PetitionList from './home/petitions/views/List';
-import EventList from './home/events/views/List';
-import ExplorerList from './home/explorer/views/List';
+import HomeOneNavigator from './home/HomeOne';
 
 import { colors } from '../styles/Styles';
 import { navigatorStyles } from '../styles/NavStyles';
@@ -23,7 +17,7 @@ const Tab = createBottomTabNavigator();
 function MainNavigator() {
   return (
     <Tab.Navigator
-      initialRouteName="Actus"
+      initialRouteName="Home1"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconName;
@@ -50,15 +44,9 @@ function MainNavigator() {
       tabBar={() => <Text>TODO: Make Tabbar</Text>}
     >
       <Tab.Screen name="Display" component={DisplayStackNavigator} />
-      <Tab.Screen name="Profile" component={ProfileStackNavigator} />
       <Tab.Screen name="Search" component={SearchStackNavigator} />
-      <Tab.Screen name="Settings" component={SettingsStackNavigator} />
-      <Tab.Screen name="UserContent" component={UserContentStackNavigator} />
-      <Tab.Screen name="Drawer" component={DrawerList} />
-      <Tab.Screen name="ArticleList" component={ArticleList} />
-      <Tab.Screen name="PetitionList" component={PetitionList} />
-      <Tab.Screen name="EventList" component={EventList} />
-      <Tab.Screen name="ExplorerList" component={ExplorerList} />
+      <Tab.Screen name="Home1" component={HomeOneNavigator} />
+      <Tab.Screen name="More" component={MoreStackNavigator} />
     </Tab.Navigator>
   );
 }

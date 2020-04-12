@@ -1,6 +1,6 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
-const selectedTheme = 'purple';
+const selectedTheme = 'light';
 
 const common = {
   roundness: 5,

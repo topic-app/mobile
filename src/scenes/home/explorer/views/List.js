@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View } from 'react-native';
+import PropTypes from 'prop-types';
 
 import places from '../../../../data/explorerListData.json';
 import ExplorerMap from './Map';
@@ -25,7 +25,7 @@ function ExplorerList({ navigation }) {
         tileServerUrl={`${tileServerUrl}/styles/${isDark ? 'dark' : 'light'}/style.json`}
         places={places}
         map={map}
-        navigate={(id) => navigation.navigate('ExplorerArticle', id)}
+        navigation={navigation}
       />
     </View>
   );
@@ -36,5 +36,6 @@ export default ExplorerList;
 ExplorerList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    openDrawer: PropTypes.func.isRequired,
   }).isRequired,
 };

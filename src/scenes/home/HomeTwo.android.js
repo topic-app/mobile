@@ -12,11 +12,11 @@ import { navigatorStyles } from '../../styles/NavStyles';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function TabsNavigator() {
+function HomeTwoNavigator() {
   return (
     <Tab.Navigator
       shifting={false}
-      initialRouteName="Actus"
+      initialRouteName="Article"
       activeColor={colors.primary}
       inactiveColor={colors.disabled}
       barStyle={navigatorStyles.barStyle}
@@ -46,4 +46,4 @@ function TabsNavigator() {
   );
 }
 
-export default TabsNavigator;
+export default HomeTwoNavigator;

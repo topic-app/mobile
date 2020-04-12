@@ -39,7 +39,7 @@ class CustomHeaderBar extends React.Component {
 
   render() {
     const { menuVisible } = this.state;
-    const { scene, previous, navigation } = this.props;
+    const { scene, navigation } = this.props;
 
     const {
       title,
@@ -59,7 +59,7 @@ class CustomHeaderBar extends React.Component {
       primaryAction = <Appbar.BackAction onPress={primary} />;
     } else if (drawer) {
       primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
-    } else if (previous !== undefined) {
+    } else {
       primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
     }
 
@@ -255,18 +255,18 @@ const SlideRightAndScaleTransition = {
   },
 };
 
-const ListHeaderConfig = {
+const HeaderConfig = {
   header: ({ scene, previous, navigation }) => (
     <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
   ),
 };
 
-const DisplayHeaderConfig = {
+const TransitionHeaderConfig = {
   // ...SlideRightAndScaleTransition,
-  ...TransitionPresets.SlideFromRightIOS,
+  ...TransitionPresets.DefaultTransition,
   header: ({ scene, previous, navigation }) => (
     <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
   ),
 };
 
-export { TranslucentStatusBar, ListHeaderConfig, DisplayHeaderConfig };
+export { TranslucentStatusBar, HeaderConfig, TransitionHeaderConfig, CustomHeaderBar };

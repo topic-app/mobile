@@ -4,9 +4,9 @@ import { View, Linking } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { Drawer, Avatar, Title } from 'react-native-paper';
 
-import BottomTabsNavigator from './home/BottomTabs';
+import HomeTwoNavigator from './HomeTwo';
 
-import { navigatorStyles } from '../styles/NavStyles';
+import { navigatorStyles } from '../../styles/NavStyles';
 
 const DrawerNav = createDrawerNavigator();
 
@@ -52,14 +52,20 @@ function CustomDrawerContent({ navigation }) {
           label="Mon Profil"
           icon="account-outline"
           onPress={() => {
-            console.log('Profile');
+            navigation.navigate('Main', {
+              screen: 'More',
+              params: { screen: 'Profile', params: { screen: 'Profile' } },
+            });
           }}
         />
         <Drawer.Item
           label="Mes Groupes"
           icon="account-group-outline"
           onPress={() => {
-            console.log('Groupes');
+            navigation.navigate('Main', {
+              screen: 'More',
+              params: { screen: 'MyGroups', params: { screen: 'List' } },
+            });
           }}
         />
         <Drawer.Item
@@ -76,7 +82,10 @@ function CustomDrawerContent({ navigation }) {
           icon="settings-outline"
           onPress={() => {
             navigation.closeDrawer();
-            navigation.navigate('Settings');
+            navigation.navigate('Main', {
+              screen: 'More',
+              params: { screen: 'Settings', params: { screen: 'List' } },
+            });
           }}
         />
         <Drawer.Item
@@ -96,20 +105,20 @@ function CustomDrawerContent({ navigation }) {
   );
 }
 
-function DrawerNavigator() {
+function HomeOneNavigator() {
   return (
     <DrawerNav.Navigator
-      initialRouteName="Home"
+      initialRouteName="Home2"
       drawerContent={({ navigation }) => <CustomDrawerContent navigation={navigation} />}
       drawerStyle={navigatorStyles.drawerStyle}
       edgeWidth={90}
     >
-      <DrawerNav.Screen name="Home" component={BottomTabsNavigator} />
+      <DrawerNav.Screen name="Home2" component={HomeTwoNavigator} />
     </DrawerNav.Navigator>
   );
 }
 
-export default DrawerNavigator;
+export default HomeOneNavigator;
 
 CustomDrawerContent.propTypes = {
   navigation: PropTypes.shape({

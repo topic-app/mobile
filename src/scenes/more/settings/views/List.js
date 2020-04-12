@@ -3,7 +3,7 @@ import { List, Divider } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { View, Switch } from 'react-native';
 
-import { styles } from '../../../styles/Styles';
+import { styles } from '../../../../styles/Styles';
 import { settingsStyles } from '../styles/Styles';
 
 class SettingsList extends React.Component {

@@ -1,24 +1,24 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 import DisplayStackNavigator from './display/index';
-import ProfileStackNavigator from './profile/index';
+import MoreStackNavigator from './more/index';
 import SearchStackNavigator from './search/index';
-import SettingsStackNavigator from './settings/index';
-import UserContentStackNavigator from './userContent/index';
-import DrawerNavigator from './Drawer';
+import HomeOneNavigator from './home/HomeOne';
 
 const Stack = createStackNavigator();
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Drawer" headerMode="none">
+    <Stack.Navigator
+      initialRouteName="Home1"
+      headerMode="none"
+      screenOptions={TransitionPresets.SlideFromRightIOS}
+    >
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
-      <Stack.Screen name="Profile" component={ProfileStackNavigator} />
+      <Stack.Screen name="More" component={MoreStackNavigator} />
       <Stack.Screen name="Search" component={SearchStackNavigator} />
-      <Stack.Screen name="Settings" component={SettingsStackNavigator} />
-      <Stack.Screen name="UserContent" component={UserContentStackNavigator} />
-      <Stack.Screen name="Drawer" component={DrawerNavigator} />
+      <Stack.Screen name="Home1" component={HomeOneNavigator} />
     </Stack.Navigator>
   );
 }

@@ -2,12 +2,12 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-function MyPetitions() {
+function UserDisplay() {
   return (
     <View>
-      <Text>My Petitions</Text>
+      <Text>User Display!</Text>
     </View>
   );
 }
 
-export default MyPetitions;
+export default UserDisplay;

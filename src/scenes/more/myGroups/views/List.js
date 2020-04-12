@@ -2,12 +2,12 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-function MyEvents() {
+function MyGroupsList() {
   return (
     <View>
-      <Text>My Events</Text>
+      <Text>My Groups List!</Text>
     </View>
   );
 }
 
-export default MyEvents;
+export default MyGroupsList;

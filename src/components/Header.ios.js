@@ -28,12 +28,12 @@ TranslucentStatusBar.defaultProps = {
   contentThemeName: theme.dark === true ? 'light' : 'dark',
 };
 
-const ListHeaderConfig = {
+const HeaderConfig = {
   headerStyle: navigatorStyles.header,
   headerTitleStyle: styles.text,
   headerBackTitleStyle: styles.text,
 };
 
-const DisplayHeaderConfig = ListHeaderConfig;
+const TransitionHeaderConfig = HeaderConfig;
 
-export { TranslucentStatusBar, ListHeaderConfig, DisplayHeaderConfig };
+export { TranslucentStatusBar, HeaderConfig, TransitionHeaderConfig };

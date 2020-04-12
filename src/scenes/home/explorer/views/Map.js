@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Linking, StatusBar, Platform } from 'react-native';
-import { Text, FAB } from 'react-native-paper';
+import { Text, FAB, IconButton } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -144,7 +144,7 @@ class ExplorerMap extends React.Component {
       }
     });
 
-    const { map, tileServerUrl } = this.props;
+    const { map, tileServerUrl, navigation } = this.props;
     const { data, isModalVisible, userLocation, fabVisible } = this.state;
 
     return (
@@ -206,6 +206,25 @@ class ExplorerMap extends React.Component {
         >
           <LocationModal data={data} hideModal={this.hideModal} />
         </Modal>
+
+        {Platform.OS !== 'ios' ? (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              paddingTop: 34,
+              paddingLeft: 4,
+            }}
+          >
+            <IconButton
+              onPress={() => navigation.openDrawer()}
+              icon="menu"
+              color={colors.text}
+              size={24}
+            />
+          </View>
+        ) : null}
 
         {fabVisible ? (
           <View
@@ -281,4 +300,8 @@ ExplorerMap.propTypes = {
     }),
   }).isRequired,
   tileServerUrl: PropTypes.string.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    openDrawer: PropTypes.func.isRequired,
+  }).isRequired,
 };

@@ -2,12 +2,12 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-function MyLocations() {
+function UserEvents() {
   return (
     <View>
-      <Text>My Locations</Text>
+      <Text>Someone's Events</Text>
     </View>
   );
 }
 
-export default MyLocations;
+export default UserEvents;
