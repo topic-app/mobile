@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: colors.text,
-    fontSize: 25,
+    fontSize: 18,
     fontWeight: '400',
     marginBottom: 5,
   },
