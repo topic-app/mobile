@@ -69,7 +69,7 @@ function genTagData(item, type) {
     data.push(
       ...item.tags.map((tag) => ({
         type: 'tag',
-        text: tag.name,
+        text: tag.displayName,
         color: tag.color,
         id: tag.tagId,
       })),
