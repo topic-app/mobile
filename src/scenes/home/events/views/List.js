@@ -10,7 +10,7 @@ import { CustomHeaderBar } from '../../../../components/Header';
 import { styles } from '../../../../styles/Styles';
 
 function EventList({ navigation, events }) {
-  let scrollY = new Animated.Value(0);
+  const scrollY = new Animated.Value(0);
 
   const headerElevation = scrollY.interpolate({
     inputRange: [0, 10],

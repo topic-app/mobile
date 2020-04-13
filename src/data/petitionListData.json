@@ -36,52 +36,52 @@
     "description": "Trop de pigeons ont veut les manger",
     "tags": [
       {
-        "name": "On",
+        "displayName": "On",
         "color": "red",
         "tagId": "140930"
       },
       {
-        "name": "Est",
+        "displayName": "Est",
         "color": "blue",
         "tagId": "5198312941723"
       },
       {
-        "name": "D'Accord",
+        "displayName": "D'Accord",
         "color": "purple",
         "tagId": "104243275932"
       },
       {
-        "name": "Que",
+        "displayName": "Que",
         "color": "yellow",
         "tagId": "51438597234981"
       },
       {
-        "name": "Le",
+        "displayName": "Le",
         "color": "orange",
         "tagId": "51284935782934"
       },
       {
-        "name": "Chat",
+        "displayName": "Chat",
         "color": "cyan",
         "tagId": "19237432582"
       },
       {
-        "name": "D'Alex",
+        "displayName": "D'Alex",
         "color": "purple",
         "tagId": "519235834930295"
       },
       {
-        "name": "Est",
+        "displayName": "Est",
         "color": "green",
         "tagId": "192358341237592"
       },
       {
-        "name": "Trop",
+        "displayName": "Trop",
         "color": "pink",
         "tagId": "152938412375923"
       },
       {
-        "name": "Mignon",
+        "displayName": "Mignon",
         "color": "black",
         "tagId": "49123573294231049"
       }
@@ -111,12 +111,12 @@
     },
     "tags": [
       {
-        "name": "Tag 1",
+        "displayName": "Tag 1",
         "color": "red",
         "tagId": "193247285849"
       },
       {
-        "name": "Tag 2",
+        "displayName": "Tag 2",
         "color": "blue",
         "tagId": "9142384172353894"
       }
@@ -166,12 +166,12 @@
     },
     "tags": [
       {
-        "name": "Tag 1",
+        "displayName": "Tag 1",
         "color": "red",
         "tagId": "1494432"
       },
       {
-        "name": "Tag 2",
+        "displayName": "Tag 2",
         "color": "blue",
         "tagId": "049123758123"
       }
@@ -217,12 +217,12 @@
     },
     "tags": [
       {
-        "name": "Tag 1",
+        "displayName": "Tag 1",
         "color": "red",
         "tagId": "2943778132"
       },
       {
-        "name": "Tag 2",
+        "displayName": "Tag 2",
         "color": "blue",
         "tagId": "94123563217"
       }

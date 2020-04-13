@@ -128,7 +128,7 @@ CustomHeaderBar.propTypes = {
     }).isRequired,
     route: PropTypes.shape({
       name: PropTypes.string,
-    }).isRequired,
+    }),
   }).isRequired,
   previous: PropTypes.shape({
     descriptor: PropTypes.object,

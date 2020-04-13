@@ -195,17 +195,6 @@ class ExplorerMap extends React.Component {
           </MapboxGL.ShapeSource>
           <MapboxGL.UserLocation visible={userLocation} animated />
         </MapboxGL.MapView>
-        <Modal
-          supportedOrientations={['portrait', 'landscape']}
-          isVisible={isModalVisible}
-          hasBackdrop={false}
-          onBackButtonPress={this.hideModal}
-          coverScreen={false}
-          animationOutTiming={200} // We want it to dissapear fast
-          style={explorerStyles.modal}
-        >
-          <LocationModal data={data} hideModal={this.hideModal} />
-        </Modal>
 
         {Platform.OS !== 'ios' ? (
           <View
@@ -243,8 +232,19 @@ class ExplorerMap extends React.Component {
             />
           </View>
         ) : null}
-
         <ExplorerAttribution />
+
+        <Modal
+          supportedOrientations={['portrait', 'landscape']}
+          isVisible={isModalVisible}
+          hasBackdrop={false}
+          onBackButtonPress={this.hideModal}
+          coverScreen={false}
+          animationOutTiming={200} // We want it to dissapear fast
+          style={explorerStyles.modal}
+        >
+          <LocationModal data={data} hideModal={this.hideModal} />
+        </Modal>
       </View>
     );
   }

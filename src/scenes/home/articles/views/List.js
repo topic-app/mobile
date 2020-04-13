@@ -15,7 +15,7 @@ function ArticleList({ navigation, articles, state }) {
     updateArticles();
   }, []);
 
-  let scrollY = new Animated.Value(0);
+  const scrollY = new Animated.Value(0);
 
   const headerElevation = scrollY.interpolate({
     inputRange: [0, 10],

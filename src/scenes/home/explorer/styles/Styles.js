@@ -17,7 +17,6 @@ const explorerStyles = StyleSheet.create({
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
     elevation: 5,
-    zIndex: 10,
     backgroundColor: colors.background,
     paddingVertical: 10,
     paddingHorizontal: 15,

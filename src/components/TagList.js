@@ -69,7 +69,7 @@ function genTagData(item, type) {
     data.push(
       ...item.tags.map((tag) => ({
         type: 'tag',
-        text: tag.name,
+        text: tag.displayName,
         color: tag.color,
         id: tag.tagId,
       })),
@@ -151,7 +151,7 @@ TagList.propTypes = {
   item: PropTypes.shape({
     tags: PropTypes.arrayOf(
       PropTypes.shape({
-        name: PropTypes.string.isRequired,
+        displayName: PropTypes.string.isRequired,
         color: PropTypes.string.isRequired,
         tagId: PropTypes.string.isRequired,
       }),

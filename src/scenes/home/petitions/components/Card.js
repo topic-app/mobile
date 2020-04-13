@@ -115,9 +115,9 @@ function PetitionMultiple({ petition }) {
       <View>
         <View>
           {petition.voteData.opinions.map((opinion, key) => (
-            <View style={{ marginVertical: 3, marginHorizontal: 15 }}>
+            <View key={key} style={{ marginVertical: 3, marginHorizontal: 15 }}>
               <View>
-                <ProgressBar key={key} progress={opinion.votes / total} />
+                <ProgressBar progress={opinion.votes / total} />
               </View>
               <View>
                 <Text style={styles.text}>
@@ -186,8 +186,10 @@ const petitionPropType = PropTypes.shape({
       }),
     ),
   }).isRequired,
-  date: PropTypes.string.isRequired,
-  duration: PropTypes.string.isRequired,
+  duration: PropTypes.shape({
+    start: PropTypes.string.isRequired, // Note: need to change to instanceOf(Date) once we get axios working
+    end: PropTypes.string.isRequired,
+  }).isRequired,
   description: PropTypes.string,
   objective: PropTypes.string,
   votes: PropTypes.string,

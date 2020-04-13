@@ -40,12 +40,12 @@
     "description": "La Fête de la Science 2020 se déroule du 5 au 13 octobre en métropole, et du 9 au 17 novembre en outre-mer et à l'international.",
     "tags": [
       {
-        "name": "Tag 1",
+        "displayName": "Tag 1",
         "color": "red",
         "tagId": "item1"
       },
       {
-        "name": "Tag 2",
+        "displayName": "Tag 2",
         "color": "brown",
         "tagId": "item4"
       }
@@ -108,12 +108,12 @@
     "description": "En littérature, la description constitue une pause dans le récit, où elle peut former un ensemble autonome, bien que le plus souvent elle prenne place dans la narration.",
     "tags": [
       {
-        "name": "Tag 1",
+        "displayName": "Tag 1",
         "color": "red",
         "tagId": "item1"
       },
       {
-        "name": "Tag 2",
+        "displayName": "Tag 2",
         "color": "brown",
         "tagId": "item4"
       }
@@ -176,12 +176,12 @@
     "description": "cette année toute les classe de premierre et de terminal des classes technologique et general du lpo GB ont decider de vous faire decouvrir les sciences",
     "tags": [
       {
-        "name": "Tag 1",
+        "displayName": "Tag 1",
         "color": "red",
         "tagId": "item1"
       },
       {
-        "name": "Tag 2",
+        "displayName": "Tag 2",
         "color": "brown",
         "tagId": "item4"
       }
@@ -244,12 +244,12 @@
     "description": "On va aller au bord de mer acceullir les pigeons qui reviennent d'Afrique après un long voyage pour revenir nous voir. On a ammené des graines de tournesol car c'est leur nourriture préférs mais aussi une batte de baseball au cas ou l'un d'entre eux se rebelle. Il y aura un petit gouté avec les pigeons après. SVP ne dites pas à la police, j'ai déjà 3 contraventions à cause de ce coronatruc. Venez nous joindre! <3",
     "tags": [
       {
-        "name": "Tag 1",
+        "displayName": "Tag 1",
         "color": "red",
         "tagId": "pigeon"
       },
       {
-        "name": "Tag 2",
+        "displayName": "Tag 2",
         "color": "brown",
         "tagId": "fete"
       }

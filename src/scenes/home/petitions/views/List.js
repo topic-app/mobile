@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, Platform, Animated } from 'react-native';
+import { View, Platform, Animated } from 'react-native';
 import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -11,7 +11,7 @@ import { CustomHeaderBar } from '../../../../components/Header';
 import { styles } from '../../../../styles/Styles';
 
 function PetitionList({ navigation, petitions }) {
-  let scrollY = new Animated.Value(0);
+  const scrollY = new Animated.Value(0);
 
   const headerElevation = scrollY.interpolate({
     inputRange: [0, 10],

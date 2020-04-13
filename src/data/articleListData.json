@@ -12,12 +12,12 @@
       },
       "tags": [
         {
-          "name": "Tag 1",
+          "displayName": "Tag 1",
           "color": "red",
           "tagId": "item1"
         },
         {
-          "name": "Tag 4",
+          "displayName": "Tag 4",
           "color": "brown",
           "tagId": "item4"
         }
@@ -61,17 +61,17 @@
       },
       "tags": [
         {
-          "name": "Tag 1",
+          "displayName": "Tag 1",
           "color": "red",
           "tagId": "item1"
         },
         {
-          "name": "Tag 2",
+          "displayName": "Tag 2",
           "color": "blue",
           "tagId": "item2"
         },
         {
-          "name": "Tag 3",
+          "displayName": "Tag 3",
           "color": "green",
           "tagId": "item3"
         }
@@ -119,17 +119,17 @@
       },
       "tags": [
         {
-          "name": "Tag 1",
+          "displayName": "Tag 1",
           "color": "red",
           "tagId": "item1"
         },
         {
-          "name": "Tag 6",
+          "displayName": "Tag 6",
           "color": "pink",
           "tagId": "item6"
         },
         {
-          "name": "Tag 3",
+          "displayName": "Tag 3",
           "color": "green",
           "tagId": "item3"
         }
@@ -177,17 +177,17 @@
       },
       "tags": [
         {
-          "name": "Tag 1",
+          "displayName": "Tag 1",
           "color": "red",
           "tagId": "item1"
         },
         {
-          "name": "Tag 2",
+          "displayName": "Tag 2",
           "color": "blue",
           "tagId": "item2"
         },
         {
-          "name": "Tag 3",
+          "displayName": "Tag 3",
           "color": "green",
           "tagId": "item3"
         }
@@ -226,17 +226,17 @@
       },
       "tags": [
         {
-          "name": "Tag 1",
+          "displayName": "Tag 1",
           "color": "red",
           "tagId": "item1"
         },
         {
-          "name": "Tag 2",
+          "displayName": "Tag 2",
           "color": "blue",
           "tagId": "item2"
         },
         {
-          "name": "Tag 9",
+          "displayName": "Tag 9",
           "color": "cyan",
           "tagId": "item9"
         }
