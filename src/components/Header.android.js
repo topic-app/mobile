@@ -52,7 +52,6 @@ class CustomHeaderBar extends React.Component {
     } = scene.descriptor.options;
 
     const headerTitle = title !== undefined ? title : scene.route.name;
-    const style = headerStyle !== undefined ? headerStyle : navigatorStyles.header;
 
     let primaryAction;
     if (primary !== undefined) {
@@ -91,7 +90,10 @@ class CustomHeaderBar extends React.Component {
     return (
       <View style={navigatorStyles.headerSurface}>
         <TranslucentStatusBar />
-        <Appbar.Header style={style} statusBarHeight={StatusBar.currentHeight}>
+        <Appbar.Header
+          style={[navigatorStyles.header, headerStyle ?? null]}
+          statusBarHeight={StatusBar.currentHeight}
+        >
           {primaryAction}
           <Appbar.Content title={headerTitle} subtitle={subtitle} />
           {secondaryActions}

@@ -97,7 +97,11 @@ function CustomDrawerContent({ navigation }) {
           label="A Propos"
           icon="information-outline"
           onPress={() => {
-            console.log('A propos');
+            navigation.closeDrawer();
+            navigation.navigate('Main', {
+              screen: 'More',
+              params: { screen: 'About', params: { screen: 'List' } },
+            });
           }}
         />
       </Drawer.Section>

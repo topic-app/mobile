@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, Platform } from 'react-native';
+import { View, FlatList, Platform, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button } from 'react-native-paper';
@@ -10,33 +10,47 @@ import { CustomHeaderBar } from '../../../../components/Header';
 import { styles } from '../../../../styles/Styles';
 
 function EventList({ navigation, events }) {
+  let scrollY = new Animated.Value(0);
+
+  const headerElevation = scrollY.interpolate({
+    inputRange: [0, 10],
+    outputRange: [0, 10],
+    extrapolate: 'clamp',
+  });
+
   return (
     <View style={styles.page}>
       {Platform.OS !== 'ios' ? (
-        <CustomHeaderBar
-          navigation={navigation}
-          scene={{
-            descriptor: {
-              options: {
-                title: 'Évènements',
-                drawer: true,
-                actions: [
-                  {
-                    icon: 'magnify',
-                    onPress: () =>
-                      navigation.navigate('Main', {
-                        screen: 'Search',
-                        params: { screen: 'Search', params: { initialCategory: 'Event' } },
-                      }),
-                  },
-                ],
-                overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+        <Animated.View style={{ backgroundColor: 'white', elevation: headerElevation }}>
+          <CustomHeaderBar
+            navigation={navigation}
+            scene={{
+              descriptor: {
+                options: {
+                  title: 'Évènements',
+                  drawer: true,
+                  headerStyle: { zIndex: 1, elevation: 0 },
+                  actions: [
+                    {
+                      icon: 'magnify',
+                      onPress: () =>
+                        navigation.navigate('Main', {
+                          screen: 'Search',
+                          params: { screen: 'Search', params: { initialCategory: 'Event' } },
+                        }),
+                    },
+                  ],
+                  overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
+        </Animated.View>
       ) : null}
-      <FlatList
+      <Animated.FlatList
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+          useNativeDriver: true,
+        })}
         data={events}
         refreshing={false}
         onRefresh={() => console.log('Refresh')}
