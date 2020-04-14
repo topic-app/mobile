@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 import MainNavigator from './scenes/index';
 import AuthStackNavigator from './scenes/auth/index';
@@ -9,7 +9,11 @@ const Stack = createStackNavigator();
 
 function RootStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Main" headerMode="none">
+    <Stack.Navigator
+      initialRouteName="Main"
+      headerMode="none"
+      screenOptions={TransitionPresets.SlideFromRightIOS}
+    >
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
       <Stack.Screen name="Main" component={MainNavigator} />
       <Stack.Screen name="Landing" component={LandingStackNavigator} />

@@ -83,7 +83,7 @@ const explorerStyles = StyleSheet.create({
   fab: {
     marginBottom: 25,
     marginRight: 15,
-    backgroundColor: isDark ? '#c4c4c4' : '#ffffff',
+    backgroundColor: isDark ? '#c5c5c5' : '#ffffff',
     // color applied directly to FAB
   },
 });

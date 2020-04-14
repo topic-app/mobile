@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, FlatList, Platform, Animated } from 'react-native';
+import { View, Platform, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button } from 'react-native-paper';
 
 import EventCard from '../components/Card';
 
-import { CustomHeaderBar } from '../../../../components/Header';
+import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
 import { styles } from '../../../../styles/Styles';
 
 function EventList({ navigation, events }) {
@@ -28,7 +28,7 @@ function EventList({ navigation, events }) {
               descriptor: {
                 options: {
                   title: 'Évènements',
-                  drawer: true,
+                  home: true,
                   headerStyle: { zIndex: 1, elevation: 0 },
                   actions: [
                     {
@@ -36,7 +36,10 @@ function EventList({ navigation, events }) {
                       onPress: () =>
                         navigation.navigate('Main', {
                           screen: 'Search',
-                          params: { screen: 'Search', params: { initialCategory: 'Event' } },
+                          params: {
+                            screen: 'Search',
+                            params: { initialCategory: 'Event', previous: 'Évènements' },
+                          },
                         }),
                     },
                   ],
@@ -46,7 +49,9 @@ function EventList({ navigation, events }) {
             }}
           />
         </Animated.View>
-      ) : null}
+      ) : (
+        <TranslucentStatusBar />
+      )}
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
@@ -73,6 +78,7 @@ function EventList({ navigation, events }) {
                     params: {
                       id: event.item.eventId,
                       title: event.item.title,
+                      previous: 'Évènements',
                     },
                   },
                 },

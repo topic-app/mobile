@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import ArticleCard from '../components/Card';
 
-import { CustomHeaderBar } from '../../../../components/Header';
+import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
 import { updateArticles } from '../../../../redux/actions/articles';
 import { styles } from '../../../../styles/Styles';
 
@@ -33,15 +33,18 @@ function ArticleList({ navigation, articles, state }) {
               descriptor: {
                 options: {
                   title: 'Actus',
-                  drawer: true,
-                  headerStyle: { zIndex: 1, elevation: 0 },
+                  home: true,
+                  headerStyle: { elevation: 0 },
                   actions: [
                     {
                       icon: 'magnify',
                       onPress: () =>
                         navigation.navigate('Main', {
                           screen: 'Search',
-                          params: { screen: 'Search', params: { initialCategory: 'Article' } },
+                          params: {
+                            screen: 'Search',
+                            params: { initialCategory: 'Article', previous: 'Actus' },
+                          },
                         }),
                     },
                   ],
@@ -51,7 +54,9 @@ function ArticleList({ navigation, articles, state }) {
             }}
           />
         </Animated.View>
-      ) : null}
+      ) : (
+        <TranslucentStatusBar />
+      )}
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
@@ -78,6 +83,7 @@ function ArticleList({ navigation, articles, state }) {
                     params: {
                       id: article.item._id,
                       title: article.item.title,
+                      previous: 'Actus',
                     },
                   },
                 },
@@ -100,6 +106,7 @@ export default connect(mapStateToProps)(ArticleList);
 ArticleList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    push: PropTypes.func.isRequired,
   }).isRequired,
   articles: PropTypes.arrayOf(
     PropTypes.shape({

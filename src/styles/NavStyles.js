@@ -6,6 +6,7 @@ const navigatorStyles = StyleSheet.create({
   header: {
     backgroundColor: colors.appBar,
     elevation: 1,
+    zIndex: 1,
   },
   barStyle: {
     backgroundColor: colors.tabBackground,

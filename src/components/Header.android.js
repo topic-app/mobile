@@ -8,13 +8,9 @@ import { theme, colors } from '../styles/Theme';
 import { navigatorStyles } from '../styles/NavStyles';
 
 function TranslucentStatusBar({ contentThemeName }) {
-  let translucent = false;
-  if (theme.statusBarTranslucent) {
-    translucent = true;
-  }
   return (
     <StatusBar
-      translucent={translucent}
+      translucent
       backgroundColor={colors.statusBar}
       barStyle={`${contentThemeName}-content`}
     />
@@ -46,7 +42,7 @@ class CustomHeaderBar extends React.Component {
       subtitle,
       headerStyle,
       primary,
-      drawer,
+      home,
       actions,
       overflow,
     } = scene.descriptor.options;
@@ -56,7 +52,7 @@ class CustomHeaderBar extends React.Component {
     let primaryAction;
     if (primary !== undefined) {
       primaryAction = <Appbar.BackAction onPress={primary} />;
-    } else if (drawer) {
+    } else if (home) {
       primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
     } else {
       primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
@@ -120,8 +116,7 @@ CustomHeaderBar.propTypes = {
         subtitle: PropTypes.string,
         headerStyle: PropTypes.object,
         primary: PropTypes.func,
-        searchRoute: PropTypes.array,
-        drawer: PropTypes.bool,
+        home: PropTypes.bool,
         overflow: PropTypes.arrayOf(PropTypes.object),
         actions: PropTypes.arrayOf(PropTypes.object),
       }).isRequired,
@@ -130,20 +125,11 @@ CustomHeaderBar.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
-  previous: PropTypes.shape({
-    descriptor: PropTypes.object,
-    progress: PropTypes.object,
-    route: PropTypes.object,
-  }),
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
     openDrawer: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
-};
-
-CustomHeaderBar.defaultProps = {
-  previous: undefined,
 };
 
 /*
@@ -258,17 +244,13 @@ const SlideRightAndScaleTransition = {
 };
 
 const HeaderConfig = {
-  header: ({ scene, previous, navigation }) => (
-    <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
-  ),
+  header: ({ scene, navigation }) => <CustomHeaderBar scene={scene} navigation={navigation} />,
 };
 
 const TransitionHeaderConfig = {
   // ...SlideRightAndScaleTransition,
   ...TransitionPresets.DefaultTransition,
-  header: ({ scene, previous, navigation }) => (
-    <CustomHeaderBar scene={scene} previous={previous} navigation={navigation} />
-  ),
+  header: ({ scene, navigation }) => <CustomHeaderBar scene={scene} navigation={navigation} />,
 };
 
 export { TranslucentStatusBar, HeaderConfig, TransitionHeaderConfig, CustomHeaderBar };

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import PetitionCard from '../components/Card';
 
-import { CustomHeaderBar } from '../../../../components/Header';
+import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
 import { styles } from '../../../../styles/Styles';
 
 function PetitionList({ navigation, petitions }) {
@@ -29,7 +29,7 @@ function PetitionList({ navigation, petitions }) {
               descriptor: {
                 options: {
                   title: 'Pétitions',
-                  drawer: true,
+                  home: true,
                   headerStyle: { zIndex: 1, elevation: 0 },
                   actions: [
                     {
@@ -37,7 +37,10 @@ function PetitionList({ navigation, petitions }) {
                       onPress: () =>
                         navigation.navigate('Main', {
                           screen: 'Search',
-                          params: { screen: 'Search', params: { initialCategory: 'Petition' } },
+                          params: {
+                            screen: 'Search',
+                            params: { initialCategory: 'Petition', previous: 'Pétitions' },
+                          },
                         }),
                     },
                   ],
@@ -47,7 +50,9 @@ function PetitionList({ navigation, petitions }) {
             }}
           />
         </Animated.View>
-      ) : null}
+      ) : (
+        <TranslucentStatusBar />
+      )}
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
@@ -73,6 +78,8 @@ function PetitionList({ navigation, petitions }) {
                     screen: 'Display',
                     params: {
                       id: petition.item.petitionId,
+                      title: petition.item.title,
+                      previous: 'Pétitions',
                     },
                   },
                 },

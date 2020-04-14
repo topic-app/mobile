@@ -9,6 +9,7 @@ import RNLocation from 'react-native-location';
 
 import LocationModal from '../components/LocationModal';
 import { getImageName, markerImages } from '../utils/getAssetColor';
+import { TranslucentStatusBar } from '../../../../components/Header';
 
 import { styles, colors } from '../../../../styles/Styles';
 import { explorerStyles } from '../styles/Styles';
@@ -213,7 +214,9 @@ class ExplorerMap extends React.Component {
               size={24}
             />
           </View>
-        ) : null}
+        ) : (
+          <TranslucentStatusBar />
+        )}
 
         {fabVisible ? (
           <View

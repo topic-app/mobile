@@ -1,9 +1,12 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import ArticleDisplay from './views/Display';
+import { Text } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import ArticleDisplay from './views/Display';
 import { HeaderConfig } from '../../../components/Header';
 
 const Stack = createStackNavigator();
@@ -16,9 +19,15 @@ function ArticleDisplayStackNavigator() {
         component={ArticleDisplay}
         options={
           Platform.OS === 'ios'
-            ? ({ route }) => ({
+            ? ({ navigation, route }) => ({
                 ...HeaderConfig,
                 title: route.params.title,
+                headerLeft: () => (
+                  <HeaderConfig.BackButton
+                    previous={route.params.previous}
+                    navigation={navigation}
+                  />
+                ),
               })
             : ({ route }) => ({
                 ...HeaderConfig,

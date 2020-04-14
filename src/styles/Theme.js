@@ -1,10 +1,9 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
-const selectedTheme = 'light';
+const selectedTheme = 'dark';
 
 const common = {
   roundness: 5,
-  statusBarTranslucent: true,
   colors: {
     statusBar: 'transparent',
     primary: '#592989',
@@ -17,6 +16,7 @@ const common = {
 const lightBase = {
   ...DefaultTheme,
   ...common,
+  statusBarContentTheme: 'dark', // The text color of the status bar
   colors: {
     ...DefaultTheme.colors,
     ...common.colors,
@@ -40,6 +40,7 @@ const lightBase = {
 const darkBase = {
   ...DarkTheme,
   ...common,
+  statusBarContentTheme: 'light',
   colors: {
     ...DarkTheme.colors,
     ...common.colors,
@@ -62,6 +63,7 @@ const darkBase = {
 const themes = {
   purple: {
     ...lightBase,
+    statusBarContentTheme: 'light',
     colors: {
       ...lightBase.colors,
       appBar: common.colors.primary,
