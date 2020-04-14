@@ -1,7 +1,7 @@
 {
   "data": [
     {
-      "articleId": "1",
+      "_id": "1",
       "title": "Article 1",
       "date": "2019-03-30T18:25:43.511Z",
       "time": "Il y a 2 heures",
@@ -14,35 +14,35 @@
         {
           "displayName": "Tag 1",
           "color": "red",
-          "tagId": "item1"
+          "_id": "item1"
         },
         {
           "displayName": "Tag 4",
           "color": "brown",
-          "tagId": "item4"
+          "_id": "item4"
         }
       ],
       "location": {
         "global": false,
         "schools": [
           {
-            "schoolId": "98",
+            "_id": "98",
             "displayName": "Pasteur"
           }
         ],
         "departments": [
           {
-            "departmentId": "11",
+            "_id": "11",
             "displayName": "Paca"
           }
         ]
       },
       "author": {
-        "userId": "42",
+        "_id": "42",
         "displayName": "Alexander Nitters"
       },
       "group": {
-        "groupId": "99",
+        "_id": "99",
         "displayName": "L'Aiglon",
         "thumbnailUrl": "https://picsum.photos/300"
       },
@@ -50,7 +50,7 @@
       "imageUrl": "https://picsum.photos/300"
     },
     {
-      "articleId": "2",
+      "_id": "2",
       "title": "Article 2",
       "date": "2020-01-30T18:25:43.511Z",
       "time": "Il y a 5 heures",
@@ -63,44 +63,44 @@
         {
           "displayName": "Tag 1",
           "color": "red",
-          "tagId": "item1"
+          "_id": "item1"
         },
         {
           "displayName": "Tag 2",
           "color": "blue",
-          "tagId": "item2"
+          "_id": "item2"
         },
         {
           "displayName": "Tag 3",
           "color": "green",
-          "tagId": "item3"
+          "_id": "item3"
         }
       ],
       "location": {
         "global": true,
         "schools": [
           {
-            "schoolId": "98",
+            "_id": "98",
             "displayName": "CIV"
           },
           {
-            "schoolId": "97",
+            "_id": "97",
             "displayName": "Simone Veil"
           }
         ],
         "departments": [
           {
-            "departmentId": "12",
+            "_id": "12",
             "displayName": "Var"
           }
         ]
       },
       "author": {
-        "userId": "42",
+        "_id": "42",
         "displayName": "Benjamin Sengupta"
       },
       "group": {
-        "groupId": "99",
+        "_id": "99",
         "displayName": "Mediasphone",
         "thumbnailUrl": "https://picsum.photos/300"
       },
@@ -108,7 +108,7 @@
       "imageUrl": ""
     },
     {
-      "articleId": "3",
+      "_id": "3",
       "title": "Article 3",
       "date": "2020-03-30T18:25:43.511Z",
       "time": "Il y a 1 jour",
@@ -121,44 +121,44 @@
         {
           "displayName": "Tag 1",
           "color": "red",
-          "tagId": "item1"
+          "_id": "item1"
         },
         {
           "displayName": "Tag 6",
           "color": "pink",
-          "tagId": "item6"
+          "_id": "item6"
         },
         {
           "displayName": "Tag 3",
           "color": "green",
-          "tagId": "item3"
+          "_id": "item3"
         }
       ],
       "location": {
         "global": false,
         "schools": [
           {
-            "schoolId": "98",
+            "_id": "98",
             "displayName": "CIV"
           },
           {
-            "schoolId": "97",
+            "_id": "97",
             "displayName": "Simone Veil"
           }
         ],
         "departments": [
           {
-            "departmentId": "11",
+            "_id": "11",
             "displayName": "Paca"
           }
         ]
       },
       "author": {
-        "userId": "42",
+        "_id": "42",
         "displayName": "Romain Chardiny"
       },
       "group": {
-        "groupId": "99",
+        "_id": "99",
         "displayName": "L'Aiglon",
         "thumbnailUrl": "https://picsum.photos/300"
       },
@@ -166,7 +166,7 @@
       "imageUrl": "https://picsum.photos/300"
     },
     {
-      "articleId": "4",
+      "_id": "4",
       "title": "Article 4",
       "date": "2020-04-05T06:25:43.511Z",
       "time": "Il y a 1 semaine",
@@ -179,35 +179,35 @@
         {
           "displayName": "Tag 1",
           "color": "red",
-          "tagId": "item1"
+          "_id": "item1"
         },
         {
           "displayName": "Tag 2",
           "color": "blue",
-          "tagId": "item2"
+          "_id": "item2"
         },
         {
           "displayName": "Tag 3",
           "color": "green",
-          "tagId": "item3"
+          "_id": "item3"
         }
       ],
       "location": {
         "global": false,
         "schools": [
           {
-            "schoolId": "98",
+            "_id": "98",
             "displayName": "CIV"
           }
         ],
         "departments": []
       },
       "author": {
-        "userId": "42",
+        "_id": "42",
         "displayName": "Tom Ruchier-Berquet"
       },
       "group": {
-        "groupId": "99",
+        "_id": "99",
         "displayName": "CVL du CIV",
         "thumbnailUrl": "https://picsum.photos/300"
       },
@@ -215,7 +215,7 @@
       "imageUrl": "https://picsum.photos/300"
     },
     {
-      "articleId": "5",
+      "_id": "5",
       "title": "Article 5",
       "date": "2020-04-05T09:03:43.511Z",
       "time": "Il y a 1 semaine",
@@ -228,44 +228,44 @@
         {
           "displayName": "Tag 1",
           "color": "red",
-          "tagId": "item1"
+          "_id": "item1"
         },
         {
           "displayName": "Tag 2",
           "color": "blue",
-          "tagId": "item2"
+          "_id": "item2"
         },
         {
           "displayName": "Tag 9",
           "color": "cyan",
-          "tagId": "item9"
+          "_id": "item9"
         }
       ],
       "location": {
         "global": false,
         "schools": [
           {
-            "schoolId": "98",
+            "_id": "98",
             "displayName": "CIV"
           },
           {
-            "schoolId": "97",
+            "_id": "97",
             "displayName": "Simone Veil"
           }
         ],
         "departments": [
           {
-            "departmentId": "11",
+            "_id": "11",
             "displayName": "Paca"
           }
         ]
       },
       "author": {
-        "userId": "42",
+        "_id": "42",
         "displayName": "Jeremy Hendrikse"
       },
       "group": {
-        "groupId": "99",
+        "_id": "99",
         "displayName": "Radio clin d'oeil",
         "thumbnailUrl": "https://picsum.photos/300"
       },

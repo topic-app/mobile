@@ -1,36 +1,36 @@
 [
   {
-    "id": "1",
+    "_id": "1",
     "name": "Centre Internationale de Valbonne",
     "type": "school",
     "position": { "lat": 43.6215017, "lng": 7.0416363 }
   },
   {
-    "id": "2",
+    "_id": "2",
     "name": "Lycée Simone Veil",
     "type": "school",
     "position": { "lat": 43.6414, "lng": 7.034722222 }
   },
   {
-    "id": "3",
+    "_id": "3",
     "name": "Centre Internationalle de Valbonne",
     "type": "school",
     "position": { "lat": 44.6213888889, "lng": 7.04583333333 }
   },
   {
-    "id": "4",
+    "_id": "4",
     "name": "Lycée Internationale François 1er",
     "type": "event",
     "position": { "lat": 48.4086, "lng": 2.695 }
   },
   {
-    "id": "5",
+    "_id": "5",
     "name": "Musée National Fernand Léger",
     "type": "museum",
     "position": { "lat": 43.617777778, "lng": 7.108888889 }
   },
   {
-    "id": "6",
+    "_id": "6",
     "name": "FTC CIV",
     "type": "secret",
     "position": { "lat": 43.6193543, "lng": 7.0432442 }

@@ -116,7 +116,7 @@ class ExplorerMap extends React.Component {
       if (place.type !== 'secret') {
         featureCollection.features.push({
           type: 'Feature',
-          id: place.id,
+          id: place._id,
           properties: {
             name: place.name,
             type: place.type,
@@ -131,7 +131,7 @@ class ExplorerMap extends React.Component {
       } else {
         secret = {
           type: 'Feature',
-          id: place.id,
+          id: place._id,
           properties: {
             name: place.name,
             type: place.type,
@@ -283,7 +283,7 @@ export default ExplorerMap;
 ExplorerMap.propTypes = {
   places: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      _id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       type: PropTypes.string.isRequired,
       position: PropTypes.shape({

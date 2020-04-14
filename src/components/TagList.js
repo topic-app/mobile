@@ -31,17 +31,17 @@ function genTagData(item, type) {
       if (voteType === 'group') {
         data.push({
           type: 'group',
+          id: group._id,
           avatar: group.thumbnailUrl || '',
           icon: 'newspaper',
           text: group.displayName,
-          id: group.groupId,
         });
       } else if (voteType === 'user') {
         data.push({
           type: 'author',
+          id: user._id,
           icon: 'account',
           text: user.displayName,
-          id: user.userId,
         });
       }
     }
@@ -49,18 +49,18 @@ function genTagData(item, type) {
     if (item.author) {
       data.push({
         type: 'author',
+        id: item.author._id,
         icon: 'account',
         text: item.author.displayName,
-        id: item.author.userId,
       });
     }
     if (item.group) {
       data.push({
         type: 'group',
+        id: item.group._id,
         avatar: item.group.thumbnailUrl || '',
         icon: 'newspaper', // Just in case thumbnail url is undefined
         text: item.group.displayName,
-        id: item.group.groupId,
       });
     }
   }
@@ -69,9 +69,9 @@ function genTagData(item, type) {
     data.push(
       ...item.tags.map((tag) => ({
         type: 'tag',
+        id: tag._id,
         text: tag.displayName,
         color: tag.color,
-        id: tag.tagId,
       })),
     );
   }
@@ -89,18 +89,18 @@ function genTagData(item, type) {
     data.push(
       ...item.location.schools.map((school) => ({
         type: 'school',
+        id: school._id,
         icon: 'map-marker',
         text: school.displayName,
-        id: school.schoolId,
       })),
     );
 
     data.push(
       ...item.location.departments.map((department) => ({
         type: 'department',
+        id: department._id,
         icon: 'map-marker',
         text: department.displayName,
-        id: department.departmentId,
       })),
     );
   }
@@ -153,36 +153,36 @@ TagList.propTypes = {
       PropTypes.shape({
         displayName: PropTypes.string.isRequired,
         color: PropTypes.string.isRequired,
-        tagId: PropTypes.string.isRequired,
+        _id: PropTypes.string.isRequired,
       }),
     ).isRequired,
     location: PropTypes.shape({
       global: PropTypes.bool.isRequired,
       schools: PropTypes.arrayOf(
         PropTypes.shape({
-          schoolId: PropTypes.string.isRequired,
+          _id: PropTypes.string.isRequired,
           displayName: PropTypes.string.isRequired,
         }),
       ).isRequired,
       departments: PropTypes.arrayOf(
         PropTypes.shape({
-          departmentId: PropTypes.string.isRequired,
+          _id: PropTypes.string.isRequired,
           displayName: PropTypes.string.isRequired,
         }),
       ).isRequired,
     }).isRequired,
     author: PropTypes.shape({
-      userId: PropTypes.string.isRequired,
+      _id: PropTypes.string.isRequired,
       displayName: PropTypes.string.isRequired,
     }),
     publisher: PropTypes.shape({
       type: PropTypes.string,
       user: PropTypes.shape({
-        userId: PropTypes.string,
+        _id: PropTypes.string,
         displayName: PropTypes.string,
       }),
       group: PropTypes.shape({
-        groupId: PropTypes.string,
+        _id: PropTypes.string,
         displayName: PropTypes.string,
         thumbnailUrl: PropTypes.string,
       }),

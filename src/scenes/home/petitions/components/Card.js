@@ -172,6 +172,7 @@ function PetitionComponentListCard({ navigate, petition }) {
 export default PetitionComponentListCard;
 
 const petitionPropType = PropTypes.shape({
+  _id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   voteData: PropTypes.shape({
     type: PropTypes.string.isRequired,

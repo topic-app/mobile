@@ -1,6 +1,6 @@
 [
   {
-    "petitionId": "1",
+    "_id": "1",
     "title": "Pétition sur les pigeons",
     "voteData": {
       "type": "goal",
@@ -15,13 +15,13 @@
       "global": false,
       "schools": [
         {
-          "schoolId": "312321312",
+          "_id": "312321312",
           "displayName": "Pasteur"
         }
       ],
       "departments": [
         {
-          "departmentId": "412341234",
+          "_id": "412341234",
           "displayName": "Pacman"
         }
       ]
@@ -29,7 +29,7 @@
     "publisher": {
       "type": "user",
       "user": {
-        "userId": "428934812395",
+        "_id": "428934812395",
         "displayName": "Alexander Nitters"
       }
     },
@@ -38,58 +38,58 @@
       {
         "displayName": "On",
         "color": "red",
-        "tagId": "140930"
+        "_id": "140930"
       },
       {
         "displayName": "Est",
         "color": "blue",
-        "tagId": "5198312941723"
+        "_id": "5198312941723"
       },
       {
         "displayName": "D'Accord",
         "color": "purple",
-        "tagId": "104243275932"
+        "_id": "104243275932"
       },
       {
         "displayName": "Que",
         "color": "yellow",
-        "tagId": "51438597234981"
+        "_id": "51438597234981"
       },
       {
         "displayName": "Le",
         "color": "orange",
-        "tagId": "51284935782934"
+        "_id": "51284935782934"
       },
       {
         "displayName": "Chat",
         "color": "cyan",
-        "tagId": "19237432582"
+        "_id": "19237432582"
       },
       {
         "displayName": "D'Alex",
         "color": "purple",
-        "tagId": "519235834930295"
+        "_id": "519235834930295"
       },
       {
         "displayName": "Est",
         "color": "green",
-        "tagId": "192358341237592"
+        "_id": "192358341237592"
       },
       {
         "displayName": "Trop",
         "color": "pink",
-        "tagId": "152938412375923"
+        "_id": "152938412375923"
       },
       {
         "displayName": "Mignon",
         "color": "black",
-        "tagId": "49123573294231049"
+        "_id": "49123573294231049"
       }
     ]
   },
 
   {
-    "petitionId": "2",
+    "_id": "2",
     "title": "Pétition sur les changement de meteo",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
     "date": "jj/mm/aaaa   min/heure",
@@ -105,7 +105,7 @@
     "publisher": {
       "type": "user",
       "user": {
-        "userId": "4938495",
+        "_id": "4938495",
         "displayName": "Jérémy Hendrikse"
       }
     },
@@ -113,25 +113,25 @@
       {
         "displayName": "Tag 1",
         "color": "red",
-        "tagId": "193247285849"
+        "_id": "193247285849"
       },
       {
         "displayName": "Tag 2",
         "color": "blue",
-        "tagId": "9142384172353894"
+        "_id": "9142384172353894"
       }
     ],
     "location": {
       "global": false,
       "schools": [
         {
-          "schoolId": "41234",
+          "_id": "41234",
           "displayName": "Pasteur"
         }
       ],
       "departments": [
         {
-          "departmentId": "5432594",
+          "_id": "5432594",
           "displayName": "Pac"
         }
       ]
@@ -139,7 +139,7 @@
   },
 
   {
-    "petitionId": "3",
+    "_id": "3",
     "title": "Pétition sur les changements de meteo",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
     "date": "jj/mm/aaaa   min/heure",
@@ -160,7 +160,7 @@
     "publisher": {
       "type": "user",
       "user": {
-        "userId": "39692137659",
+        "_id": "39692137659",
         "displayName": "Tom Ruchier Berquet"
       }
     },
@@ -168,25 +168,25 @@
       {
         "displayName": "Tag 1",
         "color": "red",
-        "tagId": "1494432"
+        "_id": "1494432"
       },
       {
         "displayName": "Tag 2",
         "color": "blue",
-        "tagId": "049123758123"
+        "_id": "049123758123"
       }
     ],
     "location": {
       "global": false,
       "schools": [
         {
-          "schoolId": "09412375",
+          "_id": "09412375",
           "displayName": "Pasteur"
         }
       ],
       "departments": [
         {
-          "departmentId": "17856143",
+          "_id": "17856143",
           "displayName": "Pac"
         }
       ]
@@ -194,7 +194,7 @@
   },
 
   {
-    "petitionId": "4",
+    "_id": "4",
     "title": "Pétition sur les changements de meteo",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
     "date": "jj/mm/aaaa   min/heure",
@@ -211,7 +211,7 @@
     "publisher": {
       "type": "user",
       "user": {
-        "userId": "1231829",
+        "_id": "1231829",
         "displayName": "Benjamin Sengupta"
       }
     },
@@ -219,25 +219,25 @@
       {
         "displayName": "Tag 1",
         "color": "red",
-        "tagId": "2943778132"
+        "_id": "2943778132"
       },
       {
         "displayName": "Tag 2",
         "color": "blue",
-        "tagId": "94123563217"
+        "_id": "94123563217"
       }
     ],
     "location": {
       "global": false,
       "schools": [
         {
-          "schoolId": "48128374128",
+          "_id": "48128374128",
           "displayName": "Pasteur"
         }
       ],
       "departments": [
         {
-          "departmentId": "6957287234",
+          "_id": "6957287234",
           "displayName": "Pac"
         }
       ]

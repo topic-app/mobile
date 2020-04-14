@@ -1,6 +1,6 @@
 [
   {
-    "eventId": "1",
+    "_id": "1",
     "title": "Fête de la Science",
     "duration": {
       "start": "2020-03-30T18:25:43.511Z",
@@ -10,28 +10,28 @@
       "global": false,
       "schools": [
         {
-          "schoolId": "98",
+          "_id": "98",
           "displayName": "CIV"
         },
         {
-          "schoolId": "97",
+          "_id": "97",
           "displayName": "Simone Veil"
         }
       ],
       "departments": [
         {
-          "departmentId": "11",
+          "_id": "11",
           "displayName": "Paca"
         }
       ]
     },
     "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
     "author": {
-      "userId": "53",
+      "_id": "53",
       "displayName": "Jean Dupond"
     },
     "group": {
-      "groupId": "145",
+      "_id": "145",
       "displayName": "Sollaris"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
@@ -42,12 +42,12 @@
       {
         "displayName": "Tag 1",
         "color": "red",
-        "tagId": "item1"
+        "_id": "item1"
       },
       {
         "displayName": "Tag 2",
         "color": "brown",
-        "tagId": "item4"
+        "_id": "item4"
       }
     ],
     "program": [
@@ -62,7 +62,7 @@
     ],
     "contact": {
       "user": {
-        "userId": "53",
+        "_id": "53",
         "displayName": "Jean Dupond"
       },
       "email": "jean.dupond@ac-region.fr",
@@ -72,7 +72,7 @@
     "cache": { "followers": 178 }
   },
   {
-    "eventId": "2",
+    "_id": "2",
     "title": "journé des events",
     "duration": {
       "start": "2020-04-07T18:25:43.511Z",
@@ -82,24 +82,24 @@
       "global": false,
       "schools": [
         {
-          "schoolId": "107",
+          "_id": "107",
           "displayName": "Saint-dié-des-Vosges"
         }
       ],
       "departments": [
         {
-          "departmentId": "12",
+          "_id": "12",
           "displayName": "Vosges"
         }
       ]
     },
     "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
     "author": {
-      "userId": "53",
+      "_id": "53",
       "displayName": "Jean Dupond"
     },
     "group": {
-      "groupId": "145",
+      "_id": "145",
       "displayName": "Sollaris"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
@@ -110,12 +110,12 @@
       {
         "displayName": "Tag 1",
         "color": "red",
-        "tagId": "item1"
+        "_id": "item1"
       },
       {
         "displayName": "Tag 2",
         "color": "brown",
-        "tagId": "item4"
+        "_id": "item4"
       }
     ],
     "program": [
@@ -130,7 +130,7 @@
     ],
     "contact": {
       "user": {
-        "userId": "53",
+        "_id": "53",
         "displayName": "Jean Dupond"
       },
       "email": "jean.dupond@ac-region.fr",
@@ -140,7 +140,7 @@
     "cache": { "followers": 178 }
   },
   {
-    "eventId": "3",
+    "_id": "3",
     "title": "Fête de la Science",
     "duration": {
       "start": "2020-04-01T12:25:43.511Z",
@@ -150,24 +150,24 @@
       "global": false,
       "schools": [
         {
-          "schoolId": "98",
+          "_id": "98",
           "displayName": "CIV"
         }
       ],
       "departments": [
         {
-          "departmentId": "12",
+          "_id": "12",
           "displayName": "Paca"
         }
       ]
     },
     "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
     "author": {
-      "userId": "53",
+      "_id": "53",
       "displayName": "Jean Dupond"
     },
     "group": {
-      "groupId": "145",
+      "_id": "145",
       "displayName": "Sollaris"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
@@ -178,12 +178,12 @@
       {
         "displayName": "Tag 1",
         "color": "red",
-        "tagId": "item1"
+        "_id": "item1"
       },
       {
         "displayName": "Tag 2",
         "color": "brown",
-        "tagId": "item4"
+        "_id": "item4"
       }
     ],
     "program": [
@@ -198,7 +198,7 @@
     ],
     "contact": {
       "user": {
-        "userId": "53",
+        "_id": "53",
         "displayName": "Jean Dupond"
       },
       "email": "jean.dupond@ac-region.fr",
@@ -208,7 +208,7 @@
     "cache": { "followers": 178 }
   },
   {
-    "eventId": "4",
+    "_id": "4",
     "title": "On acceuille les pigeons",
     "duration": {
       "start": "2020-03-31T18:25:43.511Z",
@@ -218,24 +218,24 @@
       "global": true,
       "schools": [
         {
-          "schoolId": "98",
+          "_id": "98",
           "displayName": "CIV"
         }
       ],
       "departments": [
         {
-          "departmentId": "12",
+          "_id": "12",
           "displayName": "Paca"
         }
       ]
     },
     "address": "48, Quelque part en bord de mer Nice",
     "author": {
-      "userId": "69",
+      "_id": "69",
       "displayName": "Marquis Louis-Christophe de Pigeonville"
     },
     "group": {
-      "groupId": "420",
+      "_id": "420",
       "displayName": "Love Pigeons"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
@@ -246,12 +246,12 @@
       {
         "displayName": "Tag 1",
         "color": "red",
-        "tagId": "pigeon"
+        "_id": "pigeon"
       },
       {
         "displayName": "Tag 2",
         "color": "brown",
-        "tagId": "fete"
+        "_id": "fete"
       }
     ],
     "program": [
@@ -270,7 +270,7 @@
     ],
     "contact": {
       "author": {
-        "userId": "69",
+        "_id": "69",
         "displayName": "Marquis Louis-Christophe de Pigeonville"
       },
       "email": "legrandmarquislouischristophedepigeonville@pigeons.com",

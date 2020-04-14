@@ -59,7 +59,7 @@ function EventList({ navigation, events }) {
         data={events}
         refreshing={false}
         onRefresh={() => console.log('Refresh')}
-        keyExtractor={(event) => event.eventId}
+        keyExtractor={(event) => event._id}
         ListFooterComponent={
           <View style={styles.container}>
             <Button style={styles.text}>Retour en haut</Button>
@@ -76,7 +76,7 @@ function EventList({ navigation, events }) {
                   params: {
                     screen: 'Display',
                     params: {
-                      id: event.item.eventId,
+                      id: event.item._id,
                       title: event.item.title,
                       previous: 'Évènements',
                     },
@@ -104,6 +104,7 @@ EventList.propTypes = {
   }).isRequired,
   events: PropTypes.arrayOf(
     PropTypes.shape({
+      _id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       duration: PropTypes.shape({
         // start: PropTypes.instanceOf(Date).isRequired,
