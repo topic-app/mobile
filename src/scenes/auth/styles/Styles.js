@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../../../styles/Styles';
 
 const authStyles = StyleSheet.create({
   centerContainer: {
@@ -12,10 +13,22 @@ const authStyles = StyleSheet.create({
     maxWidth: 600,
     paddingBottom: 3,
   },
+  textInputContainer: {
+    alignSelf: 'stretch',
+  },
+  buttonContainer: {
+    alignSelf: 'stretch',
+  },
   title: {
     fontSize: 30,
     marginBottom: 10,
   },
+  stepIndicatorContainer: {
+    margin: 10
+  },
+  formContainer: {
+    margin: 20,
+  }
 });
 
 export { authStyles };

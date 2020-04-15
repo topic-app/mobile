@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import AuthLoginScreen from './views/Create';
-import AuthCreateScreen from './views/Login';
+import AuthLoginScreen from './views/Login';
+import AuthCreateScreen from './views/Create';
 import AuthResetPasswordScreen from './views/ResetPassword';
 
 const Stack = createStackNavigator();
@@ -22,6 +22,7 @@ function AuthNavigator() {
         component={AuthCreateScreen}
         options={{
           title: 'Créer un compte',
+          headerShown: false
         }}
       />
       <Stack.Screen

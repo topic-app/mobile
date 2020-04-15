@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.6",
+    "@react-native-community/viewpager": "^3.3.0",
     "@react-native-mapbox-gl/maps": "^8.0.0-rc1",
     "@react-navigation/bottom-tabs": "^5.2.4",
     "@react-navigation/drawer": "^5.3.4",
@@ -31,6 +32,7 @@
     "react-native-reanimated": "~1.7.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "~2.2.0",
+    "react-native-step-indicator": "0.0.11",
     "react-native-unimodules": "~0.8.1",
     "react-native-vector-icons": "^6.6.0",
     "react-native-web": "^0.11.7",

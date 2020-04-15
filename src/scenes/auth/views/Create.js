@@ -1,118 +1,160 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, TextInput } from 'react-native-paper';
+import { Text, TextInput, HelperText, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import StepIndicator from 'react-native-step-indicator';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ViewPager from '@react-native-community/viewpager';
 
 import { styles, colors } from '../../../styles/Styles';
 import { theme } from '../../../styles/Theme';
 import { authStyles } from '../styles/Styles';
+import AuthCreatePageGeneral from '../components/CreateGeneral';
+
+const stepIndicatorStyles = {
+  stepIndicatorSize: 30,
+  currentStepIndicatorSize: 40,
+  separatorStrokeWidth: 2,
+  currentStepStrokeWidth: 3,
+  stepStrokeCurrentColor: colors.primary,
+  stepStrokeWidth: 3,
+  separatorStrokeFinishedWidth: 4,
+  stepStrokeFinishedColor: colors.primary,
+  stepStrokeUnFinishedColor: '#aaaaaa',
+  separatorFinishedColor: colors.primary,
+  separatorUnFinishedColor: '#aaaaaa',
+  stepIndicatorFinishedColor: colors.primary,
+  stepIndicatorUnFinishedColor: '#ffffff',
+  stepIndicatorCurrentColor: '#ffffff',
+  stepIndicatorLabelFontSize: 13,
+  currentStepIndicatorLabelFontSize: 13,
+  stepIndicatorLabelCurrentColor: colors.primary,
+  stepIndicatorLabelFinishedColor: '#ffffff',
+  stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+  labelColor: '#999999',
+  labelSize: 13,
+  currentStepLabelColor: colors.primary,
+}
+
+const pages = ['general', 'school', 'privacy', 'profile', 'legal'];
+
+function selectIcon(position) {
+  switch (position) {
+    case 0: {
+      return 'account';
+    }
+    case 1: {
+      return 'school';
+    }
+    case 2: {
+      return 'shield';
+    }
+    case 3: {
+      return 'comment-account';
+    }
+    case 4: {
+      return 'script-text';
+    }
+    default: {
+      return 'checkbox-blank-circle-outline';
+    }
+  }
+}
+
+function iconColor(status) {
+  switch (status) {
+    case 'finished':
+      return '#ffffff';
+    case 'unfinished':
+      return '#aaaaaa';
+    case 'current':
+      return colors.primary
+    default:
+      return '#000000';
+  }
+}
+
+function renderStepIndicator(params) {
+  return <Icon
+    color={iconColor(params.stepStatus)}
+    size={15}
+    name={selectIcon(params.position)}
+  />
+}
 
 class AuthCreate extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      username: '',
-      usernameError: false,
-      usernameValid: false,
-      userNameErrorMessage: '',
-      email: '',
-      emailError: false,
-      emailValid: false,
-      emailErrorMessage: 'Email Invalide',
-      password: '', // Trust me, I'm a security specialist, I know what I'm doing.
-      passwordError: false,
-      passwordValid: false,
-      passwordErrorMessage: '',
-    };
-    this.emailRef = React.createRef();
+      currentPage: 0
+    }
   }
 
-  validateUsernameInput = () => {
-    const { username } = this.state;
-    if (username !== '') {
-      if (username.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null && username.length >= 3) {
-        this.setState({ usernameValid: true, usernameError: false });
-      } else {
-        this.setState({ usernameValid: false, usernameError: true });
-      }
-    } else {
-      this.setState({ usernameValid: false, usernameError: false });
+  onStepPress = (position) => {
+    const { currentPage } = this.state;
+    if (position < currentPage) {
+      this.setState({ currentPage: position });
+      this.viewPager.setPage(position);
     }
-  };
+  }
 
-  validateEmailInput = () => {
-    const { email } = this.state;
-    if (email !== '') {
-      if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,13})+$/) !== null) {
-        this.setState({ emailValid: true, emailError: false });
-      } else {
-        this.setState({ emailValid: false, emailError: true });
-      }
-    } else {
-      this.setState({ emailValid: false, emailError: false });
-    }
-  };
+  moveForward = () => {
+    const { currentPage } = this.state;
+    this.setState({ currentPage: currentPage + 1 });
+    this.viewPager.setPage(currentPage + 1);
+  }
+
+  moveBackward = () => {
+    const { currentPage } = this.state;
+    this.setState({ currentPage: currentPage - 1 });
+    this.viewPager.setPage(currentPage - 1);
+  }
 
   render() {
-    const {
-      username,
-      usernameError,
-      usernameValid,
-      email,
-      emailError,
-      emailValid,
-      password,
-      passwordError,
-      passwordValid,
-    } = this.state;
-
+    const { currentPage } = this.state
     return (
       <View style={styles.page}>
-        <View style={authStyles.centerContainer}>
-          <Text style={authStyles.title}>Créer un Compte</Text>
-          <TextInput
-            label="Nom d'Utilisateur"
-            value={username}
-            error={usernameError}
-            theme={
-              usernameValid
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
-            mode="outlined"
-            onEndEditing={this.validateUsernameInput}
-            textContentType="username"
-            style={authStyles.textInput}
-            onChangeText={(text) => this.setState({ username: text })}
-          />
-          <TextInput
-            label="Email"
-            value={email}
-            error={emailError}
-            theme={
-              emailValid
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
-            textContentType="emailAddress"
-            mode="outlined"
-            onEndEditing={this.validateEmailInput}
-            style={authStyles.textInput}
-            onChangeText={(text) => this.setState({ email: text })}
-          />
-          <TextInput
-            label="Mot de Passe"
-            value={password}
-            error={passwordError}
-            mode="outlined"
-            secureTextEntry
-            textContentType="password"
-            style={authStyles.textInput}
-            onChangeText={(text) => this.setState({ password: text })}
+        <View style={authStyles.stepIndicatorContainer}>
+          <View style={authStyles.centerContainer}>
+            <Text style={authStyles.title}>Créer un Compte</Text>
+          </View>
+          <StepIndicator
+            stepCount={5}
+            currentPosition={currentPage}
+            labels={['General', 'École', 'Vie privée', 'Profil', 'Conditions']}
+            onPress={this.onStepPress}
+            customStyles={stepIndicatorStyles}
+            renderStepIndicator={renderStepIndicator}
           />
         </View>
+        <ViewPager
+          style={{ flexGrow: 1 }}
+          ref={viewPager => {
+            this.viewPager = viewPager
+          }}
+          onPageSelected={page => {
+            /*this.setState({ currentPage: page.position })*/
+          }}
+          scrollEnabled={false}
+        >
+          <View key="1">
+            <AuthCreatePageGeneral forward={this.moveForward} />
+          </View>
+          <View key="2">
+            <Text>HELLO 2</Text>
+          </View>
+          <View key="3">
+            <Text>HELLO 3</Text>
+          </View>
+          <View key="4">
+            <Text>HELLO 4</Text>
+          </View>
+          <View key="5">
+            <Text>HELLO 5</Text>
+          </View>
+        </ViewPager>
       </View>
-    );
+    )
   }
 }
 
