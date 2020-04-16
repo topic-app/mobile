@@ -34,8 +34,8 @@ class AuthCreatePageGeneral extends React.Component {
     if (username !== '') {
       if (username.length < 3) {
         this.setState({ usernameValid: false, usernameError: true, usernameErrorMessage: "Le nom d'utilisateur doit contenir au moins 3 caractères" });
-      } else if (username.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) === null) {
-        this.setState({ usernameValid: false, usernameError: true, usernameErrorMessage: "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux"})
+      } else if (username.match(/^[a-zA-Z0-9_.]+$/i) === null) {
+        this.setState({ usernameValid: false, usernameError: true, usernameErrorMessage: "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux sauf « _ » et « . »"})
       } else {
         request('auth/check/local/username', 'get', { username }).then((result) => {
           if (result.success && !result.data.usernameExists) {
@@ -57,7 +57,7 @@ class AuthCreatePageGeneral extends React.Component {
   preValidateUsernameInput = () => {
     const { username } = this.state;
     request('auth/check/local/username', 'get', { username }).then((result) => {
-      if (username.length >= 3 && username.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null && result.success && !result.data.usernameExists) {
+      if (username.length >= 3 && username.match(/^[a-zA-Z0-9_.]+$/i) !== null && result.success && !result.data.usernameExists) {
         this.setState({ usernameValid: true, usernameError: false });
       }
     }).catch(() => {});
