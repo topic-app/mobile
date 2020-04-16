@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import { Text, TextInput, HelperText, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { updateCreationData } from '../../../redux/actions/account';
@@ -172,14 +172,16 @@ class AuthCreatePageProfile extends React.Component {
           </View>
           <View style={authStyles.buttonContainer}>
             <Button
-              mode="outlined"
+              mode={Platform.OS !== "ios" ? "outlined": "text"}
+              uppercase={Platform.OS !== "ios"}
               onPress={() => {backward();}}
               style={{flex: 1, marginRight: 5}}
             >
               Retour
             </Button>
             <Button
-              mode="contained"
+              mode={Platform.OS !== "ios" ? "contained": "outlined"}
+              uppercase={Platform.OS !== "ios"}
               onPress={() => {this.submit();}}
               style={{flex: 1, marginLeft: 5}}
             >

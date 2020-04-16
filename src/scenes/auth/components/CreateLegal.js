@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback } from 'react-native';
+import { View, TouchableWithoutFeedback, Platform } from 'react-native';
 import { Text, TextInput, HelperText, Button, Snackbar, Checkbox, Paragraph, Caption } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -105,14 +105,16 @@ class AuthCreatePageLegal extends React.Component {
         </View>
         <View style={authStyles.buttonContainer}>
           <Button
-            mode="outlined"
+            mode={Platform.OS !== "ios" ? "outlined": "text"}
+            uppercase={Platform.OS !== "ios"}
             onPress={() => backward()}
             style={{flex: 1, marginRight: 5}}
           >
             Retour
           </Button>
           <Button
-            mode="contained"
+            mode={Platform.OS !== "ios" ? "contained": "outlined"}
+            uppercase={Platform.OS !== "ios"}
             onPress={() => this.submit()}
             style={{flex: 1, marginLeft: 5}}
           >

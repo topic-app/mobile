@@ -155,7 +155,7 @@ class AuthCreate extends React.Component {
           onPageSelected={page => {
             /* this.setState({ currentPage: page.position }) */
           }}
-          scrollEnabled={false} // TEMP: Disable this for easier testing
+          scrollEnabled // TEMP: Disable this for easier testing
         >
           <View key="1">
             <AuthCreatePageGeneral forward={this.moveForward} />
