@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { Text, TextInput, HelperText, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import StepIndicator from 'react-native-step-indicator';
@@ -9,7 +9,12 @@ import ViewPager from '@react-native-community/viewpager';
 import { styles, colors } from '../../../styles/Styles';
 import { theme } from '../../../styles/Theme';
 import { authStyles } from '../styles/Styles';
+
 import AuthCreatePageGeneral from '../components/CreateGeneral';
+import AuthCreatePageSchool from '../components/CreateSchool';
+import AuthCreatePagePrivacy from '../components/CreatePrivacy';
+import AuthCreatePageProfile from '../components/CreateProfile';
+import AuthCreatePageLegal from '../components/CreateLegal';
 
 const stepIndicatorStyles = {
   stepIndicatorSize: 30,
@@ -24,19 +29,17 @@ const stepIndicatorStyles = {
   separatorFinishedColor: colors.primary,
   separatorUnFinishedColor: '#aaaaaa',
   stepIndicatorFinishedColor: colors.primary,
-  stepIndicatorUnFinishedColor: '#ffffff',
-  stepIndicatorCurrentColor: '#ffffff',
+  stepIndicatorUnFinishedColor: colors.background,
+  stepIndicatorCurrentColor: colors.background,
   stepIndicatorLabelFontSize: 13,
   currentStepIndicatorLabelFontSize: 13,
   stepIndicatorLabelCurrentColor: colors.primary,
-  stepIndicatorLabelFinishedColor: '#ffffff',
+  stepIndicatorLabelFinishedColor: colors.background,
   stepIndicatorLabelUnFinishedColor: '#aaaaaa',
   labelColor: '#999999',
   labelSize: 13,
   currentStepLabelColor: colors.primary,
 }
-
-const pages = ['general', 'school', 'privacy', 'profile', 'legal'];
 
 function selectIcon(position) {
   switch (position) {
@@ -104,14 +107,31 @@ class AuthCreate extends React.Component {
     this.viewPager.setPage(currentPage + 1);
   }
 
+  skipForward = () => {
+    const { currentPage } = this.state;
+    this.setState({ currentPage: currentPage + 2 });
+    this.viewPager.setPage(currentPage + 2);
+  }
+
+  skipBackward = () => {
+    const { currentPage } = this.state;
+    this.setState({ currentPage: currentPage + 2 });
+    this.viewPager.setPage(currentPage + 2);
+  }
+
   moveBackward = () => {
     const { currentPage } = this.state;
     this.setState({ currentPage: currentPage - 1 });
     this.viewPager.setPage(currentPage - 1);
   }
 
+  create = () => {
+    console.log("create")
+  }
+
   render() {
-    const { currentPage } = this.state
+    const { currentPage } = this.state;
+    const { navigation } = this.props;
     return (
       <View style={styles.page}>
         <View style={authStyles.stepIndicatorContainer}>
@@ -133,24 +153,24 @@ class AuthCreate extends React.Component {
             this.viewPager = viewPager
           }}
           onPageSelected={page => {
-            /*this.setState({ currentPage: page.position })*/
+            /* this.setState({ currentPage: page.position }) */
           }}
-          scrollEnabled={false}
+          scrollEnabled={false} // TEMP: Disable this for easier testing
         >
           <View key="1">
             <AuthCreatePageGeneral forward={this.moveForward} />
           </View>
           <View key="2">
-            <Text>HELLO 2</Text>
+            <AuthCreatePageSchool forward={this.moveForward} backward={this.moveBackward} />
           </View>
           <View key="3">
-            <Text>HELLO 3</Text>
+            <AuthCreatePagePrivacy forward={this.moveForward} backward={this.moveBackward} skip={this.skipForward} />
           </View>
           <View key="4">
-            <Text>HELLO 4</Text>
+            <AuthCreatePageProfile forward={this.moveForward} backward={this.moveBackward} />
           </View>
           <View key="5">
-            <Text>HELLO 5</Text>
+            <AuthCreatePageLegal forward={this.create} backward={this.moveBackward} />
           </View>
         </ViewPager>
       </View>

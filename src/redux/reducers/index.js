@@ -5,6 +5,7 @@ import prefReducer from './prefs';
 import eventReducer from './event';
 import petitionReducer from './petitions';
 import accountReducer from './account';
+import locationReducer from './location';
 
 const Reducer = combineReducers({
   articles: articleReducer,
@@ -12,6 +13,7 @@ const Reducer = combineReducers({
   petitions: petitionReducer,
   preferences: prefReducer,
   account: accountReducer,
+  location: locationReducer,
 });
 
 export default Reducer;

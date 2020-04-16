@@ -1,7 +1,8 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, TextInput, HelperText, Button, Snackbar } from 'react-native-paper';
+import { Text, TextInput, HelperText, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { updateCreationData } from '../../../redux/actions/account';
 
 import { styles, colors } from '../../../styles/Styles';
 import { theme } from '../../../styles/Theme';
@@ -29,7 +30,6 @@ class AuthCreatePageGeneral extends React.Component {
 
   validateUsernameInput = () => {
     const { username } = this.state;
-    console.log(username.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) === null)
     if (username !== '') {
       if (username.length < 3) {
         this.setState({ usernameValid: false, usernameError: true, usernameErrorMessage: "Le nom d'utilisateur doit contenir au moins 3 caractères" });
@@ -43,6 +43,13 @@ class AuthCreatePageGeneral extends React.Component {
     }
   };
 
+  preValidateUsernameInput = () => {
+    const { username } = this.state;
+    if (username.length >= 3 && username.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null) {
+      this.setState({ usernameValid: true, usernameError: false });
+    }
+  }
+
   validateEmailInput = () => {
     const { email } = this.state;
     if (email !== '') {
@@ -55,6 +62,13 @@ class AuthCreatePageGeneral extends React.Component {
       this.setState({ emailValid: false, emailError: false });
     }
   };
+
+  preValidateEmailInput = () => {
+    const { email } = this.state;
+    if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,13})+$/) !== null) {
+      this.setState({ emailValid: true, emailError: false });
+    }
+  }
 
   validatePasswordInput = () => {
     const { password } = this.state;
@@ -71,12 +85,22 @@ class AuthCreatePageGeneral extends React.Component {
     }
   };
 
-  submit = () => {
+  preValidatePasswordInput = () => {
+    const { password } = this.state;
+    if (password.length >= 8 && password.match(/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/) !== null) {
+      this.setState({ passwordValid: true, passwordError: false })
+    }
+  }
+
+  submit = async() => {
     const {
+      username,
       usernameError,
       usernameValid,
+      email,
       emailError,
       emailValid,
+      password,
       passwordError,
       passwordValid,
     } = this.state;
@@ -85,13 +109,14 @@ class AuthCreatePageGeneral extends React.Component {
       forward
     } = this.props;
 
-    this.usernameInput.blur();
-    this.emailInput.blur();
-    this.passwordInput.blur();
-    this.validatePasswordInput();
-    this.validateEmailInput();
-    this.validateUsernameInput();
+    await this.usernameInput.blur();
+    await this.emailInput.blur();
+    await this.passwordInput.blur();
+    await this.validatePasswordInput();
+    await this.validateEmailInput();
+    await this.validateUsernameInput();
     if (usernameValid && emailValid && passwordValid) {
+      updateCreationData({ username, email, password })
       forward()
     } else {
       if (!usernameValid && !usernameError) {
@@ -148,9 +173,7 @@ class AuthCreatePageGeneral extends React.Component {
               style={authStyles.textInput}
               onChangeText={(text) => {
                 this.setState({ username: text });
-                if (usernameError) {
-                  this.validateUsernameInput();
-                }
+                this.preValidateUsernameInput();
               }}
             />
             <HelperText
@@ -185,9 +208,7 @@ class AuthCreatePageGeneral extends React.Component {
               style={authStyles.textInput}
               onChangeText={(text) => {
                 this.setState({ email: text });
-                if (emailError) {
-                  this.validateEmailInput();
-                }
+                this.preValidateEmailInput();
               }}
             />
             <HelperText
@@ -211,6 +232,7 @@ class AuthCreatePageGeneral extends React.Component {
               onSubmitEditing={() => {
                 this.validatePasswordInput();
                 this.submit()
+                // this.submit() // TEMP: Because validation needs to be redone
               }}
               onEndEditing={this.validatePasswordInput}
               textContentType="password"
@@ -218,9 +240,7 @@ class AuthCreatePageGeneral extends React.Component {
               style={authStyles.textInput}
               onChangeText={(text) => {
                 this.setState({ password: text });
-                if (passwordError) {
-                  this.validatePasswordInput();
-                }
+                this.preValidatePasswordInput();
               }}
               theme={
                 passwordValid
@@ -238,7 +258,8 @@ class AuthCreatePageGeneral extends React.Component {
           <View style={authStyles.buttonContainer}>
             <Button
               mode="contained"
-              onPress={() => this.submit()}
+              onPress={() => {this.submit();}}
+              style={{flex: 1}}
             >
               Suivant
             </Button>

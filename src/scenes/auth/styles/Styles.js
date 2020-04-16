@@ -18,6 +18,18 @@ const authStyles = StyleSheet.create({
   },
   buttonContainer: {
     alignSelf: 'stretch',
+    flexDirection: 'row'
+  },
+  listContainer: {
+    margin: 10
+  },
+  descriptionContainer: {
+    marginHorizontal: 30,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  descriptionPartContainer: {
+    marginVertical: 10,
   },
   title: {
     fontSize: 30,
@@ -28,6 +40,9 @@ const authStyles = StyleSheet.create({
   },
   formContainer: {
     margin: 20,
+  },
+  radio: {
+    color: colors.primary,
   }
 });
 
