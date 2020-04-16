@@ -8,7 +8,7 @@ import { styles } from '../../../../styles/Styles';
 
 function PetitionDisplay({ route, petitions }) {
   const { id } = route.params;
-  const petition = petitions.find((t) => t.petitionId === id);
+  const petition = petitions.find((t) => t._id === id);
 
   return (
     <View style={styles.page}>
