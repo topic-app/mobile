@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Platform } from 'react-native';
 import { Text, TextInput, HelperText, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { updateCreationData } from '../../../redux/actions/account';
+import { updateCreationData, updateState } from '../../../redux/actions/account';
 
 import { styles, colors } from '../../../styles/Styles';
 import { theme } from '../../../styles/Theme';
 import { authStyles } from '../styles/Styles';
+import request from '../../../utils/request';
 
 class AuthCreatePageGeneral extends React.Component {
   constructor(props) {
@@ -36,7 +37,17 @@ class AuthCreatePageGeneral extends React.Component {
       } else if (username.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) === null) {
         this.setState({ usernameValid: false, usernameError: true, usernameErrorMessage: "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux"})
       } else {
-        this.setState({ usernameValid: true, usernameError: false, usernameErrorMessage: "" });
+        request('auth/check/local/username', 'get', { username }).then((result) => {
+          if (result.success && !result.data.usernameExists) {
+            this.setState({ usernameValid: true, usernameError: false, usernameErrorMessage: "" });
+          } else if (!result.success) {
+            updateState({ success: false, error: result.error })
+          } else {
+            this.setState({ usernameValid: false, usernameError: true, usernameErrorMessage: "Ce nom d'utilisateur existe déjà" });
+          }
+        }).catch((err) => {
+          updateState({ success: false, error: err })
+        });
       }
     } else {
       this.setState({ usernameValid: false, usernameError: false });
@@ -45,9 +56,11 @@ class AuthCreatePageGeneral extends React.Component {
 
   preValidateUsernameInput = () => {
     const { username } = this.state;
-    if (username.length >= 3 && username.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null) {
-      this.setState({ usernameValid: true, usernameError: false });
-    }
+    request('auth/check/local/username', 'get', { username }).then((result) => {
+      if (username.length >= 3 && username.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null && result.success && !result.data.usernameExists) {
+        this.setState({ usernameValid: true, usernameError: false });
+      }
+    }).catch(() => {});
   }
 
   validateEmailInput = () => {
@@ -56,7 +69,17 @@ class AuthCreatePageGeneral extends React.Component {
       if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,13})+$/) === null) {
         this.setState({ emailValid: false, emailError: true, emailErrorMessage: "L'addresse mail n'est pas valide" });
       } else {
-        this.setState({ emailValid: true, emailError: false });
+        request('auth/check/local/email', 'get', { email }).then((result) => {
+          if (result.success && !result.data.usernameExists) {
+            this.setState({ emailValid: true, emailError: false, emailErrorMessage: "" });
+          } else if (!result.success) {
+            updateState({ success: false, error: result.error })
+          } else {
+            this.setState({ emailValid: false, emailError: true, emailErrorMessage: "Il existe déjà un compte avec cet email" });
+          }
+        }).catch((err) => {
+          updateState({ success: false, error: err })
+        });
       }
     } else {
       this.setState({ emailValid: false, emailError: false });
@@ -65,9 +88,11 @@ class AuthCreatePageGeneral extends React.Component {
 
   preValidateEmailInput = () => {
     const { email } = this.state;
-    if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,13})+$/) !== null) {
-      this.setState({ emailValid: true, emailError: false });
-    }
+    request('auth/check/local/username', 'get', { email }).then((result) => {
+      if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,13})+$/) !== null && result.success && result.data.usernameExists) { // TODO: Change to emailExists once server is updated
+        this.setState({ emailValid: true, emailError: false });
+      }
+    }).catch(() => {});
   }
 
   validatePasswordInput = () => {
@@ -93,6 +118,7 @@ class AuthCreatePageGeneral extends React.Component {
   }
 
   submit = async() => {
+    updateState({ loading: true })
     const {
       username,
       usernameError,
@@ -127,6 +153,7 @@ class AuthCreatePageGeneral extends React.Component {
         this.setState({ passwordValid: false, passwordError: true, passwordErrorMessage: "Mot de passe requis"});
       }
     }
+    updateState({ loading: false })
   }
 
   render() {

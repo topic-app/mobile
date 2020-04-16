@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { Text, TextInput, HelperText, Button } from 'react-native-paper';
+import { View, ScrollView, Platform } from 'react-native';
+import { Text, TextInput, HelperText, Button, ProgressBar } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ViewPager from '@react-native-community/viewpager';
+import { connect } from 'react-redux';
 
 import { styles, colors } from '../../../styles/Styles';
 import { theme } from '../../../styles/Theme';
@@ -15,6 +16,8 @@ import AuthCreatePageSchool from '../components/CreateSchool';
 import AuthCreatePagePrivacy from '../components/CreatePrivacy';
 import AuthCreatePageProfile from '../components/CreateProfile';
 import AuthCreatePageLegal from '../components/CreateLegal';
+
+import { register, updateState } from '../../../redux/actions/account';
 
 const stepIndicatorStyles = {
   stepIndicatorSize: 30,
@@ -125,15 +128,99 @@ class AuthCreate extends React.Component {
     this.viewPager.setPage(currentPage - 1);
   }
 
+  restart = () => {
+    updateState({ error: null, success: null, loading: null })
+    this.setState({ currentPage: 0 });
+  }
+
   create = () => {
-    console.log("create")
+    console.log("create");
+
+    const { creationData } = this.props;
+
+    console.log(`Creation data ${creationData}`)
+
+    const reqParams = {
+      accountInfo: {
+        username: creationData.username,
+        email: creationData.email,
+        password: creationData.password,
+        global: creationData.global,
+        schools: creationData.schools,
+        departments: creationData.departments,
+        description: null,
+        public: creationData.accountType === "public",
+        firstName: creationData.accountType === "public" ? creationData.firstname : null,
+        lastName: creationData.accountType === "public" ? creationData.lastname : null,
+      },
+      device: {
+        type: "app",
+        deviceId: null,
+        canNotify: true,
+      }
+    }
+
+    register(reqParams);
+
+
   }
 
   render() {
     const { currentPage } = this.state;
-    const { navigation } = this.props;
+    const { navigation, reqState } = this.props;
+    if (reqState.success) {
+      return(
+        <View style={styles.page}>
+          <View style={authStyles.stepIndicatorContainer}>
+            <View style={authStyles.centerContainer}>
+              <Icon size={50} color={colors.valid} name="account-check-outline" />
+              <Text style={authStyles.title}>Compte crée</Text>
+            </View>
+          </View>
+          <View style={authStyles.formContainer}>
+            <View style={authStyles.buttonContainer}>
+              <Button
+                mode={Platform.OS !== "ios" ? "contained": "outlined"}
+                uppercase={Platform.OS !== "ios"}
+                onPress={() => this.navigate()}
+                style={{flex: 1}}
+              >
+                Retour
+              </Button>
+            </View>
+          </View>
+        </View>
+      )
+    }
+    if (reqState.success === false) {
+      return(
+        <View style={styles.page}>
+          <View style={authStyles.stepIndicatorContainer}>
+            <View style={authStyles.centerContainer}>
+              <Icon size={50} color={colors.text} name="account-remove-outline" />
+              <Text style={authStyles.title}>Erreur lors de la création du compte</Text>
+              <Text>Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données soient correctes ou signaler un bug depuis le menu principal</Text>
+              <Text>Erreur: {reqState.error.message || reqState.error.value || reqState.error.extraMessage || 'Inconnu'}</Text>
+            </View>
+          </View>
+          <View style={authStyles.formContainer}>
+            <View style={authStyles.buttonContainer}>
+              <Button
+                mode={Platform.OS !== "ios" ? "contained": "outlined"}
+                uppercase={Platform.OS !== "ios"}
+                onPress={() => this.restart()}
+                style={{flex: 1}}
+              >
+                Recommencer
+              </Button>
+            </View>
+          </View>
+        </View>
+      )
+    }
     return (
       <View style={styles.page}>
+        {reqState.loading && <ProgressBar indeterminate />}
         <View style={authStyles.stepIndicatorContainer}>
           <View style={authStyles.centerContainer}>
             <Text style={authStyles.title}>Créer un Compte</Text>
@@ -178,10 +265,30 @@ class AuthCreate extends React.Component {
   }
 }
 
-export default AuthCreate;
+const mapStateToProps = (state) => {
+  const { account } = state;
+  return { creationData: account.creationData, reqState: account.state };
+}
+
+export default connect(mapStateToProps)(AuthCreate);
+
+AuthCreate.defaultProps = {
+  creationData: {},
+  reqState: {
+    error: null,
+    success: null,
+    loading: false,
+  }
+}
 
 AuthCreate.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  creationData: PropTypes.shape(),
+  reqState: PropTypes.shape({
+    error: PropTypes.any,
+    success: PropTypes.bool,
+    loading: PropTypes.bool,
+  })
 };

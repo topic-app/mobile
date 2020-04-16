@@ -13,26 +13,34 @@
    loggedIn: false,
    accountInfo: {},
    creationData: {},
+   state: {
+     loading: false,
+     success: null,
+     error: null,
+   }
  }
 
 function accountReducer(state = initialState, action) {
   switch (action.type) {
     case 'UPDATE_CREATION_DATA':
       return {
-        loggedIn: state.loggedIn,
-        accountInfo: state.accountInfo,
-        creationData: {...state.creationData, ...action.data}
+        ...state,
+        creationData: {...state.creationData, ...action.data},
       }
     case 'CLEAR_CREATION_DATA':
       return {
-        loggedIn: state.loggedIn,
-        accountInfo: state.accountInfo,
+        ...state,
         creationData: {}
       }
+    case 'UPDATE_ACCOUNT_STATE':
+      return {
+        ...state,
+        state: action.data
+      }
     case 'LOGIN':
-      return { loggedIn: true, accountInfo: action.data, creationData: {} };
+      return { loggedIn: true, accountInfo: action.data, creationData: {}, state: state.state };
     case 'LOGOUT':
-      return { loggedIn: false, creationData: {} };
+      return { loggedIn: false, creationData: {}, state: state.state };
     default:
       return state;
   }
