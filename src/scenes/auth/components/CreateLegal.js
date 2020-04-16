@@ -1,22 +1,46 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Platform } from 'react-native';
-import {
-  Text,
-  TextInput,
-  HelperText,
-  Button,
-  Snackbar,
-  Checkbox,
-  Paragraph,
-  Caption,
-} from 'react-native-paper';
+import { View, TouchableWithoutFeedback, Platform, ScrollView } from 'react-native';
+import { Text, HelperText, Button, Snackbar, Checkbox } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { styles, colors } from '../../../styles/Styles';
-import { theme } from '../../../styles/Theme';
+import { colors } from '../../../styles/Styles';
 import { authStyles } from '../styles/Styles';
+
+function ListHeading({ label }) {
+  return <Text style={{ paddingHorizontal: 19, fontWeight: 'bold' }}>{label}</Text>;
+}
+
+function ListItem({ icon, iconColor, label, textStyle }) {
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      <MaterialCommunityIcons
+        style={{ paddingTop: 2.5, paddingRight: 3 }}
+        size={15}
+        color={iconColor ?? colors.text}
+        name={icon}
+      />
+      <Text style={textStyle}>{label}</Text>
+    </View>
+  );
+}
+
+function ListItemAnchor({ icon, label, onPress, textStyle }) {
+  // Note: TouchableWithoutFeedback needs a child that is a View
+  return (
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View>
+        <ListItem
+          icon={icon}
+          iconColor={colors.primary}
+          label={label}
+          textStyle={[{ textDecorationLine: 'underline', color: colors.primary }, textStyle]}
+        />
+      </View>
+    </TouchableWithoutFeedback>
+  );
+}
 
 class AuthCreatePageLegal extends React.Component {
   constructor(props) {
@@ -35,10 +59,21 @@ class AuthCreatePageLegal extends React.Component {
     const { forward } = this.props;
     const { terms, email } = this.state;
     if (!terms) {
-      this.setState({ error: true, errorMessage: 'Vous devez accepter' });
-    } else if (!email) {
-      this.setState({ emailError: true, emailErrorMessage: 'Vous devez confirmer' });
+      this.setState({ error: true, errorMessage: 'Vous devez accepter pour pouvoir continuer' });
     } else {
+      this.setState({ error: false });
+    }
+    if (!email) {
+      this.setState({
+        emailError: true,
+        emailErrorMessage: 'Vous devez confirmer pour pouvoir continuer',
+      });
+    } else {
+      this.setState({
+        emailError: false,
+      });
+    }
+    if (terms && email) {
       forward();
     }
   };
@@ -48,86 +83,85 @@ class AuthCreatePageLegal extends React.Component {
     const { forward, backward, creationData } = this.props;
 
     return (
-      <View style={authStyles.formContainer}>
+      <ScrollView style={authStyles.formContainer}>
         <View style={authStyles.descriptionContainer}>
           <View>
             <View style={authStyles.descriptionPartContainer}>
-              <Text>Résumé de la politique de vie privée</Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="check" /> Nous collectons seulement les
-                informations que vous nous donnez explicitement
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="check" /> Nous partageons vos données
-                seulement avec des organismes éducatifs
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="check" /> Vos données restent en Europe et
-                sont soumises aux lois françaises
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="check" /> Vous pouvez supprimer votre
-                compte et exercer vos droits à tout moment via l&apos;onglet Profil
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="close" /> Vos données ne sont pas vendues
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="close" /> Vos données ne sont pas gardées
-                quand elles ne sont plus nécéssaires
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="information-outline" /> Pour plus
-                d&apos;informations addressez vous à dpo@topicapp.fr
-              </Text>
-              <Text style={{ textDecorationLine: 'underline', color: colors.primary }}>
-                <Icon size={15} color={colors.text} name="arrow-right-bold-circle-outline" /> Voir
-                la politique de vie privée
-              </Text>
+              <ListHeading label="Résumé de la politique de vie privée" />
+              <ListItem
+                icon="check"
+                label="Nous collectons seulement les informations que vous nous donnez explicitement"
+              />
+              <ListItem
+                icon="check"
+                label="Nous partageons vos données seulement avec des organismes éducatifs"
+              />
+              <ListItem
+                icon="check"
+                label="Vos données restent en Europe et sont soumises aux lois françaises"
+              />
+              <ListItem
+                icon="check"
+                label="Vous pouvez supprimer votre compte et exercer vos droits à tout moment via l'onglet Profil"
+              />
+              <ListItem icon="close" label="Vos données ne sont pas vendues" />
+              <ListItem
+                icon="close"
+                label="Vos données ne sont pas gardées quand elles ne sont plus nécéssaires"
+              />
+              <ListItem
+                icon="information-outline"
+                label="Pour plus d'informations addressez vous à dpo@topicapp.fr"
+              />
+              <ListItemAnchor
+                icon="arrow-right-bold-circle-outline"
+                label="Voir la politique de vie privée"
+                onPress={() => console.log('Vie Privée!')}
+              />
             </View>
             <View style={authStyles.descriptionPartContainer}>
-              <Text>Résumé des conditions d&apos;utilisation </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="close" /> Toute forme de violence, de
-                harcèlement, ou de haine est interdite{' '}
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="close" /> Le contenu que vous publiez doit
-                être approprié pour des enfants de tous ages
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="alert-outline" /> En cas de contenu
-                illicite ou inapproprié, nous en informerons les instances telles que votre école ou
-                la police{' '}
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="alert-outline" /> En cas de non respect de
-                ces conditions, votre compte peut etre supprimé
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="information-outline" /> Vous pouvez
-                reporter un contenu qui contrevient à ces conditions{' '}
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="information-outline" /> Nous déclinons
-                toute responsabilité en cas de problème{' '}
-              </Text>
-              <Text>
-                <Icon size={15} color={colors.text} name="information-outline" /> Le contenu posté
-                sur la plateforme n&apos;est pas forcément correct ou vérifié{' '}
-              </Text>
-              <Text style={{ textDecorationLine: 'underline', color: colors.primary }}>
-                <Icon size={15} color={colors.text} name="arrow-right-bold-circle-outline" /> Voir
-                les conditions d&apos;utilisation
-              </Text>
+              <ListHeading label="Résumé des conditions d'utilisation" />
+              <ListItem
+                icon="close"
+                label="Toute forme de violence, de harcèlement, ou de haine est formellement interdite"
+              />
+              <ListItem
+                icon="close"
+                label="Le contenu que vous publiez doit être approprié pour des enfants de tous ages"
+              />
+              <ListItem
+                icon="alert-outline"
+                label="En cas de contenu illicite ou inapproprié, nous en informerons les instances telles que votre école ou la police"
+              />
+              <ListItem
+                icon="alert-outline"
+                label="En cas de non respect de ces conditions, votre compte peut etre supprimé"
+              />
+              <ListItem
+                icon="information-outline"
+                label="Vous pouvez reporter un contenu qui contrevient à ces conditions"
+              />
+              <ListItem
+                icon="information-outline"
+                label="Nous déclinons toute responsabilité en cas de problème"
+              />
+              <ListItem
+                icon="information-outline"
+                label="Nous déclinons toute responsabilité en cas de problème"
+              />
+              <ListItemAnchor
+                icon="arrow-right-bold-circle-outline"
+                label="Voir les conditions d'utilisation"
+                onPress={() => console.log("conditions d'utilisation!")}
+              />
             </View>
           </View>
           <View style={authStyles.descriptionPartContainer}>
-            <Text>
-              <Icon size={15} color={colors.text} name="information-outline" /> Ces résumés
-              n&apos;ont aucune valeur légale et ne remplacent pas les conditions d&apos;utilisation
-              et la politique de vie privée{' '}
-            </Text>
+            <ListItem
+              icon="information-outline"
+              label="Ces résumés n'ont aucune valeur légale et ne remplacent pas les conditions d'utilisation et la politique de vie privée"
+              textStyle={{ fontWeight: 'bold' }}
+            />
           </View>
         </View>
         <View>
@@ -187,7 +221,7 @@ class AuthCreatePageLegal extends React.Component {
             Créer mon compte
           </Button>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

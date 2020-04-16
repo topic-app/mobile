@@ -18,13 +18,13 @@ const authStyles = StyleSheet.create({
   },
   buttonContainer: {
     alignSelf: 'stretch',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   listContainer: {
-    margin: 10
+    padding: 10,
   },
   descriptionContainer: {
-    marginHorizontal: 30,
+    marginHorizontal: 20,
     marginTop: 10,
     marginBottom: 20,
   },
@@ -36,14 +36,14 @@ const authStyles = StyleSheet.create({
     marginBottom: 10,
   },
   stepIndicatorContainer: {
-    margin: 10
+    margin: 10,
   },
   formContainer: {
     margin: 20,
   },
   radio: {
     color: colors.primary,
-  }
+  },
 });
 
 export { authStyles };

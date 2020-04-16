@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Text, TextInput, HelperText, Button } from 'react-native-paper';
+import { TextInput, HelperText, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { updateCreationData, updateState } from '../../../redux/actions/account';
 
-import { styles, colors } from '../../../styles/Styles';
+import { colors } from '../../../styles/Styles';
 import { theme } from '../../../styles/Theme';
 import { authStyles } from '../styles/Styles';
 import request from '../../../utils/request';
