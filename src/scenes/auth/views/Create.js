@@ -182,10 +182,10 @@ class AuthCreate extends React.Component {
               <Button
                 mode={Platform.OS !== "ios" ? "contained": "outlined"}
                 uppercase={Platform.OS !== "ios"}
-                onPress={() => this.navigate()}
+                onPress={() => navigation.navigate('Main', { screen: 'Home1', params: { screen: 'Home2', params: { screen: 'Article' }}})}
                 style={{flex: 1}}
               >
-                Retour
+                Continuer
               </Button>
             </View>
           </View>
@@ -242,7 +242,7 @@ class AuthCreate extends React.Component {
           onPageSelected={page => {
             /* this.setState({ currentPage: page.position }) */
           }}
-          scrollEnabled // TEMP: Disable this for easier testing
+          scrollEnabled={false} // TEMP: Disable this for easier testing
         >
           <View key="1">
             <AuthCreatePageGeneral forward={this.moveForward} />
