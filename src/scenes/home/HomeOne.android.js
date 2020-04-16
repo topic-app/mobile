@@ -12,6 +12,14 @@ import { navigatorStyles } from '../../styles/NavStyles';
 
 const DrawerNav = createDrawerNavigator();
 
+function genName({ data, info }) {
+  if (data.firstName && data.lastName) {
+    return `${data.firstName} ${  data.lastName}`;
+  }
+  return data.firstName || data.lastName || info.username;
+
+}
+
 function CustomDrawerContent({ navigation, loggedIn, accountInfo }) {
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
@@ -44,7 +52,7 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo }) {
           </View>
 
           <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
-            Christophe de Carcasonne
+            { genName(accountInfo.user) }
           </Title>
         </View>)}
       </View>
@@ -156,6 +164,14 @@ function HomeOneNavigator() {
 
 export default HomeOneNavigator;
 
+CustomDrawerContent.defaultProps = {
+  accountInfo: {
+    user: {
+
+    }
+  }
+}
+
 CustomDrawerContent.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
@@ -164,6 +180,8 @@ CustomDrawerContent.propTypes = {
   }).isRequired,
   loggedIn: PropTypes.bool.isRequired,
   accountInfo: PropTypes.shape({
-    // TODO
-  }).isRequired
+    user: PropTypes.shape({
+      // Todo
+    })
+  })
 };
