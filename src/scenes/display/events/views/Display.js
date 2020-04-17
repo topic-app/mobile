@@ -10,7 +10,7 @@ import { styles } from '../../../../styles/Styles';
 
 function EventDisplay({ route, events }) {
   const { id } = route.params;
-  const event = events.find((t) => t.eventId === id);
+  const event = events.find((t) => t._id === id);
   const { start, end } = event.duration;
 
   return (

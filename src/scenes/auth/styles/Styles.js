@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../../../styles/Styles';
 
 const authStyles = StyleSheet.create({
   centerContainer: {
@@ -12,9 +13,36 @@ const authStyles = StyleSheet.create({
     maxWidth: 600,
     paddingBottom: 3,
   },
+  textInputContainer: {
+    alignSelf: 'stretch',
+  },
+  buttonContainer: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+  },
+  listContainer: {
+    padding: 10,
+  },
+  descriptionContainer: {
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  descriptionPartContainer: {
+    marginVertical: 10,
+  },
   title: {
     fontSize: 30,
     marginBottom: 10,
+  },
+  stepIndicatorContainer: {
+    margin: 10,
+  },
+  formContainer: {
+    margin: 20,
+  },
+  radio: {
+    color: colors.primary,
   },
 });
 

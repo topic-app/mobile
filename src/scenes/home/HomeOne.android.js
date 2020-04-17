@@ -3,18 +3,28 @@ import PropTypes from 'prop-types';
 import { View, Linking } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { Drawer, Avatar, Title } from 'react-native-paper';
+import { connect } from 'react-redux';
 
+// eslint-disable-next-line
 import HomeTwoNavigator from './HomeTwo';
 
 import { navigatorStyles } from '../../styles/NavStyles';
 
 const DrawerNav = createDrawerNavigator();
 
-function CustomDrawerContent({ navigation }) {
+function genName({ data, info }) {
+  if (data.firstName && data.lastName) {
+    return `${data.firstName} ${  data.lastName}`;
+  }
+  return data.firstName || data.lastName || info.username;
+
+}
+
+function CustomDrawerContent({ navigation, loggedIn, accountInfo }) {
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <View style={navigatorStyles.profileBackground}>
-        <View style={navigatorStyles.profileIconContainer}>
+        { loggedIn && (<View style={navigatorStyles.profileIconContainer}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Avatar.Image
               size={55}
@@ -42,40 +52,63 @@ function CustomDrawerContent({ navigation }) {
           </View>
 
           <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
-            Christophe de Carcasonne
+            { genName(accountInfo.user) }
           </Title>
-        </View>
+        </View>)}
       </View>
       <Drawer.Section style={{ marginTop: -4 }} />
-      <Drawer.Section>
-        <Drawer.Item
-          label="Mon Profil"
-          icon="account-outline"
-          onPress={() => {
-            navigation.navigate('Main', {
-              screen: 'More',
-              params: { screen: 'Profile', params: { screen: 'Profile' } },
-            });
-          }}
-        />
-        <Drawer.Item
-          label="Mes Groupes"
-          icon="account-group-outline"
-          onPress={() => {
-            navigation.navigate('Main', {
-              screen: 'More',
-              params: { screen: 'MyGroups', params: { screen: 'List' } },
-            });
-          }}
-        />
-        <Drawer.Item
-          label="Modération"
-          icon="shield-check-outline"
-          onPress={() => {
-            console.log('Moderation');
-          }}
-        />
-      </Drawer.Section>
+      { loggedIn ? (
+        <Drawer.Section>
+          <Drawer.Item
+            label="Mon Profil"
+            icon="account-outline"
+            onPress={() => {
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: { screen: 'Profile', params: { screen: 'Profile' } },
+              });
+            }}
+          />
+          <Drawer.Item
+            label="Mes Groupes"
+            icon="account-group-outline"
+            onPress={() => {
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: { screen: 'MyGroups', params: { screen: 'List' } },
+              });
+            }}
+          />
+          <Drawer.Item
+            label="Modération"
+            icon="shield-check-outline"
+            onPress={() => {
+              console.log('Moderation');
+            }}
+          />
+        </Drawer.Section>
+      ) : (
+        <Drawer.Section>
+          <Drawer.Item
+            label="Se connecter"
+            icon="account-outline"
+            onPress={() => {
+              navigation.navigate('Auth', {
+                screen: 'Login',
+              });
+            }}
+          />
+          <Drawer.Item
+            label="Créer un compte"
+            icon="account-plus-outline"
+            onPress={() => {
+              navigation.navigate('Auth', {
+                screen: 'Create',
+              });
+            }}
+          />
+        </Drawer.Section>
+      )}
       <Drawer.Section>
         <Drawer.Item
           label="Paramètres"
@@ -109,11 +142,18 @@ function CustomDrawerContent({ navigation }) {
   );
 }
 
+const mapStateToProps = (state) => {
+  const { account } = state;
+  return { accountInfo: account.accountInfo,  loggedIn: account.loggedIn };
+};
+
+const CustomDrawerContentRedux = connect(mapStateToProps)(CustomDrawerContent);
+
 function HomeOneNavigator() {
   return (
     <DrawerNav.Navigator
       initialRouteName="Home2"
-      drawerContent={({ navigation }) => <CustomDrawerContent navigation={navigation} />}
+      drawerContent={({ navigation }) => <CustomDrawerContentRedux navigation={navigation} />}
       drawerStyle={navigatorStyles.drawerStyle}
       edgeWidth={90}
     >
@@ -124,10 +164,24 @@ function HomeOneNavigator() {
 
 export default HomeOneNavigator;
 
+CustomDrawerContent.defaultProps = {
+  accountInfo: {
+    user: {
+
+    }
+  }
+}
+
 CustomDrawerContent.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
     closeDrawer: PropTypes.func,
   }).isRequired,
+  loggedIn: PropTypes.bool.isRequired,
+  accountInfo: PropTypes.shape({
+    user: PropTypes.shape({
+      // Todo
+    })
+  })
 };
