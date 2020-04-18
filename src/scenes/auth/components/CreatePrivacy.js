@@ -38,8 +38,8 @@ class AuthCreatePagePrivacy extends React.Component {
     };
 
     const publicOnly = {
-      icon: accountType.public ? 'check' : 'close',
-      iconColor: accountType.public ? colors.valid : colors.invalid,
+      icon: accountType === 'public' ? 'check' : 'close',
+      iconColor: accountType === 'public' ? colors.valid : colors.invalid,
     };
 
     return (
