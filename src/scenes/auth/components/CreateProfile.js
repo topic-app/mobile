@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Text, TextInput, HelperText, Button } from 'react-native-paper';
+import { TextInput, HelperText, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { updateCreationData } from '../../../redux/actions/account';
 
-import { styles, colors } from '../../../styles/Styles';
+import { colors } from '../../../styles/Styles';
 import { theme } from '../../../styles/Theme';
 import { authStyles } from '../styles/Styles';
 
@@ -21,69 +21,77 @@ class AuthCreatePageProfile extends React.Component {
       lastnameValid: true,
       lastnameErrorMessage: '',
     };
-    this.emailRef = React.createRef();
+    this.firstnameInput = React.createRef();
+    this.lastnameInput = React.createRef();
+
+    const { setPageOnPress } = props;
+    setPageOnPress(this.blurInputs); // When user presses the page, blur all inputs
   }
 
-  validateFirstnameInput = () => {
-    const { firstname } = this.state;
+  validateFirstnameInput = async (firstname) => {
+    let validation = { firstnameValid: false, firstnameError: false };
     if (firstname !== '') {
       if (firstname.match(/^[a-zA-Z0-9_ ]*$/i) === null) {
-        this.setState({
+        validation = {
           firstnameValid: false,
           firstnameError: true,
           firstnameErrorMessage: 'Votre prénom ne peut pas contenir de caractères spéciaux',
-        });
+        };
       } else {
-        this.setState({ firstnameValid: true, firstnameError: false, firstnameErrorMessage: '' });
+        validation = { firstnameValid: true, firstnameError: false, firstnameErrorMessage: '' };
       }
-    } else {
-      this.setState({ firstnameValid: false, firstnameError: false });
     }
+
+    this.setState(validation);
+    return validation;
   };
 
-  preValidateFirstnameInput = () => {
-    const { firstname } = this.state;
+  preValidateFirstnameInput = async (firstname) => {
     if (firstname.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null) {
       this.setState({ firstnameValid: false, firstnameError: false });
     }
   };
 
-  validateLastnameInput = () => {
-    const { lastname } = this.state;
+  validateLastnameInput = async (lastname) => {
+    let validation = { lastnameValid: false, lastnameError: false };
     if (lastname !== '') {
       if (lastname.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) === null) {
-        this.setState({
+        validation = {
           lastnameValid: false,
           lastnameError: true,
           lastnameErrorMessage: 'Votre nom ne peut pas contenir de caractères spéciaux',
-        });
+        };
       } else {
-        this.setState({ lastnameValid: true, lastnameError: false });
+        validation = { lastnameValid: true, lastnameError: false };
       }
-    } else {
-      this.setState({ lastnameValid: false, lastnameError: false });
     }
+
+    this.setState(validation);
+    return validation;
   };
 
-  preValidateLastnameInput = () => {
-    const { lastname } = this.state;
+  preValidateLastnameInput = async (lastname) => {
     if (lastname.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null) {
       this.setState({ lastnameValid: true, lastnameError: false });
     }
   };
 
-  submit = async () => {
-    const { firstnameValid, firstname, lastnameValid, lastname } = this.state;
+  blurInputs = async () => {
+    this.firstnameInput.current.blur()
+    this.lastnameInput.current.blur()
+  }
 
+  submit = async () => {
     const { forward } = this.props;
 
-    await this.firstnameInput.blur();
-    await this.lastnameInput.blur();
-    await this.validateFirstnameInput();
-    await this.validateLastnameInput();
+    const firstname = this.firstnameInput.current.state.value;
+    const lastname = this.lastnameInput.current.state.value;
+    const { firstnameValid } = await this.validateFirstnameInput(firstname);
+    const { lastnameValid } = await this.validateLastnameInput(lastname);
     if ((firstnameValid || !firstname) && (lastnameValid || !lastname)) {
       updateCreationData({ firstname, lastname });
       forward();
+      this.blurInputs();
     }
   };
 
@@ -105,16 +113,14 @@ class AuthCreatePageProfile extends React.Component {
       <View style={authStyles.formContainer}>
         <View style={authStyles.textInputContainer}>
           <TextInput
-            ref={(firstnameInput) => {
-              this.firstnameInput = firstnameInput;
-            }}
+            ref={this.firstnameInput}
             label="Prénom (facultatif)"
             value={firstname}
             error={firstnameError}
             autoCompleteType="name"
-            onSubmitEditing={() => {
-              this.validateFirstnameInput();
-              this.lastnameInput.focus();
+            onSubmitEditing={(info) => {
+              this.validateFirstnameInput(info.nativeEvent.text);
+              this.lastnameInput.current.focus();
             }}
             autoFocus
             theme={
@@ -123,12 +129,14 @@ class AuthCreatePageProfile extends React.Component {
                 : theme
             }
             mode="outlined"
-            onEndEditing={this.validateUsernameInput}
+            onEndEditing={(info) => {
+              this.validateFirstnameInput(info.nativeEvent.text);
+            }}
             textContentType="givenName"
             style={authStyles.textInput}
             onChangeText={(text) => {
               this.setState({ firstname: text });
-              this.preValidateFirstnameInput();
+              this.preValidateFirstnameInput(text);
             }}
           />
           <HelperText type="error" visible={firstnameError}>
@@ -137,15 +145,13 @@ class AuthCreatePageProfile extends React.Component {
         </View>
         <View style={authStyles.textInputContainer}>
           <TextInput
-            ref={(lastnameInput) => {
-              this.lastnameInput = lastnameInput;
-            }}
+            ref={this.lastnameInput}
             label="Nom (facultatif)"
             value={lastname}
             error={lastnameError}
             autoCompleteType="email"
-            onSubmitEditing={() => {
-              this.validateLastnameInput();
+            onSubmitEditing={(info) => {
+              this.validateLastnameInput(info.nativeEvent.text);
               this.submit();
             }}
             autoCorrect={false}
@@ -156,11 +162,13 @@ class AuthCreatePageProfile extends React.Component {
             }
             textContentType="emailAddress"
             mode="outlined"
-            onEndEditing={this.validateEmailInput}
+            onEndEditing={(info) => {
+              this.validateLastnameInput(info.nativeEvent.text);
+            }}
             style={authStyles.textInput}
             onChangeText={(text) => {
               this.setState({ lastname: text });
-              this.preValidateLastnameInput();
+              this.preValidateLastnameInput(text);
             }}
           />
           <HelperText type="error" visible={lastnameError}>
@@ -199,4 +207,5 @@ export default AuthCreatePageProfile;
 AuthCreatePageProfile.propTypes = {
   forward: PropTypes.func.isRequired,
   backward: PropTypes.func.isRequired,
+  setPageOnPress: PropTypes.func.isRequired,
 };

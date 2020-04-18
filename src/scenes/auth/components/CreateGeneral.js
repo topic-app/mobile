@@ -14,171 +14,182 @@ class AuthCreatePageGeneral extends React.Component {
     super(props);
     this.state = {
       username: '',
-      usernameError: null,
+      usernameError: false,
+      usernameValid: false,
       usernameErrorMessage: '',
       email: '',
-      emailError: null,
+      emailError: false,
+      emailValid: false,
       emailErrorMessage: 'Email Invalide',
-      password: '', // Trust me, I'm a security specialist, I know what I'm doing.
-      passwordError: null,
+      password: '',
+      passwordError: false,
+      passwordValid: false,
       passwordErrorMessage: '',
     };
+
+    const { setPageOnPress } = props;
+    setPageOnPress(this.blurInputs); // When user presses the page, blur all inputs
+
     this.emailInput = React.createRef();
     this.usernameInput = React.createRef();
     this.passwordInput = React.createRef();
   }
 
-  validateUsername = (username = this.state.username) => {
-    const result = { error: false };
+  validateUsernameInput = async (username) => {
+    let validation = { usernameValid: false, usernameError: false };
+
     if (username !== '') {
       if (username.length < 3) {
-        result.error = true;
-        result.message = "Le nom d'utilisateur doit contenir au moins 3 caractères";
+        validation = {
+          usernameValid: false,
+          usernameError: true,
+          usernameErrorMessage: "Le nom d'utilisateur doit contenir au moins 3 caractères",
+        };
       } else if (username.match(/^[a-zA-Z0-9_.]+$/i) === null) {
-        result.error = true;
-        result.message =
-          "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux sauf « _ » et « . »";
+        validation = {
+          usernameValid: false,
+          usernameError: true,
+          usernameErrorMessage:
+            "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux sauf « _ » et « . »",
+        };
       } else {
-        request('auth/check/local/username', 'get', { username })
-          .then((requestResult) => {
-            if (!requestResult.success) {
-              updateState({ success: false, error: requestResult.error });
-            } else {
-              result.error = true;
-              result.message = "Ce nom d'utilisateur existe déjà";
-            }
-          })
-          .catch((err) => {
-            updateState({ success: false, error: err });
-          });
+        const result = await request('auth/check/local/username', 'get', { username });
+        if (result.success && !result.data.usernameExists) {
+          validation = { usernameValid: true, usernameError: false };
+        } else if (result.success) {
+          validation = {
+            usernameValid: false,
+            usernameError: true,
+            usernameErrorMessage: "Ce nom d'utilisateur existe déjà",
+          };
+        } else {
+          updateState({ success: false, error: result.error });
+        }
       }
-    } else {
-      result.error = null;
     }
-    return result;
+
+    this.setState(validation);
+    return validation;
   };
 
-  validateEmail = (email = this.state.email) => {
-    const result = { error: false };
+  preValidateUsernameInput = async (username) => {
+    if (username.length >= 3 && username.match(/^[a-zA-Z0-9_.]+$/i) !== null) {
+      this.setState({ usernameValid: false, usernameError: false });
+    }
+  };
+
+  validateEmailInput = async (email) => {
+    let validation = { emailValid: false, emailError: false };
+
     if (email !== '') {
-      if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,13})+$/) === null) {
-        result.error = true;
-        result.message = "L'addresse mail n'est pas valide";
+      if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) === null) {
+        validation = {
+          emailValid: false,
+          emailError: true,
+          emailErrorMessage: 'Addresse mail incorrecte',
+        };
       } else {
-        request('auth/check/local/email', 'get', { email })
-          .then((requestResult) => {
-            if (!requestResult.success) {
-              updateState({ success: false, error: requestResult.error });
-            } else {
-              result.error = true;
-              result.message = 'Il existe déjà un compte avec cet email';
-            }
-          })
-          .catch((err) => {
-            updateState({ success: false, error: err });
-          });
+        const result = await request('auth/check/local/email', 'get', { email });
+        if (result.success && !result.data.emailExists) {
+          validation = { emailValid: true, emailError: false };
+        } else if (result.success) {
+          validation = {
+            emailValid: false,
+            emailError: true,
+            emailErrorMessage: 'Cette addresse email à déjà été utilisée',
+          };
+        } else {
+          updateState({ success: false, error: result.error });
+        }
       }
-    } else {
-      result.error = null;
     }
-    return result;
+
+    this.setState(validation);
+    return validation;
   };
 
-  validatePassword = (password = this.state.password) => {
-    const result = { error: false };
+  preValidateEmailInput = async (email) => {
+    if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) !== null) {
+      // TODO: Change to emailExists once server is updated
+      this.setState({ emailValid: false, emailError: false });
+    }
+  };
+
+  validatePasswordInput = async (password) => {
+    let validation = { passwordValid: false, passwordError: false };
+
     if (password !== '') {
       if (password.length < 8) {
-        result.error = true;
-        result.message = 'Le mot de passe doit contenir au moins 8 caractères';
+        validation = {
+          passwordValid: false,
+          passwordError: true,
+          passwordErrorMessage: 'Le mot de passe doit contenir au moins 8 caractères',
+        };
       } else if (password.match(/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/) === null) {
-        result.error = true;
-        result.message =
-          'Le mot de passe doit contenir au moins un chiffre, une minuscule et une majuscule';
+        validation = {
+          passwordValid: false,
+          passwordError: true,
+          passwordErrorMessage:
+            'Le mot de passe doit contenir au moins un chiffre, une minuscule et une majuscule',
+        };
+      } else {
+        validation = { passwordValid: true, passwordError: false };
       }
-    } else {
-      result.error = null;
     }
-    return result;
+
+    this.setState(validation);
+    return validation;
   };
 
-  handleInputState = (type, result) => {
-    switch (type) {
-      case 'username':
-        if (result.error) {
-          this.setState({
-            usernameError: true,
-            usernameErrorMessage: result.message,
-          });
-        } else if (result.error === null) {
-          // If username is empty
-          this.setState({ usernameError: null });
-        } else {
-          this.setState({ usernameError: false });
-        }
-        break;
-      case 'email':
-        if (result.error) {
-          this.setState({
-            emailError: true,
-            emailErrorMessage: result.message,
-          });
-        } else if (result.error === null) {
-          this.setState({ emailError: null });
-        } else {
-          this.setState({ emailError: false });
-        }
-        break;
-      case 'password':
-        if (result.error) {
-          this.setState({
-            passwordError: true,
-            passwordErrorMessage: result.message,
-          });
-        } else if (result.error === null) {
-          this.setState({ passwordError: null });
-        } else {
-          this.setState({ passwordError: false });
-        }
-        break;
-      default:
-        console.warn('Unknown type encountered:', type);
-        break;
+  preValidatePasswordInput = async (password) => {
+    if (
+      password.length >= 8 &&
+      password.match(/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/) !== null
+    ) {
+      this.setState({ passwordValid: false, passwordError: false });
     }
+  };
+
+  blurInputs = () => {
+    this.usernameInput.current.blur();
+    this.emailInput.current.blur();
+    this.passwordInput.current.blur();
   };
 
   submit = async () => {
     updateState({ loading: true });
-    const { username, email, password } = this.state;
+
+    const username = this.usernameInput.current.state.value;
+    const email = this.emailInput.current.state.value;
+    const password = this.passwordInput.current.state.value;
+
     const { forward } = this.props;
 
-    await this.usernameInput.current.blur();
-    await this.emailInput.current.blur();
-    await this.passwordInput.current.blur();
-    const usernameResult = this.validateUsername(username);
-    const emailResult = this.validateEmail(email);
-    const passwordResult = this.validatePassword(password);
-    if (!usernameResult.error && !emailResult.error && !passwordResult.error) {
+    const { passwordValid, passwordError } = await this.validatePasswordInput(password);
+    const { emailValid, emailError } = await this.validateEmailInput(email);
+    const { usernameValid, usernameError } = await this.validateUsernameInput(username);
+    if (usernameValid && emailValid && passwordValid) {
+      this.blurInputs();
       updateCreationData({ username, email, password });
       forward();
     } else {
-      if (usernameResult.error === null) {
-        this.setState({
-          usernameError: true,
-          usernameErrorMessage: "Nom d'utilisateur requis",
-        });
+      const result = {};
+      if (!usernameValid && !usernameError) {
+        result.usernameValid = false;
+        result.usernameError = true;
+        result.usernameErrorMessage = "Nom d'utilisateur requis";
       }
-      if (emailResult.error === null) {
-        this.setState({
-          emailError: true,
-          emailErrorMessage: 'Addresse email requise',
-        });
+      if (!emailValid && !emailError) {
+        result.emailValid = false;
+        result.emailError = true;
+        result.emailErrorMessage = 'Adresse mail requise';
       }
-      if (passwordResult.error === null) {
-        this.setState({
-          passwordError: true,
-          passwordErrorMessage: 'Mot de passe requis',
-        });
+      if (!passwordValid && !passwordError) {
+        result.passwordValid = false;
+        result.passwordError = true;
+        result.passwordErrorMessage = 'Mot de passe requis';
       }
+      this.setState(result);
     }
     updateState({ loading: false });
   };
@@ -188,12 +199,15 @@ class AuthCreatePageGeneral extends React.Component {
       username,
       usernameError,
       usernameErrorMessage,
+      usernameValid,
       email,
       emailError,
       emailErrorMessage,
+      emailValid,
       password,
       passwordError,
       passwordErrorMessage,
+      passwordValid,
     } = this.state;
 
     return (
@@ -202,33 +216,29 @@ class AuthCreatePageGeneral extends React.Component {
           <TextInput
             ref={this.usernameInput}
             label="Nom d'Utilisateur"
-            mode="outlined"
             value={username}
             error={usernameError}
-            textContentType="username"
             autoCompleteType="username"
+            onSubmitEditing={(info) => {
+              this.validateUsernameInput(info.nativeEvent.text);
+              this.emailInput.current.focus();
+            }}
             autoCorrect={false}
             autoFocus
             theme={
-              usernameError === false // Note: has to be strictly false, null is reserved for an empty input
+              usernameValid
                 ? { colors: { primary: colors.primary, placeholder: colors.valid } }
                 : theme
             }
+            mode="outlined"
+            onEndEditing={(info) => {
+              this.validateUsernameInput(info.nativeEvent.text);
+            }}
+            textContentType="username"
             style={authStyles.textInput}
             onChangeText={(text) => {
               this.setState({ username: text });
-              const result = this.validateUsername(username);
-              if (result.error === false) {
-                this.setState({ usernameError: false });
-              }
-            }}
-            onEndEditing={() => {
-              const { username: usernameText } = this.state;
-              this.handleInputState('username', this.validateUsername(usernameText));
-            }}
-            onSubmitEditing={({ nativeEvent: { text } }) => {
-              this.handleInputState('username', this.validateUsername(text));
-              this.emailInput.current.focus();
+              this.preValidateUsernameInput(text);
             }}
           />
           <HelperText type="error" visible={usernameError}>
@@ -239,32 +249,28 @@ class AuthCreatePageGeneral extends React.Component {
           <TextInput
             ref={this.emailInput}
             label="Email"
-            mode="outlined"
             value={email}
             error={emailError}
-            textContentType="emailAddress"
             autoCompleteType="email"
+            onSubmitEditing={(info) => {
+              this.validateEmailInput(info.nativeEvent.text);
+              this.passwordInput.current.focus();
+            }}
             autoCorrect={false}
             theme={
-              emailError === false
+              emailValid
                 ? { colors: { primary: colors.primary, placeholder: colors.valid } }
                 : theme
             }
+            textContentType="emailAddress"
+            mode="outlined"
+            onEndEditing={(info) => {
+              this.validateEmailInput(info.nativeEvent.text);
+            }}
             style={authStyles.textInput}
             onChangeText={(text) => {
               this.setState({ email: text });
-              const result = this.validateEmail(email);
-              if (result.error === false) {
-                this.setState({ emailError: false });
-              }
-            }}
-            onEndEditing={() => {
-              const { email: emailText } = this.state;
-              this.handleInputState('email', this.validateEmail(emailText));
-            }}
-            onSubmitEditing={({ nativeEvent: { text } }) => {
-              this.handleInputState('email', this.validateEmail(text));
-              this.passwordInput.current.focus();
+              this.preValidateEmailInput(text);
             }}
           />
           <HelperText type="error" visible={emailError}>
@@ -275,34 +281,30 @@ class AuthCreatePageGeneral extends React.Component {
           <TextInput
             ref={this.passwordInput}
             label="Mot de Passe"
-            mode="outlined"
             value={password}
             error={passwordError}
-            textContentType="password"
-            autoCompleteType="password"
+            mode="outlined"
             autoCorrect={false}
             secureTextEntry
-            theme={
-              passwordError === false
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
+            onSubmitEditing={(info) => {
+              this.validatePasswordInput(info.nativeEvent.text);
+              this.submit();
+            }}
+            onEndEditing={(info) => {
+              this.validatePasswordInput(info.nativeEvent.text);
+            }}
+            textContentType="password"
+            autoCompleteType="password"
             style={authStyles.textInput}
             onChangeText={(text) => {
               this.setState({ password: text });
-              const result = this.validatePassword(password);
-              if (result.error === false) {
-                this.setState({ passwordError: false });
-              }
+              this.preValidatePasswordInput(text);
             }}
-            onEndEditing={() => {
-              const { password: passwordText } = this.state;
-              this.handleInputState('password', this.validatePassword(passwordText));
-            }}
-            onSubmitEditing={({ nativeEvent: { text } }) => {
-              this.handleInputState('password', this.validatePassword(text));
-              this.submit();
-            }}
+            theme={
+              passwordValid
+                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+                : theme
+            }
           />
           <HelperText type="error" visible={passwordError}>
             {passwordErrorMessage}
@@ -312,7 +314,9 @@ class AuthCreatePageGeneral extends React.Component {
           <Button
             mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
             uppercase={Platform.OS !== 'ios'}
-            onPress={this.submit}
+            onPress={() => {
+              this.submit();
+            }}
             style={{ flex: 1 }}
           >
             Suivant
@@ -327,4 +331,5 @@ export default AuthCreatePageGeneral;
 
 AuthCreatePageGeneral.propTypes = {
   forward: PropTypes.func.isRequired,
+  setPageOnPress: PropTypes.func.isRequired,
 };

@@ -1,46 +1,12 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Platform, ScrollView } from 'react-native';
-import { Text, HelperText, Button, Snackbar, Checkbox } from 'react-native-paper';
+import { View, TouchableWithoutFeedback, Platform, ScrollView, Linking } from 'react-native';
+import { Text, HelperText, Button, Checkbox } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { colors } from '../../../styles/Styles';
 import { authStyles } from '../styles/Styles';
 
-function ListHeading({ label }) {
-  return <Text style={{ paddingHorizontal: 19, fontWeight: 'bold' }}>{label}</Text>;
-}
-
-function ListItem({ icon, iconColor, label, textStyle }) {
-  return (
-    <View style={{ flexDirection: 'row' }}>
-      <MaterialCommunityIcons
-        style={{ paddingTop: 2.5, paddingRight: 3 }}
-        size={15}
-        color={iconColor ?? colors.text}
-        name={icon}
-      />
-      <Text style={textStyle}>{label}</Text>
-    </View>
-  );
-}
-
-function ListItemAnchor({ icon, label, onPress, textStyle }) {
-  // Note: TouchableWithoutFeedback needs a child that is a View
-  return (
-    <TouchableWithoutFeedback onPress={onPress}>
-      <View>
-        <ListItem
-          icon={icon}
-          iconColor={colors.primary}
-          label={label}
-          textStyle={[{ textDecorationLine: 'underline', color: colors.primary }, textStyle]}
-        />
-      </View>
-    </TouchableWithoutFeedback>
-  );
-}
+import { ListHeading, ListItem, ListItemAnchor } from './ListComponents';
 
 class AuthCreatePageLegal extends React.Component {
   constructor(props) {
@@ -80,7 +46,7 @@ class AuthCreatePageLegal extends React.Component {
 
   render() {
     const { terms, error, errorMessage, email, emailError, emailErrorMessage } = this.state;
-    const { forward, backward, creationData } = this.props;
+    const { backward, creationData } = this.props;
 
     return (
       <ScrollView style={authStyles.formContainer}>
@@ -116,7 +82,7 @@ class AuthCreatePageLegal extends React.Component {
               <ListItemAnchor
                 icon="arrow-right-bold-circle-outline"
                 label="Voir la politique de vie privée"
-                onPress={() => console.log('Vie Privée!')}
+                onPress={() => Linking.openURL('https://topicapp.fr/legal/privacy')}
               />
             </View>
             <View style={authStyles.descriptionPartContainer}>
@@ -152,7 +118,7 @@ class AuthCreatePageLegal extends React.Component {
               <ListItemAnchor
                 icon="arrow-right-bold-circle-outline"
                 label="Voir les conditions d'utilisation"
-                onPress={() => console.log("conditions d'utilisation!")}
+                onPress={() => Linking.openURL('https://topicapp.fr/legal/terms/')}
               />
             </View>
           </View>

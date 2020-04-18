@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Platform } from 'react-native';
-import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Platform, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
 import { Text, Avatar, Card, IconButton } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/fr';
