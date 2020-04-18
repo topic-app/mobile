@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StatusBar, View } from 'react-native';
+import { StatusBar, View, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { theme } from '../styles/Theme';

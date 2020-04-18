@@ -1,10 +1,6 @@
 import React from 'react';
-import { Platform, View } from 'react-native';
+import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-
-import { Text } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ArticleDisplay from './views/Display';
 import { HeaderConfig } from '../../../components/Header';

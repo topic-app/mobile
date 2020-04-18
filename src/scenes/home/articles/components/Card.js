@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Platform, View, Image } from 'react-native';
+import { Platform, View, Image, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
 import { Card, Paragraph, Text } from 'react-native-paper';
-import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import moment from 'moment';
 
 import TagList from '../../../../components/TagList';

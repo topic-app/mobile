@@ -33,6 +33,7 @@ const lightBase = {
     subtext: '#999999',
     muted: '#444444',
     valid: '#1e981d',
+    invalid: '#b71d39',
     text: '#111111',
   },
 };
@@ -57,6 +58,7 @@ const darkBase = {
     subtext: '#666666',
     muted: '#999999',
     valid: '#28a127',
+    invalid: '#8f4e5a',
   },
 };
 

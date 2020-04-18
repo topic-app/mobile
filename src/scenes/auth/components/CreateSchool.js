@@ -1,22 +1,12 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Text,
-  TextInput,
-  HelperText,
-  Button,
-  Snackbar,
-  Title,
-  Subheading,
-  Card,
-} from 'react-native-paper';
+import { Button, Title, Subheading, Card } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { updateCreationData } from '../../../redux/actions/account';
 
-import { styles, colors } from '../../../styles/Styles';
-import { theme } from '../../../styles/Theme';
+import { colors } from '../../../styles/Styles';
 import { authStyles } from '../styles/Styles';
 
 class AuthCreatePageSchool extends React.Component {

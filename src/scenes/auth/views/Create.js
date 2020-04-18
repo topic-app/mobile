@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, ScrollView, Platform } from 'react-native';
-import { Text, TextInput, HelperText, Button, ProgressBar } from 'react-native-paper';
+import { View, TouchableWithoutFeedback, Platform } from 'react-native';
+import { Text, Button, ProgressBar } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,7 +8,6 @@ import ViewPager from '@react-native-community/viewpager';
 import { connect } from 'react-redux';
 
 import { styles, colors } from '../../../styles/Styles';
-import { theme } from '../../../styles/Theme';
 import { authStyles } from '../styles/Styles';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';
@@ -42,7 +41,7 @@ const stepIndicatorStyles = {
   labelColor: '#999999',
   labelSize: 13,
   currentStepLabelColor: colors.primary,
-}
+};
 
 function selectIcon(position) {
   switch (position) {
@@ -74,71 +73,69 @@ function iconColor(status) {
     case 'unfinished':
       return '#aaaaaa';
     case 'current':
-      return colors.primary
+      return colors.primary;
     default:
       return '#000000';
   }
 }
 
 function renderStepIndicator(params) {
-  return <Icon
-    color={iconColor(params.stepStatus)}
-    size={15}
-    name={selectIcon(params.position)}
-  />
+  return <Icon color={iconColor(params.stepStatus)} size={15} name={selectIcon(params.position)} />;
 }
 
 class AuthCreate extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      currentPage: 0
-    }
+      currentPage: 0,
+      onPagePress: null,
+    };
+    this.viewPager = React.createRef();
   }
 
   onStepPress = (position) => {
     const { currentPage } = this.state;
     if (position < currentPage) {
       this.setState({ currentPage: position });
-      this.viewPager.setPage(position);
+      this.viewPager.current.setPage(position);
     }
-  }
+  };
 
   moveForward = () => {
     const { currentPage } = this.state;
     this.setState({ currentPage: currentPage + 1 });
-    this.viewPager.setPage(currentPage + 1);
-  }
+    this.viewPager.current.setPage(currentPage + 1);
+  };
 
   skipForward = () => {
     const { currentPage } = this.state;
     this.setState({ currentPage: currentPage + 2 });
-    this.viewPager.setPage(currentPage + 2);
-  }
+    this.viewPager.current.setPage(currentPage + 2);
+  };
 
   skipBackward = () => {
     const { currentPage } = this.state;
     this.setState({ currentPage: currentPage + 2 });
-    this.viewPager.setPage(currentPage + 2);
-  }
+    this.viewPager.current.setPage(currentPage + 2);
+  };
 
   moveBackward = () => {
     const { currentPage } = this.state;
     this.setState({ currentPage: currentPage - 1 });
-    this.viewPager.setPage(currentPage - 1);
-  }
+    this.viewPager.current.setPage(currentPage - 1);
+  };
 
   restart = () => {
-    updateState({ error: null, success: null, loading: null })
+    updateState({ error: null, success: null, loading: null });
     this.setState({ currentPage: 0 });
-  }
+  };
+
+  setPageOnPress = (func) => {
+    this.setState({ onPagePress: func });
+  };
 
   create = () => {
-    console.log("create");
-
     const { creationData } = this.props;
-
-    console.log(`Creation data ${creationData}`)
 
     const reqParams = {
       accountInfo: {
@@ -149,27 +146,26 @@ class AuthCreate extends React.Component {
         schools: creationData.schools,
         departments: creationData.departments,
         description: null,
-        public: creationData.accountType === "public",
-        firstName: creationData.accountType === "public" ? creationData.firstname : null,
-        lastName: creationData.accountType === "public" ? creationData.lastname : null,
+        public: creationData.accountType === 'public',
+        firstName: creationData.accountType === 'public' ? creationData.firstname : null,
+        lastName: creationData.accountType === 'public' ? creationData.lastname : null,
       },
       device: {
-        type: "app",
+        type: 'app',
         deviceId: null,
         canNotify: true,
-      }
-    }
+      },
+    };
 
     register(reqParams);
-
-
-  }
+  };
 
   render() {
-    const { currentPage } = this.state;
+    const { currentPage, onPagePress } = this.state;
     const { navigation, reqState } = this.props;
+
     if (reqState.success) {
-      return(
+      return (
         <View style={styles.page}>
           <View style={authStyles.stepIndicatorContainer}>
             <View style={authStyles.centerContainer}>
@@ -180,95 +176,130 @@ class AuthCreate extends React.Component {
           <View style={authStyles.formContainer}>
             <View style={authStyles.buttonContainer}>
               <Button
-                mode={Platform.OS !== "ios" ? "contained": "outlined"}
-                uppercase={Platform.OS !== "ios"}
-                onPress={() => navigation.navigate('Main', { screen: 'Home1', params: { screen: 'Home2', params: { screen: 'Article' }}})}
-                style={{flex: 1}}
+                mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() =>
+                  navigation.navigate('Main', {
+                    screen: 'Home1',
+                    params: { screen: 'Home2', params: { screen: 'Article' } },
+                  })
+                }
+                style={{ flex: 1 }}
               >
                 Continuer
               </Button>
             </View>
           </View>
         </View>
-      )
+      );
     }
+
     if (reqState.success === false) {
-      return(
+      return (
         <View style={styles.page}>
           <View style={authStyles.stepIndicatorContainer}>
             <View style={authStyles.centerContainer}>
               <Icon size={50} color={colors.text} name="account-remove-outline" />
               <Text style={authStyles.title}>Erreur lors de la création du compte</Text>
-              <Text>Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données soient correctes ou signaler un bug depuis le menu principal</Text>
-              <Text>Erreur: {reqState.error.message || reqState.error.value || reqState.error.extraMessage || 'Inconnu'}</Text>
+              <Text>
+                Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données
+                soient correctes ou signaler un bug depuis le menu principal
+              </Text>
+              <Text>
+                Erreur:{' '}
+                {reqState.error.message ||
+                  reqState.error.value ||
+                  reqState.error.extraMessage ||
+                  'Inconnu'}
+              </Text>
             </View>
           </View>
           <View style={authStyles.formContainer}>
             <View style={authStyles.buttonContainer}>
               <Button
-                mode={Platform.OS !== "ios" ? "contained": "outlined"}
-                uppercase={Platform.OS !== "ios"}
+                mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                uppercase={Platform.OS !== 'ios'}
                 onPress={() => this.restart()}
-                style={{flex: 1}}
+                style={{ flex: 1 }}
               >
                 Recommencer
               </Button>
             </View>
           </View>
         </View>
-      )
+      );
     }
+
     return (
       <View style={styles.page}>
-        {reqState.loading && <ProgressBar indeterminate />}
-        <View style={authStyles.stepIndicatorContainer}>
-          <View style={authStyles.centerContainer}>
-            <Text style={authStyles.title}>Créer un Compte</Text>
+        <TouchableWithoutFeedback onPress={onPagePress} style={{ height: '100%', width: '100%' }}>
+          <View style={{ flex: 1 }}>
+            {reqState.loading && <ProgressBar indeterminate />}
+            <View style={authStyles.stepIndicatorContainer}>
+              <View style={authStyles.centerContainer}>
+                <Text style={authStyles.title}>Créer un Compte</Text>
+              </View>
+              <StepIndicator
+                stepCount={5}
+                currentPosition={currentPage}
+                labels={['General', 'École', 'Vie privée', 'Profil', 'Conditions']}
+                onPress={this.onStepPress}
+                customStyles={stepIndicatorStyles}
+                renderStepIndicator={renderStepIndicator}
+              />
+            </View>
+            <ViewPager
+              style={{ flexGrow: 1 }}
+              ref={this.viewPager}
+              scrollEnabled={false} // TEMP: Disable this for easier testing
+            >
+              <View key="1">
+                <AuthCreatePageGeneral
+                  setPageOnPress={this.setPageOnPress}
+                  forward={this.moveForward}
+                />
+              </View>
+              <View key="2">
+                <AuthCreatePageSchool
+                  setPageOnPress={this.setPageOnPress}
+                  forward={this.moveForward}
+                  backward={this.moveBackward}
+                />
+              </View>
+              <View key="3">
+                <AuthCreatePagePrivacy
+                  forward={this.moveForward}
+                  backward={this.moveBackward}
+                  skip={this.skipForward}
+                  setPageOnPress={this.setPageOnPress}
+                />
+              </View>
+              <View key="4">
+                <AuthCreatePageProfile
+                  setPageOnPress={this.setPageOnPress}
+                  forward={this.moveForward}
+                  backward={this.moveBackward}
+                />
+              </View>
+              <View key="5">
+                <AuthCreatePageLegal
+                  setPageOnPress={this.setPageOnPress}
+                  forward={this.create}
+                  backward={this.moveBackward}
+                />
+              </View>
+            </ViewPager>
           </View>
-          <StepIndicator
-            stepCount={5}
-            currentPosition={currentPage}
-            labels={['General', 'École', 'Vie privée', 'Profil', 'Conditions']}
-            onPress={this.onStepPress}
-            customStyles={stepIndicatorStyles}
-            renderStepIndicator={renderStepIndicator}
-          />
-        </View>
-        <ViewPager
-          style={{ flexGrow: 1 }}
-          ref={viewPager => {
-            this.viewPager = viewPager
-          }}
-          onPageSelected={page => {
-            /* this.setState({ currentPage: page.position }) */
-          }}
-          scrollEnabled={false} // TEMP: Disable this for easier testing
-        >
-          <View key="1">
-            <AuthCreatePageGeneral forward={this.moveForward} />
-          </View>
-          <View key="2">
-            <AuthCreatePageSchool forward={this.moveForward} backward={this.moveBackward} />
-          </View>
-          <View key="3">
-            <AuthCreatePagePrivacy forward={this.moveForward} backward={this.moveBackward} skip={this.skipForward} />
-          </View>
-          <View key="4">
-            <AuthCreatePageProfile forward={this.moveForward} backward={this.moveBackward} />
-          </View>
-          <View key="5">
-            <AuthCreatePageLegal forward={this.create} backward={this.moveBackward} />
-          </View>
-        </ViewPager>
+        </TouchableWithoutFeedback>
       </View>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state) => {
   const { account } = state;
   return { creationData: account.creationData, reqState: account.state };
-}
+};
 
 export default connect(mapStateToProps)(AuthCreate);
 
@@ -278,8 +309,8 @@ AuthCreate.defaultProps = {
     error: null,
     success: null,
     loading: false,
-  }
-}
+  },
+};
 
 AuthCreate.propTypes = {
   navigation: PropTypes.shape({
@@ -290,5 +321,5 @@ AuthCreate.propTypes = {
     error: PropTypes.any,
     success: PropTypes.bool,
     loading: PropTypes.bool,
-  })
+  }),
 };

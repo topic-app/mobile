@@ -1,21 +1,13 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Text,
-  TextInput,
-  HelperText,
-  Button,
-  Snackbar,
-  RadioButton,
-  Paragraph,
-} from 'react-native-paper';
+import { Button, RadioButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { updateCreationData } from '../../../redux/actions/account';
 
 import { styles, colors } from '../../../styles/Styles';
-import { theme } from '../../../styles/Theme';
 import { authStyles } from '../styles/Styles';
+
+import { ListHeading, ListItem } from './ListComponents';
 
 class AuthCreatePagePrivacy extends React.Component {
   constructor(props) {
@@ -40,6 +32,16 @@ class AuthCreatePagePrivacy extends React.Component {
     const { accountType } = this.state;
     const { backward } = this.props;
 
+    const always = {
+      icon: 'check',
+      iconColor: colors.valid,
+    };
+
+    const publicOnly = {
+      icon: accountType.public ? 'check' : 'close',
+      iconColor: accountType.public ? colors.valid : colors.invalid,
+    };
+
     return (
       <View style={authStyles.formContainer}>
         <View style={authStyles.listContainer}>
@@ -54,113 +56,68 @@ class AuthCreatePagePrivacy extends React.Component {
           </RadioButton.Group>
         </View>
         <View style={authStyles.descriptionContainer}>
-          {accountType === 'private' ? (
-            <View>
-              <View style={authStyles.descriptionPartContainer}>
-                <Text>Vous pouvez: </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Créer des pétitions
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Écrire des articles et créer
-                  des évènements si vous appartenez à un groupe
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Signer des pétitions
-                  anonymement
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.text} name="close" /> Signer des pétitions
-                  publiquement
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.text} name="close" /> Écrire des commentaires
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.text} name="close" /> Etre administrateur d&apos;un
-                  groupe
-                </Text>
-              </View>
-              <View style={authStyles.descriptionPartContainer}>
-                <Text>Les autres utilisateurs peuvent: </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Voir votre nom
-                  d&apos;utilisateur
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Voir vos articles, pétitions,
-                  et commentaires
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.text} name="close" /> Voir les contenus auquels vous
-                  êtes abonnés
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.text} name="close" /> Voir votre école
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.text} name="close" /> Voir votre nom et prénom
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.text} name="close" /> Voir les groupes auquels vous
-                  appartenez
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <View>
-              <View style={authStyles.descriptionPartContainer}>
-                <Text>Vous pouvez: </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Créer des pétitions
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Écrire des articles et créer
-                  des évènements si vous appartenez à un groupe
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Signer des pétitions
-                  anonymement
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Signer des pétitions
-                  publiquement
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Écrire des commentaires
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Etre administrateur d&apos;un
-                  groupe
-                </Text>
-              </View>
-              <View style={authStyles.descriptionPartContainer}>
-                <Text>Les autres utilisateurs peuvent: </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Voir votre nom
-                  d&apos;utilisateur
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Voir vos articles, pétitions,
-                  et commentaires
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Voir les contenus auquels
-                  vous êtes abonnés
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Voir votre école
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Voir votre nom et prénom
-                </Text>
-                <Text>
-                  <Icon size={15} color={colors.valid} name="check" /> Voir les groupes auquels vous
-                  appartenez
-                </Text>
-              </View>
-            </View>
-          )}
+          <View style={authStyles.descriptionPartContainer}>
+            <ListHeading label="Vous pouvez" />
+            <ListItem icon={always.icon} iconColor={always.iconColor} label="Créer des pétitions" />
+            <ListItem
+              icon={always.icon}
+              iconColor={always.iconColor}
+              label="Écrire des articles et créer des évènements si vous appartenez à un groupe"
+            />
+            <ListItem
+              icon={always.icon}
+              iconColor={always.iconColor}
+              label="Signer des pétitions anonymement"
+            />
+            <ListItem
+              icon={publicOnly.icon}
+              iconColor={publicOnly.iconColor}
+              label="Signer des pétitions publiquement"
+            />
+            <ListItem
+              icon={publicOnly.icon}
+              iconColor={publicOnly.iconColor}
+              label="Écrire des commentaires"
+            />
+            <ListItem
+              icon={publicOnly.icon}
+              iconColor={publicOnly.iconColor}
+              label="Être administrateur d'un groupe"
+            />
+          </View>
+          <View style={authStyles.descriptionPartContainer}>
+            <ListHeading label="Les autres utilisateurs peuvent" />
+            <ListItem
+              icon={always.icon}
+              iconColor={always.iconColor}
+              label="Voir votre nom d'utilisateur"
+            />
+            <ListItem
+              icon={always.icon}
+              iconColor={always.iconColor}
+              label="Voir vos articles, évènements et pétitions"
+            />
+            <ListItem
+              icon={publicOnly.icon}
+              iconColor={publicOnly.iconColor}
+              label="Voir les contenus auquels vous êtes abonnés"
+            />
+            <ListItem
+              icon={publicOnly.icon}
+              iconColor={publicOnly.iconColor}
+              label="Voir votre école"
+            />
+            <ListItem
+              icon={publicOnly.icon}
+              iconColor={publicOnly.iconColor}
+              label="Voir votre nom et prénom"
+            />
+            <ListItem
+              icon={publicOnly.icon}
+              iconColor={publicOnly.iconColor}
+              label="Voir les groupes auquels vous appartenez"
+            />
+          </View>
         </View>
         <View style={authStyles.buttonContainer}>
           <Button

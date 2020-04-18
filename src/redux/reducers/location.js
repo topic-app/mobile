@@ -41,7 +41,7 @@
      },
      "department":null
    }],
-   departments: [''],
+   departments: [],
    departmentData: [{}],
    global: false,
  }
