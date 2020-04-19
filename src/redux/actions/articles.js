@@ -4,26 +4,34 @@ import request from '../../utils/request';
 /**
  * @docs actionCreators
  * Créateur d'action pour updateArticles
- * @param lastId L'id du dernier article, par ordre chronologique, de la liste d'articles/database redux
+ * @param next Si il faut récupérer les articles après le dernier
  * @returns Action
  */
-function updateArticlesCreator(lastId = undefined) {
+function updateArticlesCreator(type = 'initial') {
   return (dispatch, getState) => {
+    let lastId;
+    let number = 10;
     dispatch({
-      type: 'UPDATE_ARTICLES',
+      type: 'UPDATE_ARTICLES_STATE',
       data: {
-        data: getState().articles.data,
-        state: {
-          refreshing: true,
-          loading: false,
-          success: null,
-          error: null,
+        loading: {
+          initial: type === 'initial',
+          refresh: type === 'refresh',
+          next: type === 'next',
+          article: getState().articles.state.loading.article,
         },
+        success: null,
+        error: null,
       },
     });
-    request('articles/list', 'get', { lastId })
+    if (type === 'next') {
+      const articles = getState().articles.data;
+      // articles.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+      lastId = articles[articles.length - 1]._id;
+      number = 5;
+    }
+    request('articles/list', 'get', { lastId, number })
       .then((result) => {
-        // console.log(`Result, ${JSON.stringify(result)}`)
         const { data } = getState().articles; // The old articles, in redux db
         result.data.articles.forEach((a) => {
           const article = { ...a, preload: true };
@@ -35,44 +43,51 @@ function updateArticlesCreator(lastId = undefined) {
         });
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
         if (result.success) {
-          return dispatch({
+          dispatch({
             type: 'UPDATE_ARTICLES',
+            data,
+          });
+          return dispatch({
+            type: 'UPDATE_ARTICLES_STATE',
             data: {
-              data,
-              state: {
-                refreshing: false,
-                loading: false,
-                success: true,
-                error: null,
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+                article: getState().articles.state.loading.article,
               },
+              success: true,
+              error: null,
             },
           });
         }
         console.log(`Error, ${result}`);
         return dispatch({
-          type: 'UPDATE_ARTICLES',
+          type: 'UPDATE_ARTICLES_STATE',
           data: {
-            data: getState().articles.data,
-            state: {
-              refreshing: false,
-              loading: false,
-              success: false,
-              error: 'server',
+            loading: {
+              initial: false,
+              refresh: false,
+              next: false,
+              article: getState().articles.state.loading.article,
             },
+            success: false,
+            error: 'server',
           },
         });
       })
       .catch((err) => {
         return dispatch({
-          type: 'UPDATE_ARTICLES',
+          type: 'UPDATE_ARTICLES_STATE',
           data: {
-            data: getState().articles.data,
-            state: {
-              refreshing: false,
-              success: false,
-              loading: false,
-              error: err,
+            loading: {
+              initial: false,
+              refresh: false,
+              next: false,
+              article: getState().articles.state.loading.article,
             },
+            success: false,
+            error: err,
           },
         });
       });
@@ -88,15 +103,16 @@ function updateArticlesCreator(lastId = undefined) {
 function fetchArticleCreator(articleId) {
   return (dispatch, getState) => {
     dispatch({
-      type: 'UPDATE_ARTICLES',
+      type: 'UPDATE_ARTICLES_STATE',
       data: {
-        data: getState().articles.data,
-        state: {
-          refreshing: false,
-          loading: true,
-          success: null,
-          error: null,
+        loading: {
+          initial: getState().articles.state.loading.initial,
+          refresh: getState().articles.state.loading.refresh,
+          next: getState().articles.state.loading.next,
+          article: true,
         },
+        success: null,
+        error: null,
       },
     });
     request('articles/info', 'get', { articleId })
@@ -111,45 +127,52 @@ function fetchArticleCreator(articleId) {
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
         if (result.success) {
-          return dispatch({
+          dispatch({
             type: 'UPDATE_ARTICLES',
+            data,
+          });
+          return dispatch({
+            type: 'UPDATE_ARTICLES_STATE',
             data: {
-              data,
-              state: {
-                refreshing: false,
-                loading: false,
-                success: true,
-                error: null,
+              loading: {
+                initial: getState().articles.state.loading.initial,
+                refresh: getState().articles.state.loading.refresh,
+                next: getState().articles.state.loading.next,
+                article: false,
               },
+              success: true,
+              error: null,
             },
           });
         }
         console.log(`ERROR: ${result}`);
         return dispatch({
-          type: 'UPDATE_ARTICLES',
+          type: 'UPDATE_ARTICLES_STATE',
           data: {
-            data: getState().articles.data,
-            state: {
-              refreshing: false,
-              loading: false,
-              success: false,
-              error: 'server',
+            loading: {
+              initial: getState().articles.state.loading.initial,
+              refresh: getState().articles.state.loading.refresh,
+              next: getState().articles.state.loading.next,
+              article: false,
             },
+            success: false,
+            error: 'server',
           },
         });
       })
       .catch((err) => {
         console.log(`ERROR: ${err}`);
         return dispatch({
-          type: 'UPDATE_ARTICLES',
+          type: 'UPDATE_ARTICLES_STATE',
           data: {
-            data: getState().articles.data,
-            state: {
-              refreshing: false,
-              loading: false,
-              success: false,
-              error: err,
+            loading: {
+              initial: getState().articles.state.loading.initial,
+              refresh: getState().articles.state.loading.refresh,
+              next: getState().articles.state.loading.next,
+              article: false,
             },
+            success: false,
+            error: err,
           },
         });
       });
@@ -168,15 +191,17 @@ function clearArticlesCreator() {
 }
 
 /**
+ * @docs actions
  * Récupère les infos basiques articles depuis le serveur
- * @param lastId L'id du dernier article, par ordre chronologique, de la liste d'articles/database redux
+ * @param next Si il faut récupérer les articles après le dernier
  */
-function updateArticles() {
+function updateArticles(type) {
   console.log('Update articles');
-  return Store.dispatch(updateArticlesCreator());
+  return Store.dispatch(updateArticlesCreator(type));
 }
 
 /**
+ * @docs actions
  * Récupère toutes les infos publiques d'un seul article
  * @param articleId L'id de l'article à récuperer
  */
@@ -186,6 +211,7 @@ function fetchArticle(articleId) {
 }
 
 /**
+ * @docs actions
  * Vide la database redux complètement
  */
 function clearArticles() {

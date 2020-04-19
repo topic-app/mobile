@@ -9,7 +9,7 @@ import TagList from '../../../../components/TagList';
 import { styles } from '../../../../styles/Styles';
 import { fetchArticle } from '../../../../redux/actions/articles';
 
-function ArticleDisplay({ route, articles }) {
+function ArticleDisplay({ route, articles, state }) {
   const { id } = route.params;
   let article = {};
   React.useEffect(() => {
@@ -35,10 +35,10 @@ function ArticleDisplay({ route, articles }) {
             source={{ uri: article.thumbnailUrl }}
             style={[styles.image, { height: 250 }]}
           >
-            {article.preload && <ProgressBar indeterminate />}
+            {(article.preload || state.loading.article) && <ProgressBar indeterminate />}
           </ImageBackground>
         ) : (
-          article.preload && <ProgressBar indeterminate />
+          (article.preload || state.loading.article) && <ProgressBar indeterminate />
         )}
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
@@ -77,12 +77,17 @@ ArticleDisplay.propTypes = {
       thumbnailUrl: PropTypes.string,
       description: PropTypes.string,
       content: PropTypes.shape({
-        parser: PropTypes.string.isRequired,
-        data: PropTypes.string.isRequired,
-      }).isRequired,
+        parser: PropTypes.string,
+        data: PropTypes.string,
+      }),
       group: PropTypes.shape({
         displayName: PropTypes.string,
       }),
     }).isRequired,
   ).isRequired,
+  state: PropTypes.shape({
+    loading: PropTypes.shape({
+      article: PropTypes.bool,
+    }),
+  }).isRequired,
 };
