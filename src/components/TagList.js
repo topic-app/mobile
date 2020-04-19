@@ -70,6 +70,7 @@ function genTagData(item, type) {
       ...item.tags.map((tag) => ({
         type: 'tag',
         id: tag._id,
+        icon: 'pound',
         text: tag.displayName,
         color: tag.color,
       })),

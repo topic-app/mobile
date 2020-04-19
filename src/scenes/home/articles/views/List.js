@@ -1,18 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Animated, Platform } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, Animated, Platform, ActivityIndicator } from 'react-native';
+import { ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import ArticleCard from '../components/Card';
 
+// eslint-disable-next-line
 import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
 import { updateArticles } from '../../../../redux/actions/articles';
 import { styles } from '../../../../styles/Styles';
+import { colors } from '../../../../styles/Theme';
 
 function ArticleList({ navigation, articles, state }) {
   React.useEffect(() => {
-    updateArticles();
+    updateArticles('initial');
   }, []);
 
   const scrollY = new Animated.Value(0);
@@ -57,17 +59,20 @@ function ArticleList({ navigation, articles, state }) {
       ) : (
         <TranslucentStatusBar />
       )}
+      {state.loading.initial && <ProgressBar indeterminate />}
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
         data={articles}
-        refreshing={state.refreshing}
-        onRefresh={() => updateArticles()}
+        refreshing={state.loading.refresh}
+        onRefresh={() => updateArticles('refresh')}
+        onEndReached={() => updateArticles('next')}
+        onEndReachedThreshold={0.5}
         keyExtractor={(article) => article._id}
         ListFooterComponent={
-          <View style={styles.container}>
-            <Button style={styles.text}>Retour en haut</Button>
+          <View style={[styles.container, { height: 50 }]}>
+            {state.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
           </View>
         }
         renderItem={(article) => (
@@ -117,7 +122,13 @@ ArticleList.propTypes = {
     }).isRequired,
   ).isRequired,
   state: PropTypes.shape({
-    refreshing: PropTypes.bool.isRequired,
+    refreshing: PropTypes.bool,
     success: PropTypes.bool,
+    loading: PropTypes.shape({
+      next: PropTypes.bool,
+      initial: PropTypes.bool,
+      refresh: PropTypes.bool,
+    }),
+    nextLoading: PropTypes.bool,
   }).isRequired,
 };

@@ -1,6 +1,19 @@
 import data from '../../data/articleListData.json';
 
-const initialState = { data: [], state: { success: null, refreshing: false, error: null } };
+const initialState = {
+  data: [],
+  state: {
+    success: null,
+    refreshing: false,
+    error: null,
+    loading: {
+      initial: false,
+      refresh: false,
+      next: false,
+      article: false,
+    },
+  },
+};
 
 /**
  * @docs reducers
@@ -13,8 +26,16 @@ const initialState = { data: [], state: { success: null, refreshing: false, erro
  */
 function articleReducer(state = initialState, action) {
   switch (action.type) {
+    case 'UPDATE_ARTICLES_STATE':
+      return {
+        ...state,
+        state: action.data,
+      };
     case 'UPDATE_ARTICLES':
-      return action.data;
+      return {
+        ...state,
+        data: action.data,
+      };
     case 'CLEAR_DATABASE':
       return { articles: [], state: state.state };
     default:
