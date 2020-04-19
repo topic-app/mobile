@@ -15,6 +15,7 @@ function AuthNavigator() {
         component={AuthLoginScreen}
         options={{
           title: 'Se connecter',
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -22,7 +23,7 @@ function AuthNavigator() {
         component={AuthCreateScreen}
         options={{
           title: 'Créer un compte',
-          headerShown: false
+          headerShown: false,
         }}
       />
       <Stack.Screen
