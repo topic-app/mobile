@@ -10,30 +10,25 @@ import request from '../../utils/request';
 function updateCreationDataCreator(fields) {
   return {
     type: 'UPDATE_CREATION_DATA',
-    data: fields
-  }
+    data: fields,
+  };
 }
 
 function clearCreationDataCreator() {
   return {
     type: 'CLEAR_CREATION_DATA',
-    data: {}
-  }
+    data: {},
+  };
 }
 
 function updateStateCreator(state) {
   return {
     type: 'UPDATE_ACCOUNT_STATE',
-    data: state
-  }
+    data: state,
+  };
 }
 
 function loginCreator(fields) {
-
-}
-
-function registerCreator(fields) {
-  console.log(`REGISTER CREATOR ${fields}`)
   return (dispatch, getState) => {
     dispatch({
       type: 'UPDATE_ACCOUNT_STATE',
@@ -43,9 +38,19 @@ function registerCreator(fields) {
         error: null,
       },
     });
-    request('auth/register/local', 'post',  fields)
+    request('auth/login/local', 'post', fields)
       .then((result) => {
-        console.log(`RESULT REGISTER ${result}`)
+        if (result.success && !result.data.correct) {
+          return dispatch({
+            type: 'UPDATE_ACCOUNT_STATE',
+            data: {
+              loading: false,
+              success: null,
+              error: null,
+              incorrect: true,
+            },
+          });
+        }
         if (result.success) {
           dispatch({
             type: 'UPDATE_ACCOUNT_STATE',
@@ -53,14 +58,13 @@ function registerCreator(fields) {
               loading: false,
               success: true,
               error: null,
-            }
+            },
           });
           return dispatch({
             type: 'LOGIN',
-            data: result.data
+            data: result.data,
           });
         }
-        console.log(`Error, ${result}`);
         return dispatch({
           type: 'UPDATE_ACCOUNT_STATE',
           data: {
@@ -84,35 +88,77 @@ function registerCreator(fields) {
   };
 }
 
-function logoutCreator() {
-
+function registerCreator(fields) {
+  return (dispatch, getState) => {
+    dispatch({
+      type: 'UPDATE_ACCOUNT_STATE',
+      data: {
+        loading: true,
+        success: null,
+        error: null,
+      },
+    });
+    request('auth/register/local', 'post', fields)
+      .then((result) => {
+        if (result.success) {
+          dispatch({
+            type: 'UPDATE_ACCOUNT_STATE',
+            data: {
+              loading: false,
+              success: true,
+              error: null,
+            },
+          });
+          return dispatch({
+            type: 'LOGIN',
+            data: result.data,
+          });
+        }
+        return dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            loading: false,
+            success: false,
+            error: 'server',
+          },
+        });
+      })
+      .catch((err) => {
+        return dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            refreshing: false,
+            success: false,
+            loading: false,
+            error: err,
+          },
+        });
+      });
+  };
 }
 
-function login(fields) {
+function logoutCreator() {}
 
+function login(fields) {
+  return Store.dispatch(loginCreator(fields));
 }
 
 function updateState(fields) {
-    return Store.dispatch(updateStateCreator(fields));
+  return Store.dispatch(updateStateCreator(fields));
 }
 
 function register(fields) {
-  console.log(`Register ${JSON.stringify(fields)}`);
   return Store.dispatch(registerCreator(fields));
 }
 
-function logout() {
-
-}
+function logout() {}
 
 function updateCreationData(params) {
-  console.log(`Update creation data ${JSON.stringify(params)}`);
   return Store.dispatch(updateCreationDataCreator(params));
 }
 
 function clearCreationData(params) {
-  console.log('Clear creation data');
   return Store.dispatch(clearCreationDataCreator());
 }
 
-export { updateCreationData, clearCreationData, register, updateState }
+export { updateCreationData, clearCreationData, register, login, updateState };

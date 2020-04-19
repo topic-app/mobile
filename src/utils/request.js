@@ -2,50 +2,48 @@ import axios from './axiosInstance';
 
 async function request(endpoint, method, params = {}, auth = false) {
   if (method === 'get') {
-    const res = await axios.get(endpoint, { params })
-    if (res.status === 200) {
-      if (res.data.success === true) {
-        return {
-          success: true,
-          data: (res.data.info)
-        };
-      }
-      return {
+    let res = { data: { success: false } };
+    try {
+      res = await axios.get(endpoint, { params });
+    } catch (err) {
+      throw new Error({
         success: false,
-        reason: 'success',
-      }
+        reason: 'status',
+        status: err.status,
+        error: err,
+        res: null,
+      });
     }
-    return {
-      success: false,
-      reason: 'status',
-      status: res.status,
-    }
-
-  } if (method === 'post') {
-    const res = await axios.post(endpoint, params)
-    if (res.status === 200) {
-      if (res.data.success === true) {
-        return {
-          success: true,
-          data: (res.data.info)
-        };
-      }
+    if (res.data.success === true) {
       return {
-        success: false,
-        reason: 'success',
-      }
+        success: true,
+        data: res.data.info,
+      };
     }
-    return {
-      success: false,
-      reason: 'status',
-      status: res.status,
-    }
-
+    throw new Error({ success: false, reason: 'success', status: res.status, error: null, res });
   }
-  return {
-    success: false,
-    reason: 'method'
-  };
+  if (method === 'post') {
+    let res = { data: { success: false } };
+    try {
+      res = await axios.post(endpoint, params);
+    } catch (err) {
+      throw new Error({
+        success: false,
+        reason: 'status',
+        status: err.status,
+        error: err,
+        res: null,
+      });
+    }
+    if (res.data.success === true) {
+      return {
+        success: true,
+        data: res.data.info,
+      };
+    }
+    throw new Error({ success: false, reason: 'success', status: res.status, error: null, res });
+  }
+  throw new Error({ success: false, reason: 'method', status: null, error: null });
 }
 
 export default request;

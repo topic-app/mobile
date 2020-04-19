@@ -9,34 +9,35 @@
  * @returns Nouveau state
  */
 
- const initialState = {
-   loggedIn: false,
-   accountInfo: {},
-   creationData: {},
-   state: {
-     loading: false,
-     success: null,
-     error: null,
-   }
- }
+const initialState = {
+  loggedIn: false,
+  accountInfo: {},
+  creationData: {},
+  state: {
+    loading: false,
+    success: null,
+    error: null,
+    incorrect: null,
+  },
+};
 
 function accountReducer(state = initialState, action) {
   switch (action.type) {
     case 'UPDATE_CREATION_DATA':
       return {
         ...state,
-        creationData: {...state.creationData, ...action.data},
-      }
+        creationData: { ...state.creationData, ...action.data },
+      };
     case 'CLEAR_CREATION_DATA':
       return {
         ...state,
-        creationData: {}
-      }
+        creationData: {},
+      };
     case 'UPDATE_ACCOUNT_STATE':
       return {
         ...state,
-        state: action.data
-      }
+        state: { ...state.state, ...action.data },
+      };
     case 'LOGIN':
       return { loggedIn: true, accountInfo: action.data, creationData: {}, state: state.state };
     case 'LOGOUT':
