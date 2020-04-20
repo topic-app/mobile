@@ -10,5 +10,12 @@
     "react/prefer-stateless-function": ["off"],
     "no-unused-vars": ["warn"],
     "no-underscore-dangle": ["off"]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".android.js", ".ios.js", ".web.js"]
+      }
+    }
   }
 }
