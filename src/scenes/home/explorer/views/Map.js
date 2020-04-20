@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Linking, StatusBar, Platform } from 'react-native';
-import { Text, FAB, IconButton } from 'react-native-paper';
+import { Text, FAB, IconButton, withTheme } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -11,8 +11,8 @@ import LocationModal from '../components/LocationModal';
 import { getImageName, markerImages } from '../utils/getAssetColor';
 import { TranslucentStatusBar } from '../../../../components/Header';
 
-import { styles, colors } from '../../../../styles/Styles';
-import { explorerStyles } from '../styles/Styles';
+import getExplorerStyles from '../styles/Styles';
+import getStyles from '../../../../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 RNLocation.configure({
@@ -110,8 +110,11 @@ class ExplorerMap extends React.Component {
       type: 'FeatureCollection',
       features: [],
     };
+
     let secret = {};
-    const { places } = this.props;
+    const { places, theme } = this.props;
+    const { colors } = theme;
+    const explorerStyles = getExplorerStyles(theme);
     places.forEach((place) => {
       if (place.type !== 'secret') {
         featureCollection.features.push({
@@ -235,7 +238,7 @@ class ExplorerMap extends React.Component {
             />
           </View>
         ) : null}
-        <ExplorerAttribution />
+        <ExplorerAttribution theme={theme} />
 
         <Modal
           supportedOrientations={['portrait', 'landscape']}
@@ -253,7 +256,9 @@ class ExplorerMap extends React.Component {
   }
 }
 
-function ExplorerAttribution() {
+function ExplorerAttribution({ theme }) {
+  const styles = getStyles(theme);
+  const explorerStyles = getExplorerStyles(theme);
   return (
     <View style={explorerStyles.attributionContainer}>
       <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
@@ -278,7 +283,7 @@ function ExplorerAttribution() {
   );
 }
 
-export default ExplorerMap;
+export default withTheme(ExplorerMap);
 
 ExplorerMap.propTypes = {
   places: PropTypes.arrayOf(
@@ -306,5 +311,20 @@ ExplorerMap.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     openDrawer: PropTypes.func.isRequired,
+  }).isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
+
+ExplorerAttribution.propTypes = {
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }).isRequired,
   }).isRequired,
 };

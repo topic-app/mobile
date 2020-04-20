@@ -2,36 +2,37 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Linking } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
-import { Drawer, Avatar, Title } from 'react-native-paper';
+import { Drawer, Avatar, Title, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 // eslint-disable-next-line
 import HomeTwoNavigator from './HomeTwo';
 
-import { navigatorStyles } from '../../styles/NavStyles';
+import getNavigatorStyles from '../../styles/NavStyles';
 
 const DrawerNav = createDrawerNavigator();
 
 function genName({ data, info }) {
   if (data.firstName && data.lastName) {
-    return `${data.firstName} ${  data.lastName}`;
+    return `${data.firstName} ${data.lastName}`;
   }
   return data.firstName || data.lastName || info.username;
-
 }
 
-function CustomDrawerContent({ navigation, loggedIn, accountInfo }) {
+function CustomDrawerContent({ navigation, loggedIn, accountInfo, theme }) {
+  const navigatorStyles = getNavigatorStyles(theme);
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <View style={navigatorStyles.profileBackground}>
-        { loggedIn && (<View style={navigatorStyles.profileIconContainer}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Avatar.Image
-              size={55}
-              style={[navigatorStyles.avatar, { marginRight: 10 }]}
-              source={{ uri: 'https://i.picsum.photos/id/1005/400/400.jpg' }}
-            />
-            {/*
+        {loggedIn && (
+          <View style={navigatorStyles.profileIconContainer}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Avatar.Image
+                size={55}
+                style={[navigatorStyles.avatar, { marginRight: 10 }]}
+                source={{ uri: 'https://i.picsum.photos/id/1005/400/400.jpg' }}
+              />
+              {/*
               <FlatList
                 horizontal
                 scrollEnabled={false}
@@ -49,15 +50,16 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo }) {
                 )}
               />
               */}
-          </View>
+            </View>
 
-          <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
-            { genName(accountInfo.user) }
-          </Title>
-        </View>)}
+            <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
+              {genName(accountInfo.user)}
+            </Title>
+          </View>
+        )}
       </View>
       <Drawer.Section style={{ marginTop: -4 }} />
-      { loggedIn ? (
+      {loggedIn ? (
         <Drawer.Section>
           <Drawer.Item
             label="Mon Profil"
@@ -144,12 +146,13 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo }) {
 
 const mapStateToProps = (state) => {
   const { account } = state;
-  return { accountInfo: account.accountInfo,  loggedIn: account.loggedIn };
+  return { accountInfo: account.accountInfo, loggedIn: account.loggedIn };
 };
 
-const CustomDrawerContentRedux = connect(mapStateToProps)(CustomDrawerContent);
+const CustomDrawerContentRedux = connect(mapStateToProps)(withTheme(CustomDrawerContent));
 
-function HomeOneNavigator() {
+function HomeOneNavigator({ theme }) {
+  const navigatorStyles = getNavigatorStyles(theme);
   return (
     <DrawerNav.Navigator
       initialRouteName="Home2"
@@ -162,15 +165,17 @@ function HomeOneNavigator() {
   );
 }
 
-export default HomeOneNavigator;
+HomeOneNavigator.propTypes = {
+  theme: PropTypes.shape({}).isRequired,
+};
+
+export default withTheme(HomeOneNavigator);
 
 CustomDrawerContent.defaultProps = {
   accountInfo: {
-    user: {
-
-    }
-  }
-}
+    user: {},
+  },
+};
 
 CustomDrawerContent.propTypes = {
   navigation: PropTypes.shape({
@@ -182,6 +187,7 @@ CustomDrawerContent.propTypes = {
   accountInfo: PropTypes.shape({
     user: PropTypes.shape({
       // Todo
-    })
-  })
+    }),
+  }),
+  theme: PropTypes.shape({}).isRequired,
 };

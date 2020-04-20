@@ -1,13 +1,17 @@
 import React from 'react';
-import { List, Divider } from 'react-native-paper';
+import { List, Divider, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { View, Switch } from 'react-native';
+import { View } from 'react-native';
 
-import { styles } from '../../../../styles/Styles';
-import { settingsStyles } from '../styles/Styles';
+import getStyles from '../../../../styles/Styles';
+import getSettingsStyles from '../styles/Styles';
 
 class SettingsList extends React.Component {
   render() {
+    const { theme } = this.props;
+    const styles = getStyles(theme);
+    const settingsStyles = getSettingsStyles(theme);
+
     return (
       <View style={styles.page}>
         <List.Section>
@@ -54,4 +58,8 @@ class SettingsList extends React.Component {
   }
 }
 
-export default SettingsList;
+SettingsList.propTypes = {
+  theme: PropTypes.shape({}).isRequired,
+};
+
+export default withTheme(SettingsList);

@@ -1,14 +1,17 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Text, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { styles } from '../../../../styles/Styles';
+import getStyles from '../../../../styles/Styles';
 
-function PetitionDisplay({ route, petitions }) {
+function PetitionDisplay({ route, petitions, theme }) {
   const { id } = route.params;
   const petition = petitions.find((t) => t._id === id);
+
+  const styles = getStyles(theme);
 
   return (
     <View style={styles.page}>
@@ -22,7 +25,7 @@ const mapStateToProps = (state) => {
   return { petitions };
 };
 
-export default connect(mapStateToProps)(PetitionDisplay);
+export default connect(mapStateToProps)(withTheme(PetitionDisplay));
 
 PetitionDisplay.propTypes = {
   route: PropTypes.shape({
@@ -31,4 +34,5 @@ PetitionDisplay.propTypes = {
     }).isRequired,
   }).isRequired,
   petitions: PropTypes.arrayOf(PropTypes.shape() /* A faire */).isRequired,
+  theme: PropTypes.shape({}).isRequired,
 };

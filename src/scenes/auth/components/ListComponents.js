@@ -1,10 +1,8 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { colors } from '../../../styles/Styles';
 
 function ListHeading({ label }) {
   return <Text style={{ paddingHorizontal: 19, fontWeight: 'bold' }}>{label}</Text>;
@@ -13,7 +11,9 @@ ListHeading.propTypes = {
   label: PropTypes.string.isRequired,
 };
 
-function ListItem({ icon, iconColor, label, textStyle }) {
+function ListItemUnthemed({ icon, iconColor, label, textStyle, theme }) {
+  const { colors } = theme;
+  const color = iconColor || colors.text;
   return (
     <View style={{ flexDirection: 'row' }}>
       <MaterialCommunityIcons
@@ -26,18 +26,27 @@ function ListItem({ icon, iconColor, label, textStyle }) {
     </View>
   );
 }
-ListItem.defaultProps = {
-  iconColor: colors.text,
+ListItemUnthemed.defaultProps = {
+  iconColor: null,
   textStyle: null,
 };
-ListItem.propTypes = {
+ListItemUnthemed.propTypes = {
   icon: PropTypes.string.isRequired,
   iconColor: PropTypes.string,
   label: PropTypes.string.isRequired,
   textStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      valid: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
+const ListItem = withTheme(ListItemUnthemed);
 
-function ListItemAnchor({ icon, label, onPress, textStyle }) {
+function ListItemAnchorUnthemed({ icon, label, onPress, textStyle, theme }) {
+  const { colors } = theme;
   // Note: TouchableWithoutFeedback needs a child that is a View
   return (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -52,14 +61,23 @@ function ListItemAnchor({ icon, label, onPress, textStyle }) {
     </TouchableWithoutFeedback>
   );
 }
-ListItemAnchor.defaultProps = {
+ListItemAnchorUnthemed.defaultProps = {
   textStyle: null,
 };
-ListItemAnchor.propTypes = {
+ListItemAnchorUnthemed.propTypes = {
   icon: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
   textStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      valid: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
+
+const ListItemAnchor = withTheme(ListItemUnthemed);
 
 export { ListHeading, ListItem, ListItemAnchor };

@@ -1,18 +1,21 @@
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
+import { withTheme } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 import ArticleList from './articles/views/List';
 import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
 
-import { colors } from '../../styles/Styles';
-import { navigatorStyles } from '../../styles/NavStyles';
+import getNavigatorStyles from '../../styles/NavStyles';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function HomeTwoNavigator() {
+function HomeTwoNavigator({ theme }) {
+  const { colors } = theme;
+  const navigatorStyles = getNavigatorStyles(theme);
   return (
     <Tab.Navigator
       shifting={false}
@@ -46,4 +49,13 @@ function HomeTwoNavigator() {
   );
 }
 
-export default HomeTwoNavigator;
+HomeTwoNavigator.propTypes = {
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      disabled: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
+
+export default withTheme(HomeTwoNavigator);

@@ -2,15 +2,17 @@ import React from 'react';
 import { View, Platform, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button } from 'react-native-paper';
+import { Button, withTheme } from 'react-native-paper';
 
 import EventCard from '../components/Card';
 
 import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
-import { styles } from '../../../../styles/Styles';
+import getStyles from '../../../../styles/Styles';
 
-function EventList({ navigation, events }) {
+function EventList({ navigation, events, theme }) {
   const scrollY = new Animated.Value(0);
+
+  const styles = getStyles(theme);
 
   const headerElevation = scrollY.interpolate({
     inputRange: [0, 10],
@@ -96,7 +98,7 @@ const mapStateToProps = (state) => {
   return { events };
 };
 
-export default connect(mapStateToProps)(EventList);
+export default connect(mapStateToProps)(withTheme(EventList));
 
 EventList.propTypes = {
   navigation: PropTypes.shape({
@@ -116,4 +118,5 @@ EventList.propTypes = {
       thumbnailUrl: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
+  theme: PropTypes.shape({}).isRequired,
 };

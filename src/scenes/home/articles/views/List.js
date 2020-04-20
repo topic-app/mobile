@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Animated, Platform, ActivityIndicator } from 'react-native';
-import { ProgressBar } from 'react-native-paper';
+import { ProgressBar, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import ArticleCard from '../components/Card';
@@ -9,10 +9,9 @@ import ArticleCard from '../components/Card';
 // eslint-disable-next-line
 import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
 import { updateArticles } from '../../../../redux/actions/articles';
-import { styles } from '../../../../styles/Styles';
-import { colors } from '../../../../styles/Theme';
+import getStyles from '../../../../styles/Styles';
 
-function ArticleList({ navigation, articles, state }) {
+function ArticleList({ navigation, articles, state, theme }) {
   React.useEffect(() => {
     updateArticles('initial');
   }, []);
@@ -24,6 +23,9 @@ function ArticleList({ navigation, articles, state }) {
     outputRange: [0, 10],
     extrapolate: 'clamp',
   });
+
+  const { colors } = theme;
+  const styles = getStyles(theme);
 
   return (
     <View style={styles.page}>
@@ -106,7 +108,7 @@ const mapStateToProps = (state) => {
   return { articles: articles.data, state: articles.state };
 };
 
-export default connect(mapStateToProps)(ArticleList);
+export default connect(mapStateToProps)(withTheme(ArticleList));
 
 ArticleList.propTypes = {
   navigation: PropTypes.shape({
@@ -130,5 +132,10 @@ ArticleList.propTypes = {
       refresh: PropTypes.bool,
     }),
     nextLoading: PropTypes.bool,
+  }).isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string,
+    }).isRequired,
   }).isRequired,
 };

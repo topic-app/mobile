@@ -1,12 +1,10 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { TextInput, HelperText, Button } from 'react-native-paper';
+import { TextInput, HelperText, Button, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { updateCreationData } from '../../../redux/actions/account';
+import { updateCreationData, updateState } from '../../../redux/actions/account';
 
-import { colors } from '../../../styles/Styles';
-import { theme } from '../../../styles/Theme';
-import { authStyles } from '../styles/Styles';
+import getAuthStyles from '../styles/Styles';
 
 class AuthCreatePageProfile extends React.Component {
   constructor(props) {
@@ -14,18 +12,16 @@ class AuthCreatePageProfile extends React.Component {
     this.state = {
       firstname: '',
       firstnameError: false,
-      firstnameValid: true,
+      firstnameValid: false,
       firstnameErrorMessage: '',
       lastname: '',
       lastnameError: false,
-      lastnameValid: true,
+      lastnameValid: false,
       lastnameErrorMessage: '',
     };
+
     this.firstnameInput = React.createRef();
     this.lastnameInput = React.createRef();
-
-    const { setPageOnPress } = props;
-    setPageOnPress(this.blurInputs); // When user presses the page, blur all inputs
   }
 
   validateFirstnameInput = async (firstname) => {
@@ -77,11 +73,12 @@ class AuthCreatePageProfile extends React.Component {
   };
 
   blurInputs = async () => {
-    this.firstnameInput.current.blur()
-    this.lastnameInput.current.blur()
-  }
+    this.firstnameInput.current.blur();
+    this.lastnameInput.current.blur();
+  };
 
   submit = async () => {
+    updateState({ loading: true }); // Do we need this anymore?
     const { forward } = this.props;
 
     const firstname = this.firstnameInput.current.state.value;
@@ -93,6 +90,8 @@ class AuthCreatePageProfile extends React.Component {
       forward();
       this.blurInputs();
     }
+
+    updateState({ loading: false }); // Do we need this anymore?
   };
 
   render() {
@@ -107,7 +106,10 @@ class AuthCreatePageProfile extends React.Component {
       lastnameErrorMessage,
     } = this.state;
 
-    const { backward } = this.props;
+    const { backward, theme } = this.props;
+
+    const { colors } = theme;
+    const authStyles = getAuthStyles(theme);
 
     return (
       <View style={authStyles.formContainer}>
@@ -118,6 +120,7 @@ class AuthCreatePageProfile extends React.Component {
             value={firstname}
             error={firstnameError}
             autoCompleteType="name"
+            disableFullscreenUI
             onSubmitEditing={(info) => {
               this.validateFirstnameInput(info.nativeEvent.text);
               this.lastnameInput.current.focus();
@@ -150,6 +153,7 @@ class AuthCreatePageProfile extends React.Component {
             value={lastname}
             error={lastnameError}
             autoCompleteType="email"
+            disableFullscreenUI
             onSubmitEditing={(info) => {
               this.validateLastnameInput(info.nativeEvent.text);
               this.submit();
@@ -202,10 +206,15 @@ class AuthCreatePageProfile extends React.Component {
   }
 }
 
-export default AuthCreatePageProfile;
+export default withTheme(AuthCreatePageProfile);
 
 AuthCreatePageProfile.propTypes = {
   forward: PropTypes.func.isRequired,
   backward: PropTypes.func.isRequired,
-  setPageOnPress: PropTypes.func.isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      valid: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };

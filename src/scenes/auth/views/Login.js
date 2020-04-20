@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, Platform } from 'react-native';
-import { Text, Button, ProgressBar, TextInput, HelperText } from 'react-native-paper';
+import { Text, Button, ProgressBar, TextInput, HelperText, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { styles, colors } from '../../../styles/Styles';
-import { authStyles } from '../styles/Styles';
+import getStyles from '../../../styles/Styles';
+import getAuthStyles from '../styles/Styles';
 
 import { updateState, login } from '../../../redux/actions/account';
 
@@ -47,7 +47,11 @@ class AuthLogin extends React.Component {
 
   render() {
     const { onPagePress, username, password } = this.state;
-    const { navigation, reqState } = this.props;
+    const { navigation, reqState, theme } = this.props;
+
+    const { colors } = theme;
+    const authStyles = getAuthStyles(theme);
+    const styles = getStyles(theme);
 
     if (reqState.success) {
       return (
@@ -194,7 +198,7 @@ const mapStateToProps = (state) => {
   return { reqState: account.state };
 };
 
-export default connect(mapStateToProps)(AuthLogin);
+export default connect(mapStateToProps)(withTheme(AuthLogin));
 
 AuthLogin.defaultProps = {
   reqState: {
@@ -215,4 +219,11 @@ AuthLogin.propTypes = {
     loading: PropTypes.bool,
     incorrect: PropTypes.bool,
   }),
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      valid: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
