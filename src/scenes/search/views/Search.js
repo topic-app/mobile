@@ -1,25 +1,26 @@
 import React from 'react';
 import { View, StatusBar } from 'react-native';
-import { Text, Searchbar, Button } from 'react-native-paper';
+import { Text, Searchbar, Button, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-import { styles } from '../../../styles/Styles';
+import getStyles from '../../../styles/Styles';
 
 class Search extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       searchQuery: '',
-      searchTags: [],
+      // searchTags: [],
     };
   }
 
   onChangeSearch = (query) => this.setState({ searchQuery: query });
 
   render() {
-    const { navigation, route } = this.props;
+    const { navigation, route, theme } = this.props;
     const { initialCategory } = route.params;
     const { searchQuery } = this.state;
+    const styles = getStyles(theme);
 
     return (
       <View style={styles.page}>
@@ -38,7 +39,7 @@ class Search extends React.Component {
   }
 }
 
-export default Search;
+export default withTheme(Search);
 
 Search.propTypes = {
   navigation: PropTypes.shape({
@@ -50,4 +51,5 @@ Search.propTypes = {
       initialCategory: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  theme: PropTypes.shape({}).isRequired,
 };

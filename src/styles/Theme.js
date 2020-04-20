@@ -1,6 +1,6 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 
-const selectedTheme = 'light';
+const selectedTheme = 'dark';
 
 const common = {
   roundness: 5,
@@ -64,6 +64,9 @@ const darkBase = {
 
 const themes = {
   purple: {
+    name: 'Violet',
+    value: 'purple',
+    dark: false,
     ...lightBase,
     statusBarContentTheme: 'light',
     colors: {
@@ -74,8 +77,18 @@ const themes = {
       drawerContent: darkBase.colors.text,
     },
   },
-  light: lightBase,
-  dark: darkBase,
+  light: {
+    name: 'Clair',
+    value: 'light',
+    dark: false,
+    ...lightBase,
+  },
+  dark: {
+    name: 'Sombre',
+    value: 'dark',
+    dark: true,
+    ...darkBase,
+  },
 };
 
 const theme = themes[selectedTheme];

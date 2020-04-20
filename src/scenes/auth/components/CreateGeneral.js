@@ -1,13 +1,12 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { TextInput, HelperText, Button } from 'react-native-paper';
+import { TextInput, HelperText, Button, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { updateCreationData, updateState } from '../../../redux/actions/account';
 
-import { colors } from '../../../styles/Styles';
-import { theme } from '../../../styles/Theme';
-import { authStyles } from '../styles/Styles';
+import { updateCreationData, updateState } from '../../../redux/actions/account';
 import request from '../../../utils/request';
+
+import getAuthStyles from '../styles/Styles';
 
 class AuthCreatePageGeneral extends React.Component {
   constructor(props) {
@@ -26,9 +25,6 @@ class AuthCreatePageGeneral extends React.Component {
       passwordValid: false,
       passwordErrorMessage: '',
     };
-
-    const { setPageOnPress } = props;
-    setPageOnPress(this.blurInputs); // When user presses the page, blur all inputs
 
     this.emailInput = React.createRef();
     this.usernameInput = React.createRef();
@@ -157,7 +153,7 @@ class AuthCreatePageGeneral extends React.Component {
   };
 
   submit = async () => {
-    updateState({ loading: true });
+    updateState({ loading: true }); // Do we need this anymore?
 
     const username = this.usernameInput.current.state.value;
     const email = this.emailInput.current.state.value;
@@ -191,7 +187,7 @@ class AuthCreatePageGeneral extends React.Component {
       }
       this.setState(result);
     }
-    updateState({ loading: false });
+    updateState({ loading: false }); // Same here: do we need this?
   };
 
   render() {
@@ -210,6 +206,10 @@ class AuthCreatePageGeneral extends React.Component {
       passwordValid,
     } = this.state;
 
+    const { theme } = this.props;
+    const { colors } = theme;
+    const authStyles = getAuthStyles(theme);
+
     return (
       <View style={authStyles.formContainer}>
         <View style={authStyles.textInputContainer}>
@@ -218,6 +218,7 @@ class AuthCreatePageGeneral extends React.Component {
             label="Nom d'Utilisateur"
             value={username}
             error={usernameError}
+            disableFullscreenUI
             autoCompleteType="username"
             onSubmitEditing={(info) => {
               this.validateUsernameInput(info.nativeEvent.text);
@@ -251,7 +252,10 @@ class AuthCreatePageGeneral extends React.Component {
             label="Email"
             value={email}
             error={emailError}
+            disableFullscreenUI
+            keyboardType="email-address"
             autoCompleteType="email"
+            autoCapitalize="none"
             onSubmitEditing={(info) => {
               this.validateEmailInput(info.nativeEvent.text);
               this.passwordInput.current.focus();
@@ -281,7 +285,9 @@ class AuthCreatePageGeneral extends React.Component {
           <TextInput
             ref={this.passwordInput}
             label="Mot de Passe"
+            returnKeyType="go"
             value={password}
+            disableFullscreenUI
             error={passwordError}
             mode="outlined"
             autoCorrect={false}
@@ -327,9 +333,14 @@ class AuthCreatePageGeneral extends React.Component {
   }
 }
 
-export default AuthCreatePageGeneral;
+export default withTheme(AuthCreatePageGeneral);
 
 AuthCreatePageGeneral.propTypes = {
   forward: PropTypes.func.isRequired,
-  setPageOnPress: PropTypes.func.isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      valid: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };

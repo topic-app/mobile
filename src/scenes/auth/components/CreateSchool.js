@@ -1,13 +1,12 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, Title, Subheading, Card } from 'react-native-paper';
+import { Button, Title, Subheading, Card, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { updateCreationData } from '../../../redux/actions/account';
 
-import { colors } from '../../../styles/Styles';
-import { authStyles } from '../styles/Styles';
+import getAuthStyles from '../styles/Styles';
 
 class AuthCreatePageSchool extends React.Component {
   submit = () => {
@@ -21,7 +20,11 @@ class AuthCreatePageSchool extends React.Component {
   };
 
   render() {
-    const { backward, location } = this.props;
+    const { backward, location, theme } = this.props;
+
+    const { colors } = theme;
+    const authStyles = getAuthStyles(theme);
+
     return (
       <View style={authStyles.formContainer}>
         <Card style={{ marginBottom: 30 }}>
@@ -30,7 +33,7 @@ class AuthCreatePageSchool extends React.Component {
             <Subheading>{location.schoolData[0].address.shortName}</Subheading>
           </Card.Content>
           <Card.Actions>
-            <Button mode="text" onPress={() => {}}>
+            <Button mode="text" onPress={() => console.log('Change schools')}>
               Changer d&apos;école
             </Button>
           </Card.Actions>
@@ -64,10 +67,15 @@ const mapStateToProps = (state) => {
   return { location };
 };
 
-export default connect(mapStateToProps)(AuthCreatePageSchool);
+export default connect(mapStateToProps)(withTheme(AuthCreatePageSchool));
 
 AuthCreatePageSchool.propTypes = {
   forward: PropTypes.func.isRequired,
   backward: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };

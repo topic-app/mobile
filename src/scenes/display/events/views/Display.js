@@ -1,17 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, ScrollView } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
 import TagList from '../../../../components/TagList';
-import { styles } from '../../../../styles/Styles';
+import getStyles from '../../../../styles/Styles';
 
-function EventDisplay({ route, events }) {
+function EventDisplay({ route, events, theme }) {
   const { id } = route.params;
   const event = events.find((t) => t._id === id);
   const { start, end } = event.duration;
+
+  const styles = getStyles(theme);
 
   return (
     <View style={styles.page}>
@@ -39,7 +41,7 @@ const mapStateToProps = (state) => {
   return { events };
 };
 
-export default connect(mapStateToProps)(EventDisplay);
+export default connect(mapStateToProps)(withTheme(EventDisplay));
 
 EventDisplay.propTypes = {
   route: PropTypes.shape({
@@ -57,4 +59,5 @@ EventDisplay.propTypes = {
       }),
     }).isRequired,
   ).isRequired,
+  theme: PropTypes.shape({}).isRequired,
 };

@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
-import { Text, Avatar, Card, IconButton } from 'react-native-paper';
+import { Text, Avatar, Card, IconButton, withTheme } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/fr';
 
 import TagList from '../../../../components/TagList';
-import { styles, colors } from '../../../../styles/Styles';
-import eventStyles from '../styles/Styles';
+import getStyles from '../../../../styles/Styles';
+import getEventStyles from '../styles/Styles';
 
 function buildDateString(start, end) {
   moment.updateLocale('fr');
@@ -28,8 +28,13 @@ function buildDateString(start, end) {
   return `Prévu - ${startDate.calendar()} (${startDate.fromNow()})`;
 }
 
-function EventCard({ event, navigate }) {
+function EventCard({ event, navigate, theme }) {
   const { start, end } = event.duration;
+
+  const { colors } = theme;
+
+  const styles = getStyles(theme);
+  const eventStyles = getEventStyles(theme);
 
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
@@ -60,7 +65,7 @@ function EventCard({ event, navigate }) {
   );
 }
 
-export default EventCard;
+export default withTheme(EventCard);
 
 EventCard.propTypes = {
   event: PropTypes.shape({
@@ -76,4 +81,10 @@ EventCard.propTypes = {
     summary: PropTypes.string.isRequired,
   }).isRequired,
   navigate: PropTypes.func.isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string,
+      disabled: PropTypes.string,
+    }).isRequired,
+  }).isRequired,
 };

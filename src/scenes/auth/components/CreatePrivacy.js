@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton } from 'react-native-paper';
+import { Button, RadioButton, List, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { updateCreationData } from '../../../redux/actions/account';
 
-import { styles, colors } from '../../../styles/Styles';
-import { authStyles } from '../styles/Styles';
+import getAuthStyles from '../styles/Styles';
 
 import { ListHeading, ListItem } from './ListComponents';
 
@@ -30,7 +29,10 @@ class AuthCreatePagePrivacy extends React.Component {
 
   render() {
     const { accountType } = this.state;
-    const { backward } = this.props;
+    const { backward, theme } = this.props;
+
+    const { colors } = theme;
+    const authStyles = getAuthStyles(theme);
 
     const always = {
       icon: 'check',
@@ -45,15 +47,50 @@ class AuthCreatePagePrivacy extends React.Component {
     return (
       <View style={authStyles.formContainer}>
         <View style={authStyles.listContainer}>
-          <RadioButton.Group
-            onValueChange={(value) => {
-              this.setState({ accountType: value });
-            }}
-            value={accountType}
-          >
-            <RadioButton.Item value="public" label="Compte public" labelStyle={styles.text} />
-            <RadioButton.Item value="private" label="Compe privé" />
-          </RadioButton.Group>
+          <List.Item
+            title="Compte public"
+            left={() =>
+              Platform.OS !== 'ios' ? (
+                <RadioButton
+                  status={accountType === 'public' ? 'checked' : 'unchecked'}
+                  color={colors.primary}
+                  onPress={() => this.setState({ accountType: 'public' })}
+                />
+              ) : null
+            }
+            right={() =>
+              Platform.OS === 'ios' ? (
+                <RadioButton
+                  status={accountType === 'public' ? 'checked' : 'unchecked'}
+                  color={colors.primary}
+                  onPress={() => this.setState({ accountType: 'public' })}
+                />
+              ) : null
+            }
+            onPress={() => this.setState({ accountType: 'public' })}
+          />
+          <List.Item
+            title="Compte privé"
+            left={() =>
+              Platform.OS !== 'ios' ? (
+                <RadioButton
+                  status={accountType === 'private' ? 'checked' : 'unchecked'}
+                  color={colors.primary}
+                  onPress={() => this.setState({ accountType: 'private' })}
+                />
+              ) : null
+            }
+            right={() =>
+              Platform.OS === 'ios' ? (
+                <RadioButton
+                  status={accountType === 'private' ? 'checked' : 'unchecked'}
+                  color={colors.primary}
+                  onPress={() => this.setState({ accountType: 'private' })}
+                />
+              ) : null
+            }
+            onPress={() => this.setState({ accountType: 'private' })}
+          />
         </View>
         <View style={authStyles.descriptionContainer}>
           <View style={authStyles.descriptionPartContainer}>
@@ -142,10 +179,17 @@ class AuthCreatePagePrivacy extends React.Component {
   }
 }
 
-export default AuthCreatePagePrivacy;
+export default withTheme(AuthCreatePagePrivacy);
 
 AuthCreatePagePrivacy.propTypes = {
   forward: PropTypes.func.isRequired,
   backward: PropTypes.func.isRequired,
   skip: PropTypes.func.isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      valid: PropTypes.string.isRequired,
+      invalid: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };

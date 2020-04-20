@@ -1,25 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StatusBar, View, TouchableOpacity } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, withTheme } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import { theme } from '../styles/Theme';
-import { navigatorStyles } from '../styles/NavStyles';
-import { styles, colors, isDark } from '../styles/Styles';
+import getNavigatorStyles from '../styles/NavStyles';
+import getStyles from '../styles/Styles';
 
-function TranslucentStatusBar({ contentThemeName }) {
+function TranslucentStatusBarUnthemed({ contentThemeName, theme }) {
+  const contentTheme = contentThemeName || theme.statusBarContentTheme;
+  const { colors } = theme;
   return (
     <StatusBar
       translucent
       backgroundColor={colors.statusBar}
-      barStyle={`${contentThemeName}-content`}
+      barStyle={`${contentTheme}-content`}
     />
   );
 }
 
-function BackButton({ navigation, previous }) {
-  const backColor = isDark ? '#0a84ff' : '#0a7aff';
+function SolidStatusBarUnthemed({ color, contentThemeName, theme }) {
+  const contentTheme = contentThemeName || theme.statusBarContentTheme;
+  const backgroundColor = color || theme.colors.background;
+  return (
+    <StatusBar
+      translucent={false}
+      backgroundColor={backgroundColor}
+      barStyle={`${contentTheme}-content`}
+    />
+  );
+}
+
+const TranslucentStatusBar = withTheme(TranslucentStatusBarUnthemed);
+const SolidStatusBar = withTheme(SolidStatusBarUnthemed);
+
+function BackButtonUnthemed({ navigation, previous, theme }) {
+  const backColor = theme.dark ? '#0a84ff' : '#0a7aff';
   return (
     <View>
       <TranslucentStatusBar />
@@ -45,32 +61,66 @@ function BackButton({ navigation, previous }) {
   );
 }
 
-TranslucentStatusBar.propTypes = {
+const BackButton = withTheme(BackButtonUnthemed);
+
+TranslucentStatusBarUnthemed.propTypes = {
   contentThemeName: PropTypes.string,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      statusBar: PropTypes.string.isRequired,
+    }).isRequired,
+    statusBarContentTheme: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
-TranslucentStatusBar.defaultProps = {
-  contentThemeName: theme.statusBarContentTheme,
+TranslucentStatusBarUnthemed.defaultProps = {
+  contentThemeName: '',
 };
 
-BackButton.propTypes = {
+SolidStatusBarUnthemed.propTypes = {
+  color: PropTypes.string,
+  contentThemeName: PropTypes.string,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      statusBar: PropTypes.string.isRequired,
+      background: PropTypes.string.isRequired,
+    }).isRequired,
+    statusBarContentTheme: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+SolidStatusBarUnthemed.defaultProps = {
+  color: '',
+  contentThemeName: '',
+};
+
+BackButtonUnthemed.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
   }).isRequired,
   previous: PropTypes.string,
+  theme: PropTypes.shape({
+    dark: PropTypes.bool.isRequired,
+  }).isRequired,
 };
 
-BackButton.defaultProps = {
+BackButtonUnthemed.defaultProps = {
   previous: null,
 };
 
-const HeaderConfig = {
-  headerStyle: navigatorStyles.header,
-  headerTitleStyle: styles.text,
-  headerBackTitleStyle: styles.text,
-  BackButton,
-};
+function HeaderConfig(theme) {
+  const navigatorStyles = getNavigatorStyles(theme);
+  const styles = getStyles(theme);
+  return {
+    headerStyle: navigatorStyles.header,
+    headerTitleStyle: styles.text,
+    headerBackTitleStyle: styles.text,
+    BackButton,
+  };
+}
 
 const TransitionHeaderConfig = HeaderConfig;
 
-export { TranslucentStatusBar, HeaderConfig, TransitionHeaderConfig };
+export { TranslucentStatusBar, SolidStatusBar, HeaderConfig, TransitionHeaderConfig };

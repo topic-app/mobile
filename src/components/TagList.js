@@ -1,9 +1,9 @@
 import React from 'react';
 import { FlatList, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { Chip, Avatar } from 'react-native-paper';
+import { Chip, Avatar, withTheme } from 'react-native-paper';
 
-import { styles, colors } from '../styles/Styles';
+import getStyles from '../styles/Styles';
 
 function genTagIcon(type) {
   if (type === 'tag') {
@@ -109,8 +109,11 @@ function genTagData(item, type) {
   return data;
 }
 
-function TagList({ item, type }) {
+function TagList({ item, type, theme }) {
   const data = genTagData(item, type);
+
+  const styles = getStyles(theme);
+  const { colors } = theme;
 
   return (
     <FlatList
@@ -189,6 +192,14 @@ TagList.propTypes = {
       }),
     }),
   }).isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      valid: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+      disabled: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
-export default TagList;
+export default withTheme(TagList);

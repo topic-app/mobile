@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform, View, Image, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
-import { Card, Paragraph, Text } from 'react-native-paper';
+import { Card, Paragraph, Text, withTheme } from 'react-native-paper';
 import moment from 'moment';
 
 import TagList from '../../../../components/TagList';
-import { styles } from '../../../../styles/Styles';
+import getStyles from '../../../../styles/Styles';
 
-function ActuComponentListCard({ article, navigate }) {
+function ActuComponentListCard({ article, navigate, theme }) {
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
+  const styles = getStyles(theme);
 
   return (
     <Card style={styles.card}>
@@ -60,7 +61,7 @@ function ActuComponentListCard({ article, navigate }) {
   );
 }
 
-export default ActuComponentListCard;
+export default withTheme(ActuComponentListCard);
 
 ActuComponentListCard.propTypes = {
   article: PropTypes.shape({
@@ -70,4 +71,5 @@ ActuComponentListCard.propTypes = {
     date: PropTypes.string.isRequired,
   }).isRequired,
   navigate: PropTypes.func.isRequired,
+  theme: PropTypes.shape({}).isRequired,
 };

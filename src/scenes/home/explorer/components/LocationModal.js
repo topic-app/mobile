@@ -3,13 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button, Divider, Text } from 'react-native-paper';
+import { Button, Divider, Text, withTheme } from 'react-native-paper';
 
 import BottomSheet from './BottomSheet';
 import places from '../../../../data/explorerDisplayData.json';
-import { explorerStyles } from '../styles/Styles';
+import getExplorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
-import { styles } from '../../../../styles/Styles';
+import getStyles from '../../../../styles/Styles';
 
 function genTagDecoration(type) {
   if (type === 'school') {
@@ -59,9 +59,12 @@ function checkLink(link, color) {
   return null;
 }
 
-function LocationModal({ data, hideModal }) {
+function LocationModal({ data, hideModal, theme }) {
   const { icon, color } = genTagDecoration(data.type);
   const place = places[data.id];
+
+  const styles = getStyles(theme);
+  const explorerStyles = getExplorerStyles(theme);
 
   return (
     <View style={{ flex: 1 }}>
@@ -101,7 +104,7 @@ function LocationModal({ data, hideModal }) {
   );
 }
 
-export default LocationModal;
+export default withTheme(LocationModal);
 
 LocationModal.propTypes = {
   data: PropTypes.shape({
@@ -110,4 +113,5 @@ LocationModal.propTypes = {
     name: PropTypes.string.isRequired,
   }).isRequired,
   hideModal: PropTypes.func.isRequired,
+  theme: PropTypes.shape({}).isRequired,
 };

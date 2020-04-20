@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Platform, ScrollView, Linking } from 'react-native';
-import { Text, HelperText, Button, Checkbox } from 'react-native-paper';
+import { View, Platform, Linking } from 'react-native';
+import { HelperText, Button, Checkbox, List, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { authStyles } from '../styles/Styles';
+import getAuthStyles from '../styles/Styles';
 
 import { ListHeading, ListItem, ListItemAnchor } from './ListComponents';
 
@@ -22,7 +22,7 @@ class AuthCreatePageLegal extends React.Component {
   }
 
   submit = () => {
-    const { forward } = this.props;
+    const { create } = this.props;
     const { terms, email } = this.state;
     if (!terms) {
       this.setState({ error: true, errorMessage: 'Vous devez accepter pour pouvoir continuer' });
@@ -40,16 +40,18 @@ class AuthCreatePageLegal extends React.Component {
       });
     }
     if (terms && email) {
-      forward();
+      create();
     }
   };
 
   render() {
     const { terms, error, errorMessage, email, emailError, emailErrorMessage } = this.state;
-    const { backward, creationData } = this.props;
+    const { backward, creationData, theme } = this.props;
+    const { colors } = theme;
+    const authStyles = getAuthStyles(theme);
 
     return (
-      <ScrollView style={authStyles.formContainer}>
+      <View style={authStyles.formContainer}>
         <View style={authStyles.descriptionContainer}>
           <View>
             <View style={authStyles.descriptionPartContainer}>
@@ -131,43 +133,39 @@ class AuthCreatePageLegal extends React.Component {
           </View>
         </View>
         <View>
-          <TouchableWithoutFeedback
-            style={authStyles.listContainer}
-            onPress={() => {
-              this.setState({ terms: !terms });
-            }}
-          >
-            <View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Checkbox status={terms ? 'checked' : 'unchecked'} />
-                <Text>
-                  J&apos;accepte les conditions d&apos;utilisation et la politique de vie privée
-                </Text>
-              </View>
-              <HelperText type="error" visible={error}>
-                {errorMessage}
-              </HelperText>
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            style={authStyles.listContainer}
-            onPress={() => {
-              this.setState({ email: !email });
-            }}
-          >
-            <View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Checkbox status={email ? 'checked' : 'unchecked'} />
-                <Text>
-                  Je confirme que mon addresse mail est bien{' '}
-                  {creationData ? creationData.email : ''}
-                </Text>
-              </View>
-              <HelperText type="error" visible={emailError}>
-                {emailErrorMessage}
-              </HelperText>
-            </View>
-          </TouchableWithoutFeedback>
+          <List.Item
+            title="J'accepte les conditions d'utilisation et la politique de vie privée"
+            left={() =>
+              Platform.OS !== 'ios' ? (
+                <Checkbox status={terms ? 'checked' : 'unchecked'} color={colors.primary} />
+              ) : null
+            }
+            right={() =>
+              Platform.OS === 'ios' ? (
+                <Checkbox status={terms ? 'checked' : 'unchecked'} color={colors.primary} />
+              ) : null
+            }
+            onPress={() => this.setState({ terms: !terms })}
+          />
+          <List.Item
+            title={`Je confirme que mon addresse mail est bien ${
+              creationData ? creationData.email : ''
+            }`}
+            left={() =>
+              Platform.OS !== 'ios' ? (
+                <Checkbox status={email ? 'checked' : 'unchecked'} color={colors.primary} />
+              ) : null
+            }
+            right={() =>
+              Platform.OS === 'ios' ? (
+                <Checkbox status={email ? 'checked' : 'unchecked'} color={colors.primary} />
+              ) : null
+            }
+            onPress={() => this.setState({ email: !email })}
+          />
+          <HelperText type="error" visible={emailError || error}>
+            {error ? errorMessage : emailErrorMessage}
+          </HelperText>
         </View>
         <View style={authStyles.buttonContainer}>
           <Button
@@ -187,7 +185,7 @@ class AuthCreatePageLegal extends React.Component {
             Créer mon compte
           </Button>
         </View>
-      </ScrollView>
+      </View>
     );
   }
 }
@@ -197,7 +195,7 @@ const mapStateToProps = (state) => {
   return { creationData: account.creationData };
 };
 
-export default connect(mapStateToProps)(AuthCreatePageLegal);
+export default connect(mapStateToProps)(withTheme(AuthCreatePageLegal));
 
 AuthCreatePageLegal.defaultProps = {
   creationData: {
@@ -206,9 +204,14 @@ AuthCreatePageLegal.defaultProps = {
 };
 
 AuthCreatePageLegal.propTypes = {
-  forward: PropTypes.func.isRequired,
+  create: PropTypes.func.isRequired,
   backward: PropTypes.func.isRequired,
   creationData: PropTypes.shape({
     email: PropTypes.string,
   }),
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };

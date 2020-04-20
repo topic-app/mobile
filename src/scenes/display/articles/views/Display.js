@@ -1,21 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, ProgressBar } from 'react-native-paper';
+import { Text, ProgressBar, withTheme } from 'react-native-paper';
 import { View, ImageBackground, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
 import Content from '../../../../components/Content';
 import TagList from '../../../../components/TagList';
-import { styles } from '../../../../styles/Styles';
+import getStyles from '../../../../styles/Styles';
 import { fetchArticle } from '../../../../redux/actions/articles';
 
-function ArticleDisplay({ route, articles, state }) {
+function ArticleDisplay({ route, articles, state, theme }) {
   const { id } = route.params;
   let article = {};
   React.useEffect(() => {
-    console.log('componentDidMount display');
     fetchArticle(id);
   }, []);
+
+  const styles = getStyles(theme);
 
   article = articles.find((t) => t._id === id);
 
@@ -62,7 +63,7 @@ const mapStateToProps = (state) => {
   return { articles: articles.data, state: articles.state };
 };
 
-export default connect(mapStateToProps)(ArticleDisplay);
+export default connect(mapStateToProps)(withTheme(ArticleDisplay));
 
 ArticleDisplay.propTypes = {
   route: PropTypes.shape({
@@ -90,4 +91,5 @@ ArticleDisplay.propTypes = {
       article: PropTypes.bool,
     }),
   }).isRequired,
+  theme: PropTypes.shape({}).isRequired,
 };

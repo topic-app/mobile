@@ -1,7 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
-import { Text } from 'react-native-paper';
+import { Text, withTheme } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 import DisplayStackNavigator from './display/index';
 import MoreStackNavigator from './more/index';
@@ -9,12 +10,13 @@ import SearchStackNavigator from './search/index';
 
 import HomeOneNavigator from './home/HomeOne';
 
-import { colors } from '../styles/Styles';
-import { navigatorStyles } from '../styles/NavStyles';
+import getNavigatorStyles from '../styles/NavStyles';
 
 const Tab = createBottomTabNavigator();
 
-function MainNavigator() {
+function MainNavigator({ theme }) {
+  const navigatorStyles = getNavigatorStyles(theme);
+  const { colors } = theme;
   return (
     <Tab.Navigator
       initialRouteName="Home1"
@@ -51,4 +53,13 @@ function MainNavigator() {
   );
 }
 
-export default MainNavigator;
+MainNavigator.propTypes = {
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      disabled: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
+
+export default withTheme(MainNavigator);

@@ -3,13 +3,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform, View, Text, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Card, ProgressBar } from 'react-native-paper';
+import { Card, ProgressBar, withTheme } from 'react-native-paper';
 import moment from 'moment';
 
 import TagList from '../../../../components/TagList';
-import { styles } from '../../../../styles/Styles';
+import getStyles from '../../../../styles/Styles';
 
-function PetitionGoalStatus({ petition }) {
+function PetitionGoalStatus({ petition, theme }) {
+  const styles = getStyles(theme);
   if (petition.voteData.votes < petition.voteData.goal) {
     return (
       <View style={{ marginHorizontal: 15, marginVertical: 4 }}>
@@ -29,7 +30,8 @@ function PetitionGoalStatus({ petition }) {
   );
 }
 
-function PetitionSign({ petition }) {
+function PetitionSign({ petition, theme }) {
+  const styles = getStyles(theme);
   return (
     <View>
       <View style={{ marginHorizontal: 15, marginVertical: 4 }}>
@@ -42,10 +44,11 @@ function PetitionSign({ petition }) {
   );
 }
 
-function PetitionGoal({ petition }) {
+function PetitionGoal({ petition, theme }) {
+  const styles = getStyles(theme);
   return (
     <View>
-      <PetitionGoalStatus petition={petition} />
+      <PetitionGoalStatus theme={theme} petition={petition} />
       <View style={{ marginVertical: 10, marginHorizontal: 15 }}>
         <View>
           <ProgressBar
@@ -66,7 +69,8 @@ function PetitionGoal({ petition }) {
   );
 }
 
-function PetitionOpinion({ petition }) {
+function PetitionOpinion({ petition, theme }) {
+  const styles = getStyles(theme);
   return (
     <View>
       <View style={{ marginHorizontal: 15, marginVertical: 4 }}>
@@ -102,7 +106,8 @@ function PetitionOpinion({ petition }) {
   );
 }
 
-function PetitionMultiple({ petition }) {
+function PetitionMultiple({ petition, theme }) {
+  const styles = getStyles(theme);
   let total = 0;
   petition.voteData.opinions.forEach((opinion) => {
     total += opinion.votes;
@@ -132,16 +137,16 @@ function PetitionMultiple({ petition }) {
   );
 }
 
-function renderPetition(petition) {
+function renderPetition(petition, theme) {
   switch (petition.voteData.type) {
     case 'sign':
-      return <PetitionSign petition={petition} />;
+      return <PetitionSign theme={theme} petition={petition} />;
     case 'goal':
-      return <PetitionGoal petition={petition} />;
+      return <PetitionGoal theme={theme} petition={petition} />;
     case 'opinion':
-      return <PetitionOpinion petition={petition} />;
+      return <PetitionOpinion theme={theme} petition={petition} />;
     case 'multiple':
-      return <PetitionMultiple petition={petition} />;
+      return <PetitionMultiple theme={theme} petition={petition} />;
     default:
       return (
         <View>
@@ -151,14 +156,15 @@ function renderPetition(petition) {
   }
 }
 
-function PetitionComponentListCard({ navigate, petition }) {
+function PetitionComponentListCard({ navigate, petition, theme }) {
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
+  const styles = getStyles(theme);
 
   return (
     <Card style={styles.card}>
       <Touchable onPress={navigate}>
         <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
-          <View>{renderPetition(petition)}</View>
+          <View>{renderPetition(petition, theme)}</View>
           <TagList type="petition" item={petition} />
           <View style={{ marginBottom: 10, marginLeft: 15 }}>
             <Text style={styles.text}> Fin {moment(petition.duration.end).fromNow()}</Text>
@@ -169,7 +175,7 @@ function PetitionComponentListCard({ navigate, petition }) {
   );
 }
 
-export default PetitionComponentListCard;
+export default withTheme(PetitionComponentListCard);
 
 const petitionPropType = PropTypes.shape({
   _id: PropTypes.string.isRequired,
@@ -199,10 +205,31 @@ const petitionPropType = PropTypes.shape({
 PetitionComponentListCard.propTypes = {
   petition: petitionPropType.isRequired,
   navigate: PropTypes.func.isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
-PetitionOpinion.propTypes = { petition: petitionPropType.isRequired };
-PetitionGoal.propTypes = { petition: petitionPropType.isRequired };
-PetitionSign.propTypes = { petition: petitionPropType.isRequired };
-PetitionGoalStatus.propTypes = { petition: petitionPropType.isRequired };
-PetitionMultiple.propTypes = { petition: petitionPropType.isRequired };
+PetitionOpinion.propTypes = {
+  petition: petitionPropType.isRequired,
+  theme: PropTypes.shape({}).isRequired,
+};
+PetitionGoal.propTypes = {
+  petition: petitionPropType.isRequired,
+  theme: PropTypes.shape({}).isRequired,
+};
+PetitionSign.propTypes = {
+  petition: petitionPropType.isRequired,
+  theme: PropTypes.shape({}).isRequired,
+};
+PetitionGoalStatus.propTypes = {
+  petition: petitionPropType.isRequired,
+  theme: PropTypes.shape({}).isRequired,
+};
+PetitionMultiple.propTypes = {
+  petition: petitionPropType.isRequired,
+  theme: PropTypes.shape({}).isRequired,
+};

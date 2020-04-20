@@ -1,12 +1,13 @@
 import React from 'react';
-import { Text } from 'react-native-paper';
+import { Text, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Markdown from 'react-native-markdown-display';
 import MarkdownIt from 'react-native-markdown-display/src/MarkdownIt';
 
-import { styles } from '../styles/Styles';
+import getStyles from '../styles/Styles';
 
-function Content({ parser, data }) {
+function Content({ parser, data, theme }) {
+  const styles = getStyles(theme);
   if (parser === 'markdown') {
     return (
       <Markdown
@@ -31,6 +32,13 @@ function Content({ parser, data }) {
 Content.propTypes = {
   parser: PropTypes.string.isRequired,
   data: PropTypes.string.isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      primary: PropTypes.string.isRequired,
+      valid: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
-export default Content;
+export default withTheme(Content);
