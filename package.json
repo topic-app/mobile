@@ -82,13 +82,14 @@
             "./src"
           ],
           "alias": {
-            "root": ".",
-            "src": "./src",
+            "@root": ".",
+            "@src": "./src",
             "@components": "./src/components",
             "@assets": "./src/assets",
             "@redux": "./src/redux",
             "@styles": "./src/styles",
-            "@utils": "./src/utils"
+            "@utils": "./src/utils",
+            "@scenes": "./src/scenes"
           },
           "extensions": [
             ".js",
