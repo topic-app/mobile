@@ -8,20 +8,18 @@ import getSettingsStyles from '../styles/Styles';
 
 class SettingsList extends React.Component {
   render() {
-    const { theme } = this.props;
+    const { theme, navigation } = this.props;
     const styles = getStyles(theme);
     const settingsStyles = getSettingsStyles(theme);
 
     return (
       <View style={styles.page}>
         <List.Section>
-          <List.Subheader>Apparence</List.Subheader>
-          <Divider />
           <List.Item
             title="Theme"
             description="Clair"
             left={() => <List.Icon icon="brightness-6" />}
-            onPress={() => console.log('Theme')}
+            onPress={() => navigation.navigate('Theme')}
             style={settingsStyles.listItem}
           />
           <List.Item
@@ -60,6 +58,9 @@ class SettingsList extends React.Component {
 
 SettingsList.propTypes = {
   theme: PropTypes.shape({}).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default withTheme(SettingsList);

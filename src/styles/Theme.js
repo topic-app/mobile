@@ -45,6 +45,7 @@ const darkBase = {
   colors: {
     ...DarkTheme.colors,
     ...common.colors,
+    primary: common.colors.primaryLighter,
     appBar: '#242529',
     tabBackground: '#242529',
     drawerBackground: '#242529',
@@ -63,6 +64,16 @@ const darkBase = {
 };
 
 const themes = {
+  system: {
+    name: 'Determiné par le système',
+    value: 'system',
+  },
+  light: {
+    name: 'Clair',
+    value: 'light',
+    dark: false,
+    ...lightBase,
+  },
   purple: {
     name: 'Violet',
     value: 'purple',
@@ -77,12 +88,6 @@ const themes = {
       drawerContent: darkBase.colors.text,
     },
   },
-  light: {
-    name: 'Clair',
-    value: 'light',
-    dark: false,
-    ...lightBase,
-  },
   dark: {
     name: 'Sombre',
     value: 'dark',
@@ -91,9 +96,4 @@ const themes = {
   },
 };
 
-const theme = themes[selectedTheme];
-const { colors } = theme;
-const isDark = theme.dark === true;
-
-export { theme, colors, isDark };
-export default theme;
+export default themes;

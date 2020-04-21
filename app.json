@@ -7,11 +7,7 @@
     "privacy": "unlisted",
     "version": "1.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ]
+    "platforms": ["ios", "android", "web"]
   },
   "config": {
     "api": {
@@ -19,7 +15,7 @@
       "retryTime": "10"
     },
     "defaults": {
-      "theme": "light"
+      "theme": "system"
     }
   }
 }
