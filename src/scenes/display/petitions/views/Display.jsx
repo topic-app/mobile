@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { Text, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import getStyles from '../../../../styles/Styles';
+import getStyles from '@styles/Styles';
 
 function PetitionDisplay({ route, petitions, theme }) {
   const { id } = route.params;

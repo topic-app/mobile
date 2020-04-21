@@ -1,9 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import AboutList from './views/List';
+import { HeaderConfig } from '@components/Header';
 
-import { HeaderConfig } from '../../../components/Header';
+import AboutList from './views/List';
 
 const Stack = createStackNavigator();
 

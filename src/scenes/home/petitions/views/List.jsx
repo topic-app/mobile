@@ -5,10 +5,10 @@ import { View, Platform, Animated } from 'react-native';
 import { Button, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import PetitionCard from '../components/Card';
+import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
+import getStyles from '@styles/Styles';
 
-import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
-import getStyles from '../../../../styles/Styles';
+import PetitionCard from '../components/Card';
 
 function PetitionList({ navigation, petitions, theme }) {
   const scrollY = new Animated.Value(0);

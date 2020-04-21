@@ -4,10 +4,9 @@ import { View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-import places from '../../../../data/explorerListData.json';
+import places from '@src/data/explorerListData.json';
+import { config } from '@root/app.json';
 import ExplorerMap from './Map';
-
-const tileServerUrl = 'https://maps.topicapp.fr';
 
 const map = {
   minZoom: 4.25,
@@ -22,7 +21,7 @@ function ExplorerList({ navigation, theme }) {
   return (
     <View style={{ flex: 1 }}>
       <ExplorerMap
-        tileServerUrl={`${tileServerUrl}/styles/${dark ? 'dark' : 'light'}/style.json`}
+        tileServerUrl={`${config.maps.url}styles/${dark ? 'dark' : 'light'}/style.json`}
         places={places}
         map={map}
         navigation={navigation}

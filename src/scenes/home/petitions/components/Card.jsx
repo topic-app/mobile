@@ -6,8 +6,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Card, ProgressBar, withTheme } from 'react-native-paper';
 import moment from 'moment';
 
-import TagList from '../../../../components/TagList';
-import getStyles from '../../../../styles/Styles';
+import TagList from '@components/TagList';
+import getStyles from '@styles/Styles';
 
 function PetitionGoalStatus({ petition, theme }) {
   const styles = getStyles(theme);

@@ -7,15 +7,15 @@ Read more here: https://dev.to/emilios1995/dynamic-imports-in-react-native-9k5
 */
 
 const markerImages = {
-  circlePurple: require('../../../../assets/images/explorer/location-circle-purple.png'),
-  circleRed: require('../../../../assets/images/explorer/location-circle-red.png'),
-  circleGreen: require('../../../../assets/images/explorer/location-circle-green.png'),
-  circleGold: require('../../../../assets/images/explorer/location-circle-gold.png'),
-  pinPurple: require('../../../../assets/images/explorer/location-pin-purple.png'),
-  pinRed: require('../../../../assets/images/explorer/location-pin-red.png'),
-  pinGreen: require('../../../../assets/images/explorer/location-pin-green.png'),
-  pinGold: require('../../../../assets/images/explorer/location-pin-gold.png'),
-  secret: require('../../../../assets/images/explorer/easter-egg.png'),
+  circlePurple: require('@assets/images/explorer/location-circle-purple.png'),
+  circleRed: require('@assets/images/explorer/location-circle-red.png'),
+  circleGreen: require('@assets/images/explorer/location-circle-green.png'),
+  circleGold: require('@assets/images/explorer/location-circle-gold.png'),
+  pinPurple: require('@assets/images/explorer/location-pin-purple.png'),
+  pinRed: require('@assets/images/explorer/location-pin-red.png'),
+  pinGreen: require('@assets/images/explorer/location-pin-green.png'),
+  pinGold: require('@assets/images/explorer/location-pin-gold.png'),
+  secret: require('@assets/images/explorer/easter-egg.png'),
 };
 
 const markerColors = {

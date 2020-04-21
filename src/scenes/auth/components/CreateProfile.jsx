@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Platform } from 'react-native';
 import { TextInput, HelperText, Button, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { updateCreationData, updateState } from '../../../redux/actions/account';
+
+import { updateCreationData, updateState } from '@redux/actions/account';
 
 import getAuthStyles from '../styles/Styles';
 

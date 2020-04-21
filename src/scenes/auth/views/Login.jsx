@@ -5,10 +5,9 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import getStyles from '../../../styles/Styles';
+import getStyles from '@styles/Styles';
+import { updateState, login } from '@redux/actions/account';
 import getAuthStyles from '../styles/Styles';
-
-import { updateState, login } from '../../../redux/actions/account';
 
 class AuthLogin extends React.Component {
   constructor(props) {

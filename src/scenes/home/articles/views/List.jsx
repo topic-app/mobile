@@ -4,12 +4,11 @@ import { View, Animated, Platform, ActivityIndicator } from 'react-native';
 import { ProgressBar, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import ArticleCard from '../components/Card';
+import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
+import { updateArticles } from '@redux/actions/articles';
+import getStyles from '@styles/Styles';
 
-// eslint-disable-next-line
-import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
-import { updateArticles } from '../../../../redux/actions/articles';
-import getStyles from '../../../../styles/Styles';
+import ArticleCard from '../components/Card';
 
 function ArticleList({ navigation, articles, state, theme }) {
   React.useEffect(() => {

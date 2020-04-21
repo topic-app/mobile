@@ -1,4 +1,4 @@
-import data from '../../data/eventListData.json';
+import data from '@src/data/eventListData.json';
 
 const initialState = data;
 

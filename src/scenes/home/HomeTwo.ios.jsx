@@ -1,12 +1,12 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { HeaderConfig } from '@components/Header';
+
 import ArticleList from './articles/views/List';
 import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 // import ExplorerList from './explorer/views/List';
-
-import { HeaderConfig } from '../../components/Header';
 
 const Stack = createStackNavigator();
 

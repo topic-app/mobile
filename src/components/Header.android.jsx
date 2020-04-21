@@ -4,7 +4,7 @@ import { StatusBar, View } from 'react-native';
 import { Appbar, Menu, withTheme } from 'react-native-paper';
 import { TransitionPresets } from '@react-navigation/stack';
 
-import getNavigatorStyles from '../styles/NavStyles';
+import getNavigatorStyles from '@styles/NavStyles';
 
 function TranslucentStatusBarUnthemed({ contentThemeName, theme }) {
   const contentTheme = contentThemeName || theme.statusBarContentTheme;

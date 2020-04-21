@@ -1,10 +1,10 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { HeaderConfig } from '@components/Header';
+
 import MyGroupsList from './views/List';
 import MyGroupsEdit from './views/Edit';
-
-import { HeaderConfig } from '../../../components/Header';
 
 const Stack = createStackNavigator();
 

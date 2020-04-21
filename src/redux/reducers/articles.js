@@ -1,5 +1,3 @@
-import data from '../../data/articleListData.json';
-
 const initialState = {
   data: [],
   state: {

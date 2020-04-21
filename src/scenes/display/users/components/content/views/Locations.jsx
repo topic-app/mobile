@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper';
 function UserLocations() {
   return (
     <View>
-      <Text>User's Locations</Text>
+      <Text>User&apos;s Locations</Text>
     </View>
   );
 }

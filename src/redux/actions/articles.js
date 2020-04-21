@@ -1,5 +1,5 @@
+import request from '@utils/request';
 import Store from '../store';
-import request from '../../utils/request';
 
 /**
  * @docs actionCreators

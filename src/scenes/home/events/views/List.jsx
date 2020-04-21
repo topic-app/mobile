@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, withTheme } from 'react-native-paper';
 
-import EventCard from '../components/Card';
+import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
+import getStyles from '@styles/Styles';
 
-import { CustomHeaderBar, TranslucentStatusBar } from '../../../../components/Header';
-import getStyles from '../../../../styles/Styles';
+import EventCard from '../components/Card';
 
 function EventList({ navigation, events, theme }) {
   const scrollY = new Animated.Value(0);

@@ -3,23 +3,7 @@ import { FlatList, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { Chip, Avatar, withTheme } from 'react-native-paper';
 
-import getStyles from '../styles/Styles';
-
-function genTagIcon(type) {
-  if (type === 'tag') {
-    return 'tag';
-  }
-  if (type === 'author') {
-    return 'account';
-  }
-  if (type === 'group') {
-    return 'newspaper';
-  }
-  if (type === 'location') {
-    return 'map-marker';
-  }
-  return '';
-}
+import getStyles from '@styles/Styles';
 
 function genTagData(item, type) {
   // TEMP: if to check for undefineds

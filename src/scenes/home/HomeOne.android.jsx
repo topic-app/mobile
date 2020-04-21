@@ -5,10 +5,9 @@ import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigatio
 import { Drawer, Avatar, Title, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-// eslint-disable-next-line
-import HomeTwoNavigator from './HomeTwo';
+import getNavigatorStyles from '@styles/NavStyles';
 
-import getNavigatorStyles from '../../styles/NavStyles';
+import HomeTwoNavigator from './HomeTwo';
 
 const DrawerNav = createDrawerNavigator();
 

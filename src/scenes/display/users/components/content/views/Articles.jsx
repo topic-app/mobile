@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper';
 function UserArticles() {
   return (
     <View>
-      <Text>Someone's Articles</Text>
+      <Text>Someone&apos;s Articles</Text>
     </View>
   );
 }

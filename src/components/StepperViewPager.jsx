@@ -7,8 +7,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ViewPager from '@react-native-community/viewpager';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { TranslucentStatusBar } from '../components/Header';
-import getStyles from '../styles/Styles';
+import getStyles from '@styles/Styles';
+import { TranslucentStatusBar } from './Header';
 
 const stepperStyles = StyleSheet.create({
   centerContainer: {

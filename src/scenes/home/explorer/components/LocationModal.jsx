@@ -5,11 +5,12 @@ import { View, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button, Divider, Text, withTheme } from 'react-native-paper';
 
+import getStyles from '@styles/Styles';
+import places from '@src/data/explorerDisplayData.json';
+
 import BottomSheet from './BottomSheet';
-import places from '../../../../data/explorerDisplayData.json';
 import getExplorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAssetColor';
-import getStyles from '../../../../styles/Styles';
 
 function genTagDecoration(type) {
   if (type === 'school') {

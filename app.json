@@ -14,6 +14,9 @@
       "url": "https://api.topicapp.fr/v1/",
       "retryTime": "10"
     },
+    "maps": {
+      "url": "https://maps.topicapp.fr/"
+    },
     "defaults": {
       "theme": "system"
     }

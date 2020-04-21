@@ -4,10 +4,10 @@ import { Text, ProgressBar, withTheme } from 'react-native-paper';
 import { View, ImageBackground, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
-import Content from '../../../../components/Content';
-import TagList from '../../../../components/TagList';
-import getStyles from '../../../../styles/Styles';
-import { fetchArticle } from '../../../../redux/actions/articles';
+import Content from '@components/Content';
+import TagList from '@components/TagList';
+import getStyles from '@styles/Styles';
+import { fetchArticle } from '@redux/actions/articles';
 
 function ArticleDisplay({ route, articles, state, theme }) {
   const { id } = route.params;

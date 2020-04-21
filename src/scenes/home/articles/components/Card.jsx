@@ -4,8 +4,8 @@ import { Platform, View, Image, TouchableNativeFeedback, TouchableOpacity } from
 import { Card, Paragraph, Text, withTheme } from 'react-native-paper';
 import moment from 'moment';
 
-import TagList from '../../../../components/TagList';
-import getStyles from '../../../../styles/Styles';
+import TagList from '@components/TagList';
+import getStyles from '@styles/Styles';
 
 function ActuComponentListCard({ article, navigate, theme }) {
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;

@@ -4,7 +4,7 @@ import { Button, Title, Subheading, Card, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { updateCreationData } from '../../../redux/actions/account';
+import { updateCreationData } from '@redux/actions/account';
 
 import getAuthStyles from '../styles/Styles';
 

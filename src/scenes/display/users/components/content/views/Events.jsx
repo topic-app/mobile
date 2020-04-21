@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper';
 function UserEvents() {
   return (
     <View>
-      <Text>Someone's Events</Text>
+      <Text>Someone&apos;s Events</Text>
     </View>
   );
 }

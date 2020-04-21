@@ -2,15 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import StepperViewPager from '../../../components/StepperViewPager';
+import { register, updateState } from '@redux/actions/account';
+import StepperViewPager from '@components/StepperViewPager';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageSchool from '../components/CreateSchool';
 import AuthCreatePagePrivacy from '../components/CreatePrivacy';
 import AuthCreatePageProfile from '../components/CreateProfile';
 import AuthCreatePageLegal from '../components/CreateLegal';
-
-import { register, updateState } from '../../../redux/actions/account';
 
 function AuthCreate({ navigation, reqState, creationData }) {
   const viewPagerRef = React.useRef(null);

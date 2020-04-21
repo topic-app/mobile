@@ -5,8 +5,8 @@ import { Text, Avatar, Card, IconButton, withTheme } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/fr';
 
-import TagList from '../../../../components/TagList';
-import getStyles from '../../../../styles/Styles';
+import TagList from '@components/TagList';
+import getStyles from '@styles/Styles';
 import getEventStyles from '../styles/Styles';
 
 function buildDateString(start, end) {

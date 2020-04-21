@@ -5,8 +5,8 @@ import { Text, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import TagList from '../../../../components/TagList';
-import getStyles from '../../../../styles/Styles';
+import TagList from '@components/TagList';
+import getStyles from '@styles/Styles';
 
 function EventDisplay({ route, events, theme }) {
   const { id } = route.params;

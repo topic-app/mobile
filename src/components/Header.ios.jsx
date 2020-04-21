@@ -4,8 +4,8 @@ import { StatusBar, View, TouchableOpacity } from 'react-native';
 import { Text, withTheme } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import getNavigatorStyles from '../styles/NavStyles';
-import getStyles from '../styles/Styles';
+import getNavigatorStyles from '@styles/NavStyles';
+import getStyles from '@styles/Styles';
 
 function TranslucentStatusBarUnthemed({ contentThemeName, theme }) {
   const contentTheme = contentThemeName || theme.statusBarContentTheme;

@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper';
 function UserPetitions() {
   return (
     <View>
-      <Text>Someone's Petitions</Text>
+      <Text>Someone&apos;s Petitions</Text>
     </View>
   );
 }

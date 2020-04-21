@@ -4,12 +4,12 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import { withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
+import getNavigatorStyles from '@styles/NavStyles';
+
 import ArticleList from './articles/views/List';
 import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
-
-import getNavigatorStyles from '../../styles/NavStyles';
 
 const Tab = createMaterialBottomTabNavigator();
 

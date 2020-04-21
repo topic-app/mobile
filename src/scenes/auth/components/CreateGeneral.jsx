@@ -3,9 +3,8 @@ import { View, Platform } from 'react-native';
 import { TextInput, HelperText, Button, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-import { updateCreationData, updateState } from '../../../redux/actions/account';
-import request from '../../../utils/request';
-
+import { updateCreationData, updateState } from '@redux/actions/account';
+import request from '@utils/request';
 import getAuthStyles from '../styles/Styles';
 
 class AuthCreatePageGeneral extends React.Component {

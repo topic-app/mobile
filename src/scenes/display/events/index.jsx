@@ -2,10 +2,9 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { HeaderConfig } from '@components/Header';
 import EventDisplay from './views/Display';
 import EventProgram from './views/Program';
-
-import { HeaderConfig } from '../../../components/Header';
 
 const Stack = createStackNavigator();
 

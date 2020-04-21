@@ -4,13 +4,12 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import { Text, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
+import getNavigatorStyles from '@styles/NavStyles';
+
 import DisplayStackNavigator from './display/index';
 import MoreStackNavigator from './more/index';
 import SearchStackNavigator from './search/index';
-
 import HomeOneNavigator from './home/HomeOne';
-
-import getNavigatorStyles from '../styles/NavStyles';
 
 const Tab = createBottomTabNavigator();
 

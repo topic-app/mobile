@@ -7,16 +7,16 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import RNLocation from 'react-native-location';
 
+import getStyles from '@styles/Styles';
+import { TranslucentStatusBar } from '@components/Header';
+
 import LocationModal from '../components/LocationModal';
 import { getImageName, markerImages } from '../utils/getAssetColor';
-import { TranslucentStatusBar } from '../../../../components/Header';
-
 import getExplorerStyles from '../styles/Styles';
-import getStyles from '../../../../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 RNLocation.configure({
-  androidProvider: 'standard',
+  androidProvider: 'standard', // Don't pass by Google Location Services
 });
 
 class ExplorerMap extends React.Component {

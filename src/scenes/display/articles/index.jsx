@@ -2,8 +2,8 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { HeaderConfig } from '@components/Header';
 import ArticleDisplay from './views/Display';
-import { HeaderConfig } from '../../../components/Header';
 
 const Stack = createStackNavigator();
 
