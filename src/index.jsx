@@ -1,9 +1,9 @@
 import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
-import MainNavigator from '@scenes/index';
-import AuthStackNavigator from '@scenes/auth/index';
-import LandingStackNavigator from '@scenes/landing/index';
+import MainNavigator from './scenes/index';
+import AuthStackNavigator from './scenes/auth/index';
+import LandingStackNavigator from './scenes/landing/index';
 
 const Stack = createStackNavigator();
 
