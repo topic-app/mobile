@@ -1,3 +1,4 @@
+import { config } from '../../../app.json';
 /**
  * @docs reducers
  * Reducer pour les preferences
@@ -9,13 +10,15 @@
  * @returns Nouveau state
  */
 
-function articleReducer(state = {}, action) {
+const initialState = config.defaults;
+
+function articleReducer(state = initialState, action) {
   const prefs = state;
   switch (action.type) {
     case 'SET_PREFS':
-      return {...prefs, ...action.data.prefs};
+      return { ...prefs, ...action.data };
     case 'CLEAR_PREF':
-      delete prefs[action.data.pref]
+      delete prefs[action.data];
       return prefs;
     case 'CLEAR_ALL_PREFS':
       return {};

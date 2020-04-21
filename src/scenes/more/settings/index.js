@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import SettingsList from './views/List';
-import SettingsThemeCreator from './views/ThemeCreator';
+import SettingsTheme from './views/Theme';
 
 import { HeaderConfig } from '../../../components/Header';
 
@@ -20,7 +20,15 @@ function SettingsStackNavigator() {
           overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         }}
       />
-      <Stack.Screen name="ThemeCreator" component={SettingsThemeCreator} />
+      <Stack.Screen
+        name="Theme"
+        component={SettingsTheme}
+        options={{
+          ...HeaderConfig,
+          title: 'Thème',
+          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+        }}
+      />
     </Stack.Navigator>
   );
 }
