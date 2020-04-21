@@ -1,5 +1,5 @@
 {
-  "name": "@root",
+  "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -49,12 +49,14 @@
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^25.1.0",
+    "babel-plugin-module-resolver": "^4.0.0",
     "babel-preset-airbnb": "^4.4.0",
     "babel-preset-react-native": "^4.0.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-import": "^2.20.1",
+    "eslint-import-resolver-babel-module": "^5.1.2",
+    "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
@@ -68,5 +70,37 @@
   "jest": {
     "preset": "react-native"
   },
-  "private": true
+  "babel": {
+    "presets": [
+      "airbnb"
+    ],
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "root": [
+            "./src"
+          ],
+          "alias": {
+            "root": ".",
+            "src": "./src",
+            "@components": "./src/components",
+            "@assets": "./src/assets",
+            "@redux": "./src/redux",
+            "@styles": "./src/styles",
+            "@utils": "./src/utils"
+          },
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".android.js",
+            ".android.jsx",
+            ".ios.js",
+            ".ios.jsx",
+            ".native.js"
+          ]
+        }
+      ]
+    ]
+  }
 }

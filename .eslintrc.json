@@ -3,6 +3,7 @@
   "extends": ["airbnb", "prettier", "prettier/react"],
   "plugins": ["react", "jsx-a11y", "import", "prettier"],
   "rules": {
+    "import/no-extraneous-dependencies": ["error", { "packageDir": "." }],
     "linebreak-style": ["off"],
     "no-undef": ["error"],
     "react/sort-comp": ["off"],
@@ -12,18 +13,7 @@
   },
   "settings": {
     "import/resolver": {
-      "node": {
-        "extensions": [
-          ".js",
-          ".android.js",
-          ".ios.js",
-          ".web.js",
-          ".jsx",
-          ".android.jsx",
-          ".ios.jsx",
-          ".web.jsx"
-        ]
-      }
+      "babel-module": {}
     }
   }
 }
