@@ -91,7 +91,11 @@ class CustomHeaderBarUnthemed extends React.Component {
           visible={menuVisible}
           onDismiss={this.closeMenu}
           anchor={
-            <Appbar.Action icon="dots-vertical" onPress={this.openMenu} color={colors.text} />
+            <Appbar.Action
+              icon="dots-vertical"
+              onPress={this.openMenu}
+              color={colors.drawerContent}
+            />
           }
           statusBarHeight={StatusBar.currentHeight}
         >
@@ -178,6 +182,7 @@ CustomHeaderBarUnthemed.propTypes = {
       primary: PropTypes.string.isRequired,
       valid: PropTypes.string.isRequired,
       text: PropTypes.string.isRequired,
+      drawerContent: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };
