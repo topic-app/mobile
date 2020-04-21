@@ -50,7 +50,6 @@
     "babel-eslint": "^10.0.3",
     "babel-jest": "^25.1.0",
     "babel-plugin-module-resolver": "^4.0.0",
-    "babel-preset-airbnb": "^4.4.0",
     "babel-preset-react-native": "^4.0.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
@@ -72,7 +71,7 @@
   },
   "babel": {
     "presets": [
-      "airbnb"
+      "module:metro-react-native-babel-preset"
     ],
     "plugins": [
       [
