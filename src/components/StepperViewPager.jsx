@@ -1,11 +1,20 @@
 import React from 'react';
-import { View, ScrollView, Platform, TouchableOpacity, StyleSheet } from 'react-native';
-import { Text, Button, ProgressBar, IconButton, withTheme } from 'react-native-paper';
+import {
+  View,
+  ScrollView,
+  Platform,
+  TouchableOpacity,
+  StyleSheet,
+  BackHandler,
+} from 'react-native';
+import { Text, Button, ProgressBar, IconButton, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ViewPager from '@react-native-community/viewpager';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+import shortid from 'shortid';
 
 import getStyles from '@styles/Styles';
 import { TranslucentStatusBar } from './Header';
@@ -95,189 +104,206 @@ function PlatformBackButton({ onPress, theme }) {
   );
 }
 
-class StepperViewPager extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentPage: 0,
-    };
-    const { viewPagerRef } = props;
+function StepperViewPager({
+  navigation,
+  reqState,
+  pages,
+  success,
+  failure,
+  viewPagerRef: viewPagerParentRef,
+}) {
+  // NOTE: There is tons of room for performance optimization here with useCallback, React.memo, etc.
+  const [currentPage, setCurrentPage] = React.useState(0);
+  const viewPagerRef = viewPagerParentRef ?? React.createRef();
+  const scrollViewRef = React.createRef();
 
-    this.viewPagerRef = viewPagerRef ?? React.createRef();
-    this.scrollViewRef = React.createRef();
+  const onStepPress = (position) => {
+    if (position < currentPage) {
+      setCurrentPage(position);
+      viewPagerRef.current.setPage(position);
+    }
+  };
+
+  const moveForward = () => {
+    const newPage = currentPage + 1;
+    setCurrentPage(newPage);
+    viewPagerRef.current.setPage(newPage);
+  };
+
+  const skipForward = () => {
+    const newPage = currentPage + 2;
+    setCurrentPage(newPage);
+    viewPagerRef.current.setPage(newPage);
+  };
+
+  const moveBackward = () => {
+    const newPage = currentPage - 1;
+    setCurrentPage(newPage);
+    viewPagerRef.current.setPage(newPage);
+  };
+
+  // Handle back button on Android
+  if (Platform.OS === 'android') {
+    useFocusEffect(
+      React.useCallback(() => {
+        const onBackPress = () => {
+          if (currentPage === 0 || reqState.success !== null) {
+            navigation.goBack();
+            return true; // true means we handled the back request and react-navigation leaves us alone
+          }
+          moveBackward();
+          return true;
+        };
+
+        BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+        return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      }, [currentPage]),
+    );
   }
 
-  onStepPress = (position) => {
-    const { currentPage } = this.state;
-    if (position < currentPage) {
-      this.setState({ currentPage: position });
-      this.viewPagerRef.current.setPage(position);
-    }
-  };
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
 
-  moveForward = () => {
-    const { currentPage } = this.state;
-    this.setState({ currentPage: currentPage + 1 });
-    this.viewPagerRef.current.setPage(currentPage + 1);
-  };
-
-  skipForward = () => {
-    const { currentPage } = this.state;
-    this.setState({ currentPage: currentPage + 2 });
-    this.viewPagerRef.current.setPage(currentPage + 2);
-  };
-
-  moveBackward = () => {
-    const { currentPage } = this.state;
-    this.setState({ currentPage: currentPage - 1 });
-    this.viewPagerRef.current.setPage(currentPage - 1);
-  };
-
-  render() {
-    const { navigation, reqState, pages, success, failure, theme } = this.props;
-    const { currentPage } = this.state;
-
-    const styles = getStyles(theme);
-    const { colors } = theme;
-
-    if (reqState.success && success) {
-      return (
-        <View style={styles.page}>
-          <View style={stepperStyles.stepIndicatorContainer}>
-            <View style={stepperStyles.centerContainer}>
-              <Icon size={50} color={colors.valid} name={success.icon} />
-              <Text style={stepperStyles.title}>{success.title}</Text>
-              <Text>{success.description}</Text>
-            </View>
-          </View>
-          <View style={stepperStyles.formContainer}>
-            <View style={stepperStyles.buttonContainer}>
-              {success.actions.map((action, key) => (
-                <Button
-                  mode={
-                    Platform.OS !== 'ios' && key === success.actions.length - 1
-                      ? 'contained'
-                      : 'outlined'
-                  }
-                  uppercase={Platform.OS !== 'ios'}
-                  onPress={action.onPress}
-                  style={{ flex: 1 }}
-                >
-                  {action.label}
-                </Button>
-              ))}
-            </View>
-          </View>
-        </View>
-      );
-    }
-
-    if (reqState.success === false) {
-      return (
-        <View style={styles.page}>
-          <View style={stepperStyles.stepIndicatorContainer}>
-            <View style={stepperStyles.centerContainer}>
-              <Icon size={50} color={colors.error} name={failure.icon} />
-              <Text style={stepperStyles.title}>{failure.title}</Text>
-              <Text>{failure.description}</Text>
-              <Text>
-                Erreur:{' '}
-                {reqState.error.message ||
-                  reqState.error.value ||
-                  reqState.error.extraMessage ||
-                  'Inconnu'}
-              </Text>
-            </View>
-          </View>
-          <View style={stepperStyles.formContainer}>
-            <View style={stepperStyles.buttonContainer}>
-              {failure.actions.map((action, key) => (
-                <Button
-                  mode={
-                    Platform.OS !== 'ios' && key === success.actions.length - 1
-                      ? 'contained'
-                      : 'outlined'
-                  }
-                  uppercase={Platform.OS !== 'ios'}
-                  onPress={action.onPress}
-                  style={{ flex: 1 }}
-                >
-                  {action.label}
-                </Button>
-              ))}
-            </View>
-          </View>
-        </View>
-      );
-    }
-
-    const pageScrollToBottom = pages.map((item) => item.scrollToBottom);
-    const pageLabels = pages.map((item) => item.label);
-    const pageIcons = pages.map((item) => item.icon);
-    const pageHeights = pages.map((item) => item.height);
-    const pageComponents = pages.map(({ component: Component, params }, key) => {
-      return (
-        // eslint-disable-next-line react/no-array-index-key
-        <View key={key}>
-          <Component
-            forward={this.moveForward}
-            backward={this.moveBackward}
-            skip={this.skipForward}
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            {...(params && params)}
-          />
-        </View>
-      );
-    });
-    const stepIndicatorStyles = getStepIndicatorStyles(theme);
-
+  if (reqState.success && success) {
     return (
       <View style={styles.page}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <TranslucentStatusBar />
-          {reqState.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
-          <ScrollView
-            ref={this.scrollViewRef}
-            onLayout={
-              pageScrollToBottom[currentPage] &&
-              (() => this.scrollViewRef.current.scrollToEnd({ animated: true }))
-            }
-          >
-            <PlatformBackButton onPress={navigation.goBack} theme={theme} />
-            <View style={stepperStyles.stepIndicatorContainer}>
-              <View style={stepperStyles.centerContainer}>
-                <Text style={stepperStyles.title}>Créer un Compte</Text>
-              </View>
-              <StepIndicator
-                stepCount={pageLabels.length}
-                currentPosition={currentPage}
-                labels={pageLabels}
-                onPress={this.onStepPress}
-                customStyles={stepIndicatorStyles}
-                renderStepIndicator={(params) => (
-                  <Icon
-                    color={iconColor(params.stepStatus, theme)}
-                    size={15}
-                    name={pageIcons[params.position]}
-                  />
-                )}
-              />
-            </View>
-            <ViewPager
-              style={{ flexGrow: 1, height: pageHeights[currentPage] }}
-              ref={this.viewPagerRef}
-              scrollEnabled={false}
-            >
-              {pageComponents}
-            </ViewPager>
-          </ScrollView>
-        </SafeAreaView>
+        <View style={stepperStyles.stepIndicatorContainer}>
+          <View style={stepperStyles.centerContainer}>
+            <Icon size={50} color={colors.valid} name={success.icon} />
+            <Text style={stepperStyles.title}>{success.title}</Text>
+            <Text>{success.description}</Text>
+          </View>
+        </View>
+        <View style={stepperStyles.formContainer}>
+          <View style={stepperStyles.buttonContainer}>
+            {success.actions.map((action, key) => (
+              <Button
+                key={shortid()}
+                mode={
+                  Platform.OS !== 'ios' && key === success.actions.length - 1
+                    ? 'contained'
+                    : 'outlined'
+                }
+                uppercase={Platform.OS !== 'ios'}
+                onPress={action.onPress}
+                style={{ flex: 1 }}
+              >
+                {action.label}
+              </Button>
+            ))}
+          </View>
+        </View>
       </View>
     );
   }
+
+  if (reqState.success === false) {
+    return (
+      <View style={styles.page}>
+        <View style={stepperStyles.stepIndicatorContainer}>
+          <View style={stepperStyles.centerContainer}>
+            <Icon size={50} color={colors.error} name={failure.icon} />
+            <Text style={stepperStyles.title}>{failure.title}</Text>
+            <Text>{failure.description}</Text>
+            <Text>
+              Erreur:{' '}
+              {reqState.error.message ||
+                reqState.error.value ||
+                reqState.error.extraMessage ||
+                'Inconnu'}
+            </Text>
+          </View>
+        </View>
+        <View style={stepperStyles.formContainer}>
+          <View style={stepperStyles.buttonContainer}>
+            {failure.actions.map((action, key) => (
+              <Button
+                key={shortid()}
+                mode={
+                  Platform.OS !== 'ios' && key === success.actions.length - 1
+                    ? 'contained'
+                    : 'outlined'
+                }
+                uppercase={Platform.OS !== 'ios'}
+                onPress={action.onPress}
+                style={{ flex: 1 }}
+              >
+                {action.label}
+              </Button>
+            ))}
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  const pageScrollToBottom = pages.map((item) => item.scrollToBottom);
+  const pageLabels = pages.map((item) => item.label);
+  const pageIcons = pages.map((item) => item.icon);
+  const pageHeights = pages.map((item) => item.height);
+  const pageComponents = pages.map(({ component: Component, params }) => {
+    return (
+      <View key={shortid()}>
+        <Component
+          forward={moveForward}
+          backward={moveBackward}
+          skip={skipForward}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...(params || {})}
+        />
+      </View>
+    );
+  });
+  const stepIndicatorStyles = getStepIndicatorStyles(theme);
+
+  return (
+    <View style={styles.page}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <TranslucentStatusBar />
+        {reqState.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
+        <ScrollView
+          ref={scrollViewRef}
+          onLayout={
+            pageScrollToBottom[currentPage] &&
+            (() => scrollViewRef.current.scrollToEnd({ animated: true }))
+          }
+        >
+          <PlatformBackButton onPress={navigation.goBack} theme={theme} />
+          <View style={stepperStyles.stepIndicatorContainer}>
+            <View style={stepperStyles.centerContainer}>
+              <Text style={stepperStyles.title}>Créer un Compte</Text>
+            </View>
+            <StepIndicator
+              stepCount={pageLabels.length}
+              currentPosition={currentPage}
+              labels={pageLabels}
+              onPress={onStepPress}
+              customStyles={stepIndicatorStyles}
+              renderStepIndicator={(params) => (
+                <Icon
+                  color={iconColor(params.stepStatus, theme)}
+                  size={15}
+                  name={pageIcons[params.position]}
+                />
+              )}
+            />
+          </View>
+          <ViewPager
+            style={{ flexGrow: 1, height: pageHeights[currentPage] }}
+            ref={viewPagerRef}
+            scrollEnabled={false}
+          >
+            {pageComponents}
+          </ViewPager>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
+  );
 }
 
-export default withTheme(StepperViewPager);
+export default StepperViewPager;
 
 StepperViewPager.propTypes = {
   navigation: PropTypes.shape({
@@ -298,7 +324,7 @@ StepperViewPager.propTypes = {
     PropTypes.shape({
       icon: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+      component: PropTypes.elementType.isRequired,
       height: PropTypes.number.isRequired,
       scrollToBottom: PropTypes.bool,
     }).isRequired,
@@ -325,14 +351,6 @@ StepperViewPager.propTypes = {
       }).isRequired,
     ),
   }),
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      valid: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-      error: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
 
 StepperViewPager.defaultProps = {
@@ -350,8 +368,6 @@ PlatformBackButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   theme: PropTypes.shape({
     colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      valid: PropTypes.string.isRequired,
       text: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
