@@ -4,7 +4,7 @@
     "title": "Fête de la Science",
     "duration": {
       "start": "2020-03-30T18:25:43.511Z",
-      "end": "2020-03-30T19:25:43.511Z"
+      "end": "2020-04-01T19:25:43.511Z"
     },
     "location": {
       "global": false,
@@ -52,12 +52,32 @@
     ],
     "program": [
       {
-        "time": "de 8h00 à 12h00",
-        "subject": "decouverte des techniques Anciennes"
+        "duration": {
+          "start": "2020-03-30T18:25:43.511Z",
+          "end": "2020-03-30T18:55:43.511Z"
+        },
+        "title": "decouverte des techniques Anciennes"
       },
       {
-        "time": "de 14h00 à 17h30",
-        "subject": "decouverte des techniques Modernes"
+        "duration": {
+          "start": "2020-03-30T18:55:43.511Z",
+          "end": "2020-03-30T19:25:43.511Z"
+        },
+        "title": "decouverte des techniques Modernes"
+      },
+      {
+        "duration": {
+          "start": "2020-03-31T18:25:43.511Z",
+          "end": "2020-03-31T18:55:43.511Z"
+        },
+        "title": "decouverte des Technique Future"
+      },
+      {
+        "duration": {
+          "start": "2020-03-31T18:25:43.511Z",
+          "end": "2020-04-01T18:55:43.511Z"
+        },
+        "title": "decouverte de Technique Fictive"
       }
     ],
     "contact": {
@@ -120,12 +140,18 @@
     ],
     "program": [
       {
-        "time": "de 8h00 à 12h00",
-        "subject": "decouverte des techniques Anciennes"
+        "duration": {
+          "start": "2020-03-30T18:25:43.511Z",
+          "end": "2020-03-30T18:55:43.511Z"
+        },
+        "title": "decouverte des techniques Anciennes"
       },
       {
-        "time": "de 14h00 à 17h30",
-        "subject": "decouverte des techniques Modernes"
+        "duration": {
+          "start": "2020-03-30T18:55:43.511Z",
+          "end": "2020-03-30T19:25:43.511Z"
+        },
+        "title": "decouverte des techniques Modernes"
       }
     ],
     "contact": {
@@ -188,12 +214,18 @@
     ],
     "program": [
       {
-        "time": "de 8h00 à 12h00",
-        "subject": "decouverte des techniques Anciennes"
+        "duration": {
+          "start": "2020-03-30T18:25:43.511Z",
+          "end": "2020-03-30T18:55:43.511Z"
+        },
+        "title": "decouverte des techniques Anciennes"
       },
       {
-        "time": "de 14h00 à 17h30",
-        "subject": "decouverte des techniques Modernes"
+        "duration": {
+          "start": "2020-03-30T18:55:43.511Z",
+          "end": "2020-03-30T19:25:43.511Z"
+        },
+        "title": "decouverte des techniques Modernes"
       }
     ],
     "contact": {
@@ -256,16 +288,18 @@
     ],
     "program": [
       {
-        "time": "de 8h00 à 12h00",
-        "subject": "on nourrit les pigeons"
+        "duration": {
+          "start": "2020-03-30T18:25:43.511Z",
+          "end": "2020-03-30T18:55:43.511Z"
+        },
+        "title": "decouverte des techniques Anciennes"
       },
       {
-        "time": "de 14h00 à 17h30",
-        "subject": "on mange"
-      },
-      {
-        "time": "de 17h30 à 18h45",
-        "subject": "on mange les pigeons"
+        "duration": {
+          "start": "2020-03-30T18:55:43.511Z",
+          "end": "2020-03-30T19:25:43.511Z"
+        },
+        "title": "decouverte des techniques Modernes"
       }
     ],
     "contact": {
