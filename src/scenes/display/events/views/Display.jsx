@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, ScrollView } from 'react-native';
-import { Text, withTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
 import TagList from '@components/TagList';
 import getStyles from '@styles/Styles';
+import EventDisplayProgram from './Program';
 
-function EventDisplay({ route, events, theme }) {
+function EventDisplay({ route, events }) {
   const { id } = route.params;
   const event = events.find((t) => t._id === id);
   const { start, end } = event.duration;
 
-  const styles = getStyles(theme);
+  const styles = getStyles(useTheme());
 
   return (
     <View style={styles.page}>
@@ -25,12 +26,14 @@ function EventDisplay({ route, events, theme }) {
             du {moment(start).format('DD/MM/YYYY')} aux {moment(end).format('DD/MM/YYYY')}
           </Text>
         </View>
+
         <View>
           <TagList type="event" item={event} />
         </View>
         <View style={styles.contentContainer}>
           <Text>{event.description}</Text>
         </View>
+        <EventDisplayProgram program={event.program} />
       </ScrollView>
     </View>
   );
@@ -41,7 +44,7 @@ const mapStateToProps = (state) => {
   return { events };
 };
 
-export default connect(mapStateToProps)(withTheme(EventDisplay));
+export default connect(mapStateToProps)(EventDisplay);
 
 EventDisplay.propTypes = {
   route: PropTypes.shape({
@@ -52,12 +55,11 @@ EventDisplay.propTypes = {
   events: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
-      thumbnailUrl: PropTypes.string,
-      description: PropTypes.string,
+      thumbnailUrl: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
       group: PropTypes.shape({
-        displayName: PropTypes.string,
-      }),
+        displayName: PropTypes.string.isRequired,
+      }).isRequired,
     }).isRequired,
   ).isRequired,
-  theme: PropTypes.shape({}).isRequired,
 };
