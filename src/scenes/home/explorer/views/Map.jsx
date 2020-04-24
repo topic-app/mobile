@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Linking, StatusBar, Platform } from 'react-native';
-import { Text, FAB, IconButton, withTheme } from 'react-native-paper';
+import { View, Linking, Platform } from 'react-native';
+import { useSafeArea } from 'react-native-safe-area-context';
+import { Text, FAB, IconButton, useTheme } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -19,23 +20,19 @@ RNLocation.configure({
   androidProvider: 'standard', // Don't pass by Google Location Services
 });
 
-class ExplorerMap extends React.Component {
-  camera = React.createRef();
+function ExplorerMap({ places, map, tileServerUrl, navigation }) {
+  const cameraRef = React.createRef();
 
-  constructor(props) {
-    super(props);
-    this.onMarkerPress = this.onMarkerPress.bind(this);
-    this.state = {
-      data: {
-        id: '',
-        type: '',
-        name: '',
-      },
-      isModalVisible: false,
-      userLocation: false,
-      fabVisible: false,
-    };
+  const [data, setData] = React.useState({ id: null, type: null, name: null });
+  const [isModalVisible, setModalVisible] = React.useState(false);
+  const [userLocation, setUserLocation] = React.useState(false);
+  const [fabVisible, setFabVisible] = React.useState(false);
 
+  const theme = useTheme();
+  const { colors } = theme;
+  const explorerStyles = getExplorerStyles(theme);
+
+  React.useEffect(() => {
     // Check if Location is requestable
     // If it is, then show the FAB to go to location
     check(
@@ -46,11 +43,11 @@ class ExplorerMap extends React.Component {
       .then((result) => {
         switch (result) {
           case RESULTS.GRANTED: // Location granted
-            this.setState({ fabVisible: true });
-            this.setState({ userLocation: true });
+            setFabVisible(true);
+            setUserLocation(true);
             break;
           case RESULTS.DENIED: // Location not yet requested / can still ask
-            this.setState({ fabVisible: true });
+            setFabVisible(true);
             break;
           default:
             console.warn('Location unavailable / blocked');
@@ -59,23 +56,21 @@ class ExplorerMap extends React.Component {
       .catch((error) => {
         console.error('Error while checking location\n', error);
       });
-  }
+  }, []);
 
-  onMarkerPress({ features }) {
+  const onMarkerPress = ({ features }) => {
     const feature = features[0];
     const { coordinates } = feature.geometry;
-    this.camera.current.moveTo(coordinates, 100);
-    this.setState({
-      data: {
-        id: feature.id,
-        type: feature.properties.type,
-        name: feature.properties.name,
-      },
-      isModalVisible: true,
+    cameraRef.current.moveTo(coordinates, 100);
+    setData({
+      id: feature.id,
+      type: feature.properties.type,
+      name: feature.properties.name,
     });
-  }
+    setModalVisible(true);
+  };
 
-  requestUserLocation = () => {
+  const requestUserLocation = () => {
     request(
       Platform.OS === 'ios'
         ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
@@ -83,17 +78,17 @@ class ExplorerMap extends React.Component {
     )
       .then((result) => {
         if (result === RESULTS.GRANTED) {
-          this.setState({ userLocation: true });
+          setUserLocation(true);
           RNLocation.getLatestLocation({ timeout: 60000 }).then((location) => {
             const { longitude, latitude } = location;
-            this.camera.current.setCamera({
+            cameraRef.current.setCamera({
               centerCoordinate: [longitude, latitude],
               zoomLevel: 11,
               animationDuration: 700,
             });
           });
         } else {
-          this.setState({ fabVisible: false });
+          setFabVisible(false);
         }
       })
       .catch((error) => {
@@ -101,162 +96,161 @@ class ExplorerMap extends React.Component {
       });
   };
 
-  hideModal = () => {
-    this.setState({ isModalVisible: false });
+  const featureCollection = {
+    type: 'FeatureCollection',
+    features: [],
   };
+  let secret = {};
+  places.forEach((place) => {
+    if (place.type !== 'secret') {
+      featureCollection.features.push({
+        type: 'Feature',
+        id: place._id,
+        properties: {
+          name: place.name,
+          type: place.type,
+          pinIcon: getImageName('pin', place.type),
+          circleIcon: getImageName('circle', place.type),
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [place.position.lng, place.position.lat],
+        },
+      });
+    } else {
+      secret = {
+        type: 'Feature',
+        id: place._id,
+        properties: {
+          name: place.name,
+          type: place.type,
+          icon: getImageName('secret'),
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [7.0432442, 43.6193543], // TODO: Don't manually code this
+        },
+      };
+    }
+  });
 
-  render() {
-    const featureCollection = {
-      type: 'FeatureCollection',
-      features: [],
-    };
+  const insets = useSafeArea();
 
-    let secret = {};
-    const { places, theme } = this.props;
-    const { colors } = theme;
-    const explorerStyles = getExplorerStyles(theme);
-    places.forEach((place) => {
-      if (place.type !== 'secret') {
-        featureCollection.features.push({
-          type: 'Feature',
-          id: place._id,
-          properties: {
-            name: place.name,
-            type: place.type,
-            pinIcon: getImageName('pin', place.type),
-            circleIcon: getImageName('circle', place.type),
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [place.position.lng, place.position.lat],
-          },
-        });
-      } else {
-        secret = {
-          type: 'Feature',
-          id: place._id,
-          properties: {
-            name: place.name,
-            type: place.type,
-            icon: getImageName('secret'),
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [7.0432442, 43.6193543],
-          },
-        };
-      }
-    });
+  return (
+    <View
+      style={{
+        flex: 1,
+        marginBottom:
+          Platform.OS === 'ios'
+            ? insets.bottom + 50
+            : 0 /* 50 is the height of the tabBar on iOS */,
+      }}
+    >
+      <MapboxGL.MapView
+        style={{ flex: 1 }}
+        onPress={() => setModalVisible(false)}
+        logoEnabled={false}
+        attributionEnabled={false}
+        pitchEnabled={false}
+        showUserLocation
+        styleURL={tileServerUrl}
+        compassViewMargins={{
+          x: 10,
+          y: insets.top * 1.5 + 10,
+        }}
+      >
+        <MapboxGL.Camera
+          ref={cameraRef}
+          maxBounds={map.bounds}
+          minZoomLevel={map.minZoom}
+          maxZoomLevel={map.maxZoom}
+          defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
+        />
+        <MapboxGL.Images images={markerImages} />
+        <MapboxGL.ShapeSource
+          id="markerShapeSource"
+          shape={featureCollection}
+          onPress={onMarkerPress}
+        >
+          <MapboxGL.SymbolLayer
+            id="1"
+            maxZoomLevel={9}
+            style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.5 }}
+          />
+          <MapboxGL.SymbolLayer
+            id="2"
+            minZoomLevel={9}
+            style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
+          />
+        </MapboxGL.ShapeSource>
+        <MapboxGL.ShapeSource id="secretShapeSource" shape={secret} onPress={onMarkerPress}>
+          <MapboxGL.SymbolLayer
+            id="3"
+            minZoomLevel={19}
+            style={{ iconImage: ['get', 'icon'], iconSize: 1 }}
+          />
+        </MapboxGL.ShapeSource>
+        <MapboxGL.UserLocation visible={userLocation} animated />
+      </MapboxGL.MapView>
 
-    const { map, tileServerUrl, navigation } = this.props;
-    const { data, isModalVisible, userLocation, fabVisible } = this.state;
-
-    return (
-      <View style={{ flex: 1 }}>
-        <MapboxGL.MapView
-          style={{ flex: 1 }}
-          onPress={this.hideModal}
-          logoEnabled={false}
-          attributionEnabled={false}
-          pitchEnabled={false}
-          showUserLocation
-          styleURL={tileServerUrl}
-          compassViewMargins={{
-            x: 10,
-            y: StatusBar.currentHeight * 1.5 + 10,
+      {Platform.OS !== 'ios' ? (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            paddingTop: 34,
+            paddingLeft: 4,
           }}
         >
-          <MapboxGL.Camera
-            ref={this.camera}
-            maxBounds={map.bounds}
-            minZoomLevel={map.minZoom}
-            maxZoomLevel={map.maxZoom}
-            defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
+          <IconButton
+            onPress={() => navigation.openDrawer()}
+            icon="menu"
+            color={colors.text}
+            size={24}
           />
-          <MapboxGL.Images images={markerImages} />
-          <MapboxGL.ShapeSource
-            id="markerShapeSource"
-            shape={featureCollection}
-            onPress={this.onMarkerPress}
-          >
-            <MapboxGL.SymbolLayer
-              id="1"
-              maxZoomLevel={9}
-              style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.5 }}
-            />
-            <MapboxGL.SymbolLayer
-              id="2"
-              minZoomLevel={9}
-              style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
-            />
-          </MapboxGL.ShapeSource>
-          <MapboxGL.ShapeSource id="secretShapeSource" shape={secret} onPress={this.onMarkerPress}>
-            <MapboxGL.SymbolLayer
-              id="3"
-              minZoomLevel={19}
-              style={{ iconImage: ['get', 'icon'], iconSize: 1 }}
-            />
-          </MapboxGL.ShapeSource>
-          <MapboxGL.UserLocation visible={userLocation} animated />
-        </MapboxGL.MapView>
+        </View>
+      ) : (
+        <TranslucentStatusBar />
+      )}
 
-        {Platform.OS !== 'ios' ? (
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              paddingTop: 34,
-              paddingLeft: 4,
-            }}
-          >
-            <IconButton
-              onPress={() => navigation.openDrawer()}
-              icon="menu"
-              color={colors.text}
-              size={24}
-            />
-          </View>
-        ) : (
-          <TranslucentStatusBar />
-        )}
-
-        {fabVisible ? (
-          <View
-            style={{
-              zIndex: 0,
-              position: 'absolute',
-              right: 0,
-              bottom: 0,
-            }}
-          >
-            <FAB
-              style={explorerStyles.fab}
-              color={colors.primary}
-              icon="crosshairs-gps"
-              onPress={this.requestUserLocation}
-            />
-          </View>
-        ) : null}
-        <ExplorerAttribution theme={theme} />
-
-        <Modal
-          supportedOrientations={['portrait', 'landscape']}
-          isVisible={isModalVisible}
-          hasBackdrop={false}
-          onBackButtonPress={this.hideModal}
-          coverScreen={false}
-          animationOutTiming={200} // We want it to dissapear fast
-          style={explorerStyles.modal}
+      {fabVisible && (
+        <View
+          style={{
+            zIndex: 0,
+            position: 'absolute',
+            right: 0,
+            bottom: 0,
+          }}
         >
-          <LocationModal data={data} hideModal={this.hideModal} />
-        </Modal>
-      </View>
-    );
-  }
+          <FAB
+            style={explorerStyles.fab}
+            color={colors.primary}
+            icon="crosshairs-gps"
+            onPress={requestUserLocation}
+          />
+        </View>
+      )}
+
+      <ExplorerAttribution theme={theme} />
+
+      <Modal
+        supportedOrientations={['portrait', 'landscape']}
+        isVisible={isModalVisible}
+        hasBackdrop={false}
+        onBackButtonPress={() => setModalVisible(false)}
+        coverScreen={false}
+        animationOutTiming={200} // We want it to dissapear fast
+        style={explorerStyles.modal}
+      >
+        <LocationModal data={data} hideModal={() => setModalVisible(false)} />
+      </Modal>
+    </View>
+  );
 }
 
-function ExplorerAttribution({ theme }) {
+function ExplorerAttribution() {
+  const theme = useTheme();
   const styles = getStyles(theme);
   const explorerStyles = getExplorerStyles(theme);
   return (
@@ -283,7 +277,7 @@ function ExplorerAttribution({ theme }) {
   );
 }
 
-export default withTheme(ExplorerMap);
+export default ExplorerMap;
 
 ExplorerMap.propTypes = {
   places: PropTypes.arrayOf(
@@ -310,21 +304,6 @@ ExplorerMap.propTypes = {
   tileServerUrl: PropTypes.string.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
-    openDrawer: PropTypes.func.isRequired,
-  }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};
-
-ExplorerAttribution.propTypes = {
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-    }).isRequired,
+    openDrawer: PropTypes.func,
   }).isRequired,
 };

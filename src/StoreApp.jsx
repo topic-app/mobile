@@ -1,18 +1,19 @@
 import React from 'react';
-import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
-import { NavigationContainer } from '@react-navigation/native';
+import { useColorScheme } from 'react-native-appearance';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 
-import RootStackNavigator from './src/index';
-import themes from './src/styles/Theme';
+import themes from '@styles/Theme';
+import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AppNavigator from './index';
 
 function StoreApp({ preferences }) {
   let theme;
   if (preferences.theme === 'system') {
     theme = themes[useColorScheme() === 'dark' ? 'dark' : 'light'];
+    theme.dark = useColorScheme() === 'dark';
   } else {
     theme = themes[preferences.theme];
   }
@@ -20,7 +21,7 @@ function StoreApp({ preferences }) {
     <PaperProvider theme={theme}>
       <SafeAreaProvider>
         <NavigationContainer>
-          <RootStackNavigator />
+          <AppNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
     </PaperProvider>

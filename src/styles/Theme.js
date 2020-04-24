@@ -1,9 +1,8 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
-
-const selectedTheme = 'dark';
+import { Platform } from 'react-native';
 
 const common = {
-  roundness: 5,
+  roundness: Platform.OS === 'ios' ? 15 : 5,
   colors: {
     statusBar: 'transparent',
     primary: '#592989',

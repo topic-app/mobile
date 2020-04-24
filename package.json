@@ -8,9 +8,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/blur": "^3.6.0",
     "@react-native-community/masked-view": "0.1.6",
     "@react-native-community/viewpager": "^3.3.0",
-    "@react-native-mapbox-gl/maps": "^8.0.0-rc1",
+    "@react-native-mapbox-gl/maps": "^8.0.0",
     "@react-navigation/bottom-tabs": "^5.2.4",
     "@react-navigation/drawer": "^5.3.4",
     "@react-navigation/material-bottom-tabs": "^5.1.6",
@@ -103,7 +104,9 @@
     ],
     "env": {
       "production": {
-        "plugins": ["react-native-paper/babel"]
+        "plugins": [
+          "react-native-paper/babel"
+        ]
       }
     }
   }
