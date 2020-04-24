@@ -13,19 +13,12 @@ function PetitionDisplayStackNavigator() {
       <Stack.Screen
         name="Display"
         component={PetitionDisplay}
-        options={
-          Platform.OS === 'ios'
-            ? ({ route }) => ({
-                ...HeaderConfig,
-                title: route.params.title,
-              })
-            : ({ route }) => ({
-                ...HeaderConfig,
-                title: 'Pétitions',
-                subtitle: route.params.title,
-                overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
-              })
-        }
+        options={({ route }) => ({
+          ...HeaderConfig,
+          title: 'Pétitions',
+          subtitle: route.params.title,
+          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+        })}
       />
     </Stack.Navigator>
   );

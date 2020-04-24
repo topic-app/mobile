@@ -1,16 +1,16 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+
+import { HeaderConfig } from '@components/Header';
 
 import SettingsList from './views/List';
 import SettingsTheme from './views/Theme';
-
-import { HeaderConfig } from '../../../components/Header';
 
 const Stack = createStackNavigator();
 
 function SettingsStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="List">
+    <Stack.Navigator initialRouteName="List" screenOptions={TransitionPresets.SlideFromRightIOS}>
       <Stack.Screen
         name="List"
         component={SettingsList}

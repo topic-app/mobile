@@ -89,7 +89,6 @@ function ArticleList({ navigation, articles, state, theme }) {
                     params: {
                       id: article.item._id,
                       title: article.item.title,
-                      previous: 'Actus',
                     },
                   },
                 },

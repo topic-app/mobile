@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StatusBar, View } from 'react-native';
 import { Appbar, Menu, withTheme } from 'react-native-paper';
-import { TransitionPresets } from '@react-navigation/stack';
 
 import getNavigatorStyles from '@styles/NavStyles';
 
@@ -302,16 +301,4 @@ const HeaderConfig = {
   header: ({ scene, navigation }) => <CustomHeaderBar scene={scene} navigation={navigation} />,
 };
 
-const TransitionHeaderConfig = {
-  // ...SlideRightAndScaleTransition,
-  ...TransitionPresets.DefaultTransition,
-  header: ({ scene, navigation }) => <CustomHeaderBar scene={scene} navigation={navigation} />,
-};
-
-export {
-  TranslucentStatusBar,
-  SolidStatusBar,
-  HeaderConfig,
-  TransitionHeaderConfig,
-  CustomHeaderBar,
-};
+export { TranslucentStatusBar, SolidStatusBar, HeaderConfig, CustomHeaderBar };

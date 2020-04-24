@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { View } from 'react-native';
-import { withTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 import places from '@src/data/explorerListData.json';
@@ -16,8 +16,8 @@ const map = {
   bounds: { ne: [-6, 51.5], sw: [10, 41] },
 };
 
-function ExplorerList({ navigation, theme }) {
-  const { dark } = theme;
+function ExplorerList({ navigation }) {
+  const { dark } = useTheme();
   return (
     <View style={{ flex: 1 }}>
       <ExplorerMap
@@ -30,14 +30,11 @@ function ExplorerList({ navigation, theme }) {
   );
 }
 
-export default withTheme(ExplorerList);
+export default ExplorerList;
 
 ExplorerList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     openDrawer: PropTypes.func.isRequired,
-  }).isRequired,
-  theme: PropTypes.shape({
-    dark: PropTypes.bool.isRequired,
   }).isRequired,
 };

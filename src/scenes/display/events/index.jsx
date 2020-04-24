@@ -14,19 +14,12 @@ function EventDisplayStackNavigator() {
       <Stack.Screen
         name="Display"
         component={EventDisplay}
-        options={
-          Platform.OS === 'ios'
-            ? ({ route }) => ({
-                ...HeaderConfig,
-                title: route.params.title,
-              })
-            : ({ route }) => ({
-                ...HeaderConfig,
-                title: 'Évènements',
-                subtitle: route.params.title,
-                overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
-              })
-        }
+        options={({ route }) => ({
+          ...HeaderConfig,
+          title: 'Évènements',
+          subtitle: route.params.title,
+          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+        })}
       />
       <Stack.Screen
         name="Program"

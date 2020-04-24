@@ -1,6 +1,9 @@
 ### Linux ###
 *~
 
+# CocoaPods, too large to be added to the repo (1GB)
+ios/Pods/
+
 # temporary files which can be created if a process still has a handle open of a deleted file
 .fuse_hidden*
 
@@ -196,3 +199,4 @@ lint/tmp/
 # Android stuff
 android/.gradle/
 android/app/build/
+.DS_Store
