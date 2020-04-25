@@ -2,7 +2,7 @@
 
 /* 
 In React Native, Strings are statically analyzed at compile-time,
-so require() statements have to be simple strings, not dyamic ones
+so require() statements have to be simple strings, not dynamic ones
 Read more here: https://dev.to/emilios1995/dynamic-imports-in-react-native-9k5
 */
 
@@ -26,9 +26,9 @@ const markerColors = {
   secret: '#b90007',
 };
 
-const getImageName = (markerType, placeType) => {
+function getColorFromType(placeType, markerType) {
   let color = 'Red';
-  if (markerType === 'secret') {
+  if (placeType === 'secret') {
     return 'secret';
   }
   if (placeType === 'school') {
@@ -42,7 +42,6 @@ const getImageName = (markerType, placeType) => {
     return `circle${color}`;
   }
   return `pin${color}`;
-};
+}
 
-export { markerImages, markerColors, getImageName };
-export default markerImages;
+export { markerImages, markerColors, getColorFromType };
