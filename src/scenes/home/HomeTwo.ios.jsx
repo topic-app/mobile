@@ -38,7 +38,7 @@ function HomeTwoNavigator() {
       <Stack.Screen
         name="Event"
         component={EventList}
-        options={{ ...HeaderConfig, title: 'Evènements', home: true }}
+        options={{ ...HeaderConfig, title: 'Évènements', home: true }}
       />
       <Stack.Screen
         name="Petition"

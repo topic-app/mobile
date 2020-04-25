@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import places from '@src/data/explorerDisplayData.json';
+import places from '@src/data/explorerListData.json';
 
 function LocationDisplay({ navigation, route }) {
   const { id } = route.params;
-  const place = places[id];
+  const place = places.find((t) => t._id === data.id);
 
   console.log('Full-screen display!');
   console.log(place);

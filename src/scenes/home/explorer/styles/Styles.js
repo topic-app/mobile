@@ -19,6 +19,8 @@ function getExplorerStyles(theme) {
       shadowRadius: 4.65,
       elevation: 5,
       backgroundColor: colors.background,
+    },
+    contentContainer: {
       paddingVertical: 10,
       paddingHorizontal: 15,
     },
@@ -52,17 +54,6 @@ function getExplorerStyles(theme) {
       width: '100%',
       alignItems: 'center',
       paddingBottom: 15,
-    },
-    horizontalLine: {
-      width: '100%',
-      height: 1.5,
-      backgroundColor: colors.outline,
-      borderRadius: 20,
-    },
-    horizontalLineContainer: {
-      width: '100%',
-      alignItems: 'center',
-      paddingVertical: 10,
     },
     attribution: {
       fontSize: 10,

@@ -12,7 +12,8 @@ import getStyles from '@styles/Styles';
 import { TranslucentStatusBar } from '@components/Header';
 
 import LocationModal from '../components/LocationModal';
-import { getImageName, markerImages } from '../utils/getAssetColor';
+import { buildFeatureCollections } from '../utils/featureCollection';
+import { markerImages } from '../utils/getAsset';
 import getExplorerStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
@@ -96,43 +97,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
       });
   };
 
-  const featureCollection = {
-    type: 'FeatureCollection',
-    features: [],
-  };
-  let secret = {};
-  places.forEach((place) => {
-    if (place.type !== 'secret') {
-      featureCollection.features.push({
-        type: 'Feature',
-        id: place._id,
-        properties: {
-          name: place.name,
-          type: place.type,
-          pinIcon: getImageName('pin', place.type),
-          circleIcon: getImageName('circle', place.type),
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [place.position.lng, place.position.lat],
-        },
-      });
-    } else {
-      secret = {
-        type: 'Feature',
-        id: place._id,
-        properties: {
-          name: place.name,
-          type: place.type,
-          icon: getImageName('secret'),
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [7.0432442, 43.6193543], // TODO: Don't manually code this
-        },
-      };
-    }
-  });
+  const featureCollections = buildFeatureCollections(places);
 
   const insets = useSafeArea();
 
@@ -167,29 +132,38 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
           defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
         />
         <MapboxGL.Images images={markerImages} />
-        <MapboxGL.ShapeSource
-          id="markerShapeSource"
-          shape={featureCollection}
-          onPress={onMarkerPress}
-        >
-          <MapboxGL.SymbolLayer
-            id="1"
-            maxZoomLevel={9}
-            style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.5 }}
-          />
-          <MapboxGL.SymbolLayer
-            id="2"
-            minZoomLevel={9}
-            style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
-          />
-        </MapboxGL.ShapeSource>
-        <MapboxGL.ShapeSource id="secretShapeSource" shape={secret} onPress={onMarkerPress}>
-          <MapboxGL.SymbolLayer
-            id="3"
-            minZoomLevel={19}
-            style={{ iconImage: ['get', 'icon'], iconSize: 1 }}
-          />
-        </MapboxGL.ShapeSource>
+        {featureCollections.map((fc) => {
+          if (fc.collectionType === 'secret') {
+            return (
+              <MapboxGL.ShapeSource key="secret" id="secret" shape={fc} onPress={onMarkerPress}>
+                <MapboxGL.SymbolLayer
+                  id="secret-zoom1"
+                  minZoomLevel={19}
+                  style={{ iconImage: ['get', 'circleIcon'], iconSize: 1 }}
+                />
+              </MapboxGL.ShapeSource>
+            );
+          }
+          return (
+            <MapboxGL.ShapeSource
+              key={fc.collectionType}
+              id={fc.collectionType}
+              shape={fc}
+              onPress={onMarkerPress}
+            >
+              <MapboxGL.SymbolLayer
+                id={`${fc.collectionType}-zoom1`}
+                maxZoomLevel={9}
+                style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.3 }}
+              />
+              <MapboxGL.SymbolLayer
+                id={`${fc.collectionType}-zoom2`}
+                minZoomLevel={9}
+                style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
+              />
+            </MapboxGL.ShapeSource>
+          );
+        })}
         <MapboxGL.UserLocation visible={userLocation} animated />
       </MapboxGL.MapView>
 

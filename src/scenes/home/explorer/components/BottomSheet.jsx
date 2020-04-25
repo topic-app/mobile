@@ -12,12 +12,12 @@ let { height, width } = Dimensions.get('window');
 let lastOrientation = height > width ? 'portrait' : 'landscape';
 
 let SNAP_POINTS_FROM_TOP = {
-  portrait: [0, height * 0.5, height * 0.73, height],
+  portrait: [0, height * 0.5, height * 0.71, height],
   landscape: [0, width * 0.65, width],
 };
 if (lastOrientation === 'landscape') {
   SNAP_POINTS_FROM_TOP = {
-    portrait: [0, width * 0.5, width * 0.73, width],
+    portrait: [0, width * 0.5, width * 0.71, width],
     landscape: [0, height * 0.65, height],
   };
 }
