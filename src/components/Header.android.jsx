@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StatusBar, View } from 'react-native';
-import { Appbar, Menu, withTheme } from 'react-native-paper';
+import { Appbar, Menu, useTheme, withTheme } from 'react-native-paper';
 
 import getNavigatorStyles from '@styles/NavStyles';
 
-function TranslucentStatusBarUnthemed({ contentThemeName, theme }) {
-  const contentTheme = contentThemeName || theme.statusBarContentTheme;
+function TranslucentStatusBar({ contentThemeName }) {
+  const theme = useTheme();
   const { colors } = theme;
+  const contentTheme = contentThemeName || theme.statusBarContentTheme;
   return (
     <StatusBar
       translucent
@@ -17,7 +18,8 @@ function TranslucentStatusBarUnthemed({ contentThemeName, theme }) {
   );
 }
 
-function SolidStatusBarUnthemed({ color, contentThemeName, theme }) {
+function SolidStatusBar({ color, contentThemeName }) {
+  const theme = useTheme();
   const contentTheme = contentThemeName || theme.statusBarContentTheme;
   const backgroundColor = color || theme.colors.background;
   return (
@@ -29,132 +31,95 @@ function SolidStatusBarUnthemed({ color, contentThemeName, theme }) {
   );
 }
 
-const TranslucentStatusBar = withTheme(TranslucentStatusBarUnthemed);
-const SolidStatusBar = withTheme(SolidStatusBarUnthemed);
+function CustomHeaderBar({ scene, navigation }) {
+  const [menuVisible, setMenuVisible] = React.useState(false);
 
-class CustomHeaderBarUnthemed extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      menuVisible: false,
-    };
+  const navigatorStyles = getNavigatorStyles(useTheme());
+  const { colors } = useTheme();
+
+  const {
+    title,
+    subtitle,
+    headerStyle,
+    primary,
+    home,
+    actions,
+    overflow,
+  } = scene.descriptor.options;
+
+  const headerTitle = title !== undefined ? title : scene.route.name;
+
+  let primaryAction;
+  if (primary !== undefined) {
+    primaryAction = <Appbar.BackAction onPress={primary} />;
+  } else if (home) {
+    primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
+  } else {
+    primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
   }
 
-  openMenu = () => {
-    this.setState({ menuVisible: true });
-  };
+  let secondaryActions;
+  if (actions !== undefined) {
+    secondaryActions = actions.map((item, key) => (
+      // eslint-disable-next-line react/no-array-index-key
+      <Appbar.Action key={key} icon={item.icon} onPress={item.onPress} />
+    ));
+  }
 
-  closeMenu = () => {
-    this.setState({ menuVisible: false });
-  };
-
-  render() {
-    const { menuVisible } = this.state;
-    const { scene, navigation, theme } = this.props;
-
-    const navigatorStyles = getNavigatorStyles(theme);
-    const { colors } = theme;
-
-    const {
-      title,
-      subtitle,
-      headerStyle,
-      primary,
-      home,
-      actions,
-      overflow,
-    } = scene.descriptor.options;
-
-    const headerTitle = title !== undefined ? title : scene.route.name;
-
-    let primaryAction;
-    if (primary !== undefined) {
-      primaryAction = <Appbar.BackAction onPress={primary} />;
-    } else if (home) {
-      primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
-    } else {
-      primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
-    }
-
-    let secondaryActions;
-    if (actions !== undefined) {
-      secondaryActions = actions.map((item, key) => (
+  const overflowAction = overflow && (
+    <Menu
+      visible={menuVisible}
+      onDismiss={() => setMenuVisible(false)}
+      anchor={
+        <Appbar.Action
+          icon="dots-vertical"
+          onPress={() => setMenuVisible(true)}
+          color={colors.drawerContent}
+        />
+      }
+      statusBarHeight={StatusBar.currentHeight}
+    >
+      {overflow.map((item, key) => (
         // eslint-disable-next-line react/no-array-index-key
-        <Appbar.Action key={key} icon={item.icon} onPress={item.onPress} />
-      ));
-    }
+        <Menu.Item key={key} title={item.title} icon={item.icon} onPress={item.onPress} />
+      ))}
+    </Menu>
+  );
 
-    const overflowAction =
-      overflow !== undefined ? (
-        <Menu
-          visible={menuVisible}
-          onDismiss={this.closeMenu}
-          anchor={
-            <Appbar.Action
-              icon="dots-vertical"
-              onPress={this.openMenu}
-              color={colors.drawerContent}
-            />
-          }
-          statusBarHeight={StatusBar.currentHeight}
-        >
-          {overflow.map((item, key) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Menu.Item key={key} title={item.title} icon={item.icon} onPress={item.onPress} />
-          ))}
-        </Menu>
-      ) : null;
-
-    return (
-      <View style={navigatorStyles.headerSurface}>
-        <TranslucentStatusBar />
-        <Appbar.Header
-          style={[navigatorStyles.header, headerStyle ?? null]}
-          statusBarHeight={StatusBar.currentHeight}
-        >
-          {primaryAction}
-          <Appbar.Content title={headerTitle} subtitle={subtitle} />
-          {secondaryActions}
-          {overflowAction}
-        </Appbar.Header>
-      </View>
-    );
-  }
+  return (
+    <View style={navigatorStyles.headerSurface}>
+      <TranslucentStatusBar />
+      <Appbar.Header
+        style={[navigatorStyles.header, headerStyle ?? null]}
+        statusBarHeight={StatusBar.currentHeight}
+      >
+        {primaryAction}
+        <Appbar.Content title={headerTitle} subtitle={subtitle} />
+        {secondaryActions}
+        {overflowAction}
+      </Appbar.Header>
+    </View>
+  );
 }
 
-const CustomHeaderBar = withTheme(CustomHeaderBarUnthemed);
-
-TranslucentStatusBarUnthemed.propTypes = {
+TranslucentStatusBar.propTypes = {
   contentThemeName: PropTypes.string,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      statusBar: PropTypes.string.isRequired,
-    }).isRequired,
-    statusBarContentTheme: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
-TranslucentStatusBarUnthemed.defaultProps = {
+TranslucentStatusBar.defaultProps = {
   contentThemeName: '',
 };
 
-SolidStatusBarUnthemed.propTypes = {
+SolidStatusBar.propTypes = {
   color: PropTypes.string.isRequired,
   contentThemeName: PropTypes.string,
-  theme: PropTypes.shape({
-    statusBarContentTheme: PropTypes.string.isRequired,
-    colors: PropTypes.shape({
-      background: PropTypes.shape.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
 
-SolidStatusBarUnthemed.defaultProps = {
+SolidStatusBar.defaultProps = {
   contentThemeName: '',
 };
 
-CustomHeaderBarUnthemed.propTypes = {
+CustomHeaderBar.propTypes = {
   scene: PropTypes.shape({
     descriptor: PropTypes.shape({
       options: PropTypes.shape({
@@ -175,14 +140,6 @@ CustomHeaderBarUnthemed.propTypes = {
     navigate: PropTypes.func,
     openDrawer: PropTypes.func,
     goBack: PropTypes.func,
-  }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      valid: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-      drawerContent: PropTypes.string.isRequired,
-    }).isRequired,
   }).isRequired,
 };
 

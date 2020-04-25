@@ -1,66 +1,63 @@
 import React from 'react';
-import { List, Divider, withTheme } from 'react-native-paper';
+import { List, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
 import getStyles from '../../../../styles/Styles';
 import getSettingsStyles from '../styles/Styles';
 
-class SettingsList extends React.Component {
-  render() {
-    const { theme, navigation } = this.props;
-    const styles = getStyles(theme);
-    const settingsStyles = getSettingsStyles(theme);
+function SettingsList({ navigation }) {
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const settingsStyles = getSettingsStyles(theme);
 
-    return (
-      <View style={styles.page}>
-        <List.Section>
-          <List.Item
-            title="Theme"
-            description="Clair"
-            left={() => <List.Icon icon="brightness-6" />}
-            onPress={() => navigation.navigate('Theme')}
-            style={settingsStyles.listItem}
-          />
-          <List.Item
-            title="Animations"
-            description="iOS"
-            left={() => <List.Icon icon="transition" />}
-            onPress={() => console.log('Animations')}
-            style={settingsStyles.listItem}
-          />
-          <List.Item
-            title="Qualité d'Images"
-            description="Haute, Moyenne, Basse"
-            left={() => <List.Icon icon="image-outline" />}
-            onPress={() => console.log('Animations')}
-            style={settingsStyles.listItem}
-          />
-          <List.Item
-            title="Notifications"
-            description="Push, Email"
-            left={() => <List.Icon icon="bell-outline" />}
-            onPress={() => console.log('Notification')}
-            style={settingsStyles.listItem}
-          />
-          <List.Item
-            title="Autre"
-            description="Version, Crédits, licenses etc"
-            left={() => <List.Icon icon="help-circle-outline" />}
-            onPress={() => console.log('Other')}
-            style={settingsStyles.listItem}
-          />
-        </List.Section>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.page}>
+      <List.Section>
+        <List.Item
+          title="Theme"
+          description="Clair"
+          left={() => <List.Icon icon="brightness-6" />}
+          onPress={() => navigation.navigate('Theme')}
+          style={settingsStyles.listItem}
+        />
+        <List.Item
+          title="Animations"
+          description="iOS"
+          left={() => <List.Icon icon="transition" />}
+          onPress={() => console.log('Animations')}
+          style={settingsStyles.listItem}
+        />
+        <List.Item
+          title="Qualité d'Images"
+          description="Haute, Moyenne, Basse"
+          left={() => <List.Icon icon="image-outline" />}
+          onPress={() => console.log('Animations')}
+          style={settingsStyles.listItem}
+        />
+        <List.Item
+          title="Notifications"
+          description="Push, Email"
+          left={() => <List.Icon icon="bell-outline" />}
+          onPress={() => console.log('Notification')}
+          style={settingsStyles.listItem}
+        />
+        <List.Item
+          title="Autre"
+          description="Version, Crédits, licenses etc"
+          left={() => <List.Icon icon="help-circle-outline" />}
+          onPress={() => console.log('Other')}
+          style={settingsStyles.listItem}
+        />
+      </List.Section>
+    </View>
+  );
 }
 
 SettingsList.propTypes = {
-  theme: PropTypes.shape({}).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-export default withTheme(SettingsList);
+export default SettingsList;
