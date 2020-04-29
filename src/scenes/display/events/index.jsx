@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { HeaderConfig } from '@components/Header';
 import EventDisplay from './views/Display';
-import EventProgram from './views/Program';
 
 const Stack = createStackNavigator();
 
