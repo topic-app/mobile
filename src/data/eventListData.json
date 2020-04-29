@@ -1,10 +1,10 @@
 [
   {
     "_id": "1",
-    "title": "Fête de la Science",
+    "title": "International Day",
     "duration": {
-      "start": "2020-03-30T18:25:43.511Z",
-      "end": "2020-04-01T19:25:43.511Z"
+      "start": "2020-06-25T10:25:43.511Z",
+      "end": "2020-06-28T19:25:43.511Z"
     },
     "location": {
       "global": false,
@@ -25,59 +25,76 @@
         }
       ]
     },
-    "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
+    "address": "Centre International de Valbonne",
     "author": {
       "_id": "53",
       "displayName": "Jean Dupond"
     },
     "group": {
       "_id": "145",
-      "displayName": "Sollaris"
+      "displayName": "Aseica"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
     "thumbnailUrl": "https://picsum.photos/600",
-    "summary": "Grande Fête de la Science ouvert à toute et tous",
-    "description": "La Fête de la Science 2020 se déroule du 5 au 13 octobre en métropole, et du 9 au 17 novembre en outre-mer et à l'international.",
+    "summary": "Un évènement annuel regroupant toutes les nationalités et toutes les langues de l'établissement",
+    "description": {
+      "parser": "markdown",
+      "data": "**Un évènement annuel regroupant toutes les nationalités et toutes les langues de l'établissement pour célébrer la diversité.** \n\nAu programme : spécialités gastronomiques, projections, et stands tenus par les élèves des écoles, collèges et lycées environnants. La journée est une occasion de se familiariser avec de nouvelles cultures. \nL'évènement est organisé par la section Americaine de l'établissement, avec la participation de la section allemande, espagnole, italienne, russe et chinoise. "
+    },
     "tags": [
       {
-        "displayName": "Tag 1",
+        "displayName": "diversité",
         "color": "red",
         "_id": "item1"
       },
       {
-        "displayName": "Tag 2",
+        "displayName": "culture",
         "color": "brown",
         "_id": "item4"
+      },
+      {
+        "displayName": "international",
+        "color": "green",
+        "_id": "item5"
       }
     ],
     "program": [
       {
         "duration": {
-          "start": "2020-03-30T18:25:43.511Z",
-          "end": "2020-03-30T18:55:43.511Z"
+          "start": "2020-06-25T18:25:43.511Z",
+          "end": "2020-06-25T18:55:43.511Z"
         },
-        "title": "decouverte des techniques Anciennes"
+        "title": "Gouter offert"
       },
       {
         "duration": {
-          "start": "2020-03-30T18:55:43.511Z",
-          "end": "2020-03-30T19:25:43.511Z"
+          "start": "2020-06-25T18:55:43.511Z",
+          "end": "2020-06-25T19:25:43.511Z"
         },
-        "title": "decouverte des techniques Modernes"
+        "title": "Remerciements"
       },
       {
         "duration": {
-          "start": "2020-03-31T18:25:43.511Z",
-          "end": "2020-03-31T18:55:43.511Z"
+          "start": "2020-06-25T17:00:43.511Z",
+          "end": "2020-06-25T19:00:43.511Z"
         },
-        "title": "decouverte des Technique Future"
+        "title": "Projection de films",
+        "summary": "Plusieurs films portant sur différents thèmes séléctionnés par les élèves seront projettés au cinéma du CIV"
       },
       {
         "duration": {
-          "start": "2020-03-31T18:25:43.511Z",
-          "end": "2020-04-01T18:55:43.511Z"
+          "start": "2020-06-25T19:15:43.511Z",
+          "end": "2020-06-25T20:00:43.511Z"
         },
-        "title": "decouverte de Technique Fictive"
+        "title": "Tombola"
+      },
+      {
+        "duration": {
+          "start": "2020-06-25T17:30:43.511Z",
+          "end": "2020-06-25T21:00:43.511Z"
+        },
+        "title": "Stands à l'Agora",
+        "summary": "Les élèves des sections internationales tiendront des stands sur différents thèmes, dans le batiment principal."
       }
     ],
     "contact": {
@@ -93,17 +110,17 @@
   },
   {
     "_id": "2",
-    "title": "journé des events",
+    "title": "Journée porte ouvertes du CIV",
     "duration": {
-      "start": "2020-04-07T18:25:43.511Z",
-      "end": "2020-04-08T18:25:43.511Z"
+      "start": "2020-05-07T18:25:43.511Z",
+      "end": "2020-05-08T18:25:43.511Z"
     },
     "location": {
       "global": false,
       "schools": [
         {
           "_id": "107",
-          "displayName": "Saint-dié-des-Vosges"
+          "displayName": "CIV"
         }
       ],
       "departments": [
@@ -113,29 +130,32 @@
         }
       ]
     },
-    "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
+    "address": "Centre International de Valbonne",
     "author": {
       "_id": "53",
       "displayName": "Jean Dupond"
     },
     "group": {
       "_id": "145",
-      "displayName": "Sollaris"
+      "displayName": "CVL du CIV"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
     "thumbnailUrl": "https://picsum.photos/700",
-    "summary": "Grande Fête de la Science ouvert à toute et tous",
-    "description": "En littérature, la description constitue une pause dans le récit, où elle peut former un ensemble autonome, bien que le plus souvent elle prenne place dans la narration.",
+    "summary": "Visitez le collège, le lycée et la prepa, avec différentes animations pour vous faire découvrir l'établissement...",
+    "description": {
+      "parser": "plaintext",
+      "data": "En littérature, la description constitue une pause dans le récit, où elle peut former un ensemble autonome, bien que le plus souvent elle prenne place dans la narration."
+    },
     "tags": [
       {
-        "displayName": "Tag 1",
-        "color": "red",
-        "_id": "item1"
+        "displayName": "portes ouvertes",
+        "color": "blue",
+        "_id": "portes ouvertes"
       },
       {
-        "displayName": "Tag 2",
-        "color": "brown",
-        "_id": "item4"
+        "displayName": "éducation",
+        "color": "yellow",
+        "_id": "education"
       }
     ],
     "program": [
@@ -169,47 +189,50 @@
     "_id": "3",
     "title": "Fête de la Science",
     "duration": {
-      "start": "2020-04-01T12:25:43.511Z",
-      "end": "2020-04-01T20:25:43.511Z"
+      "start": "2020-04-25T12:25:43.511Z",
+      "end": "2020-04-25T20:25:43.511Z"
     },
     "location": {
       "global": false,
-      "schools": [
-        {
-          "_id": "98",
-          "displayName": "CIV"
-        }
-      ],
+      "schools": [],
       "departments": [
         {
           "_id": "12",
-          "displayName": "Paca"
+          "displayName": "Alpes Maritimes"
         }
       ]
     },
-    "address": "32 rue de l'Ormes 88100 Saint-dié-des-Vosges",
+    "address": "Antibes, Alpes Maritimes",
     "author": {
       "_id": "53",
       "displayName": "Jean Dupond"
     },
     "group": {
       "_id": "145",
-      "displayName": "Sollaris"
+      "displayName": "L'Aiglon"
     },
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
     "thumbnailUrl": "https://picsum.photos/800",
-    "summary": "Grande Fête de la Science ouvert à toute et tous",
-    "description": "cette année toute les classe de premierre et de terminal des classes technologique et general du lpo GB ont decider de vous faire decouvrir les sciences",
+    "summary": "Découvrez la science avec des antimations proposées par les clubs et les entreprises de la région",
+    "description": {
+      "parser": "plaintext",
+      "data": "Cette année toute les classe de premierre et de terminal des classes technologique et general du lpo GB ont decider de vous faire decouvrir les sciences."
+    },
     "tags": [
       {
-        "displayName": "Tag 1",
-        "color": "red",
+        "displayName": "science",
+        "color": "purple",
         "_id": "item1"
       },
       {
-        "displayName": "Tag 2",
-        "color": "brown",
+        "displayName": "technologie",
+        "color": "red",
         "_id": "item4"
+      },
+      {
+        "displayName": "découvrir",
+        "color": "cyan",
+        "_id": "item5"
       }
     ],
     "program": [
@@ -218,7 +241,8 @@
           "start": "2020-03-30T18:25:43.511Z",
           "end": "2020-03-30T18:55:43.511Z"
         },
-        "title": "decouverte des techniques Anciennes"
+        "title": "decouverte des techniques Anciennes",
+        "summary": "This is a small summary of the event"
       },
       {
         "duration": {
@@ -273,7 +297,10 @@
     "members": [{ "membersid": "7" }, { "membersid": "12" }],
     "thumbnailUrl": "https://picsum.photos/900",
     "summary": "On va nourrir les pigeons et faire une fête pour l'arrivée de nos chers amis les pigeons.",
-    "description": "On va aller au bord de mer acceullir les pigeons qui reviennent d'Afrique après un long voyage pour revenir nous voir. On a ammené des graines de tournesol car c'est leur nourriture préférs mais aussi une batte de baseball au cas ou l'un d'entre eux se rebelle. Il y aura un petit gouté avec les pigeons après. SVP ne dites pas à la police, j'ai déjà 3 contraventions à cause de ce coronatruc. Venez nous joindre! <3",
+    "description": {
+      "parser": "plaintext",
+      "data": "On va aller au bord de mer acceullir les pigeons qui reviennent d'Afrique après un long voyage pour revenir nous voir. On a ammené des graines de tournesol car c'est leur nourriture préférs mais aussi une batte de baseball au cas ou l'un d'entre eux se rebelle. Il y aura un petit gouté avec les pigeons après. SVP ne dites pas à la police, j'ai déjà 3 contraventions à cause de ce coronatruc. Venez nous joindre!"
+    },
     "tags": [
       {
         "displayName": "Tag 1",
@@ -289,17 +316,24 @@
     "program": [
       {
         "duration": {
-          "start": "2020-03-30T18:25:43.511Z",
-          "end": "2020-03-30T18:55:43.511Z"
+          "start": "2020-03-30T06:25:43.511Z",
+          "end": "2020-03-30T08:55:43.511Z"
         },
-        "title": "decouverte des techniques Anciennes"
+        "title": "chasse au pigeons"
       },
       {
         "duration": {
-          "start": "2020-03-30T18:55:43.511Z",
-          "end": "2020-03-30T19:25:43.511Z"
+          "start": "2020-03-30T11:30:00.000Z",
+          "end": "2020-03-30T14:00:00.000Z"
         },
-        "title": "decouverte des techniques Modernes"
+        "title": "déjeuné avec les oiseaux"
+      },
+      {
+        "duration": {
+          "start": "2020-03-30T20:30:00.000Z",
+          "end": "2020-03-30T21:00:00.000Z"
+        },
+        "title": "on mange les oiseaux"
       }
     ],
     "contact": {

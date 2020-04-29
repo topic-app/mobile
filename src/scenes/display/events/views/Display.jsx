@@ -6,10 +6,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import TagList from '@components/TagList';
+import CustomTabView from '@components/CustomTabView';
 import getStyles from '@styles/Styles';
 import EventDisplayProgram from './Program';
+import EventDisplayDescription from './Description';
 
 function EventDisplay({ route, events }) {
+  const scrollViewRef = React.createRef();
   const { id } = route.params;
   const event = events.find((t) => t._id === id);
   const { start, end } = event.duration;
@@ -18,7 +21,7 @@ function EventDisplay({ route, events }) {
 
   return (
     <View style={styles.page}>
-      <ScrollView>
+      <ScrollView ref={scrollViewRef}>
         <Image source={{ uri: event.thumbnailUrl }} style={[styles.image, { height: 250 }]} />
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{event.title}</Text>
@@ -26,14 +29,32 @@ function EventDisplay({ route, events }) {
             du {moment(start).format('DD/MM/YYYY')} aux {moment(end).format('DD/MM/YYYY')}
           </Text>
         </View>
-
         <View>
-          <TagList type="event" item={event} />
+          <View>
+            <TagList type="event" item={event} />
+          </View>
         </View>
-        <View style={styles.contentContainer}>
-          <Text>{event.description}</Text>
-        </View>
-        <EventDisplayProgram program={event.program} />
+
+        <CustomTabView
+          pages={[
+            {
+              key: 'description',
+              title: 'Description',
+              component: <EventDisplayDescription description={event.description} />,
+            },
+            {
+              key: 'program',
+              title: 'Programme',
+              component: <EventDisplayProgram event={event} />,
+              onVisible: () => scrollViewRef.current.scrollToEnd({ animated: true }),
+            },
+            {
+              key: 'contact',
+              title: 'Contact',
+              component: <View />,
+            },
+          ]}
+        />
       </ScrollView>
     </View>
   );
@@ -56,7 +77,10 @@ EventDisplay.propTypes = {
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       thumbnailUrl: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
+      description: PropTypes.shape({
+        parser: PropTypes.oneOf(['plaintext', 'markdown']).isRequired,
+        data: PropTypes.string.isRequired,
+      }).isRequired,
       group: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
       }).isRequired,

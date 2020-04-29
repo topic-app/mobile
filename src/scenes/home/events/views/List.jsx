@@ -114,7 +114,10 @@ EventList.propTypes = {
         start: PropTypes.string.isRequired,
         end: PropTypes.string.isRequired,
       }).isRequired,
-      description: PropTypes.string.isRequired,
+      description: PropTypes.shape({
+        parser: PropTypes.oneOf(['markdown', 'plaintext']).isRequired,
+        data: PropTypes.string.isRequired,
+      }).isRequired,
       thumbnailUrl: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,

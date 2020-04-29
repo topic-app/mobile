@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Platform, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
-import { Text, Avatar, Card, IconButton, withTheme } from 'react-native-paper';
+import { View, Platform, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
+import { Text, Avatar, Card, IconButton, List, Button, withTheme } from 'react-native-paper';
 import moment from 'moment';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import 'moment/locale/fr';
 
 import TagList from '@components/TagList';
@@ -47,18 +48,56 @@ function EventCard({ event, navigate, theme }) {
             subtitle={buildDateString(start, end)}
             left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
           />
-          <Card.Content>
-            <Text style={eventStyles.text}>{event.summary}</Text>
-          </Card.Content>
           <Card.Content style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
-            <View style={{ marginTop: 10 }}>
+            <View>
               <TagList type="event" item={event} />
             </View>
           </Card.Content>
-          <Card.Cover source={{ uri: event.thumbnailUrl }} />
-          <Card.Actions>
-            <IconButton icon="star-outline" color={colors.disabled} />
-          </Card.Actions>
+          <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
+            <View style={{ flexDirection: 'row' }}>
+              {event.thumbnailUrl ? (
+                <Image
+                  source={{ uri: event.thumbnailUrl }}
+                  style={[
+                    styles.thumbnail,
+                    {
+                      width: 130,
+                      height: 130,
+                    },
+                  ]}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: 120,
+                    height: 120,
+                  }}
+                />
+              )}
+              <View
+                style={{
+                  margin: 10,
+                  marginTop: 0,
+                  marginLeft: 15,
+                  flex: 1,
+                }}
+              >
+                <Text style={eventStyles.text}>{event.summary}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                  <Icon color={colors.text} name="map-marker" />
+                  <Text style={{ fontSize: 17 }}> {event.address}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+                  <Icon color={colors.text} name="currency-eur" />
+                  <Text style={{ fontSize: 17 }}> Participation gratuite</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
+                  <Icon color={colors.text} name="calendar" />
+                  <Text style={{ fontSize: 17 }}> {moment(event.duration.start).calendar()}</Text>
+                </View>
+              </View>
+            </View>
+          </Card.Content>
         </View>
       </Touchable>
     </Card>
@@ -77,7 +116,10 @@ EventCard.propTypes = {
       end: PropTypes.string.isRequired,
     }).isRequired,
     thumbnailUrl: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
+    description: PropTypes.shape({
+      parser: PropTypes.oneOf(['markdown', 'plaintext']).isRequired,
+      data: PropTypes.string.isRequired,
+    }).isRequired,
     summary: PropTypes.string.isRequired,
   }).isRequired,
   navigate: PropTypes.func.isRequired,

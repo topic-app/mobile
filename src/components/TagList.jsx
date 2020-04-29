@@ -30,14 +30,6 @@ function genTagData(item, type) {
       }
     }
   } else {
-    if (item.author) {
-      data.push({
-        type: 'author',
-        id: item.author._id,
-        icon: 'account',
-        text: item.author.displayName,
-      });
-    }
     if (item.group) {
       data.push({
         type: 'group',
@@ -45,6 +37,14 @@ function genTagData(item, type) {
         avatar: item.group.thumbnailUrl || '',
         icon: 'newspaper', // Just in case thumbnail url is undefined
         text: item.group.displayName,
+      });
+    }
+    if (item.author && type !== 'event') {
+      data.push({
+        type: 'author',
+        id: item.author._id,
+        icon: 'account',
+        text: item.author.displayName,
       });
     }
   }
@@ -88,6 +88,15 @@ function genTagData(item, type) {
         text: department.displayName,
       })),
     );
+  }
+
+  if (item.author && type === 'event') {
+    data.push({
+      type: 'author',
+      id: item.author._id,
+      icon: 'account',
+      text: item.author.displayName,
+    });
   }
 
   return data;
