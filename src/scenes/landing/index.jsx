@@ -1,18 +1,16 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 import LandingWelcome from './views/Welcome';
-import LandingSearch from './views/Search';
-import LandingMap from './views/Map';
+import LandingArticles from './views/Articles';
 
 const Stack = createStackNavigator();
 
 function LandingStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Welcome" headerMode="none">
-      <Stack.Screen name="Welcome" component={LandingWelcome} />
-      <Stack.Screen name="Search" component={LandingSearch} />
-      <Stack.Screen name="Map" component={LandingMap} />
+    <Stack.Navigator initialRouteName="Welcome" screenOptions={TransitionPresets.SlideFromRightIOS}>
+      <Stack.Screen name="Welcome" component={LandingWelcome} options={{ headerShown: false }} />
+      <Stack.Screen name="Articles" component={LandingArticles} />
     </Stack.Navigator>
   );
 }

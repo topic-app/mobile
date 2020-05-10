@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import getStyles from '@styles/Styles';
-import { updateState, login } from '@redux/actions/account';
+import { updateState, login } from '@redux/actions/data/account';
 import getAuthStyles from '../styles/Styles';
 
 function AuthLogin({ navigation, reqState }) {

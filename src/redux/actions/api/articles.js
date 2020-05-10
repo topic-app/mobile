@@ -1,5 +1,5 @@
 import request from '@utils/request';
-import Store from '../store';
+import Store from '@redux/store';
 
 /**
  * @docs actionCreators
@@ -7,7 +7,7 @@ import Store from '../store';
  * @param next Si il faut récupérer les articles après le dernier
  * @returns Action
  */
-function updateArticlesCreator(type = 'initial') {
+function updateArticlesCreator(type = 'initial', params = {}) {
   return (dispatch, getState) => {
     let lastId;
     let number = 10;
@@ -30,19 +30,19 @@ function updateArticlesCreator(type = 'initial') {
       lastId = articles[articles.length - 1]._id;
       number = 5;
     }
-    request('articles/list', 'get', { lastId, number })
+    request('articles/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        const { data } = getState().articles; // The old articles, in redux db
-        result.data.articles.forEach((a) => {
-          const article = { ...a, preload: true };
-          if (data.some((p) => p._id === a._id)) {
-            data[data.map((p) => p._id).indexOf(a._id)] = article;
-          } else {
-            data.push(article);
-          }
-        });
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
         if (result.success) {
+          const { data } = getState().articles; // The old articles, in redux db
+          result.data.articles.forEach((a) => {
+            const article = { ...a, preload: true };
+            if (data.some((p) => p._id === a._id)) {
+              data[data.map((p) => p._id).indexOf(a._id)] = article;
+            } else {
+              data.push(article);
+            }
+          });
+          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
           dispatch({
             type: 'UPDATE_ARTICLES',
             data,
@@ -186,7 +186,7 @@ function fetchArticleCreator(articleId) {
  */
 function clearArticlesCreator() {
   return {
-    type: 'CLEAR_DATABASE',
+    type: 'CLEAR_ARTICLES',
   };
 }
 
@@ -195,9 +195,8 @@ function clearArticlesCreator() {
  * Récupère les infos basiques articles depuis le serveur
  * @param next Si il faut récupérer les articles après le dernier
  */
-function updateArticles(type) {
-  console.log('Update articles');
-  return Store.dispatch(updateArticlesCreator(type));
+function updateArticles(type, params) {
+  return Store.dispatch(updateArticlesCreator(type, params));
 }
 
 /**
@@ -206,7 +205,6 @@ function updateArticles(type) {
  * @param articleId L'id de l'article à récuperer
  */
 function fetchArticle(articleId) {
-  console.log(`Fetch article ${articleId}`);
   return Store.dispatch(fetchArticleCreator(articleId));
 }
 
@@ -215,7 +213,6 @@ function fetchArticle(articleId) {
  * Vide la database redux complètement
  */
 function clearArticles() {
-  console.log('Clear articles');
   return Store.dispatch(clearArticlesCreator());
 }
 

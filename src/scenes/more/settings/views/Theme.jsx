@@ -5,12 +5,10 @@ import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 
-import getStyles from '../../../../styles/Styles';
+import { updatePrefs } from '@redux/actions/data/prefs';
+import getStyles from '@styles/Styles';
+import themes from '@styles/Theme';
 import getSettingsStyles from '../styles/Styles';
-
-import themes from '../../../../styles/Theme';
-
-import { updatePrefs } from '../../../../redux/actions/prefs';
 
 function SettingsTheme({ preferences, theme }) {
   const styles = getStyles(theme);

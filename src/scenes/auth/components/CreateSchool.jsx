@@ -4,7 +4,7 @@ import { Button, Title, Subheading, Card, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { updateCreationData } from '@redux/actions/account';
+import { updateCreationData } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -27,7 +27,7 @@ function AuthCreatePageSchool({ forward, backward, location }) {
       <Card style={{ marginBottom: 30 }}>
         <Card.Content>
           <Title>{location.schoolData[0].name}</Title>
-          <Subheading>{location.schoolData[0].address.shortName}</Subheading>
+          <Subheading>{location.schoolData[0].address?.shortName}</Subheading>
         </Card.Content>
         <Card.Actions>
           <Button mode="text" onPress={() => console.log('Change schools')}>

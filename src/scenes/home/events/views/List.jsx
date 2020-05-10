@@ -95,7 +95,7 @@ function EventList({ navigation, events, theme }) {
 
 const mapStateToProps = (state) => {
   const { events } = state;
-  return { events };
+  return { events: events.data, state: events.state };
 };
 
 export default connect(mapStateToProps)(withTheme(EventList));
@@ -121,5 +121,14 @@ EventList.propTypes = {
       thumbnailUrl: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
+  state: PropTypes.shape({
+    success: PropTypes.bool,
+    loading: PropTypes.shape({
+      next: PropTypes.bool,
+      initial: PropTypes.bool,
+      refresh: PropTypes.bool,
+    }),
+    error: PropTypes.shape(),
+  }).isRequired,
   theme: PropTypes.shape({}).isRequired,
 };

@@ -5,7 +5,7 @@ import { ProgressBar, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
-import { updateArticles } from '@redux/actions/articles';
+import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
 
 import ArticleCard from '../components/Card';
@@ -122,14 +122,13 @@ ArticleList.propTypes = {
     }).isRequired,
   ).isRequired,
   state: PropTypes.shape({
-    refreshing: PropTypes.bool,
     success: PropTypes.bool,
     loading: PropTypes.shape({
       next: PropTypes.bool,
       initial: PropTypes.bool,
       refresh: PropTypes.bool,
     }),
-    nextLoading: PropTypes.bool,
+    error: PropTypes.shape(),
   }).isRequired,
   theme: PropTypes.shape({
     colors: PropTypes.shape({

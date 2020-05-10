@@ -1,5 +1,7 @@
+import data from '../../../data/petitionListData.json';
+
 const initialState = {
-  data: [],
+  data,
   state: {
     success: null,
     refreshing: false,
@@ -8,37 +10,37 @@ const initialState = {
       initial: false,
       refresh: false,
       next: false,
-      article: false,
+      petition: false,
     },
   },
 };
 
 /**
  * @docs reducers
- * Reducer pour les articles
+ * Reducer pour les petitions
  * @param {object} state Contient le contenu de la database redux
  * @param {object} action
- * @param {string} action.type ['UPDATE_ARTICLES', 'CLEAR_ARTICLES'] Le type d'action à effectuer: mettre à jour les articles avec action.data ou vider la database
+ * @param {string} action.type ['UPDATE_PETITIONS', 'CLEAR_PETITIONS'] Le type d'action à effectuer: mettre à jour les petitions avec action.data ou vider la database
  * @param {object} action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
-function articleReducer(state = initialState, action) {
+function petitionReducer(state = initialState, action) {
   switch (action.type) {
-    case 'UPDATE_ARTICLES_STATE':
+    case 'UPDATE_PETITIONS_STATE':
       return {
         ...state,
         state: action.data,
       };
-    case 'UPDATE_ARTICLES':
+    case 'UPDATE_PETITIONS':
       return {
         ...state,
         data: action.data,
       };
-    case 'CLEAR_DATABASE':
-      return { articles: [], state: state.state };
+    case 'CLEAR_PETITIONS':
+      return { data: [], state: state.state };
     default:
       return state;
   }
 }
 
-export default articleReducer;
+export default petitionReducer;
