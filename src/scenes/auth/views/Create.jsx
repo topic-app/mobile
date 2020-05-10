@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { register, updateState } from '@redux/actions/account';
+import { register, updateState } from '@redux/actions/data/account';
 import StepperViewPager from '@components/StepperViewPager';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';

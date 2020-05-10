@@ -2,11 +2,13 @@ import React from 'react';
 import { List, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
+import { connect } from 'react-redux';
 
-import getStyles from '../../../../styles/Styles';
+import getStyles from '@styles/Styles';
+import themes from '@styles/Theme';
 import getSettingsStyles from '../styles/Styles';
 
-function SettingsList({ navigation }) {
+function SettingsList({ navigation, preferences }) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const settingsStyles = getSettingsStyles(theme);
@@ -16,7 +18,7 @@ function SettingsList({ navigation }) {
       <List.Section>
         <List.Item
           title="Theme"
-          description="Clair"
+          description={themes[preferences.theme]?.name}
           left={() => <List.Icon icon="brightness-6" />}
           onPress={() => navigation.navigate('Theme')}
           style={settingsStyles.listItem}
@@ -29,8 +31,8 @@ function SettingsList({ navigation }) {
           style={settingsStyles.listItem}
         />
         <List.Item
-          title="Qualité d'Images"
-          description="Haute, Moyenne, Basse"
+          title="Changer de location"
+          description="Todo"
           left={() => <List.Icon icon="image-outline" />}
           onPress={() => console.log('Animations')}
           style={settingsStyles.listItem}
@@ -42,22 +44,23 @@ function SettingsList({ navigation }) {
           onPress={() => console.log('Notification')}
           style={settingsStyles.listItem}
         />
-        <List.Item
-          title="Autre"
-          description="Version, Crédits, licenses etc"
-          left={() => <List.Icon icon="help-circle-outline" />}
-          onPress={() => console.log('Other')}
-          style={settingsStyles.listItem}
-        />
       </List.Section>
     </View>
   );
 }
 
+const mapStateToProps = (state) => {
+  const { preferences } = state;
+  return { preferences };
+};
+
 SettingsList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  preferences: PropTypes.shape({
+    theme: PropTypes.string,
+  }).isRequired,
 };
 
-export default SettingsList;
+export default connect(mapStateToProps)(SettingsList);

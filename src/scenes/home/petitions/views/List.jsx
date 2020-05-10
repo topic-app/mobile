@@ -95,7 +95,7 @@ function PetitionList({ navigation, petitions, theme }) {
 
 const mapStateToProps = (state) => {
   const { petitions } = state;
-  return { petitions };
+  return { petitions: petitions.data, state: petitions.state };
 };
 
 export default connect(mapStateToProps)(withTheme(PetitionList));
@@ -130,6 +130,15 @@ PetitionList.propTypes = {
       votes: PropTypes.string,
     }),
   ).isRequired,
+  state: PropTypes.shape({
+    success: PropTypes.bool,
+    loading: PropTypes.shape({
+      next: PropTypes.bool,
+      initial: PropTypes.bool,
+      refresh: PropTypes.bool,
+    }),
+    error: PropTypes.shape(),
+  }).isRequired,
   theme: PropTypes.shape({
     colors: PropTypes.shape({
       primary: PropTypes.string.isRequired,

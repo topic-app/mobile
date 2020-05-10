@@ -33,6 +33,9 @@ function getNavigatorStyles(theme) {
       backgroundColor: colors.drawerBackground,
       paddingTop: StatusBar.currentHeight,
     },
+    locationBackground: {
+      backgroundColor: colors.drawerBackground,
+    },
     drawerStyle: {
       backgroundColor: colors.surface,
     },

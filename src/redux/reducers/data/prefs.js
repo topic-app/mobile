@@ -1,4 +1,4 @@
-import { config } from '../../../app.json';
+import { config } from '../../../../app.json';
 /**
  * @docs reducers
  * Reducer pour les preferences

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import Content from '@components/Content';
 import TagList from '@components/TagList';
 import getStyles from '@styles/Styles';
-import { fetchArticle } from '@redux/actions/articles';
+import { fetchArticle } from '@redux/actions/api/articles';
 
 function ArticleDisplay({ route, articles, state, theme }) {
   const { id } = route.params;

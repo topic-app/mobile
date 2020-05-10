@@ -22,12 +22,21 @@ function PetitionDisplay({ route, petitions, theme }) {
 
 const mapStateToProps = (state) => {
   const { petitions } = state;
-  return { petitions };
+  return { petitions: petitions.data, state: petitions.state };
 };
 
 export default connect(mapStateToProps)(withTheme(PetitionDisplay));
 
 PetitionDisplay.propTypes = {
+  state: PropTypes.shape({
+    success: PropTypes.bool,
+    loading: PropTypes.shape({
+      next: PropTypes.bool,
+      initial: PropTypes.bool,
+      refresh: PropTypes.bool,
+    }),
+    error: PropTypes.shape(),
+  }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,

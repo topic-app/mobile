@@ -62,7 +62,7 @@ function EventDisplay({ route, events }) {
 
 const mapStateToProps = (state) => {
   const { events } = state;
-  return { events };
+  return { events: events.data, state: events.state };
 };
 
 export default connect(mapStateToProps)(EventDisplay);
@@ -72,6 +72,15 @@ EventDisplay.propTypes = {
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,
     }).isRequired,
+  }).isRequired,
+  state: PropTypes.shape({
+    success: PropTypes.bool,
+    loading: PropTypes.shape({
+      next: PropTypes.bool,
+      initial: PropTypes.bool,
+      refresh: PropTypes.bool,
+    }),
+    error: PropTypes.shape(),
   }).isRequired,
   events: PropTypes.arrayOf(
     PropTypes.shape({

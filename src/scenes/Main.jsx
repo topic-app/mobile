@@ -1,6 +1,8 @@
 import React from 'react';
 import { Platform } from 'react-native';
+import PropTypes from 'prop-types';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { connect } from 'react-redux';
 
 import DisplayStackNavigator from './display/index';
 import MoreStackNavigator from './more/index';
@@ -29,7 +31,12 @@ if (Platform.OS === 'ios') {
 
 const Stack = createStackNavigator();
 
-function MainNavigator() {
+function MainNavigator({ navigation, location }) {
+  if (!location.selected) {
+    navigation.navigate('Landing', {
+      screen: 'Welcome',
+    });
+  }
   return (
     <Stack.Navigator initialRouteName="Home1" headerMode="none" screenOptions={screenOptions}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
@@ -40,4 +47,16 @@ function MainNavigator() {
   );
 }
 
-export default MainNavigator;
+const mapStateToProps = (state) => {
+  const { location } = state;
+  return { location };
+};
+
+MainNavigator.propTypes = {
+  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  location: PropTypes.shape({
+    selected: PropTypes.bool,
+  }).isRequired,
+};
+
+export default connect(mapStateToProps)(MainNavigator);

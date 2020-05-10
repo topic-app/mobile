@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Linking } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
-import { Drawer, Avatar, Title, withTheme } from 'react-native-paper';
+import { Drawer, Avatar, Title, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import getNavigatorStyles from '@styles/NavStyles';
-
 import HomeTwoNavigator from './HomeTwo';
+
+const topicIcon = require('@assets/images/topic-icon-circle.png');
 
 const DrawerNav = createDrawerNavigator();
 
@@ -18,52 +19,56 @@ function genName({ data, info }) {
   return data.firstName || data.lastName || info.username;
 }
 
-function CustomDrawerContent({ navigation, loggedIn, accountInfo, theme }) {
-  const navigatorStyles = getNavigatorStyles(theme);
+function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
+  const navigatorStyles = getNavigatorStyles(useTheme());
+  console.log(`Location ${JSON.stringify(location)}`);
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <View style={navigatorStyles.profileBackground}>
-        {loggedIn && (
-          <View style={navigatorStyles.profileIconContainer}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Avatar.Image
-                size={55}
-                style={[navigatorStyles.avatar, { marginRight: 10 }]}
-                source={{ uri: 'https://i.picsum.photos/id/1005/400/400.jpg' }}
-              />
-              {/*
-              <FlatList
-                horizontal
-                scrollEnabled={false}
-                data={[
-                  { groupId: '1', thumbnailUrl: 'https://picsum.photos/seed/1/200/200' },
-                  { groupId: '2', thumbnailUrl: 'https://picsum.photos/seed/2/200/200' },
-                  { groupId: '3', thumbnailUrl: 'https://picsum.photos/seed/3/200/200' },
-                ]}
-                keyExtractor={(group) => group.groupId}
-                style={{ marginVertical: 7 }}
-                renderItem={({ item, index }) => (
-                  <View style={{ marginLeft: index === 0 ? 0 : -8 }} key={item.groupId}>
-                    <Avatar.Image size={30} source={{ uri: item.thumbnailUrl }} />
-                  </View>
-                )}
-              />
-              */}
-            </View>
-
-            <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
-              {genName(accountInfo.user)}
-            </Title>
+        {(!location.state || location.state.loading) && <ProgressBar indeterminate />}
+        <View style={navigatorStyles.profileIconContainer}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Avatar.Image
+              size={55}
+              style={[navigatorStyles.avatar, { marginRight: 10 }]}
+              source={topicIcon}
+            />
+            {!loggedIn && <Title>Topic</Title>}
           </View>
-        )}
+          {loggedIn && (
+            <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
+              {genName(accountInfo?.user)}
+            </Title>
+          )}
+        </View>
       </View>
-      <Drawer.Section style={{ marginTop: -4 }} />
+      <Drawer.Section style={navigatorStyles.locationBackground}>
+        {location.schoolData.map((school) => (
+          <Drawer.Item
+            key={school?._id}
+            icon="school"
+            label={school?.shortName || school?.name}
+            onPress={() => {
+              console.log('School pressed');
+            }}
+          />
+        ))}
+        {location.departmentData.map((departement) => (
+          <Drawer.Item
+            key={departement?._id}
+            icon="home-city"
+            label={departement?.shortName || departement?.name}
+          />
+        ))}
+        {location.global && <Drawer.Item icon="flag" label="France entière" />}
+      </Drawer.Section>
       {loggedIn ? (
         <Drawer.Section>
           <Drawer.Item
             label="Mon Profil"
             icon="account-outline"
             onPress={() => {
+              navigation.closeDrawer();
               navigation.navigate('Main', {
                 screen: 'More',
                 params: { screen: 'Profile', params: { screen: 'Profile' } },
@@ -74,6 +79,7 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, theme }) {
             label="Mes Groupes"
             icon="account-group-outline"
             onPress={() => {
+              navigation.closeDrawer();
               navigation.navigate('Main', {
                 screen: 'More',
                 params: { screen: 'MyGroups', params: { screen: 'List' } },
@@ -94,6 +100,7 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, theme }) {
             label="Se connecter"
             icon="account-outline"
             onPress={() => {
+              navigation.closeDrawer();
               navigation.navigate('Auth', {
                 screen: 'Login',
               });
@@ -103,6 +110,7 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, theme }) {
             label="Créer un compte"
             icon="account-plus-outline"
             onPress={() => {
+              navigation.closeDrawer();
               navigation.navigate('Auth', {
                 screen: 'Create',
               });
@@ -144,14 +152,14 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, theme }) {
 }
 
 const mapStateToProps = (state) => {
-  const { account } = state;
-  return { accountInfo: account.accountInfo, loggedIn: account.loggedIn };
+  const { account, location } = state;
+  return { accountInfo: account.accountInfo, loggedIn: account.loggedIn, location };
 };
 
-const CustomDrawerContentRedux = connect(mapStateToProps)(withTheme(CustomDrawerContent));
+const CustomDrawerContentRedux = connect(mapStateToProps)(CustomDrawerContent);
 
-function HomeOneNavigator({ theme }) {
-  const navigatorStyles = getNavigatorStyles(theme);
+function HomeOneNavigator() {
+  const navigatorStyles = getNavigatorStyles(useTheme());
   return (
     <DrawerNav.Navigator
       initialRouteName="Home2"
@@ -164,11 +172,7 @@ function HomeOneNavigator({ theme }) {
   );
 }
 
-HomeOneNavigator.propTypes = {
-  theme: PropTypes.shape({}).isRequired,
-};
-
-export default withTheme(HomeOneNavigator);
+export default HomeOneNavigator;
 
 CustomDrawerContent.defaultProps = {
   accountInfo: {
@@ -188,5 +192,12 @@ CustomDrawerContent.propTypes = {
       // Todo
     }),
   }),
-  theme: PropTypes.shape({}).isRequired,
+  location: PropTypes.shape({
+    schoolData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    departmentData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    global: PropTypes.bool.isRequired,
+    state: PropTypes.shape({
+      loading: PropTypes.bool.isRequired,
+    }),
+  }).isRequired,
 };

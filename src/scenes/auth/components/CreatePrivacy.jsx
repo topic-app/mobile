@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Platform } from 'react-native';
 import { Button, RadioButton, List, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { updateCreationData } from '@redux/actions/account';
+import { updateCreationData } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
 
