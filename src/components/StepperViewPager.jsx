@@ -128,6 +128,7 @@ function StepperViewPager({
     const newPage = currentPage + 1;
     setCurrentPage(newPage);
     viewPagerRef.current.setPage(newPage);
+    console.log({ newPage });
   };
 
   const skipForward = () => {
@@ -243,9 +244,10 @@ function StepperViewPager({
   const pageLabels = pages.map((item) => item.label);
   const pageIcons = pages.map((item) => item.icon);
   const pageHeights = pages.map((item) => item.height);
-  const pageComponents = pages.map(({ component: Component, params }) => {
+  const pageComponents = pages.map(({ component: Component, params }, index) => {
     return (
-      <View key={shortid()}>
+      // eslint-disable-next-line react/no-array-index-key
+      <View key={index}>
         <Component
           forward={moveForward}
           backward={moveBackward}

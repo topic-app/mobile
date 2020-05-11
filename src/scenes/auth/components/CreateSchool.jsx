@@ -19,8 +19,8 @@ function AuthCreatePageSchool({ forward, backward, location }) {
   };
 
   const theme = useTheme();
-  const { colors } = theme;
   const authStyles = getAuthStyles(theme);
+  const { colors } = theme;
 
   return (
     <View style={authStyles.formContainer}>
@@ -68,5 +68,27 @@ export default connect(mapStateToProps)(AuthCreatePageSchool);
 AuthCreatePageSchool.propTypes = {
   forward: PropTypes.func.isRequired,
   backward: PropTypes.func.isRequired,
-  location: PropTypes.shape().isRequired,
+  location: PropTypes.shape({
+    schools: PropTypes.arrayOf(PropTypes.string),
+    departments: PropTypes.arrayOf(PropTypes.string),
+    global: PropTypes.bool,
+    schoolData: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        types: PropTypes.arrayOf(PropTypes.string),
+        address: PropTypes.shape({
+          shortName: PropTypes.string,
+          address: PropTypes.shape({
+            city: PropTypes.string,
+          }),
+        }),
+      }),
+    ),
+    departmentData: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        type: PropTypes.string,
+      }),
+    ),
+  }).isRequired,
 };
