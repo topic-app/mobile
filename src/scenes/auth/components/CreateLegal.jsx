@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { View, Platform, Linking } from 'react-native';
 import { HelperText, Button, Checkbox, List, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 import getAuthStyles from '../styles/Styles';
 
 import { ListHeading, ListItem, ListItemAnchor } from './ListComponents';
 
-function AuthCreatePageLegal({ backward, creationData, create }) {
+function AuthCreatePageLegal({ backward, userEmail, create }) {
   const [terms, setTerms] = useState(false);
   const [email, setEmail] = useState(false);
   const [termsError, setTermsError] = useState({ error: false, message: '' });
@@ -132,9 +131,7 @@ function AuthCreatePageLegal({ backward, creationData, create }) {
           onPress={() => setTerms(!terms)}
         />
         <List.Item
-          title={`Je confirme que mon addresse mail est bien ${
-            creationData ? creationData.email : ''
-          }`}
+          title={`Je confirme que mon addresse mail est bien ${userEmail ?? ''}`}
           left={() =>
             Platform.OS !== 'ios' ? (
               <Checkbox status={email ? 'checked' : 'unchecked'} color={colors.primary} />
@@ -173,23 +170,14 @@ function AuthCreatePageLegal({ backward, creationData, create }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  const { account } = state;
-  return { creationData: account.creationData };
-};
-
-export default connect(mapStateToProps)(AuthCreatePageLegal);
+export default AuthCreatePageLegal;
 
 AuthCreatePageLegal.defaultProps = {
-  creationData: {
-    email: '',
-  },
+  userEmail: '',
 };
 
 AuthCreatePageLegal.propTypes = {
   create: PropTypes.func.isRequired,
   backward: PropTypes.func.isRequired,
-  creationData: PropTypes.shape({
-    email: PropTypes.string,
-  }),
+  userEmail: PropTypes.string,
 };

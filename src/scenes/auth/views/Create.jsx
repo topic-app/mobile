@@ -12,7 +12,7 @@ import AuthCreatePageProfile from '../components/CreateProfile';
 import AuthCreatePageLegal from '../components/CreateLegal';
 
 function AuthCreate({ navigation, reqState, creationData }) {
-  const viewPagerRef = React.useRef(null);
+  const viewPagerRef = React.useRef();
 
   const create = () => {
     const reqParams = {
@@ -69,7 +69,7 @@ function AuthCreate({ navigation, reqState, creationData }) {
           icon: 'script-text',
           label: 'Conditions',
           component: AuthCreatePageLegal,
-          params: { creationData, create },
+          params: { userEmail: creationData.email, create },
           height: 950,
         },
       ]}
@@ -131,7 +131,17 @@ AuthCreate.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
-  creationData: PropTypes.shape(),
+  creationData: PropTypes.shape({
+    username: PropTypes.string,
+    email: PropTypes.string,
+    password: PropTypes.string,
+    global: PropTypes.bool,
+    schools: PropTypes.arrayOf(PropTypes.string),
+    departments: PropTypes.arrayOf(PropTypes.string),
+    accountType: PropTypes.string,
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+  }),
   reqState: PropTypes.shape({
     error: PropTypes.any,
     success: PropTypes.bool,

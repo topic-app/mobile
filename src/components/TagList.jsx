@@ -109,37 +109,39 @@ function TagList({ item, type, theme }) {
   const { colors } = theme;
 
   return (
-    <FlatList
-      style={{ paddingVertical: 7 }}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      data={data} // TODO: Use location, group author instead of tags
-      keyExtractor={(tag) => tag.type + tag.id}
-      renderItem={({ item: tag, index: tagIndex }) => (
-        <View
-          style={{
-            marginLeft: tagIndex === 0 ? 15 : 5,
-            marginRight: tagIndex === data.length - 1 ? 15 : 5,
-          }}
-        >
-          <Chip
-            mode="outlined"
-            icon={tag.avatar ? '' : tag.icon}
-            // TODO: Changer la couleur de l'icone
-            avatar={tag.avatar ? <Avatar.Image size={24} source={{ uri: tag.avatar }} /> : ''}
-            style={[
-              styles.tag,
-              {
-                borderColor: tag.color || colors.disabled,
-              },
-            ]}
-            textStyle={styles.tagContent}
+    <View onStartShouldSetResponder={() => true}>
+      <FlatList
+        style={{ paddingVertical: 7 }}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        data={data} // TODO: Use location, group author instead of tags
+        keyExtractor={(tag) => tag.type + tag.id}
+        renderItem={({ item: tag, index: tagIndex }) => (
+          <View
+            style={{
+              marginLeft: tagIndex === 0 ? 15 : 5,
+              marginRight: tagIndex === data.length - 1 ? 15 : 5,
+            }}
           >
-            {tag.text}
-          </Chip>
-        </View>
-      )}
-    />
+            <Chip
+              mode="outlined"
+              icon={tag.avatar ? '' : tag.icon}
+              // TODO: Changer la couleur de l'icone
+              avatar={tag.avatar ? <Avatar.Image size={24} source={{ uri: tag.avatar }} /> : ''}
+              style={[
+                styles.tag,
+                {
+                  borderColor: tag.color || colors.disabled,
+                },
+              ]}
+              textStyle={styles.tagContent}
+            >
+              {tag.text}
+            </Chip>
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
