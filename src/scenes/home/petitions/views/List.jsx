@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, Animated } from 'react-native';
-import { Button, withTheme } from 'react-native-paper';
+import { Button, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
@@ -10,7 +10,9 @@ import getStyles from '@styles/Styles';
 
 import PetitionCard from '../components/Card';
 
-function PetitionList({ navigation, petitions, theme }) {
+function PetitionList({ navigation, petitions }) {
+  const theme = useTheme();
+
   const scrollY = new Animated.Value(0);
   const styles = getStyles(theme);
 
@@ -98,7 +100,7 @@ const mapStateToProps = (state) => {
   return { petitions: petitions.data, state: petitions.state };
 };
 
-export default connect(mapStateToProps)(withTheme(PetitionList));
+export default connect(mapStateToProps)(PetitionList);
 
 PetitionList.propTypes = {
   navigation: PropTypes.shape({
@@ -130,19 +132,4 @@ PetitionList.propTypes = {
       votes: PropTypes.string,
     }),
   ).isRequired,
-  state: PropTypes.shape({
-    success: PropTypes.bool,
-    loading: PropTypes.shape({
-      next: PropTypes.bool,
-      initial: PropTypes.bool,
-      refresh: PropTypes.bool,
-    }),
-    error: PropTypes.shape(),
-  }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
 };

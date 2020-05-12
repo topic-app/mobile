@@ -11,9 +11,10 @@ import AppNavigator from './index';
 
 function StoreApp({ preferences }) {
   let theme;
+  const systemTheme = useColorScheme();
+
   if (preferences.theme === 'system') {
-    theme = themes[useColorScheme() === 'dark' ? 'dark' : 'light'];
-    theme.dark = useColorScheme() === 'dark';
+    theme = themes[systemTheme === 'dark' ? 'dark' : 'light'];
   } else {
     theme = themes[preferences.theme];
   }

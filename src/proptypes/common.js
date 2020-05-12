@@ -197,7 +197,7 @@ const petitionPropType = PropTypes.shape({
   summary: PropTypes.string.isRequired,
   content: contentPropType,
   voteData: voteDataPropType.isRequired,
-  status: PropTypes.oneOf(['open', 'closed']).isRequired, // Any other status?
+  status: PropTypes.oneOf(['open', 'waiting', 'rejected', 'answered']).isRequired,
   duration: durationPropType.isRequired,
   publisher: PropTypes.shape({
     type: PropTypes.oneOf(['user', 'group']).isRequired,

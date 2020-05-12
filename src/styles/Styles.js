@@ -44,7 +44,6 @@ function getStyles(theme) {
     cardTitle: {
       color: colors.text,
       fontSize: 18,
-      fontWeight: '400',
       marginBottom: 5,
     },
     title: {
