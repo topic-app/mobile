@@ -1,11 +1,12 @@
 [
   {
     "_id": "1",
-    "title": "Pétition sur les pigeons",
+    "title": "Mettons fin au gaspillage allimentaire au CIV",
+    "status": "open",
     "voteData": {
       "type": "goal",
-      "votes": 300,
-      "goal": 300
+      "votes": 600,
+      "goal": 2000
     },
     "duration": {
       "start": "2020-03-30T19:25:43.511Z",
@@ -90,14 +91,14 @@
 
   {
     "_id": "2",
-    "title": "Pétition sur les changement de meteo",
+    "title": "Pétition sur les changement de meteo mais pas que",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
     "date": "jj/mm/aaaa   min/heure",
     "duration": {
       "start": "2020-03-30T19:25:43.511Z",
       "end": "2020-05-30T19:25:43.511Z"
     },
-    "status": "open",
+    "status": "rejected",
     "voteData": {
       "type": "sign",
       "votes": 652
@@ -140,21 +141,23 @@
 
   {
     "_id": "3",
-    "title": "Pétition sur les changements de meteo",
+    "title": "Nous marcherons le 24 novembre contre les violences sexistes et sexuelles",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
     "date": "jj/mm/aaaa   min/heure",
     "duration": {
       "start": "2020-03-30T19:25:43.511Z",
       "end": "2020-04-11T20:00:00.000Z"
     },
-    "status": "open",
+    "status": "answered",
     "voteData": {
       "type": "multiple",
       "opinions": [
-        { "title": "Frites", "votes": 400 },
-        { "title": "Carottes", "votes": 0 },
-        { "title": "Ferrari", "votes": 69 },
-        { "title": "Glace", "votes": 7 }
+        { "title": "Frites et hamburgers", "votes": 1000 },
+        { "title": "Carottes", "votes": 500 },
+        { "title": "Ferrari", "votes": 300 },
+        { "title": "Glace", "votes": 920 },
+        { "title": "Salade", "votes": 400 },
+        { "title": "Patates", "votes": 210 }
       ]
     },
     "publisher": {
@@ -202,7 +205,57 @@
       "start": "2020-04-11T10:25:43.511Z",
       "end": "2156-12-30T23:59:59.999Z"
     },
-    "status": "open",
+    "status": "rejected",
+    "voteData": {
+      "type": "opinion",
+      "for": 200,
+      "against": 20
+    },
+    "publisher": {
+      "type": "user",
+      "user": {
+        "_id": "12843297539",
+        "displayName": "Benjamin Sengupta"
+      }
+    },
+    "tags": [
+      {
+        "displayName": "Tag 1",
+        "color": "red",
+        "_id": "39150923"
+      },
+      {
+        "displayName": "Tag 2",
+        "color": "blue",
+        "_id": "51213984149"
+      }
+    ],
+    "location": {
+      "global": false,
+      "schools": [
+        {
+          "_id": "94132519237",
+          "displayName": "Pasteur"
+        }
+      ],
+      "departments": [
+        {
+          "_id": "5123904235973",
+          "displayName": "Pac"
+        }
+      ]
+    }
+  },
+  {
+    "_id": "5",
+    "title": "On expulse Macron",
+    "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
+    "date": "jj/mm/aaaa   min/heure",
+    "duration": {
+      "start": "2020-04-11T10:25:43.511Z",
+      "end": "2156-12-30T23:59:59.999Z"
+    },
+    "status": "rejected",
     "voteData": {
       "type": "opinion",
       "for": 200,

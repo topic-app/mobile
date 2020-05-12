@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
-import { Text, Avatar, Card, IconButton, List, Button, withTheme } from 'react-native-paper';
+import { Text, Avatar, Card, useTheme } from 'react-native-paper';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import 'moment/locale/fr';
 
 import TagList from '@components/TagList';
 import getStyles from '@styles/Styles';
 import getEventStyles from '../styles/Styles';
 
 function buildDateString(start, end) {
-  moment.updateLocale('fr');
   const now = moment();
   const startDate = moment(start);
   const endDate = moment(end);
@@ -29,11 +27,11 @@ function buildDateString(start, end) {
   return `Prévu - ${startDate.calendar()} (${startDate.fromNow()})`;
 }
 
-function EventCard({ event, navigate, theme }) {
+function EventCard({ event, navigate }) {
   const { start, end } = event.duration;
 
+  const theme = useTheme();
   const { colors } = theme;
-
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
 
@@ -104,7 +102,7 @@ function EventCard({ event, navigate, theme }) {
   );
 }
 
-export default withTheme(EventCard);
+export default EventCard;
 
 EventCard.propTypes = {
   event: PropTypes.shape({
@@ -121,12 +119,7 @@ EventCard.propTypes = {
       data: PropTypes.string.isRequired,
     }).isRequired,
     summary: PropTypes.string.isRequired,
+    address: PropTypes.object,
   }).isRequired,
   navigate: PropTypes.func.isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string,
-      disabled: PropTypes.string,
-    }).isRequired,
-  }).isRequired,
 };

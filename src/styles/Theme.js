@@ -1,5 +1,6 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 import { Platform } from 'react-native';
+import { solidLight, solidDark } from './SolidColors';
 
 const common = {
   roundness: Platform.OS === 'ios' ? 15 : 5,
@@ -19,6 +20,7 @@ const lightBase = {
   colors: {
     ...DefaultTheme.colors,
     ...common.colors,
+    solid: solidLight,
     appBar: '#ffffff',
     tabBackground: '#ffffff',
     drawerBackground: '#ffffff',
@@ -39,11 +41,13 @@ const lightBase = {
 
 const darkBase = {
   ...DarkTheme,
+  // Note: 'dark: true' is included in ...DarkTheme,
   ...common,
   statusBarContentTheme: 'light',
   colors: {
     ...DarkTheme.colors,
     ...common.colors,
+    solid: solidDark,
     primary: common.colors.primaryLighter,
     appBar: '#242529',
     tabBackground: '#242529',
@@ -57,7 +61,8 @@ const darkBase = {
     image: '#444444',
     subtext: '#666666',
     muted: '#999999',
-    valid: '#28a127',
+    valid: '#217c20',
+    error: '#841616',
     invalid: '#8f4e5a',
   },
 };
@@ -82,15 +87,14 @@ const themes = {
     colors: {
       ...lightBase.colors,
       appBar: common.colors.primary,
-      // Optional: defines text color on drawer background, default is
       drawerBackground: common.colors.primaryLighter,
+      // Optional: drawerContent defines text color that rests on the drawer background
       drawerContent: darkBase.colors.text,
     },
   },
   dark: {
     name: 'Sombre',
     value: 'dark',
-    dark: true,
     ...darkBase,
   },
 };

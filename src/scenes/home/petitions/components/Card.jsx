@@ -1,152 +1,89 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Platform, View, Text, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
+import { Platform, View, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Card, ProgressBar, withTheme } from 'react-native-paper';
+import { Card, ProgressBar, Text, useTheme } from 'react-native-paper';
 import moment from 'moment';
+import _ from 'lodash';
 
 import TagList from '@components/TagList';
 import getStyles from '@styles/Styles';
+import getPetitionStyles from '../styles/Styles';
+import MultiVote from './MultiVote';
 
-function PetitionGoalStatus({ petition, theme }) {
-  const styles = getStyles(theme);
-  if (petition.voteData.votes < petition.voteData.goal) {
-    return (
-      <View style={{ marginHorizontal: 15, marginVertical: 4 }}>
-        <Text style={styles.cardTitle}>{petition.title}</Text>
-      </View>
-    );
-  }
+function PetitionSign({ voteData }) {
+  const petitionStyles = getPetitionStyles(useTheme());
+  return (
+    <Text style={[petitionStyles.signText, { fontWeight: 'bold' }]}>
+      {voteData.votes} signatures
+    </Text>
+  );
+}
+
+function PetitionGoal({ voteData }) {
+  const theme = useTheme();
+  const { colors } = theme;
+  const petitionStyles = getPetitionStyles(useTheme());
+  const { votes, goal } = voteData;
+
+  const getLeftSpacing = (vote) => {
+    const offset = 7;
+    // Return left spacing in percentage while making sure it stays in between 0% and 90%
+    return `${_.clamp(Math.round((vote / goal) * 100 - offset), 0, 90)}%`;
+  };
+
   return (
     <View>
-      <View style={{ marginHorizontal: 15, marginVertical: 4, marginLeft: 40 }}>
-        <Text style={styles.cardTitle}>{petition.title}</Text>
+      <View style={petitionStyles.progressContainer}>
+        <ProgressBar
+          style={[petitionStyles.progress, petitionStyles.progressRadius]}
+          progress={votes / goal}
+        />
+        <Text style={[petitionStyles.voteLabel, { left: getLeftSpacing(votes) }]}>{votes}</Text>
+        <Text style={{ position: 'absolute', right: 0, top: -24, color: colors.subtitle }}>
+          {goal}
+        </Text>
       </View>
-      <View style={{ marginTop: -29, marginLeft: 15 }}>
-        <MaterialCommunityIcons name="check" color="green" size={20} />
-      </View>
+      <Text style={petitionStyles.signText}>
+        <Text style={{ fontWeight: 'bold' }}>{votes}</Text> / {goal} signatures
+      </Text>
     </View>
   );
 }
 
-function PetitionSign({ petition, theme }) {
-  const styles = getStyles(theme);
+function PetitionMultiple({ voteData }) {
+  const { colors } = useTheme();
+  return <MultiVote items={voteData.opinions} barColors={Object.values(colors.solid)} />;
+}
+
+function PetitionOpinion({ voteData }) {
+  const theme = useTheme();
+  const { colors } = theme;
   return (
     <View>
-      <View style={{ marginHorizontal: 15, marginVertical: 4 }}>
-        <Text style={styles.cardTitle}>{petition.title}</Text>
-      </View>
-      <View style={{ marginLeft: 15 }}>
-        <Text style={styles.text}>Signatures: {petition.voteData.votes}</Text>
-      </View>
+      <MultiVote
+        items={[
+          { title: 'Pour', votes: voteData.for },
+          { title: 'Contre', votes: voteData.against },
+        ]}
+        barColors={[colors.valid, colors.error]}
+        showAllLabels
+      />
     </View>
   );
 }
 
-function PetitionGoal({ petition, theme }) {
-  const styles = getStyles(theme);
-  return (
-    <View>
-      <PetitionGoalStatus theme={theme} petition={petition} />
-      <View style={{ marginVertical: 10, marginHorizontal: 15 }}>
-        <View>
-          <ProgressBar
-            progress={petition.voteData.votes / petition.voteData.goal}
-            color="#4c3e8e"
-          />
-        </View>
-        <View style={{ flexDirection: 'row', marginHorizontal: 15 }}>
-          <View>
-            <Text style={styles.text}>Signatures: {petition.voteData.votes} /</Text>
-          </View>
-          <View>
-            <Text style={styles.text}> Objectif: {petition.voteData.goal}</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-function PetitionOpinion({ petition, theme }) {
-  const styles = getStyles(theme);
-  return (
-    <View>
-      <View style={{ marginHorizontal: 15, marginVertical: 4 }}>
-        <Text style={styles.cardTitle}>{petition.title}</Text>
-      </View>
-      <View>
-        <View style={{ marginVertical: 4, marginHorizontal: 15 }}>
-          <View>
-            <ProgressBar
-              progress={petition.voteData.for / (petition.voteData.for + petition.voteData.against)}
-              color="green"
-            />
-          </View>
-          <View>
-            <Text style={styles.text}> Pour: {petition.voteData.for}</Text>
-          </View>
-        </View>
-        <View style={{ marginVertical: 4, marginHorizontal: 15 }}>
-          <View>
-            <ProgressBar
-              progress={
-                petition.voteData.against / (petition.voteData.for + petition.voteData.against)
-              }
-              color="red"
-            />
-          </View>
-          <View>
-            <Text style={styles.text}> Contre: {petition.voteData.against}</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-function PetitionMultiple({ petition, theme }) {
-  const styles = getStyles(theme);
-  let total = 0;
-  petition.voteData.opinions.forEach((opinion) => {
-    total += opinion.votes;
-  });
-  return (
-    <View>
-      <View style={{ marginHorizontal: 15, marginVertical: 4 }}>
-        <Text style={styles.cardTitle}>{petition.title}</Text>
-      </View>
-      <View>
-        <View>
-          {petition.voteData.opinions.map((opinion, key) => (
-            <View key={key} style={{ marginVertical: 3, marginHorizontal: 15 }}>
-              <View>
-                <ProgressBar progress={opinion.votes / total} />
-              </View>
-              <View>
-                <Text style={styles.text}>
-                  {opinion.title}: {opinion.votes}
-                </Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      </View>
-    </View>
-  );
-}
-
-function renderPetition(petition, theme) {
-  switch (petition.voteData.type) {
+function renderPetitionVote(voteData) {
+  switch (voteData.type) {
     case 'sign':
-      return <PetitionSign theme={theme} petition={petition} />;
+      return <PetitionSign voteData={voteData} />;
     case 'goal':
-      return <PetitionGoal theme={theme} petition={petition} />;
+      return <PetitionGoal voteData={voteData} />;
     case 'opinion':
-      return <PetitionOpinion theme={theme} petition={petition} />;
+      return <PetitionOpinion voteData={voteData} />;
     case 'multiple':
-      return <PetitionMultiple theme={theme} petition={petition} />;
+      return <PetitionMultiple voteData={voteData} />;
     default:
       return (
         <View>
@@ -156,80 +93,188 @@ function renderPetition(petition, theme) {
   }
 }
 
-function PetitionComponentListCard({ navigate, petition, theme }) {
-  const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
+function getShortTime(time) {
+  // If time is in the past
+  if (moment(time).isBefore()) {
+    return null;
+  }
+  // If time is within 1 hour
+  if (moment(time).isBefore(moment().add(1, 'hour'))) {
+    return `${moment(time).diff(moment(), 'minutes')} min`;
+  }
+  // If time is within 1 day
+  if (moment(time).isBefore(moment().add(1, 'day'))) {
+    return `${moment(time).diff(moment(), 'hours')} h`;
+  }
+  if (moment(time).isBefore(moment().add(1, 'month'))) {
+    return `${moment(time).diff(moment(), 'hours')} j`;
+  }
+  if (moment(time).isBefore(moment().add(1, 'year'))) {
+    return `${moment(time).diff(moment(), 'months')} mois`;
+  }
+  return `${moment(time).diff(moment(), 'years')} ans`;
+}
+
+function StatusChip({ mode, color, icon, label }) {
+  const theme = useTheme();
+  const { colors } = theme;
+
+  if (label === null) return null;
+
+  let viewStyles;
+  let textColor;
+
+  switch (mode) {
+    case 'text':
+      viewStyles = {
+        backgroundColor: 'transparent',
+      };
+      textColor = color;
+      break;
+    case 'outlined':
+      viewStyles = {
+        backgroundColor: colors.surface,
+        borderWidth: 0.7,
+        borderColor: color,
+      };
+      textColor = color;
+      break;
+    default:
+      viewStyles = {
+        backgroundColor: color,
+        elevation: 1,
+      };
+      textColor = colors.surface;
+  }
+
+  return (
+    <View
+      style={{
+        height: 25,
+        paddingLeft: 4,
+        paddingRight: 6,
+        marginTop: 2,
+        marginLeft: 4,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRadius: theme.roundness,
+        ...viewStyles,
+      }}
+    >
+      <MaterialCommunityIcons name={icon} color={textColor} size={17} />
+      <Text style={{ color: textColor, fontSize: 13 }}> {label}</Text>
+    </View>
+  );
+}
+
+function renderPetitionStatus(status, theme) {
+  const { colors } = theme;
+
+  switch (status) {
+    case 'answered':
+      return <StatusChip color={colors.valid} icon="check" label="Réussite" />;
+    case 'rejected':
+      return <StatusChip mode="text" color={colors.disabled} icon="lock" label="Fermée" />;
+    default:
+      return (
+        <StatusChip mode="text" color={colors.disabled} icon="clock-outline" label="En Attente" />
+      );
+  }
+}
+
+function PetitionComponentListCard({ navigate, petition }) {
+  const theme = useTheme();
   const styles = getStyles(theme);
+  const { colors } = theme;
+
+  const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
+
+  const endTime = getShortTime(petition.duration.end);
 
   return (
     <Card style={styles.card}>
       <Touchable onPress={navigate}>
-        <Card.Content style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
-          <View>{renderPetition(petition, theme)}</View>
-          <TagList type="petition" item={petition} />
-          <View style={{ marginBottom: 10, marginLeft: 15 }}>
-            <Text style={styles.text}> Fin {moment(petition.duration.end).fromNow()}</Text>
-          </View>
-        </Card.Content>
+        <View style={{ paddingTop: 10, paddingBottom: 5 }}>
+          <Card.Content>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.cardTitle} numberOfLines={3}>
+                  {petition.title}
+                </Text>
+              </View>
+              <View style={{ alignItems: 'flex-end' }}>
+                {petition.status === 'open' && endTime ? (
+                  <StatusChip
+                    mode="text"
+                    color={colors.disabled}
+                    icon="clock-outline"
+                    label={endTime}
+                  />
+                ) : (
+                  renderPetitionStatus(petition.status, theme)
+                )}
+              </View>
+            </View>
+
+            {renderPetitionVote(petition.voteData)}
+          </Card.Content>
+
+          <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
+            <TagList type="petition" item={petition} />
+          </Card.Content>
+        </View>
       </Touchable>
     </Card>
   );
 }
 
-export default withTheme(PetitionComponentListCard);
+export default PetitionComponentListCard;
 
-const petitionPropType = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  voteData: PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    goal: PropTypes.number,
-    votes: PropTypes.number,
-    against: PropTypes.number,
-    for: PropTypes.number,
-    multiple: PropTypes.arrayOf(
-      PropTypes.shape({
-        title: PropTypes.string,
-        votes: PropTypes.number,
-      }),
-    ),
-  }).isRequired,
-  duration: PropTypes.shape({
-    start: PropTypes.string.isRequired, // Note: need to change to instanceOf(Date) once we get axios working
-    end: PropTypes.string.isRequired,
-  }).isRequired,
-  description: PropTypes.string,
-  objective: PropTypes.string,
-  votes: PropTypes.string,
+const voteDataPropType = PropTypes.shape({
+  type: PropTypes.string.isRequired,
+  goal: PropTypes.number,
+  votes: PropTypes.number,
+  against: PropTypes.number,
+  for: PropTypes.number,
+  multiple: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      votes: PropTypes.number,
+    }),
+  ),
 });
 
 PetitionComponentListCard.propTypes = {
-  petition: petitionPropType.isRequired,
-  navigate: PropTypes.func.isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
+  petition: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    voteData: voteDataPropType.isRequired,
+    status: PropTypes.oneOf(['open', 'waiting', 'rejected', 'answered']),
+    duration: PropTypes.shape({
+      start: PropTypes.string.isRequired, // Note: need to change to instanceOf(Date) once we get axios working
+      end: PropTypes.string.isRequired,
     }).isRequired,
+    description: PropTypes.string,
+    objective: PropTypes.string,
+    votes: PropTypes.string,
   }).isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
-PetitionOpinion.propTypes = {
-  petition: petitionPropType.isRequired,
-  theme: PropTypes.shape({}).isRequired,
+PetitionOpinion.propTypes = { voteData: voteDataPropType.isRequired };
+
+PetitionGoal.propTypes = PetitionOpinion.propTypes;
+PetitionSign.propTypes = PetitionOpinion.propTypes;
+PetitionMultiple.propTypes = PetitionOpinion.propTypes;
+
+StatusChip.propTypes = {
+  mode: PropTypes.oneOf(['contained', 'text', 'outlined']),
+  label: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+  icon: PropTypes.string,
 };
-PetitionGoal.propTypes = {
-  petition: petitionPropType.isRequired,
-  theme: PropTypes.shape({}).isRequired,
-};
-PetitionSign.propTypes = {
-  petition: petitionPropType.isRequired,
-  theme: PropTypes.shape({}).isRequired,
-};
-PetitionGoalStatus.propTypes = {
-  petition: petitionPropType.isRequired,
-  theme: PropTypes.shape({}).isRequired,
-};
-PetitionMultiple.propTypes = {
-  petition: petitionPropType.isRequired,
-  theme: PropTypes.shape({}).isRequired,
+
+StatusChip.defaultProps = {
+  mode: 'contained',
+  icon: null,
 };
