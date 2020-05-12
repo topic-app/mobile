@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Text, ProgressBar, withTheme } from 'react-native-paper';
 import { View, ImageBackground, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
+import ErrorMessage from '@components/ErrorMessage';
 
 import Content from '@components/Content';
 import TagList from '@components/TagList';
@@ -30,16 +31,27 @@ function ArticleDisplay({ route, articles, state, theme }) {
   }
   return (
     <View style={styles.page}>
+      {state.error ? (
+        <ErrorMessage
+          type="axios"
+          contentType="données de l'article"
+          error={state.error}
+          retry={() => fetchArticle(id)}
+        />
+      ) : null}
       <ScrollView>
         {article.imageUrl ? (
           <ImageBackground
             source={{ uri: article.thumbnailUrl }}
             style={[styles.image, { height: 250 }]}
           >
-            {(article.preload || state.loading.article) && <ProgressBar indeterminate />}
+            {(article.preload || state.loading.article) && !state.error && (
+              <ProgressBar indeterminate />
+            )}
           </ImageBackground>
         ) : (
-          (article.preload || state.loading.article) && <ProgressBar indeterminate />
+          (article.preload || state.loading.article) &&
+          !state.error && <ProgressBar indeterminate />
         )}
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{article.title}</Text>
@@ -90,6 +102,7 @@ ArticleDisplay.propTypes = {
     loading: PropTypes.shape({
       article: PropTypes.bool,
     }),
+    error: PropTypes.oneOf(PropTypes.shape(), null),
   }).isRequired,
   theme: PropTypes.shape({}).isRequired,
 };

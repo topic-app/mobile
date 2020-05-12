@@ -5,6 +5,7 @@ import { ProgressBar, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
+import ErrorMessage from '@components/ErrorMessage';
 import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
 
@@ -56,11 +57,19 @@ function ArticleList({ navigation, articles, state, theme }) {
               },
             }}
           />
+          {state.loading.initial && <ProgressBar indeterminate />}
+          {state.error ? (
+            <ErrorMessage
+              type="axios"
+              contentType="articles"
+              error={state.error}
+              retry={() => updateArticles('initial')}
+            />
+          ) : null}
         </Animated.View>
       ) : (
         <TranslucentStatusBar />
       )}
-      {state.loading.initial && <ProgressBar indeterminate />}
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
@@ -128,7 +137,7 @@ ArticleList.propTypes = {
       initial: PropTypes.bool,
       refresh: PropTypes.bool,
     }),
-    error: PropTypes.shape(),
+    error: PropTypes.oneOf(PropTypes.shape(), null),
   }).isRequired,
   theme: PropTypes.shape({
     colors: PropTypes.shape({
