@@ -4,6 +4,7 @@ import { View, Platform, FlatList } from 'react-native';
 import { useTheme, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { updateSchools } from '@redux/actions/api/schools';
 import { updateDepartments } from '@redux/actions/api/departments';
+import ErrorMessage from '@components/ErrorMessage';
 
 function ItemList({ type, data, setGlobalSelected, state }) {
   const theme = useTheme();
@@ -23,6 +24,19 @@ function ItemList({ type, data, setGlobalSelected, state }) {
 
   return (
     <View>
+      {(state.schools.loading.initial || state.departments.loading.initial) && (
+        <ProgressBar indeterminate />
+      )}
+      {state.schools.error || state.departments.error ? (
+        <ErrorMessage
+          type="axios"
+          error={[state.schools.error, state.departments.error]}
+          retry={() => {
+            updateSchools('initial');
+            updateDepartments('initial');
+          }}
+        />
+      ) : null}
       <FlatList
         data={data}
         keyExtractor={(i) => i._id}
@@ -69,12 +83,14 @@ ItemList.propTypes = {
         initial: PropTypes.bool.isRequired,
         refresh: PropTypes.bool.isRequired,
       }),
+      error: PropTypes.oneOf(PropTypes.shape(), null).isRequired,
     }),
     departments: PropTypes.shape({
       loading: PropTypes.shape({
         initial: PropTypes.bool.isRequired,
         refresh: PropTypes.bool.isRequired,
       }),
+      error: PropTypes.oneOf(PropTypes.shape(), null).isRequired,
     }),
   }).isRequired,
   data: PropTypes.arrayOf(

@@ -133,7 +133,7 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
         <Drawer.Item
           label="Signaler un bug"
           icon="gitlab"
-          onPress={() => Linking.openURL('https://gitlab.com/')}
+          onPress={() => Linking.openURL('https://gitlab.com/topicapp/issues/issues')}
         />
         <Drawer.Item
           label="A Propos"

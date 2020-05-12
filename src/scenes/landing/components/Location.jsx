@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import getStyles from '@styles/Styles';
 import CustomTabView from '@components/CustomTabView';
+import ErrorMessage from '@components/ErrorMessage';
 import { updateSchools } from '@redux/actions/api/schools';
 import { updateDepartments } from '@redux/actions/api/departments';
 
@@ -81,9 +82,6 @@ function WelcomeLocation({ schools, departments, state, navigation, done }) {
 
   return (
     <View style={styles.page}>
-      {(state.schools.loading.initial || state.departments.loading.initial) && (
-        <ProgressBar indeterminate />
-      )}
       <ScrollView>
         <View style={landingStyles.headerContainer}>
           <View style={landingStyles.centerContainer}>
@@ -195,12 +193,14 @@ WelcomeLocation.propTypes = {
         initial: PropTypes.bool.isRequired,
         refresh: PropTypes.bool.isRequired,
       }),
+      error: PropTypes.oneOf(PropTypes.shape(), null).isRequired,
     }),
     departments: PropTypes.shape({
       loading: PropTypes.shape({
         initial: PropTypes.bool.isRequired,
         refresh: PropTypes.bool.isRequired,
       }),
+      error: PropTypes.oneOf(PropTypes.shape(), null).isRequired,
     }),
   }).isRequired,
 };
