@@ -1,15 +1,24 @@
 import React from 'react';
-import { View, Platform, Animated } from 'react-native';
+import { View, Platform, Animated, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, withTheme } from 'react-native-paper';
+import { Button, ProgressBar, useTheme } from 'react-native-paper';
 
 import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
+import { updateEvents } from '@redux/actions/api/events';
+import ErrorMessage from '@components/ErrorMessage';
 import getStyles from '@styles/Styles';
 
 import EventCard from '../components/Card';
 
-function EventList({ navigation, events, theme }) {
+function EventList({ navigation, events, state }) {
+  React.useEffect(() => {
+    updateEvents('initial');
+  }, []);
+
+  const theme = useTheme();
+  const { colors } = theme;
+
   const scrollY = new Animated.Value(0);
 
   const styles = getStyles(theme);
@@ -50,6 +59,15 @@ function EventList({ navigation, events, theme }) {
               },
             }}
           />
+          {state.loading.initial && <ProgressBar indeterminate />}
+          {state.error ? (
+            <ErrorMessage
+              type="axios"
+              contentType="articles"
+              error={state.error}
+              retry={() => updateEvents('initial')}
+            />
+          ) : null}
         </Animated.View>
       ) : (
         <TranslucentStatusBar />
@@ -59,12 +77,14 @@ function EventList({ navigation, events, theme }) {
           useNativeDriver: true,
         })}
         data={events}
-        refreshing={false}
-        onRefresh={() => console.log('Refresh')}
+        refreshing={state.loading.refresh}
+        onRefresh={() => updateEvents('refresh')}
+        onEndReached={() => updateEvents('next')}
+        onEndReachedThreshold={0.5}
         keyExtractor={(event) => event._id}
         ListFooterComponent={
-          <View style={styles.container}>
-            <Button style={styles.text}>Retour en haut</Button>
+          <View style={[styles.container, { height: 50 }]}>
+            {state.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
           </View>
         }
         renderItem={(event) => (
@@ -98,7 +118,7 @@ const mapStateToProps = (state) => {
   return { events: events.data, state: events.state };
 };
 
-export default connect(mapStateToProps)(withTheme(EventList));
+export default connect(mapStateToProps)(EventList);
 
 EventList.propTypes = {
   navigation: PropTypes.shape({
@@ -111,14 +131,14 @@ EventList.propTypes = {
       duration: PropTypes.shape({
         // start: PropTypes.instanceOf(Date).isRequired,
         // end: PropTypes.instanceOf(Date).isRequired,
-        start: PropTypes.string.isRequired,
-        end: PropTypes.string.isRequired,
+        start: PropTypes.string,
+        end: PropTypes.string,
       }).isRequired,
       description: PropTypes.shape({
         parser: PropTypes.oneOf(['markdown', 'plaintext']).isRequired,
         data: PropTypes.string.isRequired,
       }).isRequired,
-      thumbnailUrl: PropTypes.string.isRequired,
+      thumbnailUrl: PropTypes.string,
     }).isRequired,
   ).isRequired,
   state: PropTypes.shape({
@@ -130,5 +150,4 @@ EventList.propTypes = {
     }),
     error: PropTypes.shape(),
   }).isRequired,
-  theme: PropTypes.shape({}).isRequired,
 };
