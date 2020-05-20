@@ -32,7 +32,6 @@ function updateSchoolsCreator(type = 'initial', params = {}) {
     }
     request('schools/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        console.log(`Result ${JSON.stringify(result)}`);
         if (result.success) {
           const { data } = getState().schools; // The old schools, in redux db
           result.data.schools.forEach((a) => {
@@ -62,7 +61,7 @@ function updateSchoolsCreator(type = 'initial', params = {}) {
             },
           });
         }
-        console.log(`Error, ${result}`);
+        console.log(`Error while requesting /schools/list: ${result}`);
         return dispatch({
           type: 'UPDATE_SCHOOLS_STATE',
           data: {

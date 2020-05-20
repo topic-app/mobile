@@ -1,6 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
+import shortid from 'shortid';
+
 import getPetitionStyles from '../styles/Styles';
 
 const MAX_LABELS = 3;
@@ -26,7 +29,7 @@ function MultiVote({ items, barColors, showAllLabels }) {
         {votes.map((vote, index) => (
           // Render colored progress bar
           <View
-            key={index}
+            key={shortid()}
             style={[
               petitionStyles.progress,
               {
@@ -44,7 +47,7 @@ function MultiVote({ items, barColors, showAllLabels }) {
           if (vote / total > 0.1 && !(vote.toString().length > 3 && vote / total < 0.2)) {
             numLabels += 1;
             return (
-              <View key={index} style={{ width: getWidth(vote), alignItems: 'center' }}>
+              <View key={shortid()} style={{ width: getWidth(vote), alignItems: 'center' }}>
                 <Text
                   style={[
                     petitionStyles.voteLabelMultiple,
@@ -63,7 +66,7 @@ function MultiVote({ items, barColors, showAllLabels }) {
         {labels.slice(0, showAllLabels ? MAX_LABELS : numLabels).map((label, index) => {
           return (
             <View
-              key={index}
+              key={shortid()}
               style={{
                 flex: 1,
                 flexDirection: 'row',
@@ -90,3 +93,18 @@ function MultiVote({ items, barColors, showAllLabels }) {
 }
 
 export default MultiVote;
+
+MultiVote.defaultProps = {
+  showAllLabels: false,
+};
+
+MultiVote.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      votes: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+  barColors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  showAllLabels: PropTypes.bool,
+};

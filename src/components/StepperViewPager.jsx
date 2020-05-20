@@ -106,6 +106,7 @@ function PlatformBackButton({ onPress, theme }) {
 
 function StepperViewPager({
   navigation,
+  title,
   reqState,
   pages,
   success,
@@ -275,7 +276,7 @@ function StepperViewPager({
           <PlatformBackButton onPress={navigation.goBack} theme={theme} />
           <View style={stepperStyles.stepIndicatorContainer}>
             <View style={stepperStyles.centerContainer}>
-              <Text style={stepperStyles.title}>Créer un Compte</Text>
+              <Text style={stepperStyles.title}>{title}</Text>
             </View>
             <StepIndicator
               stepCount={pageLabels.length}
@@ -353,6 +354,7 @@ StepperViewPager.propTypes = {
       }).isRequired,
     ),
   }),
+  title: PropTypes.string,
 };
 
 StepperViewPager.defaultProps = {
@@ -364,6 +366,7 @@ StepperViewPager.defaultProps = {
   success: null,
   failure: null,
   viewPagerRef: null,
+  title: '',
 };
 
 PlatformBackButton.propTypes = {

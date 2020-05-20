@@ -3,95 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform, View, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Card, ProgressBar, Text, useTheme } from 'react-native-paper';
+import { Card, Text, useTheme } from 'react-native-paper';
 import moment from 'moment';
-import _ from 'lodash';
 
 import TagList from '@components/TagList';
 import getStyles from '@styles/Styles';
-import getPetitionStyles from '../styles/Styles';
-import MultiVote from './MultiVote';
-
-function PetitionSign({ voteData }) {
-  const petitionStyles = getPetitionStyles(useTheme());
-  return (
-    <Text style={[petitionStyles.signText, { fontWeight: 'bold' }]}>
-      {voteData.votes} signatures
-    </Text>
-  );
-}
-
-function PetitionGoal({ voteData }) {
-  const theme = useTheme();
-  const { colors } = theme;
-  const petitionStyles = getPetitionStyles(useTheme());
-  const { votes, goal } = voteData;
-
-  const getLeftSpacing = (vote) => {
-    const offset = 7;
-    // Return left spacing in percentage while making sure it stays in between 0% and 90%
-    return `${_.clamp(Math.round((vote / goal) * 100 - offset), 0, 90)}%`;
-  };
-
-  return (
-    <View>
-      <View style={petitionStyles.progressContainer}>
-        <ProgressBar
-          style={[petitionStyles.progress, petitionStyles.progressRadius]}
-          progress={votes / goal}
-        />
-        <Text style={[petitionStyles.voteLabel, { left: getLeftSpacing(votes) }]}>{votes}</Text>
-        <Text style={{ position: 'absolute', right: 0, top: -24, color: colors.subtitle }}>
-          {goal}
-        </Text>
-      </View>
-      <Text style={petitionStyles.signText}>
-        <Text style={{ fontWeight: 'bold' }}>{votes}</Text> / {goal} signatures
-      </Text>
-    </View>
-  );
-}
-
-function PetitionMultiple({ voteData }) {
-  const { colors } = useTheme();
-  return <MultiVote items={voteData.opinions} barColors={Object.values(colors.solid)} />;
-}
-
-function PetitionOpinion({ voteData }) {
-  const theme = useTheme();
-  const { colors } = theme;
-  return (
-    <View>
-      <MultiVote
-        items={[
-          { title: 'Pour', votes: voteData.for },
-          { title: 'Contre', votes: voteData.against },
-        ]}
-        barColors={[colors.valid, colors.error]}
-        showAllLabels
-      />
-    </View>
-  );
-}
-
-function renderPetitionVote(voteData) {
-  switch (voteData.type) {
-    case 'sign':
-      return <PetitionSign voteData={voteData} />;
-    case 'goal':
-      return <PetitionGoal voteData={voteData} />;
-    case 'opinion':
-      return <PetitionOpinion voteData={voteData} />;
-    case 'multiple':
-      return <PetitionMultiple voteData={voteData} />;
-    default:
-      return (
-        <View>
-          <Text>Unknown Petition Type</Text>
-        </View>
-      );
-  }
-}
+import PetitionChart from './Charts';
 
 function getShortTime(time) {
   // If time is in the past
@@ -107,7 +24,7 @@ function getShortTime(time) {
     return `${moment(time).diff(moment(), 'hours')} h`;
   }
   if (moment(time).isBefore(moment().add(1, 'month'))) {
-    return `${moment(time).diff(moment(), 'hours')} j`;
+    return `${moment(time).diff(moment(), 'days')} j`;
   }
   if (moment(time).isBefore(moment().add(1, 'year'))) {
     return `${moment(time).diff(moment(), 'months')} mois`;
@@ -216,7 +133,7 @@ function PetitionComponentListCard({ navigate, petition }) {
               </View>
             </View>
 
-            {renderPetitionVote(petition.voteData)}
+            <PetitionChart voteData={petition.voteData} />
           </Card.Content>
 
           <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
@@ -260,12 +177,6 @@ PetitionComponentListCard.propTypes = {
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };
-
-PetitionOpinion.propTypes = { voteData: voteDataPropType.isRequired };
-
-PetitionGoal.propTypes = PetitionOpinion.propTypes;
-PetitionSign.propTypes = PetitionOpinion.propTypes;
-PetitionMultiple.propTypes = PetitionOpinion.propTypes;
 
 StatusChip.propTypes = {
   mode: PropTypes.oneOf(['contained', 'text', 'outlined']),

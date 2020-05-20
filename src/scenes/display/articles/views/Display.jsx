@@ -102,7 +102,7 @@ ArticleDisplay.propTypes = {
     loading: PropTypes.shape({
       article: PropTypes.bool,
     }),
-    error: PropTypes.oneOf(PropTypes.shape(), null),
+    error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
   }).isRequired,
   theme: PropTypes.shape({}).isRequired,
 };

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, BackHandler } from 'react-native';
@@ -14,8 +15,8 @@ import WelcomeLocation from '../components/Location';
 function done(selected, schools, departments, navigation) {
   updateLocation({
     selected: true,
-    schools: selected.filter((i) => schools.map((s) => s._id).includes(i)),
-    departments: selected.filter((i) => departments.map((d) => d._id).includes(i)),
+    schools: schools.map((sch) => sch._id).filter((id) => selected.includes(id)),
+    departments: departments.map((dep) => dep._id).filter((id) => selected.includes(id)),
     global: selected.includes('global'),
   });
   navigation.navigate('Main', {
@@ -61,7 +62,7 @@ function LandingWelcome({ navigation }) {
         BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
         return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-      }, [currentPage]),
+      }, [back, navigation, currentPage]),
     );
   }
 

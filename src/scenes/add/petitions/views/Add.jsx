@@ -5,38 +5,13 @@ import { connect } from 'react-redux';
 import { register, updateState } from '@redux/actions/data/account';
 import StepperViewPager from '@components/StepperViewPager';
 
-import AuthCreatePageGeneral from '../components/CreateGeneral';
-import AuthCreatePageSchool from '../components/CreateSchool';
-import AuthCreatePagePrivacy from '../components/CreatePrivacy';
-import AuthCreatePageProfile from '../components/CreateProfile';
-import AuthCreatePageLegal from '../components/CreateLegal';
+import PetitionAddPageGeneral from '../components/AddGeneral';
+import PetitionAddPageLocation from '../components/AddLocation';
+import PetitionAddPageGoals from '../components/AddGoals';
+import PetitionAddPageDescription from '../components/AddDescription';
 
-function AuthCreate({ navigation, reqState, creationData }) {
-  const viewPagerRef = React.useRef();
-
-  const create = () => {
-    const reqParams = {
-      accountInfo: {
-        username: creationData.username,
-        email: creationData.email,
-        password: creationData.password,
-        global: creationData.global,
-        schools: creationData.schools,
-        departments: creationData.departments,
-        description: null,
-        public: creationData.accountType === 'public',
-        firstName: creationData.accountType === 'public' ? creationData.firstname : null,
-        lastName: creationData.accountType === 'public' ? creationData.lastname : null,
-      },
-      device: {
-        type: 'app',
-        deviceId: null,
-        canNotify: true,
-      },
-    };
-
-    register(reqParams);
-  };
+function PetitionAdd({ navigation, reqState, creationData }) {
+  const viewPagerRef = React.useRef(null);
 
   const restart = () => {
     updateState({ error: null, success: null, loading: null });
@@ -48,35 +23,38 @@ function AuthCreate({ navigation, reqState, creationData }) {
       navigation={navigation}
       viewPagerRef={viewPagerRef}
       reqState={reqState}
-      title="Créer un compte"
+      title="Créer une pétition"
       pages={[
         {
-          icon: 'account',
-          label: 'General',
-          component: AuthCreatePageGeneral,
+          icon: 'comment-outline',
+          label: 'Titre',
+          component: PetitionAddPageGeneral,
           scrollToBottom: true,
-          height: 350,
+          height: 450,
         },
-        { icon: 'school', label: 'École', component: AuthCreatePageSchool, height: 250 },
-        { icon: 'shield', label: 'Vie privée', component: AuthCreatePagePrivacy, height: 550 },
         {
-          icon: 'comment-account',
-          label: 'Profil',
-          component: AuthCreatePageProfile,
+          icon: 'map-marker',
+          label: 'Écoles',
+          component: PetitionAddPageLocation,
           scrollToBottom: true,
           height: 260,
         },
         {
           icon: 'script-text',
-          label: 'Conditions',
-          component: AuthCreatePageLegal,
-          params: { userEmail: creationData.email, create },
+          label: 'Description',
+          component: PetitionAddPageDescription,
+          height: 950,
+        },
+        {
+          icon: 'check-decagram',
+          label: 'Objectifs',
+          component: PetitionAddPageGoals,
           height: 950,
         },
       ]}
       success={{
         icon: 'account-check-outline',
-        title: 'Compte Crée',
+        title: 'Pétition ajoutée',
         actions: [
           {
             label: 'Continuer',
@@ -117,9 +95,9 @@ const mapStateToProps = (state) => {
   return { creationData: account.creationData, reqState: account.state };
 };
 
-export default connect(mapStateToProps)(AuthCreate);
+export default connect(mapStateToProps)(PetitionAdd);
 
-AuthCreate.defaultProps = {
+PetitionAdd.defaultProps = {
   creationData: {},
   reqState: {
     error: null,
@@ -128,21 +106,11 @@ AuthCreate.defaultProps = {
   },
 };
 
-AuthCreate.propTypes = {
+PetitionAdd.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
-  creationData: PropTypes.shape({
-    username: PropTypes.string,
-    email: PropTypes.string,
-    password: PropTypes.string,
-    global: PropTypes.bool,
-    schools: PropTypes.arrayOf(PropTypes.string),
-    departments: PropTypes.arrayOf(PropTypes.string),
-    accountType: PropTypes.string,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-  }),
+  creationData: PropTypes.shape(),
   reqState: PropTypes.shape({
     error: PropTypes.any,
     success: PropTypes.bool,

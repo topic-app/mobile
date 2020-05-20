@@ -60,7 +60,7 @@ ErrorMessage.defaultProps = {
 ErrorMessage.propTypes = {
   type: PropTypes.string.isRequired,
   contentType: PropTypes.string,
-  error: PropTypes.oneOf(PropTypes.shape(), PropTypes.arrayOf(), null),
+  error: PropTypes.oneOf([PropTypes.object, PropTypes.array, null]), // TODO: Better PropTypes
   retry: PropTypes.func,
   restart: PropTypes.func,
 };
