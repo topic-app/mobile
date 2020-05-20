@@ -5,6 +5,7 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import { connect } from 'react-redux';
 
 import DisplayStackNavigator from './display/index';
+import AddStackNavigator from './add/index';
 import MoreStackNavigator from './more/index';
 import SearchStackNavigator from './search/index';
 import HomeOneNavigator from './home/HomeOne';
@@ -40,6 +41,7 @@ function MainNavigator({ navigation, location }) {
   return (
     <Stack.Navigator initialRouteName="Home1" headerMode="none" screenOptions={screenOptions}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
+      <Stack.Screen name="Add" component={AddStackNavigator} />
       <Stack.Screen name="More" component={MoreStackNavigator} />
       <Stack.Screen name="Search" component={SearchStackNavigator} />
       <Stack.Screen name="Home1" component={HomeOneNavigator} />

@@ -1,15 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Platform, Image, ScrollView } from 'react-native';
+import { View, Platform, ScrollView } from 'react-native';
 import { Text, useTheme, Button, List, Divider, DarkTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import getStyles from '@styles/Styles';
-import ViewPager from '@react-native-community/viewpager';
 import shortid from 'shortid';
+import TopicIcon from '@assets/images/topic-icon.svg';
 import getLandingStyles from '../styles/Styles';
-import { TranslucentStatusBar } from '../../../components/Header';
-
-const topicIcon = require('@assets/images/topic-icon-circle.png');
 
 function WelcomeLanding({ forward, navigation }) {
   const theme = useTheme();
@@ -58,7 +53,7 @@ function WelcomeLanding({ forward, navigation }) {
       <ScrollView>
         <View style={landingStyles.headerContainer}>
           <View style={landingStyles.centerContainer}>
-            <Image source={topicIcon} style={{ width: 256, height: 256 }} />
+            <TopicIcon height={256} width={256} />
             <Text theme={DarkTheme} style={landingStyles.title}>
               Topic
             </Text>

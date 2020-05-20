@@ -1,29 +1,30 @@
 [
   {
     "_id": "1",
-    "title": "Mettons fin au gaspillage allimentaire au CIV",
+    "title": "Ne plus utiliser Windows 7 sur les ordinateurs",
+    "description": "Au lycée, la restauration jette plus de 20kg de nourriture par soir, hors aujourd'hui plus que toujours tout est compté. C'est assez pour nourrir une famille pour une semaine! Il faut que cela s'arrête. Mobilisons-nous contre le gaspillage alimentaire!\n\n#StopAuGaspillageAlimentaire",
     "status": "open",
     "voteData": {
       "type": "goal",
-      "votes": 600,
-      "goal": 2000
+      "votes": 3734,
+      "goal": 5000
     },
     "duration": {
       "start": "2020-03-30T19:25:43.511Z",
-      "end": "2020-04-30T19:25:43.511Z"
+      "end": "2020-05-30T19:25:43.511Z"
     },
     "location": {
       "global": false,
       "schools": [
         {
           "_id": "312321312",
-          "displayName": "Pasteur"
+          "displayName": "CIV"
         }
       ],
       "departments": [
         {
           "_id": "412341234",
-          "displayName": "Pacman"
+          "displayName": "Région-Sud"
         }
       ]
     },
@@ -34,74 +35,33 @@
         "displayName": "Alexander Nitters"
       }
     },
-    "description": "Trop de pigeons ont veut les manger",
     "tags": [
       {
-        "displayName": "On",
+        "displayName": "informatique",
         "color": "red",
         "_id": "140930"
       },
       {
-        "displayName": "Est",
+        "displayName": "tech",
         "color": "blue",
         "_id": "5198312941723"
-      },
-      {
-        "displayName": "D'Accord",
-        "color": "purple",
-        "_id": "104243275932"
-      },
-      {
-        "displayName": "Que",
-        "color": "yellow",
-        "_id": "51438597234981"
-      },
-      {
-        "displayName": "Le",
-        "color": "orange",
-        "_id": "51284935782934"
-      },
-      {
-        "displayName": "Chat",
-        "color": "cyan",
-        "_id": "19237432582"
-      },
-      {
-        "displayName": "D'Alex",
-        "color": "purple",
-        "_id": "519235834930295"
-      },
-      {
-        "displayName": "Est",
-        "color": "green",
-        "_id": "192358341237592"
-      },
-      {
-        "displayName": "Trop",
-        "color": "pink",
-        "_id": "152938412375923"
-      },
-      {
-        "displayName": "Mignon",
-        "color": "black",
-        "_id": "49123573294231049"
       }
     ]
   },
 
   {
     "_id": "2",
-    "title": "Pétition sur les changement de meteo mais pas que",
+    "title": "Acheter plus de matériel de sport pour le gymnase",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
-    "date": "jj/mm/aaaa   min/heure",
     "duration": {
-      "start": "2020-03-30T19:25:43.511Z",
-      "end": "2020-05-30T19:25:43.511Z"
+      "start": "2020-04-30T19:25:43.511Z",
+      "end": "2020-05-18T19:25:43.511Z"
     },
     "status": "rejected",
     "voteData": {
-      "type": "sign",
-      "votes": 652
+      "type": "goal",
+      "votes": 452,
+      "goal": 800
     },
     "publisher": {
       "type": "user",
@@ -112,13 +72,13 @@
     },
     "tags": [
       {
-        "displayName": "Tag 1",
-        "color": "red",
+        "displayName": "sport",
+        "color": "green",
         "_id": "193247285849"
       },
       {
-        "displayName": "Tag 2",
-        "color": "blue",
+        "displayName": "activités",
+        "color": "cyan",
         "_id": "9142384172353894"
       }
     ],
@@ -127,55 +87,51 @@
       "schools": [
         {
           "_id": "41234",
-          "displayName": "Pasteur"
+          "displayName": "Simone Veil"
         }
       ],
-      "departments": [
-        {
-          "_id": "5432594",
-          "displayName": "Pac"
-        }
-      ]
+      "departments": []
     }
   },
 
   {
     "_id": "3",
-    "title": "Nous marcherons le 24 novembre contre les violences sexistes et sexuelles",
-    "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
-    "date": "jj/mm/aaaa   min/heure",
+    "title": "Qu'est-ce que vous aimeriez voir dans le nouvel espace commun?",
+    "description": "Au CIV, nous avons lancé un nouvel espace commun situé à coté du CDI. Nous aimerions savoir ce que vous voulez que l'on y mette.",
     "duration": {
-      "start": "2020-03-30T19:25:43.511Z",
-      "end": "2020-04-11T20:00:00.000Z"
+      "start": "2020-05-11T19:25:43.511Z",
+      "end": "2020-05-21T20:00:00.000Z"
     },
-    "status": "answered",
+    "status": "open",
     "voteData": {
       "type": "multiple",
       "opinions": [
-        { "title": "Frites et hamburgers", "votes": 1000 },
-        { "title": "Carottes", "votes": 500 },
-        { "title": "Ferrari", "votes": 300 },
-        { "title": "Glace", "votes": 920 },
-        { "title": "Salade", "votes": 400 },
-        { "title": "Patates", "votes": 210 }
+        { "title": "Espace lecture", "votes": 170 },
+        { "title": "Matériel informatique", "votes": 120 },
+        { "title": "FabLab", "votes": 230 },
+        { "title": "Aide au devoirs", "votes": 70 }
       ]
     },
     "publisher": {
-      "type": "user",
+      "type": "group",
       "user": {
         "_id": "39692137659",
         "displayName": "Tom Ruchier Berquet"
+      },
+      "group": {
+        "_id": "9393939399",
+        "displayName": "Administration CIV"
       }
     },
     "tags": [
       {
-        "displayName": "Tag 1",
-        "color": "red",
+        "displayName": "espace",
+        "color": "purple",
         "_id": "1494432"
       },
       {
-        "displayName": "Tag 2",
-        "color": "blue",
+        "displayName": "infra",
+        "color": "orange",
         "_id": "049123758123"
       }
     ],
@@ -184,116 +140,139 @@
       "schools": [
         {
           "_id": "09412375",
-          "displayName": "Pasteur"
+          "displayName": "CIV"
         }
       ],
-      "departments": [
-        {
-          "_id": "17856143",
-          "displayName": "Pac"
-        }
-      ]
+      "departments": []
     }
   },
 
   {
     "_id": "4",
-    "title": "Pétition sur les changements de meteo",
+    "title": "Mettre des chargeurs pour les tablettes de la région dans toutes les salles",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
     "date": "jj/mm/aaaa   min/heure",
     "duration": {
       "start": "2020-04-11T10:25:43.511Z",
-      "end": "2156-12-30T23:59:59.999Z"
+      "end": "2020-06-30T23:59:59.999Z"
     },
-    "status": "rejected",
+    "status": "open",
     "voteData": {
       "type": "opinion",
-      "for": 200,
-      "against": 20
+      "for": 526,
+      "against": 139
     },
     "publisher": {
-      "type": "user",
-      "user": {
+      "type": "group",
+      "group": {
         "_id": "12843297539",
-        "displayName": "Benjamin Sengupta"
+        "displayName": "CVL du CIV"
       }
     },
     "tags": [
       {
-        "displayName": "Tag 1",
+        "displayName": "informatique",
         "color": "red",
         "_id": "39150923"
       },
       {
-        "displayName": "Tag 2",
-        "color": "blue",
+        "displayName": "tablettes",
+        "color": "green",
         "_id": "51213984149"
       }
     ],
     "location": {
       "global": false,
-      "schools": [
-        {
-          "_id": "94132519237",
-          "displayName": "Pasteur"
-        }
-      ],
+      "schools": [],
       "departments": [
         {
           "_id": "5123904235973",
-          "displayName": "Pac"
+          "displayName": "Région Sud"
         }
       ]
     }
   },
   {
     "_id": "5",
-    "title": "On expulse Macron",
+    "title": "Annuler l'épreuve orale de Français pour les premières",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
-    "date": "jj/mm/aaaa   min/heure",
     "duration": {
-      "start": "2020-04-11T10:25:43.511Z",
-      "end": "2156-12-30T23:59:59.999Z"
+      "start": "2020-04-30T19:25:43.511Z",
+      "end": "2020-06-01T19:25:43.511Z"
     },
-    "status": "rejected",
+    "status": "open",
     "voteData": {
-      "type": "opinion",
-      "for": 200,
-      "against": 20
+      "type": "goal",
+      "votes": 72045,
+      "goal": 100000
     },
     "publisher": {
-      "type": "user",
-      "user": {
-        "_id": "1231829",
-        "displayName": "Benjamin Sengupta"
+      "type": "group",
+      "group": {
+        "_id": "4938495",
+        "displayName": "Asso JTAC"
       }
     },
     "tags": [
       {
-        "displayName": "Tag 1",
-        "color": "red",
-        "_id": "2943778132"
+        "displayName": "coronavirus",
+        "color": "lightgreen",
+        "_id": "193247285849"
       },
       {
-        "displayName": "Tag 2",
-        "color": "blue",
-        "_id": "94123563217"
+        "displayName": "activités",
+        "color": "cyan",
+        "_id": "9142384172353894"
+      }
+    ],
+    "location": {
+      "global": true,
+      "schools": [],
+      "departments": []
+    }
+  },
+  {
+    "_id": "6",
+    "title": "Ajouter des bancs dans la cour de récréation",
+    "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
+    "duration": {
+      "start": "2020-04-30T19:25:43.511Z",
+      "end": "2020-05-18T19:25:43.511Z"
+    },
+    "status": "answered",
+    "voteData": {
+      "type": "goal",
+      "votes": 452,
+      "goal": 800
+    },
+    "publisher": {
+      "type": "user",
+      "user": {
+        "_id": "4938495",
+        "displayName": "Jérémy Hendrikse"
+      }
+    },
+    "tags": [
+      {
+        "displayName": "sport",
+        "color": "green",
+        "_id": "193247285849"
+      },
+      {
+        "displayName": "activités",
+        "color": "cyan",
+        "_id": "9142384172353894"
       }
     ],
     "location": {
       "global": false,
       "schools": [
         {
-          "_id": "48128374128",
-          "displayName": "Pasteur"
+          "_id": "41234",
+          "displayName": "Simone Veil"
         }
       ],
-      "departments": [
-        {
-          "_id": "6957287234",
-          "displayName": "Pac"
-        }
-      ]
+      "departments": []
     }
   }
 ]

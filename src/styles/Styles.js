@@ -48,8 +48,9 @@ function getStyles(theme) {
     },
     title: {
       color: colors.text,
-      fontSize: 40,
+      fontSize: 35,
       fontWeight: '400',
+      lineHeight: 38,
     },
     subtitle: {
       color: colors.subtext,
@@ -71,6 +72,12 @@ function getStyles(theme) {
       height: 1.5,
       marginVertical: 10,
       borderRadius: 20,
+    },
+    bottomRightFab: {
+      position: 'absolute',
+      backgroundColor: colors.primary,
+      right: 15,
+      bottom: 15,
     },
   });
 }

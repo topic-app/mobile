@@ -29,7 +29,7 @@ function updateStateCreator(state) {
 }
 
 function fetchLocationDataCreator() {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: 'UPDATE_LOCATION_STATE',
       data: {
@@ -38,41 +38,55 @@ function fetchLocationDataCreator() {
         error: null,
       },
     });
+
+    const { schools, departments } = getState().location;
     const schoolData = [];
     const departmentData = [];
-    getState().location.schools.forEach((school) => {
-      request('/schools/info', 'get', { schoolId: school }).then((result) => {
-        if (result.success) {
-          console.log(`School result ${JSON.stringify(result)}`);
-          return schoolData.push(result?.data?.schools[0]);
+    let error = false;
+
+    await Promise.all(
+      schools.map(async (school) => {
+        try {
+          const result = await request('/schools/info', 'get', { schoolId: school });
+          if (result.success) {
+            schoolData.push(result?.data?.schools[0]);
+          } else {
+            error = true;
+          }
+        } catch (e) {
+          error = true;
+          console.log('Error while getting school info', JSON.stringify(e));
         }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_LOCATION_STATE',
-          data: {
-            loading: false,
-            success: false,
-            error: 'server',
-          },
-        });
-      });
-    });
-    getState().location.departments.forEach((school) => {
-      request('/departments/info', 'get', { schoolId: school }).then((result) => {
-        if (result.success) {
-          return departmentData.push(result?.data?.departments[0]);
+      }),
+    );
+
+    await Promise.all(
+      departments.map(async (department) => {
+        try {
+          const result = await request('/departments/info', 'get', { departmentId: department });
+          if (result.success) {
+            departmentData.push(result?.data?.departments[0]);
+          } else {
+            error = true;
+          }
+        } catch (e) {
+          error = true;
+          console.log('Error while getting department info', JSON.stringify(e));
         }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_LOCATION_STATE',
-          data: {
-            loading: false,
-            success: false,
-            error: 'server',
-          },
-        });
+      }),
+    );
+
+    if (error) {
+      return dispatch({
+        type: 'UPDATE_LOCATION_STATE',
+        data: {
+          loading: false,
+          success: false,
+          error: 'server',
+        },
       });
-    });
+    }
+
     dispatch({
       type: 'UPDATE_LOCATION_STATE',
       data: {

@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, Animated } from 'react-native';
-import { Button, useTheme } from 'react-native-paper';
+import { Button, FAB, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
@@ -12,6 +12,7 @@ import PetitionCard from '../components/Card';
 
 function PetitionList({ navigation, petitions }) {
   const theme = useTheme();
+  const { colors } = theme;
 
   const scrollY = new Animated.Value(0);
   const styles = getStyles(theme);
@@ -90,6 +91,21 @@ function PetitionList({ navigation, petitions }) {
             }
           />
         )}
+      />
+      <FAB
+        icon="plus"
+        onPress={() =>
+          navigation.navigate('Main', {
+            screen: 'Add',
+            params: {
+              screen: 'Petition',
+              params: {
+                screen: 'Add',
+              },
+            },
+          })
+        }
+        style={styles.bottomRightFab}
       />
     </View>
   );

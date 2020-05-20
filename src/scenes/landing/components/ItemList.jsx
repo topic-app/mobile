@@ -83,14 +83,14 @@ ItemList.propTypes = {
         initial: PropTypes.bool.isRequired,
         refresh: PropTypes.bool.isRequired,
       }),
-      error: PropTypes.oneOf(PropTypes.shape(), null).isRequired,
+      error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
     }),
     departments: PropTypes.shape({
       loading: PropTypes.shape({
         initial: PropTypes.bool.isRequired,
         refresh: PropTypes.bool.isRequired,
       }),
-      error: PropTypes.oneOf(PropTypes.shape(), null).isRequired,
+      error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
     }),
   }).isRequired,
   data: PropTypes.arrayOf(

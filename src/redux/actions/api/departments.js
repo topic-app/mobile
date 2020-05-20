@@ -32,7 +32,6 @@ function updateDepartmentsCreator(type = 'initial', params = {}) {
     }
     request('departments/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        console.log(`Result ${JSON.stringify(result)}`);
         if (result.success) {
           const { data } = getState().departments; // The old departments, in redux db
           result.data.departments.forEach((a) => {
@@ -62,7 +61,7 @@ function updateDepartmentsCreator(type = 'initial', params = {}) {
             },
           });
         }
-        console.log(`Error, ${result}`);
+        console.log(`Error while requesting /departments/list: ${result}`);
         return dispatch({
           type: 'UPDATE_DEPARTMENTS_STATE',
           data: {

@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Linking } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
-import { Drawer, Avatar, Title, ProgressBar, useTheme } from 'react-native-paper';
+import { Drawer, Title, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
+import TopicIcon from '@assets/images/topic-icon.svg';
 
 import getNavigatorStyles from '@styles/NavStyles';
 import HomeTwoNavigator from './HomeTwo';
-
-const topicIcon = require('@assets/images/topic-icon-circle.png');
 
 const DrawerNav = createDrawerNavigator();
 
@@ -28,10 +27,10 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
         {(!location.state || location.state.loading) && <ProgressBar indeterminate />}
         <View style={navigatorStyles.profileIconContainer}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Avatar.Image
-              size={55}
-              style={[navigatorStyles.avatar, { marginRight: 10 }]}
-              source={topicIcon}
+            <TopicIcon
+              style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
+              height={55}
+              width={55}
             />
             {!loggedIn && <Title>Topic</Title>}
           </View>

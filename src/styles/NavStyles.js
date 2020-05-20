@@ -41,6 +41,7 @@ function getNavigatorStyles(theme) {
     },
     avatar: {
       elevation: 3,
+      marginRight: 10,
     },
   });
 }

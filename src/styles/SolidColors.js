@@ -14,7 +14,7 @@ const solidLight = {
   yellow: '#e8dc2d',
   magenta: '#a146c3',
   cyan: '#22a1d2',
-  pink: '#9d43ba',
+  pink: '#ca59cc',
   orange: '#d36301',
   lime: '#64bc19',
   gold: '#deb11a',
@@ -23,7 +23,7 @@ const solidLight = {
 
 const solidDark = {};
 Object.entries(solidLight).forEach(([key, val]) => {
-  // Darken all values in solidLight by 50 steps
+  // Darken all values in solidLight by 40 steps
   solidDark[key] = colorShade(val, -40);
 });
 
