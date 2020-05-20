@@ -1,7 +1,5 @@
-import data from '../../../data/eventListData.json';
-
 const initialState = {
-  data, // TEMP:
+  data: [], // TEMP:
   state: {
     success: null,
     refreshing: false,

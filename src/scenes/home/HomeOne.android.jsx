@@ -20,7 +20,7 @@ function genName({ data, info }) {
 
 function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
   const navigatorStyles = getNavigatorStyles(useTheme());
-  console.log(`Location ${JSON.stringify(location)}`);
+  // console.log(`Location ${JSON.stringify(location)}`);
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <View style={navigatorStyles.profileBackground}>

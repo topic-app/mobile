@@ -1,32 +1,58 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Image, ScrollView } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { View, Image, ScrollView, ImageBackground } from 'react-native';
+import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
 import TagList from '@components/TagList';
 import CustomTabView from '@components/CustomTabView';
+import ErrorMessage from '@components/ErrorMessage';
 import getStyles from '@styles/Styles';
+import { fetchEvent } from '@redux/actions/api/events';
 import EventDisplayProgram from './Program';
 import EventDisplayDescription from './Description';
+import EventDisplayContact from './Contact';
 
-function EventDisplay({ route, events }) {
+function EventDisplay({ route, events, state }) {
   const scrollViewRef = React.createRef();
   const { id } = route.params;
+  React.useEffect(() => {
+    fetchEvent(id);
+  }, []);
   const event = events.find((t) => t._id === id);
-  const { start, end } = event.duration;
+  const start = event?.duration?.start;
+  const end = event?.duration?.end;
 
   const styles = getStyles(useTheme());
 
   return (
     <View style={styles.page}>
       <ScrollView ref={scrollViewRef}>
-        <Image source={{ uri: event.thumbnailUrl }} style={[styles.image, { height: 250 }]} />
+        {state.error ? (
+          <ErrorMessage
+            type="axios"
+            contentType="données de l'article"
+            error={state.error}
+            retry={() => fetchEvent(id)}
+          />
+        ) : null}
+        {event?.imageUrl ? (
+          <ImageBackground
+            source={{ uri: event.thumbnailUrl }}
+            style={[styles.image, { height: 250 }]}
+          >
+            {(event.preload || state.loading.event) && !state.error && (
+              <ProgressBar indeterminate />
+            )}
+          </ImageBackground>
+        ) : (
+          (event.preload || state.loading.event) && !state.error && <ProgressBar indeterminate />
+        )}
         <View style={styles.contentContainer}>
-          <Text style={styles.title}>{event.title}</Text>
+          <Text style={styles.title}>{event?.title}</Text>
           <Text style={styles.subtitle}>
-            du {moment(start).format('DD/MM/YYYY')} aux {moment(end).format('DD/MM/YYYY')}
+            Du {moment(start).format('DD/MM/YYYY')} au {moment(end).format('DD/MM/YYYY')}
           </Text>
         </View>
         <View>
@@ -40,7 +66,7 @@ function EventDisplay({ route, events }) {
             {
               key: 'description',
               title: 'Description',
-              component: <EventDisplayDescription description={event.description} />,
+              component: <EventDisplayDescription event={event} />,
             },
             {
               key: 'program',
@@ -51,7 +77,7 @@ function EventDisplay({ route, events }) {
             {
               key: 'contact',
               title: 'Contact',
-              component: <View />,
+              component: <EventDisplayContact event={event} />,
             },
           ]}
         />
@@ -79,6 +105,7 @@ EventDisplay.propTypes = {
       next: PropTypes.bool,
       initial: PropTypes.bool,
       refresh: PropTypes.bool,
+      event: PropTypes.bool,
     }),
     error: PropTypes.shape(),
   }).isRequired,
@@ -87,11 +114,11 @@ EventDisplay.propTypes = {
       title: PropTypes.string.isRequired,
       thumbnailUrl: PropTypes.string.isRequired,
       description: PropTypes.shape({
-        parser: PropTypes.oneOf(['plaintext', 'markdown']).isRequired,
-        data: PropTypes.string.isRequired,
+        parser: PropTypes.oneOf(['plaintext', 'markdown']),
+        data: PropTypes.string,
       }).isRequired,
       group: PropTypes.shape({
-        displayName: PropTypes.string.isRequired,
+        displayName: PropTypes.string,
       }).isRequired,
     }).isRequired,
   ).isRequired,

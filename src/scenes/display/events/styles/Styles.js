@@ -13,6 +13,10 @@ function getEventStyles(theme) {
       marginBottom: 5,
       marginLeft: 20,
     },
+    description: {
+      marginTop: 20,
+      marginVertical: 5,
+    },
     time: {
       fontWeight: 'bold',
       marginLeft: 10,

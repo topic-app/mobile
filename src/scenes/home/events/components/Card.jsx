@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Platform, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
 import { Text, Avatar, Card, useTheme } from 'react-native-paper';
 import moment from 'moment';
+import shortid from 'shortid';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TagList from '@components/TagList';
@@ -28,7 +29,8 @@ function buildDateString(start, end) {
 }
 
 function EventCard({ event, navigate }) {
-  const { start, end } = event.duration;
+  const start = event?.duration?.start;
+  const end = event?.duration?.end;
 
   const theme = useTheme();
   const { colors } = theme;
@@ -42,7 +44,7 @@ function EventCard({ event, navigate }) {
       <Touchable onPress={navigate}>
         <View>
           <Card.Title
-            title={event.title}
+            title={event?.title}
             subtitle={buildDateString(start, end)}
             left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
           />
@@ -53,7 +55,7 @@ function EventCard({ event, navigate }) {
           </Card.Content>
           <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
             <View style={{ flexDirection: 'row' }}>
-              {event.thumbnailUrl ? (
+              {event?.thumbnailUrl ? (
                 <Image
                   source={{ uri: event.thumbnailUrl }}
                   style={[
@@ -80,18 +82,30 @@ function EventCard({ event, navigate }) {
                   flex: 1,
                 }}
               >
-                <Text style={eventStyles.text}>{event.summary}</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                  <Icon color={colors.text} name="map-marker" />
-                  <Text style={{ fontSize: 17 }}> {event.address}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
-                  <Icon color={colors.text} name="currency-eur" />
-                  <Text style={{ fontSize: 17 }}> Participation gratuite</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
-                  <Icon color={colors.text} name="calendar" />
-                  <Text style={{ fontSize: 17 }}> {moment(event.duration.start).calendar()}</Text>
+                <Text style={eventStyles.text}>{event?.summary}</Text>
+
+                {Array.isArray(event?.places) &&
+                  event.places.map((p) => (
+                    <View
+                      key={shortid()}
+                      style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
+                    >
+                      <Icon color={colors.text} name="map-marker" size={17} />
+                      <Text style={{ fontSize: 17 }}>
+                        &nbsp;
+                        {p?.type === 'standalone' &&
+                          (p?.address?.shortName ||
+                            `${p?.address?.address?.street}, ${p?.address?.address?.city}`)}
+                        {p.type === 'school' && p?.associatedSchool?.displayName}
+                        {p.type === 'standalone' && p?.associatedPlace?.displayName}
+                      </Text>
+                    </View>
+                  ))}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+                  <Icon color={colors.text} name="calendar" size={17} />
+                  <Text style={{ fontSize: 17 }}>
+                    &nbsp;{moment(event?.duration?.start).calendar()}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -119,7 +133,22 @@ EventCard.propTypes = {
       data: PropTypes.string.isRequired,
     }).isRequired,
     summary: PropTypes.string.isRequired,
-    address: PropTypes.object,
+    places: PropTypes.arrayOf(
+      PropTypes.shape({
+        type: PropTypes.string,
+        address: PropTypes.shape({
+          shortName: PropTypes.string,
+          address: PropTypes.string,
+          city: PropTypes.string,
+        }),
+        associatedSchool: PropTypes.shape({
+          displayName: PropTypes.string,
+        }),
+        associatedPlace: PropTypes.shape({
+          displayName: PropTypes.string,
+        }),
+      }),
+    ),
   }).isRequired,
   navigate: PropTypes.func.isRequired,
 };
