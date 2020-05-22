@@ -57,12 +57,16 @@ function ArticleList({ navigation, articles, state, theme }) {
               },
             }}
           />
-          {state.loading.initial && <ProgressBar indeterminate />}
-          {state.error ? (
+          {state.list.loading.initial && <ProgressBar indeterminate />}
+          {state.list.error ? (
             <ErrorMessage
               type="axios"
-              contentType="articles"
-              error={state.error}
+              strings={{
+                what: 'la récupération des articles',
+                contentPlural: 'des articles',
+                contentSingular: "La liste d'articles",
+              }}
+              error={state.list.error}
               retry={() => updateArticles('initial')}
             />
           ) : null}
@@ -75,14 +79,14 @@ function ArticleList({ navigation, articles, state, theme }) {
           useNativeDriver: true,
         })}
         data={articles}
-        refreshing={state.loading.refresh}
+        refreshing={state.list.loading.refresh}
         onRefresh={() => updateArticles('refresh')}
         onEndReached={() => updateArticles('next')}
         onEndReachedThreshold={0.5}
         keyExtractor={(article) => article._id}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {state.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
+            {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
           </View>
         }
         renderItem={(article) => (
@@ -131,13 +135,15 @@ ArticleList.propTypes = {
     }).isRequired,
   ).isRequired,
   state: PropTypes.shape({
-    success: PropTypes.bool,
-    loading: PropTypes.shape({
-      next: PropTypes.bool,
-      initial: PropTypes.bool,
-      refresh: PropTypes.bool,
-    }),
-    error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
+    list: PropTypes.shape({
+      success: PropTypes.bool,
+      loading: PropTypes.shape({
+        next: PropTypes.bool,
+        initial: PropTypes.bool,
+        refresh: PropTypes.bool,
+      }),
+      error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
+    }).isRequired,
   }).isRequired,
   theme: PropTypes.shape({
     colors: PropTypes.shape({

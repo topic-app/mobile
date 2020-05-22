@@ -59,12 +59,16 @@ function EventList({ navigation, events, state }) {
               },
             }}
           />
-          {state.loading.initial && <ProgressBar indeterminate />}
-          {state.error ? (
+          {state.list.loading.initial && <ProgressBar indeterminate />}
+          {state.list.error ? (
             <ErrorMessage
               type="axios"
-              contentType="articles"
-              error={state.error}
+              strings={{
+                what: 'la récupération des évènements',
+                contentPlural: 'des évènements',
+                contentSingular: "La liste d'évènements",
+              }}
+              error={state.list.error}
               retry={() => updateEvents('initial')}
             />
           ) : null}
@@ -77,14 +81,14 @@ function EventList({ navigation, events, state }) {
           useNativeDriver: true,
         })}
         data={events}
-        refreshing={state.loading.refresh}
+        refreshing={state.list.loading.refresh}
         onRefresh={() => updateEvents('refresh')}
         onEndReached={() => updateEvents('next')}
         onEndReachedThreshold={0.5}
         keyExtractor={(event) => event._id}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {state.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
+            {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
           </View>
         }
         renderItem={(event) => (
@@ -142,12 +146,14 @@ EventList.propTypes = {
     }).isRequired,
   ).isRequired,
   state: PropTypes.shape({
-    success: PropTypes.bool,
-    loading: PropTypes.shape({
-      next: PropTypes.bool,
-      initial: PropTypes.bool,
-      refresh: PropTypes.bool,
-    }),
-    error: PropTypes.shape(),
+    list: PropTypes.shape({
+      success: PropTypes.bool,
+      loading: PropTypes.shape({
+        next: PropTypes.bool,
+        initial: PropTypes.bool,
+        refresh: PropTypes.bool,
+      }),
+      error: PropTypes.shape(),
+    }).isRequired,
   }).isRequired,
 };

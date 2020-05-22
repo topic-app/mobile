@@ -1,14 +1,19 @@
 const initialState = {
   data: [],
   state: {
-    success: null,
-    refreshing: false,
-    error: null,
-    loading: {
-      initial: false,
-      refresh: false,
-      next: false,
-      school: false,
+    list: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
+    info: {
+      success: null,
+      error: null,
+      loading: false,
     },
   },
 };
@@ -27,7 +32,7 @@ function schoolReducer(state = initialState, action) {
     case 'UPDATE_SCHOOLS_STATE':
       return {
         ...state,
-        state: action.data,
+        state: { ...state.state, ...action.data },
       };
     case 'UPDATE_SCHOOLS':
       return {

@@ -14,14 +14,15 @@ function updateDepartmentsCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_DEPARTMENTS_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          department: getState().departments.state.loading.department,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,47 +33,32 @@ function updateDepartmentsCreator(type = 'initial', params = {}) {
     }
     request('departments/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().departments; // The old departments, in redux db
-          result.data.departments.forEach((a) => {
-            const department = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = department;
-            } else {
-              data.push(department);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_DEPARTMENTS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_DEPARTMENTS_STATE',
-            data: {
+        const { data } = getState().departments; // The old departments, in redux db
+        result.data.departments.forEach((a) => {
+          const department = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = department;
+          } else {
+            data.push(department);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_DEPARTMENTS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_DEPARTMENTS_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                department: getState().departments.state.loading.department,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error while requesting /departments/list: ${result}`);
-        return dispatch({
-          type: 'UPDATE_DEPARTMENTS_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              department: getState().departments.state.loading.department,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
@@ -80,14 +66,15 @@ function updateDepartmentsCreator(type = 'initial', params = {}) {
         return dispatch({
           type: 'UPDATE_DEPARTMENTS_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              department: getState().departments.state.loading.department,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,11 @@ function fetchDepartmentCreator(departmentId) {
     dispatch({
       type: 'UPDATE_DEPARTMENTS_STATE',
       data: {
-        loading: {
-          initial: getState().departments.state.loading.initial,
-          refresh: getState().departments.state.loading.refresh,
-          next: getState().departments.state.loading.next,
-          department: true,
+        info: {
+          loading: true,
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     request('departments/info', 'get', { departmentId })
@@ -126,53 +110,30 @@ function fetchDepartmentCreator(departmentId) {
           data.push(department);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_DEPARTMENTS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_DEPARTMENTS_STATE',
-            data: {
-              loading: {
-                initial: getState().departments.state.loading.initial,
-                refresh: getState().departments.state.loading.refresh,
-                next: getState().departments.state.loading.next,
-                department: false,
-              },
+        dispatch({
+          type: 'UPDATE_DEPARTMENTS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_DEPARTMENTS_STATE',
+          data: {
+            info: {
+              loading: false,
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`ERROR: ${result}`);
-        return dispatch({
-          type: 'UPDATE_DEPARTMENTS_STATE',
-          data: {
-            loading: {
-              initial: getState().departments.state.loading.initial,
-              refresh: getState().departments.state.loading.refresh,
-              next: getState().departments.state.loading.next,
-              department: false,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
-        console.log(`ERROR: ${err}`);
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_DEPARTMENTS_STATE',
           data: {
-            loading: {
-              initial: getState().departments.state.loading.initial,
-              refresh: getState().departments.state.loading.refresh,
-              next: getState().departments.state.loading.next,
-              department: false,
+            info: {
+              loading: false,
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -196,7 +157,6 @@ function clearDepartmentsCreator() {
  * @param next Si il faut récupérer les departments après le dernier
  */
 function updateDepartments(type, params) {
-  console.log('Update departments');
   return Store.dispatch(updateDepartmentsCreator(type, params));
 }
 

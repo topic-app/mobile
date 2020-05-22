@@ -1,14 +1,19 @@
 const initialState = {
   data: [], // TEMP:
   state: {
-    success: null,
-    refreshing: false,
-    error: null,
-    loading: {
-      initial: false,
-      refresh: false,
-      next: false,
-      event: false,
+    list: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
+    info: {
+      success: null,
+      error: null,
+      loading: false,
     },
   },
 };
@@ -27,7 +32,7 @@ function eventReducer(state = initialState, action) {
     case 'UPDATE_EVENTS_STATE':
       return {
         ...state,
-        state: action.data,
+        state: { ...state.state, ...action.data },
       };
     case 'UPDATE_EVENTS':
       return {

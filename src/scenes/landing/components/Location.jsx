@@ -189,18 +189,22 @@ WelcomeLocation.propTypes = {
   departments: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   state: PropTypes.shape({
     schools: PropTypes.shape({
-      loading: PropTypes.shape({
-        initial: PropTypes.bool.isRequired,
-        refresh: PropTypes.bool.isRequired,
-      }),
-      error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      list: PropTypes.shape({
+        loading: PropTypes.shape({
+          initial: PropTypes.bool.isRequired,
+          refresh: PropTypes.bool.isRequired,
+        }),
+        error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      }).isRequired,
     }),
     departments: PropTypes.shape({
-      loading: PropTypes.shape({
-        initial: PropTypes.bool.isRequired,
-        refresh: PropTypes.bool.isRequired,
-      }),
-      error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      list: PropTypes.shape({
+        loading: PropTypes.shape({
+          initial: PropTypes.bool.isRequired,
+          refresh: PropTypes.bool.isRequired,
+        }),
+        error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      }).isRequired,
     }),
   }).isRequired,
 };

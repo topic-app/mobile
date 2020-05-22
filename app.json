@@ -22,7 +22,7 @@
     },
     "dev": {
       "defaultLocation": {
-        "selected": true,
+        "selected": false,
         "type": "school",
         "schools": ["5e9208118851c52a8e6c6f8d"],
         "schoolData": [

@@ -8,14 +8,14 @@ import { updateCreationData } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
 
-function AuthCreatePageSchool({ forward, backward, location }) {
+function AuthCreatePageSchool({ next, prev, location }) {
   const submit = () => {
     updateCreationData({
       schools: location.schools,
       departments: location.departments,
       global: location.global,
     });
-    forward();
+    next();
   };
 
   const theme = useTheme();
@@ -24,22 +24,38 @@ function AuthCreatePageSchool({ forward, backward, location }) {
 
   return (
     <View style={authStyles.formContainer}>
-      <Card style={{ marginBottom: 30 }}>
-        <Card.Content>
-          <Title>{location.schoolData[0].name}</Title>
-          <Subheading>{location.schoolData[0].address?.shortName}</Subheading>
-        </Card.Content>
-        <Card.Actions>
-          <Button mode="text" onPress={() => console.log('Change schools')}>
-            Changer d&apos;école
-          </Button>
-        </Card.Actions>
-      </Card>
+      {location.schoolData.map((s) => (
+        <Card key={s._id} style={{ marginBottom: 30 }}>
+          <Card.Content>
+            <Title>{s?.name}</Title>
+            <Subheading>{s?.address?.shortName || s?.address?.address?.city}</Subheading>
+          </Card.Content>
+        </Card>
+      ))}
+      {location.departmentData.map((d) => (
+        <Card key={d._id} style={{ marginBottom: 30 }}>
+          <Card.Content>
+            <Title>{d?.name}</Title>
+            <Subheading>{d?.type === 'region' ? 'Région' : 'Département'}</Subheading>
+          </Card.Content>
+        </Card>
+      ))}
+      {location.global && (
+        <Card style={{ marginBottom: 30 }}>
+          <Card.Content>
+            <Title>France entière</Title>
+            <Subheading>Pas d&apos;école ou département spécifique</Subheading>
+          </Card.Content>
+        </Card>
+      )}
+      <View style={authStyles.changeButtonContainer}>
+        <Button mode="text">Changer</Button>
+      </View>
       <View style={authStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => backward()}
+          onPress={() => prev()}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour
@@ -66,8 +82,8 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(AuthCreatePageSchool);
 
 AuthCreatePageSchool.propTypes = {
-  forward: PropTypes.func.isRequired,
-  backward: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+  prev: PropTypes.func.isRequired,
   location: PropTypes.shape({
     schools: PropTypes.arrayOf(PropTypes.string),
     departments: PropTypes.arrayOf(PropTypes.string),

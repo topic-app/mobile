@@ -9,29 +9,9 @@ function getAuthStyles(theme) {
       alignItems: 'center',
       justifyContent: 'center',
     },
-    textInput: {
-      width: '100%',
-      alignSelf: 'center',
-      paddingBottom: 3,
-    },
-    textInputContainer: {
-      alignSelf: 'stretch',
-    },
     buttonContainer: {
       alignSelf: 'center',
       flexDirection: 'row',
-    },
-    listContainer: {
-      padding: 10,
-    },
-    descriptionContainer: {
-      marginLeft: 20,
-      marginRight: 25,
-      marginTop: 10,
-      marginBottom: 20,
-    },
-    descriptionPartContainer: {
-      marginVertical: 10,
     },
     title: {
       fontSize: 30,
@@ -48,6 +28,29 @@ function getAuthStyles(theme) {
       width: '100%',
       maxWidth: 600,
       alignSelf: 'center',
+    },
+    textInput: {
+      width: '100%',
+      alignSelf: 'center',
+      paddingBottom: 3,
+    },
+    textInputContainer: {
+      alignSelf: 'stretch',
+    },
+    changeButtonContainer: {
+      marginBottom: 20,
+    },
+    listContainer: {
+      padding: 10,
+    },
+    descriptionContainer: {
+      marginLeft: 20,
+      marginRight: 25,
+      marginTop: 10,
+      marginBottom: 20,
+    },
+    descriptionPartContainer: {
+      marginVertical: 10,
     },
     radio: {
       color: colors.primary,

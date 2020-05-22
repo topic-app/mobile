@@ -14,14 +14,15 @@ function updateEventsCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_EVENTS_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          event: getState().events.state.loading.event,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,62 +33,48 @@ function updateEventsCreator(type = 'initial', params = {}) {
     }
     request('events/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().events; // The old events, in redux db
-          result.data.events.forEach((a) => {
-            const event = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = event;
-            } else {
-              data.push(event);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_EVENTS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_EVENTS_STATE',
-            data: {
+        const { data } = getState().events; // The old events, in redux db
+        result.data.events.forEach((a) => {
+          const event = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = event;
+          } else {
+            data.push(event);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_EVENTS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_EVENTS_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                event: getState().events.state.loading.event,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_EVENTS_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              event: getState().events.state.loading.event,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_EVENTS_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              event: getState().events.state.loading.event,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,11 @@ function fetchEventCreator(eventId) {
     dispatch({
       type: 'UPDATE_EVENTS_STATE',
       data: {
-        loading: {
-          initial: getState().events.state.loading.initial,
-          refresh: getState().events.state.loading.refresh,
-          next: getState().events.state.loading.next,
-          event: true,
+        info: {
+          loading: true,
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     request('events/info', 'get', { eventId })
@@ -126,53 +110,30 @@ function fetchEventCreator(eventId) {
           data.push(event);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_EVENTS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_EVENTS_STATE',
-            data: {
-              loading: {
-                initial: getState().events.state.loading.initial,
-                refresh: getState().events.state.loading.refresh,
-                next: getState().events.state.loading.next,
-                event: false,
-              },
+        dispatch({
+          type: 'UPDATE_EVENTS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_EVENTS_STATE',
+          data: {
+            info: {
+              loading: false,
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`ERROR: ${result}`);
-        return dispatch({
-          type: 'UPDATE_EVENTS_STATE',
-          data: {
-            loading: {
-              initial: getState().events.state.loading.initial,
-              refresh: getState().events.state.loading.refresh,
-              next: getState().events.state.loading.next,
-              event: false,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
-        console.log(`ERROR: ${err}`);
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_EVENTS_STATE',
           data: {
-            loading: {
-              initial: getState().events.state.loading.initial,
-              refresh: getState().events.state.loading.refresh,
-              next: getState().events.state.loading.next,
-              event: false,
+            info: {
+              loading: false,
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });

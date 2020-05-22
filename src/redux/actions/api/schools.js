@@ -14,14 +14,15 @@ function updateSchoolsCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_SCHOOLS_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          school: getState().schools.state.loading.school,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,47 +33,32 @@ function updateSchoolsCreator(type = 'initial', params = {}) {
     }
     request('schools/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().schools; // The old schools, in redux db
-          result.data.schools.forEach((a) => {
-            const school = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = school;
-            } else {
-              data.push(school);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_SCHOOLS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_SCHOOLS_STATE',
-            data: {
+        const { data } = getState().schools; // The old schools, in redux db
+        result.data.schools.forEach((a) => {
+          const school = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = school;
+          } else {
+            data.push(school);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_SCHOOLS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_SCHOOLS_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                school: getState().schools.state.loading.school,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error while requesting /schools/list: ${result}`);
-        return dispatch({
-          type: 'UPDATE_SCHOOLS_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              school: getState().schools.state.loading.school,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
@@ -80,14 +66,15 @@ function updateSchoolsCreator(type = 'initial', params = {}) {
         return dispatch({
           type: 'UPDATE_SCHOOLS_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              school: getState().schools.state.loading.school,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,11 @@ function fetchSchoolCreator(schoolId) {
     dispatch({
       type: 'UPDATE_SCHOOLS_STATE',
       data: {
-        loading: {
-          initial: getState().schools.state.loading.initial,
-          refresh: getState().schools.state.loading.refresh,
-          next: getState().schools.state.loading.next,
-          school: true,
+        info: {
+          loading: true,
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     request('schools/info', 'get', { schoolId })
@@ -126,53 +110,30 @@ function fetchSchoolCreator(schoolId) {
           data.push(school);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_SCHOOLS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_SCHOOLS_STATE',
-            data: {
-              loading: {
-                initial: getState().schools.state.loading.initial,
-                refresh: getState().schools.state.loading.refresh,
-                next: getState().schools.state.loading.next,
-                school: false,
-              },
+        dispatch({
+          type: 'UPDATE_SCHOOLS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_SCHOOLS_STATE',
+          data: {
+            info: {
+              loading: false,
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`ERROR: ${result}`);
-        return dispatch({
-          type: 'UPDATE_SCHOOLS_STATE',
-          data: {
-            loading: {
-              initial: getState().schools.state.loading.initial,
-              refresh: getState().schools.state.loading.refresh,
-              next: getState().schools.state.loading.next,
-              school: false,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
-        console.log(`ERROR: ${err}`);
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_SCHOOLS_STATE',
           data: {
-            loading: {
-              initial: getState().schools.state.loading.initial,
-              refresh: getState().schools.state.loading.refresh,
-              next: getState().schools.state.loading.next,
-              school: false,
+            info: {
+              loading: false,
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -196,7 +157,6 @@ function clearSchoolsCreator() {
  * @param next Si il faut récupérer les schools après le dernier
  */
 function updateSchools(type, params) {
-  console.log(`Update schools`);
   return Store.dispatch(updateSchoolsCreator(type, params));
 }
 

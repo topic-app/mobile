@@ -33,55 +33,55 @@ function loginCreator(fields) {
     dispatch({
       type: 'UPDATE_ACCOUNT_STATE',
       data: {
-        loading: true,
-        success: null,
-        error: null,
+        login: {
+          loading: true,
+          success: null,
+          error: null,
+          incorrect: null,
+        },
       },
     });
     request('auth/login/local', 'post', fields)
       .then((result) => {
-        if (result.success && !result.data.correct) {
+        if (!result.data.correct) {
           return dispatch({
             type: 'UPDATE_ACCOUNT_STATE',
             data: {
-              loading: false,
-              success: null,
-              error: null,
-              incorrect: true,
+              login: {
+                loading: false,
+                success: null,
+                error: null,
+                incorrect: true,
+              },
             },
           });
         }
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_ACCOUNT_STATE',
-            data: {
+        dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            login: {
               loading: false,
               success: true,
               error: null,
+              incorrect: false,
             },
-          });
-          return dispatch({
-            type: 'LOGIN',
-            data: result.data,
-          });
-        }
-        return dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
-          data: {
-            loading: false,
-            success: false,
-            error: 'server',
           },
+        });
+        return dispatch({
+          type: 'LOGIN',
+          data: result.data,
         });
       })
       .catch((err) => {
         return dispatch({
           type: 'UPDATE_ACCOUNT_STATE',
           data: {
-            refreshing: false,
-            success: false,
-            loading: false,
-            error: err,
+            login: {
+              success: false,
+              loading: false,
+              error: err,
+              incorrect: null,
+            },
           },
         });
       });
@@ -93,44 +93,39 @@ function registerCreator(fields) {
     dispatch({
       type: 'UPDATE_ACCOUNT_STATE',
       data: {
-        loading: true,
-        success: null,
-        error: null,
+        register: {
+          loading: true,
+          success: null,
+          error: null,
+        },
       },
     });
     request('auth/register/local', 'post', fields)
       .then((result) => {
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_ACCOUNT_STATE',
-            data: {
+        dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            register: {
               loading: false,
               success: true,
               error: null,
             },
-          });
-          return dispatch({
-            type: 'LOGIN',
-            data: result.data,
-          });
-        }
-        return dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
-          data: {
-            loading: false,
-            success: false,
-            error: 'server',
           },
+        });
+        return dispatch({
+          type: 'LOGIN',
+          data: result.data,
         });
       })
       .catch((err) => {
         return dispatch({
           type: 'UPDATE_ACCOUNT_STATE',
           data: {
-            refreshing: false,
-            success: false,
-            loading: false,
-            error: err,
+            register: {
+              success: false,
+              loading: false,
+              error: err,
+            },
           },
         });
       });

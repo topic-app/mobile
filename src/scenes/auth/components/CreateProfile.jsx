@@ -3,11 +3,11 @@ import { View, Platform } from 'react-native';
 import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-import { updateCreationData, updateState } from '@redux/actions/data/account';
+import { updateCreationData } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
 
-function AuthCreatePageProfile({ forward, backward }) {
+function AuthCreatePageProfile({ next, prev }) {
   const firstnameInput = React.createRef();
   const lastnameInput = React.createRef();
 
@@ -92,19 +92,14 @@ function AuthCreatePageProfile({ forward, backward }) {
   }
 
   async function submit() {
-    updateState({ loading: true });
-
     const firstnameVal = firstnameInput.current.state.value;
     const lastnameVal = lastnameInput.current.state.value;
     const firstname = await validateFirstnameInput(firstnameVal);
     const lastname = await validateLastnameInput(lastnameVal);
-    console.log(firstname, lastname);
     if ((firstname.valid || !firstname) && (lastname.valid || !lastname)) {
       updateCreationData({ firstname: firstnameVal, lastname: lastnameVal });
-      forward();
+      next();
     }
-
-    updateState({ loading: false });
   }
 
   const theme = useTheme();
@@ -184,7 +179,7 @@ function AuthCreatePageProfile({ forward, backward }) {
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={backward}
+          onPress={() => prev()}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour
@@ -208,6 +203,6 @@ function AuthCreatePageProfile({ forward, backward }) {
 export default AuthCreatePageProfile;
 
 AuthCreatePageProfile.propTypes = {
-  forward: PropTypes.func.isRequired,
-  backward: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+  prev: PropTypes.func.isRequired,
 };
