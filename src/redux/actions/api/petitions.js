@@ -14,14 +14,15 @@ function updatePetitionsCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_PETITIONS_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          petition: getState().petitions.state.loading.petition,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,62 +33,48 @@ function updatePetitionsCreator(type = 'initial', params = {}) {
     }
     request('petitions/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().petitions; // The old petitions, in redux db
-          result.data.petitions.forEach((a) => {
-            const petition = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = petition;
-            } else {
-              data.push(petition);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_PETITIONS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_PETITIONS_STATE',
-            data: {
+        const { data } = getState().petitions; // The old petitions, in redux db
+        result.data.petitions.forEach((a) => {
+          const petition = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = petition;
+          } else {
+            data.push(petition);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_PETITIONS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_PETITIONS_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                petition: getState().petitions.state.loading.petition,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_PETITIONS_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              petition: getState().petitions.state.loading.petition,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_PETITIONS_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              petition: getState().petitions.state.loading.petition,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,11 @@ function fetchPetitionCreator(petitionId) {
     dispatch({
       type: 'UPDATE_PETITIONS_STATE',
       data: {
-        loading: {
-          initial: getState().petitions.state.loading.initial,
-          refresh: getState().petitions.state.loading.refresh,
-          next: getState().petitions.state.loading.next,
-          petition: true,
+        info: {
+          loading: true,
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     request('petitions/info', 'get', { petitionId })
@@ -126,53 +110,30 @@ function fetchPetitionCreator(petitionId) {
           data.push(petition);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_PETITIONS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_PETITIONS_STATE',
-            data: {
-              loading: {
-                initial: getState().petitions.state.loading.initial,
-                refresh: getState().petitions.state.loading.refresh,
-                next: getState().petitions.state.loading.next,
-                petition: false,
-              },
+        dispatch({
+          type: 'UPDATE_PETITIONS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_PETITIONS_STATE',
+          data: {
+            info: {
+              loading: false,
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`ERROR: ${result}`);
-        return dispatch({
-          type: 'UPDATE_PETITIONS_STATE',
-          data: {
-            loading: {
-              initial: getState().petitions.state.loading.initial,
-              refresh: getState().petitions.state.loading.refresh,
-              next: getState().petitions.state.loading.next,
-              petition: false,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
-        console.log(`ERROR: ${err}`);
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_PETITIONS_STATE',
           data: {
-            loading: {
-              initial: getState().petitions.state.loading.initial,
-              refresh: getState().petitions.state.loading.refresh,
-              next: getState().petitions.state.loading.next,
-              petition: false,
+            info: {
+              loading: false,
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });

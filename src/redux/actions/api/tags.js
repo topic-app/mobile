@@ -14,14 +14,15 @@ function updateTagsCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_TAGS_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          tag: getState().tags.state.loading.tag,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,47 +33,32 @@ function updateTagsCreator(type = 'initial', params = {}) {
     }
     request('tags/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().tags; // The old tags, in redux db
-          result.data.tags.forEach((a) => {
-            const tag = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = tag;
-            } else {
-              data.push(tag);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_TAGS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_TAGS_STATE',
-            data: {
+        const { data } = getState().tags; // The old tags, in redux db
+        result.data.tags.forEach((a) => {
+          const tag = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = tag;
+          } else {
+            data.push(tag);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_TAGS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_TAGS_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                tag: getState().tags.state.loading.tag,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_TAGS_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              tag: getState().tags.state.loading.tag,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
@@ -80,14 +66,15 @@ function updateTagsCreator(type = 'initial', params = {}) {
         return dispatch({
           type: 'UPDATE_TAGS_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              tag: getState().tags.state.loading.tag,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,11 @@ function fetchTagCreator(tagId) {
     dispatch({
       type: 'UPDATE_TAGS_STATE',
       data: {
-        loading: {
-          initial: getState().tags.state.loading.initial,
-          refresh: getState().tags.state.loading.refresh,
-          next: getState().tags.state.loading.next,
-          tag: true,
+        info: {
+          loading: true,
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     request('tags/info', 'get', { tagId })
@@ -126,53 +110,30 @@ function fetchTagCreator(tagId) {
           data.push(tag);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_TAGS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_TAGS_STATE',
-            data: {
-              loading: {
-                initial: getState().tags.state.loading.initial,
-                refresh: getState().tags.state.loading.refresh,
-                next: getState().tags.state.loading.next,
-                tag: false,
-              },
-              success: true,
-              error: null,
-            },
-          });
-        }
-        console.log(`ERROR: ${result}`);
+        dispatch({
+          type: 'UPDATE_TAGS',
+          data,
+        });
         return dispatch({
           type: 'UPDATE_TAGS_STATE',
           data: {
-            loading: {
-              initial: getState().tags.state.loading.initial,
-              refresh: getState().tags.state.loading.refresh,
-              next: getState().tags.state.loading.next,
-              tag: false,
+            info: {
+              loading: false,
+              success: true,
+              error: null,
             },
-            success: false,
-            error: 'server',
           },
         });
       })
       .catch((err) => {
-        console.log(`ERROR: ${err}`);
         return dispatch({
           type: 'UPDATE_TAGS_STATE',
           data: {
-            loading: {
-              initial: getState().tags.state.loading.initial,
-              refresh: getState().tags.state.loading.refresh,
-              next: getState().tags.state.loading.next,
-              tag: false,
+            info: {
+              loading: false,
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });

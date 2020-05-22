@@ -12,7 +12,16 @@ import { config } from '@root/app.json';
 
 let initialState;
 if (config.dev.defaultLocation) {
-  initialState = config.dev.defaultLocation;
+  initialState = {
+    ...config.dev.defaultLocation,
+    state: {
+      fetch: {
+        loading: null,
+        success: null,
+        error: null,
+      },
+    },
+  };
 } else {
   initialState = {
     selected: false,
@@ -22,9 +31,11 @@ if (config.dev.defaultLocation) {
     departmentData: [],
     global: null,
     state: {
-      loading: null,
-      success: null,
-      error: null,
+      fetch: {
+        loading: null,
+        success: null,
+        error: null,
+      },
     },
   };
 }

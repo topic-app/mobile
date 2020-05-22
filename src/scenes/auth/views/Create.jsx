@@ -2,8 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { register, updateState } from '@redux/actions/data/account';
-import StepperViewPager from '@components/StepperViewPager';
+import { Platform, View, ScrollView } from 'react-native';
+import { Text, Button, ProgressBar, useTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { TranslucentStatusBar } from '@components/Header';
+import { register } from '@redux/actions/data/account';
+import StepperView from '@components/StepperView';
+import getStyles from '@styles/Styles';
+import ErrorMessage from '@components/ErrorMessage';
+import PlatformBackButton from '@components/PlatformBackButton';
+import getAuthStyles from '../styles/Styles';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageSchool from '../components/CreateSchool';
@@ -12,7 +22,10 @@ import AuthCreatePageProfile from '../components/CreateProfile';
 import AuthCreatePageLegal from '../components/CreateLegal';
 
 function AuthCreate({ navigation, reqState, creationData }) {
-  const viewPagerRef = React.useRef();
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const authStyles = getAuthStyles(theme);
+  const { colors } = theme;
 
   const create = () => {
     const reqParams = {
@@ -38,77 +51,108 @@ function AuthCreate({ navigation, reqState, creationData }) {
     register(reqParams);
   };
 
-  const restart = () => {
-    updateState({ error: null, success: null, loading: null });
-    viewPagerRef.current.setPage(0);
-  };
+  if (reqState.register.success) {
+    return (
+      <View style={styles.page}>
+        <View style={authStyles.stepIndicatorContainer}>
+          <View style={authStyles.centerContainer}>
+            <Icon size={50} color={colors.valid} name="account-check-outline" />
+            <Text style={authStyles.title}>Compte crée</Text>
+            <Text>Compte crée</Text>
+          </View>
+        </View>
+        <View style={authStyles.formContainer}>
+          <View style={authStyles.buttonContainer}>
+            <Button
+              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={() =>
+                navigation.navigate('Main', {
+                  screen: 'Home1',
+                  params: { screen: 'Home2', params: { screen: 'Article' } },
+                })
+              }
+              style={{ flex: 1 }}
+            >
+              Continuer
+            </Button>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   return (
-    <StepperViewPager
-      navigation={navigation}
-      viewPagerRef={viewPagerRef}
-      reqState={reqState}
-      title="Créer un compte"
-      pages={[
-        {
-          icon: 'account',
-          label: 'General',
-          component: AuthCreatePageGeneral,
-          scrollToBottom: true,
-          height: 350,
-        },
-        { icon: 'school', label: 'École', component: AuthCreatePageSchool, height: 250 },
-        { icon: 'shield', label: 'Vie privée', component: AuthCreatePagePrivacy, height: 550 },
-        {
-          icon: 'comment-account',
-          label: 'Profil',
-          component: AuthCreatePageProfile,
-          scrollToBottom: true,
-          height: 260,
-        },
-        {
-          icon: 'script-text',
-          label: 'Conditions',
-          component: AuthCreatePageLegal,
-          params: { userEmail: creationData.email, create },
-          height: 950,
-        },
-      ]}
-      success={{
-        icon: 'account-check-outline',
-        title: 'Compte Crée',
-        actions: [
-          {
-            label: 'Continuer',
-            onPress: () =>
-              navigation.navigate('Main', {
-                screen: 'Home1',
-                params: { screen: 'Home2', params: { screen: 'Article' } },
-              }),
-          },
-        ],
-      }}
-      failure={{
-        icon: 'account-remove-outline',
-        title: 'Erreur lors de la création du compte',
-        description:
-          'Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données soient correctes ou signaler un bug depuis le menu principal',
-        actions: [
-          {
-            label: 'Réessayer',
-            onPress: () => restart(),
-          },
-          {
-            label: 'Continuer',
-            onPress: () =>
-              navigation.navigate('Main', {
-                screen: 'Home1',
-                params: { screen: 'Home2', params: { screen: 'Article' } },
-              }),
-          },
-        ],
-      }}
-    />
+    <View style={styles.page}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <TranslucentStatusBar />
+        {reqState.register.loading || reqState.check.loading ? (
+          <ProgressBar indeterminate />
+        ) : (
+          <View style={{ height: 4 }} />
+        )}
+        {reqState.register.success === false && (
+          <ErrorMessage
+            error={reqState.register.error}
+            strings={{
+              what: 'la création du compte',
+              contentSingular: 'Le compte',
+            }}
+            type="axios"
+            retry={create}
+          />
+        )}
+        {reqState.check.success === false && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la vérification des informations',
+              contentPlural: 'des informations',
+            }}
+            error={reqState.check.error}
+          />
+        )}
+
+        <ScrollView>
+          <PlatformBackButton onPress={navigation.goBack} />
+          <StepperView
+            title="Créer un compte"
+            pages={[
+              {
+                key: 'general',
+                icon: 'account',
+                title: 'General',
+                component: <AuthCreatePageGeneral />,
+              },
+              {
+                key: 'location',
+                icon: 'school',
+                title: 'École',
+                component: <AuthCreatePageSchool />,
+              },
+              {
+                key: 'privacy',
+                icon: 'shield',
+                title: 'Vie privée',
+                component: <AuthCreatePagePrivacy />,
+              },
+              {
+                key: 'profile',
+                icon: 'comment-account',
+                title: 'Profil',
+                component: <AuthCreatePageProfile />,
+              },
+              {
+                key: 'legal',
+                icon: 'script-text',
+                title: 'Conditions',
+                component: <AuthCreatePageLegal userEmail={creationData.email} create={create} />,
+              },
+            ]}
+          />
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -131,6 +175,7 @@ AuthCreate.defaultProps = {
 AuthCreate.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
   }).isRequired,
   creationData: PropTypes.shape({
     username: PropTypes.string,
@@ -144,8 +189,15 @@ AuthCreate.propTypes = {
     lastname: PropTypes.string,
   }),
   reqState: PropTypes.shape({
-    error: PropTypes.any,
-    success: PropTypes.bool,
-    loading: PropTypes.bool,
+    register: PropTypes.shape({
+      error: PropTypes.any,
+      success: PropTypes.bool,
+      loading: PropTypes.bool,
+    }).isRequired,
+    check: PropTypes.shape({
+      error: PropTypes.any,
+      success: PropTypes.bool,
+      loading: PropTypes.bool,
+    }).isRequired,
   }),
 };

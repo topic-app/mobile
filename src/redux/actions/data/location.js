@@ -33,9 +33,11 @@ function fetchLocationDataCreator() {
     dispatch({
       type: 'UPDATE_LOCATION_STATE',
       data: {
-        loading: true,
-        success: null,
-        error: null,
+        fetch: {
+          loading: true,
+          success: null,
+          error: null,
+        },
       },
     });
 
@@ -48,14 +50,9 @@ function fetchLocationDataCreator() {
       schools.map(async (school) => {
         try {
           const result = await request('/schools/info', 'get', { schoolId: school });
-          if (result.success) {
-            schoolData.push(result?.data?.schools[0]);
-          } else {
-            error = true;
-          }
+          schoolData.push(result?.data?.schools[0]);
         } catch (e) {
-          error = true;
-          console.log('Error while getting school info', JSON.stringify(e));
+          error = e;
         }
       }),
     );
@@ -64,14 +61,9 @@ function fetchLocationDataCreator() {
       departments.map(async (department) => {
         try {
           const result = await request('/departments/info', 'get', { departmentId: department });
-          if (result.success) {
-            departmentData.push(result?.data?.departments[0]);
-          } else {
-            error = true;
-          }
+          departmentData.push(result?.data?.departments[0]);
         } catch (e) {
-          error = true;
-          console.log('Error while getting department info', JSON.stringify(e));
+          error = e;
         }
       }),
     );
@@ -80,9 +72,11 @@ function fetchLocationDataCreator() {
       return dispatch({
         type: 'UPDATE_LOCATION_STATE',
         data: {
-          loading: false,
-          success: false,
-          error: 'server',
+          fetch: {
+            loading: false,
+            success: false,
+            error,
+          },
         },
       });
     }
@@ -90,9 +84,11 @@ function fetchLocationDataCreator() {
     dispatch({
       type: 'UPDATE_LOCATION_STATE',
       data: {
-        loading: false,
-        success: true,
-        error: null,
+        fetch: {
+          loading: false,
+          success: true,
+          error: null,
+        },
       },
     });
     return dispatch({

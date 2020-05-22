@@ -24,13 +24,13 @@ function ItemList({ type, data, setGlobalSelected, state }) {
 
   return (
     <View>
-      {(state.schools.loading.initial || state.departments.loading.initial) && (
+      {(state.schools.list.loading.initial || state.departments.list.loading.initial) && (
         <ProgressBar indeterminate />
       )}
-      {state.schools.error || state.departments.error ? (
+      {state.schools.list.error || state.departments.list.error ? (
         <ErrorMessage
           type="axios"
-          error={[state.schools.error, state.departments.error]}
+          error={[state.schools.list.error, state.departments.list.error]}
           retry={() => {
             updateSchools('initial');
             updateDepartments('initial');
@@ -40,7 +40,7 @@ function ItemList({ type, data, setGlobalSelected, state }) {
       <FlatList
         data={data}
         keyExtractor={(i) => i._id}
-        refreshing={state.schools.loading.refresh || state.departments.loading.refresh}
+        refreshing={state.schools.list.loading.refresh || state.departments.list.loading.refresh}
         renderItem={({ item }) => (
           <List.Item
             title={item.title}
@@ -79,18 +79,22 @@ ItemList.propTypes = {
   setGlobalSelected: PropTypes.func.isRequired,
   state: PropTypes.shape({
     schools: PropTypes.shape({
-      loading: PropTypes.shape({
-        initial: PropTypes.bool.isRequired,
-        refresh: PropTypes.bool.isRequired,
-      }),
-      error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      list: PropTypes.shape({
+        loading: PropTypes.shape({
+          initial: PropTypes.bool.isRequired,
+          refresh: PropTypes.bool.isRequired,
+        }),
+        error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      }).isRequired,
     }),
     departments: PropTypes.shape({
-      loading: PropTypes.shape({
-        initial: PropTypes.bool.isRequired,
-        refresh: PropTypes.bool.isRequired,
-      }),
-      error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      list: PropTypes.shape({
+        loading: PropTypes.shape({
+          initial: PropTypes.bool.isRequired,
+          refresh: PropTypes.bool.isRequired,
+        }),
+        error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      }).isRequired,
     }),
   }).isRequired,
   data: PropTypes.arrayOf(

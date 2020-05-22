@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Image, ScrollView, ImageBackground } from 'react-native';
+import { View, ScrollView, ImageBackground } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -19,7 +19,7 @@ function EventDisplay({ route, events, state }) {
   const { id } = route.params;
   React.useEffect(() => {
     fetchEvent(id);
-  }, []);
+  }, [id]);
   const event = events.find((t) => t._id === id);
   const start = event?.duration?.start;
   const end = event?.duration?.end;
@@ -29,11 +29,14 @@ function EventDisplay({ route, events, state }) {
   return (
     <View style={styles.page}>
       <ScrollView ref={scrollViewRef}>
-        {state.error ? (
+        {state.info.error ? (
           <ErrorMessage
             type="axios"
-            contentType="données de l'article"
-            error={state.error}
+            strings={{
+              what: 'la récupération de cet évènement',
+              contentSingular: "L'évènement",
+            }}
+            error={state.info.error}
             retry={() => fetchEvent(id)}
           />
         ) : null}
@@ -42,12 +45,13 @@ function EventDisplay({ route, events, state }) {
             source={{ uri: event.thumbnailUrl }}
             style={[styles.image, { height: 250 }]}
           >
-            {(event.preload || state.loading.event) && !state.error && (
+            {(event.preload || state.info.loading) && !state.info.error && (
               <ProgressBar indeterminate />
             )}
           </ImageBackground>
         ) : (
-          (event.preload || state.loading.event) && !state.error && <ProgressBar indeterminate />
+          (event.preload || state.info.loading) &&
+          !state.info.error && <ProgressBar indeterminate />
         )}
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{event?.title}</Text>
@@ -100,14 +104,11 @@ EventDisplay.propTypes = {
     }).isRequired,
   }).isRequired,
   state: PropTypes.shape({
-    success: PropTypes.bool,
-    loading: PropTypes.shape({
-      next: PropTypes.bool,
-      initial: PropTypes.bool,
-      refresh: PropTypes.bool,
-      event: PropTypes.bool,
-    }),
-    error: PropTypes.shape(),
+    info: PropTypes.shape({
+      success: PropTypes.bool,
+      loading: PropTypes.bool,
+      error: PropTypes.shape(),
+    }).isRequired,
   }).isRequired,
   events: PropTypes.arrayOf(
     PropTypes.shape({

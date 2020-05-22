@@ -14,14 +14,15 @@ function updateArticlesCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_ARTICLES_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          article: getState().articles.state.loading.article,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,62 +33,48 @@ function updateArticlesCreator(type = 'initial', params = {}) {
     }
     request('articles/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().articles; // The old articles, in redux db
-          result.data.articles.forEach((a) => {
-            const article = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = article;
-            } else {
-              data.push(article);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_ARTICLES',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_ARTICLES_STATE',
-            data: {
+        const { data } = getState().articles; // The old articles, in redux db
+        result.data.articles.forEach((a) => {
+          const article = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = article;
+          } else {
+            data.push(article);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_ARTICLES',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_ARTICLES_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                article: getState().articles.state.loading.article,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_ARTICLES_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              article: getState().articles.state.loading.article,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_ARTICLES_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              article: getState().articles.state.loading.article,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,11 @@ function fetchArticleCreator(articleId) {
     dispatch({
       type: 'UPDATE_ARTICLES_STATE',
       data: {
-        loading: {
-          initial: getState().articles.state.loading.initial,
-          refresh: getState().articles.state.loading.refresh,
-          next: getState().articles.state.loading.next,
-          article: true,
+        info: {
+          loading: true,
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     request('articles/info', 'get', { articleId })
@@ -126,53 +110,30 @@ function fetchArticleCreator(articleId) {
           data.push(article);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_ARTICLES',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_ARTICLES_STATE',
-            data: {
-              loading: {
-                initial: getState().articles.state.loading.initial,
-                refresh: getState().articles.state.loading.refresh,
-                next: getState().articles.state.loading.next,
-                article: false,
-              },
-              success: true,
-              error: null,
-            },
-          });
-        }
-        console.log(`ERROR: ${result}`);
+        dispatch({
+          type: 'UPDATE_ARTICLES',
+          data,
+        });
         return dispatch({
           type: 'UPDATE_ARTICLES_STATE',
           data: {
-            loading: {
-              initial: getState().articles.state.loading.initial,
-              refresh: getState().articles.state.loading.refresh,
-              next: getState().articles.state.loading.next,
-              article: false,
+            info: {
+              loading: false,
+              success: true,
+              error: null,
             },
-            success: false,
-            error: 'server',
           },
         });
       })
       .catch((err) => {
-        console.log(`ERROR: ${err}`);
         return dispatch({
           type: 'UPDATE_ARTICLES_STATE',
           data: {
-            loading: {
-              initial: getState().articles.state.loading.initial,
-              refresh: getState().articles.state.loading.refresh,
-              next: getState().articles.state.loading.next,
-              article: false,
+            info: {
+              loading: false,
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });

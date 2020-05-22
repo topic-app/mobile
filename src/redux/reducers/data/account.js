@@ -14,10 +14,22 @@ const initialState = {
   accountInfo: {},
   creationData: {},
   state: {
-    loading: false,
-    success: null,
-    error: null,
-    incorrect: null,
+    login: {
+      loading: false,
+      success: null,
+      error: null,
+      incorrect: null,
+    },
+    register: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    check: {
+      loading: false,
+      success: null,
+      error: null,
+    },
   },
 };
 

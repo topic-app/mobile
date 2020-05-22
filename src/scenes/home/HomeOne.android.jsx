@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import TopicIcon from '@assets/images/topic-icon.svg';
 
 import getNavigatorStyles from '@styles/NavStyles';
+import { fetchLocationData } from '@redux/actions/data/location';
+import ErrorMessage from '@components/ErrorMessage';
 import HomeTwoNavigator from './HomeTwo';
 
 const DrawerNav = createDrawerNavigator();
@@ -24,7 +26,19 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <View style={navigatorStyles.profileBackground}>
-        {(!location.state || location.state.loading) && <ProgressBar indeterminate />}
+        {location.state.fetch.loading && <ProgressBar indeterminate />}
+        {location.state.fetch.error ? (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la récupération des articles',
+              contentPlural: 'des articles',
+              contentSingular: "La liste d'articles",
+            }}
+            error={location.state.fetch.error}
+            retry={() => fetchLocationData()}
+          />
+        ) : null}
         <View style={navigatorStyles.profileIconContainer}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TopicIcon
@@ -196,7 +210,11 @@ CustomDrawerContent.propTypes = {
     departmentData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     global: PropTypes.bool.isRequired,
     state: PropTypes.shape({
-      loading: PropTypes.bool.isRequired,
+      fetch: PropTypes.shape({
+        loading: PropTypes.bool.isRequired,
+        success: PropTypes.bool.isRequired,
+        error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
+      }).isRequired,
     }),
   }).isRequired,
 };

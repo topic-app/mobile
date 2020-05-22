@@ -7,7 +7,7 @@ import getAuthStyles from '../styles/Styles';
 
 import { ListHeading, ListItem, ListItemAnchor } from './ListComponents';
 
-function AuthCreatePageLegal({ backward, userEmail, create }) {
+function AuthCreatePageLegal({ prev, userEmail, create }) {
   const [terms, setTerms] = useState(false);
   const [email, setEmail] = useState(false);
   const [termsError, setTermsError] = useState({ error: false, message: '' });
@@ -152,7 +152,7 @@ function AuthCreatePageLegal({ backward, userEmail, create }) {
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => backward()}
+          onPress={() => prev()}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour
@@ -178,6 +178,6 @@ AuthCreatePageLegal.defaultProps = {
 
 AuthCreatePageLegal.propTypes = {
   create: PropTypes.func.isRequired,
-  backward: PropTypes.func.isRequired,
+  prev: PropTypes.func.isRequired,
   userEmail: PropTypes.string,
 };

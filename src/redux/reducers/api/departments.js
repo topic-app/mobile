@@ -1,14 +1,19 @@
 const initialState = {
   data: [],
   state: {
-    success: null,
-    refreshing: false,
-    error: null,
-    loading: {
-      initial: false,
-      refresh: false,
-      next: false,
-      department: false,
+    list: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
+    info: {
+      success: null,
+      error: null,
+      loading: false,
     },
   },
 };
@@ -27,7 +32,7 @@ function departmentReducer(state = initialState, action) {
     case 'UPDATE_DEPARTMENTS_STATE':
       return {
         ...state,
-        state: action.data,
+        state: { ...state.state, ...action.data },
       };
     case 'UPDATE_DEPARTMENTS':
       return {

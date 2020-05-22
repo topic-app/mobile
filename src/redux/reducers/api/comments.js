@@ -1,14 +1,14 @@
 const initialState = {
   data: [],
   state: {
-    success: null,
-    refreshing: false,
-    error: null,
-    loading: {
-      initial: false,
-      refresh: false,
-      next: false,
-      comment: false,
+    list: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
     },
   },
 };
@@ -27,7 +27,7 @@ function commentReducer(state = initialState, action) {
     case 'UPDATE_COMMENTS_STATE':
       return {
         ...state,
-        state: action.data,
+        state: { ...state.state, ...action.data },
       };
     case 'UPDATE_COMMENTS':
       return {

@@ -14,14 +14,15 @@ function updatePlacesCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_PLACES_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          place: getState().places.state.loading.place,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,47 +33,32 @@ function updatePlacesCreator(type = 'initial', params = {}) {
     }
     request('places/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().places; // The old places, in redux db
-          result.data.places.forEach((a) => {
-            const place = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = place;
-            } else {
-              data.push(place);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_PLACES',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_PLACES_STATE',
-            data: {
+        const { data } = getState().places; // The old places, in redux db
+        result.data.places.forEach((a) => {
+          const place = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = place;
+          } else {
+            data.push(place);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_PLACES',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_PLACES_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                place: getState().places.state.loading.place,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_PLACES_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              place: getState().places.state.loading.place,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
@@ -80,14 +66,15 @@ function updatePlacesCreator(type = 'initial', params = {}) {
         return dispatch({
           type: 'UPDATE_PLACES_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              place: getState().places.state.loading.place,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,11 @@ function fetchPlaceCreator(placeId) {
     dispatch({
       type: 'UPDATE_PLACES_STATE',
       data: {
-        loading: {
-          initial: getState().places.state.loading.initial,
-          refresh: getState().places.state.loading.refresh,
-          next: getState().places.state.loading.next,
-          place: true,
+        info: {
+          loading: true,
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     request('places/info', 'get', { placeId })
@@ -126,53 +110,30 @@ function fetchPlaceCreator(placeId) {
           data.push(place);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_PLACES',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_PLACES_STATE',
-            data: {
-              loading: {
-                initial: getState().places.state.loading.initial,
-                refresh: getState().places.state.loading.refresh,
-                next: getState().places.state.loading.next,
-                place: false,
-              },
-              success: true,
-              error: null,
-            },
-          });
-        }
-        console.log(`ERROR: ${result}`);
+        dispatch({
+          type: 'UPDATE_PLACES',
+          data,
+        });
         return dispatch({
           type: 'UPDATE_PLACES_STATE',
           data: {
-            loading: {
-              initial: getState().places.state.loading.initial,
-              refresh: getState().places.state.loading.refresh,
-              next: getState().places.state.loading.next,
-              place: false,
+            info: {
+              loading: false,
+              success: true,
+              error: null,
             },
-            success: false,
-            error: 'server',
           },
         });
       })
       .catch((err) => {
-        console.log(`ERROR: ${err}`);
         return dispatch({
           type: 'UPDATE_PLACES_STATE',
           data: {
-            loading: {
-              initial: getState().places.state.loading.initial,
-              refresh: getState().places.state.loading.refresh,
-              next: getState().places.state.loading.next,
-              place: false,
+            info: {
+              loading: false,
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });

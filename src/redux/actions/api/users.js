@@ -14,14 +14,15 @@ function updateUsersCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_USERS_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          user: getState().users.state.loading.user,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,47 +33,32 @@ function updateUsersCreator(type = 'initial', params = {}) {
     }
     request('users/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().users; // The old users, in redux db
-          result.data.users.forEach((a) => {
-            const user = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = user;
-            } else {
-              data.push(user);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_USERS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_USERS_STATE',
-            data: {
+        const { data } = getState().users; // The old users, in redux db
+        result.data.users.forEach((a) => {
+          const user = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = user;
+          } else {
+            data.push(user);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_USERS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_USERS_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                user: getState().users.state.loading.user,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_USERS_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              user: getState().users.state.loading.user,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
@@ -80,14 +66,15 @@ function updateUsersCreator(type = 'initial', params = {}) {
         return dispatch({
           type: 'UPDATE_USERS_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              user: getState().users.state.loading.user,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,7 @@ function fetchUserCreator(userId) {
     dispatch({
       type: 'UPDATE_USERS_STATE',
       data: {
-        loading: {
-          initial: getState().users.state.loading.initial,
-          refresh: getState().users.state.loading.refresh,
-          next: getState().users.state.loading.next,
-          user: true,
-        },
-        success: null,
-        error: null,
+        info: { loading: true, success: null, error: null },
       },
     });
     request('users/info', 'get', { userId })
@@ -126,53 +106,30 @@ function fetchUserCreator(userId) {
           data.push(user);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_USERS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_USERS_STATE',
-            data: {
-              loading: {
-                initial: getState().users.state.loading.initial,
-                refresh: getState().users.state.loading.refresh,
-                next: getState().users.state.loading.next,
-                user: false,
-              },
-              success: true,
-              error: null,
-            },
-          });
-        }
-        console.log(`ERROR: ${result}`);
+        dispatch({
+          type: 'UPDATE_USERS',
+          data,
+        });
         return dispatch({
           type: 'UPDATE_USERS_STATE',
           data: {
-            loading: {
-              initial: getState().users.state.loading.initial,
-              refresh: getState().users.state.loading.refresh,
-              next: getState().users.state.loading.next,
-              user: false,
+            info: {
+              loading: false,
+              success: true,
+              error: null,
             },
-            success: false,
-            error: 'server',
           },
         });
       })
       .catch((err) => {
-        console.log(`ERROR: ${err}`);
         return dispatch({
           type: 'UPDATE_USERS_STATE',
           data: {
-            loading: {
-              initial: getState().users.state.loading.initial,
-              refresh: getState().users.state.loading.refresh,
-              next: getState().users.state.loading.next,
-              user: false,
+            info: {
+              loading: false,
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });

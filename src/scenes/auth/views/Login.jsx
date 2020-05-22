@@ -1,12 +1,16 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Platform } from 'react-native';
+import { View, ScrollView, Platform } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { TranslucentStatusBar } from '@components/Header';
 import getStyles from '@styles/Styles';
-import { updateState, login } from '@redux/actions/data/account';
+import ErrorMessage from '@components/ErrorMessage';
+import PlatformBackButton from '@components/PlatformBackButton';
+import { login } from '@redux/actions/data/account';
 import getAuthStyles from '../styles/Styles';
 
 function AuthLogin({ navigation, reqState }) {
@@ -14,8 +18,6 @@ function AuthLogin({ navigation, reqState }) {
   const [password, setPassword] = React.useState('');
   const usernameInput = React.createRef();
   const passwordInput = React.createRef();
-
-  const restart = () => updateState({ error: null, success: null, loading: null });
 
   const submit = () => {
     const fields = {
@@ -37,7 +39,7 @@ function AuthLogin({ navigation, reqState }) {
   const authStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
-  if (reqState.success) {
+  if (reqState.login.success) {
     return (
       <View style={styles.page}>
         <View style={authStyles.stepIndicatorContainer}>
@@ -67,99 +69,81 @@ function AuthLogin({ navigation, reqState }) {
     );
   }
 
-  if (reqState.success === false) {
-    return (
-      <View style={styles.page}>
-        <View style={authStyles.stepIndicatorContainer}>
-          <View style={authStyles.centerContainer}>
-            <Icon size={50} color={colors.text} name="account-remove-outline" />
-            <Text style={authStyles.title}>Erreur lors de la connexion</Text>
-            <Text>
-              Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données
-              soient correctes ou signaler un bug depuis le menu principal
-            </Text>
-            <Text>
-              Erreur:{' '}
-              {reqState.error.message ||
-                reqState.error.value ||
-                reqState.error.extraMessage ||
-                'Inconnu'}
-            </Text>
-          </View>
-        </View>
-        <View style={authStyles.formContainer}>
-          <View style={authStyles.buttonContainer}>
-            <Button
-              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={() => restart()}
-              style={{ flex: 1 }}
-            >
-              Recommencer
-            </Button>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.page}>
-      {reqState.loading && <ProgressBar indeterminate />}
-      <View style={authStyles.stepIndicatorContainer}>
-        <View style={authStyles.centerContainer}>
-          <Text style={authStyles.title}>Se connecter</Text>
-        </View>
-      </View>
-      <View style={authStyles.formContainer}>
-        <View style={authStyles.textInputContainer}>
-          <TextInput
-            ref={usernameInput}
-            label="Nom d'utilisateur ou addresse mail"
-            value={username}
-            autoCompleteType="username"
-            onSubmitEditing={() => passwordInput.current.focus()}
-            autoCorrect={false}
-            autoFocus
-            error={reqState.incorrect}
-            mode="outlined"
-            textContentType="username"
-            style={authStyles.textInput}
-            onChangeText={(text) => setUsername(text)}
+      <SafeAreaView style={{ flex: 1 }}>
+        <TranslucentStatusBar />
+        {reqState.login.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
+        {reqState.login.success === false && (
+          <ErrorMessage
+            error={reqState.login.error}
+            strings={{
+              what: 'la connexion',
+              contentSingular: 'Le compte',
+            }}
+            type="axios"
+            retry={submit}
           />
-          <HelperText type="error" visible={false} />
-          {/* Because spacing */}
-        </View>
-        <View style={authStyles.textInputContainer}>
-          <TextInput
-            ref={passwordInput}
-            label="Mot de Passe"
-            value={password}
-            mode="outlined"
-            error={reqState.incorrect}
-            autoCorrect={false}
-            secureTextEntry
-            onSubmitEditing={() => submit()}
-            textContentType="password"
-            autoCompleteType="password"
-            style={authStyles.textInput}
-            onChangeText={(text) => setPassword(text)}
-          />
-          <HelperText type="error" visible={reqState.incorrect}>
-            Le nom d&apos;utilisateur ou le mot de passe est incorrect
-          </HelperText>
-        </View>
-        <View style={authStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => submit()}
-            style={{ flex: 1 }}
-          >
-            Se connecter
-          </Button>
-        </View>
-      </View>
+        )}
+
+        <ScrollView>
+          <PlatformBackButton onPress={navigation.goBack} />
+          <View style={authStyles.stepIndicatorContainer}>
+            <View style={authStyles.centerContainer}>
+              <Text style={authStyles.title}>Se connecter</Text>
+            </View>
+          </View>
+          <View style={authStyles.formContainer}>
+            <View style={authStyles.textInputContainer}>
+              <TextInput
+                ref={usernameInput}
+                label="Nom d'utilisateur ou addresse mail"
+                value={username}
+                autoCompleteType="username"
+                onSubmitEditing={() => passwordInput.current.focus()}
+                autoCorrect={false}
+                autoFocus
+                error={reqState.login.incorrect}
+                mode="outlined"
+                textContentType="username"
+                style={authStyles.textInput}
+                onChangeText={(text) => setUsername(text)}
+              />
+              <HelperText type="error" visible={false} />
+              {/* Because spacing */}
+            </View>
+            <View style={authStyles.textInputContainer}>
+              <TextInput
+                ref={passwordInput}
+                label="Mot de Passe"
+                value={password}
+                mode="outlined"
+                error={reqState.login.incorrect}
+                autoCorrect={false}
+                secureTextEntry
+                onSubmitEditing={() => submit()}
+                textContentType="password"
+                autoCompleteType="password"
+                style={authStyles.textInput}
+                onChangeText={(text) => setPassword(text)}
+              />
+              <HelperText type="error" visible={reqState.login.incorrect}>
+                Le nom d&apos;utilisateur ou le mot de passe est incorrect
+              </HelperText>
+            </View>
+            <View style={authStyles.buttonContainer}>
+              <Button
+                mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() => submit()}
+                style={{ flex: 1 }}
+              >
+                Se connecter
+              </Button>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 }
@@ -173,21 +157,26 @@ export default connect(mapStateToProps)(AuthLogin);
 
 AuthLogin.defaultProps = {
   reqState: {
-    error: null,
-    success: null,
-    loading: false,
-    incorrect: null,
+    login: {
+      error: null,
+      success: null,
+      loading: false,
+      incorrect: null,
+    },
   },
 };
 
 AuthLogin.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
   }).isRequired,
   reqState: PropTypes.shape({
-    error: PropTypes.any,
-    success: PropTypes.bool,
-    loading: PropTypes.bool,
-    incorrect: PropTypes.bool,
+    login: PropTypes.shape({
+      error: PropTypes.any,
+      success: PropTypes.bool,
+      loading: PropTypes.bool,
+      incorrect: PropTypes.bool,
+    }),
   }),
 };

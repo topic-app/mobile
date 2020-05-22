@@ -7,7 +7,7 @@ import { updateCreationData, updateState } from '@redux/actions/data/account';
 import request from '@utils/request';
 import getAuthStyles from '../styles/Styles';
 
-function AuthCreatePageGeneral({ forward }) {
+function AuthCreatePageGeneral({ next }) {
   const usernameInput = createRef();
   const emailInput = createRef();
   const passwordInput = createRef();
@@ -68,21 +68,23 @@ function AuthCreatePageGeneral({ forward }) {
             "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux sauf « _ » et « . »",
         };
       } else {
-        const result = await request('auth/check/local/username', 'get', { username });
-        if (result.success && !result.data.usernameExists) {
+        let result;
+        try {
+          result = await request('auth/check/local/username', 'get', { username });
+        } catch (err) {
+          updateState({ check: { success: false, error: err, loading: false } });
+        }
+        if (!result.data.usernameExists) {
           validation = { valid: true, error: false };
-        } else if (result.success) {
+        } else {
           validation = {
             valid: false,
             error: true,
             message: "Ce nom d'utilisateur existe déjà",
           };
-        } else {
-          updateState({ success: false, error: result.error });
         }
       }
     }
-
     setUsername(validation);
     return validation;
   }
@@ -104,17 +106,20 @@ function AuthCreatePageGeneral({ forward }) {
           message: 'Addresse mail incorrecte',
         };
       } else {
-        const result = await request('auth/check/local/email', 'get', { email });
-        if (result.success && !result.data.emailExists) {
+        let result;
+        try {
+          result = await request('auth/check/local/email', 'get', { email });
+        } catch (err) {
+          updateState({ check: { success: false, error: result.error, loading: false } });
+        }
+        if (!result.data.emailExists) {
           validation = { valid: true, error: false };
-        } else if (result.success) {
+        } else {
           validation = {
             valid: false,
             error: true,
             message: 'Cette addresse email à déjà été utilisée',
           };
-        } else {
-          updateState({ success: false, error: result.error });
         }
       }
     }
@@ -172,7 +177,7 @@ function AuthCreatePageGeneral({ forward }) {
   }
 
   async function submit() {
-    updateState({ loading: true });
+    updateState({ check: { loading: true, success: null, error: null } });
 
     const usernameVal = usernameInput.current.state.value;
     const emailVal = emailInput.current.state.value;
@@ -183,7 +188,7 @@ function AuthCreatePageGeneral({ forward }) {
     const password = await validatePasswordInput(passwordVal);
     if (username.valid && email.valid && password.valid) {
       updateCreationData({ username: usernameVal, email: emailVal, password: passwordVal });
-      forward();
+      next();
     } else {
       if (!username.valid && !username.error) {
         setUsername({
@@ -207,7 +212,7 @@ function AuthCreatePageGeneral({ forward }) {
         });
       }
     }
-    updateState({ loading: false });
+    updateState({ check: { loading: false, success: true, error: null } });
   }
 
   const theme = useTheme();
@@ -341,5 +346,5 @@ function AuthCreatePageGeneral({ forward }) {
 export default AuthCreatePageGeneral;
 
 AuthCreatePageGeneral.propTypes = {
-  forward: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
 };

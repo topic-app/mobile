@@ -14,14 +14,15 @@ function updateCommentsCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_COMMENTS_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          comment: getState().comments.state.loading.comment,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,62 +33,48 @@ function updateCommentsCreator(type = 'initial', params = {}) {
     }
     request('comments/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().comments; // The old comments, in redux db
-          result.data.comments.forEach((a) => {
-            const comment = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = comment;
-            } else {
-              data.push(comment);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_COMMENTS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_COMMENTS_STATE',
-            data: {
+        const { data } = getState().comments; // The old comments, in redux db
+        result.data.comments.forEach((a) => {
+          const comment = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = comment;
+          } else {
+            data.push(comment);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_COMMENTS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_COMMENTS_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                comment: getState().comments.state.loading.comment,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_COMMENTS_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              comment: getState().comments.state.loading.comment,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_COMMENTS_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              comment: getState().comments.state.loading.comment,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });

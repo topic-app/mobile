@@ -8,15 +8,15 @@ import getAuthStyles from '../styles/Styles';
 
 import { ListHeading, ListItem } from './ListComponents';
 
-function AuthCreatePagePrivacy({ backward, forward, skip }) {
+function AuthCreatePagePrivacy({ prev, next }) {
   const [accountType, setAccountType] = React.useState('private');
 
   const submit = () => {
     updateCreationData({ accountType });
     if (accountType === 'private') {
-      skip();
+      next(2);
     } else {
-      forward();
+      next();
     }
   };
 
@@ -150,7 +150,7 @@ function AuthCreatePagePrivacy({ backward, forward, skip }) {
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => backward()}
+          onPress={() => prev()}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour
@@ -171,7 +171,6 @@ function AuthCreatePagePrivacy({ backward, forward, skip }) {
 export default AuthCreatePagePrivacy;
 
 AuthCreatePagePrivacy.propTypes = {
-  forward: PropTypes.func.isRequired,
-  backward: PropTypes.func.isRequired,
-  skip: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+  prev: PropTypes.func.isRequired,
 };

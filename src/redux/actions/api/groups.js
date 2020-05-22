@@ -14,14 +14,15 @@ function updateGroupsCreator(type = 'initial', params = {}) {
     dispatch({
       type: 'UPDATE_GROUPS_STATE',
       data: {
-        loading: {
-          initial: type === 'initial',
-          refresh: type === 'refresh',
-          next: type === 'next',
-          group: getState().groups.state.loading.group,
+        list: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     if (type === 'next') {
@@ -32,62 +33,48 @@ function updateGroupsCreator(type = 'initial', params = {}) {
     }
     request('groups/list', 'get', { lastId, number, ...params })
       .then((result) => {
-        if (result.success) {
-          const { data } = getState().groups; // The old groups, in redux db
-          result.data.groups.forEach((a) => {
-            const group = { ...a, preload: true };
-            if (data.some((p) => p._id === a._id)) {
-              data[data.map((p) => p._id).indexOf(a._id)] = group;
-            } else {
-              data.push(group);
-            }
-          });
-          data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-          dispatch({
-            type: 'UPDATE_GROUPS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_GROUPS_STATE',
-            data: {
+        const { data } = getState().groups; // The old groups, in redux db
+        result.data.groups.forEach((a) => {
+          const group = { ...a, preload: true };
+          if (data.some((p) => p._id === a._id)) {
+            data[data.map((p) => p._id).indexOf(a._id)] = group;
+          } else {
+            data.push(group);
+          }
+        });
+        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+        dispatch({
+          type: 'UPDATE_GROUPS',
+          data,
+        });
+        return dispatch({
+          type: 'UPDATE_GROUPS_STATE',
+          data: {
+            list: {
               loading: {
                 initial: false,
                 refresh: false,
                 next: false,
-                group: getState().groups.state.loading.group,
               },
               success: true,
               error: null,
             },
-          });
-        }
-        console.log(`Error, ${result}`);
-        return dispatch({
-          type: 'UPDATE_GROUPS_STATE',
-          data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              group: getState().groups.state.loading.group,
-            },
-            success: false,
-            error: 'server',
           },
         });
       })
-      .catch((err) => {
+      .catch((error) => {
         return dispatch({
           type: 'UPDATE_GROUPS_STATE',
           data: {
-            loading: {
-              initial: false,
-              refresh: false,
-              next: false,
-              group: getState().groups.state.loading.group,
+            list: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
             },
-            success: false,
-            error: err,
           },
         });
       });
@@ -105,14 +92,11 @@ function fetchGroupCreator(groupId) {
     dispatch({
       type: 'UPDATE_GROUPS_STATE',
       data: {
-        loading: {
-          initial: getState().groups.state.loading.initial,
-          refresh: getState().groups.state.loading.refresh,
-          next: getState().groups.state.loading.next,
-          group: true,
+        info: {
+          loading: true,
+          success: null,
+          error: null,
         },
-        success: null,
-        error: null,
       },
     });
     request('groups/info', 'get', { groupId })
@@ -126,53 +110,30 @@ function fetchGroupCreator(groupId) {
           data.push(group);
         }
         data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        if (result.success) {
-          dispatch({
-            type: 'UPDATE_GROUPS',
-            data,
-          });
-          return dispatch({
-            type: 'UPDATE_GROUPS_STATE',
-            data: {
-              loading: {
-                initial: getState().groups.state.loading.initial,
-                refresh: getState().groups.state.loading.refresh,
-                next: getState().groups.state.loading.next,
-                group: false,
-              },
-              success: true,
-              error: null,
-            },
-          });
-        }
-        console.log(`ERROR: ${result}`);
+        dispatch({
+          type: 'UPDATE_GROUPS',
+          data,
+        });
         return dispatch({
           type: 'UPDATE_GROUPS_STATE',
           data: {
-            loading: {
-              initial: getState().groups.state.loading.initial,
-              refresh: getState().groups.state.loading.refresh,
-              next: getState().groups.state.loading.next,
-              group: false,
+            info: {
+              loading: false,
+              success: true,
+              error: null,
             },
-            success: false,
-            error: 'server',
           },
         });
       })
       .catch((err) => {
-        console.log(`ERROR: ${err}`);
         return dispatch({
           type: 'UPDATE_GROUPS_STATE',
           data: {
-            loading: {
-              initial: getState().groups.state.loading.initial,
-              refresh: getState().groups.state.loading.refresh,
-              next: getState().groups.state.loading.next,
-              group: false,
+            info: {
+              loading: false,
+              success: false,
+              error: err,
             },
-            success: false,
-            error: err,
           },
         });
       });
