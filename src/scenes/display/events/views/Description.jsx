@@ -45,7 +45,6 @@ function getPlaceLabels(place) {
 }
 
 function getTimeLabels(timeData, startTime, endTime) {
-  console.log(timeData);
   if (timeData?.start && timeData?.end) {
     return {
       dateString: `Du ${moment(timeData.start).format('DD/MM/YYYY')} au ${moment(
@@ -53,7 +52,7 @@ function getTimeLabels(timeData, startTime, endTime) {
       ).format('DD/MM/YYYY')}`,
       timeString:
         startTime && endTime
-          ? `De ${startTime} à ${endTime}`
+          ? `De ${startTime}h à ${endTime}h`
           : `De ${moment(timeData.start).hour()}h à ${moment(timeData.end).hour()}h`,
     };
   }
@@ -86,13 +85,13 @@ function EventDisplayDescription({ event }) {
   }
 
   // Note: using optional chaining is very risky with moment, if a property is undefined the whole
-  // equality becomes undefined and moment then refers to current time, which completely falsifies hours
-  const startTime = Math.min(
-    ...(event?.program?.map((e) => e.duration.start && moment(e.duration.start).hour()) || []),
-  );
-  const endTime = Math.max(
-    ...(event?.program?.map((e) => e.duration.end && moment(e.duration.end).hour()) || []),
-  );
+  // equality becomes undefined and moment then refers to current time, which is not at all what we want
+  let startTime = null;
+  let endTime = null;
+  if (event?.duration?.start && event?.duration?.end) {
+    startTime = moment(event.duration.start).hour();
+    endTime = moment(event.duration.end).hour();
+  }
 
   const { timeString, dateString } = getTimeLabels(event?.duration, startTime, endTime);
 
@@ -144,6 +143,10 @@ EventDisplayDescription.propTypes = {
     }).isRequired,
     group: PropTypes.shape({
       displayName: PropTypes.string.isRequired,
+    }).isRequired,
+    duration: PropTypes.shape({
+      start: PropTypes.string.isRequired,
+      end: PropTypes.string.isRequired,
     }).isRequired,
     places: PropTypes.arrayOf(
       PropTypes.shape({

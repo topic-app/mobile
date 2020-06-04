@@ -21,8 +21,7 @@ function EventDisplay({ route, events, state }) {
     fetchEvent(id);
   }, [id]);
   const event = events.find((t) => t._id === id);
-  const start = event?.duration?.start;
-  const end = event?.duration?.end;
+  const { start, end } = event?.duration || {};
 
   const styles = getStyles(useTheme());
 
@@ -56,7 +55,9 @@ function EventDisplay({ route, events, state }) {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{event?.title}</Text>
           <Text style={styles.subtitle}>
-            Du {moment(start).format('DD/MM/YYYY')} au {moment(end).format('DD/MM/YYYY')}
+            {start && end
+              ? `Du ${start.format('DD/MM/YYYY')} au ${end.format('DD/MM/YYYY')}`
+              : 'Aucune Date Spécifiée'}
           </Text>
         </View>
         <View>

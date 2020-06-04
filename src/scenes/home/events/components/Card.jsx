@@ -11,6 +11,7 @@ import getStyles from '@styles/Styles';
 import getEventStyles from '../styles/Styles';
 
 function buildDateString(start, end) {
+  if (start === undefined || end === undefined) return null;
   const now = moment();
   const startDate = moment(start);
   const endDate = moment(end);
@@ -29,8 +30,7 @@ function buildDateString(start, end) {
 }
 
 function EventCard({ event, navigate }) {
-  const start = event?.duration?.start;
-  const end = event?.duration?.end;
+  const { start, end } = event?.duration || {};
 
   const theme = useTheme();
   const { colors } = theme;
@@ -45,14 +45,12 @@ function EventCard({ event, navigate }) {
         <View>
           <Card.Title
             title={event?.title}
-            subtitle={buildDateString(start, end)}
+            subtitle={buildDateString(start, end) || 'Aucune Date Spécifiée'}
             left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
           />
-          <Card.Content style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
-            <View>
-              <TagList type="event" item={event} />
-            </View>
-          </Card.Content>
+          <View style={{ paddingBottom: 5 }}>
+            <TagList type="event" item={event} />
+          </View>
           <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
             <View style={{ flexDirection: 'row' }}>
               {event?.thumbnailUrl ? (
@@ -101,12 +99,6 @@ function EventCard({ event, navigate }) {
                       </Text>
                     </View>
                   ))}
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                  <Icon color={colors.text} name="calendar" size={17} />
-                  <Text style={{ fontSize: 17 }}>
-                    &nbsp;{moment(event?.duration?.start).calendar()}
-                  </Text>
-                </View>
               </View>
             </View>
           </Card.Content>
@@ -120,6 +112,7 @@ export default EventCard;
 
 EventCard.propTypes = {
   event: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     duration: PropTypes.shape({
       // start: PropTypes.instanceOf(Date).isRequired,
