@@ -4,11 +4,18 @@ import { View, Dimensions } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { TabView, TabBar } from 'react-native-tab-view';
 
-function CustomTabView({ keyboardDismissMode, pages, scrollEnabled }) {
+function CustomTabView({
+  keyboardDismissMode,
+  pages,
+  scrollEnabled,
+  hideTabBar,
+  hideTabIndicator,
+  initialTab,
+}) {
   const theme = useTheme();
   const { colors } = theme;
 
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = React.useState(initialTab);
 
   const initialLayout = { width: Dimensions.get('window').width };
 
@@ -27,18 +34,24 @@ function CustomTabView({ keyboardDismissMode, pages, scrollEnabled }) {
     pages[index].onVisible();
   }
 
-  const renderTabBar = (props) => (
-    <TabBar
-      // eslint-disable-next-line
-      {...props}
-      style={{ backgroundColor: 'transparent', elevation: 0, borderWidth: 0 }}
-      indicatorStyle={{ backgroundColor: colors.primary }}
-      activeColor={colors.primary}
-      inactiveColor={colors.text}
-      pressColor={colors.primary}
-      scrollEnabled={scrollEnabled}
-    />
-  );
+  const renderTabBar = hideTabBar
+    ? () => null
+    : (props) => (
+        <TabBar
+          // eslint-disable-next-line
+          {...props}
+          style={{ backgroundColor: 'transparent', elevation: 0, borderWidth: 0 }}
+          indicatorStyle={
+            hideTabIndicator
+              ? { height: 0, backgroundColor: colors.primary }
+              : { backgroundColor: colors.primary }
+          }
+          activeColor={colors.primary}
+          inactiveColor={colors.text}
+          pressColor={colors.primary}
+          scrollEnabled={scrollEnabled}
+        />
+      );
 
   return (
     <View>
@@ -56,7 +69,10 @@ function CustomTabView({ keyboardDismissMode, pages, scrollEnabled }) {
 
 CustomTabView.defaultProps = {
   keyboardDismissMode: 'auto',
-  scrollEnabled: false,
+  scrollEnabled: true,
+  hideTabBar: false,
+  hideTabIndicator: false,
+  initialTab: 0,
 };
 
 CustomTabView.propTypes = {
@@ -70,6 +86,9 @@ CustomTabView.propTypes = {
     }),
   ).isRequired,
   scrollEnabled: PropTypes.bool,
+  hideTabBar: PropTypes.bool,
+  hideTabIndicator: PropTypes.bool,
+  initialTab: PropTypes.number,
 };
 
 export default CustomTabView;

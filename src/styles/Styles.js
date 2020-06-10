@@ -79,6 +79,13 @@ function getStyles(theme) {
       right: 15,
       bottom: 15,
     },
+    avatar: {
+      elevation: 1,
+    },
+    centerIllustrationContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
   });
 }
 

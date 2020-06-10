@@ -1,163 +1,49 @@
-import request from '@utils/request';
 import Store from '@redux/store';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour updateArticles
- * @param next Si il faut récupérer les articles après le dernier
- * @returns Action
- */
-function updateArticlesCreator(type = 'initial', params = {}) {
-  return (dispatch, getState) => {
-    let lastId;
-    let number = 10;
-    dispatch({
-      type: 'UPDATE_ARTICLES_STATE',
-      data: {
-        list: {
-          loading: {
-            initial: type === 'initial',
-            refresh: type === 'refresh',
-            next: type === 'next',
-          },
-          success: null,
-          error: null,
-        },
-      },
-    });
-    if (type === 'next') {
-      const articles = getState().articles.data;
-      // articles.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-      lastId = articles[articles.length - 1]._id;
-      number = 5;
-    }
-    request('articles/list', 'get', { lastId, number, ...params })
-      .then((result) => {
-        const { data } = getState().articles; // The old articles, in redux db
-        result.data.articles.forEach((a) => {
-          const article = { ...a, preload: true };
-          if (data.some((p) => p._id === a._id)) {
-            data[data.map((p) => p._id).indexOf(a._id)] = article;
-          } else {
-            data.push(article);
-          }
-        });
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_ARTICLES',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_ARTICLES_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((error) => {
-        return dispatch({
-          type: 'UPDATE_ARTICLES_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: false,
-              error,
-            },
-          },
-        });
-      });
-  };
-}
+import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour fetchArticle
- * @param articleId L'id de l'article que l'on veut chercher
- * @returns Action
- */
-function fetchArticleCreator(articleId) {
-  return (dispatch, getState) => {
-    dispatch({
-      type: 'UPDATE_ARTICLES_STATE',
-      data: {
-        info: {
-          loading: true,
-          success: null,
-          error: null,
-        },
-      },
-    });
-    request('articles/info', 'get', { articleId })
-      .then((result) => {
-        const { articles } = result.data;
-        const article = articles[0];
-        const { data } = getState().articles; // The old articles, in redux db
-        if (data.some((p) => p._id === article._id)) {
-          data[data.map((p) => p._id).indexOf(article._id)] = article;
-        } else {
-          data.push(article);
-        }
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_ARTICLES',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_ARTICLES_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((err) => {
-        return dispatch({
-          type: 'UPDATE_ARTICLES_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: false,
-              error: err,
-            },
-          },
-        });
-      });
-  };
-}
-
-/**
- * @docs actionCreators
- * Créateur d'action pour clearArticles
- * @returns Action
- */
-function clearArticlesCreator() {
-  return {
-    type: 'CLEAR_ARTICLES',
-  };
-}
+const dateDescSort = (data) => data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
  * @docs actions
  * Récupère les infos basiques articles depuis le serveur
- * @param next Si il faut récupérer les articles après le dernier
+ * @param type [initial, next, refresh] le type de récupération. Si c'est next, il récupère automatiquement les articles après le dernier contenu dans redux
+ * @param params Les paramètres supplémentaires pour la requete (eg. tags, auteurs)
  */
 function updateArticles(type, params) {
-  return Store.dispatch(updateArticlesCreator(type, params));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_ARTICLES',
+      stateUpdate: 'UPDATE_ARTICLES_STATE',
+      url: 'articles/list',
+      sort: dateDescSort,
+      dataType: 'articles',
+      type,
+      params,
+    }),
+  );
+}
+
+/**
+ * @docs actions
+ * Récupère les infos basiques articles depuis le serveur en recherchant 'terms'
+ * @param type [initial, next, refresh] le type de récupération. Si c'est next, il récupère automatiquement les articles après le dernier contenu dans redux
+ * @param terms Le texte pour rechercher
+ * @param params Les paramètres supplémentaires pour la requete (eg. tags, auteurs)
+ */
+function searchArticles(type, terms, params) {
+  if (type !== 'next') Store.dispatch(clearCreator({ clear: 'CLEAR_ARTICLES', data: false }));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_ARTICLES_SEARCH',
+      stateUpdate: 'UPDATE_ARTICLES_STATE',
+      url: 'articles/list',
+      dataType: 'articles',
+      type,
+      params: { ...params, search: true, terms },
+      stateName: 'search',
+    }),
+  );
 }
 
 /**
@@ -166,7 +52,16 @@ function updateArticles(type, params) {
  * @param articleId L'id de l'article à récuperer
  */
 function fetchArticle(articleId) {
-  return Store.dispatch(fetchArticleCreator(articleId));
+  return Store.dispatch(
+    fetchCreator({
+      update: 'UPDATE_ARTICLES',
+      stateUpdate: 'UPDATE_ARTICLES_STATE',
+      url: 'articles/info',
+      dataType: 'articles',
+      sort: dateDescSort,
+      params: { articleId },
+    }),
+  );
 }
 
 /**
@@ -174,7 +69,7 @@ function fetchArticle(articleId) {
  * Vide la database redux complètement
  */
 function clearArticles() {
-  return Store.dispatch(clearArticlesCreator());
+  return Store.dispatch(clearCreator({ clear: 'CLEAR_ARTICLES' }));
 }
 
-export { updateArticles, clearArticles, fetchArticle };
+export { updateArticles, clearArticles, fetchArticle, searchArticles };

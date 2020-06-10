@@ -43,7 +43,7 @@ function PetitionList({ navigation, petitions }) {
                           screen: 'Search',
                           params: {
                             screen: 'Search',
-                            params: { initialCategory: 'Petition', previous: 'Pétitions' },
+                            params: { initialCategory: 'petitions', previous: 'Pétitions' },
                           },
                         }),
                     },

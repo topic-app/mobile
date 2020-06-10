@@ -23,11 +23,12 @@ function MyGroupsStackNavigator() {
       <Stack.Screen
         name="Edit"
         component={MyGroupsEdit}
-        options={{
+        options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Mes Groupes: Edit',
+          title: route.params.title || 'Mes Groupes - Edit',
+          subtitle: route.params.title && 'Mes Groupes - Edit',
           overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
-        }}
+        })}
       />
     </Stack.Navigator>
   );

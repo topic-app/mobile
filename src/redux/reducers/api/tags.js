@@ -1,5 +1,6 @@
 const initialState = {
   data: [],
+  search: [],
   state: {
     list: {
       success: null,
@@ -7,6 +8,14 @@ const initialState = {
       loading: {
         initial: false,
         refresh: false,
+        next: false,
+      },
+    },
+    search: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
         next: false,
       },
     },
@@ -39,8 +48,17 @@ function tagReducer(state = initialState, action) {
         ...state,
         data: action.data,
       };
+    case 'UPDATE_TAGS_SEARCH':
+      return {
+        ...state,
+        data: action.data,
+      };
     case 'CLEAR_TAGS':
-      return { data: [], state: state.state };
+      return {
+        data: action.data.data ? [] : state.data,
+        search: action.data.search ? [] : state.search,
+        state: state.state,
+      };
     default:
       return state;
   }

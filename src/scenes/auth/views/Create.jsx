@@ -12,7 +12,9 @@ import { register } from '@redux/actions/data/account';
 import StepperView from '@components/StepperView';
 import getStyles from '@styles/Styles';
 import ErrorMessage from '@components/ErrorMessage';
-import PlatformBackButton from '@components/PlatformBackButton';
+import { PlatformBackButton } from '@components/PlatformComponents';
+import IllustrationRegisterDark from '@assets/images/illustrations/auth/register_dark.svg';
+import IllustrationRegisterLight from '@assets/images/illustrations/auth/register_light.svg';
 import getAuthStyles from '../styles/Styles';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';
@@ -115,8 +117,15 @@ function AuthCreate({ navigation, reqState, creationData }) {
 
         <ScrollView>
           <PlatformBackButton onPress={navigation.goBack} />
+          <View style={styles.centerIllustrationContainer}>
+            {theme.dark ? (
+              <IllustrationRegisterDark height={200} width={200} />
+            ) : (
+              <IllustrationRegisterLight height={200} width={200} />
+            )}
+            <Text style={authStyles.title}>Créer un compte</Text>
+          </View>
           <StepperView
-            title="Créer un compte"
             pages={[
               {
                 key: 'general',

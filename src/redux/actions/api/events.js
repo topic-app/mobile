@@ -1,155 +1,9 @@
-import request from '@utils/request';
 import Store from '@redux/store';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour updateEvents
- * @param next Si il faut récupérer les events après le dernier
- * @returns Action
- */
-function updateEventsCreator(type = 'initial', params = {}) {
-  return (dispatch, getState) => {
-    let lastId;
-    let number = 10;
-    dispatch({
-      type: 'UPDATE_EVENTS_STATE',
-      data: {
-        list: {
-          loading: {
-            initial: type === 'initial',
-            refresh: type === 'refresh',
-            next: type === 'next',
-          },
-          success: null,
-          error: null,
-        },
-      },
-    });
-    if (type === 'next') {
-      const events = getState().events.data;
-      // events.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-      lastId = events[events.length - 1]._id;
-      number = 5;
-    }
-    request('events/list', 'get', { lastId, number, ...params })
-      .then((result) => {
-        const { data } = getState().events; // The old events, in redux db
-        result.data.events.forEach((a) => {
-          const event = { ...a, preload: true };
-          if (data.some((p) => p._id === a._id)) {
-            data[data.map((p) => p._id).indexOf(a._id)] = event;
-          } else {
-            data.push(event);
-          }
-        });
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_EVENTS',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_EVENTS_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((error) => {
-        return dispatch({
-          type: 'UPDATE_EVENTS_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: false,
-              error,
-            },
-          },
-        });
-      });
-  };
-}
+import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour fetchEvent
- * @param eventId L'id de l'event que l'on veut chercher
- * @returns Action
- */
-function fetchEventCreator(eventId) {
-  return (dispatch, getState) => {
-    dispatch({
-      type: 'UPDATE_EVENTS_STATE',
-      data: {
-        info: {
-          loading: true,
-          success: null,
-          error: null,
-        },
-      },
-    });
-    request('events/info', 'get', { eventId })
-      .then((result) => {
-        const { events } = result.data;
-        const event = events[0];
-        const { data } = getState().events; // The old events, in redux db
-        if (data.some((p) => p._id === event._id)) {
-          data[data.map((p) => p._id).indexOf(event._id)] = event;
-        } else {
-          data.push(event);
-        }
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_EVENTS',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_EVENTS_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((error) => {
-        return dispatch({
-          type: 'UPDATE_EVENTS_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-      });
-  };
-}
-
-/**
- * @docs actionCreators
- * Créateur d'action pour clearEvents
- * @returns Action
- */
-function clearEventsCreator() {
-  return {
-    type: 'CLEAR_EVENTS',
-  };
-}
+const dateAscSort = (data) =>
+  data.sort((a, b) => (new Date(a.duration?.start) > new Date(b.duration?.start) ? 1 : -1));
 
 /**
  * @docs actions
@@ -157,7 +11,32 @@ function clearEventsCreator() {
  * @param next Si il faut récupérer les events après le dernier
  */
 function updateEvents(type, params) {
-  return Store.dispatch(updateEventsCreator(type, params));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_EVENTS',
+      stateUpdate: 'UPDATE_EVENTS_STATE',
+      url: 'events/list',
+      sort: dateAscSort,
+      dataType: 'events',
+      type,
+      params,
+    }),
+  );
+}
+
+function searchEvents(type, terms, params) {
+  if (type !== 'next') Store.dispatch(clearCreator({ clear: 'CLEAR_EVENTS', data: false }));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_EVENTS_SEARCH',
+      stateUpdate: 'UPDATE_EVENTS_STATE',
+      url: 'events/list',
+      dataType: 'events',
+      type,
+      params: { ...params, search: true, terms },
+      stateName: 'search',
+    }),
+  );
 }
 
 /**
@@ -166,7 +45,16 @@ function updateEvents(type, params) {
  * @param eventId L'id de l'event à récuperer
  */
 function fetchEvent(eventId) {
-  return Store.dispatch(fetchEventCreator(eventId));
+  return Store.dispatch(
+    fetchCreator({
+      update: 'UPDATE_EVENTS',
+      stateUpdate: 'UPDATE_EVENTS_STATE',
+      url: 'events/list',
+      sort: dateAscSort,
+      dataType: 'events',
+      params: { eventId },
+    }),
+  );
 }
 
 /**
@@ -174,7 +62,7 @@ function fetchEvent(eventId) {
  * Vide la database redux complètement
  */
 function clearEvents() {
-  return Store.dispatch(clearEventsCreator());
+  return Store.dispatch(clearCreator({ clear: 'CLEAR_EVENTS' }));
 }
 
-export { updateEvents, clearEvents, fetchEvent };
+export { updateEvents, clearEvents, fetchEvent, searchEvents };

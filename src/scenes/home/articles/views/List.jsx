@@ -8,6 +8,8 @@ import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
 import ErrorMessage from '@components/ErrorMessage';
 import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
+import IllustrationArticlesGreyedLight from '@assets/images/illustrations/articles/articles_greyed_light.svg';
+import IllustrationArticlesGreyedDark from '@assets/images/illustrations/articles/articles_greyed_dark.svg';
 
 import ArticleCard from '../components/Card';
 
@@ -47,7 +49,7 @@ function ArticleList({ navigation, articles, state, theme }) {
                           screen: 'Search',
                           params: {
                             screen: 'Search',
-                            params: { initialCategory: 'Article', previous: 'Actus' },
+                            params: { initialCategory: 'articles', previous: 'Actus' },
                           },
                         }),
                     },
@@ -82,6 +84,15 @@ function ArticleList({ navigation, articles, state, theme }) {
         refreshing={state.list.loading.refresh}
         onRefresh={() => updateArticles('refresh')}
         onEndReached={() => updateArticles('next')}
+        ListEmptyComponent={() => (
+          <View style={styles.centerIllustrationContainer}>
+            {theme.dark ? (
+              <IllustrationArticlesGreyedDark height={400} width={400} />
+            ) : (
+              <IllustrationArticlesGreyedLight height={400} width={400} />
+            )}
+          </View>
+        )}
         onEndReachedThreshold={0.5}
         keyExtractor={(article) => article._id}
         ListFooterComponent={
@@ -146,6 +157,7 @@ ArticleList.propTypes = {
     }).isRequired,
   }).isRequired,
   theme: PropTypes.shape({
+    dark: PropTypes.bool.isRequired,
     colors: PropTypes.shape({
       primary: PropTypes.string,
     }).isRequired,

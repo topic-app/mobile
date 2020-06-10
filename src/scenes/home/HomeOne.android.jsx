@@ -25,42 +25,44 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
   // console.log(`Location ${JSON.stringify(location)}`);
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
-      <View style={navigatorStyles.profileBackground}>
-        {location.state.fetch.loading && <ProgressBar indeterminate />}
-        {location.state.fetch.error ? (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la récupération des articles',
-              contentPlural: 'des articles',
-              contentSingular: "La liste d'articles",
-            }}
-            error={location.state.fetch.error}
-            retry={() => fetchLocationData()}
-          />
-        ) : null}
-        <View style={navigatorStyles.profileIconContainer}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TopicIcon
-              style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
-              height={55}
-              width={55}
+      <Drawer.Section>
+        <View style={navigatorStyles.profileBackground}>
+          {location.state.fetch.loading && <ProgressBar indeterminate />}
+          {location.state.fetch.error && (
+            <ErrorMessage
+              type="axios"
+              strings={{
+                what: 'la récupération des articles',
+                contentPlural: 'des articles',
+                contentSingular: "La liste d'articles",
+              }}
+              error={location.state.fetch.error}
+              retry={fetchLocationData}
             />
-            {!loggedIn && <Title>Topic</Title>}
-          </View>
-          {loggedIn && (
-            <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
-              {genName(accountInfo?.user)}
-            </Title>
           )}
+          <View style={navigatorStyles.profileIconContainer}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TopicIcon
+                style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
+                height={55}
+                width={55}
+              />
+              {!loggedIn && <Title style={navigatorStyles.title}>Topic</Title>}
+            </View>
+            {loggedIn && (
+              <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
+                {genName(accountInfo?.user)}
+              </Title>
+            )}
+          </View>
         </View>
-      </View>
-      <Drawer.Section style={navigatorStyles.locationBackground}>
+      </Drawer.Section>
+      <Drawer.Section>
         {location.schoolData.map((school) => (
           <Drawer.Item
-            key={school?._id}
+            key={school._id}
             icon="school"
-            label={school?.shortName || school?.name}
+            label={school.shortName || school.name}
             onPress={() => {
               console.log('School pressed');
             }}
@@ -68,9 +70,9 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
         ))}
         {location.departmentData.map((departement) => (
           <Drawer.Item
-            key={departement?._id}
+            key={departement._id}
             icon="home-city"
-            label={departement?.shortName || departement?.name}
+            label={departement.shortName || departement.name}
           />
         ))}
         {location.global && <Drawer.Item icon="flag" label="France entière" />}

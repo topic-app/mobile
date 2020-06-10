@@ -125,6 +125,11 @@ function AuthCreatePagePrivacy({ prev, next }) {
             label="Voir vos articles, évènements et pétitions"
           />
           <ListItem
+            icon={always.icon}
+            iconColor={always.iconColor}
+            label="Voir les groupes auquels vous appartenez"
+          />
+          <ListItem
             icon={publicOnly.icon}
             iconColor={publicOnly.iconColor}
             label="Voir les contenus auquels vous êtes abonnés"
@@ -138,11 +143,6 @@ function AuthCreatePagePrivacy({ prev, next }) {
             icon={publicOnly.icon}
             iconColor={publicOnly.iconColor}
             label="Voir votre nom et prénom"
-          />
-          <ListItem
-            icon={publicOnly.icon}
-            iconColor={publicOnly.iconColor}
-            label="Voir les groupes auquels vous appartenez"
           />
         </View>
       </View>

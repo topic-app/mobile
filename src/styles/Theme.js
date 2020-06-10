@@ -32,10 +32,12 @@ const lightBase = {
     surface: '#fcfcfc',
     image: '#dddddd',
     subtext: '#999999',
+    icon: '#777777',
     muted: '#444444',
     valid: '#1e981d',
     invalid: '#b71d39',
     text: '#111111',
+    anchor: '#3caaff',
   },
 };
 
@@ -60,18 +62,16 @@ const darkBase = {
     surface: '#202125',
     image: '#444444',
     subtext: '#666666',
+    icon: '#888888',
     muted: '#999999',
     valid: '#217c20',
     error: '#841616',
     invalid: '#8f4e5a',
+    anchor: '#0084ff',
   },
 };
 
 const themes = {
-  system: {
-    name: 'Determiné par le système',
-    value: 'system',
-  },
   light: {
     name: 'Clair',
     value: 'light',

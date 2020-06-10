@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, FlatList, Platform } from 'react-native';
-import { Text, List, RadioButton, withTheme } from 'react-native-paper';
+import { List, RadioButton, Divider, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import IllustrationSettingsThemeAll from '@assets/images/illustrations/settings/settings_theme_all.svg';
 
 import { connect } from 'react-redux';
 
@@ -19,6 +20,37 @@ function SettingsTheme({ preferences, theme }) {
     <View style={styles.page}>
       <FlatList
         data={Object.values(themes)}
+        ListHeaderComponent={() => (
+          <View>
+            <View style={styles.centerIllustrationContainer}>
+              <IllustrationSettingsThemeAll height={200} width={200} />
+            </View>
+            <Divider style={{ marginTop: 30 }} />
+            <List.Item
+              title="Utiliser le thème du système"
+              left={() =>
+                Platform.OS !== 'ios' && (
+                  <RadioButton
+                    color={colors.primary}
+                    status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
+                    onPress={() => updatePrefs({ useSystemTheme: true })}
+                  />
+                )
+              }
+              right={() =>
+                Platform.OS === 'ios' && (
+                  <RadioButton
+                    color={colors.primary}
+                    status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
+                    onPress={() => updatePrefs({ useSystemTheme: true })}
+                  />
+                )
+              }
+              onPress={() => updatePrefs({ useSystemTheme: true })}
+              style={settingsStyles.listItem}
+            />
+          </View>
+        )}
         renderItem={({ item }) => (
           <List.Item
             title={item.name}
@@ -26,8 +58,12 @@ function SettingsTheme({ preferences, theme }) {
               Platform.OS !== 'ios' && (
                 <RadioButton
                   color={colors.primary}
-                  status={item.value === preferences.theme ? 'checked' : 'unchecked'}
-                  onPress={() => updatePrefs({ theme: item.value })}
+                  status={
+                    item.value === preferences.theme && !preferences.useSystemTheme
+                      ? 'checked'
+                      : 'unchecked'
+                  }
+                  onPress={() => updatePrefs({ theme: item.value, useSystemTheme: false })}
                 />
               )
             }
@@ -35,12 +71,16 @@ function SettingsTheme({ preferences, theme }) {
               Platform.OS === 'ios' && (
                 <RadioButton
                   color={colors.primary}
-                  status={item.value === preferences.theme ? 'checked' : 'unchecked'}
-                  onPress={() => updatePrefs({ theme: item.value })}
+                  status={
+                    item.value === preferences.theme && !preferences.useSystemTheme
+                      ? 'checked'
+                      : 'unchecked'
+                  }
+                  onPress={() => updatePrefs({ theme: item.value, useSystemTheme: false })}
                 />
               )
             }
-            onPress={() => updatePrefs({ theme: item.value })}
+            onPress={() => updatePrefs({ theme: item.value, useSystemTheme: false })}
             style={settingsStyles.listItem}
           />
         )}
@@ -53,6 +93,7 @@ function SettingsTheme({ preferences, theme }) {
 SettingsTheme.propTypes = {
   preferences: PropTypes.shape({
     theme: PropTypes.string.isRequired,
+    useSystemTheme: PropTypes.bool.isRequired,
   }).isRequired,
   theme: PropTypes.shape({
     colors: PropTypes.shape({

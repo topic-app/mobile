@@ -1,19 +1,35 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Platform, ScrollView } from 'react-native';
+import { View, Platform, ScrollView, Dimensions } from 'react-native';
 import { Text, useTheme, Button, Divider, Searchbar, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import getStyles from '@styles/Styles';
 import CustomTabView from '@components/CustomTabView';
 import ErrorMessage from '@components/ErrorMessage';
-import { updateSchools } from '@redux/actions/api/schools';
-import { updateDepartments } from '@redux/actions/api/departments';
+import { updateLocation, fetchLocationData } from '@redux/actions/data/location';
+import { updateSchools, searchSchools } from '@redux/actions/api/schools';
+import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
+import IllustrationSelectLocationLight from '@assets/images/illustrations/select_location/select_location_light.svg';
+import IllustrationSelectLocationDark from '@assets/images/illustrations/select_location/select_location_dark.svg';
 
 import getLandingStyles from '../styles/Styles';
 
 // import { SchoolsTab } from './SchoolsTab';
-import ItemList from './ItemList';
+import ItemList from '../components/ItemList';
+
+function done(selected, schools, departments, navigation) {
+  updateLocation({
+    selected: true,
+    schools: schools.map((sch) => sch._id).filter((id) => selected.includes(id)),
+    departments: departments.map((dep) => dep._id).filter((id) => selected.includes(id)),
+    global: selected.includes('global'),
+  });
+  navigation.navigate('Main', {
+    screen: 'Home1',
+    params: { screen: 'Home2', params: { screen: 'Article' } },
+  });
+}
 
 function getData(type, locationData) {
   let data = [
@@ -26,7 +42,7 @@ function getData(type, locationData) {
   ];
 
   if (type === 'school') {
-    data = locationData.map((s) => {
+    data = locationData?.map((s) => {
       return {
         type: 'school',
         title: s.name,
@@ -40,8 +56,8 @@ function getData(type, locationData) {
     });
   } else if (type === 'department' || type === 'region') {
     data = locationData
-      .filter((d) => d.type === type)
-      .map((d) => {
+      ?.filter((d) => d.type === type)
+      ?.map((d) => {
         return {
           type,
           title: d.name,
@@ -56,11 +72,22 @@ function getData(type, locationData) {
 updateSchools('initial');
 updateDepartments('initial');
 
-function WelcomeLocation({ schools, departments, state, navigation, done }) {
+function WelcomeLocation({
+  schools,
+  departments,
+  schoolsSearch,
+  departmentsSearch,
+  state,
+  navigation,
+}) {
+  const [search, setSearch] = React.useState('');
   const theme = useTheme();
   const { colors } = theme;
   const landingStyles = getLandingStyles(theme);
   const styles = getStyles(theme);
+
+  const scrollRef = React.createRef();
+  const inputRef = React.createRef();
 
   // Note: when selected is changed, the component is not rerendered.
   // This is essential because we do not want to rerender four lists
@@ -72,38 +99,86 @@ function WelcomeLocation({ schools, departments, state, navigation, done }) {
     } else {
       selected.push(x);
     }
-    console.log('global selected changed!', selected);
   };
 
-  const schoolData = getData('school', schools);
-  const departmentData = getData('department', departments);
+  const schoolData = getData('school', search === '' ? schools : schoolsSearch);
+  const departmentData = getData('department', search === '' ? departments : departmentsSearch);
   const regionData = getData('region', departments);
   const otherData = getData('other', []);
 
+  const scrollHeight = 190;
+
+  const searchChange = (text) => {
+    scrollRef.current.scrollTo({ y: scrollHeight, animated: true });
+    setSearch(text);
+    if (text !== search && text !== '') {
+      searchSchools('initial', text);
+      searchDepartments('initial', text);
+    }
+  };
+
+  const retry = () => {
+    if (search !== '') {
+      searchSchools('initial', search);
+      searchDepartments('initial', search);
+    } else {
+      updateSchools('initial');
+      updateDepartments('initial');
+    }
+  };
+
+  const next = (type) => {
+    if (type === 'schools') {
+      if (search !== '') {
+        searchSchools('next', search);
+      } else {
+        updateSchools('next');
+      }
+    } else if (search !== '') {
+      searchDepartments('next', search);
+    } else {
+      updateDepartments('next');
+    }
+  };
+
   return (
     <View style={styles.page}>
-      <ScrollView>
+      <ScrollView ref={scrollRef}>
         <View style={landingStyles.headerContainer}>
-          <View style={landingStyles.centerContainer}>
-            <Icon size={50} color={colors.primay} name="map-marker" />
+          <View style={landingStyles.centerIllustrationContainer}>
+            {theme.dark ? (
+              <IllustrationSelectLocationDark height={200} width={200} />
+            ) : (
+              <IllustrationSelectLocationLight height={200} width={200} />
+            )}
             <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
           </View>
         </View>
         <View style={landingStyles.searchContainer}>
-          <Searchbar placeholder="Rechercher" />
+          <Searchbar
+            placeholder="Rechercher"
+            value={search}
+            onChangeText={searchChange}
+            ref={inputRef}
+          />
         </View>
         <CustomTabView
+          scrollEnabled={false}
           pages={[
             {
               key: 'school',
               title: 'École',
               component: (
-                <ItemList
-                  type="school"
-                  data={schoolData}
-                  setGlobalSelected={setSelected}
-                  state={state}
-                />
+                <View style={{ height: Dimensions.get('window').height }}>
+                  <ItemList
+                    type="school"
+                    data={schoolData}
+                    setGlobalSelected={setSelected}
+                    state={state}
+                    retry={retry}
+                    next={() => next('schools')}
+                  />
+                </View>
               ),
             },
             {
@@ -115,6 +190,8 @@ function WelcomeLocation({ schools, departments, state, navigation, done }) {
                   data={departmentData}
                   setGlobalSelected={setSelected}
                   state={state}
+                  retry={retry}
+                  next={() => next('departments')}
                 />
               ),
             },
@@ -127,6 +204,8 @@ function WelcomeLocation({ schools, departments, state, navigation, done }) {
                   data={regionData}
                   setGlobalSelected={setSelected}
                   state={state}
+                  retry={retry}
+                  next={() => next('regions')}
                 />
               ),
             },
@@ -139,6 +218,8 @@ function WelcomeLocation({ schools, departments, state, navigation, done }) {
                   data={otherData}
                   setGlobalSelected={setSelected}
                   state={state}
+                  retry={retry}
+                  next={() => console.log('next')}
                 />
               ),
             },
@@ -146,12 +227,12 @@ function WelcomeLocation({ schools, departments, state, navigation, done }) {
         />
       </ScrollView>
       <Divider />
-      <View style={landingStyles.contentContainer}>
+      {/* <View style={landingStyles.contentContainer}>
         <Text>
           Par défaut, vous verrez les articles de votre école, ainsi que les articles du département
           dans lequel se trouve l&apos;école et de la France entière
         </Text>
-      </View>
+      </View> */}
       <View style={landingStyles.contentContainer}>
         <View style={landingStyles.buttonContainer}>
           <Button
@@ -171,9 +252,12 @@ function WelcomeLocation({ schools, departments, state, navigation, done }) {
 
 const mapStateToProps = (state) => {
   const { schools, departments } = state;
+  console.log(`d ${schools?.data?.length} s ${schools?.search.length}`);
   return {
     schools: schools.data,
     departments: departments.data,
+    schoolsSearch: schools.search,
+    departmentsSearch: departments.search,
     state: { schools: schools.state, departments: departments.state },
   };
 };
@@ -181,12 +265,13 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(WelcomeLocation);
 
 WelcomeLocation.propTypes = {
-  done: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
   schools: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   departments: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  schoolsSearch: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  departmentsSearch: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   state: PropTypes.shape({
     schools: PropTypes.shape({
       list: PropTypes.shape({
@@ -194,7 +279,7 @@ WelcomeLocation.propTypes = {
           initial: PropTypes.bool.isRequired,
           refresh: PropTypes.bool.isRequired,
         }),
-        error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+        error: PropTypes.object, // TODO: Better PropTypes
       }).isRequired,
     }),
     departments: PropTypes.shape({
@@ -203,7 +288,7 @@ WelcomeLocation.propTypes = {
           initial: PropTypes.bool.isRequired,
           refresh: PropTypes.bool.isRequired,
         }),
-        error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+        error: PropTypes.object, // TODO: Better PropTypes
       }).isRequired,
     }),
   }).isRequired,

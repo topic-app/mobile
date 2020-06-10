@@ -26,6 +26,7 @@ function SettingsStackNavigator() {
         options={{
           ...HeaderConfig,
           title: 'Thème',
+          subtitle: 'Paramètres',
           overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         }}
       />

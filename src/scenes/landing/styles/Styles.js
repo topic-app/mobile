@@ -9,6 +9,10 @@ function getLandingStyles(theme) {
       alignItems: 'center',
       justifyContent: 'center',
     },
+    centerIllustrationContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     textInput: {
       width: '100%',
       alignSelf: 'center',

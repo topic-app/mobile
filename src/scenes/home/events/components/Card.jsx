@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Platform, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
+import { View, Image } from 'react-native';
 import { Text, Avatar, Card, useTheme } from 'react-native-paper';
 import moment from 'moment';
 import shortid from 'shortid';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TagList from '@components/TagList';
+import { CardBase } from '@components/Cards';
 import getStyles from '@styles/Styles';
 import getEventStyles from '../styles/Styles';
 
@@ -37,74 +38,56 @@ function EventCard({ event, navigate }) {
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
 
-  const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
-
   return (
-    <Card style={styles.card}>
-      <Touchable onPress={navigate}>
-        <View>
-          <Card.Title
-            title={event?.title}
-            subtitle={buildDateString(start, end) || 'Aucune Date Spécifiée'}
-            left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
-          />
-          <View style={{ paddingBottom: 5 }}>
-            <TagList type="event" item={event} />
-          </View>
-          <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
-            <View style={{ flexDirection: 'row' }}>
-              {event?.thumbnailUrl ? (
-                <Image
-                  source={{ uri: event.thumbnailUrl }}
-                  style={[
-                    styles.thumbnail,
-                    {
-                      width: 130,
-                      height: 130,
-                    },
-                  ]}
-                />
-              ) : (
+    <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
+      <Card.Title
+        title={event?.title}
+        subtitle={buildDateString(start, end)}
+        left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
+      />
+      <View style={{ paddingVertical: 5 }}>
+        <TagList type="event" item={event} />
+      </View>
+      <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
+        <View style={{ flexDirection: 'row' }}>
+          {event?.thumbnailUrl && (
+            <Image
+              source={{ uri: event.thumbnailUrl }}
+              style={[
+                styles.thumbnail,
+                {
+                  width: 130,
+                  height: 130,
+                  marginRight: 15,
+                },
+              ]}
+            />
+          )}
+          <View>
+            <Text style={eventStyles.cardDescription}>{event?.summary}</Text>
+            {Array.isArray(event?.places) &&
+              event.places.map((p) => (
                 <View
-                  style={{
-                    width: 120,
-                    height: 120,
-                  }}
-                />
-              )}
-              <View
-                style={{
-                  margin: 10,
-                  marginTop: 0,
-                  marginLeft: 15,
-                  flex: 1,
-                }}
-              >
-                <Text style={eventStyles.text}>{event?.summary}</Text>
-
-                {Array.isArray(event?.places) &&
-                  event.places.map((p) => (
-                    <View
-                      key={shortid()}
-                      style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
-                    >
-                      <Icon color={colors.text} name="map-marker" size={17} />
-                      <Text style={{ fontSize: 17 }}>
-                        &nbsp;
-                        {p?.type === 'standalone' &&
-                          (p?.address?.shortName ||
-                            `${p?.address?.address?.street}, ${p?.address?.address?.city}`)}
-                        {p.type === 'school' && p?.associatedSchool?.displayName}
-                        {p.type === 'standalone' && p?.associatedPlace?.displayName}
-                      </Text>
-                    </View>
-                  ))}
-              </View>
-            </View>
-          </Card.Content>
+                  key={shortid()}
+                  style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
+                >
+                  <Icon color={colors.icon} name="map-marker" style={eventStyles.cardDescription} />
+                  <Text
+                    style={[eventStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
+                    numberOfLines={1}
+                  >
+                    {p?.type === 'standalone' &&
+                      (p?.address?.shortName ||
+                        `${p?.address?.address?.street}, ${p?.address?.address?.city}`)}
+                    {p.type === 'school' && p?.associatedSchool?.displayName}
+                    {p.type === 'standalone' && p?.associatedPlace?.displayName}
+                  </Text>
+                </View>
+              ))}
+          </View>
         </View>
-      </Touchable>
-    </Card>
+      </Card.Content>
+    </CardBase>
   );
 }
 

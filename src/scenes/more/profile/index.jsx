@@ -17,7 +17,7 @@ function ProfileStackNavigator() {
         component={Profile}
         options={{
           ...HeaderConfig,
-          title: 'Profil',
+          title: 'Mon Profil',
           overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         }}
       />
@@ -26,7 +26,8 @@ function ProfileStackNavigator() {
         component={ProfileAvatar}
         options={{
           ...HeaderConfig,
-          title: 'Profil: Avatar',
+          title: 'Avatar',
+          subtitle: 'Mon Profil',
           overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         }}
       />

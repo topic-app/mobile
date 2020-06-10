@@ -9,8 +9,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TranslucentStatusBar } from '@components/Header';
 import getStyles from '@styles/Styles';
 import ErrorMessage from '@components/ErrorMessage';
-import PlatformBackButton from '@components/PlatformBackButton';
+import { PlatformBackButton } from '@components/PlatformComponents';
 import { login } from '@redux/actions/data/account';
+import IllustrationLoginDark from '@assets/images/illustrations/auth/login_dark.svg';
+import IllustrationLoginLight from '@assets/images/illustrations/auth/login_light.svg';
 import getAuthStyles from '../styles/Styles';
 
 function AuthLogin({ navigation, reqState }) {
@@ -89,7 +91,12 @@ function AuthLogin({ navigation, reqState }) {
         <ScrollView>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={authStyles.stepIndicatorContainer}>
-            <View style={authStyles.centerContainer}>
+            <View style={styles.centerIllustrationContainer}>
+              {theme.dark ? (
+                <IllustrationLoginDark height={200} width={200} />
+              ) : (
+                <IllustrationLoginLight height={200} width={200} />
+              )}
               <Text style={authStyles.title}>Se connecter</Text>
             </View>
           </View>

@@ -1,23 +1,17 @@
 import React from 'react';
-import { useColorScheme } from 'react-native-appearance';
+import { Appearance } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
+import { updatePrefs } from '@redux/actions/data/prefs';
 import themes from '@styles/Theme';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './index';
 
 function StoreApp({ preferences }) {
-  let theme;
-  const systemTheme = useColorScheme();
+  const theme = themes[preferences.theme] || 'light';
 
-  if (preferences.theme === 'system') {
-    theme = themes[systemTheme === 'dark' ? 'dark' : 'light'];
-  } else {
-    theme = themes[preferences.theme];
-  }
   return (
     <PaperProvider theme={theme}>
       <SafeAreaProvider>
@@ -37,6 +31,7 @@ const mapStateToProps = (state) => {
 StoreApp.propTypes = {
   preferences: PropTypes.shape({
     theme: PropTypes.string.isRequired,
+    useSystemTheme: PropTypes.bool.isRequired,
   }).isRequired,
 };
 
