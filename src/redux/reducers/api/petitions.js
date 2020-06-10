@@ -2,6 +2,7 @@ import data from '../../../data/petitionListData.json';
 
 const initialState = {
   data,
+  search: [],
   state: {
     list: {
       success: null,
@@ -9,6 +10,14 @@ const initialState = {
       loading: {
         initial: false,
         refresh: false,
+        next: false,
+      },
+    },
+    search: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
         next: false,
       },
     },
@@ -41,8 +50,17 @@ function petitionReducer(state = initialState, action) {
         ...state,
         data: action.data,
       };
+    case 'UPDATE_PETITIONS_SEARCH':
+      return {
+        ...state,
+        search: action.data,
+      };
     case 'CLEAR_PETITIONS':
-      return { data: [], state: state.state };
+      return {
+        data: action.data.data ? [] : state.data,
+        search: action.data.search ? [] : state.search,
+        state: state.state,
+      };
     default:
       return state;
   }

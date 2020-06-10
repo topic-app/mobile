@@ -19,6 +19,7 @@
     "@react-navigation/native": "^5.1.7",
     "@react-navigation/stack": "^5.2.14",
     "axios": "^0.19.2",
+    "color": "^3.1.2",
     "expo": "^37.0.8",
     "lodash": "^4.17.15",
     "moment": "^2.25.1",

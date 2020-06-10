@@ -1,155 +1,8 @@
-import request from '@utils/request';
 import Store from '@redux/store';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour updateGroups
- * @param next Si il faut récupérer les groups après le dernier
- * @returns Action
- */
-function updateGroupsCreator(type = 'initial', params = {}) {
-  return (dispatch, getState) => {
-    let lastId;
-    let number = 10;
-    dispatch({
-      type: 'UPDATE_GROUPS_STATE',
-      data: {
-        list: {
-          loading: {
-            initial: type === 'initial',
-            refresh: type === 'refresh',
-            next: type === 'next',
-          },
-          success: null,
-          error: null,
-        },
-      },
-    });
-    if (type === 'next') {
-      const groups = getState().groups.data;
-      // groups.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-      lastId = groups[groups.length - 1]._id;
-      number = 5;
-    }
-    request('groups/list', 'get', { lastId, number, ...params })
-      .then((result) => {
-        const { data } = getState().groups; // The old groups, in redux db
-        result.data.groups.forEach((a) => {
-          const group = { ...a, preload: true };
-          if (data.some((p) => p._id === a._id)) {
-            data[data.map((p) => p._id).indexOf(a._id)] = group;
-          } else {
-            data.push(group);
-          }
-        });
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_GROUPS',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_GROUPS_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((error) => {
-        return dispatch({
-          type: 'UPDATE_GROUPS_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: false,
-              error,
-            },
-          },
-        });
-      });
-  };
-}
+import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour fetchGroup
- * @param groupId L'id de l'group que l'on veut chercher
- * @returns Action
- */
-function fetchGroupCreator(groupId) {
-  return (dispatch, getState) => {
-    dispatch({
-      type: 'UPDATE_GROUPS_STATE',
-      data: {
-        info: {
-          loading: true,
-          success: null,
-          error: null,
-        },
-      },
-    });
-    request('groups/info', 'get', { groupId })
-      .then((result) => {
-        const { groups } = result.data;
-        const group = groups[0];
-        const { data } = getState().groups; // The old groups, in redux db
-        if (data.some((p) => p._id === group._id)) {
-          data[data.map((p) => p._id).indexOf(group._id)] = group;
-        } else {
-          data.push(group);
-        }
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_GROUPS',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_GROUPS_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((err) => {
-        return dispatch({
-          type: 'UPDATE_GROUPS_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: false,
-              error: err,
-            },
-          },
-        });
-      });
-  };
-}
-
-/**
- * @docs actionCreators
- * Créateur d'action pour clearGroups
- * @returns Action
- */
-function clearGroupsCreator() {
-  return {
-    type: 'CLEAR_GROUPS',
-  };
-}
+const nameAscSort = (data) => data.sort((a, b) => a.name.localCompare(b.name));
 
 /**
  * @docs actions
@@ -157,7 +10,32 @@ function clearGroupsCreator() {
  * @param next Si il faut récupérer les groups après le dernier
  */
 function updateGroups(type, params) {
-  return Store.dispatch(updateGroupsCreator(type, params));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_GROUPS',
+      stateUpdate: 'UPDATE_GROUPS_STATE',
+      url: 'groups/list',
+      sort: nameAscSort,
+      dataType: 'groups',
+      type,
+      params,
+    }),
+  );
+}
+
+function searchGroups(type, terms, params) {
+  if (type !== 'next') Store.dispatch(clearCreator({ clear: 'CLEAR_GROUPS', data: false }));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_GROUPS_SEARCH',
+      stateUpdate: 'UPDATE_GROUPS_STATE',
+      url: 'groups/list',
+      dataType: 'groups',
+      type,
+      params: { ...params, search: true, terms },
+      stateName: 'search',
+    }),
+  );
 }
 
 /**
@@ -166,7 +44,16 @@ function updateGroups(type, params) {
  * @param groupId L'id de l'group à récuperer
  */
 function fetchGroup(groupId) {
-  return Store.dispatch(fetchGroupCreator(groupId));
+  return Store.dispatch(
+    fetchCreator({
+      update: 'UPDATE_GROUPS',
+      stateUpdate: 'UPDATE_GROUPS_STATE',
+      url: 'groups/list',
+      sort: nameAscSort,
+      dataType: 'groups',
+      params: { groupId },
+    }),
+  );
 }
 
 /**
@@ -174,7 +61,7 @@ function fetchGroup(groupId) {
  * Vide la database redux complètement
  */
 function clearGroups() {
-  return Store.dispatch(clearGroupsCreator());
+  return Store.dispatch(clearCreator({ clear: 'CLEAR_GROUPS' }));
 }
 
-export { updateGroups, clearGroups, fetchGroup };
+export { updateGroups, clearGroups, fetchGroup, searchGroups };

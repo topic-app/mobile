@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ViewPager from '@react-native-community/viewpager';
+import { PlatformBackButton } from '@components/PlatformComponents';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import shortid from 'shortid';
@@ -88,20 +89,6 @@ function iconColor(status, theme) {
     default:
       return '#000000';
   }
-}
-
-function PlatformBackButton({ onPress, theme }) {
-  const { colors } = theme;
-  if (Platform.OS === 'ios') {
-    return (
-      <TouchableOpacity onPress={onPress}>
-        <Icon name="chevron-left" color={colors.text} size={30} style={stepperStyles.backButton} />
-      </TouchableOpacity>
-    );
-  }
-  return (
-    <IconButton icon="arrow-left" size={25} style={stepperStyles.backButton} onPress={onPress} />
-  );
 }
 
 function StepperViewPager({
@@ -273,7 +260,7 @@ function StepperViewPager({
             (() => scrollViewRef.current.scrollToEnd({ animated: true }))
           }
         >
-          <PlatformBackButton onPress={navigation.goBack} theme={theme} />
+          <PlatformBackButton onPress={navigation.goBack} />
           <View style={stepperStyles.stepIndicatorContainer}>
             <View style={stepperStyles.centerContainer}>
               <Text style={stepperStyles.title}>{title}</Text>

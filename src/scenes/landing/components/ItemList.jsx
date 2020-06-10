@@ -2,11 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, FlatList } from 'react-native';
 import { useTheme, List, Checkbox, ProgressBar } from 'react-native-paper';
-import { updateSchools } from '@redux/actions/api/schools';
-import { updateDepartments } from '@redux/actions/api/departments';
 import ErrorMessage from '@components/ErrorMessage';
 
-function ItemList({ type, data, setGlobalSelected, state }) {
+function ItemList({ type, data, setGlobalSelected, state, retry, next }) {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -22,25 +20,24 @@ function ItemList({ type, data, setGlobalSelected, state }) {
     }
   }
 
+  const states = [
+    state.schools.list,
+    state.departments.list,
+    state.schools.search,
+    state.departments.search,
+  ];
+
   return (
     <View>
-      {(state.schools.list.loading.initial || state.departments.list.loading.initial) && (
-        <ProgressBar indeterminate />
+      {states.some((s) => s.loading.initial) && <ProgressBar indeterminate />}
+      {states.some((s) => s.error) && (
+        <ErrorMessage type="axios" error={states.map((s) => s.error)} retry={retry} />
       )}
-      {state.schools.list.error || state.departments.list.error ? (
-        <ErrorMessage
-          type="axios"
-          error={[state.schools.list.error, state.departments.list.error]}
-          retry={() => {
-            updateSchools('initial');
-            updateDepartments('initial');
-          }}
-        />
-      ) : null}
       <FlatList
         data={data}
         keyExtractor={(i) => i._id}
-        refreshing={state.schools.list.loading.refresh || state.departments.list.loading.refresh}
+        onEndReachedThreshold={0.5}
+        onEndReached={next}
         renderItem={({ item }) => (
           <List.Item
             title={item.title}
@@ -76,6 +73,8 @@ function ItemList({ type, data, setGlobalSelected, state }) {
 
 ItemList.propTypes = {
   type: PropTypes.string.isRequired,
+  retry: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
   setGlobalSelected: PropTypes.func.isRequired,
   state: PropTypes.shape({
     schools: PropTypes.shape({
@@ -86,9 +85,23 @@ ItemList.propTypes = {
         }),
         error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
       }).isRequired,
+      search: PropTypes.shape({
+        loading: PropTypes.shape({
+          initial: PropTypes.bool.isRequired,
+          refresh: PropTypes.bool.isRequired,
+        }),
+        error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      }).isRequired,
     }),
     departments: PropTypes.shape({
       list: PropTypes.shape({
+        loading: PropTypes.shape({
+          initial: PropTypes.bool.isRequired,
+          refresh: PropTypes.bool.isRequired,
+        }),
+        error: PropTypes.oneOf([PropTypes.object, null]).isRequired, // TODO: Better PropTypes
+      }).isRequired,
+      search: PropTypes.shape({
         loading: PropTypes.shape({
           initial: PropTypes.bool.isRequired,
           refresh: PropTypes.bool.isRequired,

@@ -7,7 +7,7 @@ function colorShade(color, amount) {
 }
 
 const solidLight = {
-  // Better colors should be at the front
+  // Better colors should be at the top
   red: '#962626',
   green: '#34a115',
   blue: '#147bdd',

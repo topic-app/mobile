@@ -1,14 +1,16 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Platform, View, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
+import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Card, Text, useTheme } from 'react-native-paper';
 import moment from 'moment';
 
 import TagList from '@components/TagList';
+import { PlatformTouchable } from '@components/PlatformComponents';
 import getStyles from '@styles/Styles';
 import PetitionChart from './Charts';
+import { CardBase } from '@root/src/components/Cards';
 
 function getShortTime(time) {
   // If time is in the past
@@ -104,44 +106,38 @@ function PetitionComponentListCard({ navigate, petition }) {
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
-
   const endTime = getShortTime(petition.duration.end);
 
   return (
-    <Card style={styles.card}>
-      <Touchable onPress={navigate}>
-        <View style={{ paddingTop: 10, paddingBottom: 5 }}>
-          <Card.Content>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.cardTitle} numberOfLines={3}>
-                  {petition.title}
-                </Text>
-              </View>
-              <View style={{ alignItems: 'flex-end' }}>
-                {petition.status === 'open' && endTime ? (
-                  <StatusChip
-                    mode="text"
-                    color={colors.disabled}
-                    icon="clock-outline"
-                    label={endTime}
-                  />
-                ) : (
-                  renderPetitionStatus(petition.status, theme)
-                )}
-              </View>
-            </View>
-
-            <PetitionChart voteData={petition.voteData} />
-          </Card.Content>
-
-          <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-            <TagList type="petition" item={petition} />
-          </Card.Content>
+    <CardBase onPress={navigate}>
+      <Card.Content>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.cardTitle} numberOfLines={3}>
+              {petition.title}
+            </Text>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            {petition.status === 'open' && endTime ? (
+              <StatusChip
+                mode="text"
+                color={colors.disabled}
+                icon="clock-outline"
+                label={endTime}
+              />
+            ) : (
+              renderPetitionStatus(petition.status, theme)
+            )}
+          </View>
         </View>
-      </Touchable>
-    </Card>
+
+        <PetitionChart voteData={petition.voteData} />
+      </Card.Content>
+
+      <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
+        <TagList type="petition" item={petition} />
+      </Card.Content>
+    </CardBase>
   );
 }
 

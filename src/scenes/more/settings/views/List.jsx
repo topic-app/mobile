@@ -18,7 +18,9 @@ function SettingsList({ navigation, preferences }) {
       <List.Section>
         <List.Item
           title="Theme"
-          description={themes[preferences.theme]?.name}
+          description={`${themes[preferences.theme]?.name}${
+            preferences.useSystemTheme ? ' (système)' : ''
+          }`}
           left={() => <List.Icon icon="brightness-6" />}
           onPress={() => navigation.navigate('Theme')}
           style={settingsStyles.listItem}
@@ -60,6 +62,7 @@ SettingsList.propTypes = {
   }).isRequired,
   preferences: PropTypes.shape({
     theme: PropTypes.string,
+    useSystemTheme: PropTypes.bool.isRequired,
   }).isRequired,
 };
 

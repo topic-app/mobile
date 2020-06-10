@@ -1,155 +1,8 @@
-import request from '@utils/request';
 import Store from '@redux/store';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour updateDepartments
- * @param next Si il faut récupérer les departments après le dernier
- * @returns Action
- */
-function updateDepartmentsCreator(type = 'initial', params = {}) {
-  return (dispatch, getState) => {
-    let lastId;
-    let number = 10;
-    dispatch({
-      type: 'UPDATE_DEPARTMENTS_STATE',
-      data: {
-        list: {
-          loading: {
-            initial: type === 'initial',
-            refresh: type === 'refresh',
-            next: type === 'next',
-          },
-          success: null,
-          error: null,
-        },
-      },
-    });
-    if (type === 'next') {
-      const departments = getState().departments.data;
-      // departments.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-      lastId = departments[departments.length - 1]._id;
-      number = 5;
-    }
-    request('departments/list', 'get', { lastId, number, ...params })
-      .then((result) => {
-        const { data } = getState().departments; // The old departments, in redux db
-        result.data.departments.forEach((a) => {
-          const department = { ...a, preload: true };
-          if (data.some((p) => p._id === a._id)) {
-            data[data.map((p) => p._id).indexOf(a._id)] = department;
-          } else {
-            data.push(department);
-          }
-        });
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_DEPARTMENTS',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_DEPARTMENTS_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((err) => {
-        return dispatch({
-          type: 'UPDATE_DEPARTMENTS_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: false,
-              error: err,
-            },
-          },
-        });
-      });
-  };
-}
+import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour fetchDepartment
- * @param departmentId L'id de l'department que l'on veut chercher
- * @returns Action
- */
-function fetchDepartmentCreator(departmentId) {
-  return (dispatch, getState) => {
-    dispatch({
-      type: 'UPDATE_DEPARTMENTS_STATE',
-      data: {
-        info: {
-          loading: true,
-          success: null,
-          error: null,
-        },
-      },
-    });
-    request('departments/info', 'get', { departmentId })
-      .then((result) => {
-        const { departments } = result.data;
-        const department = departments[0];
-        const { data } = getState().departments; // The old departments, in redux db
-        if (data.some((p) => p._id === department._id)) {
-          data[data.map((p) => p._id).indexOf(department._id)] = department;
-        } else {
-          data.push(department);
-        }
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_DEPARTMENTS',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_DEPARTMENTS_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((error) => {
-        return dispatch({
-          type: 'UPDATE_DEPARTMENTS_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-      });
-  };
-}
-
-/**
- * @docs actionCreators
- * Créateur d'action pour clearDepartments
- * @returns Action
- */
-function clearDepartmentsCreator() {
-  return {
-    type: 'CLEAR_DEPARTMENTS',
-  };
-}
+const nameAscSort = (data) => data; // .sort((a, b) => a.name.localCompare(b.name));
 
 /**
  * @docs actions
@@ -157,7 +10,34 @@ function clearDepartmentsCreator() {
  * @param next Si il faut récupérer les departments après le dernier
  */
 function updateDepartments(type, params) {
-  return Store.dispatch(updateDepartmentsCreator(type, params));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_DEPARTMENTS',
+      stateUpdate: 'UPDATE_DEPARTMENTS_STATE',
+      url: 'departments/list',
+      sort: nameAscSort,
+      dataType: 'departments',
+      type,
+      params,
+      listName: 'data',
+    }),
+  );
+}
+
+function searchDepartments(type, terms, params) {
+  if (type !== 'next') Store.dispatch(clearCreator({ clear: 'CLEAR_DEPARTMENTS', data: false }));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_DEPARTMENTS_SEARCH',
+      stateUpdate: 'UPDATE_DEPARTMENTS_STATE',
+      url: 'departments/list',
+      dataType: 'departments',
+      type,
+      params: { ...params, search: true, terms },
+      stateName: 'search',
+      listName: 'search',
+    }),
+  );
 }
 
 /**
@@ -166,7 +46,16 @@ function updateDepartments(type, params) {
  * @param departmentId L'id de l'department à récuperer
  */
 function fetchDepartment(departmentId) {
-  return Store.dispatch(fetchDepartmentCreator(departmentId));
+  return Store.dispatch(
+    fetchCreator({
+      update: 'UPDATE_DEPARTMENTS',
+      stateUpdate: 'UPDATE_DEPARTMENTS_STATE',
+      url: 'departments/list',
+      sort: nameAscSort,
+      dataType: 'departments',
+      params: { departmentId },
+    }),
+  );
 }
 
 /**
@@ -174,7 +63,7 @@ function fetchDepartment(departmentId) {
  * Vide la database redux complètement
  */
 function clearDepartments() {
-  return Store.dispatch(clearDepartmentsCreator());
+  return Store.dispatch(clearCreator({ clear: 'CLEAR_DEPARTMENTS' }));
 }
 
-export { updateDepartments, clearDepartments, fetchDepartment };
+export { updateDepartments, clearDepartments, fetchDepartment, searchDepartments };

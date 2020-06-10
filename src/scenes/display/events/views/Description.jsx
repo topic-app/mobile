@@ -6,6 +6,7 @@ import getStyles from '@styles/Styles';
 import Content from '@components/Content';
 import moment from 'moment';
 import shortid from 'shortid';
+import { InlineCard } from '@components/Cards';
 import getEventStyles from '../styles/Styles';
 
 function getPlaceLabels(place) {
@@ -57,8 +58,8 @@ function getTimeLabels(timeData, startTime, endTime) {
     };
   }
   return {
-    dateString: 'Date Invalide',
-    timeString: 'Aucune date spécifiée',
+    dateString: 'Aucune date spécifiée',
+    timeString: null,
   };
 }
 
@@ -96,29 +97,32 @@ function EventDisplayDescription({ event }) {
   const { timeString, dateString } = getTimeLabels(event?.duration, startTime, endTime);
 
   return (
-    <View style={styles.contentContainer}>
+    <View>
       {Array.isArray(event?.places) &&
         event.places.map((place) => {
           const { title, description } = getPlaceLabels(place);
           return (
-            <List.Item
+            <InlineCard
               key={shortid()}
-              left={() => <List.Icon color={colors.text} icon="map-marker" />}
+              icon="map-marker"
               title={title}
-              description={description}
+              subtitle={description}
+              onPress={() => console.log('location pressed', place._id)}
             />
           );
         })}
 
-      <List.Item
-        left={() => <List.Icon color={colors.text} icon="calendar" />}
+      <InlineCard
+        icon="calendar"
         title={dateString}
-        description={timeString}
+        subtitle={timeString}
+        onPress={() => console.log('time pressed, switch to program')}
       />
-      <List.Item
-        left={() => <List.Icon color={colors.text} icon="school" />}
-        title={event?.group?.displayName}
-        description={`Groupe ${capitalize(event?.group?.type)}`}
+      <InlineCard
+        icon="school"
+        title={event.group.displayName}
+        subtitle={event.group.type && `Groupe ${capitalize(event.group.type)}`}
+        onPress={() => console.log('go to group', event.group._id)}
       />
       <Divider />
       <View style={eventStyles.description}>
@@ -142,6 +146,7 @@ EventDisplayDescription.propTypes = {
       data: PropTypes.string.isRequired,
     }).isRequired,
     group: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
       displayName: PropTypes.string.isRequired,
     }).isRequired,
     duration: PropTypes.shape({

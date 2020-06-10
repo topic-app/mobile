@@ -262,7 +262,6 @@ function ErrorMessage({ type, strings, error, retry, restart, back }) {
       }
       // Type 7: Some other network error or server completely down
     } else {
-      console.log(netInfo);
       message = {
         icon: 'wifi-strength-alert-outline',
         text: `Erreur lors de ${strings.what}. Veuillez vérifier votre connexion internet ou réessayer plus tard.`,

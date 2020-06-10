@@ -1,7 +1,7 @@
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
-import { withTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 import getNavigatorStyles from '@styles/NavStyles';
@@ -13,7 +13,8 @@ import ExplorerList from './explorer/views/List';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function HomeTwoNavigator({ theme }) {
+function HomeTwoNavigator() {
+  const theme = useTheme();
   const { colors } = theme;
   const navigatorStyles = getNavigatorStyles(theme);
   return (
@@ -58,4 +59,4 @@ HomeTwoNavigator.propTypes = {
   }).isRequired,
 };
 
-export default withTheme(HomeTwoNavigator);
+export default HomeTwoNavigator;

@@ -1,155 +1,8 @@
-import request from '@utils/request';
 import Store from '@redux/store';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour updatePlaces
- * @param next Si il faut récupérer les places après le dernier
- * @returns Action
- */
-function updatePlacesCreator(type = 'initial', params = {}) {
-  return (dispatch, getState) => {
-    let lastId;
-    let number = 10;
-    dispatch({
-      type: 'UPDATE_PLACES_STATE',
-      data: {
-        list: {
-          loading: {
-            initial: type === 'initial',
-            refresh: type === 'refresh',
-            next: type === 'next',
-          },
-          success: null,
-          error: null,
-        },
-      },
-    });
-    if (type === 'next') {
-      const places = getState().places.data;
-      // places.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-      lastId = places[places.length - 1]._id;
-      number = 5;
-    }
-    request('places/list', 'get', { lastId, number, ...params })
-      .then((result) => {
-        const { data } = getState().places; // The old places, in redux db
-        result.data.places.forEach((a) => {
-          const place = { ...a, preload: true };
-          if (data.some((p) => p._id === a._id)) {
-            data[data.map((p) => p._id).indexOf(a._id)] = place;
-          } else {
-            data.push(place);
-          }
-        });
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_PLACES',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_PLACES_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((err) => {
-        return dispatch({
-          type: 'UPDATE_PLACES_STATE',
-          data: {
-            list: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: false,
-              error: err,
-            },
-          },
-        });
-      });
-  };
-}
+import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-/**
- * @docs actionCreators
- * Créateur d'action pour fetchPlace
- * @param placeId L'id de l'place que l'on veut chercher
- * @returns Action
- */
-function fetchPlaceCreator(placeId) {
-  return (dispatch, getState) => {
-    dispatch({
-      type: 'UPDATE_PLACES_STATE',
-      data: {
-        info: {
-          loading: true,
-          success: null,
-          error: null,
-        },
-      },
-    });
-    request('places/info', 'get', { placeId })
-      .then((result) => {
-        const { places } = result.data;
-        const place = places[0];
-        const { data } = getState().places; // The old places, in redux db
-        if (data.some((p) => p._id === place._id)) {
-          data[data.map((p) => p._id).indexOf(place._id)] = place;
-        } else {
-          data.push(place);
-        }
-        data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
-        dispatch({
-          type: 'UPDATE_PLACES',
-          data,
-        });
-        return dispatch({
-          type: 'UPDATE_PLACES_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: true,
-              error: null,
-            },
-          },
-        });
-      })
-      .catch((err) => {
-        return dispatch({
-          type: 'UPDATE_PLACES_STATE',
-          data: {
-            info: {
-              loading: false,
-              success: false,
-              error: err,
-            },
-          },
-        });
-      });
-  };
-}
-
-/**
- * @docs actionCreators
- * Créateur d'action pour clearPlaces
- * @returns Action
- */
-function clearPlacesCreator() {
-  return {
-    type: 'CLEAR_PLACES',
-  };
-}
+const nameAscSort = (data) => data.sort((a, b) => a.name.localCompare(b.name));
 
 /**
  * @docs actions
@@ -157,7 +10,32 @@ function clearPlacesCreator() {
  * @param next Si il faut récupérer les places après le dernier
  */
 function updatePlaces(type, params) {
-  return Store.dispatch(updatePlacesCreator(type, params));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_PLACES',
+      stateUpdate: 'UPDATE_PLACES_STATE',
+      url: 'places/list',
+      sort: nameAscSort,
+      dataType: 'places',
+      type,
+      params,
+    }),
+  );
+}
+
+function searchPlaces(type, terms, params) {
+  if (type !== 'next') Store.dispatch(clearCreator({ clear: 'CLEAR_PLACES', data: false }));
+  return Store.dispatch(
+    updateCreator({
+      update: 'UPDATE_PLACES_SEARCH',
+      stateUpdate: 'UPDATE_PLACES_STATE',
+      url: 'places/list',
+      dataType: 'places',
+      type,
+      params: { ...params, search: true, terms },
+      stateName: 'search',
+    }),
+  );
 }
 
 /**
@@ -166,7 +44,16 @@ function updatePlaces(type, params) {
  * @param placeId L'id de l'place à récuperer
  */
 function fetchPlace(placeId) {
-  return Store.dispatch(fetchPlaceCreator(placeId));
+  return Store.dispatch(
+    fetchCreator({
+      update: 'UPDATE_PLACES',
+      stateUpdate: 'UPDATE_PLACES_STATE',
+      url: 'places/list',
+      sort: nameAscSort,
+      dataType: 'places',
+      params: { placeId },
+    }),
+  );
 }
 
 /**
@@ -174,7 +61,7 @@ function fetchPlace(placeId) {
  * Vide la database redux complètement
  */
 function clearPlaces() {
-  return Store.dispatch(clearPlacesCreator());
+  return Store.dispatch(clearCreator({ clear: 'CLEAR_PLACES' }));
 }
 
-export { updatePlaces, clearPlaces, fetchPlace };
+export { updatePlaces, clearPlaces, fetchPlace, searchPlaces };

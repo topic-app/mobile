@@ -15,8 +15,8 @@ function PetitionDisplayStackNavigator() {
         component={PetitionDisplay}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Pétitions',
-          subtitle: route.params.title,
+          title: route.params.title || 'Pétitions - Aperçu',
+          subtitle: route.params.title && 'Pétitions - Aperçu',
           overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         })}
       />

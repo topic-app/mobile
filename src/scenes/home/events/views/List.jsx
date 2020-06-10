@@ -49,7 +49,7 @@ function EventList({ navigation, events, state }) {
                           screen: 'Search',
                           params: {
                             screen: 'Search',
-                            params: { initialCategory: 'Event', previous: 'Évènements' },
+                            params: { initialCategory: 'events', previous: 'Évènements' },
                           },
                         }),
                     },

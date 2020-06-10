@@ -22,7 +22,7 @@ function HomeTwoNavigator() {
     <Stack.Navigator
       initialRouteName="Article"
       screenOptions={({ route }) => {
-        if (route.params && getNestedParams(route).noTransition) {
+        if (route.params && getNestedParams(route)?.noTransition) {
           return {
             cardStyleInterpolator: () => ({ cardStyle: null }),
           };

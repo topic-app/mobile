@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="efaf6d37-ad8b-408b-a167-fb47e2b6544c" width="1142" height="959.79" data-name="Layer 1" version="1.1" viewBox="0 0 1142 959.79" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title>Map dark</dc:title>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <linearGradient id="eaeac4a1-6091-43b3-af38-ae8114f9a62f" x1="535.45" x2="535.45" y1="779.24" y2="104.91" gradientUnits="userSpaceOnUse" xlink:href="#eaa4df2b-8460-421b-8c86-0d729e8c7ac3">
+   <stop stop-color="gray" stop-opacity=".25" offset="0"/>
+   <stop stop-color="gray" stop-opacity=".12" offset=".53514"/>
+   <stop stop-color="gray" stop-opacity=".1" offset="1"/>
+  </linearGradient>
+  <clipPath id="b609a8ad-8ad7-4296-9cf1-6f9923717ce3" transform="translate(-64.549 -7.9245)">
+   <polygon points="889.29 734.56 724.7 734.56 473.64 758.82 220.64 734.56 220.64 139.96 472.6 158.16 729.99 139.96 981.79 174.34 981.79 641.52" fill="#592989"/>
+  </clipPath>
+  <linearGradient id="eaa4df2b-8460-421b-8c86-0d729e8c7ac3" x1="873.19" x2="873.19" y1="742.81" y2="620.08" gradientUnits="userSpaceOnUse">
+   <stop stop-opacity=".12" offset="0"/>
+   <stop stop-opacity=".09" offset=".55135"/>
+   <stop stop-opacity=".02" offset="1"/>
+  </linearGradient>
+ </defs>
+ <title>Map dark</title>
+ <polygon points="829.06 752.8 669.3 752.8 397.18 779.24 122.95 752.8 122.95 104.91 396.04 124.74 675.03 104.91 947.95 142.37 940.94 639.91" fill="url(#eaeac4a1-6091-43b3-af38-ae8114f9a62f)"/>
+ <polygon points="823.86 743.79 667.59 743.79 401.42 769.52 133.19 743.79 133.19 113.41 400.31 132.71 673.19 113.41 940.14 149.86 933.29 633.96"/>
+ <polygon points="824.74 726.63 660.15 726.63 409.1 750.9 156.1 726.63 156.1 132.04 408.05 150.24 665.44 132.04 917.24 166.42 917.24 633.6" fill="#212122"/>
+ <g clip-path="url(#b609a8ad-8ad7-4296-9cf1-6f9923717ce3)">
+  <polygon points="1142 905.14 564.09 585.08 710.89 97.332 660.93 77.52 589.79 313.89 22.967 0 0 54.646 572.41 371.63 441.73 805.83 491.69 825.64 546.71 642.82 1119.1 959.79"/>
+ </g>
+ <polygon points="813.08 742.81 815.02 620.08 933.29 624.85" fill="url(#eaa4df2b-8460-421b-8c86-0d729e8c7ac3)"/>
+ <g>
+  <polygon points="156.1 388.99 518.84 549.6 542.95 599.58 518.95 624.58 156.1 452.49"/>
+  <polygon points="823.86 742.81 825.62 629.56 933.29 633.96" fill="#2e2c2c"/>
+  <polygon points="648.95 647.58 800.31 150.45 860.52 158.67 690.95 673.58"/>
+ </g>
+ <polyline points="408.05 750.9 660 726.63 660 132.04 408.05 150.24" opacity=".1"/>
+ <path transform="translate(-64.549 -7.9245)" d="m703.35 356.36c0 48.029-86.965 184.04-86.965 184.04s-86.965-136.01-86.965-184.04a86.965 86.965 0 1 1 173.93 0z" fill="#353535"/>
+ <g>
+  <circle cx="551.83" cy="342.37" r="26.292"/>
+  <polygon points="784.67 388.99 917.24 423.01 917.24 486.5 754.95 428.58"/>
+  <polygon points="279.43 510.98 245.95 742.58 283.95 750.58 334.01 536.87 333.95 506.58"/>
+  <polygon points="278.08 208.64 240.51 426.37 269.6 442.08 338.95 208.58"/>
+ </g>
+ <g fill="#353535">
+  <circle cx="349.95" cy="165.58" r="8"/>
+  <circle cx="253.95" cy="579.58" r="8"/>
+  <circle cx="245.95" cy="638.58" r="8"/>
+  <circle cx="330.95" cy="624.58" r="8"/>
+  <circle cx="193.95" cy="384.58" r="8"/>
+  <circle cx="823.95" cy="376.58" r="8"/>
+  <circle cx="754.95" cy="654.58" r="8"/>
+ </g>
+</svg>

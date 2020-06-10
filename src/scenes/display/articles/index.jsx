@@ -14,8 +14,8 @@ function ArticleDisplayStackNavigator() {
         component={ArticleDisplay}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Actus',
-          subtitle: route.params.title,
+          title: route.params.title || 'Actus - Aperçu',
+          subtitle: route.params.title && 'Actus - Aperçu',
           overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         })}
       />

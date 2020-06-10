@@ -21,7 +21,6 @@ function getNavigatorStyles(theme) {
 
     // Drawer styles
     title: {
-      marginTop: 5,
       color: colors.drawerContent,
     },
     profileIconContainer: {
@@ -32,9 +31,7 @@ function getNavigatorStyles(theme) {
     profileBackground: {
       backgroundColor: colors.drawerBackground,
       paddingTop: StatusBar.currentHeight,
-    },
-    locationBackground: {
-      backgroundColor: colors.drawerBackground,
+      minHeight: 130,
     },
     drawerStyle: {
       backgroundColor: colors.surface,

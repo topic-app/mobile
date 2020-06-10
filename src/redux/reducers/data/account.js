@@ -1,3 +1,4 @@
+import { config } from '@root/app.json';
 /**
  * @docs reducers
  * Reducer pour les preferences
@@ -9,29 +10,55 @@
  * @returns Nouveau state
  */
 
-const initialState = {
-  loggedIn: false,
-  accountInfo: {},
-  creationData: {},
-  state: {
-    login: {
-      loading: false,
-      success: null,
-      error: null,
-      incorrect: null,
+let initialState;
+
+if (config.dev.defaultAccount) {
+  initialState = {
+    ...config.dev.defaultAccount,
+    state: {
+      login: {
+        loading: false,
+        success: null,
+        error: null,
+        incorrect: null,
+      },
+      register: {
+        loading: false,
+        success: null,
+        error: null,
+      },
+      check: {
+        loading: false,
+        success: null,
+        error: null,
+      },
     },
-    register: {
-      loading: false,
-      success: null,
-      error: null,
+  };
+} else {
+  initialState = {
+    loggedIn: false,
+    accountInfo: {},
+    creationData: {},
+    state: {
+      login: {
+        loading: false,
+        success: null,
+        error: null,
+        incorrect: null,
+      },
+      register: {
+        loading: false,
+        success: null,
+        error: null,
+      },
+      check: {
+        loading: false,
+        success: null,
+        error: null,
+      },
     },
-    check: {
-      loading: false,
-      success: null,
-      error: null,
-    },
-  },
-};
+  };
+}
 
 function accountReducer(state = initialState, action) {
   switch (action.type) {
