@@ -41,6 +41,9 @@ function getStyles(theme) {
     text: {
       color: colors.text,
     },
+    primaryText: {
+      color: colors.primary,
+    },
     cardTitle: {
       color: colors.text,
       fontSize: 18,

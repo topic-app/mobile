@@ -3,8 +3,12 @@ import { Text, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Markdown from 'react-native-markdown-display';
 import MarkdownIt from 'react-native-markdown-display/src/MarkdownIt';
+import FitImage from 'react-native-fit-image';
+import { config } from '@root/app.json';
+import handleUrl from '@utils/handleUrl';
 
 import getStyles from '@styles/Styles';
+import { getImageUrl } from '../utils/getAssetUrl';
 
 function Content({ parser, data, theme }) {
   const styles = getStyles(theme);
@@ -17,7 +21,23 @@ function Content({ parser, data, theme }) {
         ])}
         style={{
           body: styles.text,
+          link: styles.primaryText,
         }}
+        rules={{
+          image: (node, children, parent, imageStyles) => {
+            const { src } = node.attributes;
+
+            return (
+              <FitImage
+                indicator
+                key={node.key}
+                style={imageStyles._VIEW_SAFE_image}
+                source={{ uri: getImageUrl(src, 'medium') }}
+              />
+            );
+          },
+        }}
+        onLinkPress={handleUrl}
       >
         {data}
       </Markdown>
