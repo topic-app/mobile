@@ -131,7 +131,7 @@ function fetchCreator({
     request(url, 'get', params)
       .then((result) => {
         const elements = result.data[dataType];
-        const element = { ...elements[0], preload: true };
+        const element = elements[0];
         const dbData = getState()[dataType].data || []; // The old elements, in redux db
         let data = [...dbData]; // Shallow copy of dbData to get rid of reference
         const index = data.findIndex((p) => p._id === element._id);
@@ -165,8 +165,24 @@ function fetchCreator({
 
 /**
  * @docs actionCreators
- * Créateur d'action pour tout (clear)
+ * Créateur d'action pour mettre à jour les paramètres de requete
+ * @param updateParams L'action pour clear la db
+ * @param params Les paramètres à mettre à jour
+ * @returns Action
+ */
+function updateParamsCreator({ updateParams, params }) {
+  return {
+    type: updateParams,
+    data: params,
+  };
+}
+
+/**
+ * @docs actionCreators
+ * Créateur d'action pour tout clear
  * @param clear L'action pour clear la db
+ * @param data Si il faut effacer la liste d'articles
+ * @param search Si il faut effacer la recherche d'articles
  * @returns Action
  */
 function clearCreator({ clear, data = true, search = true }) {
@@ -179,4 +195,4 @@ function clearCreator({ clear, data = true, search = true }) {
   };
 }
 
-export { updateCreator, fetchCreator, clearCreator };
+export { updateCreator, fetchCreator, clearCreator, updateParamsCreator };

@@ -50,7 +50,7 @@ function CustomHeaderBar({ scene, navigation }) {
   const headerTitle = title !== undefined ? title : scene.route.name;
 
   let primaryAction;
-  if (primary !== undefined) {
+  if (primary) {
     primaryAction = <Appbar.BackAction onPress={primary} />;
   } else if (home) {
     primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
@@ -90,7 +90,7 @@ function CustomHeaderBar({ scene, navigation }) {
     <View style={navigatorStyles.headerSurface}>
       <TranslucentStatusBar />
       <Appbar.Header
-        style={[navigatorStyles.header, headerStyle ?? null]}
+        style={[navigatorStyles.header, headerStyle]}
         statusBarHeight={StatusBar.currentHeight}
       >
         {primaryAction}

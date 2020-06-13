@@ -26,17 +26,10 @@ function SettingsList({ navigation, preferences }) {
           style={settingsStyles.listItem}
         />
         <List.Item
-          title="Animations"
-          description="iOS"
-          left={() => <List.Icon icon="transition" />}
-          onPress={() => console.log('Animations')}
-          style={settingsStyles.listItem}
-        />
-        <List.Item
           title="Changer de location"
-          description="Todo"
-          left={() => <List.Icon icon="image-outline" />}
-          onPress={() => console.log('Animations')}
+          description="Écoles, départements, régions"
+          left={() => <List.Icon icon="map-marker-outline" />}
+          onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })}
           style={settingsStyles.listItem}
         />
         <List.Item

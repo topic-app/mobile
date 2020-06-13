@@ -51,9 +51,9 @@ function getStyles(theme) {
     },
     title: {
       color: colors.text,
-      fontSize: 35,
+      fontSize: 30,
+      lineHeight: 35,
       fontWeight: '400',
-      lineHeight: 38,
     },
     subtitle: {
       color: colors.subtext,
@@ -86,6 +86,7 @@ function getStyles(theme) {
       elevation: 1,
     },
     centerIllustrationContainer: {
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },

@@ -103,7 +103,7 @@ function GroupDisplay({ route, navigation }) {
         <Divider />
         {group.location.global && (
           <InlineCard
-            icon="map-marker-outline"
+            icon="map-marker"
             title="France Entière"
             onPress={() => console.log('global pressed')}
           />
@@ -137,7 +137,7 @@ function GroupDisplay({ route, navigation }) {
             subtitle={mem.role.name}
             badge={mem.role.admin ? 'star' : null}
             badgeColor={colors.solid.gold}
-            icon="account-outline"
+            icon="account"
             onPress={() => console.log(`user ${mem._id} pressed!`)}
           />
         ))}

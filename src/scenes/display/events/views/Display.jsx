@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, ImageBackground } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
 import TagList from '@components/TagList';
 import CustomTabView from '@components/CustomTabView';

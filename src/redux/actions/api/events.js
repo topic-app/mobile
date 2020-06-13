@@ -49,9 +49,9 @@ function fetchEvent(eventId) {
     fetchCreator({
       update: 'UPDATE_EVENTS',
       stateUpdate: 'UPDATE_EVENTS_STATE',
-      url: 'events/list',
-      sort: dateAscSort,
+      url: 'events/info',
       dataType: 'events',
+      sort: dateAscSort,
       params: { eventId },
     }),
   );
