@@ -12,7 +12,20 @@
   "config": {
     "api": {
       "url": "https://api.topicapp.fr/v1/",
-      "retryTime": "10"
+      "retryTime": 10
+    },
+    "cdn": {
+      "image": {
+        "url": "https://cdn.topicapp.fr/file/get/",
+        "defaultSize": "small",
+        "retryTime": 10
+      }
+    },
+    "content": {
+      "allowedSites": [
+        { "url": "https://topicapp.fr/", "allowSubdomains": true },
+        { "url": "https://gitlab.com/", "allowSubdomains": true }
+      ]
     },
     "maps": {
       "url": "https://maps.topicapp.fr/"

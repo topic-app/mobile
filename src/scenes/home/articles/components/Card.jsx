@@ -7,20 +7,21 @@ import moment from 'moment';
 import TagList from '@components/TagList';
 import { CardBase } from '@components/Cards';
 import getStyles from '@styles/Styles';
+import { getImageUrl } from '@utils/getAssetUrl';
 
 function ActuComponentListCard({ article, navigate }) {
   const styles = getStyles(useTheme());
 
   return (
     <CardBase onPress={navigate}>
-      <Card.Content>
-        <Text style={styles.cardTitle}>{article.title}</Text>
-      </Card.Content>
-      <Card.Content style={{ marginTop: 5 }}>
-        <View style={{ flexDirection: 'row' }}>
-          {article.thumbnailUrl ? (
+      <View style={{ paddingTop: 10, paddingBottom: 5 }}>
+        <Card.Content>
+          <Text style={styles.cardTitle}>{article?.title}</Text>
+        </Card.Content>
+        <Card.Content style={{ marginTop: 5 }}>
+          <View style={{ flexDirection: 'row' }}>
             <Image
-              source={{ uri: article.thumbnailUrl }}
+              source={{ uri: getImageUrl(article?.image, 'small') }}
               style={[
                 styles.thumbnail,
                 {
@@ -29,30 +30,23 @@ function ActuComponentListCard({ article, navigate }) {
                 },
               ]}
             />
-          ) : (
             <View
               style={{
-                width: 120,
-                height: 120,
+                margin: 10,
+                marginTop: 0,
+                marginLeft: 15,
+                flex: 1,
               }}
-            />
-          )}
-          <View
-            style={{
-              margin: 10,
-              marginTop: 0,
-              marginLeft: 15,
-              flex: 1,
-            }}
-          >
-            <Text style={styles.subtitle}>Publié {moment(article.date).fromNow()}</Text>
-            <Paragraph style={styles.text}>{article.summary}</Paragraph>
+            >
+              <Text style={styles.subtitle}>Publié {moment(article?.date).fromNow()}</Text>
+              <Paragraph style={styles.text}>{article?.summary}</Paragraph>
+            </View>
           </View>
-        </View>
-      </Card.Content>
-      <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-        <TagList type="article" item={article} />
-      </Card.Content>
+        </Card.Content>
+        <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
+          <TagList type="article" item={article} />
+        </Card.Content>
+      </View>
     </CardBase>
   );
 }
@@ -62,7 +56,12 @@ export default ActuComponentListCard;
 ActuComponentListCard.propTypes = {
   article: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    thumbnailUrl: PropTypes.string,
+    image: PropTypes.shape({
+      image: PropTypes.string,
+      thumbnails: PropTypes.shape({
+        large: PropTypes.bool,
+      }),
+    }),
     summary: PropTypes.string,
     date: PropTypes.string.isRequired,
   }).isRequired,

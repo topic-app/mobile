@@ -1,17 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, ProgressBar, Divider, List, Button, withTheme } from 'react-native-paper';
-import {
-  View,
-  ImageBackground,
-  ScrollView,
-  Platform,
-  ActivityIndicator,
-  FlatList,
-} from 'react-native';
+import { View, ImageBackground, ScrollView, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import ErrorMessage from '@components/ErrorMessage';
 import moment from 'moment';
+
+import { config } from '@root/app.json';
 
 import Content from '@components/Content';
 import TagList from '@components/TagList';
@@ -54,9 +49,9 @@ function ArticleDisplay({ route, articles, comments, state, commentState, theme,
         />
       ) : null}
       <ScrollView>
-        {article.imageUrl ? (
+        {article?.image?.image ? (
           <ImageBackground
-            source={{ uri: article.thumbnailUrl }}
+            source={{ uri: `${config?.cdn?.imageUrl}${article?.image?.image}` }}
             style={[styles.image, { height: 250 }]}
           >
             {(article.preload || state.info.loading) && !state.info.error && (
