@@ -46,7 +46,7 @@ CategoryTitle.defaultProps = {
 };
 
 CategoryTitle.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]).isRequired,
+  children: PropTypes.node.isRequired,
   icon: PropTypes.string,
   style: ViewPropTypes.style,
   iconStyle: ViewPropTypes.style,

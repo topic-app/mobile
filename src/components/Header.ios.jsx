@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { StatusBar, View, TouchableOpacity } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { withTheme, Appbar, Text } from 'react-native-paper';
+import { useTheme, Appbar, Text } from 'react-native-paper';
 
 import getNavigatorStyles from '@styles/NavStyles';
 
-function TranslucentStatusBarUnthemed({ contentThemeName, theme }) {
-  const contentTheme = contentThemeName || theme.statusBarContentTheme;
+function TranslucentStatusBar({ contentThemeName }) {
+  const theme = useTheme();
   const { colors } = theme;
+  const contentTheme = contentThemeName || theme.statusBarContentTheme;
   return (
     <StatusBar
       translucent
@@ -19,7 +20,8 @@ function TranslucentStatusBarUnthemed({ contentThemeName, theme }) {
   );
 }
 
-function SolidStatusBarUnthemed({ color, contentThemeName, theme }) {
+function SolidStatusBar({ color, contentThemeName }) {
+  const theme = useTheme();
   const contentTheme = contentThemeName || theme.statusBarContentTheme;
   const backgroundColor = color || theme.colors.background;
   return (
@@ -31,10 +33,8 @@ function SolidStatusBarUnthemed({ color, contentThemeName, theme }) {
   );
 }
 
-const TranslucentStatusBar = withTheme(TranslucentStatusBarUnthemed);
-const SolidStatusBar = withTheme(SolidStatusBarUnthemed);
-
-function BackButtonUnthemed({ onPress, previous, theme }) {
+function BackButton({ onPress, previous }) {
+  const theme = useTheme();
   const backColor = theme.dark ? '#0a84ff' : '#0a7aff';
   return (
     <View>
@@ -61,9 +61,8 @@ function BackButtonUnthemed({ onPress, previous, theme }) {
   );
 }
 
-const BackButton = withTheme(BackButtonUnthemed);
-
-function CustomHeaderBarUnthemed({ scene, navigation, theme }) {
+function CustomHeaderBar({ scene, navigation }) {
+  const theme = useTheme();
   const navigatorStyles = getNavigatorStyles(theme);
 
   const {
@@ -84,7 +83,7 @@ function CustomHeaderBarUnthemed({ scene, navigation, theme }) {
   }
 
   let primaryAction;
-  if (primary !== undefined) {
+  if (primary) {
     primaryAction = <BackButton onPress={primary} />;
   } else if (home) {
     primaryAction = null;
@@ -97,10 +96,7 @@ function CustomHeaderBarUnthemed({ scene, navigation, theme }) {
   return (
     <View style={navigatorStyles.headerSurface}>
       <TranslucentStatusBar />
-      <Appbar.Header
-        statusBarHeight={insets.top}
-        style={[navigatorStyles.header, headerStyle && null]}
-      >
+      <Appbar.Header statusBarHeight={insets.top} style={[navigatorStyles.header, headerStyle]}>
         {primaryAction}
         <Appbar.Content title={headerTitle} />
       </Appbar.Header>
@@ -108,51 +104,33 @@ function CustomHeaderBarUnthemed({ scene, navigation, theme }) {
   );
 }
 
-const CustomHeaderBar = withTheme(CustomHeaderBarUnthemed);
-
-TranslucentStatusBarUnthemed.propTypes = {
+TranslucentStatusBar.propTypes = {
   contentThemeName: PropTypes.string,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      statusBar: PropTypes.string.isRequired,
-    }).isRequired,
-    statusBarContentTheme: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
-TranslucentStatusBarUnthemed.defaultProps = {
+TranslucentStatusBar.defaultProps = {
   contentThemeName: '',
 };
 
-SolidStatusBarUnthemed.propTypes = {
+SolidStatusBar.propTypes = {
   color: PropTypes.string.isRequired,
   contentThemeName: PropTypes.string,
-  theme: PropTypes.shape({
-    statusBarContentTheme: PropTypes.string.isRequired,
-    colors: PropTypes.shape({
-      background: PropTypes.shape.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
 
-SolidStatusBarUnthemed.defaultProps = {
+SolidStatusBar.defaultProps = {
   contentThemeName: '',
 };
 
-BackButtonUnthemed.propTypes = {
+BackButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   previous: PropTypes.string,
-  theme: PropTypes.shape({
-    dark: PropTypes.bool.isRequired,
-  }).isRequired,
 };
 
-BackButtonUnthemed.defaultProps = {
+BackButton.defaultProps = {
   previous: null,
 };
 
-CustomHeaderBarUnthemed.propTypes = {
+CustomHeaderBar.propTypes = {
   scene: PropTypes.shape({
     descriptor: PropTypes.shape({
       options: PropTypes.shape({
@@ -173,14 +151,6 @@ CustomHeaderBarUnthemed.propTypes = {
     navigate: PropTypes.func,
     openDrawer: PropTypes.func,
     goBack: PropTypes.func,
-  }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      valid: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-      drawerContent: PropTypes.string.isRequired,
-    }).isRequired,
   }).isRequired,
 };
 

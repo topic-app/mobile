@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { Text, List, useTheme } from 'react-native-paper';
 import getStyles from '@styles/Styles';
 import shortid from 'shortid';
+import { InlineCard } from '@components/Cards';
 import getEventStyles from '../styles/Styles';
 
 function EventDisplayContact({ event }) {
@@ -20,49 +21,23 @@ function EventDisplayContact({ event }) {
   const { email, phone, other } = event?.contact || {};
 
   return (
-    <View style={styles.contentContainer}>
-      {(typeof email === 'string' && email.length > 0) ?? (
-        <List.Item
-          left={() => <List.Icon color={colors.text} icon="email-outline" />}
-          title={email}
-          description="Adresse email"
-        />
-      )}
-      {(typeof phone === 'string' && phone.length > 0) ?? (
-        <List.Item
-          left={() => <List.Icon color={colors.text} icon="phone" />}
-          title={phone}
-          description="Numéro de téléphone"
-        />
-      )}
-      {Array.isArray(other) &&
-        other.map(({ value, key }) => {
-          if (value && key) {
-            return (
-              <List.Item
-                key={shortid()}
-                left={() => <List.Icon color={colors.text} icon="bookmark-outline" />}
-                title={value}
-                description={key}
-              />
-            );
-          }
-          return null;
-        })}
-      {Array.isArray(event?.members) &&
-        event.members.map((m) => {
-          if (m?.displayName) {
-            return (
-              <List.Item
-                key={shortid()}
-                left={() => <List.Icon color={colors.text} icon="account-outline" />}
-                title={m?.displayName}
-                description="Organisateur"
-              />
-            );
-          }
-          return null;
-        })}
+    <View>
+      {email && <InlineCard icon="email-outline" title={email} subtitle="Adresse email" />}
+      {phone && <InlineCard icon="phone" title={phone} subtitle="Numéro de téléphone" />}
+      {other &&
+        other.map(({ value, key }) => (
+          <InlineCard key={shortid()} icon="bookmark-outline" title={value} subtitle={key} />
+        ))}
+      {event?.members &&
+        event.members.map((mem) => (
+          <InlineCard
+            key={shortid()}
+            icon="account-outline"
+            title={mem.displayName}
+            subtitle="Organisateur"
+            onPress={() => console.log('go to user', mem._id)}
+          />
+        ))}
     </View>
   );
 }

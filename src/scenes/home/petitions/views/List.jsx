@@ -1,11 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Platform, Animated } from 'react-native';
+import { View, Animated } from 'react-native';
 import { Button, FAB, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
+import AnimatingHeader from '@components/AnimatingHeader';
 import getStyles from '@styles/Styles';
 
 import PetitionCard from '../components/Card';
@@ -17,46 +17,27 @@ function PetitionList({ navigation, petitions }) {
   const scrollY = new Animated.Value(0);
   const styles = getStyles(theme);
 
-  const headerElevation = scrollY.interpolate({
-    inputRange: [0, 10],
-    outputRange: [0, 10],
-    extrapolate: 'clamp',
-  });
-
   return (
     <View style={styles.page}>
-      {Platform.OS !== 'ios' ? (
-        <Animated.View style={{ backgroundColor: 'white', elevation: headerElevation }}>
-          <CustomHeaderBar
-            navigation={navigation}
-            scene={{
-              descriptor: {
-                options: {
-                  title: 'Pétitions',
-                  home: true,
-                  headerStyle: { zIndex: 1, elevation: 0 },
-                  actions: [
-                    {
-                      icon: 'magnify',
-                      onPress: () =>
-                        navigation.navigate('Main', {
-                          screen: 'Search',
-                          params: {
-                            screen: 'Search',
-                            params: { initialCategory: 'petitions', previous: 'Pétitions' },
-                          },
-                        }),
-                    },
-                  ],
-                  overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+      <AnimatingHeader
+        home
+        value={scrollY}
+        title="Pétitions"
+        actions={[
+          {
+            icon: 'magnify',
+            onPress: () =>
+              navigation.navigate('Main', {
+                screen: 'Search',
+                params: {
+                  screen: 'Search',
+                  params: { initialCategory: 'petitions', previous: 'Pétitions' },
                 },
-              },
-            }}
-          />
-        </Animated.View>
-      ) : (
-        <TranslucentStatusBar />
-      )}
+              }),
+          },
+        ]}
+        overflow={[{ title: 'Hello', onPress: () => console.log('Hello') }]}
+      />
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,

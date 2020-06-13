@@ -4,11 +4,11 @@ import { View, Platform, FlatList } from 'react-native';
 import { useTheme, List, Checkbox, ProgressBar } from 'react-native-paper';
 import ErrorMessage from '@components/ErrorMessage';
 
-function ItemList({ type, data, setGlobalSelected, state, retry, next }) {
+function ItemList({ type, data, initialSelected, setGlobalSelected, state, retry, next }) {
   const theme = useTheme();
   const { colors } = theme;
 
-  const [selected, setSelected] = React.useState([]);
+  const [selected, setSelected] = React.useState(initialSelected);
 
   function setId(id) {
     if (selected.includes(id)) {
@@ -37,6 +37,7 @@ function ItemList({ type, data, setGlobalSelected, state, retry, next }) {
         data={data}
         keyExtractor={(i) => i._id}
         onEndReachedThreshold={0.5}
+        keyboardShouldPersistTaps="handled"
         onEndReached={next}
         renderItem={({ item }) => (
           <List.Item
@@ -70,6 +71,10 @@ function ItemList({ type, data, setGlobalSelected, state, retry, next }) {
     </View>
   );
 }
+
+ItemList.defaultProps = {
+  initialSelected: [],
+};
 
 ItemList.propTypes = {
   type: PropTypes.string.isRequired,
@@ -118,6 +123,7 @@ ItemList.propTypes = {
       description: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  initialSelected: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default React.memo(ItemList);

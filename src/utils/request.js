@@ -1,7 +1,11 @@
 /* eslint-disable no-throw-literal */
+import { config } from '@root/app.json';
 import axios from './axiosInstance';
 
 async function request(endpoint, method, params = {}, auth = false) {
+  if (config.dev.logRequests) {
+    console.log(`${method} request to ${endpoint} with ${JSON.stringify(params)}`);
+  }
   if (method === 'get') {
     let res = { data: { success: false } };
     try {

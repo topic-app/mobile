@@ -1,9 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, Platform, View, ViewPropTypes } from 'react-native';
-import { IconButton, useTheme } from 'react-native-paper';
+import { TouchableHighlight, Platform, ViewPropTypes, TouchableNativeFeedback } from 'react-native';
+import { IconButton, useTheme, TouchableRipple } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TouchableHighlight, TouchableNativeFeedback } from 'react-native-gesture-handler';
 
 function PlatformIconButton({
   icon,
@@ -19,15 +18,18 @@ function PlatformIconButton({
   const theme = useTheme();
   const { colors } = theme;
   if (Platform.OS === 'ios') {
-    return (
-      <TouchableOpacity onPress={onPress}>
-        <Icon
-          name={iosIcon || icon}
-          color={color ?? colors.icon}
-          style={style}
-          size={iosSize || size * 1.2}
-        />
-      </TouchableOpacity>
+    const iconComponent = (
+      <Icon
+        name={iosIcon || icon}
+        color={color ?? colors.icon}
+        style={style}
+        size={iosSize || size * 1.2}
+      />
+    );
+    return onPress ? (
+      <TouchableHighlight onPress={onPress}>{iconComponent}</TouchableHighlight>
+    ) : (
+      iconComponent
     );
   }
   return (
@@ -41,7 +43,7 @@ function PlatformIconButton({
   );
 }
 
-const PlatformTouchable = Platform.OS === 'ios' ? TouchableHighlight : TouchableNativeFeedback;
+const PlatformTouchable = Platform.OS === 'ios' ? TouchableHighlight : TouchableRipple;
 const PlatformBackButton = ({ onPress }) => (
   <PlatformIconButton androidIcon="arrow-left" iosIcon="chevron-left" onPress={onPress} />
 );
@@ -59,6 +61,7 @@ PlatformIconButton.defaultProps = {
   iosSize: null,
   androidSize: null,
   style: null,
+  onPress: null,
 };
 
 PlatformIconButton.propTypes = {
@@ -69,7 +72,7 @@ PlatformIconButton.propTypes = {
   iosSize: PropTypes.number,
   androidIcon: PropTypes.string,
   androidSize: PropTypes.number,
-  onPress: PropTypes.func.isRequired,
+  onPress: PropTypes.func,
   style: ViewPropTypes.style,
 };
 

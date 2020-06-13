@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Platform, Animated, ActivityIndicator } from 'react-native';
+import { View, Animated, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, ProgressBar, useTheme } from 'react-native-paper';
+import { ProgressBar, useTheme } from 'react-native-paper';
 
-import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
+import AnimatingHeader from '@components/AnimatingHeader';
 import { updateEvents } from '@redux/actions/api/events';
 import ErrorMessage from '@components/ErrorMessage';
 import getStyles from '@styles/Styles';
@@ -23,59 +23,41 @@ function EventList({ navigation, events, state }) {
 
   const styles = getStyles(theme);
 
-  const headerElevation = scrollY.interpolate({
-    inputRange: [0, 10],
-    outputRange: [0, 10],
-    extrapolate: 'clamp',
-  });
-
   return (
     <View style={styles.page}>
-      {Platform.OS !== 'ios' ? (
-        <Animated.View style={{ backgroundColor: 'white', elevation: headerElevation }}>
-          <CustomHeaderBar
-            navigation={navigation}
-            scene={{
-              descriptor: {
-                options: {
-                  title: 'Évènements',
-                  home: true,
-                  headerStyle: { zIndex: 1, elevation: 0 },
-                  actions: [
-                    {
-                      icon: 'magnify',
-                      onPress: () =>
-                        navigation.navigate('Main', {
-                          screen: 'Search',
-                          params: {
-                            screen: 'Search',
-                            params: { initialCategory: 'events', previous: 'Évènements' },
-                          },
-                        }),
-                    },
-                  ],
-                  overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+      <AnimatingHeader
+        home
+        value={scrollY}
+        title="Évènements"
+        actions={[
+          {
+            icon: 'magnify',
+            onPress: () =>
+              navigation.navigate('Main', {
+                screen: 'Search',
+                params: {
+                  screen: 'Search',
+                  params: { initialCategory: 'events', previous: 'Évènements' },
                 },
-              },
+              }),
+          },
+        ]}
+        overflow={[{ title: 'Hello', onPress: () => console.log('Hello') }]}
+      >
+        {state.list.loading.initial && <ProgressBar indeterminate />}
+        {state.list.error ? (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la récupération des évènements',
+              contentPlural: 'des évènements',
+              contentSingular: "La liste d'évènements",
             }}
+            error={state.list.error}
+            retry={() => updateEvents('initial')}
           />
-          {state.list.loading.initial && <ProgressBar indeterminate />}
-          {state.list.error ? (
-            <ErrorMessage
-              type="axios"
-              strings={{
-                what: 'la récupération des évènements',
-                contentPlural: 'des évènements',
-                contentSingular: "La liste d'évènements",
-              }}
-              error={state.list.error}
-              retry={() => updateEvents('initial')}
-            />
-          ) : null}
-        </Animated.View>
-      ) : (
-        <TranslucentStatusBar />
-      )}
+        ) : null}
+      </AnimatingHeader>
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,

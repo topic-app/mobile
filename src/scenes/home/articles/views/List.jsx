@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Animated, Platform, ActivityIndicator } from 'react-native';
-import { ProgressBar, withTheme } from 'react-native-paper';
+import { ProgressBar, Button, Text, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
 
-import { CustomHeaderBar, TranslucentStatusBar } from '@components/Header';
+import AnimatingHeader from '@components/AnimatingHeader';
 import ErrorMessage from '@components/ErrorMessage';
 import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
@@ -14,68 +15,63 @@ import IllustrationArticlesGreyedDark from '@assets/images/illustrations/article
 import ArticleCard from '../components/Card';
 
 function ArticleList({ navigation, articles, state, theme }) {
-  React.useEffect(() => {
-    updateArticles('initial');
-  }, []);
-
   const scrollY = new Animated.Value(0);
 
-  const headerElevation = scrollY.interpolate({
-    inputRange: [0, 10],
-    outputRange: [0, 10],
-    extrapolate: 'clamp',
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      updateArticles('initial');
+    }, [null]),
+  );
 
   const { colors } = theme;
   const styles = getStyles(theme);
 
   return (
     <View style={styles.page}>
-      {Platform.OS !== 'ios' ? (
-        <Animated.View style={{ backgroundColor: 'white', elevation: headerElevation }}>
-          <CustomHeaderBar
-            navigation={navigation}
-            scene={{
-              descriptor: {
-                options: {
-                  title: 'Actus',
-                  home: true,
-                  headerStyle: { elevation: 0 },
-                  actions: [
-                    {
-                      icon: 'magnify',
-                      onPress: () =>
-                        navigation.navigate('Main', {
-                          screen: 'Search',
-                          params: {
-                            screen: 'Search',
-                            params: { initialCategory: 'articles', previous: 'Actus' },
-                          },
-                        }),
-                    },
-                  ],
-                  overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+      <AnimatingHeader
+        home
+        value={scrollY}
+        title="Actus"
+        actions={[
+          {
+            icon: 'magnify',
+            onPress: () =>
+              navigation.navigate('Main', {
+                screen: 'Search',
+                params: {
+                  screen: 'Search',
+                  params: { initialCategory: 'articles', previous: 'Actus' },
                 },
-              },
+              }),
+          },
+        ]}
+        overflow={[
+          {
+            title: 'Configurer',
+            onPress: () =>
+              navigation.navigate('Main', {
+                screen: 'Configure',
+                params: {
+                  screen: 'Article',
+                },
+              }),
+          },
+        ]}
+      >
+        {state.list.loading.initial && <ProgressBar indeterminate />}
+        {state.list.error ? (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la récupération des articles',
+              contentPlural: 'des articles',
+              contentSingular: "La liste d'articles",
             }}
+            error={state.list.error}
+            retry={() => updateArticles('initial')}
           />
-          {state.list.loading.initial && <ProgressBar indeterminate />}
-          {state.list.error ? (
-            <ErrorMessage
-              type="axios"
-              strings={{
-                what: 'la récupération des articles',
-                contentPlural: 'des articles',
-                contentSingular: "La liste d'articles",
-              }}
-              error={state.list.error}
-              retry={() => updateArticles('initial')}
-            />
-          ) : null}
-        </Animated.View>
-      ) : (
-        <TranslucentStatusBar />
-      )}
+        ) : null}
+      </AnimatingHeader>
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
@@ -90,6 +86,27 @@ function ArticleList({ navigation, articles, state, theme }) {
               <IllustrationArticlesGreyedDark height={400} width={400} />
             ) : (
               <IllustrationArticlesGreyedLight height={400} width={400} />
+            )}
+            {state.list.success && (
+              <View>
+                <Text>Aucun article pour cette localisation</Text>
+                <View style={styles.container}>
+                  <Button
+                    mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                    uppercase={Platform.OS !== 'ios'}
+                    onPress={() =>
+                      navigation.navigate('Main', {
+                        screen: 'Configure',
+                        params: {
+                          screen: 'Article',
+                        },
+                      })
+                    }
+                  >
+                    Changer
+                  </Button>
+                </View>
+              </View>
             )}
           </View>
         )}

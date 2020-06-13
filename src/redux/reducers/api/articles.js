@@ -1,6 +1,7 @@
 const initialState = {
   data: [],
   search: [],
+  params: {},
   state: {
     list: {
       success: null,
@@ -53,11 +54,17 @@ function articleReducer(state = initialState, action) {
         ...state,
         search: action.data,
       };
+    case 'UPDATE_ARTICLES_PARAMS':
+      return {
+        ...state,
+        params: action.data,
+      };
     case 'CLEAR_ARTICLES':
       return {
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
         state: state.state,
+        params: state.params,
       };
     default:
       return state;

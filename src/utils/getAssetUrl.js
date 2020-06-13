@@ -43,7 +43,7 @@ function getImageUrl(image, size) {
   if (typeof image === 'string') {
     return `${imageUrl}${image}?size=${imageSize}`;
   }
-  console.log(`Warning: Invalid image object. Could not find image.image or a string`, image);
+  // console.log(`Warning: Invalid image object. Could not find image.image or a string`, image);
   return null;
 }
 

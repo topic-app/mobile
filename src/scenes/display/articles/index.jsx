@@ -8,17 +8,8 @@ const Stack = createStackNavigator();
 
 function ArticleDisplayStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Display">
-      <Stack.Screen
-        name="Display"
-        component={ArticleDisplay}
-        options={({ route }) => ({
-          ...HeaderConfig,
-          title: route.params.title || 'Actus - Aperçu',
-          subtitle: route.params.title && 'Actus - Aperçu',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
-        })}
-      />
+    <Stack.Navigator initialRouteName="Display" headerMode="none">
+      <Stack.Screen name="Display" component={ArticleDisplay} />
     </Stack.Navigator>
   );
 }

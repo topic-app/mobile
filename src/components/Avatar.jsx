@@ -1,34 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ViewPropTypes } from 'react-native';
+import { View, ViewPropTypes } from 'react-native';
 import { Avatar as PaperAvatar, useTheme } from 'react-native-paper';
 import TopicIcon from '@assets/images/topic-icon.svg';
+import { PlatformTouchable } from './PlatformComponents';
 
 const getInitials = (title) => {
   const initials = title.match(/\b\w/g) || [];
   return ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
 };
 
-function Avatar({ name, imageUrl, icon, style, size }) {
-  const { colors } = useTheme();
+function Avatar({ name, imageUrl, icon, style, size, onPress }) {
+  const theme = useTheme();
+  const { colors } = theme;
+
+  let AvatarComponent = null;
 
   if (imageUrl) {
-    return <PaperAvatar.Image size={size} source={{ uri: imageUrl }} style={style} />;
-  }
-  if (icon) {
-    return (
+    AvatarComponent = <PaperAvatar.Image size={size} source={{ uri: imageUrl }} style={style} />;
+  } else if (icon) {
+    AvatarComponent = (
       <PaperAvatar.Icon
+        onPress={onPress}
+        color={theme.dark ? colors.text : null}
         size={size}
         icon={icon}
         style={[{ backgroundColor: colors.disabled }, style]}
       />
     );
+  } else if (name) {
+    AvatarComponent = (
+      <PaperAvatar.Text onPress={onPress} label={getInitials(name)} style={style} size={size} />
+    );
+  } else {
+    // If we cannot use anything, use Topic's Icon as the default; subject to change
+    AvatarComponent = <TopicIcon height={size} width={size} style={style} />;
   }
-  if (name) {
-    return <PaperAvatar.Text label={getInitials(name)} style={style} size={size} />;
+  if (onPress) {
+    return (
+      <View style={{ borderRadius: size / 2, overflow: 'hidden' }}>
+        <PlatformTouchable onPress={onPress}>{AvatarComponent}</PlatformTouchable>
+      </View>
+    );
   }
-  // If we cannot use anything, use Topic's Icon as the default
-  return <TopicIcon height={size} width={size} style={style} />;
+  return AvatarComponent;
 }
 
 export default Avatar;
@@ -39,6 +54,7 @@ Avatar.defaultProps = {
   size: 64,
   name: null,
   icon: null,
+  onPress: null,
 };
 
 Avatar.propTypes = {
@@ -47,4 +63,5 @@ Avatar.propTypes = {
   icon: PropTypes.string,
   style: ViewPropTypes.style,
   size: PropTypes.number,
+  onPress: PropTypes.func,
 };

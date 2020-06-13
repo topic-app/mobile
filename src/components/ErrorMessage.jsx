@@ -82,6 +82,12 @@ function ErrorMessage({ type, strings, error, retry, restart, back }) {
         icon: 'file-alert-outline',
         text: `${strings.contentSingular} n'a pas été trouvé. Il n'existe pas ou n'a pas encore été publié`,
       };
+      if (retry) {
+        actions.push({
+          label: 'Réessayer',
+          onPress: retry,
+        });
+      }
       if (back) {
         actions.push({
           label: 'Retour',
