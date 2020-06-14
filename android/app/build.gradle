@@ -135,6 +135,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        setProperty("archivesBaseName", applicationId + "-v" + versionName)
         multiDexEnabled true
     }
     splits {
@@ -162,6 +163,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            versionNameSuffix "-T"
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -169,6 +171,7 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            versionNameSuffix "-R"
         }
     }
 
@@ -199,8 +202,6 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
-
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 

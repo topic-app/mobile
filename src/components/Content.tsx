@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, withTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import FitImage from 'react-native-fit-image';
@@ -9,8 +9,8 @@ import handleUrl from '@utils/handleUrl';
 import getStyles from '@styles/Styles';
 import { getImageUrl } from '../utils/getAssetUrl';
 
-function Content({ parser, data, theme }) {
-  const styles = getStyles(theme);
+function Content({ parser, data }) {
+  const styles = getStyles(useTheme());
   if (parser === 'markdown') {
     return (
       <Markdown
@@ -51,13 +51,6 @@ function Content({ parser, data, theme }) {
 Content.propTypes = {
   parser: PropTypes.string.isRequired,
   data: PropTypes.string.isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      valid: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
 
-export default withTheme(Content);
+export default Content;
