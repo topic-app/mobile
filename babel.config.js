@@ -4,7 +4,8 @@ module.exports = {
     [
       'module-resolver',
       {
-        root: ['./src'],
+        root: ['./'],
+        // Note: if you change aliases, don't forget to reflect them in tsconfig.json
         alias: {
           '@root': '.',
           '@src': './src',
