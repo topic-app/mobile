@@ -1,10 +1,10 @@
-import { articleListPropType, articleInfoPropType } from './article';
-import { eventListPropType, eventInfoPropType } from './event';
-import { explorerListPropType, explorerInfoPropType } from './explorer';
-import { petitionListPropType, petitionInfoPropType } from './petition';
-import { authorPropType, memberPropType, userPropType, accountInfoPropType } from './user';
-import { groupPropType, groupInfoPropType } from './group';
-import {
+export { articleListPropType, articleInfoPropType } from './article';
+export { eventListPropType, eventInfoPropType } from './event';
+export { explorerListPropType, explorerInfoPropType } from './explorer';
+export { petitionListPropType, petitionInfoPropType } from './petition';
+export { authorPropType, memberPropType, userPropType, accountInfoPropType } from './user';
+export { groupPropType, groupInfoPropType } from './group';
+export {
   globalDatePropType,
   socialPropType,
   tagPopulatedPropType,
@@ -13,33 +13,5 @@ import {
   schoolPopulatedPropType,
   departmentPopulatedPropType,
 } from './common';
-import { imagePropType } from './image';
-import { placePropType, addressPropType, locationPropType } from './location';
-
-export {
-  articleListPropType,
-  articleInfoPropType,
-  eventListPropType,
-  eventInfoPropType,
-  explorerListPropType,
-  explorerInfoPropType,
-  petitionListPropType,
-  petitionInfoPropType,
-  authorPropType,
-  memberPropType,
-  userPropType,
-  accountInfoPropType,
-  groupPropType,
-  groupInfoPropType,
-  globalDatePropType,
-  socialPropType,
-  tagPopulatedPropType,
-  contentPropType,
-  durationPropType,
-  schoolPopulatedPropType,
-  departmentPopulatedPropType,
-  imagePropType,
-  placePropType,
-  addressPropType,
-  locationPropType,
-};
+export { imagePropType } from './image';
+export { placePropType, addressPropType, locationPropType } from './location';

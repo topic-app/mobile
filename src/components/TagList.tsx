@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { Chip, Avatar, withTheme } from 'react-native-paper';
+import { Chip, Avatar, useTheme } from 'react-native-paper';
 
 import getStyles from '@styles/Styles';
 
@@ -102,9 +102,10 @@ function genTagData(item, type) {
   return data;
 }
 
-function TagList({ item, type, theme }) {
+function TagList({ item, type }) {
   const data = genTagData(item, type);
 
+  const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
@@ -187,14 +188,6 @@ TagList.propTypes = {
       }),
     }),
   }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      valid: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-      disabled: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
 
-export default withTheme(TagList);
+export default TagList;
