@@ -1,8 +1,7 @@
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { MaterialCommunityIcons } from 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
 
 import getNavigatorStyles from '@styles/NavStyles';
 
@@ -38,7 +37,7 @@ function HomeTwoNavigator() {
             iconName = 'compass-outline';
           }
 
-          return <MaterialCommunityIcons name={iconName} size={26} color={color} />;
+          return <Icon name={iconName} size={26} color={color} />;
         },
       })}
     >
@@ -49,14 +48,5 @@ function HomeTwoNavigator() {
     </Tab.Navigator>
   );
 }
-
-HomeTwoNavigator.propTypes = {
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      disabled: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};
 
 export default HomeTwoNavigator;

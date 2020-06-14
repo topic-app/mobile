@@ -1,12 +1,19 @@
 /* eslint-disable */
-const { getDefaultConfig } = require('metro-config');
+const {getDefaultConfig} = require('metro-config');
 
 module.exports = (async () => {
   const {
-    resolver: { sourceExts, assetExts },
+    resolver: {sourceExts, assetExts},
   } = await getDefaultConfig();
   return {
     transformer: {
+      getTransformOptions: async () => ({
+        transform: {
+          experimentalImportSupport: false,
+          inlineRequires: false,
+        },
+      }),
+
       // Allows wrapping of react-native-svg's component around an import statement as such:
 
       // import TopicIcon from '@assets/images/topic-icon.svg'
