@@ -1,0 +1,112 @@
+{
+  "name": "Topic",
+  "displayName": "Topic",
+  "expo": {
+    "name": "Topic",
+    "slug": "Topic",
+    "privacy": "unlisted",
+    "version": "1.0.0",
+    "entryPoint": "node_modules/expo/AppEntry.js",
+    "platforms": ["ios", "android", "web"]
+  },
+  "config": {
+    "api": {
+      "url": "https://api.topicapp.fr/v1/",
+      "retryTime": 10
+    },
+    "cdn": {
+      "image": {
+        "url": "https://cdn.topicapp.fr/file/get/",
+        "defaultSize": "small",
+        "retryTime": 10
+      }
+    },
+    "content": {
+      "allowedSites": [
+        { "url": "https://topicapp.fr/", "allowSubdomains": true },
+        { "url": "https://gitlab.com/", "allowSubdomains": true }
+      ]
+    },
+    "maps": {
+      "url": "https://maps.topicapp.fr/"
+    },
+    "defaults": {
+      "theme": "light",
+      "useSystemTheme": true
+    },
+    "comments": {
+      "maxCharacters": 500
+    },
+    "dev": {
+      "logRequests": false,
+      "defaultLocation": {
+        "selected": false,
+        "type": "school",
+        "schools": ["5e9208118851c52a8e6c6f8d"],
+        "schoolData": [
+          {
+            "_id": "5e9208118851c52a8e6c6f8d",
+            "name": "Centre International de Valbonne",
+            "shortName": "CIV",
+            "type": "lycee",
+            "address": {
+              "shortName": "Sophia-Antipolis, Alpes Maritimes",
+              "coordinates": {
+                "lat": 43.6215017,
+                "lon": 7.0416363
+              },
+              "department": null
+            },
+            "adminGroups": [],
+            "image": {
+              "image": null,
+              "thumbnail": {
+                "small": false,
+                "medium": false,
+                "large": false
+              }
+            },
+            "description": {
+              "parser": "markdown",
+              "data": "Hello there **bold**"
+            },
+            "department": null
+          }
+        ],
+        "departments": [],
+        "departmentData": [],
+        "global": false
+      },
+      "defaultAccount": {
+        "loggedIn": true,
+        "accountInfo": {
+          "accountId": "5ec990bef666120011fc9276",
+          "accountToken": "VbLkYDu3_7iFNEXQsCiQc",
+          "accountTokenExpiry": "2020-05-30T21:08:14.245Z",
+          "user": {
+            "info": {
+              "joinDate": "2020-05-23T21:08:14.217Z",
+              "username": "test"
+            },
+            "data": {
+              "following": { "groups": [], "users": [], "events": [] },
+              "cache": { "followers": null },
+              "public": false,
+              "firstName": "",
+              "lastName": "",
+              "description": "",
+              "location": {
+                "global": false,
+                "schools": ["5e9208118851c52a8e6c6f8d"],
+                "departments": [],
+                "_id": "5ec990bef666120011fc9277"
+              }
+            },
+            "sensitiveData": { "email": "test@test.com" }
+          }
+        },
+        "creationData": {}
+      }
+    }
+  }
+}
