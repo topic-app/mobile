@@ -23,8 +23,8 @@
     },
     "content": {
       "allowedSites": [
-        {"url": "https://topicapp.fr/", "allowSubdomains": true},
-        {"url": "https://gitlab.com/", "allowSubdomains": true}
+        { "url": "https://topicapp.fr/", "allowSubdomains": true },
+        { "url": "https://gitlab.com/", "allowSubdomains": true }
       ]
     },
     "maps": {
@@ -89,8 +89,8 @@
               "username": "test"
             },
             "data": {
-              "following": {"groups": [], "users": [], "events": []},
-              "cache": {"followers": null},
+              "following": { "groups": [], "users": [], "events": [] },
+              "cache": { "followers": null },
               "public": false,
               "firstName": "",
               "lastName": "",
@@ -102,7 +102,7 @@
                 "_id": "5ec990bef666120011fc9277"
               }
             },
-            "sensitiveData": {"email": "test@test.com"}
+            "sensitiveData": { "email": "test@test.com" }
           }
         },
         "creationData": {}
