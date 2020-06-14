@@ -345,6 +345,10 @@ function AuthCreatePageGeneral({ next }) {
 
 export default AuthCreatePageGeneral;
 
+AuthCreatePageGeneral.defaultProps = {
+  next: null,
+};
+
 AuthCreatePageGeneral.propTypes = {
-  next: PropTypes.func.isRequired,
+  next: PropTypes.func,
 };

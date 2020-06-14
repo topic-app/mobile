@@ -40,7 +40,7 @@
     "dev": {
       "logRequests": false,
       "defaultLocation": {
-        "selected": false,
+        "selected": true,
         "type": "school",
         "schools": ["5e9208118851c52a8e6c6f8d"],
         "schoolData": [
@@ -78,7 +78,7 @@
         "global": false
       },
       "defaultAccount": {
-        "loggedIn": true,
+        "loggedIn": false,
         "accountInfo": {
           "accountId": "5ec990bef666120011fc9276",
           "accountToken": "VbLkYDu3_7iFNEXQsCiQc",

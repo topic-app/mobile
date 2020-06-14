@@ -11,6 +11,8 @@ import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
 import IllustrationArticlesGreyedLight from '@assets/images/illustrations/articles/articles_greyed_light.svg';
 import IllustrationArticlesGreyedDark from '@assets/images/illustrations/articles/articles_greyed_dark.svg';
+import Avatar from '@components/Avatar';
+import LinearGradient from 'react-native-linear-gradient';
 
 import ArticleCard from '../components/Card';
 

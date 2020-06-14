@@ -13,11 +13,7 @@ function AuthCreatePagePrivacy({ prev, next }) {
 
   const submit = () => {
     updateCreationData({ accountType });
-    if (accountType === 'private') {
-      next(2);
-    } else {
-      next();
-    }
+    next();
   };
 
   const theme = useTheme();
@@ -170,7 +166,12 @@ function AuthCreatePagePrivacy({ prev, next }) {
 
 export default AuthCreatePagePrivacy;
 
+AuthCreatePagePrivacy.defaultProps = {
+  next: null,
+  prev: null,
+};
+
 AuthCreatePagePrivacy.propTypes = {
-  next: PropTypes.func.isRequired,
-  prev: PropTypes.func.isRequired,
+  next: PropTypes.func,
+  prev: PropTypes.func,
 };

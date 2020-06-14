@@ -91,7 +91,6 @@ function StepperView({ keyboardDismissMode, pages, scrollEnabled, title, hideTab
   const initialLayout = { width: Dimensions.get('window').width };
 
   const renderScene = ({ route }) => {
-    console.log(pages.find((p) => p.key === route.key).component);
     return React.cloneElement(pages.find((p) => p.key === route.key).component, {
       next,
       prev,
@@ -109,34 +108,30 @@ function StepperView({ keyboardDismissMode, pages, scrollEnabled, title, hideTab
     pages[index].onVisible();
   }
 
-  const renderTabBar = hideTabBar
-    ? () => null
-    : ({ navigationState }) => (
-        <View style={stepperStyles.stepIndicatorContainer}>
-          {title ? (
-            <View style={stepperStyles.centerContainer}>
-              <Text style={stepperStyles.title}>{title}</Text>
-            </View>
-          ) : null}
-          <StepIndicator
-            stepCount={pages.length}
-            currentPosition={navigationState.index}
-            labels={pages.map((p) => p.title)}
-            onPress={() => {
-              console.log('Step perssed');
-            }}
-            customStyles={stepIndicatorStyles}
-            renderStepIndicator={(params) => (
-              <Icon
-                color={iconColor(params.stepStatus, theme)}
-                size={15}
-                name={pages[params.position].icon}
-              />
-            )}
-          />
+  const StepperTabBar = ({ navigationState }) => (
+    <View style={stepperStyles.stepIndicatorContainer}>
+      {title ? (
+        <View style={stepperStyles.centerContainer}>
+          <Text style={stepperStyles.title}>{title}</Text>
         </View>
-      );
-  renderTabBar.propTypes = {
+      ) : null}
+      <StepIndicator
+        stepCount={pages.length}
+        currentPosition={navigationState.index}
+        labels={pages.map((p) => p.title)}
+        customStyles={stepIndicatorStyles}
+        renderStepIndicator={(params) => (
+          <Icon
+            color={iconColor(params.stepStatus, theme)}
+            size={15}
+            name={pages[params.position].icon}
+          />
+        )}
+      />
+    </View>
+  );
+
+  StepperTabBar.propTypes = {
     navigationState: PropTypes.shape({
       index: PropTypes.number.isRequired,
     }).isRequired,
@@ -145,12 +140,13 @@ function StepperView({ keyboardDismissMode, pages, scrollEnabled, title, hideTab
   return (
     <View>
       <TabView
+        swipeEnabled={scrollEnabled}
         navigationState={{ index, routes: pages }}
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={initialLayout}
         keyboardDismissMode={keyboardDismissMode}
-        renderTabBar={renderTabBar}
+        renderTabBar={!hideTabBar ? StepperTabBar : () => null}
       />
     </View>
   );
@@ -169,6 +165,7 @@ StepperView.propTypes = {
     PropTypes.shape({
       key: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
+      icon: PropTypes.string.isRequired,
       component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
       onVisible: PropTypes.func,
     }),

@@ -1,9 +1,7 @@
 import React from 'react';
-import { Appearance } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { updatePrefs } from '@redux/actions/data/prefs';
 import themes from '@styles/Theme';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';

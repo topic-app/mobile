@@ -38,6 +38,7 @@ function AuthCreate({ navigation, reqState, creationData }) {
         global: creationData.global,
         schools: creationData.schools,
         departments: creationData.departments,
+        avatar: creationData.avatar,
         description: null,
         public: creationData.accountType === 'public',
         firstName: creationData.accountType === 'public' ? creationData.firstname : null,
@@ -149,7 +150,12 @@ function AuthCreate({ navigation, reqState, creationData }) {
                 key: 'profile',
                 icon: 'comment-account',
                 title: 'Profil',
-                component: <AuthCreatePageProfile />,
+                component: (
+                  <AuthCreatePageProfile
+                    username={creationData.username}
+                    accountType={creationData.accountType}
+                  />
+                ),
               },
               {
                 key: 'legal',
@@ -187,6 +193,7 @@ AuthCreate.propTypes = {
     goBack: PropTypes.func.isRequired,
   }).isRequired,
   creationData: PropTypes.shape({
+    avatar: PropTypes.object,
     username: PropTypes.string,
     email: PropTypes.string,
     password: PropTypes.string,

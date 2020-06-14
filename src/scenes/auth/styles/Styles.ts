@@ -55,6 +55,19 @@ function getAuthStyles(theme) {
     radio: {
       color: colors.primary,
     },
+    centerAvatarContainer: {
+      marginVertical: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    avatarContainer: {
+      margin: 10,
+      height: 110,
+      width: 110,
+      borderRadius: 55,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   });
 }
 

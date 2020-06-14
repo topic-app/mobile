@@ -81,9 +81,14 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps)(AuthCreatePageSchool);
 
+AuthCreatePageSchool.defaultProps = {
+  next: null,
+  prev: null,
+};
+
 AuthCreatePageSchool.propTypes = {
-  next: PropTypes.func.isRequired,
-  prev: PropTypes.func.isRequired,
+  next: PropTypes.func,
+  prev: PropTypes.func,
   location: PropTypes.shape({
     schools: PropTypes.arrayOf(PropTypes.string),
     departments: PropTypes.arrayOf(PropTypes.string),

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ProgressBar, Divider, useTheme } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import ErrorMessage from '@components/ErrorMessage';
 import { InlineCard } from '@components/Cards';
@@ -44,92 +44,93 @@ function ArticleConfigure({ params, schools, departments, tags, groups, state })
       {states.some((s) => s.error) && (
         <ErrorMessage type="axios" error={states.map((s) => s.error)} retry={fetch} />
       )}
-      <View style={styles.centerIllustrationContainer}>
-        {theme.dark ? (
-          <IllustrationConfigureDark height={200} width={200} />
-        ) : (
-          <IllustrationConfigureLight height={200} width={200} />
-        )}
-      </View>
-      <Divider />
-      <InlineCard
-        title="Écoles"
-        subtitle={
-          params.schools?.length
-            ? params.schools.map((s) => schools.find((t) => t._id === s)?.displayName).join(', ')
-            : 'Aucun'
-        }
-        icon="school"
-        onPress={() => {}}
-      />
-
-      <InlineCard
-        title="Departements"
-        subtitle={
-          params.departments
-            .map((d) =>
-              departments.filter((e) => e.type === 'department')?.find((e) => e._id === d),
-            )
-            .filter((d) => d)?.length
-            ? params.departments
-                .map(
-                  (d) =>
-                    departments.filter((e) => e.type === 'department')?.find((e) => e._id === d)
-                      ?.displayName,
-                )
-                .filter((d) => d)
-                .join(', ')
-            : 'Aucun'
-        }
-        icon="map-marker-radius"
-        onPress={() => console.log('Animations')}
-      />
-      <InlineCard
-        title="Régions"
-        subtitle={
-          params.departments
-            .map((d) => departments.filter((e) => e.type === 'region')?.find((e) => e._id === d))
-            .filter((d) => d)?.length
-            ? params.departments
-                .map(
-                  (d) =>
-                    departments.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                      ?.displayName,
-                )
-                .filter((d) => d)
-                .join(', ')
-            : 'Aucun'
-        }
-        icon="map-marker-radius"
-        onPress={() => console.log('Animations')}
-      />
-      <InlineCard
-        title="France entière"
-        subtitle={params.global ? 'Oui' : 'Non'}
-        icon="flag"
-        onPress={() => console.log('Animations')}
-      />
-      <Divider />
-      <InlineCard
-        title="Tags"
-        subtitle={
-          params.tags?.length
-            ? params.tags.map((s) => tags.find((t) => t._id === s)?.displayName).join(', ')
-            : 'Aucun'
-        }
-        icon="tag-multiple"
-        onPress={() => console.log('Notification')}
-      />
-      <InlineCard
-        title="Groupes"
-        subtitle={
-          params.groups?.length
-            ? params.groups.map((s) => groups.find((t) => t._id === s)?.displayName).join(', ')
-            : 'Aucun'
-        }
-        icon="account-group"
-        onPress={() => console.log('Notification')}
-      />
+      <ScrollView>
+        <View style={styles.centerIllustrationContainer}>
+          {theme.dark ? (
+            <IllustrationConfigureDark height={200} width={200} />
+          ) : (
+            <IllustrationConfigureLight height={200} width={200} />
+          )}
+        </View>
+        <Divider />
+        <InlineCard
+          title="Écoles"
+          subtitle={
+            params.schools?.length
+              ? params.schools.map((s) => schools.find((t) => t._id === s)?.displayName).join(', ')
+              : 'Aucun'
+          }
+          icon="school"
+          onPress={() => {}}
+        />
+        <InlineCard
+          title="Departements"
+          subtitle={
+            params.departments
+              .map((d) =>
+                departments.filter((e) => e.type === 'department')?.find((e) => e._id === d),
+              )
+              .filter((d) => d)?.length
+              ? params.departments
+                  .map(
+                    (d) =>
+                      departments.filter((e) => e.type === 'department')?.find((e) => e._id === d)
+                        ?.displayName,
+                  )
+                  .filter((d) => d)
+                  .join(', ')
+              : 'Aucun'
+          }
+          icon="map-marker-radius"
+          onPress={() => console.log('Animations')}
+        />
+        <InlineCard
+          title="Régions"
+          subtitle={
+            params.departments
+              .map((d) => departments.filter((e) => e.type === 'region')?.find((e) => e._id === d))
+              .filter((d) => d)?.length
+              ? params.departments
+                  .map(
+                    (d) =>
+                      departments.filter((e) => e.type === 'region')?.find((e) => e._id === d)
+                        ?.displayName,
+                  )
+                  .filter((d) => d)
+                  .join(', ')
+              : 'Aucun'
+          }
+          icon="map-marker-radius"
+          onPress={() => console.log('Animations')}
+        />
+        <InlineCard
+          title="France entière"
+          subtitle={params.global ? 'Oui' : 'Non'}
+          icon="flag"
+          onPress={() => console.log('Animations')}
+        />
+        <Divider />
+        <InlineCard
+          title="Tags"
+          subtitle={
+            params.tags?.length
+              ? params.tags.map((s) => tags.find((t) => t._id === s)?.displayName).join(', ')
+              : 'Aucun'
+          }
+          icon="tag-multiple"
+          onPress={() => console.log('Notification')}
+        />
+        <InlineCard
+          title="Groupes"
+          subtitle={
+            params.groups?.length
+              ? params.groups.map((s) => groups.find((t) => t._id === s)?.displayName).join(', ')
+              : 'Aucun'
+          }
+          icon="account-group"
+          onPress={() => console.log('Notification')}
+        />
+      </ScrollView>
     </View>
   );
 }
