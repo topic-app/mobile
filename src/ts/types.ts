@@ -7,15 +7,21 @@ export type Social = {
   facebook: string;
 };
 
+export type Content = {
+  parser: 'plaintext' | 'markdown';
+  data: string;
+};
+
 export type Tag = {
   _id: string;
   displayName: string;
   color: string;
 };
 
-export type Content = {
-  parser: 'plaintext' | 'markdown';
-  data: string;
+export type TagInfo = {
+  _id: string;
+  name: string;
+  description: Content;
 };
 
 export type Duration = {
@@ -23,11 +29,20 @@ export type Duration = {
   end: string;
 };
 
+type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
+
 export type School = {
   _id: string;
   shortName?: string;
   displayName: string;
-  type: 'lycee' | 'college' | 'prepa' | 'other';
+  type: SchoolType[];
+};
+
+export type Department = {
+  _id: string;
+  shortName?: string;
+  displayName: string;
+  type: 'region' | 'department';
 };
 
 export type Image = {
@@ -38,8 +53,6 @@ export type Image = {
     large: boolean;
   };
 };
-
-export type Department = School;
 
 // Location types
 export type Location = {
@@ -65,17 +78,24 @@ export type Address = {
   departments: Department[];
 };
 
-export type Place = {
-  type: 'place' | 'school' | 'standalone';
-  associatedSchool?: School;
-  associatedPlace?: Department;
-  address?: Address;
+// User types
+export type Avatar = {
+  type: 'gradient' | 'color';
+  gradient?: {
+    start: string;
+    end: string;
+    angle: number;
+  };
+  color?: string;
 };
 
-// User types
 export type User = {
   _id: string;
   displayName: string;
+  info: {
+    username: string;
+    avatar: Avatar;
+  };
 };
 
 export type AccountInfo = {
@@ -83,6 +103,7 @@ export type AccountInfo = {
   info: {
     joinDate: string;
     username: string;
+    avatar: Avatar;
   };
   data: {
     public: boolean;
@@ -98,9 +119,9 @@ export type AccountInfo = {
     cache: {
       followers: number;
     };
-    sensitiveData: {
-      email: string;
-    };
+  };
+  sensitiveData: {
+    email: string;
   };
 };
 
@@ -142,12 +163,22 @@ export type ArticleList = {
 
 export type ArticleInfo = ArticleList & {
   content: Content;
+  preferences: {
+    comments: boolean;
+  };
 };
 
 // Event Types
-export type EventEntry = {
+export type ProgramEntry = {
   title: string;
   duration: Duration;
+};
+
+export type EventPlace = {
+  type: 'place' | 'school' | 'standalone';
+  associatedSchool?: School;
+  associatedPlace?: Department;
+  address?: Address;
 };
 
 export type EventList = {
@@ -159,15 +190,14 @@ export type EventList = {
   author: Author;
   tags: Tag[];
   duration: Duration[];
-  places: Place[];
-  cache: {
-    followers: number;
-  };
+  places: EventPlace[];
+  location: Location;
 };
 
 export type EventInfo = EventList & {
-  content: Content;
+  description: Content;
   members: Member[];
+  program: ProgramEntry[];
   contact: {
     user: User;
     email: string;
@@ -178,15 +208,15 @@ export type EventInfo = EventList & {
 };
 
 // Explorer Types
-export type ExplorerList = {
+type PlaceType = 'cultural' | 'education' | 'history' | 'tourism' | 'club' | 'other';
+
+export type Place = {
   _id: string;
   name: string;
   summary: string;
-  type: 'event' | 'school' | 'museum';
-  coordinated: {
-    lat: number;
-    lon: number;
-  };
+  types: PlaceType[];
+  location: Location;
+  tags: Tag[];
 };
 
 export type ExplorerInfo = {
@@ -197,6 +227,7 @@ export type ExplorerInfo = {
   type: 'event' | 'school' | 'museum';
   location: Address;
   content: Content;
+  tags: Tag[];
 };
 
 // Petition Types
