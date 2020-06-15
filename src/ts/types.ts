@@ -2,11 +2,6 @@
 // If types.ts gets too full, seperate into multiple files and export through types.ts
 
 // Common types
-export type Social = {
-  twitter: string;
-  facebook: string;
-};
-
 export type Content = {
   parser: 'plaintext' | 'markdown';
   data: string;
@@ -21,6 +16,7 @@ export type Tag = {
 export type TagInfo = {
   _id: string;
   name: string;
+  color: string;
   description: Content;
 };
 
@@ -35,14 +31,35 @@ export type School = {
   _id: string;
   shortName?: string;
   displayName: string;
-  type: SchoolType[];
+  types: SchoolType[];
+};
+
+export type SchoolInfo = {
+  _id: string;
+  shortName?: string;
+  name: string;
+  types: SchoolType[];
+  address: Address;
+  adminGroups?: Group[];
+  image: Image;
+  description: Content;
+  departments: Department[]; // Also one in address but this one is for the admin group(s)
 };
 
 export type Department = {
   _id: string;
-  shortName?: string;
   displayName: string;
-  type: 'region' | 'department';
+  shortName?: string;
+  type: 'region' | 'department' | 'academie';
+};
+
+export type DepartmentInfo = {
+  name: string;
+  shortName?: string;
+  aliases: string[];
+  code: string; // zipcode
+  type: 'region' | 'department' | 'academie';
+  adminGroups: Group[];
 };
 
 export type Image = {
@@ -98,28 +115,32 @@ export type User = {
   };
 };
 
-export type AccountInfo = {
+export type UserInfo = {
   _id: string;
+  name: string;
   info: {
-    joinDate: string;
     username: string;
     avatar: Avatar;
+    joinDate: string;
   };
   data: {
     public: boolean;
-    firstName?: string;
-    lastName?: string;
-    description?: string;
+    firstName: string;
+    lastName: string;
     following: {
-      groups: string[];
-      users: string[];
-      events: string[];
+      groups: Group[];
+      users: User[];
+      events: Event[];
     };
     location: Location;
+    description: string;
     cache: {
       followers: number;
     };
   };
+};
+
+export type AccountInfo = UserInfo & {
   sensitiveData: {
     email: string;
   };
@@ -129,6 +150,37 @@ export type Author = User;
 export type Member = User;
 
 // Group Types
+export type GroupRolePermission = {
+  permission: string; // might be an enum in the future
+  scope: {
+    self: boolean;
+    everywhere: boolean;
+    global: boolean;
+    groups: string[];
+    schools: string[];
+    departments: string[];
+  };
+};
+
+export type GroupRole = {
+  name: string;
+  admin: boolean;
+  legalAdmin: boolean;
+  primary: boolean;
+  hierarchy: number;
+  permissions: GroupRolePermission[];
+};
+
+export type GroupMember = {
+  user: string; // user id
+  role: GroupRole; // role id
+  secondaryRoles: GroupRole[];
+  expiry: {
+    permanent: boolean;
+    expires?: string;
+  };
+};
+
 export type Group = {
   _id: string;
   displayName: string;
@@ -138,15 +190,22 @@ export type Group = {
 export type GroupInfo = {
   _id: string;
   name: string;
-  summary: string;
   type: string; // could be an enum in the future
   image: Image;
+  shortName?: string;
+  handle: string;
+  aliases: string;
+  summary: string;
   description: string;
   location: Location;
+  permissions: GroupRolePermission[]; // Not sure how this works
+  roles: GroupRole[];
+  members: GroupMember[];
   cache: {
     followers: number;
     members: number;
   };
+  tags: Tag[];
 };
 
 // Article Types
@@ -158,6 +217,7 @@ export type ArticleList = {
   image: Image;
   author: Author;
   group: Group;
+  location: Location;
   tags: Tag[];
 };
 
@@ -191,7 +251,7 @@ export type EventList = {
   tags: Tag[];
   duration: Duration[];
   places: EventPlace[];
-  location: Location;
+  location: Location; // why exactly is there places AND locations?
 };
 
 export type EventInfo = EventList & {
@@ -199,11 +259,15 @@ export type EventInfo = EventList & {
   members: Member[];
   program: ProgramEntry[];
   contact: {
-    user: User;
     email: string;
     phone: string;
-    social: Social;
     other: { key: string; value: string }[];
+  };
+  preferences: {
+    comments: boolean;
+  };
+  cache: {
+    followers: number;
   };
 };
 
@@ -212,38 +276,51 @@ type PlaceType = 'cultural' | 'education' | 'history' | 'tourism' | 'club' | 'ot
 
 export type Place = {
   _id: string;
-  name: string;
-  summary: string;
+  displayName: string;
   types: PlaceType[];
-  location: Location;
-  tags: Tag[];
+  summary: string;
+  address: Address;
 };
 
-export type ExplorerInfo = {
+export type PlaceInfo = {
   _id: string;
   name: string;
+  shortName?: string;
+  types: PlaceType[];
   summary: string;
-  image: Image;
-  type: 'event' | 'school' | 'museum';
-  location: Address;
-  content: Content;
+  description: Content;
+  group: Group;
   tags: Tag[];
+  image: Image;
+  address: Address;
+  location: Location;
 };
 
 // Petition Types
+export type Publisher = {
+  type: 'user' | 'group';
+  user?: User;
+  group?: Group;
+};
+
+export type PetitionMessage = {
+  _id: string;
+  type: 'answer' | 'group' | 'publisher' | 'system' | 'closure';
+  date: string;
+  publisher: Publisher;
+  content: Content;
+  important: boolean;
+};
+
 export type PetitionList = {
   _id: string;
   title: string;
   summary: string;
   type: 'goal' | 'sign' | 'opinion' | 'multiple';
-  status: 'open' | 'waiting' | 'answered' | 'rejected';
+  status: 'open' | 'waiting' | 'answered' | 'closed';
   duration: Duration;
   location: Location;
-  publisher: {
-    type: 'user' | 'group';
-    user?: User;
-    group?: Group;
-  };
+  publisher: Publisher;
   tags: Tag[];
   cache: {
     multiple?: { title: string; votes: string }[];
@@ -259,5 +336,11 @@ export type PetitionList = {
 
 export type PetitionInfo = PetitionList & {
   image: Image;
-  description: Content; // could change to content here
+  description: Content;
+  messages: PetitionMessage[];
+  preferences: {
+    comments: boolean;
+  };
 };
+
+// TODO: comments
