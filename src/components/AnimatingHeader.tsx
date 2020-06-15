@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform, Animated, View, ViewPropTypes } from 'react-native';
-import { CustomHeaderBar } from '@components/Header';
+import { CustomHeaderBar } from '@components/index';
 import { useNavigation } from '@react-navigation/native';
 
 function AnimatingHeader({
