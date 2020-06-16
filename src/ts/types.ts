@@ -1,5 +1,18 @@
-// Common types used throughout the project go here
-// If types.ts gets too full, seperate into multiple files and export through types.ts
+/**
+ * File containing frequently used types to be used in multiple places through the project.
+ *
+ * Format:
+ * - For items with incomplete data (e.g. Articles in Article List), use `ItemPreload` with
+ *   `Item` as the corresponding item.
+ *
+ *   e.g. `ArticlePreload` or `TagPreload`
+ *
+ * - For items with complete data (e.g. Articles in Article Display), use `Item` as the type.
+ *
+ *   e.g. `Article` or `Event`
+ *
+ * Note: if this file gets too full, seperate into multiple files
+ */
 
 // Common types
 export type Content = {
@@ -7,13 +20,13 @@ export type Content = {
   data: string;
 };
 
-export type Tag = {
+export type TagPreload = {
   _id: string;
   displayName: string;
   color: string;
 };
 
-export type TagInfo = {
+export type Tag = {
   _id: string;
   name: string;
   color: string;
@@ -27,42 +40,44 @@ export type Duration = {
 
 type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
 
-export type School = {
+export type SchoolPreload = {
   _id: string;
   shortName?: string;
   displayName: string;
   types: SchoolType[];
 };
 
-export type SchoolInfo = {
+export type School = {
   _id: string;
   shortName?: string;
   name: string;
   types: SchoolType[];
   address: Address;
-  adminGroups?: Group[];
+  adminGroups?: GroupPreload[];
   image: Image;
   description: Content;
-  departments: Department[]; // Also one in address but this one is for the admin group(s)
+  departments: DepartmentPreload[]; // Also one in address but this one is for the admin group(s)
 };
 
-export type Department = {
+export type DepartmentPreload = {
   _id: string;
   displayName: string;
   shortName?: string;
   type: 'region' | 'department' | 'academie';
 };
 
-export type DepartmentInfo = {
+export type Department = {
+  _id: string;
   name: string;
   shortName?: string;
   aliases: string[];
   code: string; // zipcode
   type: 'region' | 'department' | 'academie';
-  adminGroups: Group[];
+  adminGroups: GroupPreload[];
 };
 
 export type Image = {
+  _id: string; // Note: Not really useful
   image: string;
   thumbnails: {
     small: boolean;
@@ -73,13 +88,14 @@ export type Image = {
 
 // Location types
 export type Location = {
-  _id: string; // Note: completely useless, maybe someone could find a use for it
+  _id: string; // Note: Not really useful
   global: boolean;
-  schools: School[];
-  departments: Department[];
+  schools: SchoolPreload[];
+  departments: DepartmentPreload[];
 };
 
 export type Address = {
+  _id: string;
   shortName?: string;
   coordinates: {
     lat: number;
@@ -92,7 +108,7 @@ export type Address = {
     city: string;
     code: string;
   };
-  departments: Department[];
+  departments: DepartmentPreload[];
 };
 
 // User types
@@ -106,7 +122,7 @@ export type Avatar = {
   color?: string;
 };
 
-export type User = {
+export type UserPreload = {
   _id: string;
   displayName: string;
   info: {
@@ -115,7 +131,7 @@ export type User = {
   };
 };
 
-export type UserInfo = {
+export type User = {
   _id: string;
   name: string;
   info: {
@@ -128,8 +144,8 @@ export type UserInfo = {
     firstName: string;
     lastName: string;
     following: {
-      groups: Group[];
-      users: User[];
+      groups: GroupPreload[];
+      users: UserPreload[];
       events: Event[];
     };
     location: Location;
@@ -140,17 +156,19 @@ export type UserInfo = {
   };
 };
 
-export type AccountInfo = UserInfo & {
+export type Account = User & {
   sensitiveData: {
     email: string;
   };
 };
 
-export type Author = User;
-export type Member = User;
+export type AuthorPreload = UserPreload;
+
+export type MemberPreload = UserPreload;
 
 // Group Types
 export type GroupRolePermission = {
+  _id: string;
   permission: string; // might be an enum in the future
   scope: {
     self: boolean;
@@ -163,6 +181,7 @@ export type GroupRolePermission = {
 };
 
 export type GroupRole = {
+  _id: string;
   name: string;
   admin: boolean;
   legalAdmin: boolean;
@@ -172,8 +191,9 @@ export type GroupRole = {
 };
 
 export type GroupMember = {
-  user: string; // user id
-  role: GroupRole; // role id
+  _id: string; // Note: Not really useful
+  user: UserPreload;
+  role: GroupRole;
   secondaryRoles: GroupRole[];
   expiry: {
     permanent: boolean;
@@ -181,13 +201,13 @@ export type GroupMember = {
   };
 };
 
-export type Group = {
+export type GroupPreload = {
   _id: string;
   displayName: string;
   image: Image;
 };
 
-export type GroupInfo = {
+export type Group = {
   _id: string;
   name: string;
   type: string; // could be an enum in the future
@@ -205,23 +225,23 @@ export type GroupInfo = {
     followers: number;
     members: number;
   };
-  tags: Tag[];
+  tags: TagPreload[];
 };
 
 // Article Types
-export type ArticleList = {
+export type ArticlePreload = {
   _id: string;
   title: string;
   date: string;
   summary: string;
   image: Image;
-  author: Author;
-  group: Group;
+  author: AuthorPreload;
+  group: GroupPreload;
   location: Location;
-  tags: Tag[];
+  tags: TagPreload[];
 };
 
-export type ArticleInfo = ArticleList & {
+export type Article = ArticlePreload & {
   content: Content;
   preferences: {
     comments: boolean;
@@ -230,6 +250,7 @@ export type ArticleInfo = ArticleList & {
 
 // Event Types
 export type ProgramEntry = {
+  _id: string;
   title: string;
   duration: Duration;
   image?: Image;
@@ -237,28 +258,29 @@ export type ProgramEntry = {
 };
 
 export type EventPlace = {
+  _id: string;
   type: 'place' | 'school' | 'standalone';
-  associatedSchool?: School;
-  associatedPlace?: Department;
+  associatedSchool?: SchoolPreload;
+  associatedPlace?: DepartmentPreload;
   address?: Address;
 };
 
-export type EventList = {
+export type EventPreload = {
   _id: string;
   title: string;
   summary: string;
   image: Image;
-  group: Group;
-  author: Author;
-  tags: Tag[];
+  group: GroupPreload;
+  author: AuthorPreload;
+  tags: TagPreload[];
   duration: Duration[];
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
 };
 
-export type EventInfo = EventList & {
+export type Event = EventPreload & {
   description: Content;
-  members: Member[];
+  members: MemberPreload[];
   program: ProgramEntry[];
   contact: {
     email: string;
@@ -273,10 +295,10 @@ export type EventInfo = EventList & {
   };
 };
 
-// Explorer Types
+// Place Types (used for Explorer)
 type PlaceType = 'cultural' | 'education' | 'history' | 'tourism' | 'club' | 'other';
 
-export type Place = {
+export type PlacePreload = {
   _id: string;
   displayName: string;
   types: PlaceType[];
@@ -284,15 +306,15 @@ export type Place = {
   address: Address;
 };
 
-export type PlaceInfo = {
+export type Place = {
   _id: string;
   name: string;
   shortName?: string;
   types: PlaceType[];
   summary: string;
   description: Content;
-  group: Group;
-  tags: Tag[];
+  group: GroupPreload;
+  tags: TagPreload[];
   image: Image;
   address: Address;
   location: Location;
@@ -300,9 +322,10 @@ export type PlaceInfo = {
 
 // Petition Types
 export type Publisher = {
+  _id: string; // Note: Not really useful
   type: 'user' | 'group';
-  user?: User;
-  group?: Group;
+  user?: UserPreload;
+  group?: GroupPreload;
 };
 
 export type PetitionMessage = {
@@ -314,7 +337,7 @@ export type PetitionMessage = {
   important: boolean;
 };
 
-export type PetitionList = {
+export type PetitionPreload = {
   _id: string;
   title: string;
   summary: string;
@@ -323,7 +346,7 @@ export type PetitionList = {
   duration: Duration;
   location: Location;
   publisher: Publisher;
-  tags: Tag[];
+  tags: TagPreload[];
   cache: {
     multiple?: { title: string; votes: string }[];
     double?: {
@@ -336,7 +359,7 @@ export type PetitionList = {
   };
 };
 
-export type PetitionInfo = PetitionList & {
+export type Petition = PetitionPreload & {
   image: Image;
   description: Content;
   messages: PetitionMessage[];
@@ -345,4 +368,12 @@ export type PetitionInfo = PetitionList & {
   };
 };
 
-// TODO: comments
+// Comment Types
+export type Comment = {
+  _id: string;
+  date: string;
+  publisher: Publisher;
+  content: Content;
+  parentType: 'article' | 'event' | 'petition' | 'place' | 'comment';
+  parent: string;
+};
