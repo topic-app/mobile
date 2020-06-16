@@ -17,7 +17,7 @@ export type TagInfo = {
   _id: string;
   name: string;
   color: string;
-  description: Content;
+  summary: string;
 };
 
 export type Duration = {
@@ -232,6 +232,8 @@ export type ArticleInfo = ArticleList & {
 export type ProgramEntry = {
   title: string;
   duration: Duration;
+  image?: Image;
+  address: Address;
 };
 
 export type EventPlace = {
