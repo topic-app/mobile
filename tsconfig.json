@@ -36,7 +36,7 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
-    "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
+    "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "paths": {
       // Note: if you change these here, also change them in babel config
       "@root/*": ["./*"],
@@ -45,7 +45,8 @@
       "@assets/*": ["./src/assets/*"],
       "@redux/*": ["./src/redux/*"],
       "@styles/*": ["./src/styles/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@ts/*": ["./src/ts/*"]
     },
     "resolveJsonModule": true,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */

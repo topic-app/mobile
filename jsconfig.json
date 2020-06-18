@@ -8,7 +8,8 @@
       "@assets/*": ["./src/assets/*"],
       "@redux/*": ["./src/redux/*"],
       "@styles/*": ["./src/styles/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@ts/*": ["./src/ts/*"]
     }
   },
   "exclude": ["node_modules"]
