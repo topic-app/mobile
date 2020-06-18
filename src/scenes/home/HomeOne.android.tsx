@@ -20,14 +20,16 @@ function genName({ data, info }) {
   return data.firstName || data.lastName || info.username;
 }
 
-function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
+function CustomDrawerContent({ navigation, accountState, loggedIn, accountInfo, location }) {
   const navigatorStyles = getNavigatorStyles(useTheme());
   // console.log(`Location ${JSON.stringify(location)}`);
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <Drawer.Section>
         <View style={navigatorStyles.profileBackground}>
-          {location.state.fetch.loading && <ProgressBar indeterminate />}
+          {(location.state.fetch.loading ||
+            accountState.fetchAccount.loading ||
+            accountState.fetchGroups.loading) && <ProgressBar indeterminate />}
           {location.state.fetch.error && (
             <ErrorMessage
               type="axios"
@@ -36,7 +38,11 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
                 contentPlural: 'des articles',
                 contentSingular: "La liste d'articles",
               }}
-              error={location.state.fetch.error}
+              error={[
+                location.state.fetch.error,
+                accountState.fetchAccount.error,
+                accountState.fetchGroups.error,
+              ]}
               retry={fetchLocationData}
             />
           )}
@@ -168,7 +174,12 @@ function CustomDrawerContent({ navigation, loggedIn, accountInfo, location }) {
 
 const mapStateToProps = (state) => {
   const { account, location } = state;
-  return { accountInfo: account.accountInfo, loggedIn: account.loggedIn, location };
+  return {
+    accountInfo: account.accountInfo,
+    accountState: account.state,
+    loggedIn: account.loggedIn,
+    location,
+  };
 };
 
 const CustomDrawerContentRedux = connect(mapStateToProps)(CustomDrawerContent);
@@ -207,6 +218,16 @@ CustomDrawerContent.propTypes = {
       // Todo
     }),
   }),
+  accountState: PropTypes.shape({
+    fetchAccount: PropTypes.shape({
+      loading: PropTypes.bool.isRequired,
+      error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
+    }).isRequired,
+    fetchGroups: PropTypes.shape({
+      loading: PropTypes.bool.isRequired,
+      error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
+    }).isRequired,
+  }),
   location: PropTypes.shape({
     schoolData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     departmentData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
@@ -214,7 +235,6 @@ CustomDrawerContent.propTypes = {
     state: PropTypes.shape({
       fetch: PropTypes.shape({
         loading: PropTypes.bool.isRequired,
-        success: PropTypes.bool.isRequired,
         error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
       }).isRequired,
     }),

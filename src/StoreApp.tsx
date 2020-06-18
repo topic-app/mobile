@@ -3,12 +3,24 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import themes from '@styles/Theme';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { fetchLocationData } from '@redux/actions/data/location';
+import { fetchGroups, fetchAccount } from '@redux/actions/data/account';
 import AppNavigator from './index';
 
 function StoreApp({ preferences }) {
   const theme = themes[preferences.theme] || 'light';
+
+  React.useEffect(
+    React.useCallback(() => {
+      console.log('Updating');
+      fetchLocationData();
+      fetchGroups();
+      fetchAccount();
+    }, [null]),
+  );
 
   return (
     <PaperProvider theme={theme}>

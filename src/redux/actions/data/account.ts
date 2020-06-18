@@ -1,12 +1,116 @@
 import request from '@utils/request';
 import Store from '@redux/store';
 
-/**
- * @docs actionCreators
- * Ajoute des paramètres aux données de création de compte
- * @param lastId L'id du dernier article, par ordre chronologique, de la liste d'articles/database redux
- * @returns Action
- */
+function fetchGroupsCreator() {
+  return (dispatch, getState) => {
+    if (!getState().account.loggedIn) {
+      dispatch({
+        type: 'UPDATE_ACCOUNT_GROUPS',
+        data: [],
+      });
+      return dispatch({
+        type: 'UPDATE_ACCOUNT_PERMISSIONS',
+        data: [],
+      });
+    }
+    dispatch({
+      type: 'UPDATE_ACCOUNT_STATE',
+      data: {
+        fetchGroups: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    request('groups/my', 'get', {
+      accountId: getState().account.accountInfo.accountId,
+      accountToken: getState().account.accountInfo.accountToken,
+    })
+      .then((result) => {
+        dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            fetchGroups: {
+              loading: false,
+              success: true,
+              error: null,
+            },
+          },
+        });
+        dispatch({
+          type: 'UPDATE_ACCOUNT_GROUPS',
+          data: result.data.groups,
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            fetchGroups: {
+              success: false,
+              loading: false,
+              error: err,
+            },
+          },
+        });
+      });
+  };
+}
+
+function fetchAccountCreator() {
+  return (dispatch, getState) => {
+    if (!getState().account.loggedIn) {
+      return dispatch({
+        type: 'LOGOUT',
+        data: null,
+      });
+    }
+    dispatch({
+      type: 'UPDATE_ACCOUNT_STATE',
+      data: {
+        fetchAccount: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    request('profile/info', 'get', {
+      accountId: getState().account.accountInfo.accountId,
+      accountToken: getState().account.accountInfo.accountToken,
+    })
+      .then((result) => {
+        dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            fetchAccount: {
+              loading: false,
+              success: true,
+              error: null,
+            },
+          },
+        });
+        dispatch({
+          type: 'UPDATE_ACCOUNT_USER',
+          data: result.data.profile[0], // TEMP: This should change on server
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            fetchAccount: {
+              success: false,
+              loading: false,
+              error: err,
+            },
+          },
+        });
+      });
+  };
+}
+
 function updateCreationDataCreator(fields) {
   return {
     type: 'UPDATE_CREATION_DATA',
@@ -67,10 +171,12 @@ function loginCreator(fields) {
             },
           },
         });
-        return dispatch({
+        dispatch({
           type: 'LOGIN',
           data: result.data,
         });
+        Store.dispatch(fetchAccountCreator());
+        Store.dispatch(fetchGroupsCreator());
       })
       .catch((err) => {
         return dispatch({
@@ -112,10 +218,12 @@ function registerCreator(fields) {
             },
           },
         });
-        return dispatch({
+        dispatch({
           type: 'LOGIN',
           data: result.data,
         });
+        Store.dispatch(fetchAccountCreator());
+        Store.dispatch(fetchGroupsCreator());
       })
       .catch((err) => {
         return dispatch({
@@ -133,62 +241,6 @@ function registerCreator(fields) {
 }
 
 function logoutCreator() {}
-
-function updateGroupsCreator() {
-  return (dispatch, getState) => {
-    if (!getState().account.loggedIn) {
-      dispatch({
-        type: 'UPDATE_ACCOUNT_GROUPS',
-        data: [],
-      });
-      return dispatch({
-        type: 'UPDATE_ACCOUNT_PERMISSIONS',
-        data: [],
-      });
-    }
-    dispatch({
-      type: 'UPDATE_ACCOUNT_STATE',
-      data: {
-        updateGroups: {
-          loading: true,
-          success: null,
-          error: null,
-        },
-      },
-    });
-    request('groups/my', 'get', {
-      accountId: getState().account.accountId,
-      accountToken: getState().account.accountToken,
-    })
-      .then((result) => {
-        dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
-          data: {
-            updateGroups: {
-              loading: false,
-              success: true,
-              error: null,
-            },
-          },
-        });
-        console.log(`result.data ${result.data}`);
-      })
-      .catch((err) => {
-        return dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
-          data: {
-            updateGroups: {
-              success: false,
-              loading: false,
-              error: err,
-            },
-          },
-        });
-      });
-  };
-}
-
-function updateAccountCreator() {}
 
 /* Actions */
 
@@ -214,12 +266,20 @@ function clearCreationData(params) {
   return Store.dispatch(clearCreationDataCreator());
 }
 
-function updateGroups() {
-  return Store.dispatch(updateGroupsCreator());
+function fetchGroups() {
+  return Store.dispatch(fetchGroupsCreator());
 }
 
-function updateAccount() {
-  return Store.dispatch(updateAccountCreator());
+function fetchAccount() {
+  return Store.dispatch(fetchAccountCreator());
 }
 
-export { updateCreationData, clearCreationData, register, login, updateState };
+export {
+  updateCreationData,
+  clearCreationData,
+  fetchGroups,
+  fetchAccount,
+  register,
+  login,
+  updateState,
+};

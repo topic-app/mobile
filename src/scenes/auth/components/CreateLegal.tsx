@@ -68,6 +68,7 @@ function AuthCreatePageLegal({ prev, userEmail, create }) {
                 label="Pour plus d'informations, addressez vous à dpo@topicapp.fr"
               />
               <ListItemAnchor
+                onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/privacy')}
                 icon="arrow-right-bold-circle-outline"
                 label="Voir la politique de vie privée"
                 textStyle={{ color: colors.primary, textDecorationLine: 'underline' }}
@@ -104,6 +105,7 @@ function AuthCreatePageLegal({ prev, userEmail, create }) {
                 label="Nous déclinons toute responsabilité en cas de problème"
               />
               <ListItemAnchor
+                onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/terms/')}
                 icon="arrow-right-bold-circle-outline"
                 label="Voir les conditions d'utilisation"
                 textStyle={{ color: colors.primary, textDecorationLine: 'underline' }}

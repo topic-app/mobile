@@ -34,7 +34,12 @@ if (config.dev.defaultAccount) {
         success: null,
         error: null,
       },
-      updateGroups: {
+      fetchGroups: {
+        loading: false,
+        success: null,
+        error: null,
+      },
+      fetchAccount: {
         loading: false,
         success: null,
         error: null,
@@ -65,7 +70,12 @@ if (config.dev.defaultAccount) {
         success: null,
         error: null,
       },
-      updateGroups: {
+      fetchGroups: {
+        loading: false,
+        success: null,
+        error: null,
+      },
+      fetchAccount: {
         loading: false,
         success: null,
         error: null,
@@ -95,17 +105,22 @@ function accountReducer(state = initialState, action) {
       return {
         ...state,
         groups: action.data,
-      }
+      };
     case 'UPDATE_ACCOUNT_PERMISSIONS': {
       return {
         ...state,
         permissions: action.data,
-      }
+      };
     }
+    case 'UPDATE_ACCOUNT_USER':
+      return {
+        ...state,
+        accountInfo: { ...accountInfo, user: action.data },
+      };
     case 'LOGIN':
       return { loggedIn: true, accountInfo: action.data, creationData: {}, state: state.state };
     case 'LOGOUT':
-      return { loggedIn: false, creationData: {}, state: state.state };
+      return { loggedIn: false, accountInfo: {}, creationData: {}, state: state.state };
     default:
       return state;
   }
