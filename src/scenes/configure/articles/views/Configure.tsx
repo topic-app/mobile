@@ -67,7 +67,7 @@ function ArticleConfigure({ params, schools, departments, tags, groups, state })
           title="Departements"
           subtitle={
             params.departments
-              .map((d) =>
+              ?.map((d) =>
                 departments.filter((e) => e.type === 'department')?.find((e) => e._id === d),
               )
               .filter((d) => d)?.length
@@ -88,7 +88,7 @@ function ArticleConfigure({ params, schools, departments, tags, groups, state })
           title="Régions"
           subtitle={
             params.departments
-              .map((d) => departments.filter((e) => e.type === 'region')?.find((e) => e._id === d))
+              ?.map((d) => departments.filter((e) => e.type === 'region')?.find((e) => e._id === d))
               .filter((d) => d)?.length
               ? params.departments
                   .map(
