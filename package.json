@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "clean": "rm -rf node_modules android/.gradle && npm i && cd android && ./gradlew clean && cd .."
   },
   "dependencies": {
     "@react-native-community/blur": "^3.6.0",
