@@ -28,6 +28,28 @@ function fetchGroupsCreator() {
       accountToken: getState().account.accountInfo.accountToken,
     })
       .then((result) => {
+        // TODO: This really needs tested
+        let permissions = [];
+        result.data.groups?.forEach((g) => {
+          const user = g?.members?.find((m) => m.user === getState().account.accountInfo.accountId);
+          const userMainPermissions = g?.roles?.find((r) => r._id === user?.role)?.permissions;
+          permissions = [
+            ...permissions,
+            userMainPermissions?.map((p) => {
+              return { ...p, group: g._id };
+            }),
+          ];
+          const userSecondaryPermissions = g?.roles
+            .filter((r) => user?.secondaryRoles?.includes(r._id))
+            .map((i) => i?.permissions)
+            .flat();
+          permissions = [
+            ...permissions,
+            userSecondaryPermissions?.map((p) => {
+              return { ...p, group: g._id };
+            }),
+          ];
+        });
         dispatch({
           type: 'UPDATE_ACCOUNT_STATE',
           data: {
@@ -41,6 +63,10 @@ function fetchGroupsCreator() {
         dispatch({
           type: 'UPDATE_ACCOUNT_GROUPS',
           data: result.data.groups,
+        });
+        dispatch({
+          type: 'UPDATE_ACCOUNT_PERMISSIONS',
+          data: permissions,
         });
       })
       .catch((err) => {
