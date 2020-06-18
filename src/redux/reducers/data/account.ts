@@ -15,6 +15,8 @@ let initialState;
 if (config.dev.defaultAccount) {
   initialState = {
     ...config.dev.defaultAccount,
+    groups: [],
+    permissions: [],
     state: {
       login: {
         loading: false,
@@ -28,6 +30,11 @@ if (config.dev.defaultAccount) {
         error: null,
       },
       check: {
+        loading: false,
+        success: null,
+        error: null,
+      },
+      updateGroups: {
         loading: false,
         success: null,
         error: null,
@@ -39,6 +46,8 @@ if (config.dev.defaultAccount) {
     loggedIn: false,
     accountInfo: {},
     creationData: {},
+    groups: [],
+    permissions: [],
     state: {
       login: {
         loading: false,
@@ -52,6 +61,11 @@ if (config.dev.defaultAccount) {
         error: null,
       },
       check: {
+        loading: false,
+        success: null,
+        error: null,
+      },
+      updateGroups: {
         loading: false,
         success: null,
         error: null,
@@ -77,6 +91,17 @@ function accountReducer(state = initialState, action) {
         ...state,
         state: { ...state.state, ...action.data },
       };
+    case 'UPDATE_ACCOUNT_GROUPS':
+      return {
+        ...state,
+        groups: action.data,
+      }
+    case 'UPDATE_ACCOUNT_PERMISSIONS': {
+      return {
+        ...state,
+        permissions: action.data,
+      }
+    }
     case 'LOGIN':
       return { loggedIn: true, accountInfo: action.data, creationData: {}, state: state.state };
     case 'LOGOUT':

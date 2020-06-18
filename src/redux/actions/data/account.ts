@@ -134,6 +134,64 @@ function registerCreator(fields) {
 
 function logoutCreator() {}
 
+function updateGroupsCreator() {
+  return (dispatch, getState) => {
+    if (!getState().account.loggedIn) {
+      dispatch({
+        type: 'UPDATE_ACCOUNT_GROUPS',
+        data: [],
+      });
+      return dispatch({
+        type: 'UPDATE_ACCOUNT_PERMISSIONS',
+        data: [],
+      });
+    }
+    dispatch({
+      type: 'UPDATE_ACCOUNT_STATE',
+      data: {
+        updateGroups: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    request('groups/my', 'get', {
+      accountId: getState().account.accountId,
+      accountToken: getState().account.accountToken,
+    })
+      .then((result) => {
+        dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            updateGroups: {
+              loading: false,
+              success: true,
+              error: null,
+            },
+          },
+        });
+        console.log(`result.data ${result.data}`);
+      })
+      .catch((err) => {
+        return dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            updateGroups: {
+              success: false,
+              loading: false,
+              error: err,
+            },
+          },
+        });
+      });
+  };
+}
+
+function updateAccountCreator() {}
+
+/* Actions */
+
 function login(fields) {
   return Store.dispatch(loginCreator(fields));
 }
@@ -154,6 +212,14 @@ function updateCreationData(params) {
 
 function clearCreationData(params) {
   return Store.dispatch(clearCreationDataCreator());
+}
+
+function updateGroups() {
+  return Store.dispatch(updateGroupsCreator());
+}
+
+function updateAccount() {
+  return Store.dispatch(updateAccountCreator());
 }
 
 export { updateCreationData, clearCreationData, register, login, updateState };

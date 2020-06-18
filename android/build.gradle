@@ -36,3 +36,7 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 }
+
+subprojects {
+    tasks.withType(Javadoc).all { enabled = false }
+}
