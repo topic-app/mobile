@@ -121,6 +121,10 @@ function fetchAccountCreator() {
           type: 'UPDATE_ACCOUNT_USER',
           data: result.data.profile[0], // TEMP: This should change on server
         });
+        dispatch({
+          type: 'UPDATE_LOCATION',
+          data: result.data.profile[0]?.data?.location,
+        });
       })
       .catch((err) => {
         dispatch({

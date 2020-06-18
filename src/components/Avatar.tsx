@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { View, ViewPropTypes } from 'react-native';
 import { Avatar as PaperAvatar, Text, useTheme } from 'react-native-paper';
 import TopicIcon from '@assets/images/topic-icon.svg';
-import { PlatformTouchable } from './PlatformComponents';
 import LinearGradient from 'react-native-linear-gradient';
 import color from 'color';
+import { PlatformTouchable } from './PlatformComponents';
 
 const getInitials = (title: string) => {
   const initials = title.match(/\b\w/g) || [];
@@ -44,7 +44,7 @@ function Avatar({ name, imageUrl, icon, style, size, onPress, avatar }) {
                   : '#FFF',
             }}
           >
-            {avatar.text}
+            {avatar.text?.toUpperCase()}
           </Text>
         </LinearGradient>
       );

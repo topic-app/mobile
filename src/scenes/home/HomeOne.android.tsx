@@ -20,7 +20,14 @@ function genName({ data, info }) {
   return data.firstName || data.lastName || info.username;
 }
 
-function CustomDrawerContent({ navigation, accountState, loggedIn, accountInfo, location }) {
+function CustomDrawerContent({
+  navigation,
+  accountState,
+  loggedIn,
+  accountInfo,
+  location,
+  permissions,
+}) {
   const navigatorStyles = getNavigatorStyles(useTheme());
   // console.log(`Location ${JSON.stringify(location)}`);
   return (
@@ -107,13 +114,22 @@ function CustomDrawerContent({ navigation, accountState, loggedIn, accountInfo, 
               });
             }}
           />
-          <Drawer.Item
-            label="Modération"
-            icon="shield-check-outline"
-            onPress={() => {
-              console.log('Moderation');
-            }}
-          />
+          {permissions?.some(
+            (p) =>
+              p.name === 'article.verification.view' ||
+              p.name === 'event.verification.view' ||
+              p.name === 'petition.verification.view' ||
+              p.name === 'place.verification.view' ||
+              p.name === 'group.verification.view',
+          ) && (
+            <Drawer.Item
+              label="Modération"
+              icon="shield-check-outline"
+              onPress={() => {
+                console.log('Moderation');
+              }}
+            />
+          )}
         </Drawer.Section>
       ) : (
         <Drawer.Section>
@@ -174,9 +190,11 @@ function CustomDrawerContent({ navigation, accountState, loggedIn, accountInfo, 
 
 const mapStateToProps = (state) => {
   const { account, location } = state;
+  console.log(`Permissions ${JSON.stringify(account.permissions)}`);
   return {
     accountInfo: account.accountInfo,
     accountState: account.state,
+    permissions: account.permissions,
     loggedIn: account.loggedIn,
     location,
   };
