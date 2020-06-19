@@ -11,9 +11,9 @@ module.exports = {
           '@src': './src',
           '@components': './src/components',
           '@assets': './src/assets',
-          '@redux': './src/redux',
+          '@redux': './common/redux',
           '@styles': './src/styles',
-          '@utils': './src/utils',
+          '@utils': './common/utils',
           '@ts': './src/ts',
         },
         extensions: [
