@@ -7,7 +7,7 @@ import { config } from '@root/app.json';
 import handleUrl from '@utils/handleUrl';
 
 import getStyles from '@styles/Styles';
-import { getImageUrl } from '../utils/getAssetUrl';
+import { getImageUrl } from '@utils/getAssetUrl';
 
 function Content({ parser, data }) {
   const styles = getStyles(useTheme());
