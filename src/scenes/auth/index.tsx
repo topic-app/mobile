@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AuthLoginScreen from './views/Login';
 import AuthCreateScreen from './views/Create';
 import AuthResetPasswordScreen from './views/ResetPassword';
+import AuthCreateSuccessScreen from './views/CreateSuccess';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,14 @@ function AuthNavigator() {
         component={AuthResetPasswordScreen}
         options={{
           title: 'Réinitialiser le mot de passe',
+        }}
+      />
+      <Stack.Screen
+        name="CreateSuccess"
+        component={AuthCreateSuccessScreen}
+        options={{
+          title: 'Compte créé',
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

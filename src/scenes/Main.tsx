@@ -10,6 +10,7 @@ import MoreStackNavigator from './more/index';
 import SearchStackNavigator from './search/index';
 import HomeOneNavigator from './home/HomeOne';
 import ConfigureStackNavigator from './configure/index';
+import ListsStackNavigator from './lists/index';
 
 function getNestedParams(route) {
   let { params } = route;
@@ -43,6 +44,7 @@ function MainNavigator({ navigation, location }) {
     <Stack.Navigator initialRouteName="Home1" headerMode="none" screenOptions={screenOptions}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
       <Stack.Screen name="Configure" component={ConfigureStackNavigator} />
+      <Stack.Screen name="Lists" component={ListsStackNavigator} />
       <Stack.Screen name="Add" component={AddStackNavigator} />
       <Stack.Screen name="More" component={MoreStackNavigator} />
       <Stack.Screen name="Search" component={SearchStackNavigator} />

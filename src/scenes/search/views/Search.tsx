@@ -8,7 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { CategoryTitle } from '@components/Typography';
 import CollapsibleView from '@components/CollapsibleView';
-import { CategoriesList, ChipAddList, ChipSuggestionList } from '../components/ChipLists';
+import { CategoriesList, ChipAddList, ChipSuggestionList } from '@components/ChipLists';
 import getSearchStyles from '../styles/Styles';
 import { mapSuggestions, getSuggestions } from '../utils/suggestions';
 

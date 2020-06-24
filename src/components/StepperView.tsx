@@ -77,7 +77,14 @@ function iconColor(status, theme) {
   }
 }
 
-function StepperView({ keyboardDismissMode, pages, scrollEnabled, title, hideTabBar }) {
+function StepperView({
+  keyboardDismissMode,
+  pages,
+  swipeEnabled,
+  title,
+  hideTabBar,
+  preloadDistance,
+}) {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -140,7 +147,9 @@ function StepperView({ keyboardDismissMode, pages, scrollEnabled, title, hideTab
   return (
     <View>
       <TabView
-        swipeEnabled={scrollEnabled}
+        lazy={preloadDistance !== null}
+        lazyPreloadDistance={preloadDistance}
+        swipeEnabled={swipeEnabled}
         navigationState={{ index, routes: pages }}
         renderScene={renderScene}
         onIndexChange={setIndex}
@@ -154,13 +163,15 @@ function StepperView({ keyboardDismissMode, pages, scrollEnabled, title, hideTab
 
 StepperView.defaultProps = {
   keyboardDismissMode: 'auto',
-  scrollEnabled: false,
+  swipeEnabled: false,
   title: null,
   hideTabBar: false,
+  preloadDistance: 0,
 };
 
 StepperView.propTypes = {
   keyboardDismissMode: PropTypes.string,
+  preloadDistance: PropTypes.number,
   pages: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,
@@ -170,7 +181,7 @@ StepperView.propTypes = {
       onVisible: PropTypes.func,
     }),
   ).isRequired,
-  scrollEnabled: PropTypes.bool,
+  swipeEnabled: PropTypes.bool,
   title: PropTypes.string,
   hideTabBar: PropTypes.bool,
 };

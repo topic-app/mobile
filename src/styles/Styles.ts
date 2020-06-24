@@ -90,6 +90,10 @@ function getStyles(theme) {
       alignItems: 'center',
       justifyContent: 'center',
     },
+    bottomModal: {
+      justifyContent: 'flex-end',
+      margin: 0,
+    },
   });
 }
 

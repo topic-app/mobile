@@ -190,7 +190,6 @@ function CustomDrawerContent({
 
 const mapStateToProps = (state) => {
   const { account, location } = state;
-  console.log(`Permissions ${JSON.stringify(account.permissions)}`);
   return {
     accountInfo: account.accountInfo,
     accountState: account.state,

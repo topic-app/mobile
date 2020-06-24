@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { HeaderConfig } from '@components/Header';
 import ArticleDisplay from './views/Display';
+import ArticleAddToList from './views/AddToList';
 
 const Stack = createStackNavigator();
 

@@ -47,6 +47,7 @@ function AuthCreatePageProfile({ next, prev, username, accountType }) {
     ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((i) => {
       return {
         key: shortid(),
+        type: 'gradient',
         start: randomColor({ hue: i }),
         end: randomColor(),
         angle: Math.floor(Math.random() * 90 + 1),
@@ -123,7 +124,11 @@ function AuthCreatePageProfile({ next, prev, username, accountType }) {
       ((firstname.valid || !firstname) && (lastname.valid || !lastname)) ||
       accountType === 'private'
     ) {
-      updateCreationData({ firstname: firstnameVal, lastname: lastnameVal });
+      updateCreationData({
+        firstname: firstnameVal,
+        lastname: lastnameVal,
+        avatar: activeAvatar,
+      });
       next();
     }
   }

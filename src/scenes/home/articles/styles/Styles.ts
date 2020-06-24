@@ -9,6 +9,9 @@ function getArticleStyles(theme) {
       fontWeight: '400',
       marginBottom: 5,
     },
+    captionText: {
+      color: colors.disabled,
+    },
   });
 }
 

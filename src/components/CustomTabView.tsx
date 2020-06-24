@@ -11,6 +11,7 @@ function CustomTabView({
   hideTabBar,
   hideTabIndicator,
   initialTab,
+  preloadDistance,
 }) {
   const theme = useTheme();
   const { colors } = theme;
@@ -62,6 +63,8 @@ function CustomTabView({
         initialLayout={initialLayout}
         keyboardDismissMode={keyboardDismissMode}
         renderTabBar={renderTabBar}
+        lazy={preloadDistance !== null}
+        lazyPreloadDistance={preloadDistance}
       />
     </View>
   );
@@ -73,6 +76,7 @@ CustomTabView.defaultProps = {
   hideTabBar: false,
   hideTabIndicator: false,
   initialTab: 0,
+  preloadDistance: null,
 };
 
 CustomTabView.propTypes = {
@@ -89,6 +93,7 @@ CustomTabView.propTypes = {
   hideTabBar: PropTypes.bool,
   hideTabIndicator: PropTypes.bool,
   initialTab: PropTypes.number,
+  prealoadDistance: PropTypes.number,
 };
 
 export default CustomTabView;

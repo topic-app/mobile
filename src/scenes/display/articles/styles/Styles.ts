@@ -11,7 +11,7 @@ function getArticleStyles(theme) {
     },
     activeCommentContainer: {
       paddingHorizontal: 15,
-      paddingBottom: 7,
+      paddingBottom: 0,
       paddingTop: 15,
     },
     divider: {
@@ -28,6 +28,9 @@ function getArticleStyles(theme) {
       color: colors.softContrast,
     },
     commentBody: {},
+    disabledText: {
+      color: colors.disabled,
+    },
   });
 }
 
