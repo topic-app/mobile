@@ -51,39 +51,14 @@ function AuthCreate({ navigation, reqState, creationData }) {
       },
     };
 
-    register(reqParams);
+    register(reqParams)
+      .then(() =>
+        navigation.navigate('Auth', {
+          screen: 'CreateSuccess',
+        }),
+      )
+      .catch((e) => console.log(e));
   };
-
-  if (reqState.register.success) {
-    return (
-      <View style={styles.page}>
-        <View style={authStyles.stepIndicatorContainer}>
-          <View style={authStyles.centerContainer}>
-            <Icon size={50} color={colors.valid} name="account-check-outline" />
-            <Text style={authStyles.title}>Compte crée</Text>
-            <Text>Compte crée</Text>
-          </View>
-        </View>
-        <View style={authStyles.formContainer}>
-          <View style={authStyles.buttonContainer}>
-            <Button
-              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={() =>
-                navigation.navigate('Main', {
-                  screen: 'Home1',
-                  params: { screen: 'Home2', params: { screen: 'Article' } },
-                })
-              }
-              style={{ flex: 1 }}
-            >
-              Continuer
-            </Button>
-          </View>
-        </View>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.page}>

@@ -1,37 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView } from 'react-native';
-import { Text } from 'react-native-paper';
-import StepperView from '@components/StepperView';
-import Test from './Testcp';
+import { Text, useTheme } from 'react-native-paper';
+import CustomTabView from '@components/CustomTabView';
+import getStyles from '@styles/Styles';
 
 function About({ navigation }) {
+  const theme = useTheme();
+  const styles = getStyles(theme);
+
   return (
-    <ScrollView>
-      <Text>Test title</Text>
-      <StepperView
-        pages={[
-          {
-            key: 'test',
-            title: 'Test',
-            icon: 'school',
-            component: <Test />,
-          },
-          {
-            key: 'test2',
-            title: 'Test2',
-            icon: 'alert',
-            component: <Test />,
-          },
-          {
-            key: 'test3',
-            title: 'Test3',
-            icon: 'chevron-left',
-            component: <Text>Test hello 3</Text>,
-          },
-        ]}
-      />
-    </ScrollView>
+    <View style={styles.page}>
+      <ScrollView>
+        <CustomTabView
+          scrollEnabled={false}
+          pages={[
+            {
+              key: 'about',
+              title: 'A propos',
+              component: (
+                <View>
+                  <Text>Test</Text>
+                </View>
+              ),
+            },
+            {
+              key: 'sponsors',
+              title: 'Sponsors',
+              component: <Text>Hello again</Text>,
+            },
+            {
+              key: 'Licenses',
+              title: 'Licenses',
+              component: <Text>Test hello 3</Text>,
+            },
+          ]}
+        />
+      </ScrollView>
+    </View>
   );
 }
 

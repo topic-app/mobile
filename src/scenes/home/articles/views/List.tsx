@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Animated, Platform, ActivityIndicator } from 'react-native';
+import { View, Animated, Platform, ActivityIndicator, FlatList } from 'react-native';
 import { ProgressBar, Button, Text, withTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,12 +11,22 @@ import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
 import IllustrationArticlesGreyedLight from '@assets/images/illustrations/articles/articles_greyed_light.svg';
 import IllustrationArticlesGreyedDark from '@assets/images/illustrations/articles/articles_greyed_dark.svg';
+import IllustrationArticlesLight from '@assets/images/illustrations/articles/articles_light.svg';
+import IllustrationArticlesDark from '@assets/images/illustrations/articles/articles_dark.svg';
+import IllustrationArticlesCompletedLight from '@assets/images/illustrations/articles/articles_completed_light.svg';
+import IllustrationArticlesCompletedDark from '@assets/images/illustrations/articles/articles_completed_dark.svg';
+import IllustrationArticlesListsLight from '@assets/images/illustrations/articles/articles_lists_light.svg';
+import IllustrationArticlesListsDark from '@assets/images/illustrations/articles/articles_lists_dark.svg';
 import Avatar from '@components/Avatar';
 import LinearGradient from 'react-native-linear-gradient';
+import CustomTabView from '@components/CustomTabView';
+import { CategoriesList } from '@components/ChipLists';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import getArticleStyles from '../styles/Styles';
 
 import ArticleCard from '../components/Card';
 
-function ArticleList({ navigation, articles, state, theme }) {
+function ArticleList({ navigation, articles, lists, read, state, theme }) {
   const scrollY = new Animated.Value(0);
 
   useFocusEffect(
@@ -25,8 +35,100 @@ function ArticleList({ navigation, articles, state, theme }) {
     }, [null]),
   );
 
+  const categories = [
+    {
+      key: 'unread',
+      title: 'Non lus',
+      data: articles.filter((a) => !read.includes(a._id)),
+      type: 'category',
+    },
+    { key: 'all', title: 'Tous', data: articles, type: 'category' },
+    ...lists.map((l) => {
+      return { key: l.id, title: l.name, data: l.items, useLists: true, type: 'category' };
+    }),
+  ];
+
+  const [category, setCategory] = React.useState('unread');
+
   const { colors } = theme;
   const styles = getStyles(theme);
+  const articleStyles = getArticleStyles(theme);
+
+  const ArticleIllustration = () => {
+    if (state.list.success) {
+      if (category === 'unread') {
+        return (
+          <View>
+            <View style={styles.centerIllustrationContainer}>
+              {theme.dark ? (
+                <IllustrationArticlesCompletedDark height={400} width={400} />
+              ) : (
+                <IllustrationArticlesCompletedLight height={400} width={400} />
+              )}
+              <Text>Vous avez lu tous les articles !</Text>
+            </View>
+          </View>
+        );
+      } else if (category === 'all') {
+        return (
+          <View>
+            <View style={styles.centerIllustrationContainer}>
+              {theme.dark ? (
+                <IllustrationArticlesDark height={400} width={400} />
+              ) : (
+                <IllustrationArticlesLight height={400} width={400} />
+              )}
+            </View>
+            <Text>Aucun article pour cette localisation</Text>
+            <View style={styles.container}>
+              <Button
+                mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() =>
+                  navigation.navigate('Main', {
+                    screen: 'Configure',
+                    params: {
+                      screen: 'Article',
+                    },
+                  })
+                }
+              >
+                Configurer
+              </Button>
+            </View>
+          </View>
+        );
+      } else {
+        return (
+          <View>
+            <View style={styles.centerIllustrationContainer}>
+              {theme.dark ? (
+                <IllustrationArticlesListsDark height={400} width={400} />
+              ) : (
+                <IllustrationArticlesListsLight height={400} width={400} />
+              )}
+              <Text>Aucun article dans cette liste</Text>
+              <View style={styles.contentContainer}>
+                <Text style={articleStyles.captionText}>
+                  Ajoutez les grâce à l'icone <Icon name="playlist-plus" size={20} />
+                </Text>
+              </View>
+            </View>
+          </View>
+        );
+      }
+    } else {
+      return (
+        <View style={styles.centerIllustrationContainer}>
+          {theme.dark ? (
+            <IllustrationArticlesGreyedDark height={400} width={400} />
+          ) : (
+            <IllustrationArticlesGreyedLight height={400} width={400} />
+          )}
+        </View>
+      );
+    }
+  };
 
   return (
     <View style={styles.page}>
@@ -58,9 +160,29 @@ function ArticleList({ navigation, articles, state, theme }) {
                 },
               }),
           },
+          {
+            title: 'Listes',
+            onPress: () =>
+              navigation.navigate('Main', {
+                screen: 'Lists',
+                params: {
+                  screen: 'Article',
+                },
+              }),
+          },
+          {
+            title: 'TEMP Profile',
+            onPress: () =>
+              navigation.navigate('More', {
+                screen: 'More',
+                params: {
+                  screen: 'Profile',
+                },
+              }),
+          },
         ]}
       >
-        {state.list.loading.initial && <ProgressBar indeterminate />}
+        {state.list.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
         {state.list.error ? (
           <ErrorMessage
             type="axios"
@@ -78,40 +200,16 @@ function ArticleList({ navigation, articles, state, theme }) {
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
-        data={articles}
+        data={categories.find((c) => c.key === category).data || []}
         refreshing={state.list.loading.refresh}
         onRefresh={() => updateArticles('refresh')}
         onEndReached={() => updateArticles('next')}
-        ListEmptyComponent={() => (
-          <View style={styles.centerIllustrationContainer}>
-            {theme.dark ? (
-              <IllustrationArticlesGreyedDark height={400} width={400} />
-            ) : (
-              <IllustrationArticlesGreyedLight height={400} width={400} />
-            )}
-            {state.list.success && (
-              <View>
-                <Text>Aucun article pour cette localisation</Text>
-                <View style={styles.container}>
-                  <Button
-                    mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-                    uppercase={Platform.OS !== 'ios'}
-                    onPress={() =>
-                      navigation.navigate('Main', {
-                        screen: 'Configure',
-                        params: {
-                          screen: 'Article',
-                        },
-                      })
-                    }
-                  >
-                    Changer
-                  </Button>
-                </View>
-              </View>
-            )}
+        ListHeaderComponent={() => (
+          <View>
+            <CategoriesList categories={categories} selected={category} setSelected={setCategory} />
           </View>
         )}
+        ListEmptyComponent={ArticleIllustration}
         onEndReachedThreshold={0.5}
         keyExtractor={(article) => article._id}
         ListFooterComponent={
@@ -132,6 +230,7 @@ function ArticleList({ navigation, articles, state, theme }) {
                     params: {
                       id: article.item._id,
                       title: article.item.title,
+                      useLists: categories.find((c) => c.key === category)?.useLists,
                     },
                   },
                 },
@@ -146,7 +245,12 @@ function ArticleList({ navigation, articles, state, theme }) {
 
 const mapStateToProps = (state) => {
   const { articles } = state;
-  return { articles: articles.data, state: articles.state };
+  return {
+    articles: articles.data,
+    lists: articles.lists,
+    read: articles.read,
+    state: articles.state,
+  };
 };
 
 export default connect(mapStateToProps)(withTheme(ArticleList));
@@ -175,6 +279,7 @@ ArticleList.propTypes = {
       error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
     }).isRequired,
   }).isRequired,
+  read: PropTypes.arrayOf(PropTypes.string),
   theme: PropTypes.shape({
     dark: PropTypes.bool.isRequired,
     colors: PropTypes.shape({

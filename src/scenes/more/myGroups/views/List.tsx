@@ -5,13 +5,14 @@ import { useTheme } from 'react-native-paper';
 import getStyles from '@styles/Styles';
 import groups from '@src/data/groupListData.json';
 import { CategoryTitle } from '@components/Typography';
+import { connect } from 'react-redux';
 import GroupListCard from '../components/Card';
 
-function MyGroupsList({ navigation }) {
+function MyGroupsList({ navigation, account }) {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const members = groups.filter((g) => g.userInfo.isMember);
+  const members = account.groups || [];
   const newGroups = [
     // Put member groups at the top
     ...members,
@@ -70,7 +71,15 @@ function MyGroupsList({ navigation }) {
   );
 }
 
-export default MyGroupsList;
+const mapStateToProps = (state) => {
+  const { account, groups } = state;
+  return {
+    account,
+    groups,
+  };
+};
+
+export default connect(mapStateToProps)(MyGroupsList);
 
 MyGroupsList.propTypes = {
   navigation: PropTypes.shape({

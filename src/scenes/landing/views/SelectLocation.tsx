@@ -23,27 +23,30 @@ import ItemList from '../components/ItemList';
 function done(selected, schools, departments, navigation) {
   const schoolIds = schools.map((sch) => sch._id).filter((id) => selected.includes(id));
   const departmentIds = departments.map((dep) => dep._id).filter((id) => selected.includes(id));
-  updateLocation({
-    selected: true,
-    schools: schoolIds,
-    departments: departmentIds,
-    global: selected.includes('global'),
-  });
-  updateArticleParams({
-    schools: schoolIds,
-    departments: [
-      ...departmentIds,
-      ...schools
-        .filter((s) => selected.includes(s._id))
-        .map((s) => s.deparments || [])
-        .flat(),
-    ],
-    global: true,
-  });
-  navigation.navigate('Main', {
-    screen: 'Home1',
-    params: { screen: 'Home2', params: { screen: 'Article' } },
-  });
+  Promise.all([
+    updateLocation({
+      selected: true,
+      schools: schoolIds,
+      departments: departmentIds,
+      global: selected.includes('global'),
+    }),
+    updateArticleParams({
+      schools: schoolIds,
+      departments: [
+        ...departmentIds,
+        ...schools
+          .filter((s) => selected.includes(s._id))
+          .map((s) => s.deparments || [])
+          .flat(),
+      ],
+      global: true,
+    }),
+  ]).then(() =>
+    navigation.navigate('Main', {
+      screen: 'Home1',
+      params: { screen: 'Home2', params: { screen: 'Article' } },
+    }),
+  );
 }
 
 function getData(type, locationData) {
