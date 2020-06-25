@@ -1,25 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Platform, Image, ScrollView } from 'react-native';
-import { Text, useTheme, Button, List, Divider, DarkTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import getStyles from '@styles/Styles';
+import { View, Platform, ScrollView } from 'react-native';
+import { Text, useTheme, Button, Divider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PlatformBackButton } from '@components/PlatformComponents';
-import CustomTabView from '@components/CustomTabView';
 
-import { TranslucentStatusBar } from '@components/Header';
+import {
+  PlatformBackButton,
+  CustomTabView,
+  TranslucentStatusBar,
+  Illustration,
+} from '@components/index';
+import getStyles from '@styles/Styles';
 
-import IllustrationArticlesLight from '@assets/images/illustrations/articles/articles_light.svg';
-import IllustrationArticlesDark from '@assets/images/illustrations/articles/articles_dark.svg';
-import IllustrationEventsLight from '@assets/images/illustrations/events/events_light.svg';
-import IllustrationEventsDark from '@assets/images/illustrations/events/events_dark.svg';
-import IllustrationPetitionsLight from '@assets/images/illustrations/petitions/petitions_light.svg';
-import IllustrationPetitionsDark from '@assets/images/illustrations/petitions/petitions_dark.svg';
-import IllustrationExploreLight from '@assets/images/illustrations/explore/explore_light.svg';
-import IllustrationExploreDark from '@assets/images/illustrations/explore/explore_dark.svg';
-import IllustrationGroupsLight from '@assets/images/illustrations/groups/groups_light.svg';
-import IllustrationGroupsDark from '@assets/images/illustrations/groups/groups_dark.svg';
 import getLandingStyles from '../styles/Styles';
 
 function LandingArticles({ navigation, route }) {
@@ -46,11 +38,7 @@ function LandingArticles({ navigation, route }) {
                   <View>
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
-                        {theme.dark ? (
-                          <IllustrationArticlesDark height={300} width={300} />
-                        ) : (
-                          <IllustrationArticlesLight height={300} width={300} />
-                        )}
+                        <Illustration name="article" height={300} width={300} />
                         <Text style={landingStyles.sectionTitle}>Articles</Text>
                       </View>
                     </View>
@@ -67,11 +55,7 @@ function LandingArticles({ navigation, route }) {
                   <View>
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
-                        {theme.dark ? (
-                          <IllustrationEventsDark height={300} width={300} />
-                        ) : (
-                          <IllustrationEventsLight height={300} width={300} />
-                        )}
+                        <Illustration name="event" height={300} width={300} />
                         <Text style={landingStyles.sectionTitle}>Évènements</Text>
                       </View>
                     </View>
@@ -88,11 +72,7 @@ function LandingArticles({ navigation, route }) {
                   <View>
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
-                        {theme.dark ? (
-                          <IllustrationPetitionsDark height={300} width={300} />
-                        ) : (
-                          <IllustrationPetitionsLight height={300} width={300} />
-                        )}
+                        <Illustration name="petition" height={300} width={300} />
                         <Text style={landingStyles.sectionTitle}>Pétitions</Text>
                       </View>
                     </View>
@@ -109,11 +89,7 @@ function LandingArticles({ navigation, route }) {
                   <View>
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
-                        {theme.dark ? (
-                          <IllustrationExploreDark height={300} width={300} />
-                        ) : (
-                          <IllustrationExploreLight height={300} width={300} />
-                        )}
+                        <Illustration name="explore" height={300} width={300} />
                         <Text style={landingStyles.sectionTitle}>Carte</Text>
                       </View>
                     </View>
@@ -130,11 +106,7 @@ function LandingArticles({ navigation, route }) {
                   <View>
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
-                        {theme.dark ? (
-                          <IllustrationGroupsDark height={300} width={300} />
-                        ) : (
-                          <IllustrationGroupsLight height={300} width={300} />
-                        )}
+                        <Illustration name="group" height={300} width={300} />
                         <Text style={landingStyles.sectionTitle}>Groupes</Text>
                       </View>
                     </View>

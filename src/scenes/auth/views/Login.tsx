@@ -2,17 +2,17 @@ import React from 'react';
 import { View, ScrollView, Platform } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { TranslucentStatusBar } from '@components/Header';
+import {
+  TranslucentStatusBar,
+  ErrorMessage,
+  PlatformBackButton,
+  Illustration,
+} from '@components/index';
 import getStyles from '@styles/Styles';
-import ErrorMessage from '@components/ErrorMessage';
-import { PlatformBackButton } from '@components/PlatformComponents';
 import { login } from '@redux/actions/data/account';
-import IllustrationLoginDark from '@assets/images/illustrations/auth/login_dark.svg';
-import IllustrationLoginLight from '@assets/images/illustrations/auth/login_light.svg';
 import getAuthStyles from '../styles/Styles';
 
 function AuthLogin({ navigation, reqState }) {
@@ -69,11 +69,7 @@ function AuthLogin({ navigation, reqState }) {
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={authStyles.stepIndicatorContainer}>
             <View style={styles.centerIllustrationContainer}>
-              {theme.dark ? (
-                <IllustrationLoginDark height={200} width={200} />
-              ) : (
-                <IllustrationLoginLight height={200} width={200} />
-              )}
+              <Illustration name="auth-login" height={200} width={200} />
               <Text style={authStyles.title}>Se connecter</Text>
             </View>
           </View>

@@ -1,19 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, ScrollView, Dimensions } from 'react-native';
-import { Text, useTheme, Button, Divider, Searchbar, ProgressBar } from 'react-native-paper';
-import { connect } from 'react-redux';
+import { Text, useTheme, Button, Divider, Searchbar } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import getStyles from '@styles/Styles';
-import CustomTabView from '@components/CustomTabView';
-import ErrorMessage from '@components/ErrorMessage';
-import { updateLocation, fetchLocationData } from '@redux/actions/data/location';
+import { connect } from 'react-redux';
+
+import { updateLocation } from '@redux/actions/data/location';
+import { updateArticleParams } from '@redux/actions/api/articles';
 import { updateSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
-import { updateArticleParams } from '@redux/actions/api/articles';
-import IllustrationSelectLocationLight from '@assets/images/illustrations/select_location/select_location_light.svg';
-import IllustrationSelectLocationDark from '@assets/images/illustrations/select_location/select_location_dark.svg';
+
+import { CustomTabView, Illustration } from '@components/index';
+import getStyles from '@styles/Styles';
 
 import getLandingStyles from '../styles/Styles';
 
@@ -175,11 +173,7 @@ function WelcomeLocation({
       <ScrollView ref={scrollRef} keyboardShouldPersistTaps="handled">
         <View style={landingStyles.headerContainer}>
           <View style={landingStyles.centerIllustrationContainer}>
-            {theme.dark ? (
-              <IllustrationSelectLocationDark height={200} width={200} />
-            ) : (
-              <IllustrationSelectLocationLight height={200} width={200} />
-            )}
+            <Illustration name="location-select" height={200} width={200} />
             <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
           </View>
         </View>

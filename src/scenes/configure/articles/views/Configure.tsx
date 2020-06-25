@@ -4,16 +4,13 @@ import { ProgressBar, Divider, useTheme } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { View, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import ErrorMessage from '@components/ErrorMessage';
-import { InlineCard } from '@components/Cards';
+
+import { ErrorMessage, InlineCard, Illustration } from '@components/index';
 import { fetchSchool } from '@redux/actions/api/schools';
 import { fetchDepartment } from '@redux/actions/api/departments';
 import { fetchTag } from '@redux/actions/api/tags';
 import { fetchGroup } from '@redux/actions/api/groups';
 import getStyles from '@styles/Styles';
-
-import IllustrationConfigureDark from '@assets/images/illustrations/configure/configure_dark.svg';
-import IllustrationConfigureLight from '@assets/images/illustrations/configure/configure_light.svg';
 
 function ArticleConfigure({ params, schools, departments, tags, groups, state }) {
   const theme = useTheme();
@@ -46,11 +43,7 @@ function ArticleConfigure({ params, schools, departments, tags, groups, state })
       )}
       <ScrollView>
         <View style={styles.centerIllustrationContainer}>
-          {theme.dark ? (
-            <IllustrationConfigureDark height={200} width={200} />
-          ) : (
-            <IllustrationConfigureLight height={200} width={200} />
-          )}
+          <Illustration name="configure" height={200} width={200} />
         </View>
         <Divider />
         <InlineCard

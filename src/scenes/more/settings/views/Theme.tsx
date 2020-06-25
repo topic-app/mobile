@@ -2,13 +2,13 @@ import React from 'react';
 import { View, FlatList, Platform } from 'react-native';
 import { List, RadioButton, Divider, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import IllustrationSettingsThemeAll from '@assets/images/illustrations/settings/settings_theme_all.svg';
-
 import { connect } from 'react-redux';
 
+import { Illustration } from '@components/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
+
 import getSettingsStyles from '../styles/Styles';
 
 function SettingsTheme({ preferences, theme }) {
@@ -23,7 +23,7 @@ function SettingsTheme({ preferences, theme }) {
         ListHeaderComponent={() => (
           <View>
             <View style={styles.centerIllustrationContainer}>
-              <IllustrationSettingsThemeAll height={200} width={200} />
+              <Illustration name="settings-theme" height={200} width={200} />
             </View>
             <Divider style={{ marginTop: 30 }} />
             <List.Item

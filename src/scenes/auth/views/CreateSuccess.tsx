@@ -3,18 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Platform, View, FlatList } from 'react-native';
-import { Text, Button, ProgressBar, Divider, Snackbar, useTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, Button, Divider, Snackbar, useTheme } from 'react-native-paper';
 
-import { TranslucentStatusBar } from '@components/Header';
-import { register } from '@redux/actions/data/account';
-import StepperView from '@components/StepperView';
 import getStyles from '@styles/Styles';
-import ErrorMessage from '@components/ErrorMessage';
-import { PlatformBackButton } from '@components/PlatformComponents';
-import IllustrationRegisterSuccessDark from '@assets/images/illustrations/auth/register_success_dark.svg';
-import IllustrationRegisterSuccessLight from '@assets/images/illustrations/auth/register_success_light.svg';
+import { Illustration } from '@components/index';
 import { updateGroups } from '@redux/actions/api/groups';
 import getAuthStyles from '../styles/Styles';
 
@@ -37,11 +29,7 @@ function AuthCreateSuccess({ navigation, location, groups, state }) {
         renderItem={(item) => <Text>{JSON.stringify(item)}</Text>}
         ListHeaderComponent={() => (
           <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
-            {theme.dark ? (
-              <IllustrationRegisterSuccessDark height={200} width={200} />
-            ) : (
-              <IllustrationRegisterSuccessLight height={200} width={200} />
-            )}
+            <Illustration name="auth-register-success" height={200} width={200} />
             <Text style={authStyles.title}>Compte créé</Text>
           </View>
         )}

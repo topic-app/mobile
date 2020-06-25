@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Text,
-  ProgressBar,
   Divider,
   List,
   useTheme,
-  Chip,
   Card,
   RadioButton,
   Button,
@@ -21,32 +19,30 @@ import {
   Animated,
   FlatList,
   Platform,
-  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 
 import { config } from '@root/app.json';
-import ErrorMessage from '@components/ErrorMessage';
-import Content from '@components/Content';
-import TagList from '@components/TagList';
-import { InlineCard } from '@components/Cards';
-import CollapsibleView from '@components/CollapsibleView';
-import { PlatformIconButton } from '@components/PlatformComponents';
-import { CategoryTitle } from '@components/Typography';
-import { CategoriesList } from '@components/ChipLists';
-import AnimatingHeader from '@components/AnimatingHeader';
+import {
+  ErrorMessage,
+  Content,
+  TagList,
+  InlineCard,
+  CollapsibleView,
+  PlatformIconButton,
+  CategoryTitle,
+  CategoriesList,
+  AnimatingHeader,
+  Illustration,
+} from '@components/index';
 import { fetchArticle } from '@redux/actions/api/articles';
 import { addArticleRead, addArticleToList, addArticleList } from '@redux/actions/lists/articles';
 import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
 import { getImageUrl } from '@utils/getAssetUrl';
-import IllustrationArticlesListsLight from '@assets/images/illustrations/articles/articles_lists_light.svg';
-import IllustrationArticlesListsDark from '@assets/images/illustrations/articles/articles_lists_dark.svg';
-import IllustrationCommentsEmptyLight from '@assets/images/illustrations/comments/comments_empty_light.svg';
-import IllustrationCommentsEmptyDark from '@assets/images/illustrations/comments/comments_empty_dark.svg';
 
 import CommentInlineCard from '../components/Comment';
 import getArticleStyles from '../styles/Styles';
@@ -56,9 +52,6 @@ function ArticleDisplayHeader({ article, reqState, account, navigation, setComme
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
-
-  const expandCommentInput = () => setCommentActive(true);
-  const collapseCommentInput = () => setCommentActive(false);
 
   const { following } = account?.accountInfo?.user?.data || {};
 
@@ -188,7 +181,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
     }
     updateComments('initial', { parentId: id });
     addArticleRead(id);
-  }, [id]);
+  });
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -299,7 +292,6 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
           />
         )}
       </AnimatingHeader>
-
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
@@ -344,11 +336,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
           reqState.articles.info.success && (
             <View style={styles.contentContainer}>
               <View style={styles.centerIllustrationContainer}>
-                {theme.dark ? (
-                  <IllustrationCommentsEmptyDark height={200} width={200} />
-                ) : (
-                  <IllustrationCommentsEmptyLight height={200} width={200} />
-                )}
+                <Illustration name="comment-empty" height={200} width={200} />
                 <Text>Aucun commentaire</Text>
               </View>
             </View>
@@ -372,11 +360,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
               <View>
                 <View style={styles.contentContainer}>
                   <View style={styles.centerIllustrationContainer}>
-                    {theme.dark ? (
-                      <IllustrationArticlesListsDark height={200} width={200} />
-                    ) : (
-                      <IllustrationArticlesListsLight height={200} width={200} />
-                    )}
+                    <Illustration name="article-lists" height={200} width={200} />
                     <Text>Ajouter cet article à une liste</Text>
                   </View>
                 </View>

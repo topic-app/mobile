@@ -2,21 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { Platform, View, ScrollView } from 'react-native';
-import { Text, Button, ProgressBar, useTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, ScrollView } from 'react-native';
+import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { TranslucentStatusBar } from '@components/Header';
+import {
+  TranslucentStatusBar,
+  StepperView,
+  ErrorMessage,
+  Illustration,
+  PlatformBackButton,
+} from '@components/index';
 import { register } from '@redux/actions/data/account';
-import StepperView from '@components/StepperView';
 import getStyles from '@styles/Styles';
-import ErrorMessage from '@components/ErrorMessage';
-import { PlatformBackButton } from '@components/PlatformComponents';
-import IllustrationRegisterDark from '@assets/images/illustrations/auth/register_dark.svg';
-import IllustrationRegisterLight from '@assets/images/illustrations/auth/register_light.svg';
-import getAuthStyles from '../styles/Styles';
 
+import getAuthStyles from '../styles/Styles';
 import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageSchool from '../components/CreateSchool';
 import AuthCreatePagePrivacy from '../components/CreatePrivacy';
@@ -94,11 +94,7 @@ function AuthCreate({ navigation, reqState, creationData }) {
         <ScrollView>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
-            {theme.dark ? (
-              <IllustrationRegisterDark height={200} width={200} />
-            ) : (
-              <IllustrationRegisterLight height={200} width={200} />
-            )}
+            <Illustration name="auth-register" height={200} width={200} />
             <Text style={authStyles.title}>Créer un compte</Text>
           </View>
           <StepperView

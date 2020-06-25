@@ -1,27 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Animated, Platform, ActivityIndicator, FlatList } from 'react-native';
-import { ProgressBar, Button, Text, withTheme } from 'react-native-paper';
-import { connect } from 'react-redux';
+import { View, Animated, Platform, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { ProgressBar, Button, Text, withTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import AnimatingHeader from '@components/AnimatingHeader';
-import ErrorMessage from '@components/ErrorMessage';
+import { AnimatingHeader, ErrorMessage, Illustration, CategoriesList } from '@components/index';
 import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
-import IllustrationArticlesGreyedLight from '@assets/images/illustrations/articles/articles_greyed_light.svg';
-import IllustrationArticlesGreyedDark from '@assets/images/illustrations/articles/articles_greyed_dark.svg';
-import IllustrationArticlesLight from '@assets/images/illustrations/articles/articles_light.svg';
-import IllustrationArticlesDark from '@assets/images/illustrations/articles/articles_dark.svg';
-import IllustrationArticlesCompletedLight from '@assets/images/illustrations/articles/articles_completed_light.svg';
-import IllustrationArticlesCompletedDark from '@assets/images/illustrations/articles/articles_completed_dark.svg';
-import IllustrationArticlesListsLight from '@assets/images/illustrations/articles/articles_lists_light.svg';
-import IllustrationArticlesListsDark from '@assets/images/illustrations/articles/articles_lists_dark.svg';
-import Avatar from '@components/Avatar';
-import LinearGradient from 'react-native-linear-gradient';
-import CustomTabView from '@components/CustomTabView';
-import { CategoriesList } from '@components/ChipLists';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import getArticleStyles from '../styles/Styles';
 
 import ArticleCard from '../components/Card';
@@ -60,11 +47,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
         return (
           <View>
             <View style={styles.centerIllustrationContainer}>
-              {theme.dark ? (
-                <IllustrationArticlesCompletedDark height={400} width={400} />
-              ) : (
-                <IllustrationArticlesCompletedLight height={400} width={400} />
-              )}
+              <Illustration name="article-completed" height={400} width={400} />
               <Text>Vous avez lu tous les articles !</Text>
             </View>
           </View>
@@ -73,13 +56,9 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
         return (
           <View>
             <View style={styles.centerIllustrationContainer}>
-              {theme.dark ? (
-                <IllustrationArticlesDark height={400} width={400} />
-              ) : (
-                <IllustrationArticlesLight height={400} width={400} />
-              )}
+              <Illustration name="article" height={400} width={400} />
+              <Text>Aucun article pour cette localisation</Text>
             </View>
-            <Text>Aucun article pour cette localisation</Text>
             <View style={styles.container}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
@@ -102,15 +81,11 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
         return (
           <View>
             <View style={styles.centerIllustrationContainer}>
-              {theme.dark ? (
-                <IllustrationArticlesListsDark height={400} width={400} />
-              ) : (
-                <IllustrationArticlesListsLight height={400} width={400} />
-              )}
+              <Illustration name="article-lists" height={400} width={400} />
               <Text>Aucun article dans cette liste</Text>
               <View style={styles.contentContainer}>
                 <Text style={articleStyles.captionText}>
-                  Ajoutez les grâce à l'icone <Icon name="playlist-plus" size={20} />
+                  Ajoutez les grâce à l&apos;icone <Icon name="playlist-plus" size={20} />
                 </Text>
               </View>
             </View>
@@ -120,11 +95,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
     } else {
       return (
         <View style={styles.centerIllustrationContainer}>
-          {theme.dark ? (
-            <IllustrationArticlesGreyedDark height={400} width={400} />
-          ) : (
-            <IllustrationArticlesGreyedLight height={400} width={400} />
-          )}
+          <Illustration name="article-greyed" height={400} width={400} />
         </View>
       );
     }
