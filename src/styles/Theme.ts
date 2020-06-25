@@ -77,13 +77,11 @@ const themes = {
   light: {
     name: 'Clair',
     value: 'light',
-    dark: false,
     ...lightBase,
   },
   purple: {
     name: 'Violet',
     value: 'purple',
-    dark: false,
     ...lightBase,
     statusBarContentTheme: 'light',
     colors: {
@@ -100,5 +98,10 @@ const themes = {
     ...darkBase,
   },
 };
+
+type ValueOf<T> = T[keyof T];
+// Theme is union type of every theme in the `themes` object, equivalent of
+// type Theme = typeof themes.light | typeof themes.purple | ...
+export type Theme = ValueOf<typeof themes>;
 
 export default themes;

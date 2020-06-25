@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
-import PropTypes from 'prop-types';
+import { NavigationProp } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,7 +11,14 @@ import MainStackNavigator from './Main';
 // Can't use BlurView with expo :(
 // import { BlurView, VibrancyView } from '@react-native-community/blur';
 
-function TabItem({ label, onPress, icon, active }) {
+type TabItemProps = {
+  label: string;
+  icon: string;
+  onPress: () => void;
+  active: boolean;
+};
+
+const TabItem: React.FC<TabItemProps> = ({ label, onPress, icon, active }) => {
   const { colors } = useTheme();
   const color = active ? colors.primary : colors.disabled;
   return (
@@ -24,21 +31,34 @@ function TabItem({ label, onPress, icon, active }) {
       </TouchableWithoutFeedback>
     </View>
   );
-}
-
-TabItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
-  active: PropTypes.bool.isRequired,
 };
 
-function BottomTabs({ navigation }) {
-  const [active, setActive] = React.useState('Article');
+type BottomTabProps = {
+  navigation: NavigationProp<any, any>;
+};
 
-  const isActive = (name) => active === name;
+enum RouteName {
+  ARTICLE,
+  EVENT,
+  PETITION,
+  EXPLORER,
+  MORE,
+}
 
-  const setActiveAndNavigate = (name, route) => {
+type NavRoute = [
+  string,
+  {
+    screen: string;
+    params?: object;
+  },
+];
+
+const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
+  const [active, setActive] = React.useState(RouteName.ARTICLE);
+
+  const isActive = (name: RouteName) => active === name;
+
+  const setActiveAndNavigate = (name: RouteName, route: NavRoute) => {
     if (!isActive(name)) {
       setActive(name);
       navigation.navigate(...route);
@@ -72,9 +92,9 @@ function BottomTabs({ navigation }) {
         <TabItem
           icon="newspaper"
           label="Actus"
-          active={isActive('Article')}
+          active={isActive(RouteName.ARTICLE)}
           onPress={() =>
-            setActiveAndNavigate('Article', [
+            setActiveAndNavigate(RouteName.ARTICLE, [
               'Main',
               {
                 screen: 'Home1',
@@ -89,9 +109,9 @@ function BottomTabs({ navigation }) {
         <TabItem
           icon="calendar"
           label="Évènements"
-          active={isActive('Event')}
+          active={isActive(RouteName.EVENT)}
           onPress={() =>
-            setActiveAndNavigate('Event', [
+            setActiveAndNavigate(RouteName.EVENT, [
               'Main',
               {
                 screen: 'Home1',
@@ -106,9 +126,9 @@ function BottomTabs({ navigation }) {
         <TabItem
           icon="comment-check-outline"
           label="Pétitions"
-          active={isActive('Petition')}
+          active={isActive(RouteName.PETITION)}
           onPress={() =>
-            setActiveAndNavigate('Petition', [
+            setActiveAndNavigate(RouteName.PETITION, [
               'Main',
               {
                 screen: 'Home1',
@@ -123,9 +143,9 @@ function BottomTabs({ navigation }) {
         <TabItem
           icon="compass-outline"
           label="Explorer"
-          active={isActive('Explorer')}
+          active={isActive(RouteName.EXPLORER)}
           onPress={() =>
-            setActiveAndNavigate('Explorer', [
+            setActiveAndNavigate(RouteName.EXPLORER, [
               'Main',
               {
                 screen: 'Home1',
@@ -140,9 +160,9 @@ function BottomTabs({ navigation }) {
         <TabItem
           icon="dots-horizontal"
           label="Plus"
-          active={isActive('More')}
+          active={isActive(RouteName.MORE)}
           onPress={() =>
-            setActiveAndNavigate('More', [
+            setActiveAndNavigate(RouteName.MORE, [
               'Main',
               {
                 screen: 'More',
@@ -157,7 +177,7 @@ function BottomTabs({ navigation }) {
       </View>
     </View>
   );
-}
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -166,7 +186,6 @@ function MainNavigator() {
     <Tab.Navigator
       initialRouteName="Main"
       tabBar={({ navigation }) => <BottomTabs navigation={navigation} />}
-      // tabBar={({ navigation }) => <BottomTabBar />}
     >
       <Tab.Screen name="Main" component={MainStackNavigator} />
     </Tab.Navigator>
@@ -174,9 +193,3 @@ function MainNavigator() {
 }
 
 export default MainNavigator;
-
-BottomTabs.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-};

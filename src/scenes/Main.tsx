@@ -1,8 +1,9 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import PropTypes from 'prop-types';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { connect } from 'react-redux';
+
+import { StackNavigationProp, LocationList, State } from '@ts/types';
 
 import DisplayStackNavigator from './display/index';
 import AddStackNavigator from './add/index';
@@ -12,7 +13,7 @@ import HomeOneNavigator from './home/HomeOne';
 import ConfigureStackNavigator from './configure/index';
 import ListsStackNavigator from './lists/index';
 
-function getNestedParams(route) {
+function getNestedParams(route?: { params: object }) {
   let { params } = route;
   while (params.params) {
     params = params.params;
@@ -32,9 +33,14 @@ if (Platform.OS === 'ios') {
   };
 }
 
+type MainNavigatorProps = {
+  navigation: StackNavigationProp<any, any>;
+  location: LocationList;
+};
+
 const Stack = createStackNavigator();
 
-function MainNavigator({ navigation, location }) {
+const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) => {
   if (!location.selected) {
     navigation.navigate('Landing', {
       screen: 'Welcome',
@@ -51,18 +57,11 @@ function MainNavigator({ navigation, location }) {
       <Stack.Screen name="Home1" component={HomeOneNavigator} />
     </Stack.Navigator>
   );
-}
-
-const mapStateToProps = (state) => {
-  const { location } = state;
-  return { location };
 };
 
-MainNavigator.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
-  location: PropTypes.shape({
-    selected: PropTypes.bool,
-  }).isRequired,
+const mapStateToProps = (state: State) => {
+  const { location } = state;
+  return { location };
 };
 
 export default connect(mapStateToProps)(MainNavigator);

@@ -1,6 +1,7 @@
 import { StyleSheet, StatusBar } from 'react-native';
+import { Theme } from '@ts/types';
 
-function getNavigatorStyles(theme) {
+function getNavigatorStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     header: {

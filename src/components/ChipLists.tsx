@@ -1,21 +1,28 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  View,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  Platform,
-  Animated,
-  TextInput,
-  FlatList,
-  ViewPropTypes,
-} from 'react-native';
+import { View, Platform, Animated, TextInput, FlatList, ViewStyle } from 'react-native';
 import { Text, IconButton, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import color from 'color';
+import { PlatformTouchable } from '@components/index';
 
-function ChipBase({ children, icon, onPress, selected, containerStyle, rightAction }) {
+type ChipBaseProps = {
+  children: React.ReactNode;
+  icon?: string;
+  onPress?: () => void;
+  selected?: boolean;
+  containerStyle?: ViewStyle;
+  rightAction?: boolean;
+};
+
+const ChipBase: React.FC<ChipBaseProps> = ({
+  children,
+  icon,
+  onPress,
+  selected = false,
+  containerStyle,
+  rightAction = false,
+}) => {
   const elevation = new Animated.Value(0);
 
   const handlePressIn = () => {
@@ -37,7 +44,6 @@ function ChipBase({ children, icon, onPress, selected, containerStyle, rightActi
   if (!selected) handlePressOut();
 
   const { colors } = useTheme();
-  const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
   const selectedBackground = color(colors.primary).mix(color(colors.background), 0.85).string();
 
   return (
@@ -51,11 +57,12 @@ function ChipBase({ children, icon, onPress, selected, containerStyle, rightActi
           borderRadius: 20,
           borderWidth: 0.5,
           borderColor: selected ? colors.primary : colors.disabled,
+          alignItems: 'center',
         },
         containerStyle,
       ]}
     >
-      <Touchable
+      <PlatformTouchable
         disabled={!onPress || rightAction}
         onPress={onPress}
         onPressIn={handlePressIn}
@@ -83,21 +90,36 @@ function ChipBase({ children, icon, onPress, selected, containerStyle, rightActi
             />
           )}
         </View>
-      </Touchable>
+      </PlatformTouchable>
     </Animated.View>
   );
-}
+};
 
-function TextChip({ title, ...rest }) {
+type TextChipProps = {
+  title: string;
+};
+
+const TextChip: React.FC<TextChipProps> = ({ title, ...rest }) => {
   return (
     <ChipBase {...rest}>
       <Text style={{ paddingLeft: 6, fontSize: 15 }}>{title}</Text>
     </ChipBase>
   );
-}
+};
 
-function TextInputChip({ onSubmit, endInput, placeholder, ...rest }) {
-  const textInputRef = React.createRef();
+type TextInputChipProps = {
+  onSubmit: (tagText: string) => void;
+  endInput: () => void;
+  placeholder?: string;
+};
+
+const TextInputChip: React.FC<TextInputChipProps> = ({
+  onSubmit,
+  endInput,
+  placeholder,
+  ...rest
+}) => {
+  const textInputRef = React.useRef<TextInput>(null);
   const [tagText, setTagText] = React.useState('');
 
   const onFinish = () => {
@@ -126,9 +148,29 @@ function TextInputChip({ onSubmit, endInput, placeholder, ...rest }) {
       />
     </ChipBase>
   );
-}
+};
 
-function CategoriesList({ categories, selected, setSelected, style, containerStyle }) {
+type ListItem = {
+  key: string;
+  title: string;
+  icon?: string;
+};
+
+type CategoriesListProps = {
+  categories: ListItem[];
+  selected: string;
+  setSelected: (key: string) => void;
+  containerStyle?: ViewStyle;
+  style?: ViewStyle;
+};
+
+const CategoriesList: React.FC<CategoriesListProps> = ({
+  categories,
+  selected,
+  setSelected,
+  style,
+  containerStyle,
+}) => {
   return (
     <FlatList
       style={[{ paddingVertical: 5 }, containerStyle]}
@@ -155,9 +197,23 @@ function CategoriesList({ categories, selected, setSelected, style, containerSty
       )}
     />
   );
-}
+};
 
-function ChipAddList({ data, keyList, setList, style, containerStyle }) {
+type ChipAddListProps = {
+  data?: ListItem[];
+  keyList?: string[];
+  style?: ViewStyle;
+  containerStyle?: ViewStyle;
+  setList: (item: ListItem) => void;
+};
+
+const ChipAddList: React.FC<ChipAddListProps> = ({
+  data = [],
+  keyList = [],
+  setList,
+  style,
+  containerStyle,
+}) => {
   const sortedData = [
     // Bring selected items to the front
     ...data.filter((item) => keyList.includes(item.key)),
@@ -192,9 +248,21 @@ function ChipAddList({ data, keyList, setList, style, containerStyle }) {
       }}
     />
   );
-}
+};
 
-function ChipSuggestionList({ data, setList, style, containerStyle }) {
+type ChipSuggestionListProps = {
+  data?: ListItem[];
+  setList: (item: ListItem) => void;
+  style?: ViewStyle;
+  containerStyle?: ViewStyle;
+};
+
+const ChipSuggestionList: React.FC<ChipSuggestionListProps> = ({
+  data = [],
+  setList,
+  style,
+  containerStyle,
+}) => {
   return (
     <FlatList
       style={[{ paddingVertical: 5 }, containerStyle]}
@@ -222,127 +290,6 @@ function ChipSuggestionList({ data, setList, style, containerStyle }) {
       }}
     />
   );
-}
+};
 
 export { CategoriesList, ChipAddList, ChipSuggestionList };
-
-ChipBase.defaultProps = {
-  children: null,
-  containerStyle: null,
-  selected: false,
-  rightAction: false,
-  onPress: null,
-  icon: null,
-};
-
-ChipBase.propTypes = {
-  children: PropTypes.node,
-  selected: PropTypes.bool,
-  rightAction: PropTypes.bool,
-  icon: PropTypes.string,
-  onPress: PropTypes.func,
-  containerStyle: ViewPropTypes.style,
-};
-
-TextChip.defaultProps = {
-  containerStyle: null,
-  selected: false,
-  icon: null,
-  onPress: null,
-};
-
-TextChip.propTypes = {
-  title: PropTypes.string.isRequired,
-  selected: PropTypes.bool,
-  icon: PropTypes.string,
-  onPress: PropTypes.func,
-  containerStyle: ViewPropTypes.style,
-};
-
-TextInputChip.defaultProps = {
-  containerStyle: null,
-  icon: null,
-};
-
-TextInputChip.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  endInput: PropTypes.func.isRequired,
-  icon: PropTypes.string,
-  containerStyle: ViewPropTypes.style,
-  placeholder: PropTypes.string.isRequired,
-};
-
-CategoriesList.defaultProps = {
-  style: null,
-  containerStyle: null,
-};
-
-CategoriesList.propTypes = {
-  categories: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      icon: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-  selected: PropTypes.string.isRequired,
-  setSelected: PropTypes.func.isRequired,
-  containerStyle: ViewPropTypes.style,
-  style: ViewPropTypes.style,
-};
-
-ChipAddList.defaultProps = {
-  keyList: [],
-  data: [],
-  style: null,
-  containerStyle: null,
-};
-
-ChipAddList.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-    }),
-  ),
-  keyList: PropTypes.arrayOf(PropTypes.string),
-  setList: PropTypes.func.isRequired,
-  containerStyle: ViewPropTypes.style,
-  style: ViewPropTypes.style,
-};
-
-ChipSuggestionList.defaultProps = {
-  data: [],
-  style: null,
-  containerStyle: null,
-};
-
-ChipSuggestionList.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-    }),
-  ),
-  setList: PropTypes.func.isRequired,
-  containerStyle: ViewPropTypes.style,
-  style: ViewPropTypes.style,
-};
-
-ChipSuggestionList.defaultProps = {
-  data: [],
-  style: null,
-  containerStyle: null,
-};
-
-ChipSuggestionList.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-    }),
-  ),
-  setList: PropTypes.func.isRequired,
-  containerStyle: ViewPropTypes.style,
-  style: ViewPropTypes.style,
-};

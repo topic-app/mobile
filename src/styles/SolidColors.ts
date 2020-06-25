@@ -1,4 +1,4 @@
-function colorShade(color, amount) {
+function colorShade(color: string, amount: number) {
   return `#${color
     .replace(/^#/, '')
     .replace(/../g, (rgb) =>
@@ -21,7 +21,8 @@ const solidLight = {
   purple: '#6a31a3',
 };
 
-const solidDark = {};
+const solidDark: { [key: string]: string } = {};
+
 Object.entries(solidLight).forEach(([key, val]) => {
   // Darken all values in solidLight by 40 steps
   solidDark[key] = colorShade(val, -40);

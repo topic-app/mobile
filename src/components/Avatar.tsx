@@ -1,18 +1,29 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { View, ViewPropTypes } from 'react-native';
+import { View, ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { Avatar as PaperAvatar, Text, useTheme } from 'react-native-paper';
-import TopicIcon from '@assets/images/topic-icon.svg';
 import LinearGradient from 'react-native-linear-gradient';
 import color from 'color';
-import { PlatformTouchable } from './PlatformComponents';
+
+import { Avatar as AvatarType } from '@ts/types';
+import TopicIcon from '@assets/images/topic-icon.svg';
+import { PlatformTouchable } from '@components/index';
 
 const getInitials = (title: string) => {
   const initials = title.match(/\b\w/g) || [];
   return ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
 };
 
-function Avatar({ name, imageUrl, icon, style, size, onPress, avatar }) {
+type Props = {
+  name?: string;
+  imageUrl?: string;
+  icon?: string;
+  style?: ViewStyle | ImageStyle | TextStyle;
+  size?: number;
+  onPress?: () => void;
+  avatar?: AvatarType;
+};
+
+const Avatar: React.FC<Props> = ({ name, imageUrl, icon, style, size = 64, onPress, avatar }) => {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -51,7 +62,6 @@ function Avatar({ name, imageUrl, icon, style, size, onPress, avatar }) {
     } else {
       AvatarComponent = (
         <PaperAvatar.Text
-          onPress={onPress}
           label={avatar.text}
           color={color(avatar.color).isLight() ? '#000' : '#FFF'}
           size={size}
@@ -64,17 +74,14 @@ function Avatar({ name, imageUrl, icon, style, size, onPress, avatar }) {
   } else if (icon) {
     AvatarComponent = (
       <PaperAvatar.Icon
-        onPress={onPress}
-        color={theme.dark ? colors.text : null}
+        color={theme.dark ? colors.text : undefined}
         size={size}
         icon={icon}
         style={[{ backgroundColor: colors.disabled }, style]}
       />
     );
   } else if (name) {
-    AvatarComponent = (
-      <PaperAvatar.Text onPress={onPress} label={getInitials(name)} style={style} size={size} />
-    );
+    AvatarComponent = <PaperAvatar.Text label={getInitials(name)} style={style} size={size} />;
   } else {
     // If we cannot use anything, use Topic's Icon as the default; subject to change
     AvatarComponent = <TopicIcon height={size} width={size} style={style} />;
@@ -87,24 +94,6 @@ function Avatar({ name, imageUrl, icon, style, size, onPress, avatar }) {
     );
   }
   return AvatarComponent;
-}
+};
 
 export default Avatar;
-
-Avatar.defaultProps = {
-  imageUrl: null,
-  style: null,
-  size: 64,
-  name: null,
-  icon: null,
-  onPress: null,
-};
-
-Avatar.propTypes = {
-  name: PropTypes.string,
-  imageUrl: PropTypes.string,
-  icon: PropTypes.string,
-  style: ViewPropTypes.style,
-  size: PropTypes.number,
-  onPress: PropTypes.func,
-};

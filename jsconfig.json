@@ -6,9 +6,9 @@
       "@src/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@assets/*": ["./src/assets/*"],
-      "@redux/*": ["./component/redux/*"],
+      "@redux/*": ["./common/redux/*"],
       "@styles/*": ["./src/styles/*"],
-      "@utils/*": ["./component/utils/*"],
+      "@utils/*": ["./common/utils/*"],
       "@ts/*": ["./src/ts/*"]
     }
   },

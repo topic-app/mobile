@@ -1,11 +1,13 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { HeaderConfig } from '@components/Header';
 import ArticleDisplay from './views/Display';
-import ArticleAddToList from './views/AddToList';
 
-const Stack = createStackNavigator();
+export type ArticleDisplayStackParams = {
+  Display: { id: string; title: string };
+};
+
+const Stack = createStackNavigator<ArticleDisplayStackParams>();
 
 function ArticleDisplayStackNavigator() {
   return (

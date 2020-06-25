@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 
+import { Article, State, StackNavigationProp, RouteProp } from '@ts/types';
 import { config } from '@root/app.json';
 import {
   ErrorMessage,
@@ -46,8 +47,24 @@ import { getImageUrl } from '@utils/getAssetUrl';
 
 import CommentInlineCard from '../components/Comment';
 import getArticleStyles from '../styles/Styles';
+import { ArticleDisplayStackParams } from '../index';
 
-function ArticleDisplayHeader({ article, reqState, account, navigation, setCommentModalVisible }) {
+type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
+type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
+
+type ArticleDisplayHeaderProps = {
+  article: Article;
+  navigation: Navigation;
+  reqState;
+};
+
+const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
+  article,
+  navigation,
+  reqState,
+  account,
+  setCommentModalVisible,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -171,7 +188,7 @@ function ArticleDisplayHeader({ article, reqState, account, navigation, setComme
       )}
     </View>
   );
-}
+};
 
 function ArticleDisplay({ route, navigation, articles, comments, reqState, account, lists }) {
   const { id, useLists } = route.params;
@@ -574,7 +591,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { articles, comments, account } = state;
   return {
     articles: articles.data,

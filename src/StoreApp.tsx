@@ -1,18 +1,21 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import themes from '@styles/Theme';
 import { useColorScheme } from 'react-native';
-import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { connect } from 'react-redux';
 
+import { Preferences, State } from '@ts/types';
+import themes from '@styles/Theme';
 import { fetchLocationData } from '@redux/actions/data/location';
 import { fetchGroups, fetchAccount } from '@redux/actions/data/account';
-import { updatePrefs } from '@redux/actions/data/prefs';
 import AppNavigator from './index';
 
-function StoreApp({ preferences }) {
+type Props = {
+  preferences: Preferences;
+};
+
+const StoreApp: React.FC<Props> = ({ preferences }) => {
   let theme = themes[preferences.theme] || 'light';
 
   const colorScheme = useColorScheme();
@@ -38,18 +41,11 @@ function StoreApp({ preferences }) {
       </SafeAreaProvider>
     </PaperProvider>
   );
-}
-
-const mapStateToProps = (state) => {
-  const { preferences } = state;
-  return { preferences };
 };
 
-StoreApp.propTypes = {
-  preferences: PropTypes.shape({
-    theme: PropTypes.string.isRequired,
-    useSystemTheme: PropTypes.bool.isRequired,
-  }).isRequired,
+const mapStateToProps = (state: State) => {
+  const { preferences } = state;
+  return { preferences };
 };
 
 export default connect(mapStateToProps)(StoreApp);

@@ -1,13 +1,30 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { View, ViewPropTypes } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import { Text, Card, useTheme } from 'react-native-paper';
-import Avatar from '@components/Avatar';
-import { PlatformTouchable } from '@components/PlatformComponents';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { Avatar, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
 
-function InlineCard({ title, subtitle, onPress, badge, badgeColor, icon, imageUrl }) {
+type InlineCardProps = {
+  title: string;
+  subtitle?: string;
+  onPress?: () => void;
+  badge?: string;
+  badgeColor?: string;
+  icon?: string;
+  imageUrl?: string;
+};
+
+const InlineCard: React.FC<InlineCardProps> = ({
+  title,
+  subtitle,
+  onPress,
+  badge,
+  badgeColor,
+  icon,
+  imageUrl,
+}) => {
   const { colors } = useTheme();
 
   const cardContents = (
@@ -36,9 +53,16 @@ function InlineCard({ title, subtitle, onPress, badge, badgeColor, icon, imageUr
   ) : (
     cardContents
   );
-}
+};
 
-function CardBase({ onPress, style, contentContainerStyle, children }) {
+type CardBaseProps = {
+  onPress?: () => void;
+  style?: ViewStyle;
+  contentContainerStyle?: ViewStyle;
+  children: React.ReactNode;
+};
+
+const CardBase: React.FC<CardBaseProps> = ({ onPress, style, contentContainerStyle, children }) => {
   const styles = getStyles(useTheme());
 
   return onPress ? (
@@ -54,38 +78,6 @@ function CardBase({ onPress, style, contentContainerStyle, children }) {
       <View style={[{ paddingTop: 10, paddingBottom: 5 }, contentContainerStyle]}>{children}</View>
     </Card>
   );
-}
+};
 
 export { InlineCard, CardBase };
-
-InlineCard.defaultProps = {
-  icon: null,
-  imageUrl: null,
-  subtitle: null,
-  badge: null,
-  badgeColor: null,
-  onPress: null,
-};
-
-InlineCard.propTypes = {
-  icon: PropTypes.string,
-  imageUrl: PropTypes.string,
-  badge: PropTypes.string,
-  badgeColor: PropTypes.string,
-  subtitle: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  onPress: PropTypes.func,
-};
-
-CardBase.defaultProps = {
-  onPress: null,
-  style: null,
-  contentContainerStyle: null,
-};
-
-CardBase.propTypes = {
-  onPress: PropTypes.func,
-  style: ViewPropTypes.style,
-  contentContainerStyle: ViewPropTypes.style,
-  children: PropTypes.node.isRequired,
-};

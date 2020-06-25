@@ -1,21 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Platform, Animated, View, ViewPropTypes } from 'react-native';
+import { Platform, Animated, View, ViewStyle } from 'react-native';
 import { CustomHeaderBar } from '@components/index';
 import { useNavigation } from '@react-navigation/native';
 
-function AnimatingHeader({
+type Props = {
+  value: Animated.Value;
+  maxElevation?: number;
+  children?: React.ReactNode;
+  headerStyle?: ViewStyle;
+};
+
+const AnimatingHeader: React.FC<Props> = ({
   value,
-  maxElevation,
+  maxElevation = 10,
   children,
-  title,
-  subtitle,
-  home,
-  primary,
   headerStyle,
-  actions,
-  overflow,
-}) {
+  ...rest
+}) => {
   const navigation = useNavigation();
 
   const headerElevation = value.interpolate({
@@ -31,13 +32,8 @@ function AnimatingHeader({
         scene={{
           descriptor: {
             options: {
-              title,
-              subtitle,
-              home,
-              primary,
               headerStyle: { ...headerStyle, elevation: 0 }, // elevation takes precedence
-              actions,
-              overflow,
+              ...rest,
             },
           },
         }}
@@ -50,13 +46,8 @@ function AnimatingHeader({
         scene={{
           descriptor: {
             options: {
-              title,
-              subtitle,
-              home,
-              primary,
               headerStyle,
-              actions,
-              overflow,
+              ...rest,
             },
           },
         }}
@@ -65,30 +56,6 @@ function AnimatingHeader({
       {children}
     </View>
   );
-}
+};
 
 export default AnimatingHeader;
-
-AnimatingHeader.defaultProps = {
-  maxElevation: 10,
-  subtitle: null,
-  headerStyle: null,
-  primary: null,
-  home: false,
-  overflow: [],
-  actions: [],
-  children: null,
-};
-
-AnimatingHeader.propTypes = {
-  value: PropTypes.instanceOf(Animated.Value).isRequired,
-  maxElevation: PropTypes.number,
-  children: PropTypes.node,
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string,
-  headerStyle: ViewPropTypes.style,
-  primary: PropTypes.func,
-  home: PropTypes.bool,
-  overflow: PropTypes.arrayOf(PropTypes.object),
-  actions: PropTypes.arrayOf(PropTypes.object),
-};
