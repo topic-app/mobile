@@ -4,10 +4,16 @@ import PropTypes from 'prop-types';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import FitImage from 'react-native-fit-image';
 
+import { ContentParser } from '@ts/types';
 import getStyles from '@styles/Styles';
 import { getImageUrl, handleUrl } from '@utils/index';
 
-function Content({ parser, data }) {
+type Props = {
+  parser: ContentParser;
+  data: string;
+};
+
+const Content: React.FC<Props> = ({ parser, data }) => {
   const styles = getStyles(useTheme());
   if (parser === 'markdown') {
     return (
@@ -34,7 +40,10 @@ function Content({ parser, data }) {
             );
           },
         }}
-        onLinkPress={handleUrl}
+        onLinkPress={(url: string) => {
+          handleUrl(url);
+          return false; // Indicates that we are handling the link ourselves
+        }}
       >
         {data}
       </Markdown>
@@ -44,7 +53,7 @@ function Content({ parser, data }) {
     return <Text>{data}</Text>;
   }
   return null;
-}
+};
 
 Content.propTypes = {
   parser: PropTypes.string.isRequired,

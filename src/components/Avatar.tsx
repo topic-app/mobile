@@ -4,7 +4,7 @@ import { Avatar as PaperAvatar, Text, useTheme } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import color from 'color';
 
-import { Avatar as AvatarType } from '@ts/types';
+import { Avatar as AvatarType, Theme } from '@ts/types';
 import TopicIcon from '@assets/images/topic-icon.svg';
 
 import { PlatformTouchable } from './PlatformComponents';
@@ -25,7 +25,7 @@ type Props = {
 };
 
 const Avatar: React.FC<Props> = ({ name, imageUrl, icon, style, size = 64, onPress, avatar }) => {
-  const theme = useTheme();
+  const theme: Theme = useTheme();
   const { colors } = theme;
 
   let AvatarComponent = null;

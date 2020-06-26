@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import shortid from 'shortid';
 
 import getStyles from '@styles/Styles';
+
 import { TranslucentStatusBar } from './Header';
 import { PlatformBackButton } from './PlatformComponents';
 
