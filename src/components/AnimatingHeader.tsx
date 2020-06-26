@@ -1,7 +1,8 @@
 import React from 'react';
 import { Platform, Animated, View, ViewStyle } from 'react-native';
-import { CustomHeaderBar } from '@components/index';
 import { useNavigation } from '@react-navigation/native';
+
+import { CustomHeaderBar } from './Header';
 
 type Props = {
   value: Animated.Value;

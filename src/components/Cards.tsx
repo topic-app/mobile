@@ -3,8 +3,10 @@ import { View, ViewStyle } from 'react-native';
 import { Text, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Avatar, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
+
+import Avatar from './Avatar';
+import { PlatformTouchable } from './PlatformComponents';
 
 type InlineCardProps = {
   title: string;

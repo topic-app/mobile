@@ -6,7 +6,8 @@ import color from 'color';
 
 import { Avatar as AvatarType } from '@ts/types';
 import TopicIcon from '@assets/images/topic-icon.svg';
-import { PlatformTouchable } from '@components/index';
+
+import { PlatformTouchable } from './PlatformComponents';
 
 const getInitials = (title: string) => {
   const initials = title.match(/\b\w/g) || [];

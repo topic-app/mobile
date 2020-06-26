@@ -13,7 +13,7 @@ module.exports = {
           '@assets': './src/assets',
           '@styles': './src/styles',
           '@redux': './common/redux',
-          '@utils': './common/utils',
+          '@utils': './src/utils',
           '@ts': './src/ts',
         },
         extensions: [

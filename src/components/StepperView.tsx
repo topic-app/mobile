@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Dimensions, StyleSheet } from 'react-native';
 import { useTheme, Text } from 'react-native-paper';
-import { TabView, TabBar } from 'react-native-tab-view';
+import { TabView } from 'react-native-tab-view';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 

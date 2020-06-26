@@ -1,24 +1,17 @@
 import React from 'react';
-import {
-  View,
-  ScrollView,
-  Platform,
-  TouchableOpacity,
-  StyleSheet,
-  BackHandler,
-} from 'react-native';
-import { Text, Button, ProgressBar, IconButton, useTheme } from 'react-native-paper';
+import { View, ScrollView, Platform, StyleSheet, BackHandler } from 'react-native';
+import { Text, Button, ProgressBar, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ViewPager from '@react-native-community/viewpager';
-import { PlatformBackButton } from '@components/PlatformComponents';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import shortid from 'shortid';
 
 import getStyles from '@styles/Styles';
 import { TranslucentStatusBar } from './Header';
+import { PlatformBackButton } from './PlatformComponents';
 
 const stepperStyles = StyleSheet.create({
   centerContainer: {

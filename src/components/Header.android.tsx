@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StatusBar, View } from 'react-native';
-import { Appbar, Menu, useTheme, withTheme } from 'react-native-paper';
+import { Appbar, Menu, useTheme } from 'react-native-paper';
 
 import getNavigatorStyles from '@styles/NavStyles';
 

@@ -8,7 +8,7 @@
       "@assets/*": ["./src/assets/*"],
       "@redux/*": ["./common/redux/*"],
       "@styles/*": ["./src/styles/*"],
-      "@utils/*": ["./common/utils/*"],
+      "@utils/*": ["./src/utils/*"],
       "@ts/*": ["./src/ts/*"]
     }
   },

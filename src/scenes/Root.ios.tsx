@@ -38,11 +38,11 @@ type BottomTabProps = {
 };
 
 enum RouteName {
-  ARTICLE,
-  EVENT,
-  PETITION,
-  EXPLORER,
-  MORE,
+  ARTICLE = 'Article',
+  EVENT = 'Event',
+  PETITION = 'Petition',
+  EXPLORER = 'Explorer',
+  MORE = 'More',
 }
 
 type NavRoute = [

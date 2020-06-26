@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableHighlight, Platform, ViewPropTypes, TouchableNativeFeedback } from 'react-native';
+import { TouchableHighlight, Platform, ViewPropTypes } from 'react-native';
 import { IconButton, useTheme, TouchableRipple } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
