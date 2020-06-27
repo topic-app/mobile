@@ -140,7 +140,7 @@ function PetitionDisplay({ route, petitions }) {
           />
         </View>
         <View style={{ paddingBottom: 5, paddingTop: 2 }}>
-          <TagList type="petition" item={petition} />
+          <TagList item={petition} />
         </View>
         <View
           style={

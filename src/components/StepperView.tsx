@@ -1,10 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Dimensions, StyleSheet } from 'react-native';
 import { useTheme, Text } from 'react-native-paper';
-import { TabView } from 'react-native-tab-view';
+import { TabView, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { Theme } from '@ts/types';
 
 const stepperStyles = StyleSheet.create({
   centerContainer: {
@@ -35,7 +36,7 @@ const stepperStyles = StyleSheet.create({
   },
 });
 
-function getStepIndicatorStyles(theme) {
+function getStepIndicatorStyles(theme: Theme) {
   const { colors } = theme;
   return {
     stepIndicatorSize: 30,
@@ -63,7 +64,7 @@ function getStepIndicatorStyles(theme) {
   };
 }
 
-function iconColor(status, theme) {
+function iconColor(status: string, theme: Theme) {
   const { colors } = theme;
   switch (status) {
     case 'finished':
@@ -77,17 +78,36 @@ function iconColor(status, theme) {
   }
 }
 
-function StepperView({
-  keyboardDismissMode,
-  pages,
-  swipeEnabled,
-  title,
-  hideTabBar,
-  preloadDistance,
-}) {
-  const theme = useTheme();
-  const { colors } = theme;
+type TabBarProps = SceneRendererProps & {
+  navigationState: NavigationState<Route>;
+};
 
+type PageType = {
+  key: string;
+  title: string;
+  icon: string;
+  component: React.ReactElement;
+  onVisible?: () => void;
+};
+
+type Props = {
+  pages: PageType[];
+  title?: string;
+  keyboardDismissMode?: 'auto' | 'none' | 'on-drag';
+  swipeEnabled?: boolean;
+  hideTabBar?: boolean;
+  preloadDistance?: number;
+};
+
+const StepperView: React.FC<Props> = ({
+  pages,
+  title,
+  keyboardDismissMode = 'auto',
+  swipeEnabled = false,
+  hideTabBar = false,
+  preloadDistance = 0,
+}) => {
+  const theme = useTheme();
   const stepIndicatorStyles = getStepIndicatorStyles(theme);
 
   const [index, setIndex] = React.useState(0);
@@ -97,25 +117,18 @@ function StepperView({
 
   const initialLayout = { width: Dimensions.get('window').width };
 
-  const renderScene = ({ route }) => {
-    return React.cloneElement(pages.find((p) => p.key === route.key).component, {
+  const renderScene = ({ route }: { route: PageType }) => {
+    return React.cloneElement(pages.find((p) => p.key === route.key)!.component, {
       next,
       prev,
       index,
       setIndex,
     });
   };
-  renderScene.propTypes = {
-    route: PropTypes.shape({
-      key: PropTypes.string.isRequired,
-    }).isRequired,
-  };
 
-  if (pages[index]?.onVisible) {
-    pages[index].onVisible();
-  }
+  pages[index].onVisible?.();
 
-  const StepperTabBar = ({ navigationState }) => (
+  const StepperTabBar: React.FC<TabBarProps> = ({ navigationState }) => (
     <View style={stepperStyles.stepIndicatorContainer}>
       {title ? (
         <View style={stepperStyles.centerContainer}>
@@ -138,12 +151,6 @@ function StepperView({
     </View>
   );
 
-  StepperTabBar.propTypes = {
-    navigationState: PropTypes.shape({
-      index: PropTypes.number.isRequired,
-    }).isRequired,
-  };
-
   return (
     <View>
       <TabView
@@ -159,31 +166,6 @@ function StepperView({
       />
     </View>
   );
-}
-
-StepperView.defaultProps = {
-  keyboardDismissMode: 'auto',
-  swipeEnabled: false,
-  title: null,
-  hideTabBar: false,
-  preloadDistance: 0,
-};
-
-StepperView.propTypes = {
-  keyboardDismissMode: PropTypes.string,
-  preloadDistance: PropTypes.number,
-  pages: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      icon: PropTypes.string.isRequired,
-      component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-      onVisible: PropTypes.func,
-    }),
-  ).isRequired,
-  swipeEnabled: PropTypes.bool,
-  title: PropTypes.string,
-  hideTabBar: PropTypes.bool,
 };
 
 export default StepperView;

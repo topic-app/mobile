@@ -46,7 +46,7 @@ function EventCard({ event, navigate }) {
         left={({ size }) => <Avatar.Icon size={size} icon="calendar" />}
       />
       <View style={{ paddingVertical: 5 }}>
-        <TagList type="event" item={event} />
+        <TagList item={event} />
       </View>
       <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
         <View style={{ flexDirection: 'row' }}>

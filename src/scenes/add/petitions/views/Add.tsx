@@ -20,7 +20,6 @@ function PetitionAdd({ navigation, reqState, creationData }) {
 
   return (
     <StepperViewPager
-      navigation={navigation}
       viewPagerRef={viewPagerRef}
       reqState={reqState}
       title="Créer une pétition"
@@ -28,27 +27,27 @@ function PetitionAdd({ navigation, reqState, creationData }) {
         {
           icon: 'comment-outline',
           label: 'Titre',
-          component: PetitionAddPageGeneral,
+          component: <PetitionAddPageGeneral />,
           scrollToBottom: true,
           height: 450,
         },
         {
           icon: 'map-marker',
           label: 'Écoles',
-          component: PetitionAddPageLocation,
+          component: <PetitionAddPageLocation />,
           scrollToBottom: true,
           height: 260,
         },
         {
           icon: 'script-text',
           label: 'Description',
-          component: PetitionAddPageDescription,
+          component: <PetitionAddPageDescription />,
           height: 950,
         },
         {
           icon: 'check-decagram',
           label: 'Objectifs',
-          component: PetitionAddPageGoals,
+          component: <PetitionAddPageGoals />,
           height: 950,
         },
       ]}

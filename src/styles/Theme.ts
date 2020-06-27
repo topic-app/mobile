@@ -16,7 +16,7 @@ const common = {
 const lightBase = {
   ...DefaultTheme,
   ...common,
-  statusBarStyle: 'dark', // The text color of the status bar
+  statusBarStyle: 'dark-content', // The text color of the status bar
   colors: {
     ...DefaultTheme.colors,
     ...common.colors,
@@ -46,7 +46,7 @@ const darkBase = {
   ...DarkTheme,
   // Note: 'dark: true' is included in ...DarkTheme,
   ...common,
-  statusBarStyle: 'light',
+  statusBarStyle: 'light-content',
   colors: {
     ...DarkTheme.colors,
     ...common.colors,
@@ -83,7 +83,7 @@ const themes = {
     name: 'Violet',
     value: 'purple',
     ...lightBase,
-    statusBarStyle: 'light',
+    statusBarStyle: 'light-content',
     colors: {
       ...lightBase.colors,
       appBar: common.colors.primary,

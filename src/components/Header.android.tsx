@@ -1,37 +1,55 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { StatusBar, View } from 'react-native';
+import { StatusBar, View, StatusBarProps, ViewStyle } from 'react-native';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
+import { NavigationProp } from '@react-navigation/native';
 
 import getNavigatorStyles from '@styles/NavStyles';
+import shortid from 'shortid';
 
-function TranslucentStatusBar({ contentThemeName }) {
+const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const contentTheme = contentThemeName || theme.statusBarContentTheme;
+  const contentTheme = barStyle || theme.statusBarStyle;
   return (
     <StatusBar
       translucent
       backgroundColor={colors.statusBar}
-      barStyle={`${contentTheme}-content`}
+      barStyle={contentTheme}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...rest}
     />
   );
-}
+};
 
-function SolidStatusBar({ color, contentThemeName }) {
-  const theme = useTheme();
-  const contentTheme = contentThemeName || theme.statusBarContentTheme;
-  const backgroundColor = color || theme.colors.background;
-  return (
-    <StatusBar
-      translucent={false}
-      backgroundColor={backgroundColor}
-      barStyle={`${contentTheme}-content`}
-    />
-  );
-}
+type OverflowItem = {
+  title: string;
+  icon: string;
+  onPress: () => void;
+};
 
-function CustomHeaderBar({ scene, navigation }) {
+type ActionItem = {
+  icon: string;
+  onPress: () => void;
+};
+
+type CustomHeaderBarProps = {
+  scene: {
+    descriptor: {
+      options: {
+        title: string;
+        subtitle?: string;
+        headerStyle?: ViewStyle;
+        primary?: () => void;
+        home?: boolean;
+        actions?: ActionItem[];
+        overflow?: OverflowItem[];
+      };
+    };
+  };
+  navigation: NavigationProp<any, any>;
+};
+
+const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
 
   const navigatorStyles = getNavigatorStyles(useTheme());
@@ -42,12 +60,10 @@ function CustomHeaderBar({ scene, navigation }) {
     subtitle,
     headerStyle,
     primary,
-    home,
-    actions,
+    home = false,
+    actions = [],
     overflow,
   } = scene.descriptor.options;
-
-  const headerTitle = title !== undefined ? title : scene.route.name;
 
   let primaryAction;
   if (primary) {
@@ -58,13 +74,9 @@ function CustomHeaderBar({ scene, navigation }) {
     primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
   }
 
-  let secondaryActions;
-  if (actions !== undefined) {
-    secondaryActions = actions.map((item, key) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <Appbar.Action key={key} icon={item.icon} onPress={item.onPress} />
-    ));
-  }
+  const secondaryActions = actions.map((item) => (
+    <Appbar.Action key={shortid()} icon={item.icon} onPress={item.onPress} />
+  ));
 
   const overflowAction = overflow && (
     <Menu
@@ -94,53 +106,12 @@ function CustomHeaderBar({ scene, navigation }) {
         statusBarHeight={StatusBar.currentHeight}
       >
         {primaryAction}
-        <Appbar.Content title={headerTitle} subtitle={subtitle} />
+        <Appbar.Content title={title} subtitle={subtitle} />
         {secondaryActions}
         {overflowAction}
       </Appbar.Header>
     </View>
   );
-}
-
-TranslucentStatusBar.propTypes = {
-  contentThemeName: PropTypes.string,
-};
-
-TranslucentStatusBar.defaultProps = {
-  contentThemeName: '',
-};
-
-SolidStatusBar.propTypes = {
-  color: PropTypes.string.isRequired,
-  contentThemeName: PropTypes.string,
-};
-
-SolidStatusBar.defaultProps = {
-  contentThemeName: '',
-};
-
-CustomHeaderBar.propTypes = {
-  scene: PropTypes.shape({
-    descriptor: PropTypes.shape({
-      options: PropTypes.shape({
-        title: PropTypes.string,
-        subtitle: PropTypes.string,
-        headerStyle: PropTypes.object,
-        primary: PropTypes.func,
-        home: PropTypes.bool,
-        overflow: PropTypes.arrayOf(PropTypes.object),
-        actions: PropTypes.arrayOf(PropTypes.object),
-      }).isRequired,
-    }).isRequired,
-    route: PropTypes.shape({
-      name: PropTypes.string,
-    }),
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-    openDrawer: PropTypes.func,
-    goBack: PropTypes.func,
-  }).isRequired,
 };
 
 /*
@@ -255,7 +226,9 @@ const SlideRightAndScaleTransition = {
 };
 
 const HeaderConfig = {
-  header: ({ scene, navigation }) => <CustomHeaderBar scene={scene} navigation={navigation} />,
+  header: ({ scene, navigation }: CustomHeaderBarProps) => (
+    <CustomHeaderBar scene={scene} navigation={navigation} />
+  ),
 };
 
-export { TranslucentStatusBar, SolidStatusBar, HeaderConfig, CustomHeaderBar };
+export { TranslucentStatusBar, HeaderConfig, CustomHeaderBar };

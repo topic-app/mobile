@@ -61,7 +61,7 @@ function EventDisplay({ route, events, state }) {
         </View>
         <View>
           <View>
-            <TagList type="event" item={event} />
+            <TagList item={event} />
           </View>
         </View>
 

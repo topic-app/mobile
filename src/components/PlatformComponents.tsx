@@ -1,30 +1,40 @@
 import React from 'react';
-import { TouchableHighlight, Platform, ViewPropTypes } from 'react-native';
+import { TouchableHighlight, Platform, View, ViewStyle } from 'react-native';
 import { IconButton, useTheme, TouchableRipple } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-function PlatformIconButton({
+type PlatformIconButtonProps = {
+  // TODO: find a way to accept either `icon`, or `iosIcon` and `androidIcon`
+  icon: string;
+  iosIcon?: string;
+  androidIcon?: string;
+  size?: number;
+  iosSize?: number;
+  androidSize?: number;
+  onPress?: () => void;
+  style?: ViewStyle;
+  color?: string;
+};
+
+const PlatformIconButton: React.FC<PlatformIconButtonProps> = ({
   icon,
   iosIcon,
   androidIcon,
-  size,
+  size = 25,
   iosSize,
   androidSize,
   onPress,
   style,
   color,
-}) {
+}) => {
   const theme = useTheme();
   const { colors } = theme;
   if (Platform.OS === 'ios') {
     const iconComponent = (
-      <Icon
-        name={iosIcon || icon}
-        color={color ?? colors.icon}
-        style={style}
-        size={iosSize || size * 1.2}
-      />
+      <View style={style}>
+        <Icon name={iosIcon || icon} color={color ?? colors.icon} size={iosSize || size * 1.2} />
+      </View>
     );
     return onPress ? (
       <TouchableHighlight onPress={onPress}>{iconComponent}</TouchableHighlight>
@@ -41,39 +51,24 @@ function PlatformIconButton({
       style={style}
     />
   );
-}
+};
+
+type PlatformBackButtonProps = {
+  onPress: () => void;
+};
 
 const PlatformTouchable = Platform.OS === 'ios' ? TouchableHighlight : TouchableRipple;
-const PlatformBackButton = ({ onPress }) => (
-  <PlatformIconButton androidIcon="arrow-left" iosIcon="chevron-left" onPress={onPress} />
+const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) => (
+  <PlatformIconButton
+    icon="arrow-left"
+    androidIcon="arrow-left"
+    iosIcon="chevron-left"
+    onPress={onPress}
+  />
 );
 
 PlatformBackButton.propTypes = {
   onPress: PropTypes.func.isRequired,
-};
-
-PlatformIconButton.defaultProps = {
-  icon: null,
-  color: null,
-  iosIcon: null,
-  androidIcon: null,
-  size: 25,
-  iosSize: null,
-  androidSize: null,
-  style: null,
-  onPress: null,
-};
-
-PlatformIconButton.propTypes = {
-  icon: PropTypes.string,
-  color: PropTypes.string,
-  size: PropTypes.number,
-  iosIcon: PropTypes.string,
-  iosSize: PropTypes.number,
-  androidIcon: PropTypes.string,
-  androidSize: PropTypes.number,
-  onPress: PropTypes.func,
-  style: ViewPropTypes.style,
 };
 
 export { PlatformBackButton, PlatformIconButton, PlatformTouchable };

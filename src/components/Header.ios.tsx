@@ -1,39 +1,33 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { StatusBar, View, TouchableOpacity } from 'react-native';
+import { StatusBar, View, TouchableOpacity, StatusBarProps, ViewStyle } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme, Appbar, Text } from 'react-native-paper';
+import { NavigationProp } from '@react-navigation/native';
 
 import getNavigatorStyles from '@styles/NavStyles';
 
-function TranslucentStatusBar({ contentThemeName }) {
+const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const contentTheme = contentThemeName || theme.statusBarContentTheme;
+  const contentTheme = barStyle || theme.statusBarStyle;
   return (
     <StatusBar
       translucent
       backgroundColor={colors.statusBar}
-      barStyle={`${contentTheme}-content`}
+      barStyle={contentTheme}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...rest}
     />
   );
-}
+};
 
-function SolidStatusBar({ color, contentThemeName }) {
-  const theme = useTheme();
-  const contentTheme = contentThemeName || theme.statusBarContentTheme;
-  const backgroundColor = color || theme.colors.background;
-  return (
-    <StatusBar
-      translucent={false}
-      backgroundColor={backgroundColor}
-      barStyle={`${contentTheme}-content`}
-    />
-  );
-}
+type BackButtonProps = {
+  onPress: () => void;
+  previous: string;
+};
 
-function BackButton({ onPress, previous }) {
+const BackButton: React.FC<BackButtonProps> = ({ onPress, previous }) => {
   const theme = useTheme();
   const backColor = theme.dark ? '#0a84ff' : '#0a7aff';
   return (
@@ -59,28 +53,41 @@ function BackButton({ onPress, previous }) {
       </TouchableOpacity>
     </View>
   );
-}
+};
 
-function CustomHeaderBar({ scene, navigation }) {
+type OverflowItem = {
+  title: string;
+  icon: string;
+  onPress: () => void;
+};
+
+type ActionItem = {
+  icon: string;
+  onPress: () => void;
+};
+
+type CustomHeaderBarProps = {
+  scene: {
+    descriptor: {
+      options: {
+        title: string;
+        subtitle?: string;
+        headerStyle?: ViewStyle;
+        primary?: () => void;
+        home?: boolean;
+        actions?: ActionItem[];
+        overflow?: OverflowItem[];
+      };
+    };
+  };
+  navigation: NavigationProp<any, any>;
+};
+
+const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) => {
   const theme = useTheme();
   const navigatorStyles = getNavigatorStyles(theme);
 
-  const {
-    title,
-    subtitle, // On iOS, we want to see the subtitle as a title
-    headerStyle,
-    primary,
-    home,
-  } = scene.descriptor.options;
-
-  let headerTitle;
-  if (subtitle) {
-    headerTitle = subtitle;
-  } else if (title) {
-    headerTitle = title;
-  } else {
-    headerTitle = scene.route.name;
-  }
+  const { title, subtitle, headerStyle, primary, home } = scene.descriptor.options;
 
   let primaryAction;
   if (primary) {
@@ -98,64 +105,16 @@ function CustomHeaderBar({ scene, navigation }) {
       <TranslucentStatusBar />
       <Appbar.Header statusBarHeight={insets.top} style={[navigatorStyles.header, headerStyle]}>
         {primaryAction}
-        <Appbar.Content title={headerTitle} />
+        <Appbar.Content title={title} subtitle={subtitle} />
       </Appbar.Header>
     </View>
   );
-}
-
-TranslucentStatusBar.propTypes = {
-  contentThemeName: PropTypes.string,
-};
-
-TranslucentStatusBar.defaultProps = {
-  contentThemeName: '',
-};
-
-SolidStatusBar.propTypes = {
-  color: PropTypes.string.isRequired,
-  contentThemeName: PropTypes.string,
-};
-
-SolidStatusBar.defaultProps = {
-  contentThemeName: '',
-};
-
-BackButton.propTypes = {
-  onPress: PropTypes.func.isRequired,
-  previous: PropTypes.string,
-};
-
-BackButton.defaultProps = {
-  previous: null,
-};
-
-CustomHeaderBar.propTypes = {
-  scene: PropTypes.shape({
-    descriptor: PropTypes.shape({
-      options: PropTypes.shape({
-        title: PropTypes.string,
-        subtitle: PropTypes.string,
-        headerStyle: PropTypes.object,
-        primary: PropTypes.func,
-        home: PropTypes.bool,
-        overflow: PropTypes.arrayOf(PropTypes.object),
-        actions: PropTypes.arrayOf(PropTypes.object),
-      }).isRequired,
-    }).isRequired,
-    route: PropTypes.shape({
-      name: PropTypes.string,
-    }),
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-    openDrawer: PropTypes.func,
-    goBack: PropTypes.func,
-  }).isRequired,
 };
 
 const HeaderConfig = {
-  header: ({ scene, navigation }) => <CustomHeaderBar scene={scene} navigation={navigation} />,
+  header: ({ scene, navigation }: CustomHeaderBarProps) => (
+    <CustomHeaderBar scene={scene} navigation={navigation} />
+  ),
 };
 
-export { TranslucentStatusBar, SolidStatusBar, HeaderConfig, CustomHeaderBar };
+export { TranslucentStatusBar, HeaderConfig, CustomHeaderBar };

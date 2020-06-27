@@ -135,7 +135,7 @@ function PetitionComponentListCard({ navigate, petition }) {
       </Card.Content>
 
       <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-        <TagList type="petition" item={petition} />
+        <TagList item={petition} />
       </Card.Content>
     </CardBase>
   );

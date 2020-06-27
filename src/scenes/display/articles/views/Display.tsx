@@ -86,7 +86,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           Le {moment(article.date).format('LL')} à {moment(article.date).format('LT')}
         </Text>
       </View>
-      <TagList type="article" item={article} />
+      <TagList item={article} />
       {reqState.articles.info.loading && <ActivityIndicator size="large" color={colors.primary} />}
       {!article.preload && reqState.articles.info.success && (
         <View>

@@ -1,109 +1,18 @@
 import React from 'react';
 import { FlatList, View } from 'react-native';
-import PropTypes from 'prop-types';
-import { Chip, Avatar, useTheme } from 'react-native-paper';
+import { Chip, useTheme } from 'react-native-paper';
 
+import { genTagListData, ItemData } from '@utils/index';
 import getStyles from '@styles/Styles';
 
-function genTagData(item, type) {
-  // TEMP: if to check for undefineds
-  const data = [];
+import Avatar from './Avatar';
 
-  if (type === 'petition') {
-    if (item.publisher) {
-      const { type: voteType, user, group } = item.publisher;
-      if (voteType === 'group') {
-        data.push({
-          type: 'group',
-          id: group._id,
-          avatar: group.thumbnailUrl || '',
-          icon: 'newspaper',
-          text: group.displayName,
-        });
-      } else if (voteType === 'user') {
-        data.push({
-          type: 'author',
-          id: user._id,
-          icon: 'account',
-          text: user.displayName,
-        });
-      }
-    }
-  } else {
-    if (item.group) {
-      data.push({
-        type: 'group',
-        id: item.group._id,
-        avatar: item.group.thumbnailUrl || '',
-        icon: 'newspaper', // Just in case thumbnail url is undefined
-        text: item.group.displayName,
-      });
-    }
-    if (item.author && type !== 'event') {
-      data.push({
-        type: 'author',
-        id: item.author._id,
-        icon: 'account',
-        text: item.author.displayName,
-      });
-    }
-  }
+type Props = {
+  item: ItemData;
+};
 
-  if (item.tags) {
-    data.push(
-      ...item.tags.map((tag) => ({
-        type: 'tag',
-        id: tag._id,
-        icon: 'pound',
-        text: tag.displayName,
-        color: tag.color,
-      })),
-    );
-  }
-
-  if (item.location) {
-    if (item.location.global) {
-      data.push({
-        type: 'global',
-        icon: 'map-marker',
-        text: 'France',
-        id: '',
-      });
-    }
-
-    data.push(
-      ...item.location.schools.map((school) => ({
-        type: 'school',
-        id: school._id,
-        icon: 'map-marker',
-        text: school.displayName,
-      })),
-    );
-
-    data.push(
-      ...item.location.departments.map((department) => ({
-        type: 'department',
-        id: department._id,
-        icon: 'map-marker',
-        text: department.displayName,
-      })),
-    );
-  }
-
-  if (item.author && type === 'event') {
-    data.push({
-      type: 'author',
-      id: item.author._id,
-      icon: 'account',
-      text: item.author.displayName,
-    });
-  }
-
-  return data;
-}
-
-function TagList({ item, type }) {
-  const data = genTagData(item, type);
+const TagList: React.FC<Props> = ({ item }) => {
+  const data = genTagListData(item);
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -115,8 +24,8 @@ function TagList({ item, type }) {
         style={{ paddingVertical: 7 }}
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={data} // TODO: Use location, group author instead of tags
-        keyExtractor={(tag) => tag.type + tag.id}
+        data={data}
+        keyExtractor={(tag) => tag.type + tag.key}
         renderItem={({ item: tag, index: tagIndex }) => (
           <View
             style={{
@@ -126,9 +35,12 @@ function TagList({ item, type }) {
           >
             <Chip
               mode="outlined"
-              icon={tag.avatar ? '' : tag.icon}
-              // TODO: Changer la couleur de l'icone
-              avatar={tag.avatar ? <Avatar.Image size={24} source={{ uri: tag.avatar }} /> : ''}
+              icon={tag.image || tag.avatar ? undefined : tag.icon}
+              avatar={
+                tag.image || tag.avatar ? (
+                  <Avatar size={24} imageUrl={tag.image} avatar={tag.avatar} />
+                ) : undefined
+              }
               style={[
                 styles.tag,
                 {
@@ -137,57 +49,13 @@ function TagList({ item, type }) {
               ]}
               textStyle={styles.tagContent}
             >
-              {tag.text}
+              {tag.label}
             </Chip>
           </View>
         )}
       />
     </View>
   );
-}
-
-TagList.propTypes = {
-  type: PropTypes.string.isRequired,
-  item: PropTypes.shape({
-    tags: PropTypes.arrayOf(
-      PropTypes.shape({
-        displayName: PropTypes.string.isRequired,
-        color: PropTypes.string.isRequired,
-        _id: PropTypes.string.isRequired,
-      }),
-    ).isRequired,
-    location: PropTypes.shape({
-      global: PropTypes.bool.isRequired,
-      schools: PropTypes.arrayOf(
-        PropTypes.shape({
-          _id: PropTypes.string.isRequired,
-          displayName: PropTypes.string.isRequired,
-        }),
-      ).isRequired,
-      departments: PropTypes.arrayOf(
-        PropTypes.shape({
-          _id: PropTypes.string.isRequired,
-          displayName: PropTypes.string.isRequired,
-        }),
-      ).isRequired,
-    }).isRequired,
-    author: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      displayName: PropTypes.string.isRequired,
-    }),
-    publisher: PropTypes.shape({
-      type: PropTypes.string,
-      user: PropTypes.shape({
-        _id: PropTypes.string,
-        displayName: PropTypes.string,
-      }),
-      group: PropTypes.shape({
-        _id: PropTypes.string,
-        displayName: PropTypes.string,
-        thumbnailUrl: PropTypes.string,
-      }),
-    }),
-  }).isRequired,
 };
 
 export default TagList;
