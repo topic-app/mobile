@@ -4,7 +4,7 @@ import { TextInput, HelperText, Button, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import request from '@utils/request';
+import { request } from '@utils/index';
 import getAuthStyles from '../styles/Styles';
 
 class AuthCreatePageGeneral extends React.Component {

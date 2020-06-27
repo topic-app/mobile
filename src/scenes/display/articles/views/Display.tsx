@@ -43,7 +43,7 @@ import { addArticleRead, addArticleToList, addArticleList } from '@redux/actions
 import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
-import { getImageUrl } from '@utils/getAssetUrl';
+import { getImageUrl } from '@utils/index';
 
 import CommentInlineCard from '../components/Comment';
 import getArticleStyles from '../styles/Styles';

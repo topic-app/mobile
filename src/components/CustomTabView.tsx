@@ -1,18 +1,38 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Dimensions } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { TabView, TabBar } from 'react-native-tab-view';
+import { TabView, TabBar, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 
-function CustomTabView({
-  keyboardDismissMode,
+type TabBarProps = SceneRendererProps & {
+  navigationState: NavigationState<Route>;
+};
+
+type PageType = {
+  key: string;
+  title: string;
+  component: React.ReactElement;
+  onVisible?: () => void;
+};
+
+type Props = {
+  pages: PageType[];
+  keyboardDismissMode?: 'auto' | 'none' | 'on-drag';
+  scrollEnabled?: boolean;
+  hideTabBar?: boolean;
+  hideTabIndicator?: boolean;
+  initialTab?: number;
+  preloadDistance?: number;
+};
+
+const CustomTabView: React.FC<Props> = ({
+  keyboardDismissMode = 'auto',
   pages,
-  scrollEnabled,
-  hideTabBar,
-  hideTabIndicator,
-  initialTab,
+  scrollEnabled = true,
+  hideTabBar = false,
+  hideTabIndicator = false,
+  initialTab = 0,
   preloadDistance,
-}) {
+}) => {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -27,19 +47,17 @@ function CustomTabView({
     france: FranceTab,
   }); */
 
-  const renderScene = ({ route }) => {
-    return pages.find((p) => p.key === route.key).component;
-  };
+  pages[index].onVisible?.();
 
-  if (pages[index].onVisible) {
-    pages[index].onVisible();
-  }
+  const renderScene = ({ route }: { route: PageType }) => {
+    return pages.find((p) => p.key === route.key)!.component;
+  };
 
   const renderTabBar = hideTabBar
     ? () => null
-    : (props) => (
+    : (props: TabBarProps) => (
         <TabBar
-          // eslint-disable-next-line
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...props}
           style={{ backgroundColor: 'transparent', elevation: 0, borderWidth: 0 }}
           indicatorStyle={
@@ -68,32 +86,6 @@ function CustomTabView({
       />
     </View>
   );
-}
-
-CustomTabView.defaultProps = {
-  keyboardDismissMode: 'auto',
-  scrollEnabled: true,
-  hideTabBar: false,
-  hideTabIndicator: false,
-  initialTab: 0,
-  preloadDistance: null,
-};
-
-CustomTabView.propTypes = {
-  keyboardDismissMode: PropTypes.string,
-  pages: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-      onVisible: PropTypes.func,
-    }),
-  ).isRequired,
-  scrollEnabled: PropTypes.bool,
-  hideTabBar: PropTypes.bool,
-  hideTabIndicator: PropTypes.bool,
-  initialTab: PropTypes.number,
-  prealoadDistance: PropTypes.number,
 };
 
 export default CustomTabView;

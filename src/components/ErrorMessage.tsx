@@ -2,10 +2,38 @@ import React from 'react';
 import { Linking } from 'react-native';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { Banner, Avatar, useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
 
-function ErrorMessage({ type, strings, error, retry, restart, back }) {
-  const err = Array.isArray(error) && error?.length > 0 ? error[0] : error;
+import { Error as ErrorType } from '@ts/types';
+
+type Props = {
+  /* Please change me if `'app'` is too vague! */
+  type: 'axios' | 'app';
+  strings: {
+    what: string;
+    contentSingular: string;
+    contentPlural: string;
+    extra?: string;
+  };
+  error?: ErrorType | ErrorType[];
+  retry?: () => Promise<any>;
+  restart?: () => Promise<any>;
+  back?: () => Promise<any>;
+};
+
+const ErrorMessage: React.FC<Props> = ({
+  type,
+  strings = {
+    what: 'la récupération des données',
+    extra: '',
+    contentPlural: 'de contenus de ce type',
+    contentSingular: 'Le contenu',
+  },
+  error = { unknown: true },
+  retry,
+  restart,
+  back,
+}) => {
+  const err = (Array.isArray(error) && error?.length > 0 ? error[0] : error) as ErrorType;
   const theme = useTheme();
   const netInfo = useNetInfo();
   const { colors } = theme;
@@ -26,7 +54,7 @@ function ErrorMessage({ type, strings, error, retry, restart, back }) {
     if (err?.error?.response?.status === 503) {
       message = {
         icon: 'hammer-wrench',
-        text: `Le serveur est en maintenance. Merci de réessayer plus tard`,
+        text: 'Le serveur est en maintenance. Merci de réessayer plus tard',
       };
       if (retry) {
         actions = [
@@ -256,7 +284,7 @@ function ErrorMessage({ type, strings, error, retry, restart, back }) {
     } else if (!netInfo.isConnected || !netInfo.isInternetReachable) {
       message = {
         icon: 'wifi-strength-off-outline',
-        text: `Vous n'êtes pas connectés à Internet`,
+        text: "Vous n'êtes pas connectés à Internet",
       };
       if (retry) {
         actions = [
@@ -283,7 +311,7 @@ function ErrorMessage({ type, strings, error, retry, restart, back }) {
   } else {
     message = {
       icon: 'alert-decagram-outline',
-      text: `Une erreur inconnue est survenue`,
+      text: 'Une erreur inconnue est survenue',
     };
     if (back) {
       actions.push({
@@ -320,33 +348,6 @@ function ErrorMessage({ type, strings, error, retry, restart, back }) {
       )
     </Banner>
   );
-}
-
-ErrorMessage.defaultProps = {
-  retry: null,
-  restart: null,
-  back: null,
-  error: { unknown: true },
-  strings: {
-    what: 'la récupération des données',
-    extra: '',
-    contentPlural: 'de contenus de ce type',
-    contentSingular: 'Le contenu',
-  },
-};
-
-ErrorMessage.propTypes = {
-  type: PropTypes.string.isRequired,
-  strings: PropTypes.shape({
-    what: PropTypes.string,
-    extra: PropTypes.string,
-    contentPlural: PropTypes.string,
-    contentSingular: PropTypes.string,
-  }),
-  error: PropTypes.oneOf([PropTypes.object, PropTypes.array, null]), // TODO: Better PropTypes
-  retry: PropTypes.func,
-  restart: PropTypes.func,
-  back: PropTypes.func,
 };
 
 export default ErrorMessage;

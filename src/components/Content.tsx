@@ -1,17 +1,14 @@
 import React from 'react';
 import { Text, useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
+import { ImageStyle } from 'react-native';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import FitImage from 'react-native-fit-image';
 
-import { ContentParser } from '@ts/types';
+import { Content as ContentType } from '@ts/types';
 import getStyles from '@styles/Styles';
 import { getImageUrl, handleUrl } from '@utils/index';
 
-type Props = {
-  parser: ContentParser;
-  data: string;
-};
+type Props = ContentType;
 
 const Content: React.FC<Props> = ({ parser, data }) => {
   const styles = getStyles(useTheme());
@@ -27,7 +24,7 @@ const Content: React.FC<Props> = ({ parser, data }) => {
           link: styles.primaryText,
         }}
         rules={{
-          image: (node, children, parent, imageStyles) => {
+          image: (node, children, parent, imageStyles: { [key: string]: ImageStyle }) => {
             const { src } = node.attributes;
 
             return (
@@ -53,11 +50,6 @@ const Content: React.FC<Props> = ({ parser, data }) => {
     return <Text>{data}</Text>;
   }
   return null;
-};
-
-Content.propTypes = {
-  parser: PropTypes.string.isRequired,
-  data: PropTypes.string.isRequired,
 };
 
 export default Content;

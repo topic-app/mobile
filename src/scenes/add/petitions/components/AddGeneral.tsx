@@ -4,7 +4,7 @@ import { TextInput, HelperText, Button, List, Divider, Text, withTheme } from 'r
 import PropTypes from 'prop-types';
 
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import request from '@utils/request';
+import { request } from '@utils/index';
 import PetitionCard from '../../../home/petitions/components/Card';
 import getPetitionAddStyles from '../styles/Styles';
 

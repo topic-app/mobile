@@ -7,7 +7,7 @@ import moment from 'moment';
 import TagList from '@components/TagList';
 import { CardBase } from '@components/Cards';
 import getStyles from '@styles/Styles';
-import { getImageUrl } from '@utils/getAssetUrl';
+import { getImageUrl } from '@utils/index';
 
 function ActuComponentListCard({ article, navigate }) {
   const styles = getStyles(useTheme());
