@@ -3,21 +3,22 @@ import { Linking } from 'react-native';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { Banner, Avatar, useTheme } from 'react-native-paper';
 
-import { Error as ErrorType } from '@ts/types';
+import { Error as ErrorType, RequestState } from '@ts/types';
 
 type Props = {
   /* Please change me if `'app'` is too vague! */
   type: 'axios' | 'app';
   strings: {
     what: string;
-    contentSingular: string;
-    contentPlural: string;
+    contentSingular?: string;
+    contentPlural?: string;
     extra?: string;
   };
-  error?: ErrorType | ErrorType[];
-  retry?: () => Promise<any>;
-  restart?: () => Promise<any>;
-  back?: () => Promise<any>;
+  // TODO: Error devrait être qu'un seul type, pas une multitude de types
+  error?: RequestState['error'] | ErrorType | ErrorType[];
+  retry?: () => Promise<any> | void;
+  restart?: () => Promise<any> | void;
+  back?: () => Promise<any> | void;
 };
 
 const ErrorMessage: React.FC<Props> = ({

@@ -2,13 +2,14 @@ import React from 'react';
 import { Platform, Animated, View, ViewStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { CustomHeaderBar } from './Header';
+import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
 
-type Props = {
+type Props = CustomHeaderBarProps['scene']['descriptor']['options'] & {
   value: Animated.Value;
   maxElevation?: number;
   children?: React.ReactNode;
   headerStyle?: ViewStyle;
+  title: string;
 };
 
 const AnimatingHeader: React.FC<Props> = ({

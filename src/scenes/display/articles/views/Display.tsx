@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   Text,
   Divider,
@@ -24,7 +23,17 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 
-import { Article, State, StackNavigationProp, RouteProp } from '@ts/types';
+import {
+  Article,
+  ArticlePreload,
+  State,
+  StackNavigationProp,
+  RouteProp,
+  CommentRequestState,
+  Account,
+  ArticleRequestState,
+  Comment,
+} from '@ts/types';
 import { config } from '@root/app.json';
 import {
   ErrorMessage,
@@ -43,7 +52,7 @@ import { addArticleRead, addArticleToList, addArticleList } from '@redux/actions
 import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
-import { getImageUrl } from '@utils/index';
+import { getImageUrl, logger } from '@utils/index';
 
 import CommentInlineCard from '../components/Comment';
 import getArticleStyles from '../styles/Styles';
@@ -51,11 +60,17 @@ import { ArticleDisplayStackParams } from '../index';
 
 type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
 type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
+type CombinedReqState = {
+  articles: ArticleRequestState;
+  comments: CommentRequestState;
+};
 
 type ArticleDisplayHeaderProps = {
-  article: Article;
+  article: Article | ArticlePreload;
   navigation: Navigation;
-  reqState;
+  reqState: CombinedReqState;
+  account: Account;
+  setCommentModalVisible: (visible: boolean) => void;
 };
 
 const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
@@ -70,7 +85,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  const { following } = account?.accountInfo?.user?.data || {};
+  const following = account.accountInfo?.user.data.following;
 
   return (
     <View style={styles.page}>
@@ -106,7 +121,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               account.accountInfo.user &&
               following?.users.includes(article.author._id)
                 ? 'account-heart'
-                : null
+                : undefined
             }
             badgeColor={colors.valid}
             // TODO: Add imageUrl: imageUrl={article.author.imageUrl}
@@ -190,7 +205,36 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   );
 };
 
-function ArticleDisplay({ route, navigation, articles, comments, reqState, account, lists }) {
+type ArticleDisplayProps = {
+  route: Route;
+  navigation: Navigation;
+  articles: Article[];
+  comments: Comment[];
+  reqState: CombinedReqState;
+  account: Account;
+};
+
+type CommentPublisher = {
+  key: string;
+  title: string;
+  icon: string;
+  publisher: {
+    type: 'user' | 'group';
+    group?: string;
+  };
+  type: 'category';
+};
+
+const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
+  route,
+  navigation,
+  articles,
+  comments,
+  reqState,
+  account,
+  lists,
+}) => {
+  // Pour changer le type de route.params, voir ../index.tsx
   const { id, useLists } = route.params;
   React.useEffect(() => {
     if (!(useLists && lists?.some((l) => l.items?.some((i) => i._id === id)))) {
@@ -205,10 +249,9 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  let article = {};
+  let article: Article;
   if (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))) {
     article = lists?.find((l) => l.items?.some((i) => i._id === id))?.find((i) => i._id === id);
-    console.log(`Article ${article}`);
   } else {
     article = articles.find((t) => t._id === id);
   }
@@ -231,46 +274,46 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
     commentCharCountColor = colors.warning;
   }
 
-  let publishers = [];
+  const publishers: CommentPublisher[] = [];
   if (account.loggedIn) {
-    publishers = [
-      {
-        key: 'user',
-        title: account.accountInfo?.user?.info?.username,
-        icon: 'account',
+    publishers.push({
+      key: 'user',
+      title: account.accountInfo?.user?.info?.username,
+      icon: 'account',
+      publisher: {
+        type: 'user',
+      },
+      type: 'category',
+    });
+    account.groups.forEach((g) =>
+      publishers.push({
+        key: g._id,
+        title: g.shortName || g.name,
+        icon: 'newspaper',
         publisher: {
-          type: 'user',
+          type: 'group',
+          group: g._id,
         },
         type: 'category',
-      },
-      ...account.groups?.map((g) => {
-        return {
-          key: g._id,
-          title: g.shortName || g.name,
-          icon: 'newspaper',
-          publisher: {
-            type: 'group',
-            group: g._id,
-          },
-          type: 'category',
-        };
       }),
-    ];
+    );
   }
 
   const submitComment = () => {
-    commentAdd(
-      publishers.find((p) => p.key === publisher).publisher,
-      { parser: 'plaintext', data: commentText },
-      id,
-      'article',
-    )
-      .then(() => {
-        setCommentText('');
-        updateComments('initial', { parentId: id });
-        setCommentModalVisible(false);
-      })
-      .catch(() => console.log('Reject'));
+    if (account.loggedIn) {
+      commentAdd(
+        publishers.find((p) => p.key === publisher)!.publisher,
+        { parser: 'plaintext', data: commentText },
+        id,
+        'article',
+      )
+        .then(() => {
+          setCommentText('');
+          updateComments('initial', { parentId: id });
+          setCommentModalVisible(false);
+        })
+        .catch(() => logger.http('Comment Add Failed'));
+    }
   };
 
   const scrollY = new Animated.Value(0);
@@ -318,7 +361,6 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
             article={article}
             reqState={reqState}
             account={account}
-            route={route}
             navigation={navigation}
             setCommentModalVisible={setCommentModalVisible}
           />
@@ -334,7 +376,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
         //   updateComments('next', { parentId: id });
         // }}
         // onEndReachedThreshold={0.5}
-        keyExtractor={(comment) => comment._id}
+        keyExtractor={(comment: Comment) => comment._id}
         ItemSeparatorComponent={Divider}
         ListFooterComponent={
           reqState.articles.info.success ? (
@@ -346,7 +388,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
                 )}
               </View>
             </View>
-          ) : null
+          ) : undefined
         }
         ListEmptyComponent={() =>
           reqState.comments.list.success &&
@@ -359,7 +401,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
             </View>
           )
         }
-        renderItem={({ item }) => <CommentInlineCard comment={item} />}
+        renderItem={({ item }: { item: Comment }) => <CommentInlineCard comment={item} />}
       />
       <Modal
         isVisible={isListModalVisible}
@@ -431,6 +473,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
               );
             }}
             ListFooterComponent={() => {
+              // eslint-disable-next-line react-hooks/rules-of-hooks
               const [createListText, setCreateListText] = React.useState('');
               return (
                 <View>
@@ -497,6 +540,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
                         } else if (createListText === '') {
                           setErrorVisible(true);
                         } else if (!lists.some((l) => l.name === createListText)) {
+                          // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                           addArticleList(createListText);
                           setCreateList(false);
                           setCreateListText('');
@@ -579,7 +623,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
                 <PlatformIconButton
                   color={tooManyChars || commentText.length < 1 ? colors.disabled : colors.primary}
                   icon="send"
-                  onPress={tooManyChars || commentText.length < 1 ? null : submitComment}
+                  onPress={tooManyChars || commentText.length < 1 ? undefined : submitComment}
                   style={{ padding: 0 }}
                 />
               )}
@@ -589,7 +633,7 @@ function ArticleDisplay({ route, navigation, articles, comments, reqState, accou
       </Modal>
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { articles, comments, account } = state;
@@ -603,128 +647,3 @@ const mapStateToProps = (state: State) => {
 };
 
 export default connect(mapStateToProps)(ArticleDisplay);
-
-ArticleDisplay.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  articles: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      date: PropTypes.string.isRequired,
-      image: PropTypes.shape(),
-      description: PropTypes.string,
-      content: PropTypes.shape({
-        parser: PropTypes.string,
-        data: PropTypes.string,
-      }),
-      author: PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        displayName: PropTypes.string.isRequired,
-      }).isRequired,
-      group: PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        displayName: PropTypes.string.isRequired,
-      }),
-    }),
-  ).isRequired,
-  reqState: PropTypes.shape({
-    articles: PropTypes.shape({
-      info: PropTypes.shape({
-        loading: PropTypes.bool,
-        error: PropTypes.object, // TODO: Better PropTypes
-        success: PropTypes.bool,
-      }),
-    }).isRequired,
-    comments: PropTypes.shape({
-      list: PropTypes.shape({
-        loading: PropTypes.shape({
-          refresh: PropTypes.bool,
-          next: PropTypes.bool,
-        }),
-        error: PropTypes.object,
-      }),
-    }).isRequired,
-  }).isRequired,
-  account: PropTypes.shape({
-    loggedIn: PropTypes.bool.isRequired,
-    accountInfo: PropTypes.shape({
-      user: PropTypes.shape({
-        info: PropTypes.shape({
-          username: PropTypes.string.isRequired,
-        }).isRequired,
-        data: PropTypes.shape({
-          following: PropTypes.shape({
-            users: PropTypes.array,
-            groups: PropTypes.array,
-          }),
-        }),
-      }),
-    }),
-  }).isRequired,
-  comments: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
-
-ArticleDisplayHeader.propTypes = {
-  article: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    date: PropTypes.string.isRequired,
-    image: PropTypes.shape(),
-    description: PropTypes.string,
-    content: PropTypes.shape({
-      parser: PropTypes.string,
-      data: PropTypes.string,
-    }),
-    author: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      displayName: PropTypes.string.isRequired,
-    }).isRequired,
-    group: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      displayName: PropTypes.string.isRequired,
-    }).isRequired,
-    preload: PropTypes.bool,
-  }).isRequired,
-  reqState: PropTypes.shape({
-    articles: PropTypes.shape({
-      info: PropTypes.shape({
-        loading: PropTypes.bool,
-        error: PropTypes.object, // TODO: Better PropTypes
-        success: PropTypes.bool,
-      }),
-    }).isRequired,
-    comments: PropTypes.shape({
-      list: PropTypes.shape({
-        loading: PropTypes.shape({
-          refresh: PropTypes.bool,
-          next: PropTypes.bool,
-        }),
-        error: PropTypes.object,
-      }),
-    }).isRequired,
-  }).isRequired,
-  account: PropTypes.shape({
-    loggedIn: PropTypes.bool.isRequired,
-    accountInfo: PropTypes.shape({
-      user: PropTypes.shape({
-        info: PropTypes.shape({
-          username: PropTypes.string.isRequired,
-        }).isRequired,
-        data: PropTypes.shape({
-          following: PropTypes.shape({
-            users: PropTypes.array,
-            groups: PropTypes.array,
-          }),
-        }),
-      }),
-    }),
-  }).isRequired,
-};

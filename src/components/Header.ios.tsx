@@ -57,7 +57,7 @@ const BackButton: React.FC<BackButtonProps> = ({ onPress, previous }) => {
 
 type OverflowItem = {
   title: string;
-  icon: string;
+  icon?: string;
   onPress: () => void;
 };
 
@@ -66,7 +66,7 @@ type ActionItem = {
   onPress: () => void;
 };
 
-type CustomHeaderBarProps = {
+export type CustomHeaderBarProps = {
   scene: {
     descriptor: {
       options: {

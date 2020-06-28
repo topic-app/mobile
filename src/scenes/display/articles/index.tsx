@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ArticleDisplay from './views/Display';
 
 export type ArticleDisplayStackParams = {
-  Display: { id: string; title: string };
+  Display: { id: string; title: string; useLists: boolean };
 };
 
 const Stack = createStackNavigator<ArticleDisplayStackParams>();

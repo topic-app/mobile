@@ -23,7 +23,7 @@ const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) =
 
 type OverflowItem = {
   title: string;
-  icon: string;
+  icon?: string;
   onPress: () => void;
 };
 
@@ -32,7 +32,7 @@ type ActionItem = {
   onPress: () => void;
 };
 
-type CustomHeaderBarProps = {
+export type CustomHeaderBarProps = {
   scene: {
     descriptor: {
       options: {
