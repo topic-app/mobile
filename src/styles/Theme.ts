@@ -1,8 +1,10 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 import { Platform } from 'react-native';
 import { solidLight, solidDark } from './SolidColors';
+import fonts from './Fonts';
 
 const common = {
+  fonts,
   roundness: Platform.OS === 'ios' ? 15 : 5,
   colors: {
     statusBar: 'transparent',
