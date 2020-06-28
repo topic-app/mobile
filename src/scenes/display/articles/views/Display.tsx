@@ -85,7 +85,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  const following = account.accountInfo?.user.data.following;
+  const following = account.accountInfo?.user?.data.following;
 
   return (
     <View style={styles.page}>
@@ -242,7 +242,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     }
     updateComments('initial', { parentId: id });
     addArticleRead(id);
-  });
+  }, []);
 
   const theme = useTheme();
   const styles = getStyles(theme);
