@@ -5,7 +5,13 @@ import RootNavigator from './scenes/Root';
 import AuthStackNavigator from './scenes/auth/index';
 import LandingStackNavigator from './scenes/landing/index';
 
-const Stack = createStackNavigator();
+export type AppStackParams = {
+  Auth: undefined;
+  Root: undefined;
+  Landing: undefined;
+};
+
+const Stack = createStackNavigator<AppStackParams>();
 
 function AppStackNavigator() {
   return (

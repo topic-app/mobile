@@ -1,11 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { View, ScrollView } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { StackNavigationProp } from '@react-navigation/stack';
 
+import { State, AccountRequestState, CreationData } from '@ts/types';
+import { logger } from '@utils/index';
 import {
   TranslucentStatusBar,
   StepperView,
@@ -16,6 +18,7 @@ import {
 import { register } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 
+import { AuthStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageSchool from '../components/CreateSchool';
@@ -23,11 +26,16 @@ import AuthCreatePagePrivacy from '../components/CreatePrivacy';
 import AuthCreatePageProfile from '../components/CreateProfile';
 import AuthCreatePageLegal from '../components/CreateLegal';
 
-function AuthCreate({ navigation, reqState, creationData }) {
+type Props = {
+  navigation: StackNavigationProp<AuthStackParams, 'Create'>;
+  reqState: AccountRequestState;
+  creationData?: CreationData;
+};
+
+const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);
-  const { colors } = theme;
 
   const create = () => {
     const reqParams = {
@@ -41,8 +49,8 @@ function AuthCreate({ navigation, reqState, creationData }) {
         avatar: creationData.avatar,
         description: null,
         public: creationData.accountType === 'public',
-        firstName: creationData.accountType === 'public' ? creationData.firstname : null,
-        lastName: creationData.accountType === 'public' ? creationData.lastname : null,
+        firstName: creationData.accountType === 'public' ? creationData.firstName : null,
+        lastName: creationData.accountType === 'public' ? creationData.lastName : null,
       },
       device: {
         type: 'app',
@@ -57,7 +65,7 @@ function AuthCreate({ navigation, reqState, creationData }) {
           screen: 'CreateSuccess',
         }),
       )
-      .catch((e) => console.log(e));
+      .catch((e) => logger.error('Failed to create account', e));
   };
 
   return (
@@ -140,51 +148,11 @@ function AuthCreate({ navigation, reqState, creationData }) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { account } = state;
   return { creationData: account.creationData, reqState: account.state };
 };
 
 export default connect(mapStateToProps)(AuthCreate);
-
-AuthCreate.defaultProps = {
-  creationData: {},
-  reqState: {
-    error: null,
-    success: null,
-    loading: false,
-  },
-};
-
-AuthCreate.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
-  creationData: PropTypes.shape({
-    avatar: PropTypes.object,
-    username: PropTypes.string,
-    email: PropTypes.string,
-    password: PropTypes.string,
-    global: PropTypes.bool,
-    schools: PropTypes.arrayOf(PropTypes.string),
-    departments: PropTypes.arrayOf(PropTypes.string),
-    accountType: PropTypes.string,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-  }),
-  reqState: PropTypes.shape({
-    register: PropTypes.shape({
-      error: PropTypes.any,
-      success: PropTypes.bool,
-      loading: PropTypes.bool,
-    }).isRequired,
-    check: PropTypes.shape({
-      error: PropTypes.any,
-      success: PropTypes.bool,
-      loading: PropTypes.bool,
-    }).isRequired,
-  }),
-};

@@ -1,6 +1,7 @@
+import { Theme } from '@ts/types';
 import { StyleSheet } from 'react-native';
 
-function getPetitionStyles(theme) {
+function getPetitionStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     centerContainer: {

@@ -9,9 +9,9 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 type Props = {
   collapsed: boolean;
-  style: ViewStyle;
-  duration: number;
-  children: React.ReactNode;
+  style?: ViewStyle;
+  duration?: number;
+  children?: React.ReactNode;
 };
 
 const CollapsibleView: React.FC<Props> = ({

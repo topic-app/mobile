@@ -1,16 +1,25 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { Platform, View, FlatList } from 'react-native';
 import { Text, Button, Divider, Snackbar, useTheme } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import getStyles from '@styles/Styles';
+import { Location, Group, State, GroupRequestState } from '@ts/types';
 import { Illustration } from '@components/index';
 import { updateGroups } from '@redux/actions/api/groups';
+import getStyles from '@styles/Styles';
+
+import { AuthStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-function AuthCreateSuccess({ navigation, location, groups, state }) {
+type Props = {
+  navigation: StackNavigationProp<AuthStackParams, 'CreateSuccess'>;
+  location: Location;
+  groups: Group[];
+  reqState: GroupRequestState;
+};
+
+const AuthCreateSuccess: React.FC<Props> = ({ navigation, location, groups, reqState }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);
@@ -19,8 +28,6 @@ function AuthCreateSuccess({ navigation, location, groups, state }) {
   React.useEffect(() => {
     updateGroups('initial', { schools: location.schools });
   }, []);
-
-  console.log(`Groups ${JSON.stringify(groups)}`);
 
   return (
     <View style={styles.page}>
@@ -63,19 +70,11 @@ function AuthCreateSuccess({ navigation, location, groups, state }) {
       </View>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { location, groups } = state;
-  return { location, groups: groups.data, state: groups.state };
+  return { location, groups: groups.data, reqState: groups.state };
 };
 
 export default connect(mapStateToProps)(AuthCreateSuccess);
-
-AuthCreateSuccess.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
-  location: PropTypes.shape(),
-};

@@ -22,18 +22,19 @@ import {
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Modal from 'react-native-modal';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
 
 import {
   Article,
   ArticlePreload,
   State,
-  StackNavigationProp,
-  RouteProp,
   CommentRequestState,
   Account,
   ArticleRequestState,
   Comment,
 } from '@ts/types';
+
 import { config } from '@root/app.json';
 import {
   ErrorMessage,
@@ -312,7 +313,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           updateComments('initial', { parentId: id });
           setCommentModalVisible(false);
         })
-        .catch(() => logger.http('Comment Add Failed'));
+        .catch((e) => logger.error('Failed to add comment to article', e));
     }
   };
 

@@ -1,9 +1,13 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  TransitionPresets,
+  StackNavigationProp,
+} from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { StackNavigationProp, LocationList, State } from '@ts/types';
+import { LocationList, State } from '@ts/types';
 
 import DisplayStackNavigator from './display/index';
 import AddStackNavigator from './add/index';
@@ -33,12 +37,22 @@ if (Platform.OS === 'ios') {
   };
 }
 
+export type MainStackParams = {
+  Display: undefined;
+  Configure: undefined;
+  Lists: undefined;
+  Add: undefined;
+  More: undefined;
+  Search: undefined;
+  Home1: undefined;
+};
+
+const Stack = createStackNavigator<MainStackParams>();
+
 type MainNavigatorProps = {
   navigation: StackNavigationProp<any, any>;
   location: LocationList;
 };
-
-const Stack = createStackNavigator();
 
 const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) => {
   if (!location.selected) {

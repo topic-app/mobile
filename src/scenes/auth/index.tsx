@@ -6,7 +6,14 @@ import AuthCreateScreen from './views/Create';
 import AuthResetPasswordScreen from './views/ResetPassword';
 import AuthCreateSuccessScreen from './views/CreateSuccess';
 
-const Stack = createStackNavigator();
+export type AuthStackParams = {
+  Login: undefined;
+  Create: undefined;
+  ResetPassword: undefined;
+  CreateSuccess: undefined;
+};
+
+const Stack = createStackNavigator<AuthStackParams>();
 
 function AuthNavigator() {
   return (

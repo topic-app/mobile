@@ -125,8 +125,8 @@ function AuthCreatePageProfile({ next, prev, username, accountType }) {
       accountType === 'private'
     ) {
       updateCreationData({
-        firstname: firstnameVal,
-        lastname: lastnameVal,
+        firstName: firstnameVal,
+        lastName: lastnameVal,
         avatar: activeAvatar,
       });
       next();

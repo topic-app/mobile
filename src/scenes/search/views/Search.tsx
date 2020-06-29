@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, TextInput } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { Text, Searchbar, Button, useTheme, Divider } from 'react-native-paper';
+import { useFocusEffect, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+import {
+  CategoriesList,
+  ChipAddList,
+  ChipSuggestionList,
+  CategoryTitle,
+  CollapsibleView,
+} from '@components/index';
 import getStyles from '@styles/Styles';
-import { useFocusEffect } from '@react-navigation/native';
 
-import { CategoryTitle } from '@components/Typography';
-import CollapsibleView from '@components/CollapsibleView';
-import { CategoriesList, ChipAddList, ChipSuggestionList } from '@components/ChipLists';
 import getSearchStyles from '../styles/Styles';
-import { mapSuggestions, getSuggestions } from '../utils/suggestions';
-
-const TAG_ICON = 'pound';
-const LOCATION_ICON = 'map-marker';
-const GROUP_ICON = 'account-multiple';
+import { getSuggestions, SuggestionType } from '../utils/suggestions';
+import { SearchStackParams } from '../index';
 
 const categories = [
   { key: 'articles', title: 'Articles', icon: 'newspaper', type: 'category' },
@@ -25,18 +27,31 @@ const categories = [
   { key: 'users', title: 'Utilisateurs', icon: 'account-outline', type: 'category' },
 ];
 
-function Search({ navigation, route }) {
+type SearchProps = {
+  navigation: StackNavigationProp<SearchStackParams, 'Search'>;
+  route: RouteProp<SearchStackParams, 'Search'>;
+};
+
+const Search: React.FC<SearchProps> = ({ navigation, route }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
   const searchStyles = getSearchStyles(theme);
+
   const insets = useSafeArea();
 
   const { initialCategory } = route.params;
 
   // State related to query, use these values when submitting search
   const [searchText, setSearchText] = useState('');
-  const [filters, setFilters] = useState({
+
+  type FiltersType = {
+    category: typeof initialCategory;
+    tags: string[];
+    locations: string[];
+    groups: string[];
+  };
+  const [filters, setFilters] = useState<FiltersType>({
     category: initialCategory,
     tags: [], // Array of tag ids
     locations: [], // Array of location ids
@@ -48,7 +63,12 @@ function Search({ navigation, route }) {
 
   // At every re-render, newSuggestions (see below) is subject to change, but we don't want to lose suggestions
   // that we've tapped on, so we store all suggestions we've tapped on so we don't lose them on rerender
-  const [suggestionData, setSuggestionData] = useState({
+  type SuggestionDataType = {
+    tags: SuggestionType[];
+    locations: SuggestionType[];
+    groups: SuggestionType[];
+  };
+  const [suggestionData, setSuggestionData] = useState<SuggestionDataType>({
     tags: [],
     locations: [],
     groups: [],
@@ -56,11 +76,10 @@ function Search({ navigation, route }) {
 
   // Fetch new suggestions relevant to the user's search query, every time the user changes the Searchbar input,
   // this componenent gets rerendered and new suggestions are requested
-  const newSuggestions = getSuggestions(searchText, filters);
+  const { newTags, newLocations, newGroups } = getSuggestions(searchText, filters);
 
   // Transform array of [{_id: '32133423', displayName: 'informatique'}, ...] into an array readable by ChipAddList
   // => [{ key: '32133423', title: 'informatique', icon: TAG_ICON, type: 'tags'}, ...]
-  const newTags = mapSuggestions(newSuggestions.tags, TAG_ICON, 'tags');
   // When we expand filters, we want to see primarily the tags we've added but also suggestions at the end of ChipAddList
   // But in some cases, newTags might contain items which are already in suggestionData, resulting in duplicate items
   // So we make sure that incoming suggestions are not duplicates of old ones before displaying them in ChipAddList
@@ -74,7 +93,6 @@ function Search({ navigation, route }) {
   const tagData = [...suggestionData.tags, ...remainingTags];
 
   // Same principle as tags
-  const newLocations = mapSuggestions(newSuggestions.locations, LOCATION_ICON, 'locations');
   const remainingLocations = newLocations.filter(
     (loc) => !suggestionData.locations.map((s) => s.key).includes(loc.key),
   );
@@ -82,7 +100,6 @@ function Search({ navigation, route }) {
   const locationData = [...suggestionData.locations, ...remainingLocations];
 
   // Same principle as tags and locations
-  const newGroups = mapSuggestions(newSuggestions.groups, GROUP_ICON, 'groups');
   const remainingGroups = newGroups.filter(
     (grp) => !suggestionData.groups.map((s) => s.key).includes(grp.key),
   );
@@ -94,10 +111,10 @@ function Search({ navigation, route }) {
   const expandFilter = () => setFilterCollapsed(false);
 
   const numFilters = filters.locations.length + filters.tags.length + filters.groups.length;
-  const categoryName = categories.find((c) => c.key === filters.category).title;
+  const categoryName = categories.find((c) => c.key === filters.category)!.title;
 
   // Takes a given suggestion and adds it to filters
-  const addSuggestion = (suggestion) => {
+  const addSuggestion = (suggestion: SuggestionType) => {
     const { type, key } = suggestion;
     // Will only proceed with adding it to filters if it isn't already added
     if (!filters[type].includes(key)) {
@@ -115,7 +132,7 @@ function Search({ navigation, route }) {
     }
   };
 
-  const toggleSuggestion = (suggestion) => {
+  const toggleSuggestion = (suggestion: SuggestionType) => {
     // Same thing as addSuggestion but this one toggles the suggestion
     const { type, key } = suggestion;
     if (!filters[type].includes(key)) {
@@ -140,11 +157,11 @@ function Search({ navigation, route }) {
     console.log(`Search: \nText: ${searchText} \nFilters: ${JSON.stringify(filters)}`);
   };
 
-  const searchRef = React.createRef();
+  const searchRef = React.createRef<TextInput>();
 
   useFocusEffect(
     React.useCallback(() => {
-      setImmediate(() => searchRef.current.focus());
+      setImmediate(() => searchRef.current?.focus());
     }, [null]),
   );
 
@@ -154,6 +171,7 @@ function Search({ navigation, route }) {
         <View style={searchStyles.queryContainer}>
           <View style={{ height: insets.top, width: '100%' }} />
           <Searchbar
+            ref={searchRef}
             icon="arrow-left"
             onIconPress={navigation.goBack}
             placeholder="Rechercher"
@@ -161,7 +179,6 @@ function Search({ navigation, route }) {
               setSearchText(props);
               collapseFilter();
             }}
-            ref={searchRef}
             value={searchText}
             style={searchStyles.searchbar}
             onSubmitEditing={submitSearch}
@@ -214,7 +231,7 @@ function Search({ navigation, route }) {
               <CategoriesList
                 categories={categories}
                 selected={filters.category}
-                setSelected={(category) => setFilters({ ...filters, category })}
+                setSelected={(category: any) => setFilters({ ...filters, category })}
               />
             </View>
             <CollapsibleView collapsed={locationData.length === 0}>
@@ -257,27 +274,6 @@ function Search({ navigation, route }) {
       </ScrollView>
     </View>
   );
-}
+};
 
 export default Search;
-
-CategoryTitle.defaultProps = {
-  icon: null,
-};
-
-CategoryTitle.propTypes = {
-  children: PropTypes.string.isRequired,
-  icon: PropTypes.string,
-};
-
-Search.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      initialCategory: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};

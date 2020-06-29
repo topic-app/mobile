@@ -253,7 +253,7 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
 
 type ChipSuggestionListProps = {
   data?: ListItem[];
-  setList: (item: ListItem) => void;
+  setList: (item: any) => void;
   style?: ViewStyle;
   containerStyle?: ViewStyle;
 };

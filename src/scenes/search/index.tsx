@@ -4,7 +4,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Search from './views/Search';
 import SearchTags from './views/Tags';
 
-const Stack = createStackNavigator();
+export type SearchStackParams = {
+  Search: {
+    initialCategory: 'articles' | 'events' | 'petitions' | 'locations' | 'groups' | 'users';
+  };
+  Tags: undefined;
+};
+
+const Stack = createStackNavigator<SearchStackParams>();
 
 function SearchStackNavigator() {
   return (

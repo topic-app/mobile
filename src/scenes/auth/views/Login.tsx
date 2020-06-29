@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { StackNavigationProp } from '@react-navigation/stack';
 
+import { AccountRequestState, State } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -13,19 +14,36 @@ import {
 } from '@components/index';
 import getStyles from '@styles/Styles';
 import { login } from '@redux/actions/data/account';
-import getAuthStyles from '../styles/Styles';
 
-function AuthLogin({ navigation, reqState }) {
+import getAuthStyles from '../styles/Styles';
+import { AuthStackParams } from '../index';
+
+type Props = {
+  navigation: StackNavigationProp<AuthStackParams, 'Login'>;
+  reqState: AccountRequestState;
+};
+
+const AuthLogin: React.FC<Props> = ({
+  navigation,
+  reqState = {
+    login: {
+      error: null,
+      success: null,
+      loading: false,
+      incorrect: null,
+    },
+  },
+}) => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const usernameInput = React.createRef();
-  const passwordInput = React.createRef();
+  const usernameInput = React.createRef<RNTextInput>();
+  const passwordInput = React.createRef<RNTextInput>();
 
   const submit = () => {
     const fields = {
       accountInfo: {
-        username: usernameInput.current.state.value,
-        password: passwordInput.current.state.value,
+        username,
+        password,
       },
       device: {
         type: 'app',
@@ -80,14 +98,14 @@ function AuthLogin({ navigation, reqState }) {
                 label="Nom d'utilisateur ou addresse mail"
                 value={username}
                 autoCompleteType="username"
-                onSubmitEditing={() => passwordInput.current.focus()}
+                onSubmitEditing={() => passwordInput.current?.focus()}
                 autoCorrect={false}
                 autoFocus
-                error={reqState.login.incorrect}
+                error={!!reqState.login.incorrect} // `!!` transforms it into a boolean
                 mode="outlined"
                 textContentType="username"
                 style={authStyles.textInput}
-                onChangeText={(text) => setUsername(text)}
+                onChangeText={setUsername}
               />
               <HelperText type="error" visible={false} />
               {/* Because spacing */}
@@ -98,14 +116,14 @@ function AuthLogin({ navigation, reqState }) {
                 label="Mot de Passe"
                 value={password}
                 mode="outlined"
-                error={reqState.login.incorrect}
+                error={!!reqState.login.incorrect}
                 autoCorrect={false}
                 secureTextEntry
                 onSubmitEditing={() => submit()}
                 textContentType="password"
                 autoCompleteType="password"
                 style={authStyles.textInput}
-                onChangeText={(text) => setPassword(text)}
+                onChangeText={setPassword}
               />
               <HelperText type="error" visible={reqState.login.incorrect}>
                 Le nom d&apos;utilisateur ou le mot de passe est incorrect
@@ -115,7 +133,7 @@ function AuthLogin({ navigation, reqState }) {
               <Button
                 mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                 uppercase={Platform.OS !== 'ios'}
-                onPress={() => submit()}
+                onPress={submit}
                 style={{ flex: 1 }}
               >
                 Se connecter
@@ -126,37 +144,11 @@ function AuthLogin({ navigation, reqState }) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { account } = state;
   return { reqState: account.state };
 };
 
 export default connect(mapStateToProps)(AuthLogin);
-
-AuthLogin.defaultProps = {
-  reqState: {
-    login: {
-      error: null,
-      success: null,
-      loading: false,
-      incorrect: null,
-    },
-  },
-};
-
-AuthLogin.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
-  reqState: PropTypes.shape({
-    login: PropTypes.shape({
-      error: PropTypes.any,
-      success: PropTypes.bool,
-      loading: PropTypes.bool,
-      incorrect: PropTypes.bool,
-    }),
-  }),
-};

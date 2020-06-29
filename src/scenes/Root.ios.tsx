@@ -179,9 +179,13 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
   );
 };
 
-const Tab = createBottomTabNavigator();
+export type RootNavParams = {
+  Main: undefined;
+};
 
-function MainNavigator() {
+const Tab = createBottomTabNavigator<RootNavParams>();
+
+function RootNavigator() {
   return (
     <Tab.Navigator
       initialRouteName="Main"
@@ -192,4 +196,4 @@ function MainNavigator() {
   );
 }
 
-export default MainNavigator;
+export default RootNavigator;

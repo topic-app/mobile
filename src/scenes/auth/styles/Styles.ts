@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getAuthStyles(theme) {
+import { Theme } from '@ts/types';
+
+function getAuthStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     centerContainer: {

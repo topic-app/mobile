@@ -3,9 +3,13 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 
 import MainStackNavigator from './Main';
 
-const Stack = createStackNavigator();
+export type RootNavParams = {
+  Main: undefined;
+};
 
-function MainNavigator() {
+const Stack = createStackNavigator<RootNavParams>();
+
+function RootNavigator() {
   return (
     <Stack.Navigator
       initialRouteName="Main"
@@ -17,4 +21,4 @@ function MainNavigator() {
   );
 }
 
-export default MainNavigator;
+export default RootNavigator;

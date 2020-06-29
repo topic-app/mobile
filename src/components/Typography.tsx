@@ -1,13 +1,11 @@
 import React from 'react';
-import { View, TextStyle, ViewStyle } from 'react-native';
+import { View, TextStyle, ViewStyle, TextProps } from 'react-native';
 import { useTheme, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-type CategoryTitleProps = {
-  children: string;
+type CategoryTitleProps = TextProps & {
   icon?: string;
   iconStyle?: TextStyle;
-  style?: ViewStyle;
   containerStyle?: ViewStyle;
 };
 
