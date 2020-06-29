@@ -3,20 +3,25 @@ import PropTypes from 'prop-types';
 import { View, Image } from 'react-native';
 import { Card, Paragraph, Text, useTheme } from 'react-native-paper';
 import moment from 'moment';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TagList from '@components/TagList';
 import { CardBase } from '@components/Cards';
 import getStyles from '@styles/Styles';
 import { getImageUrl } from '@utils/index';
 
-function ActuComponentListCard({ article, navigate }) {
-  const styles = getStyles(useTheme());
+function ActuComponentListCard({ article, navigate, unread }) {
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
 
   return (
     <CardBase onPress={navigate}>
       <View style={{ paddingTop: 10, paddingBottom: 5 }}>
         <Card.Content>
-          <Text style={styles.cardTitle}>{article?.title}</Text>
+          <Text style={[styles.cardTitle, !unread && { color: colors.disabled }]}>
+            {article?.title}
+          </Text>
         </Card.Content>
         <Card.Content style={{ marginTop: 5 }}>
           <View style={{ flexDirection: 'row' }}>
@@ -39,7 +44,9 @@ function ActuComponentListCard({ article, navigate }) {
               }}
             >
               <Text style={styles.subtitle}>Publié {moment(article?.date).fromNow()}</Text>
-              <Paragraph style={styles.text}>{article?.summary}</Paragraph>
+              <Paragraph style={[styles.text, !unread && { color: colors.disabled }]}>
+                {article?.summary}
+              </Paragraph>
             </View>
           </View>
         </Card.Content>

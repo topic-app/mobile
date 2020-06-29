@@ -9,9 +9,8 @@ import { connect } from 'react-redux';
 import { AnimatingHeader, ErrorMessage, Illustration, CategoriesList } from '@components/index';
 import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
+import ArticleCard from '@components/cards/Article';
 import getArticleStyles from '../styles/Styles';
-
-import ArticleCard from '../components/Card';
 
 function ArticleList({ navigation, articles, lists, read, state, theme }) {
   const scrollY = new Animated.Value(0);
@@ -190,6 +189,10 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
         }
         renderItem={(article) => (
           <ArticleCard
+            unread={
+              !read.includes(article.item._id) ||
+              categories.find((c) => c.key === category).key !== 'all'
+            }
             article={article.item}
             navigate={() =>
               navigation.navigate('Main', {
