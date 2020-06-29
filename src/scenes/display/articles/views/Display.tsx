@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Text,
+  Title,
   Divider,
   List,
   useTheme,
@@ -53,6 +54,7 @@ import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
 import { getImageUrl, logger } from '@utils/index';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CommentInlineCard from '../components/Comment';
 import getArticleStyles from '../styles/Styles';
@@ -67,6 +69,7 @@ type CombinedReqState = {
 
 type ArticleDisplayHeaderProps = {
   article: Article | ArticlePreload;
+  offline: boolean;
   navigation: Navigation;
   reqState: CombinedReqState;
   account: Account;
@@ -79,6 +82,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   reqState,
   account,
   setCommentModalVisible,
+  offline,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -96,12 +100,28 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
         />
       )}
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>{article.title}</Text>
+        <Title style={styles.title}>{article.title}</Title>
         <Text style={styles.subtitle}>
           Le {moment(article.date).format('LL')} à {moment(article.date).format('LT')}
         </Text>
       </View>
       <TagList item={article} />
+      {offline && (
+        <View
+          style={[
+            styles.contentContainer,
+            { flexDirection: 'row', marginBottom: 0, alignItems: 'center' },
+          ]}
+        >
+          <Icon
+            style={{ marginRight: 10 }}
+            color={colors.disabled}
+            size={24}
+            name="cloud-off-outline"
+          />
+          <Title style={{ color: colors.disabled }}>Hors ligne</Title>
+        </View>
+      )}
       {reqState.articles.info.loading && <ActivityIndicator size="large" color={colors.primary} />}
       {!article.preload && reqState.articles.info.success && (
         <View>
@@ -242,7 +262,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     }
     updateComments('initial', { parentId: id });
     addArticleRead(id);
-  }, []);
+  }, [null]);
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -251,7 +271,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   let article: Article;
   if (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))) {
-    article = lists?.find((l) => l.items?.some((i) => i._id === id))?.find((i) => i._id === id);
+    article = lists.find((l) => l.items.some((i) => i._id === id)).items.find((i) => i._id === id);
   } else {
     article = articles.find((t) => t._id === id);
   }
@@ -330,8 +350,18 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     <View style={styles.page}>
       <AnimatingHeader
         value={scrollY}
-        title={route.params.title || 'Actus - Aperçu'}
-        subtitle={route.params.title && 'Actus - Aperçu'}
+        title={
+          route.params.title ||
+          (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+            ? 'Actus - Hors ligne'
+            : 'Actus')
+        }
+        subtitle={
+          route.params.title &&
+          (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+            ? 'Actus - Hors ligne'
+            : 'Actus')
+        }
         actions={[
           {
             icon: 'playlist-plus',
@@ -359,6 +389,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         ListHeaderComponent={() => (
           <ArticleDisplayHeader
             article={article}
+            offline={useLists && lists?.some((l) => l.items?.some((i) => i._id === id))}
             reqState={reqState}
             account={account}
             navigation={navigation}
@@ -368,7 +399,11 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         data={reqState.articles.info.success ? articleComments : []}
         refreshing={reqState.comments.list.loading.refresh}
         onRefresh={() => {
-          fetchArticle(id);
+          if (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))) {
+            fetchArticle(id);
+          } else {
+            addArticleToList(id, lists.find((l) => l.items.some((i) => i._id === id)).key);
+          }
           updateComments('refresh', { parentId: id });
         }}
         // onEndReached={() => {
