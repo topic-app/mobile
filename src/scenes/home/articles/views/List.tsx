@@ -6,10 +6,15 @@ import { ProgressBar, Button, Text, withTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { AnimatingHeader, ErrorMessage, Illustration, CategoriesList } from '@components/index';
+import {
+  AnimatingHeader,
+  ErrorMessage,
+  Illustration,
+  CategoriesList,
+  ArticleCard,
+} from '@components/index';
 import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
-import ArticleCard from '@components/cards/Article';
 import getArticleStyles from '../styles/Styles';
 
 function ArticleList({ navigation, articles, lists, read, state, theme }) {

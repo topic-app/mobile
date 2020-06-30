@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import shortid from 'shortid';
 
-import getPetitionStyles from '../styles/Styles';
+import getPetitionStyles from '../styles/PetitionStyles';
 
 const MAX_LABELS = 3;
 

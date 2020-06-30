@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TagList from '@components/TagList';
 import { CardBase } from '@components/Cards';
 import getStyles from '@styles/Styles';
-import getEventStyles from '../styles/Styles';
+import getCardStyles from './styles/CardStyles';
 
 function buildDateString(start, end) {
   if (start === undefined || end === undefined) return null;
@@ -36,7 +36,7 @@ function EventCard({ event, navigate }) {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
-  const eventStyles = getEventStyles(theme);
+  const cardStyles = getCardStyles(theme);
 
   return (
     <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
@@ -64,16 +64,16 @@ function EventCard({ event, navigate }) {
             />
           )}
           <View>
-            <Text style={eventStyles.cardDescription}>{event?.summary}</Text>
+            <Text style={cardStyles.cardDescription}>{event?.summary}</Text>
             {Array.isArray(event?.places) &&
               event.places.map((p) => (
                 <View
                   key={shortid()}
                   style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
                 >
-                  <Icon color={colors.icon} name="map-marker" style={eventStyles.cardDescription} />
+                  <Icon color={colors.icon} name="map-marker" style={cardStyles.cardDescription} />
                   <Text
-                    style={[eventStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
+                    style={[cardStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
                     numberOfLines={1}
                   >
                     {p?.type === 'standalone' &&

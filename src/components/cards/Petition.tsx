@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
@@ -6,11 +5,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Card, Text, useTheme } from 'react-native-paper';
 import moment from 'moment';
 
-import TagList from '@components/TagList';
-import { PlatformTouchable } from '@components/PlatformComponents';
 import getStyles from '@styles/Styles';
-import PetitionChart from './Charts';
-import { CardBase } from '@root/src/components/Cards';
+
+import { CardBase } from '../Cards';
+import PetitionChart from './components/Charts';
+import TagList from '../TagList';
 
 function getShortTime(time) {
   // If time is in the past

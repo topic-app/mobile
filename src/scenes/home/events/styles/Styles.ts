@@ -1,12 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-function getEventStyles(theme) {
+import { Theme } from '@ts/types';
+
+function getEventStyles(theme: Theme) {
   const { colors } = theme;
-  return StyleSheet.create({
-    cardDescription: {
-      fontSize: 15,
-    },
-  });
+  return StyleSheet.create({});
 }
 
 export default getEventStyles;

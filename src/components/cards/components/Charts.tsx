@@ -1,11 +1,10 @@
-// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { Text, useTheme, ProgressBar } from 'react-native-paper';
 import _ from 'lodash';
 
-import getPetitionStyles from '../styles/Styles';
+import getPetitionStyles from '../styles/PetitionStyles';
 import MultiVote from './MultiVote';
 
 function PetitionSign({ voteData }) {

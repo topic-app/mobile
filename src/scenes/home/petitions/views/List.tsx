@@ -4,10 +4,8 @@ import { View, Animated } from 'react-native';
 import { Button, FAB, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import AnimatingHeader from '@components/AnimatingHeader';
+import { PetitionCard, AnimatingHeader } from '@components/index';
 import getStyles from '@styles/Styles';
-
-import PetitionCard from '../components/Card';
 
 function PetitionList({ navigation, petitions }) {
   const theme = useTheme();

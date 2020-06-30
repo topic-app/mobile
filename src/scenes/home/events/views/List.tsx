@@ -9,7 +9,7 @@ import { updateEvents } from '@redux/actions/api/events';
 import ErrorMessage from '@components/ErrorMessage';
 import getStyles from '@styles/Styles';
 
-import EventCard from '../components/Card';
+import { EventCard } from '@components/index';
 
 function EventList({ navigation, events, state }) {
   React.useEffect(() => {
