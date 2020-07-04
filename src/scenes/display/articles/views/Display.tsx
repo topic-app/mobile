@@ -96,7 +96,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
     <View style={styles.page}>
       {article.image && (
         <Image
-          source={{ uri: getImageUrl(article.image, 'large') }}
+          source={{ uri: getImageUrl({ image: article.image, size: 'large' }) }}
           style={[styles.image, articleStyles.image]}
         />
       )}

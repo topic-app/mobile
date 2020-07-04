@@ -1,20 +1,32 @@
 import { config } from '@root/app.json';
 import { Linking, Alert } from 'react-native';
 
-const truncate = (str, len) => (str.length > len ? `${str.substring(0, len)}..` : str);
+const truncate = (str: string, len: number) => {
+  return str.length > len ? `${str.substring(0, len)}..` : str;
+};
 
-function decomposeLink(url) {
+type DecomposedLink = {
+  valid: boolean;
+  protocol?: string; // 'https'
+  domain?: string; // 'topicapp'
+  suffix?: string; // 'fr'
+  subdomains: string[]; // ['maps']
+  routes: string[];
+  composed: {
+    domain?: string; // topicapp.fr
+    subdomain?: string; // maps.topicapp.fr
+    route?: string; // api.topicapp.fr/v1
+    full?: string;
+  };
+};
+
+function decomposeLink(url: string): DecomposedLink {
   let currentUrl = url;
-  const resultUrl = {
-    protocol: null, // 'https'
-    domain: null, // 'topicapp'
-    suffix: null, // 'fr'
-    subdomains: [], // ['maps']
+  const resultUrl: DecomposedLink = {
+    valid: false,
+    subdomains: [],
     routes: [],
     composed: {
-      domain: null, // topicapp.fr
-      subdomain: null, // maps.topicapp.fr
-      route: null, // api.topicapp.fr/v1
       full: url,
     },
   };
@@ -55,9 +67,11 @@ function decomposeLink(url) {
   const domains = domainString.split('.').reverse();
   if (domains.length > 1) {
     [resultUrl.suffix, resultUrl.domain, ...resultUrl.subdomains] = domains;
+    resultUrl.valid = true;
     resultUrl.subdomains = resultUrl.subdomains.reverse();
-  } else {
+  } else if (domains.length !== 0) {
     [resultUrl.domain] = domains;
+    resultUrl.valid = true;
   }
 
   // Skip to end if continue index is -1
@@ -70,7 +84,7 @@ function decomposeLink(url) {
     for (let i = 0; i < routeEndSeperators.length; i += 1) {
       const routeEndIndex = currentUrl.indexOf(routeEndSeperators[i]);
       if (routeEndIndex !== -1) {
-        // Found a protocol
+        // Found a route
         routeString = currentUrl.substring(0, routeEndIndex);
         continueIndex = routeEndIndex + routeEndSeperators[i].length;
         break;
@@ -81,7 +95,11 @@ function decomposeLink(url) {
         continueIndex = -1;
       }
     }
-    resultUrl.routes = routeString.split('/');
+
+    if (routeString) {
+      if (routeString?.includes('/')) resultUrl.routes = routeString.split('/');
+      else resultUrl.routes = [routeString];
+    }
   }
 
   // STEP 4: Compose new urls from gathered data
@@ -95,7 +113,7 @@ function decomposeLink(url) {
   return resultUrl;
 }
 
-function handleUrl(targetUrl) {
+function handleUrl(targetUrl: string) {
   const target = decomposeLink(targetUrl);
   const { allowedSites } = config.content;
   if (

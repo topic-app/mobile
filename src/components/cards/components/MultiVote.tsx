@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import shortid from 'shortid';
@@ -8,7 +7,13 @@ import getPetitionStyles from '../styles/PetitionStyles';
 
 const MAX_LABELS = 3;
 
-function MultiVote({ items, barColors, showAllLabels }) {
+type Props = {
+  items: { title: string; votes: number }[];
+  barColors: string[];
+  showAllLabels?: boolean;
+};
+
+const MultiVote: React.FC<Props> = ({ items, barColors, showAllLabels = false }) => {
   const theme = useTheme();
   const petitionStyles = getPetitionStyles(theme);
   const { colors } = theme;
@@ -19,7 +24,7 @@ function MultiVote({ items, barColors, showAllLabels }) {
 
   const total = votes.reduce((sum, current) => sum + current);
 
-  const getWidth = (vote) => `${((vote / total) * 100).toFixed(2)}%`;
+  const getWidth = (vote: number) => `${((vote / total) * 100).toFixed(2)}%`;
 
   let numLabels = 0;
 
@@ -90,21 +95,6 @@ function MultiVote({ items, barColors, showAllLabels }) {
       </View>
     </View>
   );
-}
+};
 
 export default MultiVote;
-
-MultiVote.defaultProps = {
-  showAllLabels: false,
-};
-
-MultiVote.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      votes: PropTypes.number.isRequired,
-    }),
-  ).isRequired,
-  barColors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  showAllLabels: PropTypes.bool,
-};

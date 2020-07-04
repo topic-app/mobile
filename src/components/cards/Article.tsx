@@ -1,16 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Image } from 'react-native';
 import { Card, Paragraph, Text, useTheme } from 'react-native-paper';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import TagList from '@components/TagList';
-import { CardBase } from '@components/Cards';
-import getStyles from '@styles/Styles';
+import { ArticlePreload } from '@ts/types';
 import { getImageUrl } from '@utils/index';
+import getStyles from '@styles/Styles';
 
-function ActuComponentListCard({ article, navigate, unread }) {
+import { CardBase } from '../Cards';
+import TagList from '../TagList';
+
+type Props = {
+  article: ArticlePreload;
+  navigate: StackNavigationProp<any, any>['navigate'];
+  unread: boolean;
+};
+
+const ActuComponentListCard: React.FC<Props> = ({ article, navigate, unread }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -26,7 +33,7 @@ function ActuComponentListCard({ article, navigate, unread }) {
         <Card.Content style={{ marginTop: 5 }}>
           <View style={{ flexDirection: 'row' }}>
             <Image
-              source={{ uri: getImageUrl(article?.image, 'small') }}
+              source={{ uri: getImageUrl({ image: article?.image, size: 'small' }) }}
               style={[
                 styles.thumbnail,
                 {
@@ -56,21 +63,6 @@ function ActuComponentListCard({ article, navigate, unread }) {
       </View>
     </CardBase>
   );
-}
+};
 
 export default ActuComponentListCard;
-
-ActuComponentListCard.propTypes = {
-  article: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    image: PropTypes.shape({
-      image: PropTypes.string,
-      thumbnails: PropTypes.shape({
-        large: PropTypes.bool,
-      }),
-    }),
-    summary: PropTypes.string,
-    date: PropTypes.string.isRequired,
-  }).isRequired,
-  navigate: PropTypes.func.isRequired,
-};

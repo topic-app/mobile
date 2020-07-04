@@ -32,7 +32,7 @@ const Content: React.FC<Props> = ({ parser, data }) => {
                 indicator
                 key={node.key}
                 style={imageStyles._VIEW_SAFE_image}
-                source={{ uri: getImageUrl(src, 'medium') }}
+                source={{ uri: getImageUrl({ image: src, size: 'medium' }) }}
               />
             );
           },

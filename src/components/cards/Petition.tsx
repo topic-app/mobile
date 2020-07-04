@@ -1,17 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Card, Text, useTheme } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 
+import { PetitionStatus, PetitionPreload, Theme } from '@ts/types';
 import getStyles from '@styles/Styles';
 
 import { CardBase } from '../Cards';
 import PetitionChart from './components/Charts';
 import TagList from '../TagList';
 
-function getShortTime(time) {
+function getShortTime(time: string) {
   // If time is in the past
   if (moment(time).isBefore()) {
     return null;
@@ -33,7 +34,14 @@ function getShortTime(time) {
   return `${moment(time).diff(moment(), 'years')} ans`;
 }
 
-function StatusChip({ mode, color, icon, label }) {
+type StatusChipProps = {
+  mode?: 'contained' | 'text' | 'outlined';
+  icon?: string;
+  color: string;
+  label: string;
+};
+
+const StatusChip: React.FC<StatusChipProps> = ({ mode = 'contained', color, icon, label }) => {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -79,19 +87,26 @@ function StatusChip({ mode, color, icon, label }) {
         ...viewStyles,
       }}
     >
-      <MaterialCommunityIcons name={icon} color={textColor} size={17} />
-      <Text style={{ color: textColor, fontSize: 13 }}> {label}</Text>
+      {icon ? (
+        <MaterialCommunityIcons
+          name={icon}
+          color={textColor}
+          size={17}
+          style={{ paddingRight: 2 }}
+        />
+      ) : null}
+      <Text style={{ color: textColor, fontSize: 13 }}>{label}</Text>
     </View>
   );
-}
+};
 
-function renderPetitionStatus(status, theme) {
+function renderPetitionStatus(status: PetitionStatus, theme: Theme) {
   const { colors } = theme;
 
   switch (status) {
     case 'answered':
       return <StatusChip color={colors.valid} icon="check" label="Réussite" />;
-    case 'rejected':
+    case 'closed':
       return <StatusChip mode="text" color={colors.disabled} icon="lock" label="Fermée" />;
     default:
       return (
@@ -100,7 +115,12 @@ function renderPetitionStatus(status, theme) {
   }
 }
 
-function PetitionComponentListCard({ navigate, petition }) {
+type PetitionCardProps = {
+  navigate: StackNavigationProp<any, any>['navigate'];
+  petition: PetitionPreload;
+};
+
+const PetitionCard: React.FC<PetitionCardProps> = ({ navigate, petition }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -138,49 +158,6 @@ function PetitionComponentListCard({ navigate, petition }) {
       </Card.Content>
     </CardBase>
   );
-}
-
-export default PetitionComponentListCard;
-
-const voteDataPropType = PropTypes.shape({
-  type: PropTypes.string.isRequired,
-  goal: PropTypes.number,
-  votes: PropTypes.number,
-  against: PropTypes.number,
-  for: PropTypes.number,
-  multiple: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      votes: PropTypes.number,
-    }),
-  ),
-});
-
-PetitionComponentListCard.propTypes = {
-  petition: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    voteData: voteDataPropType.isRequired,
-    status: PropTypes.oneOf(['open', 'waiting', 'rejected', 'answered']),
-    duration: PropTypes.shape({
-      start: PropTypes.string.isRequired, // Note: need to change to instanceOf(Date) once we get axios working
-      end: PropTypes.string.isRequired,
-    }).isRequired,
-    description: PropTypes.string,
-    objective: PropTypes.string,
-    votes: PropTypes.string,
-  }).isRequired,
-  navigate: PropTypes.func.isRequired,
 };
 
-StatusChip.propTypes = {
-  mode: PropTypes.oneOf(['contained', 'text', 'outlined']),
-  label: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
-  icon: PropTypes.string,
-};
-
-StatusChip.defaultProps = {
-  mode: 'contained',
-  icon: null,
-};
+export default PetitionCard;
