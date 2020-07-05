@@ -99,6 +99,13 @@ type Props = {
   preloadDistance?: number;
 };
 
+export type StepperViewPageProps = {
+  next: (num?: number) => void;
+  prev: (num?: number) => void;
+  index: number;
+  setIndex: (newIndex: number) => void;
+};
+
 const StepperView: React.FC<Props> = ({
   pages,
   title,

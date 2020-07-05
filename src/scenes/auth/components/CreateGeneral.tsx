@@ -1,20 +1,31 @@
 import React, { useState, createRef } from 'react';
-import { View, Platform } from 'react-native';
+import { View, Platform, TextInput as RNTestInput } from 'react-native';
 import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
 
-import { updateCreationData, updateState } from '@redux/actions/data/account';
 import { request } from '@utils/index';
+import { StepperViewPageProps } from '@components/index';
+import { updateCreationData, updateState } from '@redux/actions/data/account';
+
 import getAuthStyles from '../styles/Styles';
 
-function AuthCreatePageGeneral({ next }) {
-  const usernameInput = createRef();
-  const emailInput = createRef();
-  const passwordInput = createRef();
+type Props = StepperViewPageProps;
 
-  let tempUsername = {};
-  let tempEmail = {};
-  let tempPassword = {};
+const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
+  const usernameInput = createRef<RNTestInput>();
+  const emailInput = createRef<RNTestInput>();
+  const passwordInput = createRef<RNTestInput>();
+
+  type InputStateType = {
+    value: string;
+    error: boolean;
+    valid: boolean;
+    message: string;
+  };
+
+  // TODO: Améliorer les types 'any'
+  let tempUsername: any = {};
+  let tempEmail: any = {};
+  let tempPassword: any = {};
 
   const [currentUsername, setCurrentUsername] = useState({
     value: '',
@@ -26,7 +37,7 @@ function AuthCreatePageGeneral({ next }) {
     value: '',
     error: false,
     valid: false,
-    message: 'Email Invalide',
+    message: '',
   });
   const [currentPassword, setCurrentPassword] = useState({
     value: '',
@@ -35,23 +46,25 @@ function AuthCreatePageGeneral({ next }) {
     message: '',
   });
 
-  function setUsername(data) {
-    // Because setting state is asynchronous, if setUsername gets called twice in swift succession
-    // one username overwrites the other, so we need to use a temp variable
-    tempUsername = { ...tempUsername, ...data };
+  function setUsername(data: Partial<InputStateType>) {
+    // Étant donné que définir le state est asynchrone,
+    // si setUsername est appelé deux fois rapidement, un nom
+    // d'utilisateur peut possiblement remplacer un autre,
+    // nous devons donc utiliser une variable temporaire
+    tempUsername = { ...currentUsername, ...tempUsername, ...data };
     setCurrentUsername(tempUsername);
   }
-  function setEmail(data) {
-    tempEmail = { ...tempEmail, ...data };
+  function setEmail(data: Partial<InputStateType>) {
+    tempEmail = { ...currentEmail, ...tempEmail, ...data };
     setCurrentEmail(tempEmail);
   }
-  function setPassword(data) {
-    tempPassword = { ...tempPassword, ...data };
+  function setPassword(data: Partial<InputStateType>) {
+    tempPassword = { ...currentPassword, ...tempPassword, ...data };
     setCurrentPassword(tempPassword);
   }
 
-  async function validateUsernameInput(username) {
-    let validation = { valid: false, error: false };
+  async function validateUsernameInput(username: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (username !== '') {
       if (username.length < 3) {
@@ -74,7 +87,7 @@ function AuthCreatePageGeneral({ next }) {
         } catch (err) {
           updateState({ check: { success: false, error: err, loading: false } });
         }
-        if (!result.data.usernameExists) {
+        if (result?.data?.usernameExists === false) {
           validation = { valid: true, error: false };
         } else {
           validation = {
@@ -89,14 +102,14 @@ function AuthCreatePageGeneral({ next }) {
     return validation;
   }
 
-  async function preValidateUsernameInput(username) {
+  async function preValidateUsernameInput(username: string) {
     if (username.length >= 3 && username.match(/^[a-zA-Z0-9_.]+$/i) !== null) {
       setUsername({ valid: false, error: false });
     }
   }
 
-  async function validateEmailInput(email) {
-    let validation = { valid: false, error: false };
+  async function validateEmailInput(email: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (email !== '') {
       if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) === null) {
@@ -110,9 +123,9 @@ function AuthCreatePageGeneral({ next }) {
         try {
           result = await request('auth/check/local/email', 'get', { email });
         } catch (err) {
-          updateState({ check: { success: false, error: result.error, loading: false } });
+          updateState({ check: { success: false, error: err, loading: false } });
         }
-        if (!result.data.emailExists) {
+        if (result?.data?.emailExists === false) {
           validation = { valid: true, error: false };
         } else {
           validation = {
@@ -128,15 +141,15 @@ function AuthCreatePageGeneral({ next }) {
     return validation;
   }
 
-  async function preValidateEmailInput(email) {
+  async function preValidateEmailInput(email: string) {
     if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) !== null) {
       // TODO: Change to emailExists once server is updated
       setEmail({ valid: false, error: false });
     }
   }
 
-  async function validatePasswordInput(password) {
-    let validation = { valid: false, error: false };
+  async function validatePasswordInput(password: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (password !== '') {
       if (password.length < 8) {
@@ -161,7 +174,7 @@ function AuthCreatePageGeneral({ next }) {
     return validation;
   }
 
-  async function preValidatePasswordInput(password) {
+  async function preValidatePasswordInput(password: string) {
     if (
       password.length >= 8 &&
       password.match(/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/) !== null
@@ -171,17 +184,17 @@ function AuthCreatePageGeneral({ next }) {
   }
 
   function blurInputs() {
-    usernameInput.current.blur();
-    emailInput.current.blur();
-    passwordInput.current.blur();
+    usernameInput.current?.blur();
+    emailInput.current?.blur();
+    passwordInput.current?.blur();
   }
 
   async function submit() {
     updateState({ check: { loading: true, success: null, error: null } });
 
-    const usernameVal = usernameInput.current.state.value;
-    const emailVal = emailInput.current.state.value;
-    const passwordVal = passwordInput.current.state.value;
+    const usernameVal = tempUsername.value;
+    const emailVal = tempEmail.value;
+    const passwordVal = tempPassword.value;
 
     const username = await validateUsernameInput(usernameVal);
     const email = await validateEmailInput(emailVal);
@@ -231,7 +244,7 @@ function AuthCreatePageGeneral({ next }) {
           autoCompleteType="username"
           onSubmitEditing={({ nativeEvent }) => {
             validateUsernameInput(nativeEvent.text);
-            emailInput.current.focus();
+            emailInput.current?.focus();
           }}
           autoCorrect={false}
           autoFocus
@@ -267,7 +280,7 @@ function AuthCreatePageGeneral({ next }) {
           autoCapitalize="none"
           onSubmitEditing={({ nativeEvent }) => {
             validateEmailInput(nativeEvent.text);
-            passwordInput.current.focus();
+            passwordInput.current?.focus();
           }}
           autoCorrect={false}
           theme={
@@ -282,7 +295,7 @@ function AuthCreatePageGeneral({ next }) {
           }}
           style={authStyles.textInput}
           onChangeText={(text) => {
-            setCurrentEmail({ value: text });
+            setEmail({ value: text });
             preValidateEmailInput(text);
           }}
         />
@@ -341,14 +354,6 @@ function AuthCreatePageGeneral({ next }) {
       </View>
     </View>
   );
-}
+};
 
 export default AuthCreatePageGeneral;
-
-AuthCreatePageGeneral.defaultProps = {
-  next: null,
-};
-
-AuthCreatePageGeneral.propTypes = {
-  next: PropTypes.func,
-};

@@ -11,6 +11,7 @@ export { default as Content } from './Content';
 export { default as CustomTabView } from './CustomTabView';
 export { default as ErrorMessage } from './ErrorMessage';
 export { default as StepperView } from './StepperView';
+export type { StepperViewPageProps } from './StepperView';
 export { default as StepperViewPager } from './StepperViewPager';
 export { default as TagList } from './TagList';
 export { default as Illustration } from './Illustration';
