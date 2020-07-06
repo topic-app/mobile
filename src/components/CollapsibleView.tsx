@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Platform, UIManager, LayoutAnimation, ViewStyle } from 'react-native';
+import { View, Platform, UIManager, LayoutAnimation, ViewStyle, StyleProp } from 'react-native';
 
 const { configureNext, create } = LayoutAnimation;
 
@@ -9,7 +9,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 type Props = {
   collapsed: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   duration?: number;
   children?: React.ReactNode;
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, View, StatusBarProps, ViewStyle } from 'react-native';
+import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp } from 'react-native';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { NavigationProp } from '@react-navigation/native';
 
@@ -38,7 +38,7 @@ export type CustomHeaderBarProps = {
       options: {
         title: string;
         subtitle?: string;
-        headerStyle?: ViewStyle;
+        headerStyle?: StyleProp<ViewStyle>;
         primary?: () => void;
         home?: boolean;
         actions?: ActionItem[];

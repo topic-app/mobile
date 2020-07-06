@@ -1,17 +1,24 @@
 import React from 'react';
-import { View, TouchableOpacity, Platform } from 'react-native';
+import { View, TouchableOpacity, Platform, TextStyle, StyleProp } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-function ListHeading({ label }) {
-  return <Text style={{ paddingHorizontal: 19, fontWeight: 'bold' }}>{label}</Text>;
-}
-ListHeading.propTypes = {
-  label: PropTypes.string.isRequired,
+type ListHeadingProps = {
+  label: string;
 };
 
-function ListItem({ icon, iconColor, label, textStyle }) {
+const ListHeading: React.FC<ListHeadingProps> = ({ label }) => {
+  return <Text style={{ paddingHorizontal: 19, fontWeight: 'bold' }}>{label}</Text>;
+};
+
+type ListItemProps = {
+  icon: string;
+  iconColor?: string;
+  label: string;
+  textStyle?: StyleProp<TextStyle>;
+};
+
+const ListItem: React.FC<ListItemProps> = ({ icon, iconColor, label, textStyle }) => {
   const { colors } = useTheme();
   return (
     <View style={{ flexDirection: 'row' }}>
@@ -24,21 +31,16 @@ function ListItem({ icon, iconColor, label, textStyle }) {
       <Text style={textStyle}>{label}</Text>
     </View>
   );
-}
-
-ListItem.defaultProps = {
-  iconColor: null,
-  textStyle: null,
 };
 
-ListItem.propTypes = {
-  icon: PropTypes.string.isRequired,
-  iconColor: PropTypes.string,
-  label: PropTypes.string.isRequired,
-  textStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+type ListItemAnchorProps = {
+  icon: string;
+  label: string;
+  onPress: () => void;
+  textStyle?: StyleProp<TextStyle>;
 };
 
-function ListItemAnchor({ icon, label, onPress, textStyle }) {
+const ListItemAnchor: React.FC<ListItemAnchorProps> = ({ icon, label, onPress, textStyle }) => {
   const { colors } = useTheme();
 
   // Note: TouchableWithoutFeedback needs a child that is a View
@@ -54,17 +56,6 @@ function ListItemAnchor({ icon, label, onPress, textStyle }) {
       </View>
     </TouchableOpacity>
   );
-}
-
-ListItemAnchor.defaultProps = {
-  textStyle: null,
-};
-
-ListItemAnchor.propTypes = {
-  icon: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired,
-  textStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 export { ListHeading, ListItem, ListItemAnchor };

@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, TextStyle, ViewStyle, TextProps } from 'react-native';
+import { View, TextStyle, ViewStyle, TextProps, StyleProp } from 'react-native';
 import { useTheme, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type CategoryTitleProps = TextProps & {
   icon?: string;
-  iconStyle?: TextStyle;
-  containerStyle?: ViewStyle;
+  iconStyle?: StyleProp<TextStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
 };
 
 const CategoryTitle: React.FC<CategoryTitleProps> = ({

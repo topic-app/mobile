@@ -1,5 +1,12 @@
 import React from 'react';
-import { StatusBar, View, TouchableOpacity, StatusBarProps, ViewStyle } from 'react-native';
+import {
+  StatusBar,
+  View,
+  TouchableOpacity,
+  StatusBarProps,
+  ViewStyle,
+  StyleProp,
+} from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme, Appbar, Text } from 'react-native-paper';
@@ -72,7 +79,7 @@ export type CustomHeaderBarProps = {
       options: {
         title: string;
         subtitle?: string;
-        headerStyle?: ViewStyle;
+        headerStyle?: StyleProp<ViewStyle>;
         primary?: () => void;
         home?: boolean;
         actions?: ActionItem[];

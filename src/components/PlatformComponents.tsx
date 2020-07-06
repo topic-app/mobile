@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableHighlight, Platform, View, ViewStyle } from 'react-native';
+import { TouchableHighlight, Platform, View, ViewStyle, StyleProp } from 'react-native';
 import { IconButton, useTheme, TouchableRipple } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,7 +13,7 @@ type PlatformIconButtonProps = {
   iosSize?: number;
   androidSize?: number;
   onPress?: () => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   color?: string;
 };
 

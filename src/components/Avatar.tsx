@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ViewStyle, TextStyle, ImageStyle } from 'react-native';
+import { View, ViewStyle, TextStyle, ImageStyle, StyleProp } from 'react-native';
 import { Avatar as PaperAvatar, Text, useTheme } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import color from 'color';
@@ -18,7 +18,7 @@ type Props = {
   name?: string;
   imageUrl?: string;
   icon?: string;
-  style?: ViewStyle | ImageStyle | TextStyle;
+  style?: StyleProp<ViewStyle | ImageStyle | TextStyle>;
   size?: number;
   onPress?: () => void;
   avatar?: AvatarType;

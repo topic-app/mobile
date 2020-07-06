@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { View, Platform, Animated, TextInput, FlatList, ViewStyle } from 'react-native';
+import { View, Platform, Animated, TextInput, FlatList, ViewStyle, StyleProp } from 'react-native';
 import { Text, IconButton, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import color from 'color';
@@ -12,7 +12,7 @@ type ChipBaseProps = {
   icon?: string;
   onPress?: () => void;
   selected?: boolean;
-  containerStyle?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle>;
   rightAction?: boolean;
 };
 
@@ -161,8 +161,8 @@ type CategoriesListProps = {
   categories: ListItem[];
   selected: string;
   setSelected: (key: string) => void;
-  containerStyle?: ViewStyle;
-  style?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 };
 
 const CategoriesList: React.FC<CategoriesListProps> = ({
@@ -203,8 +203,8 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
 type ChipAddListProps = {
   data?: ListItem[];
   keyList?: string[];
-  style?: ViewStyle;
-  containerStyle?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
   setList: (item: ListItem) => void;
 };
 
@@ -254,8 +254,8 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
 type ChipSuggestionListProps = {
   data?: ListItem[];
   setList: (item: any) => void;
-  style?: ViewStyle;
-  containerStyle?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
 };
 
 const ChipSuggestionList: React.FC<ChipSuggestionListProps> = ({
