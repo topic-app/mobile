@@ -61,7 +61,10 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
 
     register(reqParams)
       .then(() => navigation.navigate('CreateSuccess'))
-      .catch((e) => logger.error('Failed to create account', e));
+      .catch((e) => {
+        logger.info(reqParams);
+        logger.error('Failed to create account', e);
+      });
   };
 
   return (

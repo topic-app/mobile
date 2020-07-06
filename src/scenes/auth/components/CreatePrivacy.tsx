@@ -1,14 +1,16 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
 import { Button, RadioButton, List, useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
+
 import { updateCreationData } from '@redux/actions/data/account';
+import { StepperViewPageProps } from '@components/index';
 
 import getAuthStyles from '../styles/Styles';
-
 import { ListHeading, ListItem } from './ListComponents';
 
-function AuthCreatePagePrivacy({ prev, next }) {
+type Props = StepperViewPageProps;
+
+const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
   const [accountType, setAccountType] = React.useState('private');
 
   const submit = () => {
@@ -162,16 +164,6 @@ function AuthCreatePagePrivacy({ prev, next }) {
       </View>
     </View>
   );
-}
+};
 
 export default AuthCreatePagePrivacy;
-
-AuthCreatePagePrivacy.defaultProps = {
-  next: null,
-  prev: null,
-};
-
-AuthCreatePagePrivacy.propTypes = {
-  next: PropTypes.func,
-  prev: PropTypes.func,
-};

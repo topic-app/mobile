@@ -22,10 +22,9 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
     message: string;
   };
 
-  // TODO: Améliorer les types 'any'
-  let tempUsername: any = {};
-  let tempEmail: any = {};
-  let tempPassword: any = {};
+  let tempUsername: InputStateType;
+  let tempEmail: InputStateType;
+  let tempPassword: InputStateType;
 
   const [currentUsername, setCurrentUsername] = useState({
     value: '',
@@ -51,15 +50,15 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
     // si setUsername est appelé deux fois rapidement, un nom
     // d'utilisateur peut possiblement remplacer un autre,
     // nous devons donc utiliser une variable temporaire
-    tempUsername = { ...currentUsername, ...tempUsername, ...data };
+    tempUsername = { ...currentUsername, ...(tempUsername ?? {}), ...data };
     setCurrentUsername(tempUsername);
   }
   function setEmail(data: Partial<InputStateType>) {
-    tempEmail = { ...currentEmail, ...tempEmail, ...data };
+    tempEmail = { ...currentEmail, ...(tempEmail ?? {}), ...data };
     setCurrentEmail(tempEmail);
   }
   function setPassword(data: Partial<InputStateType>) {
-    tempPassword = { ...currentPassword, ...tempPassword, ...data };
+    tempPassword = { ...currentPassword, ...(tempPassword ?? {}), ...data };
     setCurrentPassword(tempPassword);
   }
 
@@ -102,7 +101,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
     return validation;
   }
 
-  async function preValidateUsernameInput(username: string) {
+  function preValidateUsernameInput(username: string) {
     if (username.length >= 3 && username.match(/^[a-zA-Z0-9_.]+$/i) !== null) {
       setUsername({ valid: false, error: false });
     }
@@ -141,14 +140,14 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
     return validation;
   }
 
-  async function preValidateEmailInput(email: string) {
+  function preValidateEmailInput(email: string) {
     if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) !== null) {
       // TODO: Change to emailExists once server is updated
       setEmail({ valid: false, error: false });
     }
   }
 
-  async function validatePasswordInput(password: string) {
+  function validatePasswordInput(password: string) {
     let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (password !== '') {
@@ -174,7 +173,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
     return validation;
   }
 
-  async function preValidatePasswordInput(password: string) {
+  function preValidatePasswordInput(password: string) {
     if (
       password.length >= 8 &&
       password.match(/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/) !== null
@@ -192,13 +191,13 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
   async function submit() {
     updateState({ check: { loading: true, success: null, error: null } });
 
-    const usernameVal = tempUsername.value;
-    const emailVal = tempEmail.value;
-    const passwordVal = tempPassword.value;
+    const usernameVal = currentUsername.value;
+    const emailVal = currentEmail.value;
+    const passwordVal = currentPassword.value;
 
     const username = await validateUsernameInput(usernameVal);
     const email = await validateEmailInput(emailVal);
-    const password = await validatePasswordInput(passwordVal);
+    const password = validatePasswordInput(passwordVal);
     if (username.valid && email.valid && password.valid) {
       updateCreationData({ username: usernameVal, email: emailVal, password: passwordVal });
       next();

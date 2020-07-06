@@ -4,11 +4,17 @@ import { Button, Title, Subheading, Card, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import { State } from '@ts/types';
+import { StepperViewPageProps } from '@components/index';
 import { updateCreationData } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
 
-function AuthCreatePageSchool({ next, prev, location }) {
+type Props = StepperViewPageProps & {
+  location: State['location'];
+};
+
+const AuthCreatePageSchool: React.FC<Props> = ({ next, prev, location }) => {
   const submit = () => {
     updateCreationData({
       schools: location.schools,
@@ -55,7 +61,7 @@ function AuthCreatePageSchool({ next, prev, location }) {
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => prev()}
+          onPress={prev}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour
@@ -63,32 +69,24 @@ function AuthCreatePageSchool({ next, prev, location }) {
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => submit()}
+          onPress={submit}
           style={{ flex: 1, marginLeft: 5 }}
-          theme={{ primary: colors.primary }}
         >
           Suivant
         </Button>
       </View>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { location } = state;
   return { location };
 };
 
 export default connect(mapStateToProps)(AuthCreatePageSchool);
 
-AuthCreatePageSchool.defaultProps = {
-  next: null,
-  prev: null,
-};
-
 AuthCreatePageSchool.propTypes = {
-  next: PropTypes.func,
-  prev: PropTypes.func,
   location: PropTypes.shape({
     schools: PropTypes.arrayOf(PropTypes.string),
     departments: PropTypes.arrayOf(PropTypes.string),

@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, TouchableOpacity, Platform } from 'react-native';
-import { Text, withTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useTheme } from '@react-navigation/native';
 
 function ListHeading({ label }) {
   return <Text style={{ paddingHorizontal: 19, fontWeight: 'bold' }}>{label}</Text>;

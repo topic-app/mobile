@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { ProgressBar, Divider, Text, useTheme } from 'react-native-paper';
 import { View, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import ErrorMessage from '@components/ErrorMessage';
-import getStyles from '@styles/Styles';
 
-import { CustomTabView, Illustration } from '@components/index';
+import { State } from '@ts/types';
+import { ErrorMessage, CustomTabView, Illustration } from '@components/index';
+import getStyles from '@styles/Styles';
 
 function ArticleLists({ articles, state }) {
   const theme = useTheme();
@@ -40,7 +40,7 @@ function ArticleLists({ articles, state }) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { articles } = state;
   return {
     articles,
@@ -49,11 +49,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(ArticleLists);
-
-const tagPropType = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  displayName: PropTypes.string.isRequired,
-});
 
 ArticleLists.propTypes = {
   route: PropTypes.shape({

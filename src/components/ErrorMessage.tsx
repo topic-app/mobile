@@ -97,7 +97,7 @@ const ErrorMessage: React.FC<Props> = ({
       message = {
         icon: 'file-alert-outline',
         text:
-          'Il semble y avoir un problème avec les données envoyées. Merci de vérifier que les informations sont correctes, ou de signaler un bug si c&apos;est le cas',
+          "Il semble y avoir un problème avec les données envoyées. Merci de vérifier que les informations sont correctes, ou de signaler un bug si c'est le cas",
       };
       if (restart) {
         actions.push({
@@ -159,7 +159,7 @@ const ErrorMessage: React.FC<Props> = ({
         message = {
           icon: 'account-alert-outline',
           text:
-            'Cette action nécéssite un compte, mais il semblerait que vous ne soyez pas connectés ou qu&apos;il y a un problème avec votre compte',
+            "Cette action nécéssite un compte, mais il semblerait que vous ne soyez pas connectés ou qu'il y a un problème avec votre compte",
         };
         if (back) {
           actions.push({
@@ -184,7 +184,7 @@ const ErrorMessage: React.FC<Props> = ({
         message = {
           icon: 'lock-alert',
           text:
-            'Vous n&apos;êtes pas autorisés à faire cette action, merci de vérifier que vous avez bien la permission.',
+            "Vous n'êtes pas autorisés à faire cette action, merci de vérifier que vous avez bien la permission.",
         };
         if (back) {
           actions.push({
@@ -197,7 +197,7 @@ const ErrorMessage: React.FC<Props> = ({
         message = {
           icon: 'lock-alert',
           text:
-            'Cette action ne peut être faite qu&apos;une seule fois, et il semblerait que vous l&apos;ayez déjà fait',
+            "Cette action ne peut être faite qu'une seule fois, et il semblerait que vous l'ayez déjà fait",
         };
         if (back) {
           actions.push({
@@ -210,7 +210,7 @@ const ErrorMessage: React.FC<Props> = ({
         message = {
           icon: 'reload-alert',
           text:
-            'Seul l&apos;auteur peut faire cette action, et il semblerait que vous n&apos;êtes pas l&auteur',
+            "Seul l'auteur peut faire cette action, et il semblerait que vous n'êtes pas l&auteur",
         };
         if (back) {
           actions.push({
@@ -235,7 +235,7 @@ const ErrorMessage: React.FC<Props> = ({
         message = {
           icon: 'account-alert-outline',
           text:
-            'Vous n&apos;avez pas la permission de faire cette action, ou vous n&apos;etes pas connectés. Si vous pensez avoir cette permission, merci de signaler un bug',
+            "Vous n'avez pas la permission de faire cette action, ou vous n'etes pas connectés. Si vous pensez avoir cette permission, merci de signaler un bug",
         };
         if (back) {
           actions.push({

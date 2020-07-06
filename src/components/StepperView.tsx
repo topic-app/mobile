@@ -133,7 +133,7 @@ const StepperView: React.FC<Props> = ({
     });
   };
 
-  pages[index].onVisible?.();
+  pages[index]?.onVisible?.();
 
   const StepperTabBar: React.FC<TabBarProps> = ({ navigationState }) => (
     <View style={stepperStyles.stepIndicatorContainer}>

@@ -6,6 +6,7 @@ import { ProgressBar, Button, Text, withTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
+import { State } from '@ts/types';
 import {
   AnimatingHeader,
   ErrorMessage,
@@ -15,6 +16,7 @@ import {
 } from '@components/index';
 import { updateArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
+
 import getArticleStyles from '../styles/Styles';
 
 function ArticleList({ navigation, articles, lists, read, state, theme }) {
@@ -34,9 +36,13 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
       type: 'category',
     },
     { key: 'all', title: 'Tous', data: articles, type: 'category' },
-    ...lists.map((l) => {
-      return { key: l.id, title: l.name, data: l.items, useLists: true, type: 'category' };
-    }),
+    ...lists.map((l) => ({
+      key: l.id,
+      title: l.name,
+      data: l.items,
+      useLists: true,
+      type: 'category',
+    })),
   ];
 
   const [category, setCategory] = React.useState('unread');
@@ -222,7 +228,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { articles } = state;
   return {
     articles: articles.data,

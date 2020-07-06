@@ -1,45 +1,60 @@
 import React from 'react';
-import { View, Platform, FlatList } from 'react-native';
+import { View, Platform, FlatList, TextInput as RNTextInput } from 'react-native';
 import { TextInput, HelperText, Button, Divider, useTheme } from 'react-native-paper';
-import Avatar from '@components/Avatar';
-import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
-import CollapsibleView from '@components/CollapsibleView';
 import shortid from 'shortid';
 
+import { Avatar, CollapsibleView, StepperViewPageProps } from '@components/index';
 import { updateCreationData } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
 
-function AuthCreatePageProfile({ next, prev, username, accountType }) {
-  const firstnameInput = React.createRef();
-  const lastnameInput = React.createRef();
-  const flatlistRef = React.createRef();
+type Props = StepperViewPageProps & {
+  username: string;
+  accountType: 'public' | 'private';
+};
 
-  const [currentFirstname, setCurrentFirstname] = React.useState({
+const AuthCreatePageProfile: React.FC<Props> = ({
+  next,
+  prev,
+  username = '',
+  accountType = 'private',
+}) => {
+  const firstnameInput = React.createRef<RNTextInput>();
+  const lastnameInput = React.createRef<RNTextInput>();
+  const flatlistRef = React.createRef<FlatList>();
+
+  type InputStateType = {
+    value: string;
+    error: boolean;
+    valid: boolean;
+    message: string;
+  };
+
+  const [currentFirstname, setCurrentFirstname] = React.useState<InputStateType>({
     value: '',
     error: false,
     valid: false,
-    message: false,
+    message: '',
   });
 
-  const [currentLastname, setCurrentLastname] = React.useState({
+  const [currentLastname, setCurrentLastname] = React.useState<InputStateType>({
     value: '',
     error: false,
     valid: false,
-    message: false,
+    message: '',
   });
 
-  let tempFirstname = '';
-  let tempLastname = '';
+  let tempFirstname: InputStateType;
+  let tempLastname: InputStateType;
 
-  function setFirstname(data) {
-    tempFirstname = { ...tempFirstname, ...data };
+  function setFirstname(data: Partial<InputStateType>) {
+    tempFirstname = { ...currentFirstname, ...(tempFirstname ?? {}), ...data };
     setCurrentFirstname(tempFirstname);
   }
 
-  function setLastname(data) {
-    tempLastname = { ...tempLastname, ...data };
+  function setLastname(data: Partial<InputStateType>) {
+    tempLastname = { ...currentLastname, ...(tempLastname ?? {}), ...data };
     setCurrentLastname(tempLastname);
   }
 
@@ -62,8 +77,8 @@ function AuthCreatePageProfile({ next, prev, username, accountType }) {
 
   const [avatarsVisible, setAvatarsVisible] = React.useState(false);
 
-  async function validateFirstnameInput(firstname) {
-    let validation = { valid: false, error: false };
+  function validateFirstnameInput(firstname: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
     if (firstname !== '') {
       if (firstname.match(/^[a-zA-Z0-9_ ]*$/i) === null) {
         validation = {
@@ -80,14 +95,14 @@ function AuthCreatePageProfile({ next, prev, username, accountType }) {
     return validation;
   }
 
-  async function preValidateFirstnameInput(firstname) {
+  function preValidateFirstnameInput(firstname: string) {
     if (firstname.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null) {
       setFirstname({ valid: false, error: false });
     }
   }
 
-  async function validateLastnameInput(lastname) {
-    let validation = { valid: false, error: false };
+  function validateLastnameInput(lastname: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
     if (lastname !== '') {
       if (lastname.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) === null) {
         validation = {
@@ -104,26 +119,23 @@ function AuthCreatePageProfile({ next, prev, username, accountType }) {
     return validation;
   }
 
-  async function preValidateLastnameInput(lastname) {
+  function preValidateLastnameInput(lastname: string) {
     if (lastname.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null) {
       setLastname({ valid: true, error: false });
     }
   }
 
   function blurInputs() {
-    firstnameInput.current.blur();
-    lastnameInput.current.blur();
+    firstnameInput.current?.blur();
+    lastnameInput.current?.blur();
   }
 
-  async function submit() {
-    const firstnameVal = firstnameInput.current.state.value;
-    const lastnameVal = lastnameInput.current.state.value;
-    const firstname = await validateFirstnameInput(firstnameVal);
-    const lastname = await validateLastnameInput(lastnameVal);
-    if (
-      ((firstname.valid || !firstname) && (lastname.valid || !lastname)) ||
-      accountType === 'private'
-    ) {
+  function submit() {
+    const firstnameVal = currentFirstname.value;
+    const lastnameVal = currentLastname.value;
+    const firstname = validateFirstnameInput(firstnameVal);
+    const lastname = validateLastnameInput(lastnameVal);
+    if ((firstname.valid && lastname.valid) || accountType === 'private') {
       updateCreationData({
         firstName: firstnameVal,
         lastName: lastnameVal,
@@ -207,7 +219,7 @@ function AuthCreatePageProfile({ next, prev, username, accountType }) {
             disableFullscreenUI
             onSubmitEditing={({ nativeEvent }) => {
               validateFirstnameInput(nativeEvent.text);
-              lastnameInput.current.focus();
+              lastnameInput.current?.focus();
             }}
             autoFocus
             theme={
@@ -291,20 +303,6 @@ function AuthCreatePageProfile({ next, prev, username, accountType }) {
       </View>
     </View>
   );
-}
+};
 
 export default AuthCreatePageProfile;
-
-AuthCreatePageProfile.defaultProps = {
-  username: '',
-  next: null,
-  prev: null,
-  accountType: 'private',
-};
-
-AuthCreatePageProfile.propTypes = {
-  next: PropTypes.func,
-  prev: PropTypes.func,
-  username: PropTypes.string,
-  accountType: PropTypes.string,
-};

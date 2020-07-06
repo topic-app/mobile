@@ -47,7 +47,7 @@ const CustomTabView: React.FC<Props> = ({
     france: FranceTab,
   }); */
 
-  pages[index].onVisible?.();
+  pages[index]?.onVisible?.();
 
   const renderScene = ({ route }: { route: PageType }) => {
     return pages.find((p) => p.key === route.key)!.component;

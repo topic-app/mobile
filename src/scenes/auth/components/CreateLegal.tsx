@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { View, Platform, Linking, TouchableWithoutFeedback } from 'react-native';
 import { HelperText, Button, Checkbox, List, useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
+
+import { StepperViewPageProps } from '@components/index';
 
 import getAuthStyles from '../styles/Styles';
-
 import { ListHeading, ListItem, ListItemAnchor } from './ListComponents';
 
-function AuthCreatePageLegal({ prev, userEmail, create }) {
+type Props = StepperViewPageProps & {
+  create: () => void;
+  userEmail?: string;
+};
+
+const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
   const [terms, setTerms] = useState(false);
   const [email, setEmail] = useState(false);
   const [termsError, setTermsError] = useState({ error: false, message: '' });
@@ -17,12 +22,12 @@ function AuthCreatePageLegal({ prev, userEmail, create }) {
     if (!terms) {
       setTermsError({ error: true, message: 'Vous devez accepter pour pouvoir continuer' });
     } else {
-      setTermsError({ error: false });
+      setTermsError({ ...termsError, error: false });
     }
     if (!email) {
       setEmailError({ error: true, message: 'Vous devez confirmer pour pouvoir continuer' });
     } else {
-      setEmailError({ error: false });
+      setEmailError({ ...termsError, error: false });
     }
     if (terms && email) {
       create();
@@ -157,7 +162,7 @@ function AuthCreatePageLegal({ prev, userEmail, create }) {
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}
-            onPress={() => prev()}
+            onPress={prev}
             style={{ flex: 1, marginRight: 5 }}
           >
             Retour
@@ -165,7 +170,7 @@ function AuthCreatePageLegal({ prev, userEmail, create }) {
           <Button
             mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
             uppercase={Platform.OS !== 'ios'}
-            onPress={() => submit()}
+            onPress={submit}
             style={{ flex: 1, marginLeft: 5 }}
           >
             Créer mon compte
@@ -174,17 +179,6 @@ function AuthCreatePageLegal({ prev, userEmail, create }) {
       </View>
     </View>
   );
-}
+};
 
 export default AuthCreatePageLegal;
-
-AuthCreatePageLegal.defaultProps = {
-  userEmail: '',
-  prev: null,
-};
-
-AuthCreatePageLegal.propTypes = {
-  create: PropTypes.func.isRequired,
-  prev: PropTypes.func,
-  userEmail: PropTypes.string,
-};
