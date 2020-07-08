@@ -9,9 +9,10 @@ import Avatar from './Avatar';
 
 type Props = {
   item: ItemData;
+  scrollable: boolean;
 };
 
-const TagList: React.FC<Props> = ({ item }) => {
+const TagList: React.FC<Props> = ({ item, scrollable }) => {
   const data = genTagListData(item);
 
   const theme = useTheme();
@@ -25,6 +26,7 @@ const TagList: React.FC<Props> = ({ item }) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         data={data}
+        scrollEnabled={scrollable}
         keyExtractor={(tag) => tag.type + tag.key}
         renderItem={({ item: tag, index: tagIndex }) => (
           <View

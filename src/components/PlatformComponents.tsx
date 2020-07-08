@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableHighlight, Platform, View, ViewStyle, StyleProp } from 'react-native';
+import { Platform, View, ViewStyle, StyleProp } from 'react-native';
 import { IconButton, useTheme, TouchableRipple } from 'react-native-paper';
+import { TouchableHighlight, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -57,7 +58,7 @@ type PlatformBackButtonProps = {
   onPress: () => void;
 };
 
-const PlatformTouchable = Platform.OS === 'ios' ? TouchableHighlight : TouchableRipple;
+const PlatformTouchable = Platform.OS === 'ios' ? TouchableHighlight : TouchableNativeFeedback;
 const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) => (
   <PlatformIconButton
     icon="arrow-left"

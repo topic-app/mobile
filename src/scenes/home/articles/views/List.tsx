@@ -1,9 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Animated, Platform, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Animated,
+  Platform,
+  ActivityIndicator,
+  AccessibilityInfo,
+  Dimensions,
+} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { ProgressBar, Button, Text, withTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import CollapsibleView from '@components/CollapsibleView';
+import {
+  addArticleRead,
+  deleteArticleRead,
+  addArticleToList,
+  removeArticleFromList,
+} from '@redux/actions/lists/articles';
+import { PlatformTouchable } from '@components/PlatformComponents';
 import { connect } from 'react-redux';
 
 import { State } from '@ts/types';
@@ -51,20 +67,135 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
+  const fadeAnim = React.useRef(new Animated.Value(1)).current;
+
+  const changeList = async (data) => {
+    const noAnimation = await AccessibilityInfo.isReduceMotionEnabled();
+    if (noAnimation) {
+      setCategory(data);
+    } else {
+      Animated.timing(fadeAnim, {
+        useNativeDriver: true,
+        toValue: 0,
+        duration: 100,
+      }).start(() => {
+        setCategory(data);
+        Animated.timing(fadeAnim, {
+          useNativeDriver: true,
+          toValue: 1,
+          duration: 100,
+        }).start();
+      });
+    }
+  };
+
+  const renderRightActions = (id) => {
+    return (
+      <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
+        {category === 'unread' || category === 'all' ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginRight: 20,
+            }}
+          >
+            <Text style={articleStyles.captionText}>
+              Marquer comme {read.includes(id) ? 'non lu' : 'lu'}
+            </Text>
+            <Icon
+              name={read.includes(id) ? 'eye-off' : 'eye'}
+              size={32}
+              style={{ marginHorizontal: 10 }}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginRight: 20,
+            }}
+          >
+            <Text style={articleStyles.captionText}>Retirer</Text>
+            <Icon name="delete" size={32} style={{ marginHorizontal: 10 }} />
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  const renderLeftActions = (id, swipeRef) => {
+    return (
+      <View
+        style={[
+          styles.container,
+          { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
+        ]}
+      >
+        {lists.slice(0, (Dimensions.get('window').width - 100) / 120).map((l) => (
+          <View style={{ width: 120 }}>
+            <PlatformTouchable
+              onPress={() => {
+                console.log('Add to list');
+                addArticleToList(id, l.id);
+                swipeRef.current?.close();
+              }}
+            >
+              <View style={{ alignItems: 'center', margin: 10 }}>
+                <Icon
+                  name={l.icon || 'playlist-plus'}
+                  size={32}
+                  color={
+                    lists.find((j) => j.id === l.id).items.some((i) => i._id === id)
+                      ? colors.primary
+                      : null
+                  }
+                />
+                <Text
+                  style={{
+                    color: lists.find((j) => j.id === l.id).items.some((i) => i._id === id)
+                      ? colors.primary
+                      : colors.disabled,
+                  }}
+                >
+                  {l.name}
+                </Text>
+              </View>
+            </PlatformTouchable>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  const swipeRightAction = (id, swipeRef) => {
+    swipeRef.current?.close();
+    if (category === 'unread' || category === 'all') {
+      if (read.includes(id)) {
+        deleteArticleRead(id);
+      } else {
+        addArticleRead(id);
+      }
+    } else {
+      removeArticleFromList(id, categories.find((c) => c.key === category).key);
+    }
+  };
+
   const ArticleIllustration = () => {
     if (state.list.success) {
       if (category === 'unread') {
         return (
-          <View>
+          <Animated.View style={{ opacity: fadeAnim }}>
             <View style={styles.centerIllustrationContainer}>
               <Illustration name="article-completed" height={400} width={400} />
               <Text>Vous avez lu tous les articles !</Text>
             </View>
-          </View>
+          </Animated.View>
         );
       } else if (category === 'all') {
         return (
-          <View>
+          <Animated.View style={{ opacity: fadeAnim }}>
             <View style={styles.centerIllustrationContainer}>
               <Illustration name="article" height={400} width={400} />
               <Text>Aucun article pour cette localisation</Text>
@@ -85,11 +216,11 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
                 Configurer
               </Button>
             </View>
-          </View>
+          </Animated.View>
         );
       } else {
         return (
-          <View>
+          <Animated.View style={{ opacity: fadeAnim }}>
             <View style={styles.centerIllustrationContainer}>
               <Illustration name="article-lists" height={400} width={400} />
               <Text>Aucun article dans cette liste</Text>
@@ -99,7 +230,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
                 </Text>
               </View>
             </View>
-          </View>
+          </Animated.View>
         );
       }
     } else {
@@ -187,7 +318,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
         onEndReached={() => updateArticles('next')}
         ListHeaderComponent={() => (
           <View>
-            <CategoriesList categories={categories} selected={category} setSelected={setCategory} />
+            <CategoriesList categories={categories} selected={category} setSelected={changeList} />
           </View>
         )}
         ListEmptyComponent={ArticleIllustration}
@@ -198,31 +329,43 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
             {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
           </View>
         }
-        renderItem={(article) => (
-          <ArticleCard
-            unread={
-              !read.includes(article.item._id) ||
-              categories.find((c) => c.key === category).key !== 'all'
-            }
-            article={article.item}
-            navigate={() =>
-              navigation.navigate('Main', {
-                screen: 'Display',
-                params: {
-                  screen: 'Article',
-                  params: {
-                    screen: 'Display',
-                    params: {
-                      id: article.item._id,
-                      title: article.item.title,
-                      useLists: categories.find((c) => c.key === category)?.useLists,
-                    },
-                  },
-                },
-              })
-            }
-          />
-        )}
+        renderItem={(article) => {
+          const swipeRef = React.createRef();
+          return (
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Swipeable
+                ref={swipeRef}
+                renderRightActions={() => renderRightActions(article.item._id)}
+                renderLeftActions={() => renderLeftActions(article.item._id, swipeRef)}
+                onSwipeableRightOpen={() => swipeRightAction(article.item._id, swipeRef)}
+              >
+                <ArticleCard
+                  unread={
+                    !read.includes(article.item._id) ||
+                    categories.find((c) => c.key === category).key !== 'all'
+                  }
+                  article={article.item}
+                  navigate={() =>
+                    navigation.navigate('Main', {
+                      screen: 'Display',
+                      params: {
+                        screen: 'Article',
+                        params: {
+                          screen: 'Display',
+                          params: {
+                            id: article.item._id,
+                            title: article.item.title,
+                            useLists: categories.find((c) => c.key === category)?.useLists,
+                          },
+                        },
+                      },
+                    })
+                  }
+                />
+              </Swipeable>
+            </Animated.View>
+          );
+        }}
       />
     </View>
   );

@@ -58,7 +58,7 @@ const ActuComponentListCard: React.FC<Props> = ({ article, navigate, unread }) =
           </View>
         </Card.Content>
         <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-          <TagList item={article} />
+          <TagList item={article} scrollable={false} />
         </Card.Content>
       </View>
     </CardBase>
