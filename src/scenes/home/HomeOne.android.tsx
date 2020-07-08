@@ -208,7 +208,7 @@ function HomeOneNavigator() {
       initialRouteName="Home2"
       drawerContent={({ navigation }) => <CustomDrawerContentRedux navigation={navigation} />}
       drawerStyle={navigatorStyles.drawerStyle}
-      edgeWidth={90}
+      edgeWidth={100}
     >
       <DrawerNav.Screen name="Home2" component={HomeTwoNavigator} />
     </DrawerNav.Navigator>
