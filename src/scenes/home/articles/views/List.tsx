@@ -183,7 +183,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
   };
 
   const ArticleIllustration = () => {
-    if (state.list.success) {
+    if (state.list.success || (category !== 'unread' && category !== 'all')) {
       if (category === 'unread') {
         return (
           <Animated.View style={{ opacity: fadeAnim }}>
@@ -235,9 +235,11 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
       }
     } else {
       return (
-        <View style={styles.centerIllustrationContainer}>
-          <Illustration name="article-greyed" height={400} width={400} />
-        </View>
+        <Animated.View style={{ opacity: fadeAnim }}>
+          <View style={styles.centerIllustrationContainer}>
+            <Illustration name="article-greyed" height={400} width={400} />
+          </View>
+        </Animated.View>
       );
     }
   };
