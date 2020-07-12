@@ -56,7 +56,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
       key: l.id,
       title: l.name,
       data: l.items,
-      useLists: true,
+      list: true,
       type: 'category',
     })),
   ];
@@ -92,7 +92,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
   const renderRightActions = (id) => {
     return (
       <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
-        {category === 'unread' || category === 'all' ? (
+        {!categories.find((c) => c.key === category).list ? (
           <View
             style={{
               flexDirection: 'row',
@@ -171,7 +171,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
 
   const swipeRightAction = (id, swipeRef) => {
     swipeRef.current?.close();
-    if (category === 'unread' || category === 'all') {
+    if (!categories.find((c) => c.key === category).list) {
       if (read.includes(id)) {
         deleteArticleRead(id);
       } else {
@@ -183,7 +183,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
   };
 
   const ArticleIllustration = () => {
-    if (state.list.success || (category !== 'unread' && category !== 'all')) {
+    if (state.list.success || categories.find((c) => c.key === category).list) {
       if (category === 'unread') {
         return (
           <Animated.View style={{ opacity: fadeAnim }}>
@@ -316,8 +316,12 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
         })}
         data={categories.find((c) => c.key === category).data || []}
         refreshing={state.list.loading.refresh}
-        onRefresh={() => updateArticles('refresh')}
-        onEndReached={() => updateArticles('next')}
+        onRefresh={
+          category === 'unread' || category === 'all' ? () => updateArticles('refresh') : null
+        }
+        onEndReached={
+          category === 'unread' || category === 'all' ? () => updateArticles('next') : null
+        }
         ListHeaderComponent={() => (
           <View>
             <CategoriesList categories={categories} selected={category} setSelected={changeList} />
@@ -357,7 +361,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
                           params: {
                             id: article.item._id,
                             title: article.item.title,
-                            useLists: categories.find((c) => c.key === category)?.useLists,
+                            useLists: categories.find((c) => c.key === category)?.list,
                           },
                         },
                       },
