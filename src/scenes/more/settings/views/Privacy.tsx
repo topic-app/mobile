@@ -12,7 +12,7 @@ import themes from '@styles/Theme';
 
 import getSettingsStyles from '../styles/Styles';
 
-function SettingsTheme({ preferences, theme, account }) {
+function SettingsTheme({ preferences, theme, account, navigation }) {
   const styles = getStyles(theme);
   const settingsStyles = getSettingsStyles(theme);
   const { colors } = theme;
@@ -333,12 +333,14 @@ function SettingsTheme({ preferences, theme, account }) {
               description="Visibilité du compte, addresse email"
               right={() => <List.Icon icon="chevron-right" />}
               style={settingsStyles.listItem}
+              onPress={() =>
+                navigation.navigate('Main', {
+                  screen: 'More',
+                  params: { screen: 'Profile', params: { screen: 'Profile' } },
+                })
+              }
             />
-            <List.Item
-              title="Supprimer mon compte"
-              right={() => <List.Icon icon="chevron-right" />}
-              style={settingsStyles.listItem}
-            />
+            <List.Item title="Supprimer mon compte" style={settingsStyles.listItem} />
           </List.Section>
         )}
       </ScrollView>
