@@ -26,7 +26,7 @@
       "theme": "light",
       "useSystemTheme": true,
       "history": true,
-      "recommendations": true,
+      "recommendations": false,
       "syncHistory": true,
       "syncLists": true
     },
