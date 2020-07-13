@@ -5,6 +5,7 @@ import { HeaderConfig } from '@components/Header';
 
 import SettingsList from './views/List';
 import SettingsTheme from './views/Theme';
+import SettingsPrivacy from './views/Privacy';
 
 const Stack = createStackNavigator();
 
@@ -17,7 +18,6 @@ function SettingsStackNavigator() {
         options={{
           ...HeaderConfig,
           title: 'Paramètres',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         }}
       />
       <Stack.Screen
@@ -27,7 +27,15 @@ function SettingsStackNavigator() {
           ...HeaderConfig,
           title: 'Thème',
           subtitle: 'Paramètres',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+        }}
+      />
+      <Stack.Screen
+        name="Privacy"
+        component={SettingsPrivacy}
+        options={{
+          ...HeaderConfig,
+          title: 'Vie privée',
+          subtitle: 'Paramètres',
         }}
       />
     </Stack.Navigator>

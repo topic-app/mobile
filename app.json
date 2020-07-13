@@ -24,7 +24,11 @@
     },
     "defaults": {
       "theme": "light",
-      "useSystemTheme": true
+      "useSystemTheme": true,
+      "history": true,
+      "recommendations": true,
+      "syncHistory": true,
+      "syncLists": true
     },
     "comments": {
       "maxCharacters": 500

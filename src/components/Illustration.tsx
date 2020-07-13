@@ -55,6 +55,9 @@ import LocationSelectDark from '@assets/images/illustrations/select_location/sel
 
 // Settings Illustrations
 import SettingsThemeAll from '@assets/images/illustrations/settings/settings_theme_all.svg';
+import SettingsPrivacyLight from '@assets/images/illustrations/settings/settings_privacy_light.svg';
+import SettingsPrivacyDark from '@assets/images/illustrations/settings/settings_privacy_dark.svg';
+
 import { SvgProps } from 'react-native-svg';
 
 const illustrationList = {
@@ -148,6 +151,10 @@ const illustrationList = {
   'settings-theme': {
     light: SettingsThemeAll,
     dark: SettingsThemeAll,
+  },
+  'settings-privacy': {
+    light: SettingsPrivacyLight,
+    dark: SettingsPrivacyDark,
   },
 };
 

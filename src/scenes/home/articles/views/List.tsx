@@ -35,7 +35,7 @@ import getStyles from '@styles/Styles';
 
 import getArticleStyles from '../styles/Styles';
 
-function ArticleList({ navigation, articles, lists, read, state, theme }) {
+function ArticleList({ navigation, articles, lists, read, state, theme, preferences }) {
   const scrollY = new Animated.Value(0);
 
   useFocusEffect(
@@ -44,24 +44,35 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
     }, [null]),
   );
 
-  const categories = [
-    {
-      key: 'unread',
-      title: 'Non lus',
-      data: articles.filter((a) => !read.includes(a._id)),
-      type: 'category',
-    },
-    { key: 'all', title: 'Tous', data: articles, type: 'category' },
-    ...lists.map((l) => ({
-      key: l.id,
-      title: l.name,
-      data: l.items,
-      list: true,
-      type: 'category',
-    })),
-  ];
+  const categories = preferences.history
+    ? [
+        {
+          key: 'unread',
+          title: 'Non lus',
+          data: articles.filter((a) => !read.includes(a._id)),
+          type: 'category',
+        },
+        { key: 'all', title: 'Tous', data: articles, type: 'category' },
+        ...lists.map((l) => ({
+          key: l.id,
+          title: l.name,
+          data: l.items,
+          list: true,
+          type: 'category',
+        })),
+      ]
+    : [
+        { key: 'all', title: 'Tous', data: articles, type: 'category' },
+        ...lists.map((l) => ({
+          key: l.id,
+          title: l.name,
+          data: l.items,
+          list: true,
+          type: 'category',
+        })),
+      ];
 
-  const [category, setCategory] = React.useState('unread');
+  const [category, setCategory] = React.useState(categories[0].key);
 
   const { colors } = theme;
   const styles = getStyles(theme);
@@ -314,7 +325,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
-        data={categories.find((c) => c.key === category).data || []}
+        data={categories.find((c) => c.key === category)?.data || []}
         refreshing={state.list.loading.refresh}
         onRefresh={
           category === 'unread' || category === 'all' ? () => updateArticles('refresh') : null
@@ -342,8 +353,16 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
               <Swipeable
                 ref={swipeRef}
                 renderRightActions={() => renderRightActions(article.item._id)}
-                renderLeftActions={() => renderLeftActions(article.item._id, swipeRef)}
-                onSwipeableRightOpen={() => swipeRightAction(article.item._id, swipeRef)}
+                renderLeftActions={
+                  preferences.history || categories.find((c) => c.key === category)?.list
+                    ? () => renderLeftActions(article.item._id, swipeRef)
+                    : null
+                }
+                onSwipeableRightOpen={
+                  preferences.history || categories.find((c) => c.key === category)?.list
+                    ? () => swipeRightAction(article.item._id, swipeRef)
+                    : null
+                }
               >
                 <ArticleCard
                   unread={
@@ -378,12 +397,13 @@ function ArticleList({ navigation, articles, lists, read, state, theme }) {
 }
 
 const mapStateToProps = (state: State) => {
-  const { articles } = state;
+  const { articles, preferences } = state;
   return {
     articles: articles.data,
     lists: articles.lists,
     read: articles.read,
     state: articles.state,
+    preferences,
   };
 };
 

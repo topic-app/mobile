@@ -18,6 +18,7 @@ function SettingsList({ navigation, preferences }) {
       <List.Section>
         <List.Item
           title="Theme"
+          right={() => <List.Icon icon="chevron-right" />}
           description={`${themes[preferences.theme]?.name}${
             preferences.useSystemTheme ? ' (système)' : ''
           }`}
@@ -27,16 +28,18 @@ function SettingsList({ navigation, preferences }) {
         />
         <List.Item
           title="Changer de location"
+          right={() => <List.Icon icon="chevron-right" />}
           description="Écoles, départements, régions"
           left={() => <List.Icon icon="map-marker-outline" />}
           onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })}
           style={settingsStyles.listItem}
         />
         <List.Item
-          title="Notifications"
-          description="Push, Email"
-          left={() => <List.Icon icon="bell-outline" />}
-          onPress={() => console.log('Notification')}
+          title="Vie privée"
+          description="Historique, recommendations"
+          right={() => <List.Icon icon="chevron-right" />}
+          left={() => <List.Icon icon="eye-outline" />}
+          onPress={() => navigation.navigate('Privacy')}
           style={settingsStyles.listItem}
         />
       </List.Section>

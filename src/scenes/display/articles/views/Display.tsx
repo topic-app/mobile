@@ -253,6 +253,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   comments,
   reqState,
   account,
+  preferences,
   lists,
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
@@ -262,7 +263,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
       fetchArticle(id);
     }
     updateComments('initial', { parentId: id });
-    addArticleRead(id);
+    if (preferences.history) {
+      addArticleRead(id);
+    }
   }, [null]);
 
   const theme = useTheme();
@@ -672,11 +675,12 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, comments, account } = state;
+  const { articles, comments, account, preferences } = state;
   return {
     articles: articles.data,
     comments: comments.data,
     reqState: { articles: articles.state, comments: comments.state },
+    preferences,
     lists: articles.lists,
     account,
   };
