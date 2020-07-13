@@ -103,7 +103,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
   const renderRightActions = (id) => {
     return (
       <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
-        {!categories.find((c) => c.key === category).list ? (
+        {!categories.find((c) => c.key === category)?.list ? (
           <View
             style={{
               flexDirection: 'row',
@@ -182,7 +182,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
 
   const swipeRightAction = (id, swipeRef) => {
     swipeRef.current?.close();
-    if (!categories.find((c) => c.key === category).list) {
+    if (!categories.find((c) => c.key === category)?.list) {
       if (read.includes(id)) {
         deleteArticleRead(id);
       } else {
@@ -194,7 +194,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
   };
 
   const ArticleIllustration = () => {
-    if (state.list.success || categories.find((c) => c.key === category).list) {
+    if (state.list.success || categories.find((c) => c.key === category)?.list) {
       if (category === 'unread') {
         return (
           <Animated.View style={{ opacity: fadeAnim }}>
