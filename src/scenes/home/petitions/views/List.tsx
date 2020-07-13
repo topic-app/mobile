@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import { View, Animated } from 'react-native';
 import { Button, FAB, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
+import UnauthorizedBeta from '@components/UnauthorizedBeta';
 
 import { PetitionCard, AnimatingHeader } from '@components/index';
 import getStyles from '@styles/Styles';
 
 function PetitionList({ navigation, petitions }) {
+  return <UnauthorizedBeta />;
+
   const theme = useTheme();
   const { colors } = theme;
 
