@@ -41,9 +41,9 @@ function CustomDrawerContent({
             <ErrorMessage
               type="axios"
               strings={{
-                what: 'la récupération des articles',
-                contentPlural: 'des articles',
-                contentSingular: "La liste d'articles",
+                what: 'la mise à jour du profil',
+                contentPlural: 'des informations de profil',
+                contentSingular: 'Le profil',
               }}
               error={[
                 location.state.fetch.error,
@@ -60,13 +60,14 @@ function CustomDrawerContent({
                 height={55}
                 width={55}
               />
-              {!loggedIn && <Title style={navigatorStyles.title}>Topic</Title>}
+              {loggedIn ? (
+                <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
+                  {genName(accountInfo?.user)}
+                </Title>
+              ) : (
+                <Title style={navigatorStyles.title}>Topic</Title>
+              )}
             </View>
-            {loggedIn && (
-              <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
-                {genName(accountInfo?.user)}
-              </Title>
-            )}
           </View>
         </View>
       </Drawer.Section>
