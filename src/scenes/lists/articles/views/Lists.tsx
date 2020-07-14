@@ -8,6 +8,7 @@ import {
   Button,
   HelperText,
   Card,
+  TextInput as PaperTextInput,
   useTheme,
 } from 'react-native-paper';
 import { View, Platform, FlatList, Alert, TextInput } from 'react-native';
@@ -23,10 +24,14 @@ import {
   Illustration,
 } from '@components/index';
 import getStyles from '@styles/Styles';
-import { deleteArticleList, addArticleList } from '@redux/actions/lists/articles';
+import {
+  deleteArticleList,
+  addArticleList,
+  modifyArticleList,
+} from '@redux/actions/lists/articles';
 import getArticleStyles from '../styles/Styles';
 
-function ArticleLists({ articles, preferences, account, state }) {
+function ArticleLists({ articles, preferences, account, state, navigation }) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -35,6 +40,11 @@ function ArticleLists({ articles, preferences, account, state }) {
   const [createListText, setCreateListText] = React.useState('');
   const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
   const [errorVisible, setErrorVisible] = React.useState(false);
+
+  const [editListText, setEditListText] = React.useState('');
+  const [editListDescription, setEditListDescription] = React.useState('');
+  const [isEditModalVisible, setEditModalVisible] = React.useState(false);
+  const [editingList, setEditingList] = React.useState(null);
 
   return (
     <View style={styles.page}>
@@ -64,31 +74,59 @@ function ArticleLists({ articles, preferences, account, state }) {
           return (
             <List.Item
               title={item.name}
-              left={() => <List.Icon icon={item.icon} />}
-              right={() => (
+              description={item.description}
+              descriptionNumberOfLines={100}
+              left={() => (
                 <PlatformTouchable
-                  onPress={() => {
-                    Alert.alert(
-                      `Voulez vous vraiment supprimer la liste ${item.name}?`,
-                      'Cette action est irréversible',
-                      [
-                        {
-                          text: 'Annuler',
-                          onPress: () => {},
-                        },
-                        {
-                          text: 'Supprimer',
-                          onPress: () => deleteArticleList(item.id),
-                        },
-                      ],
-                      {
-                        cancelable: true,
+                  onPress={() =>
+                    navigation.push('Main', {
+                      screen: 'Home1',
+                      params: {
+                        screen: 'Home2',
+                        params: { screen: 'Article', params: { initialList: item.id } },
                       },
-                    );
-                  }}
+                    })
+                  }
                 >
-                  <List.Icon icon="delete" />
+                  <List.Icon icon={item.icon} />
                 </PlatformTouchable>
+              )}
+              right={() => (
+                <View style={{ flexDirection: 'row' }}>
+                  <PlatformTouchable
+                    onPress={() => {
+                      setEditListText(item.name);
+                      setEditListDescription(item.description);
+                      setEditingList(item.id);
+                      setEditModalVisible(true);
+                    }}
+                  >
+                    <List.Icon icon="pencil" />
+                  </PlatformTouchable>
+                  <PlatformTouchable
+                    onPress={() => {
+                      Alert.alert(
+                        `Voulez vous vraiment supprimer la liste ${item.name}?`,
+                        'Cette action est irréversible',
+                        [
+                          {
+                            text: 'Annuler',
+                            onPress: () => {},
+                          },
+                          {
+                            text: 'Supprimer',
+                            onPress: () => deleteArticleList(item.id),
+                          },
+                        ],
+                        {
+                          cancelable: true,
+                        },
+                      );
+                    }}
+                  >
+                    <List.Icon icon="delete" />
+                  </PlatformTouchable>
+                </View>
               )}
             />
           );
@@ -108,6 +146,7 @@ function ArticleLists({ articles, preferences, account, state }) {
           </View>
         )}
       />
+
       <Modal
         isVisible={isCreateModalVisible}
         avoidKeyboard
@@ -138,15 +177,15 @@ function ArticleLists({ articles, preferences, account, state }) {
                   Vous devez entrer un nom
                 </HelperText>
               </CollapsibleView>
+              <CollapsibleView collapsed={!articles.lists.some((l) => l.name === createListText)}>
+                <HelperText
+                  type="error"
+                  visible={articles.lists.some((l) => l.name === createListText)}
+                >
+                  Une liste avec ce nom existe déjà
+                </HelperText>
+              </CollapsibleView>
             </View>
-            <CollapsibleView collapsed={!articles.lists.some((l) => l.name === createListText)}>
-              <HelperText
-                type="error"
-                visible={articles.lists.some((l) => l.name === createListText)}
-              >
-                Une liste avec ce nom existe déjà
-              </HelperText>
-            </CollapsibleView>
             <Divider />
             <View style={styles.contentContainer}>
               <Button
@@ -165,6 +204,87 @@ function ArticleLists({ articles, preferences, account, state }) {
                 }}
               >
                 Créer la liste
+              </Button>
+            </View>
+          </View>
+        </Card>
+      </Modal>
+
+      <Modal
+        isVisible={isEditModalVisible}
+        avoidKeyboard
+        onBackdropPress={() => setEditModalVisible(false)}
+        onBackButtonPress={() => setEditModalVisible(false)}
+        onSwipeComplete={() => setEditModalVisible(false)}
+        swipeDirection={['down']}
+        style={styles.bottomModal}
+      >
+        <Card>
+          <View>
+            <Divider />
+
+            <View style={articleStyles.activeCommentContainer}>
+              <PaperTextInput
+                autoFocus
+                mode="outlined"
+                label="Nom"
+                value={editListText}
+                onChangeText={(text) => {
+                  setErrorVisible(false);
+                  setEditListText(text);
+                }}
+              />
+              <CollapsibleView collapsed={!errorVisible}>
+                <HelperText type="error" visible={errorVisible}>
+                  Vous devez entrer un nom
+                </HelperText>
+              </CollapsibleView>
+              <CollapsibleView
+                collapsed={
+                  !articles.lists.some((l) => l.name === editListText && l.id !== editingList)
+                }
+              >
+                <HelperText
+                  type="error"
+                  visible={articles.lists.some(
+                    (l) => l.name === editListText && l.id !== editingList,
+                  )}
+                >
+                  Une liste avec ce nom existe déjà
+                </HelperText>
+              </CollapsibleView>
+            </View>
+            <View style={articleStyles.activeCommentContainer}>
+              <PaperTextInput
+                mode="outlined"
+                label="Description"
+                value={editListDescription}
+                onChangeText={(text) => {
+                  setEditListDescription(text);
+                }}
+              />
+            </View>
+            <Divider style={{ marginTop: 10 }} />
+            <View style={styles.contentContainer}>
+              <Button
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                color={colors.primary}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() => {
+                  if (editListText === '') {
+                    setErrorVisible(true);
+                  } else if (
+                    !articles.lists.some((l) => l.name === editListText && l.id !== editingList)
+                  ) {
+                    // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
+                    modifyArticleList(editingList, editListText, null, editListDescription);
+                    setEditListText('');
+                    setEditListDescription(false);
+                    setEditModalVisible(false);
+                  }
+                }}
+              >
+                Modifier
               </Button>
             </View>
           </View>

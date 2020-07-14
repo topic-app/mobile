@@ -35,14 +35,8 @@ import getStyles from '@styles/Styles';
 
 import getArticleStyles from '../styles/Styles';
 
-function ArticleList({ navigation, articles, lists, read, state, theme, preferences }) {
+function ArticleList({ navigation, articles, lists, read, state, theme, preferences, route }) {
   const scrollY = new Animated.Value(0);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      updateArticles('initial');
-    }, [null]),
-  );
 
   const categories = preferences.history
     ? [
@@ -72,7 +66,13 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
         })),
       ];
 
-  const [category, setCategory] = React.useState(categories[0].key);
+  const [category, setCategory] = React.useState(route.params?.initialList || categories[0].key);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      updateArticles('initial');
+    }, [null]),
+  );
 
   const { colors } = theme;
   const styles = getStyles(theme);
