@@ -296,7 +296,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
               }),
           },
           {
-            title: 'Listes',
+            title: 'Mes Listes',
             onPress: () =>
               navigation.navigate('Main', {
                 screen: 'Lists',

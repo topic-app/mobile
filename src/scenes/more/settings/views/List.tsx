@@ -27,7 +27,7 @@ function SettingsList({ navigation, preferences }) {
           style={settingsStyles.listItem}
         />
         <List.Item
-          title="Changer de location"
+          title="Changer de lieu"
           right={() => <List.Icon icon="chevron-right" />}
           description="Écoles, départements, régions"
           left={() => <List.Icon icon="map-marker-outline" />}

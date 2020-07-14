@@ -286,7 +286,7 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
                   },
                   {
                     text: 'Supprimer',
-                    onPress: () => clearArticlesRead(),
+                    onPress: clearArticlesRead,
                   },
                 ],
                 { cancelable: true },
