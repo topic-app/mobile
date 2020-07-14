@@ -9,7 +9,15 @@ import {
   Dimensions,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { ProgressBar, Button, Text, withTheme } from 'react-native-paper';
+import {
+  ProgressBar,
+  Button,
+  Banner,
+  Text,
+  Subheading,
+  Avatar,
+  withTheme,
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import CollapsibleView from '@components/CollapsibleView';
@@ -50,6 +58,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
         ...lists.map((l) => ({
           key: l.id,
           title: l.name,
+          description: l.description,
           data: l.items,
           list: true,
           type: 'category',
@@ -60,6 +69,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
         ...lists.map((l) => ({
           key: l.id,
           title: l.name,
+          description: l.description,
           data: l.items,
           list: true,
           type: 'category',
@@ -336,6 +346,13 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
         ListHeaderComponent={() => (
           <View>
             <CategoriesList categories={categories} selected={category} setSelected={changeList} />
+            {categories.find((c) => c.key === category).description ? (
+              <Banner actions={[]} visible>
+                <Subheading>Description</Subheading>
+                {'\n'}
+                <Text>{categories.find((c) => c.key === category).description}</Text>
+              </Banner>
+            ) : null}
           </View>
         )}
         ListEmptyComponent={ArticleIllustration}
