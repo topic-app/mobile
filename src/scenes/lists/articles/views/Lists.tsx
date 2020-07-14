@@ -257,6 +257,7 @@ function ArticleLists({ articles, preferences, account, state, navigation }) {
             <View style={articleStyles.activeCommentContainer}>
               <PaperTextInput
                 mode="outlined"
+                multiline
                 label="Description"
                 value={editListDescription}
                 onChangeText={(text) => {
