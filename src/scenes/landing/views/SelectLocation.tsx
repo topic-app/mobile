@@ -6,7 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { connect } from 'react-redux';
 
 import { updateLocation } from '@redux/actions/data/location';
-import { updateArticleParams } from '@redux/actions/api/articles';
+import { updateArticleParams } from '@redux/actions/contentData/articles';
 import { updateSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 

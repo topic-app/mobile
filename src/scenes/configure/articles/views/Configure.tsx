@@ -129,9 +129,9 @@ function ArticleConfigure({ params, schools, departments, tags, groups, state })
 }
 
 const mapStateToProps = (state) => {
-  const { articles, schools, departments, tags, groups } = state;
+  const { articleData, schools, departments, tags, groups } = state;
   return {
-    params: articles.params,
+    params: articleData.params,
     schools: schools.data,
     departments: departments.data,
     tags: tags.data,

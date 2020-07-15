@@ -26,7 +26,7 @@ import {
   deleteArticleRead,
   addArticleToList,
   removeArticleFromList,
-} from '@redux/actions/lists/articles';
+} from '@redux/actions/contentData/articles';
 import { PlatformTouchable } from '@components/PlatformComponents';
 import { connect } from 'react-redux';
 
@@ -414,11 +414,11 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
 }
 
 const mapStateToProps = (state: State) => {
-  const { articles, preferences } = state;
+  const { articles, articleData, preferences } = state;
   return {
     articles: articles.data,
-    lists: articles.lists,
-    read: articles.read,
+    lists: articleData.lists,
+    read: articleData.read,
     state: articles.state,
     preferences,
   };

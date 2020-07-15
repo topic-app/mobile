@@ -28,10 +28,10 @@ import {
   deleteArticleList,
   addArticleList,
   modifyArticleList,
-} from '@redux/actions/lists/articles';
+} from '@redux/actions/contentData/articles';
 import getArticleStyles from '../styles/Styles';
 
-function ArticleLists({ articles, preferences, account, state, navigation }) {
+function ArticleLists({ lists, preferences, account, state, navigation }) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -51,7 +51,7 @@ function ArticleLists({ articles, preferences, account, state, navigation }) {
       {state.info.loading && <ProgressBar indeterminate />}
       {state.info.error && <ErrorMessage type="axios" error={state.info.error} retry={fetch} />}
       <FlatList
-        data={articles.lists}
+        data={lists}
         ListHeaderComponent={() => (
           <View>
             <View style={styles.centerIllustrationContainer}>
@@ -177,11 +177,8 @@ function ArticleLists({ articles, preferences, account, state, navigation }) {
                   Vous devez entrer un nom
                 </HelperText>
               </CollapsibleView>
-              <CollapsibleView collapsed={!articles.lists.some((l) => l.name === createListText)}>
-                <HelperText
-                  type="error"
-                  visible={articles.lists.some((l) => l.name === createListText)}
-                >
+              <CollapsibleView collapsed={!lists.some((l) => l.name === createListText)}>
+                <HelperText type="error" visible={lists.some((l) => l.name === createListText)}>
                   Une liste avec ce nom existe déjà
                 </HelperText>
               </CollapsibleView>
@@ -195,7 +192,7 @@ function ArticleLists({ articles, preferences, account, state, navigation }) {
                 onPress={() => {
                   if (createListText === '') {
                     setErrorVisible(true);
-                  } else if (!articles.lists.some((l) => l.name === createListText)) {
+                  } else if (!lists.some((l) => l.name === createListText)) {
                     // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                     addArticleList(createListText);
                     setCreateListText('');
@@ -240,15 +237,11 @@ function ArticleLists({ articles, preferences, account, state, navigation }) {
                 </HelperText>
               </CollapsibleView>
               <CollapsibleView
-                collapsed={
-                  !articles.lists.some((l) => l.name === editListText && l.id !== editingList)
-                }
+                collapsed={!lists.some((l) => l.name === editListText && l.id !== editingList)}
               >
                 <HelperText
                   type="error"
-                  visible={articles.lists.some(
-                    (l) => l.name === editListText && l.id !== editingList,
-                  )}
+                  visible={lists.some((l) => l.name === editListText && l.id !== editingList)}
                 >
                   Une liste avec ce nom existe déjà
                 </HelperText>
@@ -274,13 +267,11 @@ function ArticleLists({ articles, preferences, account, state, navigation }) {
                 onPress={() => {
                   if (editListText === '') {
                     setErrorVisible(true);
-                  } else if (
-                    !articles.lists.some((l) => l.name === editListText && l.id !== editingList)
-                  ) {
+                  } else if (!lists.some((l) => l.name === editListText && l.id !== editingList)) {
                     // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                     modifyArticleList(editingList, editListText, null, editListDescription);
                     setEditListText('');
-                    setEditListDescription(false);
+                    setEditListDescription('');
                     setEditModalVisible(false);
                   }
                 }}
@@ -296,9 +287,9 @@ function ArticleLists({ articles, preferences, account, state, navigation }) {
 }
 
 const mapStateToProps = (state: State) => {
-  const { articles, preferences, account } = state;
+  const { articles, articleData, preferences, account } = state;
   return {
-    articles,
+    lists: articleData.lists,
     preferences,
     account,
     state: articles.state,

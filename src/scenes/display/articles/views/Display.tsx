@@ -50,7 +50,11 @@ import {
   Illustration,
 } from '@components/index';
 import { fetchArticle } from '@redux/actions/api/articles';
-import { addArticleRead, addArticleToList, addArticleList } from '@redux/actions/lists/articles';
+import {
+  addArticleRead,
+  addArticleToList,
+  addArticleList,
+} from '@redux/actions/contentData/articles';
 import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
@@ -675,13 +679,13 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, comments, account, preferences } = state;
+  const { articles, articleData, comments, account, preferences } = state;
   return {
     articles: articles.data,
     comments: comments.data,
     reqState: { articles: articles.state, comments: comments.state },
     preferences,
-    lists: articles.lists,
+    lists: articleData.lists,
     account,
   };
 };
