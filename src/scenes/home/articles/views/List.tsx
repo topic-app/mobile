@@ -155,7 +155,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
         ]}
       >
         {lists.slice(0, (Dimensions.get('window').width - 100) / 120).map((l) => (
-          <View style={{ width: 120 }}>
+          <View key={l.id} style={{ width: 120 }}>
             <PlatformTouchable
               onPress={() => {
                 console.log('Add to list');

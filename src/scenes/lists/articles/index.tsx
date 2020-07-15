@@ -15,7 +15,7 @@ function ArticleListsStackNavigator() {
         options={({ route }) => ({
           ...HeaderConfig,
           title: 'Actus',
-          subtitle: 'Listes',
+          subtitle: 'Mes Listes',
         })}
       />
     </Stack.Navigator>
