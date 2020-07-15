@@ -9,6 +9,7 @@ import {
   HelperText,
   Card,
   TextInput as PaperTextInput,
+  Switch,
   useTheme,
 } from 'react-native-paper';
 import { View, Platform, FlatList, Alert, TextInput } from 'react-native';
@@ -28,10 +29,11 @@ import {
   deleteArticleList,
   addArticleList,
   modifyArticleList,
+  updateArticlePrefs,
 } from '@redux/actions/contentData/articles';
 import getArticleStyles from '../styles/Styles';
 
-function ArticleLists({ lists, preferences, account, state, navigation }) {
+function ArticleLists({ lists, preferences, articlePrefs, account, navigation }) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -46,10 +48,37 @@ function ArticleLists({ lists, preferences, account, state, navigation }) {
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
   const [editingList, setEditingList] = React.useState(null);
 
+  const categories = [
+    {
+      id: 'unread',
+      name: 'Non lus',
+      navigate: () =>
+        navigation.push('Main', {
+          screen: 'Home1',
+          params: {
+            screen: 'Home2',
+            params: { screen: 'Article', params: { initialList: 'unread' } },
+          },
+        }),
+      historyDisable: true,
+    },
+    {
+      id: 'all',
+      name: 'Tous',
+      navigate: () =>
+        navigation.push('Main', {
+          screen: 'Home1',
+          params: {
+            screen: 'Home2',
+            params: { screen: 'Article', params: { initialList: 'all' } },
+          },
+        }),
+      historyDisable: false,
+    },
+  ];
+
   return (
     <View style={styles.page}>
-      {state.info.loading && <ProgressBar indeterminate />}
-      {state.info.error && <ErrorMessage type="axios" error={state.info.error} retry={fetch} />}
       <FlatList
         data={lists}
         ListHeaderComponent={() => (
@@ -67,6 +96,53 @@ function ArticleLists({ lists, preferences, account, state, navigation }) {
               </View>
             </View>
             <Divider />
+            {categories.map((c) => (
+              <View key={c.id}>
+                <List.Item
+                  title={c.name}
+                  description={
+                    preferences.history || !c.historyDisable
+                      ? null
+                      : "Activez l'historique pour voir les articles non lus"
+                  }
+                  left={() => <List.Icon />}
+                  onPress={articlePrefs.hidden.includes(c.id) ? null : c.navigate}
+                  disabled={!preferences.history && c.historyDisable}
+                  titleStyle={
+                    preferences.history || !c.historyDisable ? {} : { color: colors.disabled }
+                  }
+                  descriptionStyle={
+                    preferences.history || !c.historyDisable ? {} : { color: colors.disabled }
+                  }
+                  right={() => (
+                    <View style={{ flexDirection: 'row' }}>
+                      <Switch
+                        disabled={
+                          (!preferences.history && c.historyDisable) ||
+                          (articlePrefs.hidden.length >= categories.length - 1 &&
+                            lists.length === 0 &&
+                            !articlePrefs.hidden.includes(c.id))
+                        }
+                        value={
+                          !articlePrefs.hidden.includes(c.id) &&
+                          (preferences.history || !c.historyDisable)
+                        }
+                        color={colors.primary}
+                        onTouchEnd={
+                          articlePrefs.hidden.includes(c.id)
+                            ? () =>
+                                updateArticlePrefs({
+                                  hidden: articlePrefs.hidden.filter((h) => h !== c.id),
+                                })
+                            : () => updateArticlePrefs({ hidden: [...articlePrefs.hidden, c.id] })
+                        }
+                      />
+                    </View>
+                  )}
+                />
+                <Divider />
+              </View>
+            ))}
           </View>
         )}
         ItemSeparatorComponent={() => <Divider />}
@@ -74,7 +150,11 @@ function ArticleLists({ lists, preferences, account, state, navigation }) {
           return (
             <List.Item
               title={item.name}
-              description={item.description}
+              description={`${
+                item.items.length
+                  ? `${item.items.length} article${item.items.length === 1 ? '' : 's'}`
+                  : 'Aucun article'
+              }${item.description ? `\n${item.description}` : ''}`}
               descriptionNumberOfLines={100}
               left={() => (
                 <PlatformTouchable
@@ -104,6 +184,9 @@ function ArticleLists({ lists, preferences, account, state, navigation }) {
                     <List.Icon icon="pencil" />
                   </PlatformTouchable>
                   <PlatformTouchable
+                    disabled={
+                      lists.length === 1 && articlePrefs.hidden.length > categories.length - 1
+                    }
                     onPress={() => {
                       Alert.alert(
                         `Voulez vous vraiment supprimer la liste ${item.name}?`,
@@ -124,7 +207,14 @@ function ArticleLists({ lists, preferences, account, state, navigation }) {
                       );
                     }}
                   >
-                    <List.Icon icon="delete" />
+                    <List.Icon
+                      icon="delete"
+                      color={
+                        lists.length === 1 && articlePrefs.hidden.length > categories.length - 1
+                          ? colors.disabled
+                          : colors.text
+                      }
+                    />
                   </PlatformTouchable>
                 </View>
               )}
@@ -287,12 +377,12 @@ function ArticleLists({ lists, preferences, account, state, navigation }) {
 }
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData, preferences, account } = state;
+  const { articleData, preferences, account } = state;
   return {
     lists: articleData.lists,
+    articlePrefs: articleData.prefs,
     preferences,
     account,
-    state: articles.state,
   };
 };
 

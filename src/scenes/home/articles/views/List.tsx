@@ -43,50 +43,56 @@ import getStyles from '@styles/Styles';
 
 import getArticleStyles from '../styles/Styles';
 
-function ArticleList({ navigation, articles, lists, read, state, theme, preferences, route }) {
+function ArticleList({
+  navigation,
+  articles,
+  lists,
+  read,
+  state,
+  theme,
+  articlePrefs,
+  preferences,
+  route,
+}) {
   const scrollY = new Animated.Value(0);
+  const { colors } = theme;
+  const styles = getStyles(theme);
+  const articleStyles = getArticleStyles(theme);
 
-  const categories = preferences.history
-    ? [
-        {
-          key: 'unread',
-          title: 'Non lus',
-          data: articles.filter((a) => !read.some((r) => r.id === a._id)),
-          type: 'category',
-        },
-        { key: 'all', title: 'Tous', data: articles, type: 'category' },
-        ...lists.map((l) => ({
-          key: l.id,
-          title: l.name,
-          description: l.description,
-          data: l.items,
-          list: true,
-          type: 'category',
-        })),
-      ]
-    : [
-        { key: 'all', title: 'Tous', data: articles, type: 'category' },
-        ...lists.map((l) => ({
-          key: l.id,
-          title: l.name,
-          description: l.description,
-          data: l.items,
-          list: true,
-          type: 'category',
-        })),
-      ];
+  const categories = lists.map((l) => ({
+    key: l.id,
+    title: l.name,
+    description: l.description,
+    data: l.items,
+    list: true,
+    type: 'category',
+  }));
 
-  const [category, setCategory] = React.useState(route.params?.initialList || categories[0].key);
+  if (!articlePrefs.hidden.includes('all')) {
+    categories.unshift({ key: 'all', title: 'Tous', data: articles, type: 'category' });
+  }
+
+  if (!articlePrefs.hidden.includes('unread') && preferences.history) {
+    categories.unshift({
+      key: 'unread',
+      title: 'Non lus',
+      data: articles.filter((a) => !read.some((r) => r.id === a._id)),
+      type: 'category',
+    });
+  }
+
+  const [category, setCategory] = React.useState(
+    route.params?.initialList ||
+      (categories.some((c) => c.id === articlePrefs.default)
+        ? articlePrefs.default
+        : categories[0].key),
+  );
 
   useFocusEffect(
     React.useCallback(() => {
       updateArticles('initial');
     }, [null]),
   );
-
-  const { colors } = theme;
-  const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -346,11 +352,11 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
         ListHeaderComponent={() => (
           <View>
             <CategoriesList categories={categories} selected={category} setSelected={changeList} />
-            {categories.find((c) => c.key === category).description ? (
+            {categories.find((c) => c.key === category)?.description ? (
               <Banner actions={[]} visible>
                 <Subheading>Description</Subheading>
                 {'\n'}
-                <Text>{categories.find((c) => c.key === category).description}</Text>
+                <Text>{categories.find((c) => c.key === category)?.description}</Text>
               </Banner>
             ) : null}
           </View>
@@ -417,6 +423,7 @@ const mapStateToProps = (state: State) => {
   const { articles, articleData, preferences } = state;
   return {
     articles: articles.data,
+    articlePrefs: articleData.prefs,
     lists: articleData.lists,
     read: articleData.read,
     state: articles.state,

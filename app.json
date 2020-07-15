@@ -30,6 +30,26 @@
       "syncHistory": true,
       "syncLists": true
     },
+    "articles": {
+      "lists": [
+        {
+          "id": "0",
+          "name": "Favoris",
+          "icon": "star-outline",
+          "items": []
+        },
+        {
+          "id": "1",
+          "name": "A lire plus tard",
+          "icon": "history",
+          "items": []
+        }
+      ],
+      "defaults": {
+        "hidden": [],
+        "default": "unread"
+      }
+    },
     "comments": {
       "maxCharacters": 500
     },
