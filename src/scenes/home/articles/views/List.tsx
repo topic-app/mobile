@@ -51,7 +51,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
         {
           key: 'unread',
           title: 'Non lus',
-          data: articles.filter((a) => !read.includes(a._id)),
+          data: articles.filter((a) => !read.some((r) => r.id === a._id)),
           type: 'category',
         },
         { key: 'all', title: 'Tous', data: articles, type: 'category' },
@@ -122,10 +122,10 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
             }}
           >
             <Text style={articleStyles.captionText}>
-              Marquer comme {read.includes(id) ? 'non lu' : 'lu'}
+              Marquer comme {read.some((r) => r.id === id) ? 'non lu' : 'lu'}
             </Text>
             <Icon
-              name={read.includes(id) ? 'eye-off' : 'eye'}
+              name={read.some((r) => r.id === id) ? 'eye-off' : 'eye'}
               size={32}
               style={{ marginHorizontal: 10 }}
             />
@@ -193,7 +193,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
   const swipeRightAction = (id, swipeRef) => {
     swipeRef.current?.close();
     if (!categories.find((c) => c.key === category)?.list) {
-      if (read.includes(id)) {
+      if (read.some((r) => r.id === id)) {
         deleteArticleRead(id);
       } else {
         addArticleRead(id);
@@ -383,7 +383,7 @@ function ArticleList({ navigation, articles, lists, read, state, theme, preferen
               >
                 <ArticleCard
                   unread={
-                    !read.includes(article.item._id) ||
+                    !read.some((r) => r.id === article.item._id) ||
                     categories.find((c) => c.key === category).key !== 'all'
                   }
                   article={article.item}
