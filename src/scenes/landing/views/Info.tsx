@@ -65,7 +65,7 @@ function LandingArticles({ navigation, route }) {
                   </View>
                 ),
               },
-              {
+              /* {
                 key: 'petitions',
                 title: 'Pétitions',
                 component: (
@@ -81,7 +81,7 @@ function LandingArticles({ navigation, route }) {
                     </View>
                   </View>
                 ),
-              },
+              }, */
               {
                 key: 'explore',
                 title: 'Explorer',

@@ -31,16 +31,16 @@ function LandingWelcome({ navigation }) {
       text: "Une description un peu plus longue de ce qu'on peut faire",
       icon: 'calendar',
     },
-    {
+    /* {
       index: 2,
       title: 'Pétitions',
       description:
         'Faites entendre votre voix en signant ou créant des pétitions et en répondant aux votes',
       text: "Une description un peu plus longue de ce qu'on peut faire",
       icon: 'comment-check-outline',
-    },
+    }, */
     {
-      index: 3,
+      index: 2,
       title: 'Explorer',
       description:
         'Découvrez les évènements et les lieux proches de vous avec une carte interactive',
@@ -48,7 +48,7 @@ function LandingWelcome({ navigation }) {
       icon: 'compass-outline',
     },
     {
-      index: 4,
+      index: 3,
       divider: true,
       title: 'Groupes',
       description:
