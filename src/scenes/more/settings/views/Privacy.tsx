@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, Alert } from 'react-native';
 import { List, Avatar, Divider, Banner, Switch, withTheme } from 'react-native-paper';
-import { clearArticlesRead } from '@redux/actions/lists/articles';
+import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
