@@ -31,7 +31,7 @@ function HomeTwoNavigator() {
     >
       <Stack.Screen name="Article" component={ArticleList} />
       <Stack.Screen name="Event" component={EventList} />
-      <Stack.Screen name="Petition" component={PetitionList} />
+      {/* <Stack.Screen name="Petition" component={PetitionList} /> */}
       <Stack.Screen name="Explorer" component={ExplorerList} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
