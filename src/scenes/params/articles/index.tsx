@@ -2,24 +2,24 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { HeaderConfig } from '@components/Header';
-import ArticleLists from './views/Lists';
+import ArticleParams from './views/Params';
 
 const Stack = createStackNavigator();
 
-function ArticleListsStackNavigator() {
+function ArticleConfigureStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Lists">
+    <Stack.Navigator initialRouteName="Params">
       <Stack.Screen
-        name="Lists"
-        component={ArticleLists}
+        name="Params"
+        component={ArticleParams}
         options={({ route }) => ({
           ...HeaderConfig,
           title: 'Actus',
-          subtitle: 'Mes Listes',
+          subtitle: 'Localisation',
         })}
       />
     </Stack.Navigator>
   );
 }
 
-export default ArticleListsStackNavigator;
+export default ArticleConfigureStackNavigator;

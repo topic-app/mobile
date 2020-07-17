@@ -1,158 +1,441 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ProgressBar, Divider, useTheme } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { View, ScrollView } from 'react-native';
+import { Divider, Text, List, Button, Switch, useTheme } from 'react-native-paper';
+import { View, Platform, FlatList, Alert } from 'react-native';
 import { connect } from 'react-redux';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 
-import { ErrorMessage, InlineCard, Illustration } from '@components/index';
-import { fetchSchool } from '@redux/actions/api/schools';
-import { fetchDepartment } from '@redux/actions/api/departments';
-import { fetchTag } from '@redux/actions/api/tags';
-import { fetchGroup } from '@redux/actions/api/groups';
+import {
+  State,
+  ArticleListItem,
+  ArticleQuickItem,
+  ArticlePrefs,
+  Account,
+  Preferences,
+} from '@ts/types';
+import { PlatformTouchable, Illustration } from '@components/index';
 import getStyles from '@styles/Styles';
+import {
+  deleteArticleList,
+  updateArticlePrefs,
+  deleteArticleQuick,
+  modifyArticleList,
+} from '@redux/actions/contentData/articles';
+import getArticleStyles from '../styles/Styles';
 
-function ArticleConfigure({ params, schools, departments, tags, groups, state }) {
+import CreateModal from '../components/CreateModal';
+import EditModal from '../components/EditModal';
+import QuickTypeModal from '../components/QuickTypeModal';
+
+type ArticleListsProps = {
+  lists: ArticleListItem[];
+  quicks: ArticleQuickItem[];
+  preferences: Preferences;
+  articlePrefs: ArticlePrefs;
+  account: Account;
+  navigation: any;
+};
+
+type Category = {
+  id: string;
+  name: string;
+  navigate: () => any;
+  historyDisable?: boolean;
+};
+
+function ArticleLists({
+  lists,
+  quicks,
+  preferences,
+  articlePrefs,
+  account,
+  navigation,
+}: ArticleListsProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
+  const articleStyles = getArticleStyles(theme);
+  const { colors } = theme;
 
-  const fetch = () => {
-    if (params.schools) {
-      params.schools.forEach((s) => fetchSchool(s));
-    }
-    if (params.departments) {
-      params.departments.forEach((d) => fetchDepartment(d));
-    }
-    if (params.tags) {
-      params.tags.forEach((t) => fetchTag(t));
-    }
-    if (params.groupss) {
-      params.groupss.forEach((g) => fetchGroup(g));
-    }
-  };
+  const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
+  const [isEditModalVisible, setEditModalVisible] = React.useState(false);
+  const [editingList, setEditingList] = React.useState(null);
+  const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
 
-  useFocusEffect(React.useCallback(fetch, [null]));
+  const categoryTypes: Category[] = [
+    {
+      id: 'unread',
+      name: 'Non lus',
+      navigate: () =>
+        navigation.push('Main', {
+          screen: 'Home1',
+          params: {
+            screen: 'Home2',
+            params: { screen: 'Article', params: { initialList: 'unread' } },
+          },
+        }),
+      historyDisable: true,
+    },
+    {
+      id: 'all',
+      name: 'Tous',
+      navigate: () =>
+        navigation.push('Main', {
+          screen: 'Home1',
+          params: {
+            screen: 'Home2',
+            params: { screen: 'Article', params: { initialList: 'all' } },
+          },
+        }),
+      historyDisable: false,
+    },
+  ];
 
-  const states = [state.schools.info, state.departments.info, state.tags.info, state.groups.info];
+  let categories: Category[] = [];
+
+  categoryTypes.forEach((c, i) => {
+    if (articlePrefs.categories.includes(c.id)) {
+      categories[articlePrefs.categories.indexOf(c.id)] = c;
+    }
+  });
+
+  categories = [
+    ...categories,
+    ...categoryTypes.filter((c) => !articlePrefs.categories.includes(c.id)),
+  ];
+
+  console.log(`Categories ${JSON.stringify(categories)}`);
 
   return (
     <View style={styles.page}>
-      {states.some((s) => s.loading) && <ProgressBar indeterminate />}
-      {states.some((s) => s.error) && (
-        <ErrorMessage type="axios" error={states.map((s) => s.error)} retry={fetch} />
-      )}
-      <ScrollView>
-        <View style={styles.centerIllustrationContainer}>
-          <Illustration name="configure" height={200} width={200} />
-        </View>
-        <Divider />
-        <InlineCard
-          title="Écoles"
-          subtitle={
-            params.schools?.length
-              ? params.schools.map((s) => schools.find((t) => t._id === s)?.displayName).join(', ')
-              : 'Aucun'
+      <FlatList
+        data={['categories', 'lists', 'tags']}
+        keyExtractor={(s) => s}
+        renderItem={({ item: section }) => {
+          switch (section) {
+            case 'categories':
+              return (
+                <View>
+                  <DraggableFlatList
+                    data={categories}
+                    keyExtractor={(c) => c.id}
+                    ItemSeparatorComponent={() => <Divider />}
+                    ListHeaderComponent={() => (
+                      <View>
+                        <View style={styles.centerIllustrationContainer}>
+                          <Illustration name="configure" height={200} width={200} />
+                          <View style={[styles.contentContainer, { alignItems: 'center' }]}>
+                            <Text>Choisissez les catégories et listes à afficher</Text>
+                            <Text>Appuyez longtemps pour réorganiser</Text>
+                          </View>
+                        </View>
+                        <List.Subheader>Catégories</List.Subheader>
+                        <Divider />
+                      </View>
+                    )}
+                    renderItem={({ item, drag }) => {
+                      const enabled = articlePrefs.categories.some((d) => d === item.id);
+                      return (
+                        <List.Item
+                          key={item.id}
+                          title={item.name}
+                          description={
+                            preferences.history || !item.historyDisable
+                              ? null
+                              : "Activez l'historique pour voir les articles non lus"
+                          }
+                          left={() => <List.Icon />}
+                          onPress={enabled ? item.navigate : () => null}
+                          onLongPress={drag}
+                          disabled={!preferences.history && item.historyDisable}
+                          titleStyle={
+                            preferences.history || !item.historyDisable
+                              ? {}
+                              : { color: colors.disabled }
+                          }
+                          descriptionStyle={
+                            preferences.history || !item.historyDisable
+                              ? {}
+                              : { color: colors.disabled }
+                          }
+                          right={() => (
+                            <View style={{ flexDirection: 'row' }}>
+                              <Switch
+                                disabled={!preferences.history && item.historyDisable}
+                                value={enabled && (preferences.history || !item.historyDisable)}
+                                color={colors.primary}
+                                onTouchEnd={
+                                  enabled
+                                    ? () =>
+                                        updateArticlePrefs({
+                                          categories: articlePrefs.categories.filter(
+                                            (d) => d !== item.id,
+                                          ),
+                                        })
+                                    : () =>
+                                        updateArticlePrefs({
+                                          categories: [...articlePrefs.categories, item.id],
+                                        })
+                                }
+                              />
+                            </View>
+                          )}
+                        />
+                      );
+                    }}
+                    ListFooterComponent={() => <Divider />}
+                    onDragEnd={({ to, from }) => {
+                      const tempCategories = articlePrefs.categories;
+                      const buffer = articlePrefs.categories[to];
+                      tempCategories[to] = articlePrefs.categories[from];
+                      tempCategories[from] = buffer;
+                      updateArticlePrefs({ categories: tempCategories });
+                    }}
+                  />
+                </View>
+              );
+
+            case 'lists':
+              return (
+                <DraggableFlatList
+                  data={lists}
+                  ListHeaderComponent={() => (
+                    <View>
+                      <View style={articleStyles.listSpacer} />
+                      <List.Subheader>Listes</List.Subheader>
+                      <View style={articleStyles.subheaderDescriptionContainer}>
+                        <Text>
+                          Ajoutez vos articles à des listes afin de pouvoir y accéder rapidement.
+                        </Text>
+                        <Text>
+                          Les articles ajoutés seront disponibles hors-ligne
+                          {account.loggedIn && preferences.syncLists
+                            ? ' et seront sauvegardés sur votre compte.'
+                            : '.'}
+                        </Text>
+                      </View>
+                      <Divider />
+                    </View>
+                  )}
+                  ItemSeparatorComponent={() => <Divider />}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item, drag }) => {
+                    return (
+                      <List.Item
+                        title={item.name}
+                        description={`${
+                          item.items.length
+                            ? `${item.items.length} article${item.items.length === 1 ? '' : 's'}`
+                            : 'Aucun article'
+                        }${item.description ? `\n${item.description}` : ''}`}
+                        descriptionNumberOfLines={100}
+                        onPress={() =>
+                          navigation.push('Main', {
+                            screen: 'Home1',
+                            params: {
+                              screen: 'Home2',
+                              params: { screen: 'Article', params: { initialList: item.id } },
+                            },
+                          })
+                        }
+                        onLongPress={drag}
+                        left={() => <List.Icon icon={item.icon} />}
+                        right={() => (
+                          <View style={{ flexDirection: 'row' }}>
+                            <View onStartShouldSetResponder={() => true}>
+                              <PlatformTouchable
+                                onPress={() => {
+                                  setEditingList(item);
+                                  setEditModalVisible(true);
+                                }}
+                              >
+                                <List.Icon icon="pencil" />
+                              </PlatformTouchable>
+                            </View>
+                            <View onStartShouldSetResponder={() => true}>
+                              <PlatformTouchable
+                                disabled={
+                                  lists.length === 1 &&
+                                  articlePrefs.hidden.length > categories.length - 1
+                                }
+                                onPress={() => {
+                                  Alert.alert(
+                                    `Voulez vous vraiment supprimer la liste ${item.name}?`,
+                                    'Cette action est irréversible',
+                                    [
+                                      {
+                                        text: 'Annuler',
+                                        onPress: () => {},
+                                      },
+                                      {
+                                        text: 'Supprimer',
+                                        onPress: () => deleteArticleList(item.id),
+                                      },
+                                    ],
+                                    {
+                                      cancelable: true,
+                                    },
+                                  );
+                                }}
+                              >
+                                <List.Icon
+                                  icon="delete"
+                                  color={
+                                    lists.length === 1 &&
+                                    articlePrefs.hidden.length > categories.length - 1
+                                      ? colors.disabled
+                                      : colors.text
+                                  }
+                                />
+                              </PlatformTouchable>
+                            </View>
+                          </View>
+                        )}
+                      />
+                    );
+                  }}
+                  onDragEnd={({ from, to }) => {
+                    const fromList = lists[from];
+                    const toList = lists[to];
+
+                    modifyArticleList(
+                      fromList.id,
+                      toList.name,
+                      toList.icon,
+                      toList.description,
+                      toList.items,
+                    );
+                    modifyArticleList(
+                      toList.id,
+                      fromList.name,
+                      fromList.icon,
+                      fromList.description,
+                      fromList.items,
+                    );
+                  }}
+                  ListFooterComponent={() => (
+                    <View>
+                      <Divider />
+                      <View style={styles.container}>
+                        <Button
+                          mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
+                          uppercase={Platform.OS !== 'ios'}
+                          onPress={() => setCreateModalVisible(true)}
+                        >
+                          Créer
+                        </Button>
+                      </View>
+                    </View>
+                  )}
+                />
+              );
+
+            case 'tags':
+              return (
+                <FlatList
+                  data={quicks}
+                  ListHeaderComponent={() => (
+                    <View>
+                      <View style={articleStyles.listSpacer} />
+
+                      <List.Subheader>Tags et groupes</List.Subheader>
+
+                      <View style={articleStyles.subheaderDescriptionContainer}>
+                        <Text>
+                          Choisissez des sujets et des groupes à afficher pour un accès rapide aux
+                          articles qui vous intéressent
+                        </Text>
+                      </View>
+                      <Divider />
+                    </View>
+                  )}
+                  renderItem={({ item }) => {
+                    let content = { description: 'Unk', icon: 'error' };
+                    if (item.type === 'tag') {
+                      content = {
+                        description: 'Tag',
+                        icon: 'pound',
+                      };
+                    } else if (item.type === 'group') {
+                      content = {
+                        description: 'Groupe',
+                        icon: 'account-group',
+                      };
+                    } else if (item.type === 'user') {
+                      content = {
+                        description: 'Utilisateur',
+                        icon: 'account',
+                      };
+                    }
+                    return (
+                      <View>
+                        <List.Item
+                          title={item.title}
+                          description={content.description}
+                          left={() => <List.Icon icon={content.icon} />}
+                          right={() => (
+                            <View style={{ flexDirection: 'row' }}>
+                              <PlatformTouchable
+                                onPress={() => {
+                                  deleteArticleQuick(item.id);
+                                }}
+                              >
+                                <List.Icon icon="delete" />
+                              </PlatformTouchable>
+                            </View>
+                          )}
+                        />
+                        <Divider />
+                      </View>
+                    );
+                  }}
+                  ListFooterComponent={() => (
+                    <View style={styles.container}>
+                      <Button
+                        mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
+                        uppercase={Platform.OS !== 'ios'}
+                        onPress={() => {
+                          setQuickTypeModalVisible(true);
+                        }}
+                      >
+                        Ajouter
+                      </Button>
+                    </View>
+                  )}
+                />
+              );
+
+            default:
+              return null;
           }
-          icon="school"
-          onPress={() => {}}
-        />
-        <InlineCard
-          title="Departements"
-          subtitle={
-            params.departments
-              ?.map((d) =>
-                departments.filter((e) => e.type === 'department')?.find((e) => e._id === d),
-              )
-              .filter((d) => d)?.length
-              ? params.departments
-                  .map(
-                    (d) =>
-                      departments.filter((e) => e.type === 'department')?.find((e) => e._id === d)
-                        ?.displayName,
-                  )
-                  .filter((d) => d)
-                  .join(', ')
-              : 'Aucun'
-          }
-          icon="map-marker-radius"
-          onPress={() => console.log('Animations')}
-        />
-        <InlineCard
-          title="Régions"
-          subtitle={
-            params.departments
-              ?.map((d) => departments.filter((e) => e.type === 'region')?.find((e) => e._id === d))
-              .filter((d) => d)?.length
-              ? params.departments
-                  .map(
-                    (d) =>
-                      departments.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                        ?.displayName,
-                  )
-                  .filter((d) => d)
-                  .join(', ')
-              : 'Aucun'
-          }
-          icon="map-marker-radius"
-          onPress={() => console.log('Animations')}
-        />
-        <InlineCard
-          title="France entière"
-          subtitle={params.global ? 'Oui' : 'Non'}
-          icon="flag"
-          onPress={() => console.log('Animations')}
-        />
-        <Divider />
-        <InlineCard
-          title="Tags"
-          subtitle={
-            params.tags?.length
-              ? params.tags.map((s) => tags.find((t) => t._id === s)?.displayName).join(', ')
-              : 'Aucun'
-          }
-          icon="tag-multiple"
-          onPress={() => console.log('Notification')}
-        />
-        <InlineCard
-          title="Groupes"
-          subtitle={
-            params.groups?.length
-              ? params.groups.map((s) => groups.find((t) => t._id === s)?.displayName).join(', ')
-              : 'Aucun'
-          }
-          icon="account-group"
-          onPress={() => console.log('Notification')}
-        />
-      </ScrollView>
+        }}
+      />
+
+      <CreateModal visible={isCreateModalVisible} setVisible={setCreateModalVisible} />
+      <EditModal
+        visible={isEditModalVisible}
+        setVisible={setEditModalVisible}
+        editingList={editingList}
+        setEditingList={setEditingList}
+      />
+      <QuickTypeModal visible={isQuickTypeModalVisible} setVisible={setQuickTypeModalVisible} />
     </View>
   );
 }
 
-const mapStateToProps = (state) => {
-  const { articleData, schools, departments, tags, groups } = state;
+const mapStateToProps = (state: State) => {
+  const { articleData, preferences, account } = state;
   return {
-    params: articleData.params,
-    schools: schools.data,
-    departments: departments.data,
-    tags: tags.data,
-    groups: groups.data,
-    state: {
-      schools: schools.state,
-      departments: departments.state,
-      tags: tags.state,
-      groups: groups.state,
-    },
+    lists: articleData.lists,
+    quicks: articleData.quicks,
+    articlePrefs: articleData.prefs,
+    preferences,
+    account,
   };
 };
 
-export default connect(mapStateToProps)(ArticleConfigure);
+export default connect(mapStateToProps)(ArticleLists);
 
-const tagPropType = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  displayName: PropTypes.string.isRequired,
-});
-
-ArticleConfigure.propTypes = {
+ArticleLists.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -161,23 +444,7 @@ ArticleConfigure.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
-  params: PropTypes.shape().isRequired,
-  schools: PropTypes.arrayOf(tagPropType).isRequired,
-  departments: PropTypes.arrayOf(tagPropType).isRequired,
-  tags: PropTypes.arrayOf(tagPropType).isRequired,
-  groups: PropTypes.arrayOf(tagPropType).isRequired,
   state: PropTypes.shape({
-    schools: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    departments: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    tags: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    groups: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
+    info: PropTypes.shape({}).isRequired,
   }).isRequired,
 };

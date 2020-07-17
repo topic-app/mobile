@@ -5,7 +5,7 @@ import ArticleConfigureStackNavigator from './articles/index';
 
 const Stack = createStackNavigator();
 
-function ConfigureStackNavigator() {
+function ListsStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Article" headerMode="none">
       <Stack.Screen name="Article" component={ArticleConfigureStackNavigator} />
@@ -13,4 +13,4 @@ function ConfigureStackNavigator() {
   );
 }
 
-export default ConfigureStackNavigator;
+export default ListsStackNavigator;

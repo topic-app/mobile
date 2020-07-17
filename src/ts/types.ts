@@ -13,6 +13,10 @@ export type Preferences = {
   // This is equivalent to JS's Object.keys() for types (hover over theme for more info)
   theme: keyof typeof theme;
   useSystemTheme: boolean;
+  history: boolean;
+  recommendations: boolean;
+  syncHistory: boolean;
+  syncLists: boolean;
 };
 
 export type LocationList = {
@@ -23,4 +27,9 @@ export type LocationList = {
   departments: string[];
   departmentData: DepartmentPreload[];
   state: LocationRequestState;
+};
+
+export type ModalProps = {
+  visible: boolean;
+  setVisible: (state: boolean) => void;
 };

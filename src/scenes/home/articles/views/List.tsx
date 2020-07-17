@@ -30,7 +30,14 @@ import {
 import { PlatformTouchable } from '@components/PlatformComponents';
 import { connect } from 'react-redux';
 
-import { State } from '@ts/types';
+import {
+  State,
+  ArticleListItem,
+  ArticleReadItem,
+  Article,
+  ArticlePrefs,
+  Preferences,
+} from '@ts/types';
 import {
   AnimatingHeader,
   ErrorMessage,
@@ -43,6 +50,22 @@ import getStyles from '@styles/Styles';
 
 import getArticleStyles from '../styles/Styles';
 
+type Category = {
+  key: string;
+  title: string;
+  data: any[];
+  type: string;
+};
+
+type ArticleListProps = {
+  navigation: any;
+  articles: Article[];
+  lists: ArticleListItem[];
+  read: ArticleReadItem[];
+  articlePrefs: ArticlePrefs;
+  preferences: Preferences;
+};
+
 function ArticleList({
   navigation,
   articles,
@@ -53,40 +76,49 @@ function ArticleList({
   articlePrefs,
   preferences,
   route,
-}) {
+}: ArticleListProps) {
   const scrollY = new Animated.Value(0);
   const { colors } = theme;
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
-  const categories = lists.map((l) => ({
-    key: l.id,
-    title: l.name,
-    description: l.description,
-    data: l.items,
-    list: true,
-    type: 'category',
-  }));
+  let categories: Category[] = [];
 
-  if (!articlePrefs.hidden.includes('all')) {
-    categories.unshift({ key: 'all', title: 'Tous', data: articles, type: 'category' });
-  }
-
-  if (!articlePrefs.hidden.includes('unread') && preferences.history) {
-    categories.unshift({
+  const categoryTypes = [
+    {
+      key: 'all',
+      title: 'Tous',
+      data: articles,
+      type: 'category',
+    },
+    {
       key: 'unread',
       title: 'Non lus',
       data: articles.filter((a) => !read.some((r) => r.id === a._id)),
       type: 'category',
-    });
-  }
+    },
+  ];
 
-  const [category, setCategory] = React.useState(
-    route.params?.initialList ||
-      (categories.some((c) => c.id === articlePrefs.default)
-        ? articlePrefs.default
-        : categories[0].key),
-  );
+  articlePrefs.categories.forEach((c) => {
+    const currentCategory = categoryTypes.find((d) => d.key === c);
+    if (currentCategory) {
+      categories.push(currentCategory);
+    }
+  });
+
+  categories = [
+    ...categories,
+    ...lists.map((l) => ({
+      key: l.id,
+      title: l.name,
+      description: l.description,
+      data: l.items,
+      list: true,
+      type: 'list',
+    })),
+  ];
+
+  const [category, setCategory] = React.useState(route.params?.initialList || categories[0].key);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -233,14 +265,14 @@ function ArticleList({
                 uppercase={Platform.OS !== 'ios'}
                 onPress={() =>
                   navigation.navigate('Main', {
-                    screen: 'Configure',
+                    screen: 'Params',
                     params: {
                       screen: 'Article',
                     },
                   })
                 }
               >
-                Configurer
+                Localisation
               </Button>
             </View>
           </Animated.View>
@@ -302,22 +334,12 @@ function ArticleList({
               }),
           },
           {
-            title: 'Mes Listes',
+            title: 'Localisation',
             onPress: () =>
               navigation.navigate('Main', {
-                screen: 'Lists',
+                screen: 'Params',
                 params: {
                   screen: 'Article',
-                },
-              }),
-          },
-          {
-            title: 'TEMP Profile',
-            onPress: () =>
-              navigation.navigate('More', {
-                screen: 'More',
-                params: {
-                  screen: 'Profile',
                 },
               }),
           },

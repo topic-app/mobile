@@ -45,9 +45,15 @@
           "items": []
         }
       ],
+      "quicks": [
+        {
+          "type": "tag",
+          "title": "numérique",
+          "id": "testetesens"
+        }
+      ],
       "defaults": {
-        "hidden": [],
-        "default": "unread"
+        "categories": ["unread", "all"]
       }
     },
     "comments": {

@@ -6,7 +6,7 @@ import ArticleConfigure from './views/Configure';
 
 const Stack = createStackNavigator();
 
-function ArticleConfigureStackNavigator() {
+function ArticleListsStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Configure">
       <Stack.Screen
@@ -22,4 +22,4 @@ function ArticleConfigureStackNavigator() {
   );
 }
 
-export default ArticleConfigureStackNavigator;
+export default ArticleListsStackNavigator;
