@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Divider, Text, List, Button, Switch, useTheme } from 'react-native-paper';
 import { View, Platform, FlatList, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import DraggableFlatList from 'react-native-draggable-flatlist';
+import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 
 import {
   State,
@@ -117,6 +117,7 @@ function ArticleLists({
                 <View>
                   <DraggableFlatList
                     data={categories}
+                    scrollPercent={5}
                     keyExtractor={(c) => c.id}
                     ItemSeparatorComponent={() => <Divider />}
                     ListHeaderComponent={() => (
@@ -132,7 +133,7 @@ function ArticleLists({
                         <Divider />
                       </View>
                     )}
-                    renderItem={({ item, drag }) => {
+                    renderItem={({ item, move, moveEnd }) => {
                       const enabled = articlePrefs.categories.some((d) => d === item.id);
                       return (
                         <List.Item
@@ -145,7 +146,7 @@ function ArticleLists({
                           }
                           left={() => <List.Icon />}
                           onPress={enabled ? item.navigate : () => null}
-                          onLongPress={drag}
+                          onLongPress={move}
                           disabled={!preferences.history && item.historyDisable}
                           titleStyle={
                             preferences.history || !item.historyDisable
@@ -183,7 +184,7 @@ function ArticleLists({
                       );
                     }}
                     ListFooterComponent={() => <Divider />}
-                    onDragEnd={({ to, from }) => {
+                    onMoveEnd={({ to, from }) => {
                       const tempCategories = articlePrefs.categories;
                       const buffer = articlePrefs.categories[to];
                       tempCategories[to] = articlePrefs.categories[from];
@@ -198,6 +199,7 @@ function ArticleLists({
               return (
                 <DraggableFlatList
                   data={lists}
+                  scrollPercent={5}
                   ListHeaderComponent={() => (
                     <View>
                       <View style={articleStyles.listSpacer} />
@@ -218,7 +220,7 @@ function ArticleLists({
                   )}
                   ItemSeparatorComponent={() => <Divider />}
                   keyExtractor={(item) => item.id}
-                  renderItem={({ item, drag }) => {
+                  renderItem={({ item, move }) => {
                     return (
                       <List.Item
                         title={item.name}
@@ -237,7 +239,7 @@ function ArticleLists({
                             },
                           })
                         }
-                        onLongPress={drag}
+                        onLongPress={move}
                         left={() => <List.Icon icon={item.icon} />}
                         right={() => (
                           <View style={{ flexDirection: 'row' }}>
@@ -293,7 +295,7 @@ function ArticleLists({
                       />
                     );
                   }}
-                  onDragEnd={({ from, to }) => {
+                  onMoveEnd={({ from, to }) => {
                     const fromList = lists[from];
                     const toList = lists[to];
 
