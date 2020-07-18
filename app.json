@@ -56,71 +56,17 @@
     "dev": {
       "logRequests": false,
       "defaultLocation": {
-        "selected": true,
-        "type": "school",
-        "schools": ["5e9208118851c52a8e6c6f8d"],
-        "schoolData": [
-          {
-            "_id": "5e9208118851c52a8e6c6f8d",
-            "name": "Centre International de Valbonne",
-            "shortName": "CIV",
-            "type": "lycee",
-            "address": {
-              "shortName": "Sophia-Antipolis, Alpes Maritimes",
-              "coordinates": {
-                "lat": 43.6215017,
-                "lon": 7.0416363
-              },
-              "department": null
-            },
-            "adminGroups": [],
-            "image": {
-              "image": null,
-              "thumbnail": {
-                "small": false,
-                "medium": false,
-                "large": false
-              }
-            },
-            "description": {
-              "parser": "markdown",
-              "data": "Hello there **bold**"
-            },
-            "department": null
-          }
-        ],
+        "selected": false,
+        "type": "",
+        "schools": [],
+        "schoolData": [],
         "departments": [],
         "departmentData": [],
-        "global": false
+        "global": null
       },
       "defaultAccount": {
         "loggedIn": false,
-        "accountInfo": {
-          "accountId": "5ec990bef666120011fc9276",
-          "accountToken": "VbLkYDu3_7iFNEXQsCiQc",
-          "accountTokenExpiry": "2020-05-30T21:08:14.245Z",
-          "user": {
-            "info": {
-              "joinDate": "2020-05-23T21:08:14.217Z",
-              "username": "test"
-            },
-            "data": {
-              "following": { "groups": [], "users": [], "events": [] },
-              "cache": { "followers": null },
-              "public": false,
-              "firstName": "",
-              "lastName": "",
-              "description": "",
-              "location": {
-                "global": false,
-                "schools": ["5e9208118851c52a8e6c6f8d"],
-                "departments": [],
-                "_id": "5ec990bef666120011fc9277"
-              }
-            },
-            "sensitiveData": { "email": "test@test.com" }
-          }
-        },
+        "accountInfo": {},
         "creationData": {}
       }
     }

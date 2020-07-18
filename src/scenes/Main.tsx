@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 
 import { LocationList, State } from '@ts/types';
 
+import UnauthorizedBeta from '@components/UnauthorizedBeta';
+
 import DisplayStackNavigator from './display/index';
 import AddStackNavigator from './add/index';
 import MoreStackNavigator from './more/index';
@@ -60,6 +62,7 @@ const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) =
       screen: 'Welcome',
     });
   }
+  const unauthorizedBack = () => <UnauthorizedBeta back={navigation.goBack} />;
   return (
     <Stack.Navigator initialRouteName="Home1" headerMode="none" screenOptions={screenOptions}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
@@ -67,7 +70,7 @@ const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) =
       <Stack.Screen name="Params" component={ParamsStackNavigator} />
       <Stack.Screen name="Add" component={AddStackNavigator} />
       <Stack.Screen name="More" component={MoreStackNavigator} />
-      <Stack.Screen name="Search" component={SearchStackNavigator} />
+      <Stack.Screen name="Search" component={unauthorizedBack} />
       <Stack.Screen name="Home1" component={HomeOneNavigator} />
     </Stack.Navigator>
   );
