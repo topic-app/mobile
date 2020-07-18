@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ProgressBar, Divider, useTheme } from 'react-native-paper';
+import { ProgressBar, Text, Divider, useTheme } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
 import { ErrorMessage, InlineCard, Illustration } from '@components/index';
@@ -44,19 +44,17 @@ function ArticleConfigure({ navigation, params, schools, departments, tags, grou
       <ScrollView>
         <View style={styles.centerIllustrationContainer}>
           <Illustration name="configure" height={200} width={200} />
-          <View style={styles.contentContainer}>
+          <View style={[styles.contentContainer, { alignItems: 'center' }]}>
             <Text>
               Choissisez les écoles et départements d&apos;ou vous voulez voir les articles
             </Text>
 
-            <View style={{ flexDirection: 'row' }}>
-              <Text>Ces parametres s&apos;appliquent aux articles seulement. </Text>
-              <TouchableWithoutFeedback
-                onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })}
-              >
-                <Text style={[styles.link, styles.primaryText]}>Changer d&apos;école</Text>
-              </TouchableWithoutFeedback>
-            </View>
+            <Text>Ces parametres s&apos;appliquent aux articles seulement. </Text>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })}
+            >
+              <Text style={[styles.link, styles.primaryText]}>Changer d&apos;école</Text>
+            </TouchableWithoutFeedback>
           </View>
         </View>
         <Divider />
