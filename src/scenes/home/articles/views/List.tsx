@@ -324,7 +324,7 @@ function ArticleList({
         ]}
         overflow={[
           {
-            title: 'Configurer',
+            title: 'Catégories',
             onPress: () =>
               navigation.navigate('Main', {
                 screen: 'Configure',
