@@ -1,18 +1,32 @@
 {
-  "parser": "babel-eslint",
-  "extends": ["airbnb", "prettier", "prettier/react"],
-  "plugins": ["react", "jsx-a11y", "import", "prettier", "react-hooks"],
+  "parser": "@typescript-eslint/parser",
+  "extends": ["airbnb", "@react-native-community"],
+  "plugins": ["@typescript-eslint", "import"],
   "rules": {
+    "prettier/prettier": "off",
+    "linebreak-style": "off",
+    "no-underscore-dangle": "off",
+    "no-throw-literal": "warn",
+    "no-undef": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "react/sort-comp": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
+    "react/prefer-stateless-function": "off",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/exhaustive-deps": "off",
+    "react-native/no-inline-styles": "off",
     "import/no-extraneous-dependencies": ["error", { "packageDir": "." }],
-    "linebreak-style": ["off"],
-    "no-undef": ["error"],
-    "react/sort-comp": ["off"],
-    "react/prefer-stateless-function": ["off"],
-    "no-unused-vars": ["warn"],
-    "no-underscore-dangle": ["off"],
-    "no-throw-literal": ["warn"]
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
   },
   "settings": {
     "import/resolver": {
