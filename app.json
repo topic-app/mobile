@@ -1,17 +1,9 @@
 {
   "name": "Topic",
   "displayName": "Topic",
-  "expo": {
-    "name": "Topic",
-    "slug": "Topic",
-    "privacy": "unlisted",
-    "version": "1.0.0",
-    "entryPoint": "node_modules/expo/AppEntry.js",
-    "platforms": ["ios", "android", "web"]
-  },
   "config": {
     "api": {
-      "url": "https://api.topicapp.fr/v1/",
+      "url": "https://api-dev.topicapp.fr/v1/",
       "retryTime": 10
     },
     "cdn": {
@@ -32,7 +24,31 @@
     },
     "defaults": {
       "theme": "light",
-      "useSystemTheme": true
+      "useSystemTheme": true,
+      "history": true,
+      "recommendations": false,
+      "syncHistory": true,
+      "syncLists": true
+    },
+    "articles": {
+      "lists": [
+        {
+          "id": "0",
+          "name": "Favoris",
+          "icon": "star-outline",
+          "items": []
+        },
+        {
+          "id": "1",
+          "name": "A lire plus tard",
+          "icon": "history",
+          "items": []
+        }
+      ],
+      "quicks": [],
+      "defaults": {
+        "categories": ["unread", "all"]
+      }
     },
     "comments": {
       "maxCharacters": 500
@@ -42,7 +58,7 @@
       "defaultLocation": {
         "selected": false,
         "type": "school",
-        "schools": ["5e9208118851c52a8e6c6f8d"],
+        "schools": [],
         "schoolData": [
           {
             "_id": "5e9208118851c52a8e6c6f8d",
@@ -78,13 +94,16 @@
         "global": false
       },
       "defaultAccount": {
-        "loggedIn": true,
+        "loggedIn": false,
         "accountInfo": {
           "accountId": "5ec990bef666120011fc9276",
           "accountToken": "VbLkYDu3_7iFNEXQsCiQc",
           "accountTokenExpiry": "2020-05-30T21:08:14.245Z",
           "user": {
-            "info": { "joinDate": "2020-05-23T21:08:14.217Z", "username": "test" },
+            "info": {
+              "joinDate": "2020-05-23T21:08:14.217Z",
+              "username": "test"
+            },
             "data": {
               "following": { "groups": [], "users": [], "events": [] },
               "cache": { "followers": null },
