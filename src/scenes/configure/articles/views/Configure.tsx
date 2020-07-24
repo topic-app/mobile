@@ -26,6 +26,7 @@ import getArticleStyles from '../styles/Styles';
 import CreateModal from '../components/CreateModal';
 import EditModal from '../components/EditModal';
 import QuickTypeModal from '../components/QuickTypeModal';
+import QuickSelectModal from '../components/QuickSelectModal';
 
 type ArticleListsProps = {
   lists: ArticleListItem[];
@@ -60,6 +61,14 @@ function ArticleLists({
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
   const [editingList, setEditingList] = React.useState(null);
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
+  const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
+  const [quickType, setQuickType] = React.useState('');
+
+  const next = (data: string) => {
+    setQuickType(data);
+    setQuickTypeModalVisible(false);
+    setQuickSelectModalVisible(true);
+  };
 
   const categoryTypes: Category[] = [
     {
@@ -419,7 +428,16 @@ function ArticleLists({
         editingList={editingList}
         setEditingList={setEditingList}
       />
-      <QuickTypeModal visible={isQuickTypeModalVisible} setVisible={setQuickTypeModalVisible} />
+      <QuickTypeModal
+        visible={isQuickTypeModalVisible}
+        setVisible={setQuickTypeModalVisible}
+        next={next}
+      />
+      <QuickSelectModal
+        visible={isQuickSelectModalVisible}
+        setVisible={setQuickSelectModalVisible}
+        type={quickType}
+      />
     </View>
   );
 }

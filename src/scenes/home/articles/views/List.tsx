@@ -17,7 +17,7 @@ import {
   Text,
   Subheading,
   Avatar,
-  withTheme,
+  useTheme,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -39,6 +39,8 @@ import {
   Article,
   ArticlePrefs,
   Preferences,
+  ArticleQuickItem,
+  ArticleRequestState,
 } from '@ts/types';
 import {
   AnimatingHeader,
@@ -47,7 +49,7 @@ import {
   CategoriesList,
   ArticleCard,
 } from '@components/index';
-import { updateArticles } from '@redux/actions/api/articles';
+import { updateArticles, searchArticles, clearArticles } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
 
 import getArticleStyles from '../styles/Styles';
@@ -59,15 +61,19 @@ type Category = {
   data: any[];
   type: string;
   list?: boolean;
+  params?: object;
 };
 
 type ArticleListProps = {
   navigation: any;
   articles: Article[];
+  search: Article[];
   lists: ArticleListItem[];
   read: ArticleReadItem[];
+  quicks: ArticleQuickItem[];
   articlePrefs: ArticlePrefs;
   preferences: Preferences;
+  state: ArticleRequestState;
 };
 
 function ArticleList({
@@ -78,11 +84,11 @@ function ArticleList({
   read,
   quicks,
   state,
-  theme,
   articlePrefs,
   preferences,
   route,
 }: ArticleListProps) {
+  const theme = useTheme();
   const scrollY = new Animated.Value(0);
   const { colors } = theme;
   const styles = getStyles(theme);
@@ -167,10 +173,10 @@ function ArticleList({
   const [tab, setTab] = React.useState(route.params?.initialList || tabs[0].data[0].key);
   const [chipTab, setChipTab] = React.useState(tab);
 
-  const getSection = () => tabs.find((t) => t.data.some((d) => d.key === tab));
+  const getSection = (a: string = '') => tabs.find((t) => t.data.some((d) => d.key === (a || tab)));
 
-  const getItem = () =>
-    tabs.find((t) => t.key === getSection()?.key)?.data.find((d) => d.key === tab);
+  const getItem = (a: string = '') =>
+    tabs.find((t) => t.key === getSection(a)?.key)?.data.find((d) => d.key === (a || tab));
 
   useFocusEffect(
     React.useCallback(() => {
@@ -180,10 +186,13 @@ function ArticleList({
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
-  const changeList = async (data) => {
+  const changeList = async (data: string) => {
     const noAnimation = await AccessibilityInfo.isReduceMotionEnabled();
     if (noAnimation) {
       setChipTab(data);
+      if (getSection(data)?.key === 'quicks') {
+        searchArticles('initial', '', getItem(data)?.params, false, true);
+      }
       setTab(data);
     } else {
       setChipTab(data);
@@ -191,7 +200,11 @@ function ArticleList({
         useNativeDriver: true,
         toValue: 0,
         duration: 100,
-      }).start(() => {
+      }).start(async () => {
+        console.log(data);
+        if (getSection(data)?.key === 'quicks') {
+          await searchArticles('initial', '', getItem(data)?.params, false, true);
+        }
         setTab(data);
         Animated.timing(fadeAnim, {
           useNativeDriver: true,
@@ -202,7 +215,7 @@ function ArticleList({
     }
   };
 
-  const renderRightActions = (id) => {
+  const renderRightActions = (id: string) => {
     return (
       <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
         {getSection()?.key !== 'lists' ? (
@@ -244,7 +257,7 @@ function ArticleList({
     );
   };
 
-  const renderLeftActions = (id, swipeRef) => {
+  const renderLeftActions = (id: string, swipeRef) => {
     return (
       <View
         style={[
@@ -256,7 +269,6 @@ function ArticleList({
           <View key={l.id} style={{ width: 120 }}>
             <PlatformTouchable
               onPress={() => {
-                console.log('Add to list');
                 if (lists.find((j) => j.id === l.id)?.items.some((i) => i._id === id)) {
                   Alert.alert(
                     `Retirer l'article de la liste ${lists.find((j) => j.id === l.id)?.name} ?`,
@@ -305,7 +317,7 @@ function ArticleList({
     );
   };
 
-  const swipeRightAction = (id, swipeRef) => {
+  const swipeRightAction = (id: string, swipeRef) => {
     swipeRef.current?.close();
     if (getSection()?.key !== 'lists') {
       if (read.some((r) => r.id === id)) {
@@ -319,7 +331,11 @@ function ArticleList({
   };
 
   const ArticleIllustration = () => {
-    if (state.list.success || getSection()?.key === 'lists') {
+    if (
+      (getSection()?.key === 'categories' && state.list.success) ||
+      (getSection()?.key === 'quicks' && state.search.success) ||
+      getSection()?.key === 'lists'
+    ) {
       if (tab === 'unread') {
         return (
           <Animated.View style={{ opacity: fadeAnim }}>
@@ -354,7 +370,7 @@ function ArticleList({
             </View>
           </Animated.View>
         );
-      } else {
+      } else if (getSection()?.key === 'lists') {
         return (
           <Animated.View style={{ opacity: fadeAnim }}>
             <View style={styles.centerIllustrationContainer}>
@@ -365,6 +381,15 @@ function ArticleList({
                   Ajoutez les grâce à l&apos;icone <Icon name="playlist-plus" size={20} />
                 </Text>
               </View>
+            </View>
+          </Animated.View>
+        );
+      } else {
+        return (
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <View style={styles.centerIllustrationContainer}>
+              <Illustration name="article" height={400} width={400} />
+              <Text>Aucun article dans cette catégorie</Text>
             </View>
           </Animated.View>
         );
@@ -379,6 +404,8 @@ function ArticleList({
       );
     }
   };
+
+  const listData = getItem()?.data;
 
   return (
     <View style={styles.page}>
@@ -422,8 +449,9 @@ function ArticleList({
           },
         ]}
       >
-        {state.list.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
-        {state.list.error ? (
+        {state.list.loading.initial ||
+          (state.search.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />)}
+        {state.list.error || state.search.error ? (
           <ErrorMessage
             type="axios"
             strings={{
@@ -431,7 +459,7 @@ function ArticleList({
               contentPlural: 'des articles',
               contentSingular: "La liste d'articles",
             }}
-            error={state.list.error}
+            error={[state.list.error, state.search.error]}
             retry={() => updateArticles('initial')}
           />
         ) : null}
@@ -440,10 +468,25 @@ function ArticleList({
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
-        data={getItem().data || []}
-        refreshing={state.list.loading.refresh}
-        onRefresh={getSection()?.key !== 'lists' ? () => updateArticles('refresh') : undefined}
-        onEndReached={getSection()?.key !== 'lists' ? () => updateArticles('next') : undefined}
+        data={listData || []}
+        refreshing={
+          (getSection()?.key === 'categories' && state.list.loading.refresh) ||
+          (getSection()?.key === 'quicks' && state.search.loading.refresh)
+        }
+        onRefresh={() => {
+          if (getSection()?.key === 'categories') {
+            updateArticles('refresh');
+          } else if (getSection()?.key === 'quicks') {
+            searchArticles('refresh', '', getItem()?.params, false, true);
+          }
+        }}
+        onEndReached={() => {
+          if (getSection()?.key === 'categories') {
+            updateArticles('next');
+          } else if (getSection()?.key === 'quicks') {
+            searchArticles('next', '', getItem()?.params, false, true);
+          }
+        }}
         ListHeaderComponent={() => (
           <View>
             <TabChipList
@@ -472,13 +515,16 @@ function ArticleList({
         )}
         ListEmptyComponent={ArticleIllustration}
         onEndReachedThreshold={0.5}
-        keyExtractor={(article) => article._id}
+        keyExtractor={(article: Article) => article._id}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
+            {((getSection()?.key === 'categories' && state.list.loading.next) ||
+              (getSection()?.key === 'quicks' && state.search.loading.next)) && (
+              <ActivityIndicator size="large" color={colors.primary} />
+            )}
           </View>
         }
-        renderItem={(article) => {
+        renderItem={(article: { item: Article }) => {
           const swipeRef = React.createRef();
           return (
             <Animated.View style={{ opacity: fadeAnim }}>
@@ -497,7 +543,7 @@ function ArticleList({
                 }
               >
                 <ArticleCard
-                  unread={!read.some((r) => r.id === article.item._id) || getItem().key !== 'all'}
+                  unread={!read.some((r) => r.id === article.item._id) || getItem()?.key !== 'all'}
                   article={article.item}
                   navigate={() =>
                     navigation.navigate('Main', {
@@ -509,7 +555,7 @@ function ArticleList({
                           params: {
                             id: article.item._id,
                             title: article.item.title,
-                            useLists: getSection().key === 'lists',
+                            useLists: getSection()?.key === 'lists',
                           },
                         },
                       },
@@ -539,7 +585,7 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme(ArticleList));
+export default connect(mapStateToProps)(ArticleList);
 
 ArticleList.propTypes = {
   navigation: PropTypes.shape({
