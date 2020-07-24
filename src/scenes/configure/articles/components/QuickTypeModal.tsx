@@ -6,9 +6,9 @@ import Modal from 'react-native-modal';
 
 import getStyles from '@styles/Styles';
 
-type QuickTypeModalProps = ModalProps;
+type QuickTypeModalProps = ModalProps & { next: (type: string) => void };
 
-function QuickTypeModal({ visible, setVisible }: QuickTypeModalProps) {
+function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -91,7 +91,7 @@ function QuickTypeModal({ visible, setVisible }: QuickTypeModalProps) {
                     mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                     color={colors.primary}
                     uppercase={Platform.OS !== 'ios'}
-                    onPress={() => {}}
+                    onPress={() => next(currentType)}
                     style={{ flex: 1 }}
                   >
                     Suivant

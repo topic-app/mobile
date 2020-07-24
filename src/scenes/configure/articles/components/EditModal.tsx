@@ -45,8 +45,6 @@ function EditModal({ visible, setVisible, lists, editingList, setEditingList }: 
     >
       <Card>
         <View>
-          <Divider />
-
           <View style={articleStyles.activeCommentContainer}>
             <PaperTextInput
               autoFocus

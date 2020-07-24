@@ -43,6 +43,10 @@ import ExploreGreyedDark from '@assets/images/illustrations/explore/explore_grey
 import GroupLight from '@assets/images/illustrations/groups/groups_light.svg';
 import GroupDark from '@assets/images/illustrations/groups/groups_dark.svg';
 
+// Group Illustrations
+import TagLight from '@assets/images/illustrations/tags/tags_light.svg';
+import TagDark from '@assets/images/illustrations/tags/tags_dark.svg';
+
 // Petition Illustrations
 import PetitionLight from '@assets/images/illustrations/petitions/petitions_light.svg';
 import PetitionDark from '@assets/images/illustrations/petitions/petitions_dark.svg';
@@ -135,6 +139,18 @@ const illustrationList = {
     dark: GroupDark,
   },
 
+  // Tag Illustrations
+  tag: {
+    light: TagLight,
+    dark: TagDark,
+  },
+
+  // User Illustrations TEMP: Find a better illustration
+  user: {
+    light: GroupLight,
+    dark: GroupDark,
+  },
+
   // Petition Illustrations
   petition: {
     light: PetitionLight,
@@ -174,7 +190,7 @@ const Illustration: React.FC<Props> = ({ name, ...rest }) => {
   const { dark } = useTheme();
   const Item = dark ? illustrationList[name]?.dark : illustrationList[name]?.light;
 
-  if (Item === undefined) {
+  if (!Item) {
     console.log(`Error: ${name} not found in list of artwork`);
   }
 
