@@ -18,7 +18,7 @@ type InlineCardProps = {
   badgeColor?: string;
   icon?: string;
   imageUrl?: string;
-  avatar: AvatarType;
+  avatar?: AvatarType;
 };
 
 const InlineCard: React.FC<InlineCardProps> = ({

@@ -266,7 +266,14 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
                 color={preferences.history ? colors.text : colors.disabled}
               />
             )}
-            onPress={() => console.log('See history')}
+            onPress={() =>
+              navigation.navigate('Main', {
+                screen: 'History',
+                params: {
+                  screen: 'Main',
+                },
+              })
+            }
             disabled={!preferences.history}
             titleStyle={preferences.history ? {} : { color: colors.disabled }}
             descriptionStyle={preferences.history ? {} : { color: colors.disabled }}
