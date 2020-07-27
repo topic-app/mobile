@@ -287,16 +287,6 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
   const { id, useLists } = route.params;
-  React.useEffect(() => {
-    if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
-      fetchArticle(id).then(() => {
-        if (preferences.history) {
-          addArticleRead(id);
-        }
-      });
-    }
-    updateComments('initial', { parentId: id });
-  }, [null]);
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -315,6 +305,17 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         : data.find((a) => a._id === id) || search.find((a) => a._id === id) || null;
   }
   const articleComments = comments.filter((c) => c.parent === article?._id);
+
+  React.useEffect(() => {
+    if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
+      fetchArticle(id).then(() => {
+        if (preferences.history) {
+          addArticleRead(id, article?.title);
+        }
+      });
+    }
+    updateComments('initial', { parentId: id });
+  }, [null]);
 
   const [isListModalVisible, setListModalVisible] = React.useState(false);
   const [list, setList] = React.useState(lists[0]?.id);
