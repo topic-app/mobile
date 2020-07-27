@@ -147,16 +147,16 @@ function QuickSelectModal({
             data={data}
             keyExtractor={(i) => i._id}
             keyboardShouldPersistTaps="handled"
-            ListEmptyComponent={
-              (searchText === '' && state.list.success) ||
-              (searchText !== '' && state.search.success)
-                ? () => (
+            ListEmptyComponent={() => (
+              <View style={{ minHeight: 50 }}>
+                {(searchText === '' && state.list.success) ||
+                  (searchText !== '' && state.search.success && (
                     <View style={styles.centerIllustrationContainer}>
                       <Text>Aucun résultat</Text>
                     </View>
-                  )
-                : null
-            }
+                  ))}
+              </View>
+            )}
             renderItem={({ item }) =>
               quicks.some((q) => q.id === item._id) ? null : (
                 <List.Item

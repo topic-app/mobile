@@ -252,7 +252,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
 type ArticleDisplayProps = {
   route: Route;
   navigation: Navigation;
+  item: Article | null;
   articles: Article[];
+  search: Article[];
   comments: Comment[];
   reqState: CombinedReqState;
   account: Account;
@@ -274,7 +276,9 @@ type CommentPublisher = {
 const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   route,
   navigation,
-  articles,
+  data,
+  search,
+  item,
   comments,
   reqState,
   account,
@@ -299,13 +303,16 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  let article: Article | undefined;
+  let article: Article | undefined | null;
   if (useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))) {
     article = lists
       .find((l: ArticleListItem) => l.items.some((i) => i._id === id))
-      .items.find((i) => i._id === id);
+      ?.items.find((i) => i._id === id);
   } else {
-    article = articles.find((t) => t._id === id);
+    article =
+      item?._id === id
+        ? item
+        : data.find((a) => a._id === id) || search.find((a) => a._id === id) || null;
   }
   const articleComments = comments.filter((c) => c.parent === article?._id);
 
@@ -718,7 +725,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 const mapStateToProps = (state: State) => {
   const { articles, articleData, comments, account, preferences } = state;
   return {
-    articles: articles.data,
+    data: articles.data,
+    search: articles.search,
+    item: articles.item,
     comments: comments.data,
     reqState: { articles: articles.state, comments: comments.state },
     preferences,
