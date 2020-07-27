@@ -440,8 +440,9 @@ function ArticleList({
           },
         ]}
       >
-        {state.list.loading.initial ||
-          (state.search.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />)}
+        {(state.list.loading.initial || state.search.loading.initial) && (
+          <ProgressBar indeterminate style={{ marginTop: -4 }} />
+        )}
         {state.list.error || state.search.error ? (
           <ErrorMessage
             type="axios"

@@ -7,7 +7,6 @@ import { ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
 
 type Props = {
-  type: 'school' | 'department' | 'region' | 'other';
   data: {
     key: string;
     title: string;
@@ -24,7 +23,6 @@ type Props = {
 };
 
 const ItemList: React.FC<Props> = ({
-  type,
   data,
   initialSelected,
   setGlobalSelected,
