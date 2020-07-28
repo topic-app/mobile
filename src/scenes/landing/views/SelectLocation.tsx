@@ -89,18 +89,18 @@ function getData(type, locationData) {
         description: `${
           s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'
         }${s?.departments
-          ?.filter((d) => d.type === 'department')
+          ?.filter((d) => d.type === 'departement')
           .map((d) => `, ${d.displayName}`)}`,
       };
     });
-  } else if (type === 'department' || type === 'region') {
+  } else if (type === 'departement' || type === 'region') {
     data = locationData
       ?.filter((d) => d.type === type)
       ?.map((d) => {
         return {
           key: d._id,
           title: d.name,
-          description: `${type === 'department' ? 'Département' : 'Région'} ${d.code || ''}`,
+          description: `${type === 'departement' ? 'Département' : 'Région'} ${d.code || ''}`,
         };
       });
   }
@@ -163,7 +163,10 @@ const WelcomeLocation: React.FC<Props> = ({
   );
 
   const schoolData = getData('school', searchText === '' ? schools : schoolsSearch);
-  const departmentData = getData('department', searchText === '' ? departments : departmentsSearch);
+  const departmentData = getData(
+    'departement',
+    searchText === '' ? departments : departmentsSearch,
+  );
   const regionData = getData('region', departments);
   const otherData = getData('other', []);
 
@@ -188,14 +191,15 @@ const WelcomeLocation: React.FC<Props> = ({
     }
   };
 
-  const next = (type: 'schools' | 'departments' | 'regions') => {
+  const next = (type: 'schools' | 'departements' | 'regions') => {
     if (type === 'schools') {
-      if (searchText !== '') {
+      console.log("Hello")
+      if (searchText) {
         searchSchools('next', searchText);
       } else {
         updateSchools('next');
       }
-    } else if (searchText !== '') {
+    } else if (searchText) {
       searchDepartments('next', searchText);
     } else {
       updateDepartments('next');
@@ -241,17 +245,17 @@ const WelcomeLocation: React.FC<Props> = ({
               ),
             },
             {
-              key: 'department',
+              key: 'departement',
               title: 'Département',
               component: (
                 <ItemList
-                  type="department"
+                  type="departement"
                   initialSelected={selected}
                   data={departmentData}
                   setGlobalSelected={setSelected}
                   state={state}
                   retry={retry}
-                  next={() => next('departments')}
+                  next={() => next('departements')}
                 />
               ),
             },
@@ -281,7 +285,7 @@ const WelcomeLocation: React.FC<Props> = ({
                   setGlobalSelected={setSelected}
                   state={state}
                   retry={retry}
-                  next={() => console.log('next')}
+                  next={() => false}
                 />
               ),
             },

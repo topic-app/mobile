@@ -455,7 +455,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           if (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))) {
             fetchArticle(id);
           } else {
-            addArticleToList(id, lists.find((l) => l.items.some((i) => i._id === id)).key);
+            addArticleToList(id, lists.find((l) => l.items.some((i) => i._id === id))?.id);
           }
           updateComments('refresh', { parentId: id });
         }}

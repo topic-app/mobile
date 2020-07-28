@@ -1,21 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
-import { Text, List, useTheme } from 'react-native-paper';
-import getStyles from '@styles/Styles';
+import { View, ActivityIndicator } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import shortid from 'shortid';
 import { InlineCard } from '@components/Cards';
-import getEventStyles from '../styles/Styles';
+import { UserPreload, Event } from '@ts/types';
 
-function EventDisplayContact({ event }) {
+function EventDisplayContact({ event }: { event: Event }) {
   const theme = useTheme();
-  const styles = getStyles(theme);
-  const eventStyles = getEventStyles(theme);
   const { colors } = theme;
 
   if (!event) {
-    // TODO: Better loading handling, maybe placeholders?
-    return <Text>En attente du serveur</Text>;
+    return <ActivityIndicator size="large" color={colors.primary} />;
   }
 
   const { email, phone, other } = event?.contact || {};
@@ -25,11 +21,11 @@ function EventDisplayContact({ event }) {
       {email && <InlineCard icon="email-outline" title={email} subtitle="Adresse email" />}
       {phone && <InlineCard icon="phone" title={phone} subtitle="Numéro de téléphone" />}
       {other &&
-        other.map(({ value, key }) => (
+        other.map(({ value, key }: { value: string; key: string }) => (
           <InlineCard key={shortid()} icon="bookmark-outline" title={value} subtitle={key} />
         ))}
       {event?.members &&
-        event.members.map((mem) => (
+        event.members.map((mem: UserPreload) => (
           <InlineCard
             key={shortid()}
             icon="account-outline"
