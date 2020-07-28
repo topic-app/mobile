@@ -1,16 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { List, Text, Divider, useTheme } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { List, Divider, useTheme } from 'react-native-paper';
+import { View, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import { ArticleReadItem, Preferences } from '@ts/types';
-import moment from 'moment';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ArticleReadItem, Preferences, State } from '@ts/types';
 
-import { ErrorMessage, InlineCard, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
-import { deleteArticleRead } from '@redux/actions/contentData/articles';
 
 type MainHistoryProps = {
   navigation: any;
@@ -18,7 +12,7 @@ type MainHistoryProps = {
   preferences: Preferences;
 };
 
-function MainHistory({ navigation, read, preferences }: MainHistoryProps) {
+function MainHistory({ navigation, preferences }: MainHistoryProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -57,7 +51,7 @@ function MainHistory({ navigation, read, preferences }: MainHistoryProps) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { preferences } = state;
   return {
     preferences,

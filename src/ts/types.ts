@@ -6,7 +6,6 @@ import { SchoolPreload, DepartmentPreload } from '@root/common/ts/api';
 import { LocationRequestState } from '@root/common/ts/requestState';
 
 export * from '@root/common/ts/index';
-export type { RootState as State } from '@redux/reducers/index';
 export type { Theme } from '@styles/Theme';
 
 export type Preferences = {
