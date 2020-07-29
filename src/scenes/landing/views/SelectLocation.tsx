@@ -263,7 +263,7 @@ const WelcomeLocation: React.FC<Props> = ({
         }
       />
     ),
-    [],
+    [selected],
   );
 
   const ListHeaderComponent = React.useCallback(
@@ -311,7 +311,7 @@ const WelcomeLocation: React.FC<Props> = ({
         )}
       </View>
     ),
-    [chipCategory],
+    [chipCategory, searchText],
   );
 
   const ITEM_HEIGHT = 68.5714;
