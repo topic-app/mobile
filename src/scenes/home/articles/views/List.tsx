@@ -308,13 +308,13 @@ function ArticleList({
     );
   };
 
-  const swipeRightAction = (id: string, swipeRef) => {
+  const swipeRightAction = (id: string, title: string, swipeRef) => {
     swipeRef.current?.close();
     if (getSection()?.key !== 'lists') {
       if (read.some((r) => r.id === id)) {
         deleteArticleRead(id);
       } else {
-        addArticleRead(id);
+        addArticleRead(id, title, true);
       }
     } else {
       removeArticleFromList(id, getItem()?.key);
@@ -438,10 +438,25 @@ function ArticleList({
                 },
               }),
           },
+          ...(preferences.history
+            ? [
+                {
+                  title: 'Historique',
+                  onPress: () =>
+                    navigation.navigate('Main', {
+                      screen: 'History',
+                      params: {
+                        screen: 'Article',
+                      },
+                    }),
+                },
+              ]
+            : []),
         ]}
       >
-        {state.list.loading.initial ||
-          (state.search.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />)}
+        {(state.list.loading.initial || state.search.loading.initial) && (
+          <ProgressBar indeterminate style={{ marginTop: -4 }} />
+        )}
         {state.list.error || state.search.error ? (
           <ErrorMessage
             type="axios"
@@ -529,7 +544,7 @@ function ArticleList({
                 }
                 onSwipeableRightOpen={
                   preferences.history || getSection().key !== 'lists'
-                    ? () => swipeRightAction(article.item._id, swipeRef)
+                    ? () => swipeRightAction(article.item._id, article.item.title, swipeRef)
                     : null
                 }
               >

@@ -252,7 +252,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
 type ArticleDisplayProps = {
   route: Route;
   navigation: Navigation;
+  item: Article | null;
   articles: Article[];
+  search: Article[];
   comments: Comment[];
   reqState: CombinedReqState;
   account: Account;
@@ -274,7 +276,9 @@ type CommentPublisher = {
 const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   route,
   navigation,
-  articles,
+  data,
+  search,
+  item,
   comments,
   reqState,
   account,
@@ -283,31 +287,35 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
   const { id, useLists } = route.params;
-  React.useEffect(() => {
-    if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
-      fetchArticle(id).then(() => {
-        if (preferences.history) {
-          addArticleRead(id);
-        }
-      });
-    }
-    updateComments('initial', { parentId: id });
-  }, [null]);
 
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  let article: Article | undefined;
+  let article: Article | undefined | null;
   if (useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))) {
     article = lists
       .find((l: ArticleListItem) => l.items.some((i) => i._id === id))
-      .items.find((i) => i._id === id);
+      ?.items.find((i) => i._id === id);
   } else {
-    article = articles.find((t) => t._id === id);
+    article =
+      item?._id === id
+        ? item
+        : data.find((a) => a._id === id) || search.find((a) => a._id === id) || null;
   }
   const articleComments = comments.filter((c) => c.parent === article?._id);
+
+  React.useEffect(() => {
+    if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
+      fetchArticle(id).then(() => {
+        if (preferences.history) {
+          addArticleRead(id, article?.title);
+        }
+      });
+    }
+    updateComments('initial', { parentId: id });
+  }, [null]);
 
   const [isListModalVisible, setListModalVisible] = React.useState(false);
   const [list, setList] = React.useState(lists[0]?.id);
@@ -447,7 +455,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           if (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))) {
             fetchArticle(id);
           } else {
-            addArticleToList(id, lists.find((l) => l.items.some((i) => i._id === id)).key);
+            addArticleToList(id, lists.find((l) => l.items.some((i) => i._id === id))?.id);
           }
           updateComments('refresh', { parentId: id });
         }}
@@ -718,7 +726,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 const mapStateToProps = (state: State) => {
   const { articles, articleData, comments, account, preferences } = state;
   return {
-    articles: articles.data,
+    data: articles.data,
+    search: articles.search,
+    item: articles.item,
     comments: comments.data,
     reqState: { articles: articles.state, comments: comments.state },
     preferences,
