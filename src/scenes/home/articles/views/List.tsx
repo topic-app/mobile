@@ -9,27 +9,11 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import {
-  ProgressBar,
-  Button,
-  Banner,
-  Text,
-  Subheading,
-  Avatar,
-  useTheme,
-} from 'react-native-paper';
+import { ProgressBar, Button, Banner, Text, Subheading, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import CollapsibleView from '@components/CollapsibleView';
-import TabChipList from '@components/TabChipList';
-import {
-  addArticleRead,
-  deleteArticleRead,
-  addArticleToList,
-  removeArticleFromList,
-} from '@redux/actions/contentData/articles';
-import { PlatformTouchable } from '@components/PlatformComponents';
+import { useFocusEffect } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import {
@@ -46,13 +30,21 @@ import {
   AnimatingHeader,
   ErrorMessage,
   Illustration,
-  CategoriesList,
   ArticleCard,
+  TabChipList,
+  PlatformTouchable,
 } from '@components/index';
-import { updateArticles, searchArticles, clearArticles } from '@redux/actions/api/articles';
+import { updateArticles, searchArticles } from '@redux/actions/api/articles';
+import {
+  addArticleRead,
+  deleteArticleRead,
+  addArticleToList,
+  removeArticleFromList,
+} from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 
 import getArticleStyles from '../styles/Styles';
+import { HomeTwoNavParams } from '../../HomeTwo.ios';
 
 type Category = {
   key: string;
@@ -64,8 +56,7 @@ type Category = {
   params?: object;
 };
 
-type ArticleListProps = {
-  navigation: any;
+type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   articles: Article[];
   search: Article[];
   lists: ArticleListItem[];
@@ -612,10 +603,4 @@ ArticleList.propTypes = {
     }).isRequired,
   }).isRequired,
   read: PropTypes.arrayOf(PropTypes.string),
-  theme: PropTypes.shape({
-    dark: PropTypes.bool.isRequired,
-    colors: PropTypes.shape({
-      primary: PropTypes.string,
-    }).isRequired,
-  }).isRequired,
 };
