@@ -6,7 +6,7 @@ import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
 
-function getNestedParams(route) {
+function getNestedParams(route: { params?: any }) {
   let { params } = route;
   while (params.params) {
     params = params.params;
@@ -14,7 +14,14 @@ function getNestedParams(route) {
   return params;
 }
 
-const Stack = createStackNavigator();
+export type HomeTwoNavParams = {
+  Article: { initialList: string };
+  Event: undefined;
+  Petition: undefined;
+  Explorer: undefined;
+};
+
+const Stack = createStackNavigator<HomeTwoNavParams>();
 
 function HomeTwoNavigator() {
   return (
@@ -26,7 +33,7 @@ function HomeTwoNavigator() {
             cardStyleInterpolator: () => ({ cardStyle: null }),
           };
         }
-        return null;
+        return {};
       }}
     >
       <Stack.Screen name="Article" component={ArticleList} />

@@ -15,6 +15,7 @@ export type { StepperViewPageProps } from './StepperView';
 export { default as StepperViewPager } from './StepperViewPager';
 export { default as TagList } from './TagList';
 export { default as Illustration } from './Illustration';
+export { default as TabChipList } from './TabChipList';
 
 export { default as ArticleCard } from './cards/Article';
 export { default as EventCard } from './cards/Event';

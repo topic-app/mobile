@@ -1,17 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import {
-  View,
-  Platform,
-  Animated,
-  TextInput,
-  SectionList,
-  ViewStyle,
-  StyleProp,
-} from 'react-native';
+import { View, SectionList } from 'react-native';
 import { Text, IconButton, useTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import color from 'color';
 
 import { PlatformTouchable } from './PlatformComponents';
 
