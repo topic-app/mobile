@@ -14,6 +14,8 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
   const theme = useTheme();
   const styles = getStyles(theme);
 
+  console.log(params);
+
   const fetch = () => {
     if (params.schools) {
       fetchMultiSchool(params.schools);
@@ -54,7 +56,13 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
           title="Écoles"
           subtitle={
             params.schools?.length
-              ? params.schools.map((s) => schools?.find((t) => t._id === s)?.displayName ||schools?.find((t) => t._id === s)?.name).join(', ')
+              ? params.schools
+                  .map(
+                    (s) =>
+                      schools?.find((t) => t._id === s)?.displayName ||
+                      schools?.find((t) => t._id === s)?.name,
+                  )
+                  .join(', ')
               : 'Aucun'
           }
           icon="school"
@@ -72,8 +80,9 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
                   .map(
                     (d) =>
                       departments.filter((e) => e.type === 'departement')?.find((e) => e._id === d)
-                        ?.displayName ||   departments.filter((e) => e.type === 'departement')?.find((e) => e._id === d)
-                            ?.name,
+                        ?.displayName ||
+                      departments.filter((e) => e.type === 'departement')?.find((e) => e._id === d)
+                        ?.name,
                   )
                   .filter((d) => d)
                   .join(', ')
@@ -92,8 +101,9 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
                   .map(
                     (d) =>
                       departments.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                        ?.displayName || departments.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                          ?.name,
+                        ?.displayName ||
+                      departments.filter((e) => e.type === 'region')?.find((e) => e._id === d)
+                        ?.name,
                   )
                   .filter((d) => d)
                   .join(', ')
