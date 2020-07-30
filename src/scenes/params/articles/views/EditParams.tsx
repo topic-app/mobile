@@ -170,7 +170,6 @@ const ArticleEditParams: React.FC<Props> = ({
 
   const next = () => {
     if (category === 'schools') {
-      console.log('Hello');
       if (searchText) {
         searchSchools('next', searchText);
       } else {
