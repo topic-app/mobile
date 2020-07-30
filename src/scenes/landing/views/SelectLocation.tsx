@@ -2,8 +2,6 @@ import React from 'react';
 import {
   View,
   Platform,
-  ScrollView,
-  Dimensions,
   Alert,
   FlatList,
   TextInput as RNTextInput,
@@ -37,11 +35,13 @@ import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
 import { updateSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
-import { Illustration, CategoriesList, ChipAddList, ErrorMessage } from '@components/index';
+import { Illustration, CategoriesList, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
 
 import type { LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
+
+type Navigation = StackNavigationProp<LandingStackParams, 'SelectLocation'>;
 
 // TODO: Externalize into @ts/redux
 type ReduxLocation = {
@@ -50,7 +50,12 @@ type ReduxLocation = {
   departments: string[];
 };
 
-function done(selected, schools, departments, navigation) {
+function done(
+  selected: string[],
+  schools: (School | SchoolPreload)[],
+  departments: (Department | DepartmentPreload)[],
+  navigation: Navigation,
+) {
   const schoolIds = schools.map((sch) => sch._id).filter((id) => selected.includes(id));
   const departmentIds = departments.map((dep) => dep._id).filter((id) => selected.includes(id));
   Promise.all([
@@ -82,7 +87,12 @@ function done(selected, schools, departments, navigation) {
   );
 }
 
-function getData(type, locationData) {
+type DataType = 'school' | 'department' | 'region' | 'other';
+
+function getData(
+  type: DataType,
+  locationData: (School | SchoolPreload)[] | (Department | DepartmentPreload)[],
+) {
   let data = [
     {
       key: 'global',
@@ -92,25 +102,26 @@ function getData(type, locationData) {
   ];
 
   if (type === 'school') {
-    data = locationData?.map((s) => {
+    data = (locationData as School[])?.map((s) => {
       return {
         key: s._id,
         title: s.name,
         description: `${
           s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'
         }${s?.departments
-          ?.filter((d) => d.type === 'departement')
+          ?.filter((d) => d.type === 'department')
           .map((d) => `, ${d.displayName}`)}`,
       };
     });
-  } else if (type === 'departement' || type === 'region') {
-    data = locationData
+  } else if (type === 'department' || type === 'region') {
+    data = (locationData as Department[])
+      // TODO: Change to Region | Department in the future
       ?.filter((d) => d.type === type)
-      ?.map((d) => {
+      ?.map((d: Department) => {
         return {
           key: d._id,
           title: d.name,
-          description: `${type === 'departement' ? 'Département' : 'Région'} ${d.code || ''}`,
+          description: `${type === 'department' ? 'Département' : 'Région'} ${d.code || ''}`,
         };
       });
   }
@@ -127,7 +138,7 @@ type Props = {
     departments: DepartmentRequestState;
   };
   location?: ReduxLocation;
-  navigation: StackNavigationProp<LandingStackParams, 'SelectLocation'>;
+  navigation: Navigation;
 };
 
 const WelcomeLocation: React.FC<Props> = ({
@@ -161,15 +172,9 @@ const WelcomeLocation: React.FC<Props> = ({
     }, [null]),
   );
 
-  const [category, setCategory]: [
-    'schools' | 'departements' | 'regions' | 'other',
-    any,
-  ] = React.useState('schools');
-
-  const [chipCategory, setChipCategory]: [
-    'schools' | 'departements' | 'regions' | 'other',
-    any,
-  ] = React.useState(category);
+  type CategoryType = 'schools' | 'departements' | 'regions' | 'other';
+  const [category, setCategory] = React.useState<CategoryType>('schools');
+  const [chipCategory, setChipCategory] = React.useState<CategoryType>(category);
 
   const searchChange = (text: string) => {
     setSearchText(text);
@@ -214,7 +219,7 @@ const WelcomeLocation: React.FC<Props> = ({
     departements: {
       title: 'Départements',
       key: 'departements',
-      data: getData('departement', searchText === '' ? departments : departmentsSearch),
+      data: getData('department', searchText === '' ? departments : departmentsSearch),
     },
     regions: {
       title: 'Régions',
@@ -285,9 +290,9 @@ const WelcomeLocation: React.FC<Props> = ({
         </View>
         <CategoriesList
           selected={chipCategory}
-          setSelected={(data) => {
-            setChipCategory(data);
-            setCategory(data);
+          setSelected={(type: CategoryType) => {
+            setChipCategory(type);
+            setCategory(type);
           }}
           categories={Object.values(data).map((s) => ({ title: s.title, key: s.key }))}
         />
