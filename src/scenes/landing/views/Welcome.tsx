@@ -5,6 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import shortid from 'shortid';
 
 import TopicIcon from '@assets/images/topic-icon.svg';
+import { TranslucentStatusBar } from '@components/index';
 import { updateSchools } from '@redux/actions/api/schools';
 import { updateDepartments } from '@redux/actions/api/departments';
 
@@ -69,6 +70,7 @@ const LandingWelcome: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={landingStyles.landingPage}>
+      <TranslucentStatusBar barStyle="light-content" />
       <ScrollView>
         <View style={landingStyles.headerContainer}>
           <View style={landingStyles.centerContainer}>

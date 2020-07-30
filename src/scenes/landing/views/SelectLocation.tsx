@@ -35,7 +35,13 @@ import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
 import { updateSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
-import { Illustration, CategoriesList, ErrorMessage } from '@components/index';
+import {
+  TranslucentStatusBar,
+  Illustration,
+  CategoriesList,
+  ErrorMessage,
+} from '@components/index';
+
 import getStyles from '@styles/Styles';
 
 import type { LandingStackParams } from '../index';
@@ -276,6 +282,7 @@ const WelcomeLocation: React.FC<Props> = ({
   const ListHeaderComponent = React.useCallback(
     () => (
       <View>
+        <TranslucentStatusBar backgroundColor={colors.background} />
         <View style={landingStyles.headerContainer}>
           <View style={landingStyles.centerIllustrationContainer}>
             <Illustration name="location-select" height={200} width={200} />
