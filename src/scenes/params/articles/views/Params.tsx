@@ -6,34 +6,28 @@ import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
 import { ErrorMessage, InlineCard, Illustration } from '@components/index';
-import { fetchSchool } from '@redux/actions/api/schools';
-import { fetchDepartment } from '@redux/actions/api/departments';
-import { fetchTag } from '@redux/actions/api/tags';
-import { fetchGroup } from '@redux/actions/api/groups';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import getStyles from '@styles/Styles';
 
-function ArticleConfigure({ navigation, params, schools, departments, tags, groups, state }) {
+function ArticleParams({ navigation, params, schools, departments, state }) {
   const theme = useTheme();
   const styles = getStyles(theme);
 
+  console.log(params);
+
   const fetch = () => {
     if (params.schools) {
-      params.schools.forEach((s) => fetchSchool(s));
+      fetchMultiSchool(params.schools);
     }
     if (params.departments) {
-      params.departments.forEach((d) => fetchDepartment(d));
-    }
-    if (params.tags) {
-      params.tags.forEach((t) => fetchTag(t));
-    }
-    if (params.groupss) {
-      params.groupss.forEach((g) => fetchGroup(g));
+      fetchMultiDepartment(params.departments);
     }
   };
 
   useFocusEffect(React.useCallback(fetch, [null]));
 
-  const states = [state.schools.info, state.departments.info, state.tags.info, state.groups.info];
+  const states = [state.schools.info, state.departments.info];
 
   return (
     <View style={styles.page}>
@@ -62,24 +56,24 @@ function ArticleConfigure({ navigation, params, schools, departments, tags, grou
           title="Écoles"
           subtitle={
             params.schools?.length
-              ? params.schools.map((s) => schools.find((t) => t._id === s)?.displayName).join(', ')
+              ? params.schools.map((s) => schools?.find((t) => t._id === s)?.displayName).join(', ')
               : 'Aucun'
           }
           icon="school"
-          onPress={() => {}}
+          onPress={() => navigation.navigate('EditParams', { type: 'schools' })}
         />
         <InlineCard
           title="Departements"
           subtitle={
             params.departments
               ?.map((d) =>
-                departments.filter((e) => e.type === 'department')?.find((e) => e._id === d),
+                departments.filter((e) => e.type === 'departement')?.find((e) => e._id === d),
               )
               .filter((d) => d)?.length
               ? params.departments
                   .map(
                     (d) =>
-                      departments.filter((e) => e.type === 'department')?.find((e) => e._id === d)
+                      departments.filter((e) => e.type === 'departement')?.find((e) => e._id === d)
                         ?.displayName,
                   )
                   .filter((d) => d)
@@ -87,7 +81,7 @@ function ArticleConfigure({ navigation, params, schools, departments, tags, grou
               : 'Aucun'
           }
           icon="map-marker-radius"
-          onPress={() => console.log('Animations')}
+          onPress={() => navigation.navigate('EditParams', { type: 'departements' })}
         />
         <InlineCard
           title="Régions"
@@ -106,13 +100,13 @@ function ArticleConfigure({ navigation, params, schools, departments, tags, grou
               : 'Aucun'
           }
           icon="map-marker-radius"
-          onPress={() => console.log('Animations')}
+          onPress={() => navigation.navigate('EditParams', { type: 'regions' })}
         />
         <InlineCard
-          title="France entière"
-          subtitle={params.global ? 'Oui' : 'Non'}
+          title="Autres"
+          subtitle={params.global ? 'France entière' : 'Aucun'}
           icon="flag"
-          onPress={() => console.log('Animations')}
+          onPress={() => navigation.navigate('EditParams', { type: 'other' })}
         />
       </ScrollView>
     </View>
@@ -120,30 +114,26 @@ function ArticleConfigure({ navigation, params, schools, departments, tags, grou
 }
 
 const mapStateToProps = (state) => {
-  const { articleData, schools, departments, tags, groups } = state;
+  const { articleData, schools, departments } = state;
   return {
     params: articleData.params,
-    schools: schools.data,
-    departments: departments.data,
-    tags: tags.data,
-    groups: groups.data,
+    schools: schools.items,
+    departments: departments.items,
     state: {
       schools: schools.state,
       departments: departments.state,
-      tags: tags.state,
-      groups: groups.state,
     },
   };
 };
 
-export default connect(mapStateToProps)(ArticleConfigure);
+export default connect(mapStateToProps)(ArticleParams);
 
 const tagPropType = PropTypes.shape({
   _id: PropTypes.string.isRequired,
   displayName: PropTypes.string.isRequired,
 });
 
-ArticleConfigure.propTypes = {
+ArticleParams.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,

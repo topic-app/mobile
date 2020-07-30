@@ -35,8 +35,12 @@ import {
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { updateSchools, searchSchools } from '@redux/actions/api/schools';
-import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
+import { updateSchools, searchSchools, fetchMultiSchool } from '@redux/actions/api/schools';
+import {
+  updateDepartments,
+  searchDepartments,
+  fetchMultiDepartment,
+} from '@redux/actions/api/departments';
 import { Illustration, CategoriesList, ChipAddList, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
 
@@ -53,35 +57,13 @@ type ReduxLocation = {
 function done(selected, schools, departments, navigation) {
   const schoolIds = schools.map((sch) => sch._id).filter((id) => selected.includes(id));
   const departmentIds = departments.map((dep) => dep._id).filter((id) => selected.includes(id));
-  Promise.all([
-    updateLocation({
-      selected: true,
-      schools: schoolIds,
-      departments: departmentIds,
-      global: selected.includes('global') || selected.length === 0,
-    }),
-    updateArticleParams({
-      schools: schoolIds,
-      departments: [
-        ...departmentIds,
-        ...schools
-          .filter((s) => selected.includes(s._id))
-          .map((s) => s.departments)
-          .flat()
-          .map((d) => d._id),
-      ],
-      global: true,
-    }),
-  ]).then(() => {
-    navigation.popToTop();
-    navigation.replace('Root', {
-      screen: 'Main',
-      params: {
-        screen: 'Home1',
-        params: { screen: 'Home2', params: { screen: 'Article' } },
-      },
-    });
-  });
+  fetchMultiSchool(schoolIds);
+  fetchMultiDepartment(departmentIds);
+  updateArticleParams({
+    schools: schoolIds,
+    departments: departmentIds,
+    global: selected.includes('global'),
+  }).then(() => navigation.goBack());
 }
 
 function getData(type, locationData) {
@@ -128,34 +110,34 @@ type Props = {
     schools: SchoolRequestState;
     departments: DepartmentRequestState;
   };
-  location?: ReduxLocation;
+  articleParams: ReduxLocation;
   navigation: StackNavigationProp<LandingStackParams, 'SelectLocation'>;
 };
 
-const WelcomeLocation: React.FC<Props> = ({
+const ArticleEditParams: React.FC<Props> = ({
+  route,
   schools,
   departments,
   schoolsSearch,
   departmentsSearch,
   state,
-  location = {
-    global: false,
-    schools: [],
-    departments: [],
-  },
+  articleParams,
   navigation,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const landingStyles = getLandingStyles(theme);
+  const articleStyles = getLandingStyles(theme);
   const styles = getStyles(theme);
 
   const [searchText, setSearchText] = React.useState('');
   const scrollRef = React.createRef<FlatList>();
   const inputRef = React.createRef<RNTextInput>();
 
-  const [selected, setSelected] = React.useState([...location.schools, ...location.departments]);
-  if (location.global) selected.push('global');
+  const [selected, setSelected] = React.useState([
+    ...articleParams.schools,
+    ...articleParams.departments,
+    ...(articleParams.global ? ['global'] : []),
+  ]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -166,12 +148,7 @@ const WelcomeLocation: React.FC<Props> = ({
   const [category, setCategory]: [
     'schools' | 'departements' | 'regions' | 'other',
     any,
-  ] = React.useState('schools');
-
-  const [chipCategory, setChipCategory]: [
-    'schools' | 'departements' | 'regions' | 'other',
-    any,
-  ] = React.useState(category);
+  ] = React.useState(route.params.type);
 
   const searchChange = (text: string) => {
     setSearchText(text);
@@ -271,28 +248,16 @@ const WelcomeLocation: React.FC<Props> = ({
   const ListHeaderComponent = React.useCallback(
     () => (
       <View>
-        <View style={landingStyles.headerContainer}>
-          <View style={landingStyles.centerIllustrationContainer}>
-            <Illustration name="location-select" height={200} width={200} />
-            <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
+        {category !== 'other' && (
+          <View style={articleStyles.searchContainer}>
+            <Searchbar
+              ref={inputRef}
+              placeholder="Rechercher"
+              value={searchText}
+              onChangeText={searchChange}
+            />
           </View>
-        </View>
-        <View style={landingStyles.searchContainer}>
-          <Searchbar
-            ref={inputRef}
-            placeholder="Rechercher"
-            value={searchText}
-            onChangeText={searchChange}
-          />
-        </View>
-        <CategoriesList
-          selected={chipCategory}
-          setSelected={(data) => {
-            setChipCategory(data);
-            setCategory(data);
-          }}
-          categories={Object.values(data).map((s) => ({ title: s.title, key: s.key }))}
-        />
+        )}
         {((searchText === '' &&
           (state.schools.list.loading.initial || state.departments.list.loading.initial)) ||
           (searchText !== '' &&
@@ -313,7 +278,7 @@ const WelcomeLocation: React.FC<Props> = ({
         )}
       </View>
     ),
-    [chipCategory, searchText],
+    [searchText],
   );
 
   const ITEM_HEIGHT = 68.5714;
@@ -371,60 +336,30 @@ const WelcomeLocation: React.FC<Props> = ({
         renderItem={renderItem}
       />
       <Divider />
-      <View style={landingStyles.contentContainer}>
-        <Text>
-          Par défaut, vous verrez les articles déstinés à votre école, ainsi que les articles du
-          département dans lequel se trouve l&apos;école et de la France entière
-        </Text>
-      </View>
-      <View style={landingStyles.contentContainer}>
-        <View style={landingStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-            color={colors.primary}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              if (selected.length === 0) {
-                logger.info('User has not specified a landing location. Showing alert.');
-                Alert.alert(
-                  'Ne pas spécifier de localisation?',
-                  'Vous verrez uniquement les articles déstinés à la france entière',
-                  [
-                    {
-                      text: 'Annuler',
-                    },
-                    {
-                      text: 'Continuer',
-                      onPress: () => done(selected, schools, departments, navigation),
-                    },
-                  ],
-                  { cancelable: true },
-                );
-              } else {
-                logger.info('User selected locations', selected);
-                done(selected, schools, departments, navigation);
-              }
-            }}
-            style={{ flex: 1 }}
-          >
-            Confirmer
-          </Button>
-        </View>
+      <View style={[articleStyles.buttonContainer]}>
+        <Button
+          mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+          color={colors.primary}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => done(selected, schools, departments, navigation)}
+        >
+          Confirmer
+        </Button>
       </View>
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { schools, departments, location } = state;
+  const { schools, departments, articleData } = state;
   return {
     schools: schools.data,
     departments: departments.data,
     schoolsSearch: schools.search,
     departmentsSearch: departments.search,
-    location,
+    articleParams: articleData.params,
     state: { schools: schools.state, departments: departments.state },
   };
 };
 
-export default connect(mapStateToProps)(WelcomeLocation);
+export default connect(mapStateToProps)(ArticleEditParams);
