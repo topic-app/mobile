@@ -160,7 +160,7 @@ type ListItem = {
 type CategoriesListProps = {
   categories: ListItem[];
   selected: string;
-  setSelected: (key: string) => void;
+  setSelected: (key: any) => void;
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
 };
