@@ -95,7 +95,7 @@ const AuthLogin: React.FC<Props> = ({
             <View style={authStyles.textInputContainer}>
               <TextInput
                 ref={usernameInput}
-                label="Nom d'utilisateur ou addresse mail"
+                label="Nom d'utilisateur ou adresse mail"
                 value={username}
                 autoCompleteType="username"
                 onSubmitEditing={() => passwordInput.current?.focus()}

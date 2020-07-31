@@ -47,7 +47,7 @@ function SettingsList({ navigation, preferences, account }) {
         {account.loggedIn && (
           <List.Item
             title="Profil"
-            description="Visibilité du compte, addresse email, suppression"
+            description="Visibilité du compte, adresse email, suppression"
             left={() => <List.Icon icon="account" />}
             right={() => <List.Icon icon="chevron-right" />}
             style={settingsStyles.listItem}

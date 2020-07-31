@@ -77,7 +77,7 @@ class AuthCreatePageGeneral extends React.Component {
           validation = {
             emailValid: false,
             emailError: true,
-            emailErrorMessage: 'Cette addresse email à déjà été utilisée',
+            emailErrorMessage: 'Cette adresse email à déjà été utilisée',
           };
         } else {
           updateState({ success: false, error: result.error });
