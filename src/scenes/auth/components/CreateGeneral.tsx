@@ -115,7 +115,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
         validation = {
           valid: false,
           error: true,
-          message: 'Addresse mail incorrecte',
+          message: 'Adresse mail incorrecte',
         };
       } else {
         let result;
@@ -130,7 +130,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           validation = {
             valid: false,
             error: true,
-            message: 'Cette addresse email à déjà été utilisée',
+            message: 'Cette adresse email à déjà été utilisée',
           };
         }
       }
@@ -236,7 +236,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
       <View style={authStyles.textInputContainer}>
         <TextInput
           ref={usernameInput}
-          label="Nom d'Utilisateur"
+          label="Nom d'utilisateur"
           value={currentUsername.value}
           error={currentUsername.error}
           disableFullscreenUI
@@ -305,7 +305,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
       <View style={authStyles.textInputContainer}>
         <TextInput
           ref={passwordInput}
-          label="Mot de Passe"
+          label="Mot de passe"
           returnKeyType="go"
           value={currentPassword.value}
           disableFullscreenUI
