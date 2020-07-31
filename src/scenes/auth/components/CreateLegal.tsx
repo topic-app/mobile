@@ -70,7 +70,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
               />
               <ListItem
                 icon="information-outline"
-                label="Pour plus d'informations, addressez vous à dpo@topicapp.fr"
+                label="Pour plus d'informations, adressez vous à dpo@topicapp.fr"
               />
               <ListItemAnchor
                 onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/privacy')}
@@ -146,7 +146,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
             onPress={() => setTerms(!terms)}
           />
           <List.Item
-            title={`Je confirme que mon addresse mail est bien ${userEmail ?? ''}`}
+            title={`Je confirme que mon adresse mail est bien ${userEmail ?? ''}`}
             titleNumberOfLines={10}
             left={() =>
               Platform.OS !== 'ios' ? (
