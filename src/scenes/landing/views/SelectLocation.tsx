@@ -33,7 +33,7 @@ import {
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { updateSchools, searchSchools } from '@redux/actions/api/schools';
+import { updateSchools, searchSchools, fetchMultiSchool } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
   TranslucentStatusBar,
@@ -59,29 +59,23 @@ type ReduxLocation = {
 };
 
 function done(
-  selected: string[],
-  schools: (School | SchoolPreload)[],
-  departments: (Department | DepartmentPreload)[],
+  selectedSchools: string[],
+  selectedDepartments: string[],
+  selectedOthers: string[],
   navigation: Navigation,
 ) {
-  const schoolIds = schools.map((sch) => sch._id).filter((id) => selected.includes(id));
-  const departmentIds = departments.map((dep) => dep._id).filter((id) => selected.includes(id));
   Promise.all([
     updateLocation({
       selected: true,
-      schools: schoolIds,
-      departments: departmentIds,
-      global: selected.includes('global') || selected.length === 0,
+      schools: selectedSchools,
+      departments: selectedDepartments,
+      global: selectedOthers.includes('global'),
     }),
     updateArticleParams({
-      schools: schoolIds,
+      schools: selectedSchools,
       departments: [
-        ...departmentIds,
-        ...schools
-          .filter((s) => selected.includes(s._id))
-          .map((s) => s.departments)
-          .flat()
-          .map((d) => d._id),
+        ...selectedDepartments,
+        // Todo: logic to select extra departments
       ],
       global: true,
     }),
@@ -108,6 +102,7 @@ function getData(
       key: 'global',
       title: 'France entière',
       description: "Pas de département ou d'école spécifique",
+      type: 'other',
     },
   ];
 
@@ -119,6 +114,7 @@ function getData(
         description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
           s?.departments?.length ? `, ${s?.departments[0].displayName}` : ''
         }`,
+        type: 'school',
       };
     });
   } else if (type === 'departement' || type === 'region') {
@@ -130,6 +126,7 @@ function getData(
           key: d._id,
           title: d.name,
           description: `${type === 'departement' ? 'Département' : 'Région'} ${d.code || ''}`,
+          type: 'department',
         };
       });
   }
@@ -159,6 +156,8 @@ const WelcomeLocation: React.FC<Props> = ({
     global: false,
     schools: [],
     departments: [],
+    schoolData: [],
+    departmentData: [],
   },
   navigation,
 }) => {
@@ -171,8 +170,9 @@ const WelcomeLocation: React.FC<Props> = ({
   const scrollRef = React.createRef<FlatList>();
   const inputRef = React.createRef<RNTextInput>();
 
-  const [selected, setSelected] = React.useState([...location.schools, ...location.departments]);
-  if (location.global) selected.push('global');
+  const [selectedSchools, setSelectedSchools] = React.useState(location.schools || []);
+  const [selectedDepartments, setSelectedDepartments] = React.useState(location.departments || []);
+  const [selectedOthers, setSelectedOthers] = React.useState(location.global ? ['gloabl'] : []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -184,7 +184,7 @@ const WelcomeLocation: React.FC<Props> = ({
   const [category, setCategory] = React.useState<CategoryType>('schools');
   const [chipCategory, setChipCategory] = React.useState<CategoryType>(category);
 
-  const searchChange = async (text: string) => {
+  const searchChange = (text: string) => {
     if (text !== '') {
       searchSchools('initial', text);
       searchDepartments('initial', text);
@@ -203,7 +203,6 @@ const WelcomeLocation: React.FC<Props> = ({
 
   const next = () => {
     if (category === 'schools') {
-      console.log('Hello');
       if (searchText) {
         searchSchools('next', searchText);
       } else {
@@ -240,42 +239,61 @@ const WelcomeLocation: React.FC<Props> = ({
     },
   };
 
+  const [persistentData, setPersistentData] = React.useState<
+    { key: string; title: string; type: 'school' | 'department' | 'other' }[]
+  >([
+    ...location.schoolData.map((s) => ({ key: s._id, title: s.name, type: 'school' })),
+    ...location.departmentData.map((d) => ({ key: d._id, title: d.name, type: 'department' })),
+    { key: 'global', title: 'France entière', type: 'other' },
+  ]);
+
   const renderItem = React.useCallback(
-    ({ item }) => (
-      <List.Item
-        title={item.title}
-        description={item.description}
-        descriptionNumberOfLines={1}
-        onPress={() => {
-          if (selected.includes(item.key)) {
-            setSelected(selected.filter((s) => s !== item.key));
-          } else {
-            setSelected([...selected, item.key]);
+    ({ item }) => {
+      let [selected, setSelected] = [
+        [selectedSchools, setSelectedSchools],
+        [selectedDepartments, setSelectedDepartments],
+        [selectedOthers, setSelectedOthers],
+      ][['school', 'department', 'other'].indexOf(item.type)];
+      return (
+        <List.Item
+          title={item.title}
+          description={item.description}
+          descriptionNumberOfLines={1}
+          onPress={() => {
+            if (selected.includes(item.key)) {
+              setSelected(selected.filter((s) => s !== item.key));
+            } else {
+              setSelected([...selected, item.key]);
+              setPersistentData([
+                ...persistentData,
+                { key: item.key, title: item.title, type: item.type },
+              ]);
+            }
+          }}
+          left={() =>
+            Platform.OS !== 'ios' ? (
+              <View style={{ alignSelf: 'center' }}>
+                <Checkbox
+                  status={selected.includes(item.key) ? 'checked' : 'unchecked'}
+                  color={colors.primary}
+                />
+              </View>
+            ) : null
           }
-        }}
-        left={() =>
-          Platform.OS !== 'ios' ? (
-            <View style={{ alignSelf: 'center' }}>
-              <Checkbox
-                status={selected.includes(item.key) ? 'checked' : 'unchecked'}
-                color={colors.primary}
-              />
-            </View>
-          ) : null
-        }
-        right={() =>
-          Platform.OS === 'ios' ? (
-            <View style={{ alignSelf: 'center' }}>
-              <Checkbox
-                status={selected.includes(item.key) ? 'checked' : 'unchecked'}
-                color={colors.primary}
-              />
-            </View>
-          ) : null
-        }
-      />
-    ),
-    [selected],
+          right={() =>
+            Platform.OS === 'ios' ? (
+              <View style={{ alignSelf: 'center' }}>
+                <Checkbox
+                  status={selected.includes(item.key) ? 'checked' : 'unchecked'}
+                  color={colors.primary}
+                />
+              </View>
+            ) : null
+          }
+        />
+      );
+    },
+    [selectedSchools, selectedDepartments, selectedOthers],
   );
 
   const ListHeaderComponent = (
@@ -363,6 +381,8 @@ const WelcomeLocation: React.FC<Props> = ({
     </View>
   );
 
+  let selected = [...selectedSchools, ...selectedDepartments, ...selectedOthers];
+
   return (
     <View style={styles.page}>
       <FlatList
@@ -390,13 +410,16 @@ const WelcomeLocation: React.FC<Props> = ({
 
       <CollapsibleView collapsed={selected.length === 0}>
         <ChipAddList
-          setList={(item) => setSelected(selected.filter((s) => s !== item.key))}
-          data={selected.map((s) => ({
-            key: s,
-            title: Object.values(data)
-              .find((d) => d.data.some((e) => e.key === s))
-              ?.data?.find((e) => e.key === s)?.title,
-          }))}
+          setList={(item) =>
+            [setSelectedSchools, setSelectedDepartments, setSelectedOthers][
+              ['school', 'department', 'other'].indexOf(item.type)
+            ](
+              [selectedSchools, selectedDepartments, selectedOthers][
+                ['school', 'department', 'other'].indexOf(item.type)
+              ]?.filter((i) => i !== item.key),
+            )
+          }
+          data={selected.map((s) => persistentData.find((p) => p.key === s))}
           chipProps={{ icon: 'close', rightAction: true }}
         />
       </CollapsibleView>
@@ -418,14 +441,15 @@ const WelcomeLocation: React.FC<Props> = ({
                     },
                     {
                       text: 'Continuer',
-                      onPress: () => done(selected, schools, departments, navigation),
+                      onPress: () =>
+                        done(selectedSchools, selectedDepartments, selectedOthers, navigation),
                     },
                   ],
                   { cancelable: true },
                 );
               } else {
                 logger.info('User selected locations', selected);
-                done(selected, schools, departments, navigation);
+                done(selectedSchools, selectedDepartments, selectedOthers, navigation);
               }
             }}
             style={{ flex: 1 }}
