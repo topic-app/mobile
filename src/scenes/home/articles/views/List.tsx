@@ -142,8 +142,11 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   const getSection = (tabKey?: string) =>
     tabGroups.find((t) => t.data.some((d) => d.key === (tabKey ?? tab)))!;
-  const getItem = (tabKey?: string) =>
+  const getCategory = (tabKey?: string) =>
     getSection(tabKey).data.find((d) => d.key === (tabKey ?? tab))!;
+
+  const section = getSection();
+  const category = getCategory();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -153,25 +156,28 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
-  const changeList = async (data: string) => {
+  const changeList = async (tabKey: string) => {
     const noAnimation = await AccessibilityInfo.isReduceMotionEnabled();
+    const newSection = getSection(tabKey);
+    const newCategory = getCategory(tabKey);
+
     if (noAnimation) {
-      setChipTab(data);
-      if (getSection(data).key === 'quicks') {
-        searchArticles('initial', '', getItem(data).params, false, true);
+      setChipTab(tabKey);
+      if (newSection.key === 'quicks') {
+        searchArticles('initial', '', newCategory.params, false, true);
       }
-      setTab(data);
+      setTab(tabKey);
     } else {
-      setChipTab(data);
+      setChipTab(tabKey);
       Animated.timing(fadeAnim, {
         useNativeDriver: true,
         toValue: 0,
         duration: 100,
       }).start(async () => {
-        if (getSection(data).key === 'quicks') {
-          await searchArticles('initial', '', getItem(data).params, false, true);
+        if (newSection.key === 'quicks') {
+          await searchArticles('initial', '', newCategory.params, false, true);
         }
-        setTab(data);
+        setTab(tabKey);
         Animated.timing(fadeAnim, {
           useNativeDriver: true,
           toValue: 1,
@@ -181,7 +187,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
     }
   };
 
-  const listData = getItem().data;
+  const listData = category.data;
 
   return (
     <View style={styles.page}>
@@ -261,21 +267,21 @@ const ArticleList: React.FC<ArticleListProps> = ({
         })}
         data={listData || []}
         refreshing={
-          (getSection().key === 'categories' && state.list.loading.refresh) ||
-          (getSection().key === 'quicks' && state.search.loading.refresh)
+          (section.key === 'categories' && state.list.loading.refresh) ||
+          (section.key === 'quicks' && state.search.loading.refresh)
         }
         onRefresh={() => {
-          if (getSection().key === 'categories') {
+          if (section.key === 'categories') {
             updateArticles('refresh');
-          } else if (getSection().key === 'quicks') {
-            searchArticles('refresh', '', getItem().params, false, true);
+          } else if (section.key === 'quicks') {
+            searchArticles('refresh', '', category.params, false, true);
           }
         }}
         onEndReached={() => {
-          if (getSection().key === 'categories') {
+          if (section.key === 'categories') {
             updateArticles('next');
-          } else if (getSection().key === 'quicks') {
-            searchArticles('next', '', getItem().params, false, true);
+          } else if (section.key === 'quicks') {
+            searchArticles('next', '', category.params, false, true);
           }
         }}
         ListHeaderComponent={() => (
@@ -293,10 +299,10 @@ const ArticleList: React.FC<ArticleListProps> = ({
                 })
               }
             />
-            {getItem().description ? (
+            {category.description ? (
               <Banner actions={[]} visible>
                 <Subheading>Description</Subheading>
-                <Text>{getItem().description}</Text>
+                <Text>{category.description}</Text>
               </Banner>
             ) : null}
           </View>
@@ -305,7 +311,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
           <Animated.View style={{ opacity: fadeAnim }}>
             <ArticleEmptyList
               tab={tab}
-              sectionKey={getSection().key}
+              sectionKey={section.key}
               reqState={state}
               navigation={navigation}
             />
@@ -315,19 +321,19 @@ const ArticleList: React.FC<ArticleListProps> = ({
         keyExtractor={(article: Article) => article._id}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {((getSection().key === 'categories' && state.list.loading.next) ||
-              (getSection().key === 'quicks' && state.search.loading.next)) && (
+            {((section.key === 'categories' && state.list.loading.next) ||
+              (section.key === 'quicks' && state.search.loading.next)) && (
               <ActivityIndicator size="large" color={colors.primary} />
             )}
           </View>
         }
-        renderItem={({ item }: { item: Article }) => (
+        renderItem={({ item: article }: { item: Article }) => (
           <Animated.View style={{ opacity: fadeAnim }}>
             <ArticleListCard
-              article={item}
-              sectionKey={getSection().key}
-              itemKey={getItem().key}
-              isRead={read.some((r) => r.id === item._id)}
+              article={article}
+              sectionKey={section.key}
+              itemKey={category.key}
+              isRead={read.some((r) => r.id === article._id)}
               historyActive={preferences.history}
               lists={lists}
               navigate={() =>
@@ -338,9 +344,9 @@ const ArticleList: React.FC<ArticleListProps> = ({
                     params: {
                       screen: 'Display',
                       params: {
-                        id: item._id,
-                        title: item.title,
-                        useLists: getSection().key === 'lists',
+                        id: article._id,
+                        title: article.title,
+                        useLists: section.key === 'lists',
                       },
                     },
                   },
