@@ -63,6 +63,7 @@ function done(
   selectedDepartments: string[],
   selectedOthers: string[],
   navigation: Navigation,
+  persistentData: { title: string; key: string; departments?: Department[] }[],
 ) {
   Promise.all([
     updateLocation({
@@ -76,6 +77,10 @@ function done(
       departments: [
         ...selectedDepartments,
         // Todo: logic to select extra departments
+        ...selectedSchools
+          .map((s) => persistentData.find((p) => p.key === s)?.departments)
+          .flat()
+          .map((d: Department) => d?._id),
       ],
       global: true,
     }),
@@ -115,6 +120,7 @@ function getData(
           s?.departments?.length ? `, ${s?.departments[0].displayName}` : ''
         }`,
         type: 'school',
+        departments: s.departments,
       };
     });
   } else if (type === 'departement' || type === 'region') {
@@ -172,7 +178,7 @@ const WelcomeLocation: React.FC<Props> = ({
 
   const [selectedSchools, setSelectedSchools] = React.useState(location.schools || []);
   const [selectedDepartments, setSelectedDepartments] = React.useState(location.departments || []);
-  const [selectedOthers, setSelectedOthers] = React.useState(location.global ? ['gloabl'] : []);
+  const [selectedOthers, setSelectedOthers] = React.useState(location.global ? ['global'] : []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -240,7 +246,12 @@ const WelcomeLocation: React.FC<Props> = ({
   };
 
   const [persistentData, setPersistentData] = React.useState<
-    { key: string; title: string; type: 'school' | 'department' | 'other' }[]
+    {
+      key: string;
+      title: string;
+      type: 'school' | 'department' | 'other';
+      departments?: Department[];
+    }[]
   >([
     ...location.schoolData.map((s) => ({ key: s._id, title: s.name, type: 'school' })),
     ...location.departmentData.map((d) => ({ key: d._id, title: d.name, type: 'department' })),
@@ -266,7 +277,12 @@ const WelcomeLocation: React.FC<Props> = ({
               setSelected([...selected, item.key]);
               setPersistentData([
                 ...persistentData,
-                { key: item.key, title: item.title, type: item.type },
+                {
+                  key: item.key,
+                  title: item.title,
+                  type: item.type,
+                  departments: item.departments,
+                },
               ]);
             }
           }}
@@ -442,14 +458,26 @@ const WelcomeLocation: React.FC<Props> = ({
                     {
                       text: 'Continuer',
                       onPress: () =>
-                        done(selectedSchools, selectedDepartments, selectedOthers, navigation),
+                        done(
+                          selectedSchools,
+                          selectedDepartments,
+                          selectedOthers,
+                          navigation,
+                          persistentData,
+                        ),
                     },
                   ],
                   { cancelable: true },
                 );
               } else {
                 logger.info('User selected locations', selected);
-                done(selectedSchools, selectedDepartments, selectedOthers, navigation);
+                done(
+                  selectedSchools,
+                  selectedDepartments,
+                  selectedOthers,
+                  navigation,
+                  persistentData,
+                );
               }
             }}
             style={{ flex: 1 }}

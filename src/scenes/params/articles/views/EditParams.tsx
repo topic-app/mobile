@@ -2,8 +2,6 @@ import React from 'react';
 import {
   View,
   Platform,
-  ScrollView,
-  Dimensions,
   Alert,
   FlatList,
   TextInput as RNTextInput,
@@ -31,21 +29,29 @@ import {
   SchoolRequestState,
   DepartmentRequestState,
   State,
+  ArticleParams,
 } from '@ts/types';
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
 import { updateSchools, searchSchools, fetchMultiSchool } from '@redux/actions/api/schools';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
-  updateDepartments,
-  searchDepartments,
-  fetchMultiDepartment,
-} from '@redux/actions/api/departments';
-import { Illustration, CategoriesList, ChipAddList, ErrorMessage } from '@components/index';
+  TranslucentStatusBar,
+  Illustration,
+  CategoriesList,
+  ErrorMessage,
+  CollapsibleView,
+  ChipAddList,
+} from '@components/index';
+
 import getStyles from '@styles/Styles';
 
 import type { LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
+
+type Navigation = StackNavigationProp<LandingStackParams, 'SelectLocation'>;
 
 // TODO: Externalize into @ts/redux
 type ReduxLocation = {
@@ -54,47 +60,69 @@ type ReduxLocation = {
   departments: string[];
 };
 
-function done(selected, schools, departments, navigation) {
-  const schoolIds = schools.map((sch) => sch._id).filter((id) => selected.includes(id));
-  const departmentIds = departments.map((dep) => dep._id).filter((id) => selected.includes(id));
-  fetchMultiSchool(schoolIds);
-  fetchMultiDepartment(departmentIds);
-  updateArticleParams({
-    schools: schoolIds,
-    departments: departmentIds,
-    global: selected.includes('global'),
-  }).then(() => navigation.goBack());
+function done(
+  selectedSchools: string[],
+  selectedDepartments: string[],
+  selectedOthers: string[],
+  navigation: Navigation,
+  type: 'schools' | 'departements' | 'regions' | 'other',
+  articleParams: ArticleParams,
+) {
+  Promise.all([
+    updateArticleParams({
+      schools: type === 'schools' ? selectedSchools : articleParams.schools,
+      departments:
+        type === 'departements' || type === 'regions'
+          ? selectedDepartments
+          : articleParams.departments,
+      global: type === 'other' ? selectedOthers.includes('global') : articleParams.global,
+    }),
+  ]).then(() => {
+    if (type === 'schools') {
+      fetchMultiSchool(selectedSchools);
+    } else if (type === 'departements' || type === 'regions') {
+      fetchMultiDepartment(selectedDepartments);
+    }
+    navigation.goBack();
+  });
 }
 
-function getData(type, locationData) {
+type DataType = 'school' | 'departement' | 'region' | 'other';
+
+function getData(
+  type: DataType,
+  locationData: (School | SchoolPreload)[] | (Department | DepartmentPreload)[],
+) {
   let data = [
     {
       key: 'global',
       title: 'France entière',
       description: "Pas de département ou d'école spécifique",
+      type: 'other',
     },
   ];
 
   if (type === 'school') {
-    data = locationData?.map((s) => {
+    data = (locationData as School[])?.map((s) => {
       return {
         key: s._id,
         title: s.name,
-        description: `${
-          s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'
-        }${s?.departments
-          ?.filter((d) => d.type === 'departement')
-          .map((d) => `, ${d.displayName}`)}`,
+        description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
+          s?.departments?.length ? `, ${s?.departments[0].displayName}` : ''
+        }`,
+        type: 'school',
       };
     });
   } else if (type === 'departement' || type === 'region') {
-    data = locationData
+    data = (locationData as Department[])
+      // TODO: Change to Region | Department in the future
       ?.filter((d) => d.type === type)
-      ?.map((d) => {
+      ?.map((d: Department) => {
         return {
           key: d._id,
           title: d.name,
           description: `${type === 'departement' ? 'Département' : 'Région'} ${d.code || ''}`,
+          type: 'department',
         };
       });
   }
@@ -110,34 +138,47 @@ type Props = {
     schools: SchoolRequestState;
     departments: DepartmentRequestState;
   };
-  articleParams: ReduxLocation;
-  navigation: StackNavigationProp<LandingStackParams, 'SelectLocation'>;
+  articleParams?: ArticleParams;
+  navigation: Navigation;
+  route: {
+    params: { type: 'schools' | 'departements' | 'regions' | 'other'; hideSearch?: boolean };
+  };
 };
 
-const ArticleEditParams: React.FC<Props> = ({
-  route,
+const WelcomeLocation: React.FC<Props> = ({
   schools,
   departments,
   schoolsSearch,
   departmentsSearch,
   state,
-  articleParams,
+  articleParams = {
+    global: false,
+    schools: [],
+    departments: [],
+  },
   navigation,
+  route,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getLandingStyles(theme);
+  const landingStyles = getLandingStyles(theme);
   const styles = getStyles(theme);
+
+  console.log(JSON.stringify(articleParams));
+
+  const { type, hideSearch = false } = route.params;
 
   const [searchText, setSearchText] = React.useState('');
   const scrollRef = React.createRef<FlatList>();
   const inputRef = React.createRef<RNTextInput>();
 
-  const [selected, setSelected] = React.useState([
-    ...articleParams.schools,
-    ...articleParams.departments,
-    ...(articleParams.global ? ['global'] : []),
-  ]);
+  const [selectedSchools, setSelectedSchools] = React.useState(articleParams.schools || []);
+  const [selectedDepartments, setSelectedDepartments] = React.useState(
+    articleParams.departments || [],
+  );
+  const [selectedOthers, setSelectedOthers] = React.useState(
+    articleParams.global ? ['global'] : [],
+  );
 
   useFocusEffect(
     React.useCallback(() => {
@@ -145,37 +186,40 @@ const ArticleEditParams: React.FC<Props> = ({
     }, [null]),
   );
 
-  const [category, setCategory]: [
-    'schools' | 'departements' | 'regions' | 'other',
-    any,
-  ] = React.useState(route.params.type);
-
   const searchChange = (text: string) => {
-    setSearchText(text);
     if (text !== '') {
-      searchSchools('initial', text);
-      searchDepartments('initial', text);
+      if (type === 'schools') {
+        searchSchools('initial', text);
+      } else if (type === 'departements' || type === 'regions') {
+        searchDepartments('initial', text);
+      }
     }
   };
 
   const retry = () => {
     if (searchText !== '') {
-      searchSchools('initial', searchText);
-      searchDepartments('initial', searchText);
+      if (type === 'schools') {
+        searchSchools('initial', searchText);
+      } else if (type === 'departements' || type === 'regions') {
+        searchDepartments('initial', searchText);
+      }
     } else {
-      updateSchools('initial');
-      updateDepartments('initial');
+      if (type === 'schools') {
+        updateSchools('initial');
+      } else if (type === 'departements' || type === 'regions') {
+        updateDepartments('initial');
+      }
     }
   };
 
   const next = () => {
-    if (category === 'schools') {
+    if (type === 'schools') {
       if (searchText) {
         searchSchools('next', searchText);
       } else {
         updateSchools('next');
       }
-    } else if (category === 'departements' || category === 'regions') {
+    } else if (type === 'departements' || type === 'regions') {
       if (searchText) {
         searchDepartments('next', searchText);
       } else {
@@ -207,77 +251,84 @@ const ArticleEditParams: React.FC<Props> = ({
   };
 
   const renderItem = React.useCallback(
-    ({ item }) => (
-      <List.Item
-        title={item.title}
-        description={item.description}
-        descriptionNumberOfLines={1}
-        onPress={() => {
-          if (selected.includes(item.key)) {
-            setSelected(selected.filter((s) => s !== item.key));
-          } else {
-            setSelected([...selected, item.key]);
+    ({ item }) => {
+      let [selected, setSelected] = [
+        [selectedSchools, setSelectedSchools],
+        [selectedDepartments, setSelectedDepartments],
+        [selectedOthers, setSelectedOthers],
+      ][['school', 'department', 'other'].indexOf(item.type)];
+      return (
+        <List.Item
+          title={item.title}
+          description={item.description}
+          descriptionNumberOfLines={1}
+          onPress={() => {
+            if (selected.includes(item.key)) {
+              setSelected(selected.filter((s) => s !== item.key));
+            } else {
+              setSelected([...selected, item.key]);
+            }
+          }}
+          left={() =>
+            Platform.OS !== 'ios' ? (
+              <View style={{ alignSelf: 'center' }}>
+                <Checkbox
+                  status={selected.includes(item.key) ? 'checked' : 'unchecked'}
+                  color={colors.primary}
+                />
+              </View>
+            ) : null
           }
-        }}
-        left={() =>
-          Platform.OS !== 'ios' ? (
-            <View style={{ alignSelf: 'center' }}>
-              <Checkbox
-                status={selected.includes(item.key) ? 'checked' : 'unchecked'}
-                color={colors.primary}
-              />
-            </View>
-          ) : null
-        }
-        right={() =>
-          Platform.OS === 'ios' ? (
-            <View style={{ alignSelf: 'center' }}>
-              <Checkbox
-                status={selected.includes(item.key) ? 'checked' : 'unchecked'}
-                color={colors.primary}
-              />
-            </View>
-          ) : null
-        }
-      />
-    ),
-    [selected],
+          right={() =>
+            Platform.OS === 'ios' ? (
+              <View style={{ alignSelf: 'center' }}>
+                <Checkbox
+                  status={selected.includes(item.key) ? 'checked' : 'unchecked'}
+                  color={colors.primary}
+                />
+              </View>
+            ) : null
+          }
+        />
+      );
+    },
+    [selectedSchools, selectedDepartments, selectedOthers],
   );
 
-  const ListHeaderComponent = React.useCallback(
-    () => (
-      <View>
-        {category !== 'other' && (
-          <View style={articleStyles.searchContainer}>
-            <Searchbar
-              ref={inputRef}
-              placeholder="Rechercher"
-              value={searchText}
-              onChangeText={searchChange}
-            />
-          </View>
-        )}
-        {((searchText === '' &&
-          (state.schools.list.loading.initial || state.departments.list.loading.initial)) ||
-          (searchText !== '' &&
-            (state.schools.search?.loading.initial ||
-              state.departments.search?.loading.initial))) && <ProgressBar indeterminate />}
-        {((searchText === '' && (state.schools.list.error || state.departments.list.error)) ||
-          (searchText !== '' &&
-            (state.schools.search?.error || state.departments.search?.error))) && (
-          <ErrorMessage
-            type="axios"
-            error={
-              searchText === ''
-                ? [state.schools.list.error, state.departments.list.error]
-                : [state.schools.search?.error, state.departments.search?.error]
-            }
-            retry={retry}
+  const ListHeaderComponent = (
+    <View>
+      <View style={landingStyles.searchContainer}>
+        {!hideSearch && (
+          <Searchbar
+            ref={inputRef}
+            placeholder="Rechercher"
+            value={searchText}
+            onChangeText={(props) => {
+              setSearchText(props);
+              searchChange(props);
+            }}
           />
         )}
       </View>
-    ),
-    [searchText],
+      {((searchText === '' &&
+        (state.schools.list.loading.initial || state.departments.list.loading.initial)) ||
+        (searchText !== '' &&
+          (state.schools.search?.loading.initial ||
+            state.departments.search?.loading.initial))) && <ProgressBar indeterminate />}
+      {((searchText === '' && (state.schools.list.error || state.departments.list.error)) ||
+        (searchText !== '' &&
+          (state.schools.search?.error || state.departments.search?.error))) && (
+        <ErrorMessage
+          type="axios"
+          error={
+            searchText === ''
+              ? [state.schools.list.error, state.departments.list.error]
+              : [state.schools.search?.error, state.departments.search?.error]
+          }
+          retry={retry}
+        />
+      )}
+    </View>
   );
 
   const ITEM_HEIGHT = 68.5714;
@@ -291,9 +342,9 @@ const ArticleEditParams: React.FC<Props> = ({
     [],
   );
 
-  const ListEmptyComponent = React.useCallback(
-    () =>
-      (searchText === '' &&
+  const ListEmptyComponent = (
+    <View>
+      {(searchText === '' &&
         (state.schools.list.loading.initial || state.departments.list.loading.initial)) ||
       (searchText !== '' &&
         (state.schools.search?.loading.initial ||
@@ -301,22 +352,19 @@ const ArticleEditParams: React.FC<Props> = ({
         <View style={styles.centerIllustrationContainer}>
           <Text>Aucun résultat</Text>
         </View>
-      ),
-    [],
+      )}
+    </View>
   );
 
-  const ListFooterComponent = React.useCallback(
-    () => (
-      <View style={{ minHeight: 50 }}>
-        {((searchText === '' &&
-          (state.schools.list.loading.next || state.departments.list.loading.next)) ||
-          (searchText !== '' &&
-            (state.schools.search?.loading.next || state.departments.search?.loading.next))) && (
-          <ActivityIndicator size="large" color={colors.primary} />
-        )}
-      </View>
-    ),
-    [],
+  const ListFooterComponent = (
+    <View style={{ minHeight: 50 }}>
+      {((searchText === '' &&
+        (state.schools.list.loading.next || state.departments.list.loading.next)) ||
+        (searchText !== '' &&
+          (state.schools.search?.loading.next || state.departments.search?.loading.next))) && (
+        <ActivityIndicator size="large" color={colors.primary} />
+      )}
+    </View>
   );
 
   return (
@@ -326,7 +374,7 @@ const ArticleEditParams: React.FC<Props> = ({
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="none"
         ListHeaderComponent={ListHeaderComponent}
-        data={data[category].data}
+        data={data[type].data}
         getItemLayout={getItemLayout}
         onEndReached={next}
         onEndReachedThreshold={1}
@@ -335,22 +383,33 @@ const ArticleEditParams: React.FC<Props> = ({
         renderItem={renderItem}
       />
       <Divider />
-      <View style={[articleStyles.buttonContainer]}>
-        <Button
-          mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-          color={colors.primary}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={() => done(selected, schools, departments, navigation)}
-        >
-          Confirmer
-        </Button>
+      <View style={landingStyles.contentContainer}>
+        <View style={landingStyles.buttonContainer}>
+          <Button
+            mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+            color={colors.primary}
+            uppercase={Platform.OS !== 'ios'}
+            onPress={() => {
+              done(
+                selectedSchools,
+                selectedDepartments,
+                selectedOthers,
+                navigation,
+                type,
+                articleParams,
+              );
+            }}
+          >
+            Confirmer
+          </Button>
+        </View>
       </View>
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { schools, departments, articleData } = state;
+  const { articleData, schools, departments } = state;
   return {
     schools: schools.data,
     departments: departments.data,
@@ -361,4 +420,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticleEditParams);
+export default connect(mapStateToProps)(WelcomeLocation);
