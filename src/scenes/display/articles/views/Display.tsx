@@ -19,12 +19,15 @@ import {
   Animated,
   FlatList,
   Platform,
+  Share,
 } from 'react-native';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import ReportModal from '@components/ReportModal';
+import { articleReport } from '@redux/actions/apiActions/articles';
 
 import {
   Article,
@@ -52,18 +55,16 @@ import {
   Illustration,
 } from '@components/index';
 import { fetchArticle } from '@redux/actions/api/articles';
-import {
-  addArticleRead,
-  addArticleToList,
-  addArticleList,
-} from '@redux/actions/contentData/articles';
+import { addArticleRead, addArticleToList } from '@redux/actions/contentData/articles';
 import { updateComments } from '@redux/actions/api/comments';
-import { commentAdd } from '@redux/actions/apiActions/comments';
+import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
 import { getImageUrl, logger } from '@utils/index';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CommentInlineCard from '../components/Comment';
+import AddCommentModal from '../components/AddCommentModal';
+import AddToListModal from '../components/AddToListModal';
 import getArticleStyles from '../styles/Styles';
 import type { ArticleDisplayStackParams } from '../index';
 
@@ -262,17 +263,6 @@ type ArticleDisplayProps = {
   preferences: Preferences;
 };
 
-type CommentPublisher = {
-  key: string;
-  title: string;
-  icon: string;
-  publisher: {
-    type: 'user' | 'group';
-    group?: string;
-  };
-  type: 'category';
-};
-
 const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   route,
   navigation,
@@ -317,64 +307,12 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     updateComments('initial', { parentId: id });
   }, [null]);
 
-  const [isListModalVisible, setListModalVisible] = React.useState(false);
-  const [list, setList] = React.useState(lists[0]?.id);
-  const [createList, setCreateList] = React.useState(false);
-  const [errorVisible, setErrorVisible] = React.useState(false);
-
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
-  const [commentText, setCommentText] = useState('');
-  const [publisher, setPublisher] = React.useState('user');
-  const tooManyChars = commentText.length > config.comments.maxCharacters;
+  const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
+  const [isListModalVisible, setListModalVisible] = React.useState(false);
 
-  let commentCharCountColor = colors.softContrast;
-  if (tooManyChars) {
-    commentCharCountColor = colors.error;
-  } else if (commentText.length > 0.9 * config.comments.maxCharacters) {
-    commentCharCountColor = colors.warning;
-  }
-
-  const publishers: CommentPublisher[] = [];
-  if (account.loggedIn) {
-    publishers.push({
-      key: 'user',
-      title: account.accountInfo?.user?.info?.username,
-      icon: 'account',
-      publisher: {
-        type: 'user',
-      },
-      type: 'category',
-    });
-    account.groups?.forEach((g) =>
-      publishers.push({
-        key: g._id,
-        title: g.shortName || g.name,
-        icon: 'newspaper',
-        publisher: {
-          type: 'group',
-          group: g._id,
-        },
-        type: 'category',
-      }),
-    );
-  }
-
-  const submitComment = () => {
-    if (account.loggedIn) {
-      commentAdd(
-        publishers.find((p) => p.key === publisher)!.publisher,
-        { parser: 'plaintext', data: commentText },
-        id,
-        'article',
-      )
-        .then(() => {
-          setCommentText('');
-          updateComments('initial', { parentId: id });
-          setCommentModalVisible(false);
-        })
-        .catch((e) => logger.error('Failed to add comment to article', e));
-    }
-  };
+  const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
+  const [focusedComment, setFocusedComment] = React.useState(null);
 
   const scrollY = new Animated.Value(0);
 
@@ -421,7 +359,26 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             onPress: () => setListModalVisible(true),
           },
         ]}
-        overflow={[{ title: 'Hello', onPress: () => console.log('Hello') }]}
+        overflow={[
+          {
+            title: 'Partager',
+            onPress:
+              Platform.OS === 'ios'
+                ? () =>
+                    Share.share({
+                      message: `${article?.title} par ${article?.group?.displayName}`,
+                      url: `https://go.topicapp.fr/articles/${article?._id}`,
+                    })
+                : () =>
+                    Share.share({
+                      message: `https://go.topicapp.fr/articles/${article?._id}`,
+                      title: `${article?.title} par ${article?.group?.displayName}`,
+                    }),
+          },
+          ...(account.loggedIn
+            ? [{ title: 'Signaler', onPress: () => setArticleReportModalVisible(true) }]
+            : []),
+        ]}
       >
         {reqState.articles.info.error && (
           <ErrorMessage
@@ -489,236 +446,41 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             </View>
           )
         }
-        renderItem={({ item }: { item: Comment }) => <CommentInlineCard comment={item} />}
-      />
-      <Modal
-        isVisible={isListModalVisible}
-        avoidKeyboard
-        onBackdropPress={() => setListModalVisible(false)}
-        onBackButtonPress={() => setListModalVisible(false)}
-        onSwipeComplete={() => setListModalVisible(false)}
-        swipeDirection={['down']}
-        style={styles.bottomModal}
-      >
-        <Card>
-          <FlatList
-            data={lists}
-            ListHeaderComponent={() => (
-              <View>
-                <View style={styles.contentContainer}>
-                  <View style={styles.centerIllustrationContainer}>
-                    <Illustration name="article-lists" height={200} width={200} />
-                    <Text>Ajouter cet article à une liste</Text>
-                  </View>
-                </View>
-                <Divider />
-              </View>
-            )}
-            renderItem={({ item }) => {
-              const disabled = item?.items?.some((i) => i._id === id);
-              return (
-                <View>
-                  <List.Item
-                    title={item.name}
-                    onPress={() => {
-                      if (!disabled) {
-                        setCreateList(false);
-                        setList(item.id);
-                      }
-                    }}
-                    left={() =>
-                      Platform.OS !== 'ios' && (
-                        <RadioButton
-                          disabled={disabled}
-                          color={colors.primary}
-                          status={item.id === list ? 'checked' : 'unchecked'}
-                          onPress={() => {
-                            if (!disabled) {
-                              setCreateList(false);
-                              setList(item.id);
-                            }
-                          }}
-                        />
-                      )
-                    }
-                    right={() =>
-                      Platform.OS === 'ios' && (
-                        <RadioButton
-                          disabled={disabled}
-                          color={colors.primary}
-                          status={item.id === list ? 'checked' : 'unchecked'}
-                          onPress={() => {
-                            if (!disabled) {
-                              setCreateList(false);
-                              setList(item.id);
-                            }
-                          }}
-                        />
-                      )
-                    }
-                  />
-                </View>
-              );
+        renderItem={({ item }: { item: Comment }) => (
+          <CommentInlineCard
+            comment={item}
+            report={(id) => {
+              setFocusedComment(id);
+              setCommentReportModalVisible(true);
             }}
-            ListFooterComponent={() => {
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              const [createListText, setCreateListText] = React.useState('');
-              return (
-                <View>
-                  <List.Item
-                    title="Créer une liste"
-                    onPress={() => {
-                      setList(null);
-                      setCreateList(true);
-                    }}
-                    left={() =>
-                      Platform.OS !== 'ios' && (
-                        <IconButton
-                          style={{ width: 24, height: 24 }}
-                          color={colors.primary}
-                          icon="plus"
-                          onPress={() => {
-                            setList(null);
-                            setCreateList(true);
-                          }}
-                        />
-                      )
-                    }
-                  />
-                  <CollapsibleView collapsed={!createList}>
-                    <Divider />
-
-                    <View style={articleStyles.activeCommentContainer}>
-                      <TextInput
-                        autoFocus
-                        placeholder="Nom de la liste"
-                        placeholderTextColor={colors.disabled}
-                        style={articleStyles.commentInput}
-                        value={createListText}
-                        onChangeText={(text) => {
-                          setErrorVisible(false);
-                          setCreateListText(text);
-                        }}
-                      />
-                      <CollapsibleView collapsed={!errorVisible}>
-                        <HelperText type="error" visible={errorVisible}>
-                          Vous devez entrer un nom
-                        </HelperText>
-                      </CollapsibleView>
-                    </View>
-                    <CollapsibleView collapsed={!lists.some((l) => l.name === createListText)}>
-                      <HelperText
-                        type="error"
-                        visible={lists.some((l) => l.name === createListText)}
-                      >
-                        Une liste avec ce nom existe déjà
-                      </HelperText>
-                    </CollapsibleView>
-                  </CollapsibleView>
-                  <Divider />
-                  <View style={styles.contentContainer}>
-                    <Button
-                      mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                      color={colors.primary}
-                      uppercase={Platform.OS !== 'ios'}
-                      onPress={() => {
-                        if (!createList) {
-                          setListModalVisible(false);
-                          addArticleToList(id, list);
-                        } else if (createListText === '') {
-                          setErrorVisible(true);
-                        } else if (!lists.some((l) => l.name === createListText)) {
-                          // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
-                          addArticleList(createListText);
-                          setCreateList(false);
-                          setCreateListText('');
-                        }
-                      }}
-                      style={{ flex: 1 }}
-                    >
-                      {createList ? 'Créer la liste' : 'Ajouter'}
-                    </Button>
-                  </View>
-                </View>
-              );
-            }}
-            keyExtractor={(item) => item.id}
+            loggedIn={account.loggedIn}
           />
-        </Card>
-      </Modal>
-      <Modal
-        isVisible={isCommentModalVisible}
-        avoidKeyboard
-        onBackdropPress={() => setCommentModalVisible(false)}
-        onBackButtonPress={() => setCommentModalVisible(false)}
-        onSwipeComplete={() => setCommentModalVisible(false)}
-        swipeDirection={['down']}
-        style={styles.bottomModal}
-      >
-        <Card>
-          {reqState.comments.add.error && (
-            <ErrorMessage
-              type="axios"
-              strings={{
-                what: 'l&apos;ajout du commentaire',
-                contentSingular: 'Le commentaire',
-              }}
-              error={reqState.comments.add.error}
-              retry={submitComment}
-            />
-          )}
-          <View style={articleStyles.activeCommentContainer}>
-            <TextInput
-              // TODO: Hook up comments to drafts in redux, so the user sees his comment when he leaves and comes back.
-              // Could possibly also hook it up to drafts with the server in the future.
-              autoFocus
-              placeholder="Écrire un commentaire..."
-              placeholderTextColor={colors.disabled}
-              style={articleStyles.commentInput}
-              multiline
-              value={commentText}
-              onChangeText={setCommentText}
-            />
-          </View>
-          <Divider style={articleStyles.divider} />
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View>
-              <CategoriesList
-                categories={publishers}
-                selected={publisher}
-                setSelected={setPublisher}
-              />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                flexDirection: 'row',
-              }}
-            >
-              <Text style={{ color: commentCharCountColor }}>
-                {commentText.length}/{config.comments.maxCharacters}
-              </Text>
-
-              {reqState.comments.add.loading ? (
-                <ActivityIndicator
-                  size="large"
-                  color={colors.primary}
-                  style={{ marginHorizontal: 7 }}
-                />
-              ) : (
-                <PlatformIconButton
-                  color={tooManyChars || commentText.length < 1 ? colors.disabled : colors.primary}
-                  icon="send"
-                  onPress={tooManyChars || commentText.length < 1 ? undefined : submitComment}
-                  style={{ padding: 0 }}
-                />
-              )}
-            </View>
-          </View>
-        </Card>
-      </Modal>
+        )}
+      />
+      <AddCommentModal
+        visible={isCommentModalVisible}
+        setVisible={setCommentModalVisible}
+        id={id}
+        reqState={reqState}
+        add={(...data: any) =>
+          commentAdd(...data).then(() => updateComments('initial', { parentId: id }))
+        }
+      />
+      <ReportModal
+        visible={isArticleReportModalVisible}
+        setVisible={setArticleReportModalVisible}
+        contentId={id}
+        report={articleReport}
+        state={reqState.articles.report}
+      />
+      <ReportModal
+        visible={isCommentReportModalVisible}
+        setVisible={setCommentReportModalVisible}
+        contentId={focusedComment}
+        report={commentReport}
+        state={reqState.comments.report}
+      />
+      <AddToListModal visible={isListModalVisible} setVisible={setListModalVisible} id={id} />
     </View>
   );
 };

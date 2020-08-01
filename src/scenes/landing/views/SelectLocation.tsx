@@ -40,6 +40,8 @@ import {
   Illustration,
   CategoriesList,
   ErrorMessage,
+  CollapsibleView,
+  ChipAddList,
 } from '@components/index';
 
 import getStyles from '@styles/Styles';
@@ -95,7 +97,7 @@ function done(
   });
 }
 
-type DataType = 'school' | 'department' | 'region' | 'other';
+type DataType = 'school' | 'departement' | 'region' | 'other';
 
 function getData(
   type: DataType,
@@ -114,14 +116,12 @@ function getData(
       return {
         key: s._id,
         title: s.name,
-        description: `${
-          s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'
-        }${s?.departments
-          ?.filter((d) => d.type === 'department')
-          .map((d) => `, ${d.displayName}`)}`,
+        description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
+          s?.departments?.length ? `, ${s?.departments[0].displayName}` : ''
+        }`,
       };
     });
-  } else if (type === 'department' || type === 'region') {
+  } else if (type === 'departement' || type === 'region') {
     data = (locationData as Department[])
       // TODO: Change to Region | Department in the future
       ?.filter((d) => d.type === type)
@@ -129,7 +129,7 @@ function getData(
         return {
           key: d._id,
           title: d.name,
-          description: `${type === 'department' ? 'Département' : 'Région'} ${d.code || ''}`,
+          description: `${type === 'departement' ? 'Département' : 'Région'} ${d.code || ''}`,
         };
       });
   }
@@ -184,8 +184,7 @@ const WelcomeLocation: React.FC<Props> = ({
   const [category, setCategory] = React.useState<CategoryType>('schools');
   const [chipCategory, setChipCategory] = React.useState<CategoryType>(category);
 
-  const searchChange = (text: string) => {
-    setSearchText(text);
+  const searchChange = async (text: string) => {
     if (text !== '') {
       searchSchools('initial', text);
       searchDepartments('initial', text);
@@ -227,7 +226,7 @@ const WelcomeLocation: React.FC<Props> = ({
     departements: {
       title: 'Départements',
       key: 'departements',
-      data: getData('department', searchText === '' ? departments : departmentsSearch),
+      data: getData('departement', searchText === '' ? departments : departmentsSearch),
     },
     regions: {
       title: 'Régions',
@@ -279,53 +278,53 @@ const WelcomeLocation: React.FC<Props> = ({
     [selected],
   );
 
-  const ListHeaderComponent = React.useCallback(
-    () => (
-      <View>
-        <TranslucentStatusBar backgroundColor={colors.background} />
-        <View style={landingStyles.headerContainer}>
-          <View style={landingStyles.centerIllustrationContainer}>
-            <Illustration name="location-select" height={200} width={200} />
-            <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
-          </View>
+  const ListHeaderComponent = () => (
+    <View>
+      <TranslucentStatusBar backgroundColor={colors.background} />
+      <View style={landingStyles.headerContainer}>
+        <View style={landingStyles.centerIllustrationContainer}>
+          <Illustration name="location-select" height={200} width={200} />
+          <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
         </View>
-        <View style={landingStyles.searchContainer}>
-          <Searchbar
-            ref={inputRef}
-            placeholder="Rechercher"
-            value={searchText}
-            onChangeText={searchChange}
-          />
-        </View>
-        <CategoriesList
-          selected={chipCategory}
-          setSelected={(type: CategoryType) => {
-            setChipCategory(type);
-            setCategory(type);
-          }}
-          categories={Object.values(data).map((s) => ({ title: s.title, key: s.key }))}
-        />
-        {((searchText === '' &&
-          (state.schools.list.loading.initial || state.departments.list.loading.initial)) ||
-          (searchText !== '' &&
-            (state.schools.search?.loading.initial ||
-              state.departments.search?.loading.initial))) && <ProgressBar indeterminate />}
-        {((searchText === '' && (state.schools.list.error || state.departments.list.error)) ||
-          (searchText !== '' &&
-            (state.schools.search?.error || state.departments.search?.error))) && (
-          <ErrorMessage
-            type="axios"
-            error={
-              searchText === ''
-                ? [state.schools.list.error, state.departments.list.error]
-                : [state.schools.search?.error, state.departments.search?.error]
-            }
-            retry={retry}
-          />
-        )}
       </View>
-    ),
-    [chipCategory, searchText],
+      <View style={landingStyles.searchContainer}>
+        <Searchbar
+          ref={inputRef}
+          placeholder="Rechercher"
+          value={searchText}
+          onChangeText={(props) => {
+            setSearchText(props);
+            searchChange(props);
+          }}
+        />
+      </View>
+      <CategoriesList
+        selected={chipCategory}
+        setSelected={(type: CategoryType) => {
+          setChipCategory(type);
+          setCategory(type);
+        }}
+        categories={Object.values(data).map((s) => ({ title: s.title, key: s.key }))}
+      />
+      {((searchText === '' &&
+        (state.schools.list.loading.initial || state.departments.list.loading.initial)) ||
+        (searchText !== '' &&
+          (state.schools.search?.loading.initial ||
+            state.departments.search?.loading.initial))) && <ProgressBar indeterminate />}
+      {((searchText === '' && (state.schools.list.error || state.departments.list.error)) ||
+        (searchText !== '' &&
+          (state.schools.search?.error || state.departments.search?.error))) && (
+        <ErrorMessage
+          type="axios"
+          error={
+            searchText === ''
+              ? [state.schools.list.error, state.departments.list.error]
+              : [state.schools.search?.error, state.departments.search?.error]
+          }
+          retry={retry}
+        />
+      )}
+    </View>
   );
 
   const ITEM_HEIGHT = 68.5714;
@@ -383,12 +382,27 @@ const WelcomeLocation: React.FC<Props> = ({
         renderItem={renderItem}
       />
       <Divider />
-      <View style={landingStyles.contentContainer}>
-        <Text>
-          Par défaut, vous verrez les articles déstinés à votre école, ainsi que les articles du
-          département dans lequel se trouve l&apos;école et de la France entière
-        </Text>
-      </View>
+      <CollapsibleView collapsed={selected.length !== 0}>
+        <View style={landingStyles.contentContainer}>
+          <Text>
+            Par défaut, vous verrez les articles déstinés à votre école, ainsi que les articles du
+            département dans lequel se trouve l&apos;école et de la France entière
+          </Text>
+        </View>
+      </CollapsibleView>
+
+      <CollapsibleView collapsed={selected.length === 0}>
+        <ChipAddList
+          setList={(item) => setSelected(selected.filter((s) => s !== item.key))}
+          data={selected.map((s) => ({
+            key: s,
+            title: Object.values(data)
+              .find((d) => d.data.some((e) => e.key === s))
+              ?.data?.find((e) => e.key === s)?.title,
+          }))}
+          chipProps={{ icon: 'close', rightAction: true }}
+        />
+      </CollapsibleView>
       <View style={landingStyles.contentContainer}>
         <View style={landingStyles.buttonContainer}>
           <Button

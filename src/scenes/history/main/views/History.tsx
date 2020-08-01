@@ -24,19 +24,12 @@ function MainHistory({ navigation, preferences }: MainHistoryProps) {
         <Divider />
         <List.Item
           disabled={!preferences.history}
-          onPress={() =>
-            navigation.navigate('Main', {
-              screen: 'History',
-              params: {
-                screen: 'Article',
-              },
-            })
-          }
+          onPress={() => navigation.navigate('Article')}
           right={() => <List.Icon icon="chevron-right" />}
           title="Articles"
         />
         <View style={{ height: 20 }} />
-        <List.Subheader>Recommendations</List.Subheader>
+        <List.Subheader>Centres d'interêt</List.Subheader>
         <Divider />
         {!preferences.recommendations ? (
           <List.Item
