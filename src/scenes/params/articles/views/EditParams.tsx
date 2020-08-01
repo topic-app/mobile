@@ -108,7 +108,7 @@ function getData(
         key: s._id,
         title: s.name,
         description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
-          s?.departments?.length ? `, ${s?.departments[0].displayName}` : ''
+          s?.departments?.length ? `, ${s.departments[0].displayName || s.departments[0].name || 'Inconnu'}` : ''
         }`,
         type: 'school',
       };
