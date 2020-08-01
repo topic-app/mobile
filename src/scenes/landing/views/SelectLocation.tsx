@@ -117,7 +117,9 @@ function getData(
         key: s._id,
         title: s.name,
         description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
-          s?.departments?.length ? `, ${s?.departments[0].displayName}` : ''
+          s?.departments?.length !== 0
+            ? `, ${s?.departments[0].displayName || s?.departments[0].name || 'Inconnu'}`
+            : ''
         }`,
         type: 'school',
         departments: s.departments,
@@ -182,7 +184,7 @@ const WelcomeLocation: React.FC<Props> = ({
 
   useFocusEffect(
     React.useCallback(() => {
-      // setImmediate(() => inputRef.current?.focus());
+      setImmediate(() => inputRef.current?.focus());
     }, [null]),
   );
 
