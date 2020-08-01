@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem } from '@ts/types';
+import { ModalProps } from '@ts/types';
 import {
   Divider,
   Button,
@@ -12,10 +12,9 @@ import {
   ProgressBar,
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
-import { connect } from 'react-redux';
 import Modal from 'react-native-modal';
 
-import { CollapsibleView, ErrorMessage } from '@components/index';
+import { ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
 
 type ReportModalProps = ModalProps & {
@@ -23,13 +22,13 @@ type ReportModalProps = ModalProps & {
   contentId: string;
 };
 
-function ReportModal({
+const ReportModal: React.FC<ReportModalProps> = ({
   visible,
   setVisible,
   report,
   state = { error: true },
   contentId,
-}: ReportModalProps) {
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -180,6 +179,6 @@ function ReportModal({
       </Card>
     </Modal>
   );
-}
+};
 
 export default ReportModal;

@@ -1,33 +1,11 @@
-import React, { useState } from 'react';
-import {
-  Text,
-  Title,
-  Divider,
-  List,
-  useTheme,
-  Card,
-  RadioButton,
-  Button,
-  IconButton,
-  HelperText,
-} from 'react-native-paper';
-import {
-  View,
-  Image,
-  TextInput,
-  ActivityIndicator,
-  Animated,
-  FlatList,
-  Platform,
-  Share,
-} from 'react-native';
+import React from 'react';
+import { Text, Title, Divider, List, useTheme } from 'react-native-paper';
+import { View, Image, ActivityIndicator, Animated, Platform, Share } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import Modal from 'react-native-modal';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import ReportModal from '@components/ReportModal';
-import { articleReport } from '@redux/actions/apiActions/articles';
+import moment from 'moment';
 
 import {
   Article,
@@ -40,27 +18,23 @@ import {
   ArticleListItem,
   Preferences,
 } from '@ts/types';
-
-import { config } from '@root/app.json';
 import {
   ErrorMessage,
   Content,
   TagList,
   InlineCard,
-  CollapsibleView,
-  PlatformIconButton,
   CategoryTitle,
-  CategoriesList,
   AnimatingHeader,
   Illustration,
+  ReportModal,
 } from '@components/index';
+import { getImageUrl } from '@utils/index';
+import { articleReport } from '@redux/actions/apiActions/articles';
 import { fetchArticle } from '@redux/actions/api/articles';
 import { addArticleRead, addArticleToList } from '@redux/actions/contentData/articles';
 import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
-import { getImageUrl, logger } from '@utils/index';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CommentInlineCard from '../components/Comment';
 import AddCommentModal from '../components/AddCommentModal';
@@ -68,6 +42,7 @@ import AddToListModal from '../components/AddToListModal';
 import getArticleStyles from '../styles/Styles';
 import type { ArticleDisplayStackParams } from '../index';
 
+// Common types
 type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
 type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
 type CombinedReqState = {

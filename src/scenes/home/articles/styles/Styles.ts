@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
+import { Theme } from '@ts/types';
 
-function getArticleStyles(theme) {
+function getArticleStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     title: {

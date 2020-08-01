@@ -1,17 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  View,
-  Animated,
-  Platform,
-  ActivityIndicator,
-  AccessibilityInfo,
-  Dimensions,
-  Alert,
-} from 'react-native';
-import { ProgressBar, Button, Banner, Text, Subheading, useTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
+import { ProgressBar, Banner, Text, Subheading, useTheme } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
@@ -20,30 +9,19 @@ import {
   State,
   ArticleListItem,
   ArticleReadItem,
+  ArticlePreload,
   Article,
   ArticlePrefs,
   Preferences,
   ArticleQuickItem,
   ArticleRequestState,
 } from '@ts/types';
-import {
-  AnimatingHeader,
-  ErrorMessage,
-  Illustration,
-  ArticleCard,
-  TabChipList,
-  PlatformTouchable,
-} from '@components/index';
+import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
 import { updateArticles, searchArticles } from '@redux/actions/api/articles';
-import {
-  addArticleRead,
-  deleteArticleRead,
-  addArticleToList,
-  removeArticleFromList,
-} from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 
-import getArticleStyles from '../styles/Styles';
+import ArticleListCard from '../components/Card';
+import ArticleEmptyList from '../components/EmptyList';
 import { HomeTwoNavParams } from '../../HomeTwo.ios';
 
 type Category = {
@@ -57,8 +35,8 @@ type Category = {
 };
 
 type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
-  articles: Article[];
-  search: Article[];
+  articles: (ArticlePreload | Article)[];
+  search: ArticlePreload[];
   lists: ArticleListItem[];
   read: ArticleReadItem[];
   quicks: ArticleQuickItem[];
@@ -67,8 +45,9 @@ type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   state: ArticleRequestState;
 };
 
-function ArticleList({
+const ArticleList: React.FC<ArticleListProps> = ({
   navigation,
+  route,
   articles,
   search,
   lists,
@@ -77,15 +56,14 @@ function ArticleList({
   state,
   articlePrefs,
   preferences,
-  route,
-}: ArticleListProps) {
+}) => {
   const theme = useTheme();
-  const scrollY = new Animated.Value(0);
   const { colors } = theme;
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
 
-  const categoryTypes = [
+  const scrollY = new Animated.Value(0);
+
+  const potentialCategories = [
     {
       key: 'all',
       title: 'Tous',
@@ -95,7 +73,7 @@ function ArticleList({
   ];
 
   if (preferences.history) {
-    categoryTypes.unshift({
+    potentialCategories.unshift({
       key: 'unread',
       title: 'Non lus',
       data: articles.filter((a) => !read.some((r) => r.id === a._id)),
@@ -106,13 +84,11 @@ function ArticleList({
   const categories: Category[] = [];
 
   articlePrefs.categories.forEach((c) => {
-    const currentCategory = categoryTypes.find((d) => d.key === c);
-    if (currentCategory) {
-      categories.push(currentCategory);
-    }
+    const currentCategory = potentialCategories.find((d) => d.key === c);
+    if (currentCategory) categories.push(currentCategory);
   });
 
-  const tabs: { key: string; data: Category[] }[] = [
+  const tabGroups: { key: string; data: Category[] }[] = [
     {
       key: 'categories',
       data: categories,
@@ -161,13 +137,13 @@ function ArticleList({
     },
   ];
 
-  const [tab, setTab] = React.useState(route.params?.initialList || tabs[0].data[0].key);
+  const [tab, setTab] = React.useState(route.params?.initialList || tabGroups[0].data[0].key);
   const [chipTab, setChipTab] = React.useState(tab);
 
-  const getSection = (a: string = '') => tabs.find((t) => t.data.some((d) => d.key === (a || tab)));
-
-  const getItem = (a: string = '') =>
-    tabs.find((t) => t.key === getSection(a)?.key)?.data.find((d) => d.key === (a || tab));
+  const getSection = (tabKey?: string) =>
+    tabGroups.find((t) => t.data.some((d) => d.key === (tabKey ?? tab)))!;
+  const getItem = (tabKey?: string) =>
+    getSection(tabKey).data.find((d) => d.key === (tabKey ?? tab))!;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -181,8 +157,8 @@ function ArticleList({
     const noAnimation = await AccessibilityInfo.isReduceMotionEnabled();
     if (noAnimation) {
       setChipTab(data);
-      if (getSection(data)?.key === 'quicks') {
-        searchArticles('initial', '', getItem(data)?.params, false, true);
+      if (getSection(data).key === 'quicks') {
+        searchArticles('initial', '', getItem(data).params, false, true);
       }
       setTab(data);
     } else {
@@ -192,9 +168,8 @@ function ArticleList({
         toValue: 0,
         duration: 100,
       }).start(async () => {
-        console.log(data);
-        if (getSection(data)?.key === 'quicks') {
-          await searchArticles('initial', '', getItem(data)?.params, false, true);
+        if (getSection(data).key === 'quicks') {
+          await searchArticles('initial', '', getItem(data).params, false, true);
         }
         setTab(data);
         Animated.timing(fadeAnim, {
@@ -206,197 +181,7 @@ function ArticleList({
     }
   };
 
-  const renderRightActions = (id: string) => {
-    return (
-      <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
-        {getSection()?.key !== 'lists' ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginRight: 20,
-            }}
-          >
-            <Text style={articleStyles.captionText}>
-              Marquer comme {read.some((r) => r.id === id) ? 'non lu' : 'lu'}
-            </Text>
-            <Icon
-              name={read.some((r) => r.id === id) ? 'eye-off' : 'eye'}
-              size={32}
-              style={{ marginHorizontal: 10 }}
-              color={colors.disabled}
-            />
-          </View>
-        ) : (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginRight: 20,
-            }}
-          >
-            <Text style={articleStyles.captionText}>Retirer</Text>
-            <Icon
-              name="delete"
-              color={colors.disabled}
-              size={32}
-              style={{ marginHorizontal: 10 }}
-            />
-          </View>
-        )}
-      </View>
-    );
-  };
-
-  const renderLeftActions = (id: string, swipeRef) => {
-    return (
-      <View
-        style={[
-          styles.container,
-          { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
-        ]}
-      >
-        {lists.slice(0, (Dimensions.get('window').width - 100) / 120).map((l) => (
-          <View key={l.id} style={{ width: 120 }}>
-            <PlatformTouchable
-              onPress={() => {
-                if (lists.find((j) => j.id === l.id)?.items.some((i) => i._id === id)) {
-                  Alert.alert(
-                    `Retirer l'article de la liste ${lists.find((j) => j.id === l.id)?.name} ?`,
-                    "L'article ne sera plus disponible hors-ligne",
-                    [
-                      {
-                        text: 'Annuler',
-                      },
-                      {
-                        text: 'Retirer',
-                        onPress: () => removeArticleFromList(id, l.id),
-                      },
-                    ],
-                    { cancelable: true },
-                  );
-                } else {
-                  addArticleToList(id, l.id);
-                }
-                swipeRef.current?.close();
-              }}
-            >
-              <View style={{ alignItems: 'center', margin: 10 }}>
-                <Icon
-                  name={l.icon || 'playlist-plus'}
-                  size={32}
-                  color={
-                    lists.find((j) => j.id === l.id)?.items.some((i) => i._id === id)
-                      ? colors.primary
-                      : colors.disabled
-                  }
-                />
-                <Text
-                  style={{
-                    color: lists.find((j) => j.id === l.id)?.items.some((i) => i._id === id)
-                      ? colors.primary
-                      : colors.disabled,
-                  }}
-                >
-                  {l.name}
-                </Text>
-              </View>
-            </PlatformTouchable>
-          </View>
-        ))}
-      </View>
-    );
-  };
-
-  const swipeRightAction = (id: string, title: string, swipeRef) => {
-    swipeRef.current?.close();
-    if (getSection()?.key !== 'lists') {
-      if (read.some((r) => r.id === id)) {
-        deleteArticleRead(id);
-      } else {
-        addArticleRead(id, title, true);
-      }
-    } else {
-      removeArticleFromList(id, getItem()?.key);
-    }
-  };
-
-  const ArticleIllustration = () => {
-    if (
-      (getSection()?.key === 'categories' && state.list.success) ||
-      (getSection()?.key === 'quicks' && state.search.success) ||
-      getSection()?.key === 'lists'
-    ) {
-      if (tab === 'unread') {
-        return (
-          <Animated.View style={{ opacity: fadeAnim }}>
-            <View style={styles.centerIllustrationContainer}>
-              <Illustration name="article-completed" height={400} width={400} />
-              <Text>Vous avez lu tous les articles !</Text>
-            </View>
-          </Animated.View>
-        );
-      } else if (tab === 'all') {
-        return (
-          <Animated.View style={{ opacity: fadeAnim }}>
-            <View style={styles.centerIllustrationContainer}>
-              <Illustration name="article" height={400} width={400} />
-              <Text>Aucun article pour cette localisation</Text>
-            </View>
-            <View style={styles.container}>
-              <Button
-                mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-                uppercase={Platform.OS !== 'ios'}
-                onPress={() =>
-                  navigation.navigate('Main', {
-                    screen: 'Params',
-                    params: {
-                      screen: 'Article',
-                    },
-                  })
-                }
-              >
-                Localisation
-              </Button>
-            </View>
-          </Animated.View>
-        );
-      } else if (getSection()?.key === 'lists') {
-        return (
-          <Animated.View style={{ opacity: fadeAnim }}>
-            <View style={styles.centerIllustrationContainer}>
-              <Illustration name="article-lists" height={400} width={400} />
-              <Text>Aucun article dans cette liste</Text>
-              <View style={styles.contentContainer}>
-                <Text style={articleStyles.captionText}>
-                  Ajoutez les grâce à l&apos;icone <Icon name="playlist-plus" size={20} />
-                </Text>
-              </View>
-            </View>
-          </Animated.View>
-        );
-      } else {
-        return (
-          <Animated.View style={{ opacity: fadeAnim }}>
-            <View style={styles.centerIllustrationContainer}>
-              <Illustration name="article" height={400} width={400} />
-              <Text>Aucun article dans cette catégorie</Text>
-            </View>
-          </Animated.View>
-        );
-      }
-    } else {
-      return (
-        <Animated.View style={{ opacity: fadeAnim }}>
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name="article-greyed" height={400} width={400} />
-          </View>
-        </Animated.View>
-      );
-    }
-  };
-
-  const listData = getItem()?.data;
+  const listData = getItem().data;
 
   return (
     <View style={styles.page}>
@@ -476,27 +261,27 @@ function ArticleList({
         })}
         data={listData || []}
         refreshing={
-          (getSection()?.key === 'categories' && state.list.loading.refresh) ||
-          (getSection()?.key === 'quicks' && state.search.loading.refresh)
+          (getSection().key === 'categories' && state.list.loading.refresh) ||
+          (getSection().key === 'quicks' && state.search.loading.refresh)
         }
         onRefresh={() => {
-          if (getSection()?.key === 'categories') {
+          if (getSection().key === 'categories') {
             updateArticles('refresh');
-          } else if (getSection()?.key === 'quicks') {
-            searchArticles('refresh', '', getItem()?.params, false, true);
+          } else if (getSection().key === 'quicks') {
+            searchArticles('refresh', '', getItem().params, false, true);
           }
         }}
         onEndReached={() => {
-          if (getSection()?.key === 'categories') {
+          if (getSection().key === 'categories') {
             updateArticles('next');
-          } else if (getSection()?.key === 'quicks') {
-            searchArticles('next', '', getItem()?.params, false, true);
+          } else if (getSection().key === 'quicks') {
+            searchArticles('next', '', getItem().params, false, true);
           }
         }}
         ListHeaderComponent={() => (
           <View>
             <TabChipList
-              sections={tabs}
+              sections={tabGroups}
               selected={chipTab}
               setSelected={changeList}
               configure={() =>
@@ -508,74 +293,66 @@ function ArticleList({
                 })
               }
             />
-            {getItem()?.description ? (
+            {getItem().description ? (
               <Banner actions={[]} visible>
-                <Text>
-                  <Subheading>Description</Subheading>
-                  {'\n'}
-                  <Text>{getItem()?.description}</Text>
-                </Text>
+                <Subheading>Description</Subheading>
+                <Text>{getItem().description}</Text>
               </Banner>
             ) : null}
           </View>
         )}
-        ListEmptyComponent={ArticleIllustration}
+        ListEmptyComponent={() => (
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <ArticleEmptyList
+              tab={tab}
+              sectionKey={getSection().key}
+              reqState={state}
+              navigation={navigation}
+            />
+          </Animated.View>
+        )}
         onEndReachedThreshold={0.5}
         keyExtractor={(article: Article) => article._id}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {((getSection()?.key === 'categories' && state.list.loading.next) ||
-              (getSection()?.key === 'quicks' && state.search.loading.next)) && (
+            {((getSection().key === 'categories' && state.list.loading.next) ||
+              (getSection().key === 'quicks' && state.search.loading.next)) && (
               <ActivityIndicator size="large" color={colors.primary} />
             )}
           </View>
         }
-        renderItem={(article: { item: Article }) => {
-          const swipeRef = React.createRef();
-          return (
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Swipeable
-                ref={swipeRef}
-                renderLeftActions={() => renderLeftActions(article.item._id, swipeRef)}
-                renderRightActions={
-                  preferences.history || getSection().key !== 'lists'
-                    ? () => renderRightActions(article.item._id)
-                    : null
-                }
-                onSwipeableRightOpen={
-                  preferences.history || getSection().key !== 'lists'
-                    ? () => swipeRightAction(article.item._id, article.item.title, swipeRef)
-                    : null
-                }
-              >
-                <ArticleCard
-                  unread={!read.some((r) => r.id === article.item._id) || getItem()?.key !== 'all'}
-                  article={article.item}
-                  navigate={() =>
-                    navigation.navigate('Main', {
+        renderItem={({ item }: { item: Article }) => (
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <ArticleListCard
+              article={item}
+              sectionKey={getSection().key}
+              itemKey={getItem().key}
+              isRead={read.some((r) => r.id === item._id)}
+              historyActive={preferences.history}
+              lists={lists}
+              navigate={() =>
+                navigation.navigate('Main', {
+                  screen: 'Display',
+                  params: {
+                    screen: 'Article',
+                    params: {
                       screen: 'Display',
                       params: {
-                        screen: 'Article',
-                        params: {
-                          screen: 'Display',
-                          params: {
-                            id: article.item._id,
-                            title: article.item.title,
-                            useLists: getSection()?.key === 'lists',
-                          },
-                        },
+                        id: item._id,
+                        title: item.title,
+                        useLists: getSection().key === 'lists',
                       },
-                    })
-                  }
-                />
-              </Swipeable>
-            </Animated.View>
-          );
-        }}
+                    },
+                  },
+                })
+              }
+            />
+          </Animated.View>
+        )}
       />
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { articles, articleData, preferences } = state;
@@ -592,30 +369,3 @@ const mapStateToProps = (state: State) => {
 };
 
 export default connect(mapStateToProps)(ArticleList);
-
-ArticleList.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  articles: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      date: PropTypes.string.isRequired,
-      thumbnailUrl: PropTypes.string,
-      description: PropTypes.string,
-    }).isRequired,
-  ).isRequired,
-  state: PropTypes.shape({
-    list: PropTypes.shape({
-      success: PropTypes.bool,
-      loading: PropTypes.shape({
-        next: PropTypes.bool,
-        initial: PropTypes.bool,
-        refresh: PropTypes.bool,
-      }),
-      error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
-    }).isRequired,
-  }).isRequired,
-  read: PropTypes.arrayOf(PropTypes.string),
-};
