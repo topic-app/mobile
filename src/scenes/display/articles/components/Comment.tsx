@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, TouchableOpacity } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text, useTheme, IconButton, Menu, Provider, Divider } from 'react-native-paper';
 import Avatar from '@components/Avatar';
 import Content from '@components/Content';
 import { PlatformIconButton } from '@components/PlatformComponents';
@@ -9,8 +9,8 @@ import getStyles from '@styles/Styles';
 import moment from 'moment';
 import getCommentStyles from '../styles/Styles';
 
-function CommentInlineCard({ comment }) {
-  const { publisher, content, date, parent, parentType } = comment;
+function CommentInlineCard({ comment, report, loggedIn }) {
+  const { publisher, content, date, parent, parentType, _id: id } = comment;
   const { _id: publisherId, displayName } = publisher[publisher.type];
 
   const theme = useTheme();
@@ -18,6 +18,8 @@ function CommentInlineCard({ comment }) {
   const commentStyles = getCommentStyles(theme);
 
   const navigateToPublisher = () => console.log('go to', publisher.type, publisherId);
+
+  const [menuVisible, setMenuVisible] = React.useState(false);
 
   return (
     <View style={styles.container}>
@@ -40,6 +42,18 @@ function CommentInlineCard({ comment }) {
           <Content data={content.data} parser={content.parser} />
           {/* add a "View Replies" button if replies exist */}
         </View>
+        {loggedIn && (
+          <View style={{ alignItems: 'flex-end' }}>
+            <Menu
+              visible={menuVisible}
+              onDismiss={() => setMenuVisible(false)}
+              anchor={<IconButton icon="dots-vertical" onPress={() => setMenuVisible(true)} />}
+            >
+              <Menu.Item onPress={() => {}} title="Répondre" />
+              <Menu.Item onPress={() => report(id)} title="Signaler" />
+            </Menu>
+          </View>
+        )}
       </View>
     </View>
   );
