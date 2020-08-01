@@ -84,7 +84,8 @@ const ErrorMessage: React.FC<Props> = ({
     } else if (err?.error?.response?.status === 422) {
       message = {
         icon: 'alert-decagram-outline',
-        text: 'L&application a envoyé des données malformées au serveur. Merci de signaler ce bug.',
+        text:
+          'L&apos;application a envoyé des données malformées au serveur. Merci de signaler ce bug.',
       };
       if (back) {
         actions.push({
