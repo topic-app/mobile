@@ -278,7 +278,7 @@ const WelcomeLocation: React.FC<Props> = ({
     [selected],
   );
 
-  const ListHeaderComponent = () => (
+  const ListHeaderComponent = (
     <View>
       <TranslucentStatusBar backgroundColor={colors.background} />
       <View style={landingStyles.headerContainer}>
@@ -338,9 +338,9 @@ const WelcomeLocation: React.FC<Props> = ({
     [],
   );
 
-  const ListEmptyComponent = React.useCallback(
-    () =>
-      (searchText === '' &&
+  const ListEmptyComponent = (
+    <View>
+      {(searchText === '' &&
         (state.schools.list.loading.initial || state.departments.list.loading.initial)) ||
       (searchText !== '' &&
         (state.schools.search?.loading.initial ||
@@ -348,22 +348,19 @@ const WelcomeLocation: React.FC<Props> = ({
         <View style={styles.centerIllustrationContainer}>
           <Text>Aucun résultat</Text>
         </View>
-      ),
-    [],
+      )}
+    </View>
   );
 
-  const ListFooterComponent = React.useCallback(
-    () => (
-      <View style={{ minHeight: 50 }}>
-        {((searchText === '' &&
-          (state.schools.list.loading.next || state.departments.list.loading.next)) ||
-          (searchText !== '' &&
-            (state.schools.search?.loading.next || state.departments.search?.loading.next))) && (
-          <ActivityIndicator size="large" color={colors.primary} />
-        )}
-      </View>
-    ),
-    [],
+  const ListFooterComponent = (
+    <View style={{ minHeight: 50 }}>
+      {((searchText === '' &&
+        (state.schools.list.loading.next || state.departments.list.loading.next)) ||
+        (searchText !== '' &&
+          (state.schools.search?.loading.next || state.departments.search?.loading.next))) && (
+        <ActivityIndicator size="large" color={colors.primary} />
+      )}
+    </View>
   );
 
   return (
