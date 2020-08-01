@@ -104,7 +104,7 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
           title="Autres"
           subtitle={params.global ? 'France entière' : 'Aucun'}
           icon="flag"
-          onPress={() => navigation.navigate('EditParams', { type: 'other' })}
+          onPress={() => navigation.navigate('EditParams', { type: 'other', hideSearch: true })}
         />
       </ScrollView>
     </View>
