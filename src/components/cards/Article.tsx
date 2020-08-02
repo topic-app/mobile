@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image } from 'react-native';
-import { Card, Paragraph, Text, useTheme } from 'react-native-paper';
+import { Card, Paragraph, Text, useTheme, Title, Caption } from 'react-native-paper';
 import moment from 'moment';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -17,21 +17,22 @@ type Props = {
   unread: boolean;
 };
 
-const ActuComponentListCard: React.FC<Props> = ({ article, navigate, unread }) => {
+const ArticleCard: React.FC<Props> = ({ article, navigate, unread }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
+  const readStyle = !unread && { color: colors.disabled };
+
   return (
-    <CardBase onPress={navigate}>
-      <View style={{ paddingTop: 10, paddingBottom: 5 }}>
+    <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
+      <View style={{ marginVertical: 5 }}>
         <Card.Content>
-          <Text style={[styles.cardTitle, !unread && { color: colors.disabled }]}>
+          <Title numberOfLines={2} style={readStyle}>
             {article?.title}
-          </Text>
-        </Card.Content>
-        <Card.Content style={{ marginTop: 5 }}>
-          <View style={{ flexDirection: 'row' }}>
+          </Title>
+          <Caption>{`Publié ${moment(article?.date).fromNow()}`}</Caption>
+          <View style={{ flexDirection: 'row', paddingTop: 6 }}>
             <Image
               source={{ uri: getImageUrl({ image: article?.image, size: 'small' }) }}
               style={[
@@ -44,14 +45,11 @@ const ActuComponentListCard: React.FC<Props> = ({ article, navigate, unread }) =
             />
             <View
               style={{
-                margin: 10,
-                marginTop: 0,
                 marginLeft: 15,
                 flex: 1,
               }}
             >
-              <Text style={styles.subtitle}>Publié {moment(article?.date).fromNow()}</Text>
-              <Paragraph style={[styles.text, !unread && { color: colors.disabled }]}>
+              <Paragraph numberOfLines={6} style={readStyle}>
                 {article?.summary}
               </Paragraph>
             </View>
@@ -65,4 +63,4 @@ const ActuComponentListCard: React.FC<Props> = ({ article, navigate, unread }) =
   );
 };
 
-export default ActuComponentListCard;
+export default ArticleCard;
