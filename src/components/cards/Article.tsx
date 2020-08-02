@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, Dimensions } from 'react-native';
 import { Card, Paragraph, Text, useTheme, Title, Caption } from 'react-native-paper';
 import moment from 'moment';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -16,6 +16,10 @@ type Props = {
   navigate: StackNavigationProp<any, any>['navigate'];
   unread: boolean;
 };
+
+const screenDimensions = Dimensions.get('window');
+const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
+const imageSize = minWidth / 4;
 
 const ArticleCard: React.FC<Props> = ({ article, navigate, unread }) => {
   const theme = useTheme();
@@ -35,13 +39,7 @@ const ArticleCard: React.FC<Props> = ({ article, navigate, unread }) => {
           <View style={{ flexDirection: 'row', paddingTop: 6 }}>
             <Image
               source={{ uri: getImageUrl({ image: article?.image, size: 'small' }) }}
-              style={[
-                styles.thumbnail,
-                {
-                  width: 120,
-                  height: 120,
-                },
-              ]}
+              style={[styles.thumbnail, { width: imageSize, height: imageSize }]}
             />
             <View
               style={{
