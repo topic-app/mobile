@@ -54,7 +54,7 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
           title="Écoles"
           subtitle={
             params.schools?.length
-              ? params.schools.map((s) => schools?.find((t) => t._id === s)?.displayName).join(', ')
+              ? params.schools.map((s) => schools?.find((t) => t._id === s)?.displayName ||schools?.find((t) => t._id === s)?.name).join(', ')
               : 'Aucun'
           }
           icon="school"
@@ -72,7 +72,8 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
                   .map(
                     (d) =>
                       departments.filter((e) => e.type === 'departement')?.find((e) => e._id === d)
-                        ?.displayName,
+                        ?.displayName ||   departments.filter((e) => e.type === 'departement')?.find((e) => e._id === d)
+                            ?.name,
                   )
                   .filter((d) => d)
                   .join(', ')
@@ -91,7 +92,8 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
                   .map(
                     (d) =>
                       departments.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                        ?.displayName,
+                        ?.displayName || departments.filter((e) => e.type === 'region')?.find((e) => e._id === d)
+                          ?.name,
                   )
                   .filter((d) => d)
                   .join(', ')

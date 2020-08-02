@@ -24,6 +24,9 @@ function getNavigatorStyles(theme: Theme) {
     title: {
       color: colors.drawerContent,
     },
+    subtitle: {
+      color: colors.disabled,
+    },
     profileIconContainer: {
       paddingHorizontal: 20,
       paddingTop: 20,
