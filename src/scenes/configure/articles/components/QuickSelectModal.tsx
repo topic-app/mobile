@@ -73,21 +73,22 @@ function QuickSelectModal({
   switch (type) {
     case 'tag':
       data = searchText ? tags.search : tags.data;
-      update = (text = searchText) => (text ? searchTags('initial', text) : updateTags('initial'));
+      update = (text = searchText) =>
+        text ? searchTags('initial', text, {}) : updateTags('initial');
       icon = 'pound';
       state = tags.state;
       break;
     case 'user':
       data = searchText ? users.search : users.data;
       update = (text = searchText) =>
-        text ? searchUsers('initial', text) : updateUsers('initial');
+        text ? searchUsers('initial', text, {}) : updateUsers('initial');
       icon = 'account';
       state = users.state;
       break;
     case 'group':
       data = searchText ? groups.search : groups.data;
       update = (text = searchText) =>
-        text ? searchGroups('initial', text) : updateGroups('initial');
+        text ? searchGroups('initial', text, {}) : updateGroups('initial');
       icon = 'account-multiple';
       state = groups.state;
       break;
