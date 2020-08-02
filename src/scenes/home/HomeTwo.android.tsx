@@ -10,7 +10,14 @@ import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
 
-const Tab = createMaterialBottomTabNavigator();
+export type HomeTwoNavParams = {
+  Article: { initialList: string } | undefined;
+  Event: undefined;
+  Petition: undefined;
+  Explorer: undefined;
+};
+
+const Tab = createMaterialBottomTabNavigator<HomeTwoNavParams>();
 
 function HomeTwoNavigator() {
   const theme = useTheme();
@@ -26,15 +33,21 @@ function HomeTwoNavigator() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           let iconName;
-          if (route.name === 'Article') {
-            // Note: We could render a different map icon when the map is selected
-            iconName = 'newspaper';
-          } else if (route.name === 'Event') {
-            iconName = 'calendar';
-          } else if (route.name === 'Petition') {
-            iconName = 'comment-check-outline';
-          } else if (route.name === 'Explorer') {
-            iconName = 'compass-outline';
+          switch (route.name) {
+            case 'Article':
+              iconName = 'newspaper';
+              break;
+            case 'Event':
+              iconName = 'calendar';
+              break;
+            case 'Petition':
+              iconName = 'comment-check-outline';
+              break;
+            case 'Explorer':
+              iconName = 'compass-outline';
+              break;
+            default:
+              iconName = 'shape';
           }
 
           return <Icon name={iconName} size={26} color={color} />;

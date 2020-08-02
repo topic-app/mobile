@@ -160,9 +160,10 @@ type ListItem = {
 type CategoriesListProps = {
   categories: ListItem[];
   selected: string;
-  setSelected: (key: string) => void;
+  setSelected: (key: any) => void;
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
+  chipProps?: object;
 };
 
 const CategoriesList: React.FC<CategoriesListProps> = ({
@@ -171,6 +172,7 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
   setSelected,
   style,
   containerStyle,
+  chipProps = {},
 }) => {
   return (
     <FlatList
@@ -194,6 +196,7 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
             },
             style,
           ]}
+          {...chipProps}
         />
       )}
     />
@@ -206,6 +209,7 @@ type ChipAddListProps = {
   style?: StyleProp<ViewStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   setList: (item: ListItem) => void;
+  chipProps?: object;
 };
 
 const ChipAddList: React.FC<ChipAddListProps> = ({
@@ -214,6 +218,7 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
   setList,
   style,
   containerStyle,
+  chipProps = {},
 }) => {
   const sortedData = [
     // Bring selected items to the front
@@ -244,6 +249,7 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
               },
               style,
             ]}
+            {...chipProps}
           />
         );
       }}

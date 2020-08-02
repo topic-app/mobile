@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform, FlatList } from 'react-native';
+import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
 import { useTheme, List, Checkbox, Text, ProgressBar } from 'react-native-paper';
 
 import { SchoolRequestState, DepartmentRequestState } from '@ts/types';
@@ -7,7 +7,6 @@ import { ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
 
 type Props = {
-  type: 'school' | 'department' | 'region' | 'other';
   data: {
     key: string;
     title: string;
@@ -24,7 +23,6 @@ type Props = {
 };
 
 const ItemList: React.FC<Props> = ({
-  type,
   data,
   initialSelected,
   setGlobalSelected,
@@ -38,7 +36,7 @@ const ItemList: React.FC<Props> = ({
 
   const [selected, setSelected] = React.useState(initialSelected);
 
-  function setId(id) {
+  function setId(id: string) {
     if (selected.includes(id)) {
       setGlobalSelected('remove', id);
       setSelected(selected.filter((i) => i !== id));
@@ -57,9 +55,9 @@ const ItemList: React.FC<Props> = ({
 
   return (
     <View>
-      {states.some((s) => s.loading.initial) && <ProgressBar indeterminate />}
-      {states.some((s) => s.error) && (
-        <ErrorMessage type="axios" error={states.map((s) => s.error)} retry={retry} />
+      {states.some((s) => s?.loading.initial) && <ProgressBar indeterminate />}
+      {states.some((s) => s?.error) && (
+        <ErrorMessage type="axios" error={states.map((s) => s?.error)} retry={retry} />
       )}
       <FlatList
         data={data}
@@ -76,6 +74,11 @@ const ItemList: React.FC<Props> = ({
                 </View>
               )
             : null
+        }
+        ListFooterComponent={() =>
+          states.some((s) => s.loading.next) ? (<View style={{ height: 50}}>
+            <ActivityIndicator size="large" color={colors.primary} /></View>
+          ) : <View style={{ height: 50 }} />
         }
         onEndReached={next}
         renderItem={({ item }) => (

@@ -18,7 +18,7 @@ type InlineCardProps = {
   badgeColor?: string;
   icon?: string;
   imageUrl?: string;
-  avatar: AvatarType;
+  avatar?: AvatarType;
 };
 
 const InlineCard: React.FC<InlineCardProps> = ({
@@ -51,7 +51,7 @@ const InlineCard: React.FC<InlineCardProps> = ({
           {'  '}
           {badge && <Icon color={badgeColor || colors.icon} name={badge} size={16} />}
         </Text>
-        {subtitle && <Text style={{ color: colors.subtext }}>{subtitle}</Text>}
+        {subtitle ? <Text style={{ color: colors.subtext }}>{subtitle}</Text> : null}
       </View>
     </View>
   );
