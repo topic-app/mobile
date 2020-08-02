@@ -14,7 +14,11 @@ const ModerationList: React.FC<Props> = ({ navigation }) => {
   const theme = useTheme();
   const moderationStyles = getModerationStyles(theme);
 
-  return <View></View>;
+  return (
+    <View>
+      <Text>Hello</Text>
+    </View>
+  );
 };
 
 export default ModerationList;
