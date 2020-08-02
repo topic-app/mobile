@@ -19,7 +19,7 @@ type Props = {
 
 const screenDimensions = Dimensions.get('window');
 const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
-const imageSize = minWidth / 4;
+const imageSize = minWidth / 3.5;
 
 const ArticleCard: React.FC<Props> = ({ article, navigate, unread }) => {
   const theme = useTheme();
