@@ -76,7 +76,7 @@ const CardBase: React.FC<CardBaseProps> = ({ onPress, style, contentContainerSty
   return onPress ? (
     <Card style={[styles.card, style]}>
       <PlatformTouchable onPress={onPress}>
-        <View style={[{ paddingTop: 10, paddingBottom: 5 }, contentContainerStyle]}>
+        <View style={[{ paddingTop: 10, paddingBottom: 10 }, contentContainerStyle]}>
           {children}
         </View>
       </PlatformTouchable>

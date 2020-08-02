@@ -32,7 +32,7 @@ const TabChipList: React.FC<TabChipListProps> = ({
   return (
     <View>
       <SectionList
-        style={{ paddingTop: 10, paddingBottom: 5 }}
+        style={{ paddingTop: 13, paddingBottom: 8 }}
         horizontal
         stickySectionHeadersEnabled={false}
         keyboardShouldPersistTaps="handled"
