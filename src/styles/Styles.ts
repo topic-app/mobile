@@ -45,11 +45,6 @@ function getStyles(theme: Theme) {
     primaryText: {
       color: colors.primary,
     },
-    cardTitle: {
-      color: colors.text,
-      fontSize: 18,
-      marginBottom: 5,
-    },
     title: {
       color: colors.text,
       fontSize: 30,
