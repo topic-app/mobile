@@ -61,9 +61,22 @@ function CustomDrawerContent({
                 width={55}
               />
               {loggedIn ? (
-                <Title style={navigatorStyles.title} ellipsizeMode="tail" numberOfLines={1}>
-                  {genName(accountInfo?.user)}
-                </Title>
+                <View>
+                  <Title
+                    style={[navigatorStyles.title, { width: 200 }]}
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                  >
+                    {genName(accountInfo?.user)}
+                  </Title>
+                  <Title
+                    style={[navigatorStyles.subtitle, { width: 200, marginTop: -8 }]}
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                  >
+                    @{accountInfo?.user?.info?.username}
+                  </Title>
+                </View>
               ) : (
                 <Title style={navigatorStyles.title}>Topic</Title>
               )}
@@ -117,17 +130,21 @@ function CustomDrawerContent({
           />
           {permissions?.some(
             (p) =>
-              p?.name === 'article.verification.view' ||
-              p?.name === 'event.verification.view' ||
-              p?.name === 'petition.verification.view' ||
-              p?.name === 'place.verification.view' ||
-              p?.name === 'group.verification.view',
+              p?.permission === 'article.verification.view' ||
+              p?.permission === 'event.verification.view' ||
+              p?.permission === 'petition.verification.view' ||
+              p?.permission === 'place.verification.view' ||
+              p?.permission === 'group.verification.view',
           ) && (
             <Drawer.Item
               label="Modération"
               icon="shield-check-outline"
               onPress={() => {
-                console.log('Moderation');
+                navigation.closeDrawer();
+                navigation.navigate('Main', {
+                  screen: 'More',
+                  params: { screen: 'Moderation', params: { screen: 'List' } },
+                });
               }}
             />
           )}
