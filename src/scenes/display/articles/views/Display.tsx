@@ -117,8 +117,8 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           </View>
           {article.authors?.map((author) => (
             <InlineCard
-              avatar={author.info.avatar}
-              title={author.displayName}
+              avatar={author.info?.avatar}
+              title={author?.displayName}
               onPress={() => console.log('navigate to user', author._id)}
               badge={
                 account.loggedIn &&
@@ -137,8 +137,8 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
             <CategoryTitle>Groupe</CategoryTitle>
           </View>
           <InlineCard
-            avatar={article.group.avatar}
-            title={article.group.displayName}
+            avatar={article.group?.avatar}
+            title={article.group?.displayName}
             onPress={() =>
               navigation.navigate('Main', {
                 screen: 'Display',
