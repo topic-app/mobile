@@ -95,6 +95,9 @@ function getStyles(theme: Theme) {
       justifyContent: 'flex-end',
       margin: 0,
     },
+    modalCard: {
+      borderRadius: 0,
+    },
   });
 }
 
