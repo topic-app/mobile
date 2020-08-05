@@ -11,7 +11,7 @@ import getCommentStyles from '../styles/Styles';
 
 function CommentInlineCard({ comment, report, loggedIn }) {
   const { publisher, content, date, parent, parentType, _id: id } = comment;
-  const { _id: publisherId, displayName } = publisher[publisher.type];
+  const { _id: publisherId, displayName } = publisher[publisher.type] || {};
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -25,7 +25,7 @@ function CommentInlineCard({ comment, report, loggedIn }) {
     <View style={styles.container}>
       <View style={{ flexDirection: 'row' }}>
         <Avatar
-          avatar={publisher.type === 'user' ? publisher.user.info.avatar : publisher.group.avatar}
+          avatar={publisher.type === 'user' ? publisher.user?.info.avatar : publisher.group?.avatar}
           size={40}
           onPress={navigateToPublisher}
         />
