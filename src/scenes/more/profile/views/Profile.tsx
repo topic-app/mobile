@@ -1,99 +1,32 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { Text, useTheme, Title, Subheading, Divider } from 'react-native-paper';
+import { View, ScrollView, Alert } from 'react-native';
+import {
+  Text,
+  useTheme,
+  Title,
+  Subheading,
+  Divider,
+  Button,
+  List,
+  ProgressBar,
+} from 'react-native-paper';
 import { connect } from 'react-redux';
 import Avatar from '@components/Avatar';
 import getStyles from '@styles/Styles';
+import getProfileStyles from '../styles/Styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TranslucentStatusBar } from '@root/src/components/Header.ios';
 import { InlineCard } from '@components/Cards';
+import ErrorMessage from '@components/ErrorMessage';
+import { Account } from '@ts/types';
 
-const account = {
-  loggedIn: true,
-  accountInfo: {
-    accountId: '123456789012345',
-    accountToken: 'abcdefghijklmnop',
-    accountTokenExpiry: '2020-07-01T07:33:19.346Z',
-    user: {
-      verification: { verified: true },
-      types: ['user'],
-      info: {
-        // Cannot be modified by user
-        // This is all public
-        username: 'Username',
-        // image: { type: Image, default: defaults.image },
-        joinDate: '2020-05-01T07:33:19.346Z',
-        avatar: {
-          type: 'gradient',
-          text: 'U',
-          color: '#000000',
-          gradient: {
-            start: '#000000',
-            end: '#000000',
-            angle: 23,
-          },
-        },
-        official: true,
-      },
-      data: {
-        // This data can only be shown if public is true, and can be directly modified by user
-        public: true,
-        firstName: 'Utilisateur', // Optionnel
-        lastName: 'Test', // Optionnel
-        following: {
-          groups: [
-            {
-              _id: '912999193919293919',
-              displayName: 'Robotique CIV',
-              image: {
-                image: '9932939292993',
-                thumbnails: {
-                  small: true,
-                },
-              },
-            },
-          ],
-          users: [
-            {
-              _id: '03939299329493293',
-              displayName: 'Hello',
-              avatar: {
-                type: 'gradient',
-              },
-            },
-          ],
-          events: [],
-        },
-        location: {
-          schools: [
-            {
-              _id: '5e9208118851c52a8e6c6f8d',
-              displayName: 'CIV',
-              address: {
-                address: {
-                  number: '3',
-                  street: 'chemin de chose',
-                  city: 'Valbonne',
-                  code: '3533',
-                },
-              },
-            },
-          ],
-          departments: [],
-          global: false,
-        },
-        description: 'Bonjour bonjour',
-        cache: {
-          followers: 103, // Le nombre de personnes qui suivent l'utilisateur
-        },
-      },
-      sensitiveData: {
-        // This is never shown to anyone
-        email: 'test@example.org',
-      },
-    },
-  },
-};
+import ProfileItem from '../components/ProfileItem';
+import VisibilityModal from '../components/VisibilityModal';
+import NameModal from '../components/NameModal';
+import UsernameModal from '../components/UsernameModal';
+import EmailModal from '../components/EmailModal';
+import PasswordModal from '../components/PasswordModal';
+import { fetchAccount, logout } from '@redux/actions/data/account';
 
 function getAddressString(address) {
   const { number, street, city, code } = address || {};
@@ -108,92 +41,275 @@ function genName({ data, info }) {
   if (data.firstName && data.lastName) {
     return `${data.firstName} ${data.lastName}`;
   }
-  return data.firstName || data.lastName || info.username;
+  return data.firstName || data.lastName || null;
 }
 
-function Profile() {
+function Profile({ account, location, navigation }: { account: Account; navigation: any }) {
   const theme = useTheme();
   const styles = getStyles(theme);
+  const profileStyles = getProfileStyles(theme);
   const { colors } = theme;
+
+  const [isVisibilityVisible, setVisibilityVisible] = React.useState(false);
+  const [isNameVisible, setNameVisible] = React.useState(false);
+  const [isUsernameVisible, setUsernameVisible] = React.useState(false);
+  const [isEmailVisible, setEmailVisible] = React.useState(false);
+  const [isPasswordVisible, setPasswordVisible] = React.useState(false);
+
   return (
     <View style={styles.page}>
+      {account.state.fetchAccount.loading && <ProgressBar indeterminate />}
+      {account.state.fetchAccount.error && (
+        <ErrorMessage
+          type="axios"
+          strings={{
+            what: 'la mise à jour du profil',
+            contentPlural: 'des informations de profil',
+            contentSingular: 'Le profil',
+          }}
+          error={account.state.fetchAccount.error}
+          retry={fetchAccount}
+        />
+      )}
       <ScrollView>
-        <View style={[styles.contentContainer, { marginTop: 20, flexDirection: 'row' }]}>
-          <View>
-            <Avatar avatar={account.accountInfo.user.info.avatar} />
+        <View style={[styles.contentContainer, { marginTop: 20 }]}>
+          <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
+            <Avatar size={120} avatar={account.accountInfo.user.info.avatar} />
           </View>
           <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
             {account.accountInfo.user.data.public ? (
-              <View>
+              <View style={{ alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Title>{genName(account.accountInfo.user)}</Title>
+                  <Title>
+                    {genName(account.accountInfo.user) ||
+                      `@${account.accountInfo.user.info.username}`}
+                  </Title>
                   <View style={{ marginLeft: 5 }}>
                     {account.accountInfo.user.info.official && (
                       <Icon name="check-decagram" color={colors.primary} size={20} />
                     )}
                   </View>
                 </View>
-                <Subheading style={{ marginTop: -10 }}>
-                  @{account.accountInfo.user.info.username}
-                </Subheading>
+                {genName(account.accountInfo.user) && (
+                  <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                    @{account.accountInfo.user.info.username}
+                  </Subheading>
+                )}
               </View>
             ) : (
               <Title>@{account.accountInfo.user.info.username}</Title>
             )}
           </View>
         </View>
-        <View style={{ flexDirection: 'row' }}>
-          <View>
-            <Text>{account.accountInfo.user.data.cache.followers}</Text>
-          </View>
-          <View>
+        <Divider style={{ marginVertical: 10 }} />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 40 }}>
+              {account.accountInfo.user.data.cache.followers || ''}
+            </Text>
             <Text>
+              Abonnés{' '}
+              <Icon
+                name={account.accountInfo.user.data.public ? 'eye-outline' : 'lock-outline'}
+                color={colors.disabled}
+              />
+            </Text>
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 40 }}>
               {account.accountInfo.user.data.following.groups.length +
                 account.accountInfo.user.data.following.users.length +
                 account.accountInfo.user.data.following.events.length}
             </Text>
+            <Text>
+              Abonnements{' '}
+              <Icon
+                name={account.accountInfo.user.data.public ? 'eye-outline' : 'lock-outline'}
+                color={colors.disabled}
+              />
+            </Text>
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 40 }}>{account.groups.length}</Text>
+            <Text>
+              Groupes <Icon name="eye-outline" color={colors.disabled} />
+            </Text>
           </View>
         </View>
+        <Divider style={{ marginTop: 15 }} />
         <View>
-          {account.accountInfo.user.data.location.global && (
-            <InlineCard
-              icon="map-marker"
-              title="France Entière"
-              onPress={() => console.log('global pressed')}
-            />
+          <View style={{ height: 40 }} />
+          <List.Subheader>Compte</List.Subheader>
+          <Divider />
+          <ProfileItem
+            item="Visibilité"
+            value={account.accountInfo.user.data.public ? 'Public' : 'Privé'}
+            editable
+            type="none"
+            onPress={() => setVisibilityVisible(true)}
+          />
+          <ProfileItem
+            item="Nom d'utilisateur"
+            value={`@${account.accountInfo.user.info.username}`}
+            editable
+            type="public"
+            onPress={() => setUsernameVisible(true)}
+          />
+          {account.accountInfo.user.data.public && (
+            <View>
+              <ProfileItem
+                item="Nom"
+                value={genName(account.accountInfo.user) || 'Non spécifié'}
+                editable
+                disabled={!genName(account.accountInfo.user)}
+                type="public"
+                onPress={() => setNameVisible(true)}
+              />
+            </View>
           )}
-          {account.accountInfo.user.data.location.schools?.map((school) => (
-            <InlineCard
-              key={school._id}
-              icon="school"
-              title={school.displayName}
-              subtitle={getAddressString(school.address.address) || school.shortName}
-              onPress={() => console.log(`school ${school._id} pressed!`)}
-            />
-          ))}
-          {account.accountInfo.user.data.location.departments?.map((dep) => (
-            <InlineCard
-              key={dep._id}
-              icon="domain"
-              title={dep.displayName}
-              subtitle="Département"
-              onPress={() => console.log(`department ${dep._id} pressed!`)}
-            />
-          ))}
+          <ProfileItem
+            item="Addresse email"
+            value={account.accountInfo.user.sensitiveData.email}
+            editable
+            type="private"
+            onPress={() => setEmailVisible(true)}
+          />
+          <View style={{ height: 50 }} />
+          <List.Subheader>Localisation</List.Subheader>
+          <Divider />
+          <View>
+            {location.global && (
+              <InlineCard
+                icon="map-marker"
+                title="France Entière"
+                onPress={() => console.log('global pressed')}
+              />
+            )}
+            {location.schoolData?.map((school) => (
+              <InlineCard
+                key={school._id}
+                icon="school"
+                title={school.name}
+                subtitle={`${
+                  getAddressString(school.address?.address) || school.address.shortName
+                }${
+                  school.departments[0]
+                    ? `, ${school.departments[0].displayName || school.departments[0].name}`
+                    : ''
+                }`}
+                onPress={() => console.log(`school ${school._id} pressed!`)}
+              />
+            ))}
+            {location.departmentData?.map((dep) => (
+              <InlineCard
+                key={dep._id}
+                icon="map-marker-radius"
+                title={dep.name}
+                subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${dep.code}`}
+                onPress={() => console.log(`department ${dep._id} pressed!`)}
+              />
+            ))}
+            <View style={styles.container}>
+              <Button
+                mode="outlined"
+                onPress={() =>
+                  navigation.navigate('Landing', {
+                    screen: 'SelectLocation',
+                    params: { goBack: true },
+                  })
+                }
+              >
+                Changer
+              </Button>
+            </View>
+          </View>
+          <View style={{ height: 50 }} />
+          <List.Subheader>Authentification</List.Subheader>
+          <Divider />
+          <List.Item title="Changer mon mot de passe" onPress={() => setPasswordVisible(true)} />
+          <List.Item
+            disabled
+            title="Activer l'Authentification à deux facteurs"
+            titleStyle={{ color: colors.disabled }}
+            onPress={() => {}}
+          />
+          <List.Item
+            title="Se déconnecter"
+            titleStyle={{ color: 'red' }}
+            onPress={() => {
+              navigation.popToTop();
+              Alert.alert(
+                'Se déconnecter?',
+                "Les listes et l'historique seront toujours disponibles sur votre téléphone",
+                [
+                  {
+                    text: 'Annuler',
+                  },
+                  {
+                    text: 'Se déconnecter',
+                    onPress: logout,
+                  },
+                ],
+                { cancelable: true },
+              );
+            }}
+          />
+          <View style={{ height: 50 }} />
+          <List.Subheader>Données</List.Subheader>
+          <Divider />
+          <List.Item
+            title="Exporter mes données"
+            onPress={() =>
+              Alert.alert(
+                'Exporter les données ?',
+                'Vous recevrez un email avec un lien pour télécharger vos données.',
+                [
+                  {
+                    text: 'Annuler',
+                  },
+                ],
+                { cancelable: true },
+              )
+            }
+          />
+          <List.Item
+            title="Supprimer mon compte"
+            onPress={() => {
+              Alert.alert(
+                'Supprimer le compte?',
+                'Cette action est irréversible. Vous recevrez un email de confirmation.',
+                [
+                  {
+                    text: 'Annuler',
+                  },
+                ],
+                { cancelable: true },
+              );
+            }}
+          />
+          <View style={{ height: 50 }} />
+          <Divider />
+          <View style={styles.container}>
+            <Text style={{ color: colors.disabled }}>
+              Identifiant {account.accountInfo.accountId}
+            </Text>
+          </View>
         </View>
-
-        <Text>Profile!</Text>
-        <Text>{JSON.stringify(account, null, 2)}</Text>
       </ScrollView>
+      <VisibilityModal visible={isVisibilityVisible} setVisible={setVisibilityVisible} />
+      <NameModal visible={isNameVisible} setVisible={setNameVisible} />
+      <UsernameModal visible={isUsernameVisible} setVisible={setUsernameVisible} />
+      <EmailModal visible={isEmailVisible} setVisible={setEmailVisible} />
+      <PasswordModal visible={isPasswordVisible} setVisible={setPasswordVisible} />
     </View>
   );
 }
 
 const mapStateToProps = (state) => {
-  const { account, groups } = state;
+  const { account, location } = state;
   return {
     account,
-    groups,
+    location,
   };
 };
 

@@ -83,7 +83,11 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
       <View style={authStyles.descriptionContainer}>
         <View style={authStyles.descriptionPartContainer}>
           <ListHeading label="Vous pouvez" />
-          <ListItem icon={always.icon} iconColor={always.iconColor} label="Créer des pétitions" />
+          <ListItem
+            icon={always.icon}
+            iconColor={always.iconColor}
+            label="Voir tous les articles, évènements et lieux culturels"
+          />
           <ListItem
             icon={always.icon}
             iconColor={always.iconColor}
@@ -92,16 +96,6 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           <ListItem
             icon={always.icon}
             iconColor={always.iconColor}
-            label="Signer des pétitions anonymement"
-          />
-          <ListItem
-            icon={publicOnly.icon}
-            iconColor={publicOnly.iconColor}
-            label="Signer des pétitions publiquement"
-          />
-          <ListItem
-            icon={publicOnly.icon}
-            iconColor={publicOnly.iconColor}
             label="Écrire des commentaires"
           />
           <ListItem
@@ -120,7 +114,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           <ListItem
             icon={always.icon}
             iconColor={always.iconColor}
-            label="Voir vos articles, évènements et pétitions"
+            label="Voir vos articles et vos évènements"
           />
           <ListItem
             icon={always.icon}
@@ -130,7 +124,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           <ListItem
             icon={publicOnly.icon}
             iconColor={publicOnly.iconColor}
-            label="Voir les contenus auquels vous êtes abonnés"
+            label="Voir les groupes et utilisateurs auquels vous êtes abonnés"
           />
           <ListItem
             icon={publicOnly.icon}

@@ -2,6 +2,9 @@
   "name": "Topic",
   "displayName": "Topic",
   "config": {
+    "logger": {
+      "level": "debug"
+    },
     "api": {
       "url": "https://api-dev.topicapp.fr/v1/",
       "retryTime": 10

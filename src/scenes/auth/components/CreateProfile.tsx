@@ -75,7 +75,11 @@ const AuthCreatePageProfile: React.FC<Props> = ({
 
   const addAvatars = () => setAvatars([...avatars, ...generateAvatars()]);
 
-  const [activeAvatar, setActiveAvatar] = React.useState(avatars[0]);
+  const [activeAvatar, setActiveAvatar] = React.useState({
+    type: 'gradient',
+    gradient: avatars[0].gradient,
+    text: username?.substring(0, 1) || '',
+  });
 
   const [avatarsVisible, setAvatarsVisible] = React.useState(false);
 
@@ -174,14 +178,16 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                 >
                   <Avatar
                     size={100}
-                    onPress={() => setActiveAvatar(item)}
+                    onPress={() =>
+                      setActiveAvatar({
+                        type: 'gradient',
+                        gradient: item.gradient,
+                        text: username?.substring(0, 1) || '',
+                      })
+                    }
                     avatar={{
                       type: 'gradient',
-                      gradient: {
-                        start: item.gradient.start,
-                        end: item.gradient.end,
-                        angle: item.gradient.angle,
-                      },
+                      gradient: item.gradient,
                       text: username?.substring(0, 1) || '',
                     }}
                   />

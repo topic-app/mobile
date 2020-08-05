@@ -14,10 +14,10 @@ import HomeTwoNavigator from './HomeTwo';
 const DrawerNav = createDrawerNavigator();
 
 function genName({ data, info }) {
-  if (data.firstName && data.lastName) {
+  if (data?.firstName && data?.lastName) {
     return `${data.firstName} ${data.lastName}`;
   }
-  return data.firstName || data.lastName || info.username;
+  return data?.firstName || data?.lastName || null;
 }
 
 function CustomDrawerContent({
@@ -67,15 +67,17 @@ function CustomDrawerContent({
                     ellipsizeMode="tail"
                     numberOfLines={1}
                   >
-                    {genName(accountInfo?.user)}
+                    {genName(accountInfo?.user) || `@${accountInfo?.user?.info?.username || '...'}`}
                   </Title>
-                  <Title
-                    style={[navigatorStyles.subtitle, { width: 200, marginTop: -8 }]}
-                    ellipsizeMode="tail"
-                    numberOfLines={1}
-                  >
-                    @{accountInfo?.user?.info?.username}
-                  </Title>
+                  {genName(accountInfo?.user) ? (
+                    <Title
+                      style={[navigatorStyles.subtitle, { width: 200, marginTop: -8 }]}
+                      ellipsizeMode="tail"
+                      numberOfLines={1}
+                    >
+                      @{accountInfo?.user?.info?.username}
+                    </Title>
+                  ) : null}
                 </View>
               ) : (
                 <Title style={navigatorStyles.title}>Topic</Title>
@@ -184,11 +186,6 @@ function CustomDrawerContent({
               params: { screen: 'Settings', params: { screen: 'List' } },
             });
           }}
-        />
-        <Drawer.Item
-          label="Signaler un bug"
-          icon="gitlab"
-          onPress={() => Linking.openURL('https://gitlab.com/topicapp/issues/issues')}
         />
         <Drawer.Item
           label="A Propos"

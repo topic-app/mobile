@@ -116,7 +116,16 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'location',
                 icon: 'school',
                 title: 'École',
-                component: <AuthCreatePageSchool />,
+                component: (
+                  <AuthCreatePageSchool
+                    landing={() =>
+                      navigation.navigate('Landing', {
+                        screen: 'SelectLocation',
+                        params: { goBack: true },
+                      })
+                    }
+                  />
+                ),
               },
               {
                 key: 'privacy',

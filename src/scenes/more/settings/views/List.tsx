@@ -33,7 +33,9 @@ function SettingsList({ navigation, preferences, account }) {
           right={() => <List.Icon icon="chevron-right" />}
           description="Écoles, départements, régions"
           left={() => <List.Icon icon="map-marker-outline" />}
-          onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })}
+          onPress={() =>
+            navigation.navigate('Landing', { screen: 'SelectLocation', params: { goBack: true } })
+          }
           style={settingsStyles.listItem}
         />
         <List.Item

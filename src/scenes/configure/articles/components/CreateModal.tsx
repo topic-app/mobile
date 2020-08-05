@@ -4,6 +4,7 @@ import { Divider, Button, HelperText, Card, useTheme } from 'react-native-paper'
 import { View, Platform, TextInput } from 'react-native';
 import { connect } from 'react-redux';
 import Modal from 'react-native-modal';
+import { logger } from '@utils/index';
 
 import { CollapsibleView } from '@components/index';
 import getStyles from '@styles/Styles';
@@ -27,9 +28,18 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
     <Modal
       isVisible={visible}
       avoidKeyboard
-      onBackdropPress={() => setVisible(false)}
-      onBackButtonPress={() => setVisible(false)}
-      onSwipeComplete={() => setVisible(false)}
+      onBackdropPress={() => {
+        logger.debug('onBackdropPress');
+        setVisible(false);
+      }}
+      onBackButtonPress={() => {
+        logger.debug('onBackButtonPress');
+        setVisible(false);
+      }}
+      onSwipeComplete={() => {
+        logger.debug('onSwipeComplete');
+        setVisible(false);
+      }}
       swipeDirection={['down']}
       style={styles.bottomModal}
     >

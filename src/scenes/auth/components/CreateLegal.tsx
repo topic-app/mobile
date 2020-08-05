@@ -49,11 +49,11 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
               <ListHeading label="Résumé de la politique de vie privée" />
               <ListItem
                 icon="check"
-                label="Nous collectons seulement les informations que vous nous donnez explicitement"
+                label="Nous collectons seulement les informations nécéssaires au bon fonctionnement du service ou au développement de celui-ci"
               />
               <ListItem
                 icon="check"
-                label="Nous partageons vos données seulement avec des organismes éducatifs"
+                label="Nous partageons vos données privées le moins possible"
               />
               <ListItem
                 icon="check"
@@ -63,7 +63,10 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
                 icon="check"
                 label="Vous pouvez supprimer votre compte et exercer vos droits à tout moment via l'onglet Profil"
               />
-              <ListItem icon="close" label="Vos données ne sont pas vendues" />
+              <ListItem
+                icon="close"
+                label="Vos données ne sont pas vendues, et nous n'utilisons pas de traçage publicitaire"
+              />
               <ListItem
                 icon="close"
                 label="Vos données ne sont pas gardées quand elles ne sont plus nécéssaires"
@@ -87,27 +90,27 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
               <ListHeading label="Résumé des conditions d'utilisation" />
               <ListItem
                 icon="close"
-                label="Toute forme de violence, de harcèlement, ou de haine est formellement interdite"
+                label="Toute forme de violence, de harcèlement, ou de haine est interdite"
               />
               <ListItem
                 icon="close"
-                label="Le contenu que vous publiez doit être approprié pour des enfants de tous ages"
+                label="Les contenus illégaux, explicites, trompeurs, malveillants, abusifs ou diffamatoires sont interdits"
+              />
+              <ListItem
+                icon="close"
+                label="Vous n'avez pas le droit d'interférer avec le fonctionnement des services ou de causer des dommages au service et aux autres utilisateurs"
               />
               <ListItem
                 icon="alert-outline"
-                label="En cas de contenu illicite ou inapproprié, nous en informerons les instances telles que la police"
-              />
-              <ListItem
-                icon="alert-outline"
-                label="En cas de non respect de ces conditions, votre compte peut etre supprimé"
+                label="En cas de non respect de ces conditions, votre compte peut etre supprimé ou votre accès à l'application restreint"
               />
               <ListItem
                 icon="information-outline"
-                label="Vous pouvez reporter un contenu qui contrevient à ces conditions"
+                label="Vous pouvez signaler un contenu qui contrevient à ces conditions"
               />
               <ListItem
                 icon="information-outline"
-                label="Nous déclinons toute responsabilité en cas de problème"
+                label="Nous déclinons toute responsabilité en cas de problème, et ne garantissons pas que le service fonctionne correctement"
               />
               <ListItem
                 icon="information-outline"

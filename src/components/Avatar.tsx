@@ -38,7 +38,7 @@ const Avatar: React.FC<Props> = ({ name, imageUrl, icon, style, size = 64, onPre
           style={{
             height: size,
             width: size,
-            borderRadius: 50,
+            borderRadius: size / 2,
             alignItems: 'center',
             justifyContent: 'center',
           }}
