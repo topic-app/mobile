@@ -29,6 +29,7 @@ import {
   SchoolRequestState,
   DepartmentRequestState,
   State,
+  LocationRequestState,
 } from '@ts/types';
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
@@ -64,7 +65,15 @@ function done(
   selectedOthers: string[],
   navigation: Navigation,
   persistentData: { title: string; key: string; departments?: Department[] }[],
+  goBack: boolean,
 ) {
+  console.log(persistentData);
+  console.log(
+    selectedSchools
+      .map((s) => persistentData.find((p) => p.key === s)?.departments)
+      .flat()
+      .map((d: Department) => d?._id),
+  );
   Promise.all([
     updateLocation({
       selected: true,
@@ -85,14 +94,18 @@ function done(
       global: true,
     }),
   ]).then(() => {
-    navigation.popToTop();
-    navigation.replace('Root', {
-      screen: 'Main',
-      params: {
-        screen: 'Home1',
-        params: { screen: 'Home2', params: { screen: 'Article' } },
-      },
-    });
+    if (goBack) {
+      navigation.goBack();
+    } else {
+      navigation.popToTop();
+      navigation.replace('Root', {
+        screen: 'Main',
+        params: {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Article' } },
+        },
+      });
+    }
   });
 }
 
@@ -149,6 +162,7 @@ type Props = {
   state: {
     schools: SchoolRequestState;
     departments: DepartmentRequestState;
+    location: LocationRequestState;
   };
   location?: ReduxLocation;
   navigation: Navigation;
@@ -168,11 +182,14 @@ const WelcomeLocation: React.FC<Props> = ({
     departmentData: [],
   },
   navigation,
+  route,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
   const landingStyles = getLandingStyles(theme);
   const styles = getStyles(theme);
+
+  const { goBack = false } = route.params || {};
 
   const [searchText, setSearchText] = React.useState('');
   const scrollRef = React.createRef<FlatList>();
@@ -255,7 +272,12 @@ const WelcomeLocation: React.FC<Props> = ({
       departments?: Department[];
     }[]
   >([
-    ...location.schoolData.map((s) => ({ key: s._id, title: s.name, type: 'school' })),
+    ...location.schoolData.map((s) => ({
+      key: s._id,
+      title: s.name,
+      type: 'school',
+      departments: s.departments,
+    })),
     ...location.departmentData.map((d) => ({ key: d._id, title: d.name, type: 'department' })),
     { key: 'global', title: 'France entière', type: 'other' },
   ]);
@@ -417,6 +439,27 @@ const WelcomeLocation: React.FC<Props> = ({
         renderItem={renderItem}
       />
       <Divider />
+      {state.location.update.loading && <ProgressBar indeterminate />}
+      {state.location.update.error && (
+        <ErrorMessage
+          type="axios"
+          error={state.location.update.error}
+          strings={{
+            what: 'la mise à jour de la localisation',
+            contentSingular: 'La localisation',
+          }}
+          retry={() =>
+            done(
+              selectedSchools,
+              selectedDepartments,
+              selectedOthers,
+              navigation,
+              persistentData,
+              goBack,
+            )
+          }
+        />
+      )}
       <CollapsibleView collapsed={selected.length !== 0}>
         <View style={landingStyles.contentContainer}>
           <Text>
@@ -466,6 +509,7 @@ const WelcomeLocation: React.FC<Props> = ({
                           selectedOthers,
                           navigation,
                           persistentData,
+                          goBack,
                         ),
                     },
                   ],
@@ -479,6 +523,7 @@ const WelcomeLocation: React.FC<Props> = ({
                   selectedOthers,
                   navigation,
                   persistentData,
+                  goBack,
                 );
               }
             }}
@@ -500,7 +545,7 @@ const mapStateToProps = (state: State) => {
     schoolsSearch: schools.search,
     departmentsSearch: departments.search,
     location,
-    state: { schools: schools.state, departments: departments.state },
+    state: { schools: schools.state, departments: departments.state, location: location.state },
   };
 };
 

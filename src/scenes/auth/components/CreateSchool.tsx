@@ -12,9 +12,10 @@ import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
   location: State['location'];
+  landing: () => any;
 };
 
-const AuthCreatePageSchool: React.FC<Props> = ({ next, prev, location }) => {
+const AuthCreatePageSchool: React.FC<Props> = ({ next, prev, location, landing }) => {
   const submit = () => {
     updateCreationData({
       schools: location.schools,
@@ -55,7 +56,9 @@ const AuthCreatePageSchool: React.FC<Props> = ({ next, prev, location }) => {
         </Card>
       )}
       <View style={authStyles.changeButtonContainer}>
-        <Button mode="text">Changer</Button>
+        <Button mode="text" onPress={landing}>
+          Changer
+        </Button>
       </View>
       <View style={authStyles.buttonContainer}>
         <Button

@@ -1,9 +1,13 @@
 import React from 'react';
-import { Linking } from 'react-native';
+import { Linking, Alert } from 'react-native';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { Banner, Avatar, useTheme } from 'react-native-paper';
+import Clipboard from '@react-native-community/clipboard';
+import DeviceInfo from 'react-native-device-info';
+import { connect } from 'react-redux';
+import { request } from '@utils/index';
 
-import { Error as ErrorType, RequestState } from '@ts/types';
+import { Error as ErrorType, RequestState, State } from '@ts/types';
 
 type Props = {
   /* Please change me if `'app'` is too vague! */
@@ -16,6 +20,8 @@ type Props = {
   };
   // TODO: Error devrait être qu'un seul type, pas une multitude de types
   error?: RequestState['error'] | ErrorType | ErrorType[];
+  id?: string;
+  state: object;
   retry?: () => Promise<any> | void;
   restart?: () => Promise<any> | void;
   back?: () => Promise<any> | void;
@@ -29,8 +35,10 @@ const ErrorMessage: React.FC<Props> = ({
     contentPlural: 'de contenus de ce type',
     contentSingular: 'Le contenu',
   },
+  id = 'Inconnu',
   error = { unknown: true },
   retry,
+  state,
   restart,
   back,
 }) => {
@@ -46,7 +54,137 @@ const ErrorMessage: React.FC<Props> = ({
   let actions = [
     {
       label: 'Signaler un bug',
-      onPress: () => Linking.openURL('https://gitlab.com/topicapp/issues/issues'),
+      onPress: async () => {
+        let stringifiedError: any = error;
+        let errorError = false;
+        if (typeof error === 'object') {
+          try {
+            console.log(JSON.stringify(error));
+            stringifiedError = JSON.stringify(error);
+          } catch (error2) {
+            try {
+              stringifiedError = error.toString();
+            } catch (error3) {
+              errorError = true;
+            }
+          }
+        }
+
+        let responseData = err?.error?.response?.data?.error?.value;
+        try {
+          responseData = JSON.stringify(err?.error?.response?.data);
+        } catch (err) {}
+
+        let now = new Date();
+
+        let errorString = `
+\`\`\`yaml
+Rapport de bug Topic
+---
+ERREUR
+Type: ${type}
+Localisation: ${id}
+Description: ${strings?.what}
+Code http: ${err?.error?.response?.status}
+Data res: ${responseData}
+Erreur: ${stringifiedError}
+Recup. erreur: ${errorError}
+Heure: ${now.toLocaleString()}
+---
+APPLICATION
+Version: ${DeviceInfo.getVersion()}
+Numéro: ${DeviceInfo.getBuildNumber()}
+---
+DONNEES
+Connecte: ${state?.account?.loggedIn}
+ID compte: ${state?.account?.accountInfo?.accountId}
+Location select.: ${state?.location?.selected}
+Location: Écoles ${state?.location?.schools} | Départements ${
+          state?.location?.departments
+        } | Global ${state?.location?.global}
+---
+SYSTEME
+Os: ${await DeviceInfo.getBaseOs()} | ${DeviceInfo.getSystemName()}
+Version: ${DeviceInfo.getSystemVersion()} | Api ${await DeviceInfo.getApiLevel()}
+Modele: Id ${DeviceInfo.getDeviceId()} | Model ${DeviceInfo.getModel()} | Vendor ${DeviceInfo.getBrand()} | Product ${await DeviceInfo.getDevice()}
+---
+Gen ErrorMessage
+\`\`\`  `;
+
+        let strippedErrorString = `
+\`\`\`yaml
+Rapport de bug Topic (version sans données personelles)
+---
+ERREUR
+Type: ${type}
+Localisation: ${id}
+Description: ${strings?.what}
+Code http: ${err?.error?.response?.status}
+Heure: ${now.toLocaleString()}
+---
+APPLICATION
+Version: ${DeviceInfo.getVersion()}
+Numero: ${DeviceInfo.getBuildNumber()}
+---
+DONNEES
+Connecte: ${state?.account?.loggedIn}
+Location select.: ${state?.location?.selected}
+---
+SYSTEME
+Os: ${await DeviceInfo.getBaseOs()} | ${DeviceInfo.getSystemName()}
+Version: ${DeviceInfo.getSystemVersion()} | Api ${await DeviceInfo.getApiLevel()}
+Modele: Id ${DeviceInfo.getDeviceId()} | Model ${DeviceInfo.getModel()} | Vendor ${DeviceInfo.getBrand()} | Product ${await DeviceInfo.getDevice()}
+---
+Gen ErrorMessage
+\`\`\`  `;
+        Alert.alert(
+          'Signaler un bug',
+          `
+Le rapport généré peut contenir des données sensibles, telles que votre mot de passe, votre addresse email, l'historique etc.
+Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données personnelles (mais qui est moins utile pour les développeurs)
+`,
+          [
+            {
+              text: 'Annuler',
+            },
+            {
+              text: 'Envoyer (sans données sensibles)',
+              onPress: () =>
+                request(
+                  'https://chat.topicapp.fr/hooks/8uo3fQRFFuTx5kXFi/sWCyfDXsJLyiBKq6LjFyvwv6dtn8bHjCEiKS7os5P7x97s9W',
+                  'post',
+                  {
+                    attachments: [
+                      {
+                        title: `Rapport stripped ${err?.error?.response?.status}`,
+                        text: strippedErrorString,
+                      },
+                    ],
+                  },
+                  false,
+                ),
+            },
+            {
+              text: 'Envoyer (avec données sensibles)',
+              onPress: () =>
+                request(
+                  'https://chat.topicapp.fr/hooks/8uo3fQRFFuTx5kXFi/sWCyfDXsJLyiBKq6LjFyvwv6dtn8bHjCEiKS7os5P7x97s9W',
+                  'post',
+                  {
+                    attachments: [
+                      {
+                        title: `Rapport complet ${err?.error?.response?.status}`,
+                        text: errorString,
+                      },
+                    ],
+                  },
+                  false,
+                ),
+            },
+          ],
+          { cancelable: true },
+        );
+      },
     },
   ];
 
@@ -352,4 +490,8 @@ const ErrorMessage: React.FC<Props> = ({
   );
 };
 
-export default ErrorMessage;
+const mapStateToProps = (state: State) => {
+  return { state };
+};
+
+export default connect(mapStateToProps)(ErrorMessage);

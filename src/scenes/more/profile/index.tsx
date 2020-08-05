@@ -18,7 +18,6 @@ function ProfileStackNavigator() {
         options={{
           ...HeaderConfig,
           title: 'Mon Profil',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         }}
       />
       <Stack.Screen
