@@ -68,6 +68,7 @@ function EventList({ navigation, events, state }) {
         onEndReached={() => updateEvents('next')}
         onEndReachedThreshold={0.5}
         keyExtractor={(event) => event._id}
+        ListHeaderComponent={<View style={{ padding: 5 }} />}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
             {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}

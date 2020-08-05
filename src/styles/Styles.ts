@@ -27,7 +27,8 @@ function getStyles(theme: Theme) {
       elevation: 1,
       // borderWidth: 0.5,
       borderColor: colors.outline,
-      marginTop: 10,
+      marginTop: 5,
+      marginBottom: 5,
       marginHorizontal: 10,
       overflow: 'hidden',
       margin: 0,
@@ -44,11 +45,6 @@ function getStyles(theme: Theme) {
     },
     primaryText: {
       color: colors.primary,
-    },
-    cardTitle: {
-      color: colors.text,
-      fontSize: 18,
-      marginBottom: 5,
     },
     title: {
       color: colors.text,

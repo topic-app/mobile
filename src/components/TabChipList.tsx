@@ -1,9 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { View, SectionList } from 'react-native';
-import { Text, IconButton, useTheme } from 'react-native-paper';
-
-import { PlatformTouchable } from './PlatformComponents';
+import { IconButton, useTheme } from 'react-native-paper';
 
 import { TextChip } from './ChipLists';
 
@@ -35,7 +32,7 @@ const TabChipList: React.FC<TabChipListProps> = ({
   return (
     <View>
       <SectionList
-        style={{ paddingVertical: 5 }}
+        style={{ paddingTop: 13, paddingBottom: 8 }}
         horizontal
         stickySectionHeadersEnabled={false}
         keyboardShouldPersistTaps="handled"
@@ -51,23 +48,23 @@ const TabChipList: React.FC<TabChipListProps> = ({
             containerStyle={{
               marginLeft: index === 0 ? 15 : 5,
               marginRight: index === sections.length - 1 ? 15 : 5,
-              marginVertical: 5,
             }}
           />
         )}
-        ListFooterComponent={() =>
-          configure ? (
-            <View
-              style={{
-                marginLeft: 5,
-                marginVertical: 5,
-                flex: 1,
-                justifyContent: 'center',
-              }}
-            >
-              <IconButton icon="pencil" size={20} color={colors.disabled} onPress={configure} />
-            </View>
-          ) : null
+        ListFooterComponent={
+          configure
+            ? () => (
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                  <IconButton
+                    icon="pencil"
+                    size={26}
+                    style={{ marginLeft: 5, margin: 0 }}
+                    color={colors.icon}
+                    onPress={configure}
+                  />
+                </View>
+              )
+            : null
         }
       />
     </View>

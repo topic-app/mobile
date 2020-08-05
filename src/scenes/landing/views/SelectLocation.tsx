@@ -34,7 +34,7 @@ import {
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { updateSchools, searchSchools, fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
   TranslucentStatusBar,
@@ -201,7 +201,7 @@ const WelcomeLocation: React.FC<Props> = ({
 
   useFocusEffect(
     React.useCallback(() => {
-      setImmediate(() => inputRef.current?.focus());
+      // setImmediate(() => inputRef.current?.focus());
     }, [null]),
   );
 
