@@ -6,12 +6,13 @@ import {
   Card,
   RadioButton,
   List,
+  ThemeProvider,
   useTheme,
   ProgressBar,
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
 import { ErrorMessage } from '@components/index';
-import Modal from 'react-native-modal';
+import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
 
 import getStyles from '@styles/Styles';
 import { updateData } from '@redux/actions/data/profile';
@@ -40,103 +41,115 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
   };
 
   return (
-    <Modal
-      isVisible={visible}
-      avoidKeyboard
-      onBackdropPress={() => setVisible(false)}
-      onBackButtonPress={() => setVisible(false)}
-      onSwipeComplete={() => setVisible(false)}
-      swipeDirection={['down']}
-      style={styles.bottomModal}
+    <BottomModal
+      visible={visible}
+      onTouchOutside={() => {
+        setVisible(false);
+      }}
+      onHardwareBackPress={() => {
+        setVisible(false);
+        return true;
+      }}
+      onSwipeOut={() => {
+        setVisible(false);
+      }}
+      modalAnimation={
+        new SlideAnimation({
+          slideFrom: 'bottom',
+          useNativeDriver: false,
+        })
+      }
     >
-      <Card>
-        <View>
-          {state.updateProfile.loading && <ProgressBar indeterminate />}
-          {state.updateProfile.error && (
-            <ErrorMessage
-              type="axios"
-              strings={{
-                what: 'la modification du compte',
-                contentSingular: 'Le compte',
+      <ThemeProvider theme={theme}>
+        <Card style={styles.modalCard}>
+          <View>
+            {state.updateProfile.loading && <ProgressBar indeterminate />}
+            {state.updateProfile.error && (
+              <ErrorMessage
+                type="axios"
+                strings={{
+                  what: 'la modification du compte',
+                  contentSingular: 'Le compte',
+                }}
+                error={state.updateProfile.error}
+                retry={update}
+              />
+            )}
+            <List.Item
+              title="Compte public"
+              description="Les autres utilisateurs peuvent voir votre école, votre nom, votre prénom et les groupes que vous suivez."
+              onPress={() => {
+                setPublic(true);
               }}
-              error={state.updateProfile.error}
-              retry={update}
+              left={() =>
+                Platform.OS !== 'ios' && (
+                  <RadioButton
+                    color={colors.primary}
+                    status={isPublic ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      setPublic(true);
+                    }}
+                  />
+                )
+              }
+              right={() =>
+                Platform.OS === 'ios' && (
+                  <RadioButton
+                    color={colors.primary}
+                    status={isPublic ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      setPublic(true);
+                    }}
+                  />
+                )
+              }
             />
-          )}
-          <List.Item
-            title="Compte public"
-            description="Les autres utilisateurs peuvent voir votre école, votre nom, votre prénom et les groupes que vous suivez."
-            onPress={() => {
-              setPublic(true);
-            }}
-            left={() =>
-              Platform.OS !== 'ios' && (
-                <RadioButton
-                  color={colors.primary}
-                  status={isPublic ? 'checked' : 'unchecked'}
-                  onPress={() => {
-                    setPublic(true);
-                  }}
-                />
-              )
-            }
-            right={() =>
-              Platform.OS === 'ios' && (
-                <RadioButton
-                  color={colors.primary}
-                  status={isPublic ? 'checked' : 'unchecked'}
-                  onPress={() => {
-                    setPublic(true);
-                  }}
-                />
-              )
-            }
-          />
-          <List.Item
-            title="Compte privé"
-            description="Les autres utilisateurs peuvent voir les groupes auquels vous appartenez. Vous ne pouvez pas être administrateur d'un groupe."
-            onPress={() => {
-              setPublic(false);
-            }}
-            left={() =>
-              Platform.OS !== 'ios' && (
-                <RadioButton
-                  color={colors.primary}
-                  status={!isPublic ? 'checked' : 'unchecked'}
-                  onPress={() => {
-                    setPublic(false);
-                  }}
-                />
-              )
-            }
-            right={() =>
-              Platform.OS === 'ios' && (
-                <RadioButton
-                  color={colors.primary}
-                  status={!isPublic ? 'checked' : 'unchecked'}
-                  onPress={() => {
-                    setPublic(false);
-                  }}
-                />
-              )
-            }
-          />
-          <Divider />
-        </View>
-        <View>
-          <View style={styles.contentContainer}>
-            <Button
-              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-              color={colors.primary}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={update}
-            >
-              Confirmer
-            </Button>
+            <List.Item
+              title="Compte privé"
+              description="Les autres utilisateurs peuvent voir les groupes auquels vous appartenez. Vous ne pouvez pas être administrateur d'un groupe."
+              onPress={() => {
+                setPublic(false);
+              }}
+              left={() =>
+                Platform.OS !== 'ios' && (
+                  <RadioButton
+                    color={colors.primary}
+                    status={!isPublic ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      setPublic(false);
+                    }}
+                  />
+                )
+              }
+              right={() =>
+                Platform.OS === 'ios' && (
+                  <RadioButton
+                    color={colors.primary}
+                    status={!isPublic ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                      setPublic(false);
+                    }}
+                  />
+                )
+              }
+            />
+            <Divider />
           </View>
-        </View>
-      </Card>
-    </Modal>
+          <View>
+            <View style={styles.contentContainer}>
+              <Button
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                color={colors.primary}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={update}
+              >
+                Confirmer
+              </Button>
+            </View>
+          </View>
+        </Card>
+      </ThemeProvider>
+    </BottomModal>
   );
 }
 

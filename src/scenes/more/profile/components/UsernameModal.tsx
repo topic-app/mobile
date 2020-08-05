@@ -1,8 +1,16 @@
 import React from 'react';
 import { ModalProps, State, Account } from '@ts/types';
-import { Divider, Button, HelperText, ProgressBar, Card, useTheme } from 'react-native-paper';
+import {
+  Divider,
+  Button,
+  HelperText,
+  ProgressBar,
+  ThemeProvider,
+  Card,
+  useTheme,
+} from 'react-native-paper';
 import { View, Platform, TextInput } from 'react-native';
-import Modal from 'react-native-modal';
+import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
 import { connect } from 'react-redux';
 import { request } from '@utils/index';
 
@@ -97,63 +105,75 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
   };
 
   return (
-    <Modal
-      isVisible={visible}
-      avoidKeyboard
-      onBackdropPress={() => setVisible(false)}
-      onBackButtonPress={() => setVisible(false)}
-      onSwipeComplete={() => setVisible(false)}
-      swipeDirection={['down']}
-      style={styles.bottomModal}
+    <BottomModal
+      visible={visible}
+      onTouchOutside={() => {
+        setVisible(false);
+      }}
+      onHardwareBackPress={() => {
+        setVisible(false);
+        return true;
+      }}
+      onSwipeOut={() => {
+        setVisible(false);
+      }}
+      modalAnimation={
+        new SlideAnimation({
+          slideFrom: 'bottom',
+          useNativeDriver: false,
+        })
+      }
     >
-      <Card>
-        {state.updateProfile.loading && <ProgressBar indeterminate />}
-        {state.updateProfile.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du compte',
-              contentSingular: 'Le compte',
-            }}
-            error={state.updateProfile.error}
-            retry={update}
-          />
-        )}
-        <View>
-          <View style={profileStyles.inputContainer}>
-            <TextInput
-              ref={usernameInput}
-              autoFocus
-              placeholder="Nouveau nom d'utilisateur"
-              placeholderTextColor={colors.disabled}
-              style={profileStyles.borderlessInput}
-              value={username}
-              onChangeText={(text) => {
-                setUsername(text);
-                preValidateUsernameInput(text);
+      <ThemeProvider theme={theme}>
+        <Card style={styles.modalCard}>
+          {state.updateProfile.loading && <ProgressBar indeterminate />}
+          {state.updateProfile.error && (
+            <ErrorMessage
+              type="axios"
+              strings={{
+                what: 'la modification du compte',
+                contentSingular: 'Le compte',
               }}
-              onSubmitEditing={update}
+              error={state.updateProfile.error}
+              retry={update}
             />
-            <CollapsibleView collapsed={!usernameValidation.error}>
-              <HelperText type="error" visible>
-                {usernameValidation.message}
-              </HelperText>
-            </CollapsibleView>
+          )}
+          <View>
+            <View style={profileStyles.inputContainer}>
+              <TextInput
+                ref={usernameInput}
+                autoFocus
+                placeholder="Nouveau nom d'utilisateur"
+                placeholderTextColor={colors.disabled}
+                style={profileStyles.borderlessInput}
+                value={username}
+                onChangeText={(text) => {
+                  setUsername(text);
+                  preValidateUsernameInput(text);
+                }}
+                onSubmitEditing={update}
+              />
+              <CollapsibleView collapsed={!usernameValidation.error}>
+                <HelperText type="error" visible>
+                  {usernameValidation.message}
+                </HelperText>
+              </CollapsibleView>
+            </View>
+            <Divider />
+            <View style={styles.contentContainer}>
+              <Button
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                color={colors.primary}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={update}
+              >
+                Confirmer
+              </Button>
+            </View>
           </View>
-          <Divider />
-          <View style={styles.contentContainer}>
-            <Button
-              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-              color={colors.primary}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={update}
-            >
-              Confirmer
-            </Button>
-          </View>
-        </View>
-      </Card>
-    </Modal>
+        </Card>
+      </ThemeProvider>
+    </BottomModal>
   );
 }
 

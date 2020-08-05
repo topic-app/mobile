@@ -1,9 +1,9 @@
 import React from 'react';
 import { ModalProps, State, ArticleListItem } from '@ts/types';
-import { Divider, Button, HelperText, Card, useTheme } from 'react-native-paper';
-import { View, Platform, TextInput } from 'react-native';
+import { Divider, Button, HelperText, Card, ThemeProvider, useTheme } from 'react-native-paper';
+import { View, Platform, TextInput, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import Modal from 'react-native-modal';
+import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
 import { logger } from '@utils/index';
 
 import { CollapsibleView } from '@components/index';
@@ -25,74 +25,77 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
   const [errorVisible, setErrorVisible] = React.useState(false);
 
   return (
-    <Modal
-      isVisible={visible}
-      avoidKeyboard
-      onBackdropPress={() => {
-        logger.debug('onBackdropPress');
+    <BottomModal
+      visible={visible}
+      onTouchOutside={() => {
         setVisible(false);
       }}
-      onBackButtonPress={() => {
-        logger.debug('onBackButtonPress');
+      onHardwareBackPress={() => {
+        setVisible(false);
+        return true;
+      }}
+      onSwipeOut={() => {
         setVisible(false);
       }}
-      onSwipeComplete={() => {
-        logger.debug('onSwipeComplete');
-        setVisible(false);
-      }}
-      swipeDirection={['down']}
-      style={styles.bottomModal}
+      modalAnimation={
+        new SlideAnimation({
+          slideFrom: 'bottom',
+          useNativeDriver: false,
+        })
+      }
     >
-      <Card>
-        <View>
-          <Divider />
+      <ThemeProvider theme={theme}>
+        <Card style={styles.modalCard}>
+          <View>
+            <Divider />
 
-          <View style={articleStyles.activeCommentContainer}>
-            <TextInput
-              autoFocus
-              placeholder="Nom de la liste"
-              placeholderTextColor={colors.disabled}
-              style={articleStyles.addListInput}
-              value={createListText}
-              onChangeText={(text) => {
-                setErrorVisible(false);
-                setCreateListText(text);
-              }}
-            />
-            <CollapsibleView collapsed={!errorVisible}>
-              <HelperText type="error" visible={errorVisible}>
-                Vous devez entrer un nom
-              </HelperText>
-            </CollapsibleView>
-            <CollapsibleView collapsed={!lists.some((l) => l.name === createListText)}>
-              <HelperText type="error" visible={lists.some((l) => l.name === createListText)}>
-                Une liste avec ce nom existe déjà
-              </HelperText>
-            </CollapsibleView>
+            <View style={articleStyles.activeCommentContainer}>
+              <TextInput
+                autoFocus
+                placeholder="Nom de la liste"
+                placeholderTextColor={colors.disabled}
+                style={articleStyles.addListInput}
+                value={createListText}
+                onChangeText={(text) => {
+                  setErrorVisible(false);
+                  setCreateListText(text);
+                }}
+              />
+              <CollapsibleView collapsed={!errorVisible}>
+                <HelperText type="error" visible={errorVisible}>
+                  Vous devez entrer un nom
+                </HelperText>
+              </CollapsibleView>
+              <CollapsibleView collapsed={!lists.some((l) => l.name === createListText)}>
+                <HelperText type="error" visible={lists.some((l) => l.name === createListText)}>
+                  Une liste avec ce nom existe déjà
+                </HelperText>
+              </CollapsibleView>
+            </View>
+            <Divider />
+            <View style={styles.contentContainer}>
+              <Button
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                color={colors.primary}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() => {
+                  if (createListText === '') {
+                    setErrorVisible(true);
+                  } else if (!lists.some((l) => l.name === createListText)) {
+                    // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
+                    addArticleList(createListText);
+                    setCreateListText('');
+                    setVisible(false);
+                  }
+                }}
+              >
+                Créer la liste
+              </Button>
+            </View>
           </View>
-          <Divider />
-          <View style={styles.contentContainer}>
-            <Button
-              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-              color={colors.primary}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={() => {
-                if (createListText === '') {
-                  setErrorVisible(true);
-                } else if (!lists.some((l) => l.name === createListText)) {
-                  // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
-                  addArticleList(createListText);
-                  setCreateListText('');
-                  setVisible(false);
-                }
-              }}
-            >
-              Créer la liste
-            </Button>
-          </View>
-        </View>
-      </Card>
-    </Modal>
+        </Card>
+      </ThemeProvider>
+    </BottomModal>
   );
 }
 

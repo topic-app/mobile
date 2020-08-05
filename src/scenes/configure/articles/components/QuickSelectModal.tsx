@@ -21,13 +21,14 @@ import {
   Searchbar,
   Text,
   List,
+  ThemeProvider,
   useTheme,
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
 import Illustration from '@components/Illustration';
 import Avatar from '@components/Avatar';
 import { connect } from 'react-redux';
-import Modal from 'react-native-modal';
+import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
@@ -98,87 +99,100 @@ function QuickSelectModal({
   }, [null]);
 
   return (
-    <Modal
-      isVisible={visible}
-      avoidKeyboard
-      onBackdropPress={() => setVisible(false)}
-      onBackButtonPress={() => setVisible(false)}
-      onSwipeComplete={() => setVisible(false)}
-      swipeDirection={['down']}
-      style={styles.bottomModal}
+    <BottomModal
+      visible={visible}
+      onTouchOutside={() => {
+        setVisible(false);
+      }}
+      onHardwareBackPress={() => {
+        setVisible(false);
+        return true;
+      }}
+      onSwipeOut={() => {
+        setVisible(false);
+      }}
+      modalAnimation={
+        new SlideAnimation({
+          slideFrom: 'bottom',
+          useNativeDriver: false,
+        })
+      }
     >
-      <Card>
-        <View>
-          <View style={{ height: 200 }}>
-            <View style={styles.centerIllustrationContainer}>
-              <Illustration name={type} height={200} width={200} />
-            </View>
-          </View>
-          <Divider />
-          {state.list.loading.initial ||
-            (state.search.loading.initial && (
-              <ProgressBar indeterminate style={{ marginTop: -4 }} />
-            ))}
-          {(searchText === '' && state.list.error) || (searchText !== '' && state.search.error) ? (
-            <ErrorMessage
-              type="axios"
-              strings={{
-                what: 'la récupération des données',
-                contentPlural: 'des données',
-                contentSingular: 'La liste de données',
-              }}
-              error={[state.list.error, state.search.error]}
-              retry={update}
-            />
-          ) : null}
-
-          <View style={styles.container}>
-            <Searchbar
-              autoFocus
-              placeholder="Rechercher"
-              value={searchText}
-              onChangeText={(text) => {
-                setSearchText(text);
-                update(text);
-              }}
-            />
-          </View>
-          <FlatList
-            data={data}
-            keyExtractor={(i) => i._id}
-            keyboardShouldPersistTaps="handled"
-            ListEmptyComponent={() => (
-              <View style={{ minHeight: 50 }}>
-                {(searchText === '' && state.list.success) ||
-                  (searchText !== '' && state.search.success && (
-                    <View style={styles.centerIllustrationContainer}>
-                      <Text>Aucun résultat</Text>
-                    </View>
-                  ))}
+      <ThemeProvider theme={theme}>
+        <Card style={styles.modalCard}>
+          <View>
+            <View style={{ height: 200 }}>
+              <View style={styles.centerIllustrationContainer}>
+                <Illustration name={type} height={200} width={200} />
               </View>
-            )}
-            renderItem={({ item }) =>
-              quicks.some((q) => q.id === item._id) ? null : (
-                <List.Item
-                  title={item.name || item.info?.username}
-                  left={() =>
-                    item.avatar || item.info?.avatar ? (
-                      <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
-                    ) : (
-                      <List.Icon icon={icon} color={item.color} />
-                    )
-                  }
-                  onPress={() => {
-                    addArticleQuick(type, item._id, item.name || item.info?.username);
-                    setVisible(false);
-                  }}
-                />
-              )
-            }
-          />
-        </View>
-      </Card>
-    </Modal>
+            </View>
+            <Divider />
+            {state.list.loading.initial ||
+              (state.search.loading.initial && (
+                <ProgressBar indeterminate style={{ marginTop: -4 }} />
+              ))}
+            {(searchText === '' && state.list.error) ||
+            (searchText !== '' && state.search.error) ? (
+              <ErrorMessage
+                type="axios"
+                strings={{
+                  what: 'la récupération des données',
+                  contentPlural: 'des données',
+                  contentSingular: 'La liste de données',
+                }}
+                error={[state.list.error, state.search.error]}
+                retry={update}
+              />
+            ) : null}
+
+            <View style={styles.container}>
+              <Searchbar
+                autoFocus
+                placeholder="Rechercher"
+                value={searchText}
+                onChangeText={(text) => {
+                  setSearchText(text);
+                  update(text);
+                }}
+              />
+            </View>
+            <FlatList
+              data={data}
+              keyExtractor={(i) => i._id}
+              keyboardShouldPersistTaps="handled"
+              ListEmptyComponent={() => (
+                <View style={{ minHeight: 50 }}>
+                  {(searchText === '' && state.list.success) ||
+                    (searchText !== '' && state.search.success && (
+                      <View style={styles.centerIllustrationContainer}>
+                        <Text>Aucun résultat</Text>
+                      </View>
+                    ))}
+                </View>
+              )}
+              renderItem={({ item }) =>
+                quicks.some((q) => q.id === item._id) ? null : (
+                  <List.Item
+                    title={item.name || item.info?.username}
+                    left={() =>
+                      item.avatar || item.info?.avatar ? (
+                        <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
+                      ) : (
+                        <List.Icon icon={icon} color={item.color} />
+                      )
+                    }
+                    onPress={() => {
+                      addArticleQuick(type, item._id, item.name || item.info?.username);
+                      setVisible(false);
+                    }}
+                  />
+                )
+              }
+            />
+          </View>
+        </Card>
+      </ThemeProvider>
+    </BottomModal>
   );
 }
 

@@ -1,8 +1,16 @@
 import React from 'react';
 import { ModalProps, State, Account } from '@ts/types';
-import { Divider, Button, HelperText, ProgressBar, Card, useTheme } from 'react-native-paper';
+import {
+  Divider,
+  Button,
+  HelperText,
+  ProgressBar,
+  ThemeProvider,
+  Card,
+  useTheme,
+} from 'react-native-paper';
 import { View, Platform, TextInput, Alert } from 'react-native';
-import Modal from 'react-native-modal';
+import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
 import { connect } from 'react-redux';
 import { request } from '@utils/index';
 import LocalAuthentication from 'rn-local-authentication';
@@ -137,84 +145,84 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
   };
 
   return (
-    <Modal
-      isVisible={visible}
-      avoidKeyboard
-      onBackdropPress={() => {
-        setPasswordActive(false);
-        setEmail('');
-        setPassword('');
+    <BottomModal
+      visible={visible}
+      onTouchOutside={() => {
         setVisible(false);
-      }}
-      onBackButtonPress={() => {
-        setPasswordActive(false);
         setEmail('');
-        setPassword('');
-        setVisible(false);
       }}
-      onSwipeComplete={() => {
-        setPasswordActive(false);
+      onHardwareBackPress={() => {
+        setVisible(false);
         setEmail('');
-        setPassword('');
-        setVisible(false);
+        return true;
       }}
-      swipeDirection={['down']}
-      style={styles.bottomModal}
+      onSwipeOut={() => {
+        setVisible(false);
+        setEmail('');
+      }}
+      modalAnimation={
+        new SlideAnimation({
+          slideFrom: 'bottom',
+          useNativeDriver: false,
+        })
+      }
     >
-      <Card>
-        {state.updateProfile.loading && <ProgressBar indeterminate />}
-        {state.updateProfile.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du compte',
-              contentSingular: 'Le compte',
-            }}
-            error={state.updateProfile.error}
-            retry={update}
-          />
-        )}
-        <View>
-          <View style={profileStyles.inputContainer}>
-            <TextInput
-              ref={emailInput}
-              autoFocus
-              placeholder="Nouvelle addresse mail"
-              disableFullscreenUI
-              keyboardType="email-address"
-              autoCompleteType="email"
-              autoCapitalize="none"
-              autoCorrect={false}
-              textContentType="emailAddress"
-              placeholderTextColor={colors.disabled}
-              style={profileStyles.borderlessInput}
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                preValidateEmailInput(text);
+      <ThemeProvider theme={theme}>
+        <Card style={styles.modalCard}>
+          {state.updateProfile.loading && <ProgressBar indeterminate />}
+          {state.updateProfile.error && (
+            <ErrorMessage
+              type="axios"
+              strings={{
+                what: 'la modification du compte',
+                contentSingular: 'Le compte',
               }}
-              onSubmitEditing={() => update()}
+              error={state.updateProfile.error}
+              retry={update}
             />
-            <CollapsibleView collapsed={!emailValidation.error}>
-              <HelperText type="error" visible>
-                {emailValidation.message}
-              </HelperText>
-            </CollapsibleView>
+          )}
+          <View>
+            <View style={profileStyles.inputContainer}>
+              <TextInput
+                ref={emailInput}
+                autoFocus
+                placeholder="Nouvelle addresse mail"
+                disableFullscreenUI
+                keyboardType="email-address"
+                autoCompleteType="email"
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="emailAddress"
+                placeholderTextColor={colors.disabled}
+                style={profileStyles.borderlessInput}
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  preValidateEmailInput(text);
+                }}
+                onSubmitEditing={() => update()}
+              />
+              <CollapsibleView collapsed={!emailValidation.error}>
+                <HelperText type="error" visible>
+                  {emailValidation.message}
+                </HelperText>
+              </CollapsibleView>
+            </View>
+            <Divider />
+            <View style={styles.contentContainer}>
+              <Button
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                color={colors.primary}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={update}
+              >
+                Confirmer
+              </Button>
+            </View>
           </View>
-          <Divider />
-          <View style={styles.contentContainer}>
-            <Button
-              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-              color={colors.primary}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={update}
-            >
-              Confirmer
-            </Button>
-          </View>
-        </View>
-      </Card>
-    </Modal>
+        </Card>
+      </ThemeProvider>
+    </BottomModal>
   );
 }
 

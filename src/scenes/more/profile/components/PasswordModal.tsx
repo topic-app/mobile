@@ -1,10 +1,17 @@
 import React from 'react';
 import { ModalProps, State, Account } from '@ts/types';
-import { Divider, Button, HelperText, ProgressBar, Card, useTheme } from 'react-native-paper';
+import {
+  Divider,
+  Button,
+  HelperText,
+  ProgressBar,
+  ThemeProvider,
+  Card,
+  useTheme,
+} from 'react-native-paper';
 import { View, Platform, TextInput, Alert } from 'react-native';
-import Modal from 'react-native-modal';
+import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
 import { connect } from 'react-redux';
-import { request } from '@utils/index';
 
 import { CollapsibleView, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
@@ -107,77 +114,80 @@ function PasswordModal({ visible, setVisible, state }: PasswordModalProps) {
   };
 
   return (
-    <Modal
-      isVisible={visible}
-      avoidKeyboard
-      onBackdropPress={() => {
-        setPassword('');
+    <BottomModal
+      visible={visible}
+      onTouchOutside={() => {
         setVisible(false);
       }}
-      onBackButtonPress={() => {
-        setPassword('');
+      onHardwareBackPress={() => {
+        setVisible(false);
+        return true;
+      }}
+      onSwipeOut={() => {
         setVisible(false);
       }}
-      onSwipeComplete={() => {
-        setPassword('');
-        setVisible(false);
-      }}
-      swipeDirection={['down']}
-      style={styles.bottomModal}
+      modalAnimation={
+        new SlideAnimation({
+          slideFrom: 'bottom',
+          useNativeDriver: false,
+        })
+      }
     >
-      <Card>
-        {state.updateProfile.loading && <ProgressBar indeterminate />}
-        {state.updateProfile.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du compte',
-              contentSingular: 'Le compte',
-            }}
-            error={state.updateProfile.error}
-            retry={update}
-          />
-        )}
-        <View>
-          <View style={profileStyles.inputContainer}>
-            <TextInput
-              ref={passwordInput}
-              autoFocus
-              disableFullscreenUI
-              autoCorrect={false}
-              secureTextEntry
-              textContentType="password"
-              autoCompleteType="password"
-              placeholder="Nouveau mot de passe"
-              placeholderTextColor={colors.disabled}
-              style={profileStyles.borderlessInput}
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                preValidatePasswordInput(text);
+      <ThemeProvider theme={theme}>
+        <Card style={styles.modalCard}>
+          {state.updateProfile.loading && <ProgressBar indeterminate />}
+          {state.updateProfile.error && (
+            <ErrorMessage
+              type="axios"
+              strings={{
+                what: 'la modification du compte',
+                contentSingular: 'Le compte',
               }}
-              onSubmitEditing={update}
+              error={state.updateProfile.error}
+              retry={update}
             />
-            <CollapsibleView collapsed={!passwordValidation.error}>
-              <HelperText type="error" visible>
-                {passwordValidation.message}
-              </HelperText>
-            </CollapsibleView>
+          )}
+          <View>
+            <View style={profileStyles.inputContainer}>
+              <TextInput
+                ref={passwordInput}
+                autoFocus
+                disableFullscreenUI
+                autoCorrect={false}
+                secureTextEntry
+                textContentType="password"
+                autoCompleteType="password"
+                placeholder="Nouveau mot de passe"
+                placeholderTextColor={colors.disabled}
+                style={profileStyles.borderlessInput}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  preValidatePasswordInput(text);
+                }}
+                onSubmitEditing={update}
+              />
+              <CollapsibleView collapsed={!passwordValidation.error}>
+                <HelperText type="error" visible>
+                  {passwordValidation.message}
+                </HelperText>
+              </CollapsibleView>
+            </View>
+            <Divider />
+            <View style={styles.contentContainer}>
+              <Button
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                color={colors.primary}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={update}
+              >
+                Confirmer
+              </Button>
+            </View>
           </View>
-          <Divider />
-          <View style={styles.contentContainer}>
-            <Button
-              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-              color={colors.primary}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={update}
-            >
-              Confirmer
-            </Button>
-          </View>
-        </View>
-      </Card>
-    </Modal>
+        </Card>
+      </ThemeProvider>
+    </BottomModal>
   );
 }
 
