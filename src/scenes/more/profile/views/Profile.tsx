@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { Text, useTheme, Title, Subheading, Divider } from 'react-native-paper';
+import { Text, useTheme, Title, Subheading } from 'react-native-paper';
 import { connect } from 'react-redux';
 import Avatar from '@components/Avatar';
 import getStyles from '@styles/Styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TranslucentStatusBar } from '@root/src/components/Header.ios';
 import { InlineCard } from '@components/Cards';
 
 const account = {

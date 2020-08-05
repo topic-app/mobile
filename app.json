@@ -53,6 +53,10 @@
     "comments": {
       "maxCharacters": 500
     },
+    "logger": {
+      "level": "debug",
+      "exclude": []
+    },
     "dev": {
       "logRequests": false,
       "defaultLocation": {
