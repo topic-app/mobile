@@ -133,9 +133,11 @@ android {
         applicationId "fr.topicapp.topic"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        // versionCode is an integer not shown to the users, it is used to determine whether a
+        // version is higher than another
         versionCode 1
-        versionName "1.0"
-        setProperty("archivesBaseName", "Topic-v$versionName")
+        versionName "0.2"
+        setProperty("archivesBaseName", "Topic-$versionName")
         multiDexEnabled true
     }
     splits {
@@ -154,6 +156,7 @@ android {
             keyPassword 'pourlajeunesse'
         }
     }
+
     buildTypes {
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -161,11 +164,23 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            // TODO: Remove once beta is complete
+            versionNameSuffix "-beta"
         }
         debug {
             applicationIdSuffix ".dev"
             versionNameSuffix "-dev"
             debuggable true
+        }
+    }
+
+    def betaTesterName = System.getenv("BETA_TESTER_NAME")
+    if (betaTesterName) {
+        flavorDimensions "name"
+        productFlavors {
+            "$betaTesterName" {
+                versionNameSuffix "-$betaTesterName"
+            }
         }
     }
 
