@@ -9,6 +9,7 @@ import ArticleList from './articles/views/List';
 import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
+import UnauthorizedBeta from '@components/UnauthorizedBeta';
 
 export type HomeTwoNavParams = {
   Article: { initialList: string } | undefined;
@@ -55,9 +56,9 @@ function HomeTwoNavigator() {
       })}
     >
       <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
-      <Tab.Screen name="Event" component={EventList} options={{ title: 'Evènements' }} />
+      <Tab.Screen name="Event" component={UnauthorizedBeta} options={{ title: 'Evènements' }} />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
-      <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
+      <Tab.Screen name="Explorer" component={UnauthorizedBeta} options={{ title: 'Explorer' }} />
     </Tab.Navigator>
   );
 }
