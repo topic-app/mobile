@@ -52,7 +52,6 @@ function Profile({
 }): React.ReactNode {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const profileStyles = getProfileStyles(theme);
   const { colors } = theme;
 
   const [isVisibilityVisible, setVisibilityVisible] = React.useState(false);
