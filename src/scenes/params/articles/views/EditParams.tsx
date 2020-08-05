@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Platform,
-  Alert,
   FlatList,
   TextInput as RNTextInput,
   ActivityIndicator,
@@ -31,20 +30,14 @@ import {
   State,
   ArticleParams,
 } from '@ts/types';
-import { logger } from '@utils/index';
-import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
 import { updateSchools, searchSchools, fetchMultiSchool } from '@redux/actions/api/schools';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
-  TranslucentStatusBar,
-  Illustration,
-  CategoriesList,
-  ErrorMessage,
-  CollapsibleView,
-  ChipAddList,
-} from '@components/index';
+  fetchMultiDepartment,
+  updateDepartments,
+  searchDepartments,
+} from '@redux/actions/api/departments';
+import { ErrorMessage } from '@components/index';
 
 import getStyles from '@styles/Styles';
 
@@ -108,7 +101,9 @@ function getData(
         key: s._id,
         title: s.name,
         description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
-          s?.departments?.length ? `, ${s.departments[0].displayName || s.departments[0].name || 'Inconnu'}` : ''
+          s?.departments?.length
+            ? `, ${s.departments[0].displayName || s.departments[0].name || 'Inconnu'}`
+            : ''
         }`,
         type: 'school',
       };

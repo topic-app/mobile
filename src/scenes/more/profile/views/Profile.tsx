@@ -11,14 +11,12 @@ import {
   ProgressBar,
 } from 'react-native-paper';
 import { connect } from 'react-redux';
-import Avatar from '@components/Avatar';
-import getStyles from '@styles/Styles';
-import getProfileStyles from '../styles/Styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TranslucentStatusBar } from '@root/src/components/Header.ios';
-import { InlineCard } from '@components/Cards';
-import ErrorMessage from '@components/ErrorMessage';
-import { Account } from '@ts/types';
+
+import { Account, Address, State } from '@ts/types';
+import { Avatar, ErrorMessage, InlineCard } from '@components/index';
+import getStyles from '@styles/Styles';
+import { fetchAccount, logout } from '@redux/actions/data/account';
 
 import ProfileItem from '../components/ProfileItem';
 import VisibilityModal from '../components/VisibilityModal';
@@ -26,9 +24,9 @@ import NameModal from '../components/NameModal';
 import UsernameModal from '../components/UsernameModal';
 import EmailModal from '../components/EmailModal';
 import PasswordModal from '../components/PasswordModal';
-import { fetchAccount, logout } from '@redux/actions/data/account';
+import getProfileStyles from '../styles/Styles';
 
-function getAddressString(address) {
+function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
   if (number && street && city && code) {
     return `${number} ${street}, ${code} ${city}`;
@@ -44,7 +42,14 @@ function genName({ data, info }) {
   return data.firstName || data.lastName || null;
 }
 
-function Profile({ account, location, navigation }: { account: Account; navigation: any }) {
+function Profile({
+  account,
+  location,
+  navigation,
+}: {
+  account: Account;
+  navigation: any;
+}): React.ReactNode {
   const theme = useTheme();
   const styles = getStyles(theme);
   const profileStyles = getProfileStyles(theme);
@@ -305,7 +310,7 @@ function Profile({ account, location, navigation }: { account: Account; navigati
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { account, location } = state;
   return {
     account,

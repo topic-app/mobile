@@ -164,7 +164,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
     if (noAnimation) {
       setChipTab(tabKey);
       if (newSection.key === 'quicks') {
-        searchArticles('initial', '', newCategory.params, false, true);
+        searchArticles('initial', '', newCategory.params, false, false);
       }
       setTab(tabKey);
     } else {
@@ -175,7 +175,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
         duration: 100,
       }).start(async () => {
         if (newSection.key === 'quicks') {
-          await searchArticles('initial', '', newCategory.params, false, true);
+          await searchArticles('initial', '', newCategory.params, false, false);
         }
         setTab(tabKey);
         Animated.timing(fadeAnim, {
@@ -274,14 +274,15 @@ const ArticleList: React.FC<ArticleListProps> = ({
           if (section.key === 'categories') {
             updateArticles('refresh');
           } else if (section.key === 'quicks') {
-            searchArticles('refresh', '', category.params, false, true);
+            searchArticles('refresh', '', category.params, false, false);
           }
         }}
         onEndReached={() => {
           if (section.key === 'categories') {
             updateArticles('next');
           } else if (section.key === 'quicks') {
-            searchArticles('next', '', category.params, false, true);
+            console.log(category.params);
+            searchArticles('next', '', category.params, false, false);
           }
         }}
         ListHeaderComponent={() => (
