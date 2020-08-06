@@ -43,7 +43,16 @@ function LandingArticles({ navigation, route }) {
                       </View>
                     </View>
                     <View style={landingStyles.contentContainer}>
-                      <Text>Some long and boring description</Text>
+                      <Text>
+                        Au travers de cette fonctionnalité, vous pourrez écrire des articles,
+                        détailler vos projets, votre engagement, qu’il vous sera possible de
+                        partager au reste de la communauté au travers d’un outil de recherche
+                        personnalisée.
+                      </Text>
+                      <Text>
+                        Aimez, commentez, partagez, donnez un nouveau souffle à la presse de la
+                        jeunesse !
+                      </Text>
                     </View>
                   </View>
                 ),
@@ -60,7 +69,12 @@ function LandingArticles({ navigation, route }) {
                       </View>
                     </View>
                     <View style={landingStyles.contentContainer}>
-                      <Text>Some long and boring description</Text>
+                      <Text>
+                        Ici vous pourrez mettre en avant vos actions, vos évènements et vos
+                        rassemblements, en préciser les modalités et les mettre en lumière. Partez
+                        aussi à la recherche de ces derniers avec un outil dédié et personnalisable.
+                      </Text>
+                      <Text>Vers l’engagement de tous et pour tous !</Text>
                     </View>
                   </View>
                 ),
@@ -94,7 +108,12 @@ function LandingArticles({ navigation, route }) {
                       </View>
                     </View>
                     <View style={landingStyles.contentContainer}>
-                      <Text>Some long and boring description</Text>
+                      <Text>
+                        Nous vous proposons une carte interactive des territoires français, où
+                        seront répertoriés avec votre aide, les lieux culturels, les établissements
+                        scolaires et où apparaîtront vos évènements et ceux de la communauté.
+                      </Text>
+                      <Text>En avant la culture ! En avant l’engagement !</Text>
                     </View>
                   </View>
                 ),
@@ -111,7 +130,10 @@ function LandingArticles({ navigation, route }) {
                       </View>
                     </View>
                     <View style={landingStyles.contentContainer}>
-                      <Text>Some long and boring description</Text>
+                      <Text>
+                        Rejoignez des groupes, des associations et des clubs pour écrire des
+                        articles et créer des évènements
+                      </Text>
                     </View>
                   </View>
                 ),
