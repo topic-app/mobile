@@ -1,0 +1,312 @@
+[
+  {
+    "_id": "31203912084",
+    "name": "L'Aiglon",
+    "summary": "Nous sommes un club de presse au CIV. Nous publions des articles et nous engageons nos lecteurs à travers de sujets de débat.",
+    "type": "Presse",
+    "imageUrl": "https://webmedias.ac-nice.fr/laiglon/wp-content/uploads/sites/21/2017/06/cropped-tumblr_static_tete-aiglonrduit.jpg",
+    "verified": true,
+    "description": {
+      "parser": "plaintext",
+      "data": "Nous sommes un club de presse au CIV. Nous publions des articles et nous engageons nos lecteurs à travers de sujets de débat."
+    },
+    "location": {
+      "global": false,
+      "schools": [
+        {
+          "_id": "312974129",
+          "shortName": "CIV",
+          "displayName": "Centre International de Valbonne",
+          "type": ["lycee", "college", "prepa"],
+          "address": {
+            "coordinates": {
+              "lat": 0,
+              "lon": 0
+            },
+            "address": {
+              "number": "190",
+              "street": "Rue Frédéric Mistral",
+              "city": "Valbonne",
+              "code": "06560"
+            },
+            "departments": [
+              { "_id": "31213124", "displayName": "Alpes Maritimes", "shortName": "06" }
+            ]
+          }
+        },
+        {
+          "_id": "31205712832",
+          "shortName": "Simone Veil",
+          "displayName": "Lycée Simone Veil",
+          "type": ["lycee"],
+          "address": {
+            "coordinates": {
+              "lat": 0,
+              "lon": 0
+            },
+            "address": {
+              "number": "1265",
+              "street": "Route de Biot",
+              "city": "Valbonne",
+              "code": "06560"
+            },
+            "departments": [
+              { "_id": "31213124", "displayName": "Alpes Maritimes", "shortName": "06" }
+            ]
+          }
+        }
+      ],
+      "departments": [{ "_id": "4312938", "displayName": "Région SUD" }]
+    },
+    "cache": {
+      "followers": 463,
+      "members": 20
+    },
+    "userInfo": {
+      "isFollowing": true,
+      "isMember": false
+    },
+    "members": [
+      {
+        "_id": "sertyhnbghy",
+        "displayName": "Antoine",
+        "position": 0,
+        "role": { "name": "Admin", "admin": true }
+      },
+      {
+        "_id": "piuhgvcdf",
+        "displayName": "Léo",
+        "position": 1,
+        "role": { "name": "Modérateur", "admin": false }
+      },
+      {
+        "_id": "drtyhjnb",
+        "displayName": "Lucas",
+        "position": 2,
+        "role": { "name": "Auteur", "admin": false }
+      }
+    ]
+  },
+  {
+    "_id": "9539739",
+    "name": "Daily'Debat",
+    "summary": "Au Daily'Debat, nous abordons des sujets difficiles et d'actualités pour en débattre avec d'arguments biens fondés.",
+    "type": "Debat",
+    "imageUrl": "https://images.unsplash.com/photo-1544531586-fde5298cdd40",
+    "verified": false,
+    "description": {
+      "parser": "markdown",
+      "data": "Au **Daily'Debat**, nous abordons des sujets _difficiles_ et d'_actualités_ pour en débattre avec d'arguments biens fondés."
+    },
+    "location": {
+      "global": false,
+      "schools": [
+        {
+          "_id": "312974129",
+          "shortName": "CIV",
+          "displayName": "Centre International de Valbonne",
+          "type": ["lycee", "college", "prepa"],
+          "address": {
+            "coordinates": {
+              "lat": 0,
+              "lon": 0
+            },
+            "address": {
+              "number": "190",
+              "street": "Rue Frédéric Mistral",
+              "city": "Valbonne",
+              "code": "06560"
+            },
+            "departments": [
+              { "_id": "31213124", "displayName": "Alpes Maritimes", "shortName": "06" }
+            ]
+          }
+        }
+      ]
+    },
+    "cache": {
+      "followers": 140,
+      "members": 12
+    },
+    "userInfo": {
+      "isFollowing": true,
+      "isMember": false
+    },
+    "members": [
+      {
+        "_id": "fqsfeirid",
+        "displayName": "Axel",
+        "position": 0,
+        "role": { "name": "Admin", "admin": true }
+      },
+      {
+        "_id": "xcvghjuik",
+        "displayName": "Tom",
+        "position": 0,
+        "role": { "name": "Admin", "admin": false }
+      },
+      {
+        "_id": "mlkiujyhbfd",
+        "displayName": "Martin",
+        "position": 1,
+        "role": { "name": "Modérateur", "admin": false }
+      },
+      {
+        "_id": "poiuhvft",
+        "displayName": "Emma",
+        "position": 2,
+        "role": { "name": "Membre", "admin": false }
+      },
+      {
+        "_id": "rtghbvcfg",
+        "displayName": "Gabriel",
+        "position": 2,
+        "role": { "name": "Membre", "admin": false }
+      }
+    ]
+  },
+  {
+    "_id": "3192031274",
+    "name": "Éco-délégués",
+    "summary": "Nous sommes les ambassadeurs indispensables des démarches éco-citoyennes amorcées par les établissements scolaires, en lien avec l’ensemble de la communauté scolaire.",
+    "type": "Nature",
+    "imageUrl": "https://i.picsum.photos/id/10/2500/1667.jpg",
+    "verified": false,
+    "description": {
+      "parser": "plaintext",
+      "data": "Les classes de collège et de lycée élisent des éco-délégués pour participer activement à la mise en oeuvre du développement durable dans leurs établissements. À travers ces élections et les projets éco-responsables menés toute l'année, les élèves deviennent acteurs à part entière pour faire des établissements des espaces de biodiversité, à la pointe de la lutte contre le réchauffement climatique. 250 000 classes engagées pour le développement durable, ça peut tout changer. "
+    },
+    "location": {
+      "global": false,
+      "schools": [
+        {
+          "_id": "312974129",
+          "shortName": "CIV",
+          "displayName": "Centre International de Valbonne",
+          "type": ["lycee", "college", "prepa"],
+          "address": {
+            "coordinates": {
+              "lat": 0,
+              "lon": 0
+            },
+            "address": {
+              "number": "190",
+              "street": "Rue Frédéric Mistral",
+              "city": "Valbonne",
+              "code": "06560"
+            },
+            "departments": [
+              { "_id": "31213124", "displayName": "Alpes Maritimes", "shortName": "06" }
+            ]
+          }
+        }
+      ]
+    },
+    "cache": {
+      "followers": 50,
+      "members": 30
+    },
+    "userInfo": {
+      "isFollowing": true,
+      "isMember": false
+    },
+    "members": [
+      {
+        "_id": "fqsdfgqdfs",
+        "displayName": "Marc",
+        "position": 0,
+        "role": { "name": "Admin", "admin": true }
+      },
+      {
+        "_id": "ertez",
+        "displayName": "Sophie",
+        "position": 1,
+        "role": { "name": "Modérateur", "admin": false }
+      },
+      {
+        "_id": "hfdcvxs",
+        "displayName": "Axel",
+        "position": 1,
+        "role": { "name": "Modérateur", "admin": false }
+      },
+      {
+        "_id": "hfgdsq",
+        "displayName": "François",
+        "position": 2,
+        "role": { "name": "Déléguée", "admin": false }
+      }
+    ]
+  },
+  {
+    "_id": "3127419281",
+    "name": "Club de Robotique",
+    "summary": "Au club de robotique, nous concevons, construisons et programmons notre propre robot afin de remporter une compétition internationale nommée First Tech Challenge.",
+    "type": "Nature",
+    "imageUrl": "https://i.imgur.com/wosH2xY.jpg",
+    "verified": true,
+    "description": {
+      "parser": "plaintext",
+      "data": "Au club de robotique, nous concevons, construisons et programmons notre propre robot afin de remporter une compétition internationale nommée First Tech Challenge."
+    },
+    "location": {
+      "global": false,
+      "schools": [
+        {
+          "_id": "312974129",
+          "shortName": "CIV",
+          "displayName": "Centre International de Valbonne",
+          "type": ["lycee", "college", "prepa"],
+          "address": {
+            "coordinates": {
+              "lat": 0,
+              "lon": 0
+            },
+            "address": {
+              "number": "190",
+              "street": "Rue Frédéric Mistral",
+              "city": "Valbonne",
+              "code": "06560"
+            },
+            "departments": [
+              { "_id": "31213124", "displayName": "Alpes Maritimes", "shortName": "06" }
+            ]
+          }
+        }
+      ]
+    },
+    "cache": {
+      "followers": 315,
+      "members": 50
+    },
+    "userInfo": {
+      "isFollowing": true,
+      "isMember": true
+    },
+    "members": [
+      {
+        "_id": "312152321",
+        "displayName": "Jérôme",
+        "position": 0,
+        "role": { "name": "Admin", "admin": true }
+      },
+      {
+        "_id": "dQSFDQSD",
+        "displayName": "Alex",
+        "position": 1,
+        "role": { "name": "Modérateur", "admin": false }
+      },
+      {
+        "_id": "qdfqdsfqsdf",
+        "displayName": "Bruno",
+        "position": 1,
+        "role": { "name": "Modérateur", "admin": false }
+      },
+      {
+        "_id": "fqsdfqsdf",
+        "displayName": "Benjamin",
+        "position": 2,
+        "role": { "name": "Programmeur", "admin": false }
+      }
+    ]
+  }
+]

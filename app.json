@@ -1,0 +1,135 @@
+{
+  "name": "Topic",
+  "displayName": "Topic",
+  "config": {
+    "logger": {
+      "level": "debug"
+    },
+    "api": {
+      "url": "https://api.topicapp.fr/v1/",
+      "retryTime": 10
+    },
+    "cdn": {
+      "image": {
+        "url": "https://cdn.topicapp.fr/file/get/",
+        "defaultSize": "small",
+        "retryTime": 10
+      }
+    },
+    "content": {
+      "allowedSites": [
+        { "url": "https://topicapp.fr/", "allowSubdomains": true },
+        { "url": "https://gitlab.com/", "allowSubdomains": true }
+      ]
+    },
+    "maps": {
+      "url": "https://maps.topicapp.fr/"
+    },
+    "defaults": {
+      "theme": "light",
+      "useSystemTheme": true,
+      "history": true,
+      "recommendations": false,
+      "syncHistory": true,
+      "syncLists": true
+    },
+    "articles": {
+      "lists": [
+        {
+          "id": "0",
+          "name": "Favoris",
+          "icon": "star-outline",
+          "items": []
+        },
+        {
+          "id": "1",
+          "name": "A lire plus tard",
+          "icon": "history",
+          "items": []
+        }
+      ],
+      "quicks": [],
+      "defaults": {
+        "categories": ["unread", "all"]
+      }
+    },
+    "comments": {
+      "maxCharacters": 500
+    },
+    "logger": {
+      "level": "debug",
+      "exclude": []
+    },
+    "dev": {
+      "logRequests": false,
+      "defaultLocation": {
+        "selected": false,
+        "type": "school",
+        "schools": [],
+        "schoolData": [
+          {
+            "_id": "5e9208118851c52a8e6c6f8d",
+            "name": "Centre International de Valbonne",
+            "shortName": "CIV",
+            "type": "lycee",
+            "address": {
+              "shortName": "Sophia-Antipolis, Alpes Maritimes",
+              "coordinates": {
+                "lat": 43.6215017,
+                "lon": 7.0416363
+              },
+              "department": null
+            },
+            "adminGroups": [],
+            "image": {
+              "image": null,
+              "thumbnail": {
+                "small": false,
+                "medium": false,
+                "large": false
+              }
+            },
+            "description": {
+              "parser": "markdown",
+              "data": "Hello there **bold**"
+            },
+            "department": null
+          }
+        ],
+        "departments": [],
+        "departmentData": [],
+        "global": false
+      },
+      "defaultAccount": {
+        "loggedIn": false,
+        "accountInfo": {
+          "accountId": "5ec990bef666120011fc9276",
+          "accountToken": "VbLkYDu3_7iFNEXQsCiQc",
+          "accountTokenExpiry": "2020-05-30T21:08:14.245Z",
+          "user": {
+            "info": {
+              "joinDate": "2020-05-23T21:08:14.217Z",
+              "username": "test"
+            },
+            "data": {
+              "following": { "groups": [], "users": [], "events": [] },
+              "cache": { "followers": null },
+              "public": false,
+              "firstName": "",
+              "lastName": "",
+              "description": "",
+              "location": {
+                "global": false,
+                "schools": ["5e9208118851c52a8e6c6f8d"],
+                "departments": [],
+                "_id": "5ec990bef666120011fc9277"
+              }
+            },
+            "sensitiveData": { "email": "test@test.com" }
+          }
+        },
+        "creationData": {}
+      }
+    }
+  }
+}
