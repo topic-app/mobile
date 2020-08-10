@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { register, updateState } from '@redux/actions/data/account';
-import StepperViewPager from '@components/StepperViewPager';
+import { register, updateState } from "@redux/actions/data/account";
+import StepperView from "@components/StepperView";
 
-import PetitionAddPageGeneral from '../components/AddGeneral';
-import PetitionAddPageLocation from '../components/AddLocation';
-import PetitionAddPageGoals from '../components/AddGoals';
-import PetitionAddPageDescription from '../components/AddDescription';
+import PetitionAddPageGeneral from "../components/AddGeneral";
+import PetitionAddPageLocation from "../components/AddLocation";
+import PetitionAddPageGoals from "../components/AddGoals";
+import PetitionAddPageDescription from "../components/AddDescription";
 
 function PetitionAdd({ navigation, reqState, creationData }) {
   const viewPagerRef = React.useRef(null);
@@ -19,68 +19,68 @@ function PetitionAdd({ navigation, reqState, creationData }) {
   };
 
   return (
-    <StepperViewPager
+    <StepperView
       viewPagerRef={viewPagerRef}
       reqState={reqState}
       title="Créer une pétition"
       pages={[
         {
-          icon: 'comment-outline',
-          label: 'Titre',
+          icon: "comment-outline",
+          label: "Titre",
           component: <PetitionAddPageGeneral />,
           scrollToBottom: true,
           height: 450,
         },
         {
-          icon: 'map-marker',
-          label: 'Écoles',
+          icon: "map-marker",
+          label: "Écoles",
           component: <PetitionAddPageLocation />,
           scrollToBottom: true,
           height: 260,
         },
         {
-          icon: 'script-text',
-          label: 'Description',
+          icon: "script-text",
+          label: "Description",
           component: <PetitionAddPageDescription />,
           height: 950,
         },
         {
-          icon: 'check-decagram',
-          label: 'Objectifs',
+          icon: "check-decagram",
+          label: "Objectifs",
           component: <PetitionAddPageGoals />,
           height: 950,
         },
       ]}
       success={{
-        icon: 'account-check-outline',
-        title: 'Pétition ajoutée',
+        icon: "account-check-outline",
+        title: "Pétition ajoutée",
         actions: [
           {
-            label: 'Continuer',
+            label: "Continuer",
             onPress: () =>
-              navigation.navigate('Main', {
-                screen: 'Home1',
-                params: { screen: 'Home2', params: { screen: 'Article' } },
+              navigation.navigate("Main", {
+                screen: "Home1",
+                params: { screen: "Home2", params: { screen: "Article" } },
               }),
           },
         ],
       }}
       failure={{
-        icon: 'account-remove-outline',
-        title: 'Erreur lors de la création du compte',
+        icon: "account-remove-outline",
+        title: "Erreur lors de la création du compte",
         description:
-          'Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données soient correctes ou signaler un bug depuis le menu principal',
+          "Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données soient correctes ou signaler un bug depuis le menu principal",
         actions: [
           {
-            label: 'Réessayer',
+            label: "Réessayer",
             onPress: () => restart(),
           },
           {
-            label: 'Continuer',
+            label: "Continuer",
             onPress: () =>
-              navigation.navigate('Main', {
-                screen: 'Home1',
-                params: { screen: 'Home2', params: { screen: 'Article' } },
+              navigation.navigate("Main", {
+                screen: "Home1",
+                params: { screen: "Home2", params: { screen: "Article" } },
               }),
           },
         ],

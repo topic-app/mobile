@@ -1,3 +1,5 @@
-const TranslucentStatusBar = null;
+const TranslucentStatusBar = () => null;
+const HeaderConfig = () => null;
+const CustomHeaderBar = () => null;
 
-export { TranslucentStatusBar };
+export { TranslucentStatusBar, HeaderConfig, CustomHeaderBar };

@@ -79,7 +79,7 @@ const LandingWelcome: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={landingStyles.landingPage}>
-      {/*<TranslucentStatusBar barStyle="light-content" />*/}
+      <TranslucentStatusBar barStyle="light-content" />
       <ScrollView>
         <View style={landingStyles.headerContainer}>
           <View style={landingStyles.centerContainer}>

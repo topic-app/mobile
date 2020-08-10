@@ -367,7 +367,7 @@ const WelcomeLocation: React.FC<Props> = ({
 
   const ListHeaderComponent = (
     <View>
-      {/*<TranslucentStatusBar backgroundColor={colors.background} />*/}
+      <TranslucentStatusBar backgroundColor={colors.background} />
       <View style={landingStyles.headerContainer}>
         <View style={landingStyles.centerIllustrationContainer}>
           {/*<Illustration name="location-select" height={200} width={200} />*/}
@@ -540,28 +540,39 @@ const WelcomeLocation: React.FC<Props> = ({
                 logger.info(
                   "User has not specified a landing location. Showing alert."
                 );
-                /*Alert.alert(
-                  "Ne pas spécifier de localisation?",
-                  "Vous verrez uniquement les articles déstinés à la france entière",
-                  [
-                    {
-                      text: "Annuler",
-                    },
-                    {
-                      text: "Continuer",
-                      onPress: () =>
-                        done(
-                          selectedSchools,
-                          selectedDepartments,
-                          selectedOthers,
-                          navigation,
-                          persistentData,
-                          goBack
-                        ),
-                    },
-                  ],
-                  { cancelable: true }
-                );*/
+                if (Platform.OS !== "web") {
+                  Alert.alert(
+                    "Ne pas spécifier de localisation?",
+                    "Vous verrez uniquement les articles déstinés à la france entière",
+                    [
+                      {
+                        text: "Annuler",
+                      },
+                      {
+                        text: "Continuer",
+                        onPress: () =>
+                          done(
+                            selectedSchools,
+                            selectedDepartments,
+                            selectedOthers,
+                            navigation,
+                            persistentData,
+                            goBack
+                          ),
+                      },
+                    ],
+                    { cancelable: true }
+                  );
+                } else {
+                  done(
+                    selectedSchools,
+                    selectedDepartments,
+                    selectedOthers,
+                    navigation,
+                    persistentData,
+                    goBack
+                  );
+                }
               } else {
                 logger.info("User selected locations", selected);
                 done(

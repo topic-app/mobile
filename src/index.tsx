@@ -6,8 +6,8 @@ import {
 
 import Store from "@redux/store";
 
-// import RootNavigator from './scenes/Root';
-// import AuthStackNavigator from './scenes/auth/index';
+import RootNavigator from "./scenes/Root";
+import AuthStackNavigator from "./scenes/auth/index";
 import LandingStackNavigator from "./scenes/landing/index";
 
 export type AppStackParams = {
@@ -25,8 +25,8 @@ function AppStackNavigator() {
       headerMode="none"
       screenOptions={TransitionPresets.SlideFromRightIOS}
     >
-      {/*<Stack.Screen name="Auth" component={AuthStackNavigator} />*/}
-      {/* Comment <Stack.Screen name="Root" component={RootNavigator} />*/}
+      <Stack.Screen name="Auth" component={AuthStackNavigator} />
+      <Stack.Screen name="Root" component={RootNavigator} />
       <Stack.Screen name="Landing" component={LandingStackNavigator} />
     </Stack.Navigator>
   );
