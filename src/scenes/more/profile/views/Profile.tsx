@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, ScrollView, Alert } from 'react-native';
+import React from "react";
+import { View, ScrollView, Alert } from "react-native";
 import {
   Text,
   useTheme,
@@ -9,24 +9,24 @@ import {
   Button,
   List,
   ProgressBar,
-} from 'react-native-paper';
-import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+} from "react-native-paper";
+import { connect } from "react-redux";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { Account, Address, State } from '@ts/types';
-import { Avatar, ErrorMessage, InlineCard } from '@components/index';
-import getStyles from '@styles/Styles';
-import { fetchAccount, logout } from '@redux/actions/data/account';
+import { Account, Address, State } from "@ts/types";
+import { Avatar, ErrorMessage, InlineCard } from "@components/index";
+import getStyles from "@styles/Styles";
+import { fetchAccount, logout } from "@redux/actions/data/account";
 
-import ProfileItem from '../components/ProfileItem';
-import VisibilityModal from '../components/VisibilityModal';
-import NameModal from '../components/NameModal';
-import UsernameModal from '../components/UsernameModal';
-import EmailModal from '../components/EmailModal';
-import PasswordModal from '../components/PasswordModal';
-import getProfileStyles from '../styles/Styles';
+import ProfileItem from "../components/ProfileItem";
+import VisibilityModal from "../components/VisibilityModal";
+import NameModal from "../components/NameModal";
+import UsernameModal from "../components/UsernameModal";
+import EmailModal from "../components/EmailModal";
+import PasswordModal from "../components/PasswordModal";
+import getProfileStyles from "../styles/Styles";
 
-function getAddressString(address: Address['address']) {
+function getAddressString(address: Address["address"]) {
   const { number, street, city, code } = address || {};
   if (number && street && city && code) {
     return `${number} ${street}, ${code} ${city}`;
@@ -68,9 +68,9 @@ function Profile({
         <ErrorMessage
           type="axios"
           strings={{
-            what: 'la mise à jour du profil',
-            contentPlural: 'des informations de profil',
-            contentSingular: 'Le profil',
+            what: "la mise à jour du profil",
+            contentPlural: "des informations de profil",
+            contentSingular: "Le profil",
           }}
           error={account.state.fetchAccount.error}
           retry={fetchAccount}
@@ -78,25 +78,38 @@ function Profile({
       )}
       <ScrollView>
         <View style={[styles.contentContainer, { marginTop: 20 }]}>
-          <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
+          <View
+            style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}
+          >
             <Avatar size={120} avatar={account.accountInfo.user.info.avatar} />
           </View>
-          <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
+          <View
+            style={[
+              styles.centerIllustrationContainer,
+              { flexDirection: "row" },
+            ]}
+          >
             {account.accountInfo.user.data.public ? (
-              <View style={{ alignItems: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ alignItems: "center" }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Title>
                     {genName(account.accountInfo.user) ||
                       `@${account.accountInfo.user.info.username}`}
                   </Title>
                   <View style={{ marginLeft: 5 }}>
                     {account.accountInfo.user.info.official && (
-                      <Icon name="check-decagram" color={colors.primary} size={20} />
+                      <Icon
+                        name="check-decagram"
+                        color={colors.primary}
+                        size={20}
+                      />
                     )}
                   </View>
                 </View>
                 {genName(account.accountInfo.user) && (
-                  <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                  <Subheading
+                    style={{ marginTop: -10, color: colors.disabled }}
+                  >
                     @{account.accountInfo.user.info.username}
                   </Subheading>
                 )}
@@ -107,35 +120,43 @@ function Profile({
           </View>
         </View>
         <Divider style={{ marginVertical: 10 }} />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          <View style={{ alignItems: 'center' }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+          <View style={{ alignItems: "center" }}>
             <Text style={{ fontSize: 40 }}>
-              {account.accountInfo.user.data.cache.followers || ''}
+              {account.accountInfo.user.data.cache.followers || ""}
             </Text>
             <Text>
-              Abonnés{' '}
+              Abonnés{" "}
               <Icon
-                name={account.accountInfo.user.data.public ? 'eye-outline' : 'lock-outline'}
+                name={
+                  account.accountInfo.user.data.public
+                    ? "eye-outline"
+                    : "lock-outline"
+                }
                 color={colors.disabled}
               />
             </Text>
           </View>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: "center" }}>
             <Text style={{ fontSize: 40 }}>
               {account.accountInfo.user.data.following.groups.length +
                 account.accountInfo.user.data.following.users.length +
                 account.accountInfo.user.data.following.events.length}
             </Text>
             <Text>
-              Abonnements{' '}
+              Abonnements{" "}
               <Icon
-                name={account.accountInfo.user.data.public ? 'eye-outline' : 'lock-outline'}
+                name={
+                  account.accountInfo.user.data.public
+                    ? "eye-outline"
+                    : "lock-outline"
+                }
                 color={colors.disabled}
               />
             </Text>
           </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 40 }}>{account.groups.length}</Text>
+          <View style={{ alignItems: "center" }}>
+            <Text style={{ fontSize: 40 }}>{account.groups?.length}</Text>
             <Text>
               Groupes <Icon name="eye-outline" color={colors.disabled} />
             </Text>
@@ -148,7 +169,7 @@ function Profile({
           <Divider />
           <ProfileItem
             item="Visibilité"
-            value={account.accountInfo.user.data.public ? 'Public' : 'Privé'}
+            value={account.accountInfo.user.data.public ? "Public" : "Privé"}
             editable
             type="none"
             onPress={() => setVisibilityVisible(true)}
@@ -164,7 +185,7 @@ function Profile({
             <View>
               <ProfileItem
                 item="Nom"
-                value={genName(account.accountInfo.user) || 'Non spécifié'}
+                value={genName(account.accountInfo.user) || "Non spécifié"}
                 editable
                 disabled={!genName(account.accountInfo.user)}
                 type="public"
@@ -187,7 +208,7 @@ function Profile({
               <InlineCard
                 icon="map-marker"
                 title="France Entière"
-                onPress={() => console.log('global pressed')}
+                onPress={() => console.log("global pressed")}
               />
             )}
             {location.schoolData?.map((school) => (
@@ -196,11 +217,15 @@ function Profile({
                 icon="school"
                 title={school.name}
                 subtitle={`${
-                  getAddressString(school.address?.address) || school.address.shortName
+                  getAddressString(school.address?.address) ||
+                  school.address.shortName
                 }${
                   school.departments[0]
-                    ? `, ${school.departments[0].displayName || school.departments[0].name}`
-                    : ''
+                    ? `, ${
+                        school.departments[0].displayName ||
+                        school.departments[0].name
+                      }`
+                    : ""
                 }`}
                 onPress={() => console.log(`school ${school._id} pressed!`)}
               />
@@ -210,7 +235,9 @@ function Profile({
                 key={dep._id}
                 icon="map-marker-radius"
                 title={dep.name}
-                subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${dep.code}`}
+                subtitle={`${
+                  dep.type === "departement" ? "Département" : "Région"
+                } ${dep.code}`}
                 onPress={() => console.log(`department ${dep._id} pressed!`)}
               />
             ))}
@@ -218,8 +245,8 @@ function Profile({
               <Button
                 mode="outlined"
                 onPress={() =>
-                  navigation.navigate('Landing', {
-                    screen: 'SelectLocation',
+                  navigation.navigate("Landing", {
+                    screen: "SelectLocation",
                     params: { goBack: true },
                   })
                 }
@@ -231,7 +258,10 @@ function Profile({
           <View style={{ height: 50 }} />
           <List.Subheader>Authentification</List.Subheader>
           <Divider />
-          <List.Item title="Changer mon mot de passe" onPress={() => setPasswordVisible(true)} />
+          <List.Item
+            title="Changer mon mot de passe"
+            onPress={() => setPasswordVisible(true)}
+          />
           <List.Item
             disabled
             title="Activer l'Authentification à deux facteurs"
@@ -240,22 +270,22 @@ function Profile({
           />
           <List.Item
             title="Se déconnecter"
-            titleStyle={{ color: 'red' }}
+            titleStyle={{ color: "red" }}
             onPress={() => {
               navigation.popToTop();
               Alert.alert(
-                'Se déconnecter?',
+                "Se déconnecter?",
                 "Les listes et l'historique seront toujours disponibles sur votre téléphone",
                 [
                   {
-                    text: 'Annuler',
+                    text: "Annuler",
                   },
                   {
-                    text: 'Se déconnecter',
+                    text: "Se déconnecter",
                     onPress: logout,
                   },
                 ],
-                { cancelable: true },
+                { cancelable: true }
               );
             }}
           />
@@ -266,14 +296,14 @@ function Profile({
             title="Exporter mes données"
             onPress={() =>
               Alert.alert(
-                'Exporter les données ?',
-                'Vous recevrez un email avec un lien pour télécharger vos données.',
+                "Exporter les données ?",
+                "Vous recevrez un email avec un lien pour télécharger vos données.",
                 [
                   {
-                    text: 'Annuler',
+                    text: "Annuler",
                   },
                 ],
-                { cancelable: true },
+                { cancelable: true }
               )
             }
           />
@@ -281,14 +311,14 @@ function Profile({
             title="Supprimer mon compte"
             onPress={() => {
               Alert.alert(
-                'Supprimer le compte?',
-                'Cette action est irréversible. Vous recevrez un email de confirmation.',
+                "Supprimer le compte?",
+                "Cette action est irréversible. Vous recevrez un email de confirmation.",
                 [
                   {
-                    text: 'Annuler',
+                    text: "Annuler",
                   },
                 ],
-                { cancelable: true },
+                { cancelable: true }
               );
             }}
           />
@@ -301,11 +331,20 @@ function Profile({
           </View>
         </View>
       </ScrollView>
-      <VisibilityModal visible={isVisibilityVisible} setVisible={setVisibilityVisible} />
+      <VisibilityModal
+        visible={isVisibilityVisible}
+        setVisible={setVisibilityVisible}
+      />
       <NameModal visible={isNameVisible} setVisible={setNameVisible} />
-      <UsernameModal visible={isUsernameVisible} setVisible={setUsernameVisible} />
+      <UsernameModal
+        visible={isUsernameVisible}
+        setVisible={setUsernameVisible}
+      />
       <EmailModal visible={isEmailVisible} setVisible={setEmailVisible} />
-      <PasswordModal visible={isPasswordVisible} setVisible={setPasswordVisible} />
+      <PasswordModal
+        visible={isPasswordVisible}
+        setVisible={setPasswordVisible}
+      />
     </View>
   );
 }

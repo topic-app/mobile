@@ -370,7 +370,7 @@ const WelcomeLocation: React.FC<Props> = ({
       <TranslucentStatusBar backgroundColor={colors.background} />
       <View style={landingStyles.headerContainer}>
         <View style={landingStyles.centerIllustrationContainer}>
-          {/*<Illustration name="location-select" height={200} width={200} />*/}
+          <Illustration name="location-select" height={200} width={200} />
           <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
         </View>
       </View>
@@ -407,18 +407,18 @@ const WelcomeLocation: React.FC<Props> = ({
       {((searchText === "" &&
         (state.schools.list.error || state.departments.list.error)) ||
         (searchText !== "" &&
-          (state.schools.search?.error || state.departments.search?.error))) &&
-        false && (
-          <ErrorMessage
-            type="axios"
-            error={
-              searchText === ""
-                ? [state.schools.list.error, state.departments.list.error]
-                : [state.schools.search?.error, state.departments.search?.error]
-            }
-            retry={retry}
-          />
-        )}
+          (state.schools.search?.error ||
+            state.departments.search?.error))) && (
+        <ErrorMessage
+          type="axios"
+          error={
+            searchText === ""
+              ? [state.schools.list.error, state.departments.list.error]
+              : [state.schools.search?.error, state.departments.search?.error]
+          }
+          retry={retry}
+        />
+      )}
     </View>
   );
 
@@ -484,7 +484,7 @@ const WelcomeLocation: React.FC<Props> = ({
       />
       <Divider />
       {state.location.update.loading && <ProgressBar indeterminate />}
-      {state.location.update.error && false && (
+      {state.location.update.error && (
         <ErrorMessage
           type="axios"
           error={state.location.update.error}

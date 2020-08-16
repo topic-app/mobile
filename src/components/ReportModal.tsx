@@ -1,5 +1,5 @@
-import React from 'react';
-import { ModalProps } from '@ts/types';
+import React from "react";
+import { ModalProps, Account, State } from "@ts/types";
 import {
   Divider,
   Button,
@@ -10,16 +10,20 @@ import {
   RadioButton,
   List,
   ProgressBar,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import Modal from 'react-native-modal';
+} from "react-native-paper";
+import { View, Platform, FlatList } from "react-native";
+import Modal from "react-native-modal";
+import { connect } from "react-redux";
 
-import { ErrorMessage } from '@components/index';
-import getStyles from '@styles/Styles';
+import { ErrorMessage } from "@components/index";
+import getStyles from "@styles/Styles";
 
 type ReportModalProps = ModalProps & {
   report: (articleId: string, reason: string) => any;
   contentId: string;
+  state: { loading: boolean; success: boolean; error: any };
+  account: Account;
+  navigation: { navigate: Function };
 };
 
 const ReportModal: React.FC<ReportModalProps> = ({
@@ -27,7 +31,9 @@ const ReportModal: React.FC<ReportModalProps> = ({
   setVisible,
   report,
   state = { error: true },
+  account,
   contentId,
+  navigation = { navigate: () => {} },
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -35,37 +41,37 @@ const ReportModal: React.FC<ReportModalProps> = ({
 
   const reasons = [
     {
-      id: 'ILLEGAL',
-      name: 'Contenu illégal',
+      id: "ILLEGAL",
+      name: "Contenu illégal",
     },
     {
-      id: 'EXPLICIT',
-      name: 'Contenu explicite ou non conforme',
+      id: "EXPLICIT",
+      name: "Contenu explicite ou non conforme",
     },
     {
-      id: 'MISINFORMATION',
-      name: 'Contenu trompeur ou diffamation',
+      id: "MISINFORMATION",
+      name: "Contenu trompeur ou diffamation",
     },
     {
-      id: 'HATE',
-      name: 'Contenu haineux ou discriminatoire',
+      id: "HATE",
+      name: "Contenu haineux ou discriminatoire",
     },
     {
-      id: 'PRIVATEDATA',
-      name: 'Atteinte à la vie privée',
+      id: "PRIVATEDATA",
+      name: "Atteinte à la vie privée",
     },
     {
-      id: 'COPYRIGHT',
-      name: 'Atteinte à la propriété intellectuelle',
+      id: "COPYRIGHT",
+      name: "Atteinte à la propriété intellectuelle",
     },
     {
-      id: 'OTHER',
-      name: 'Autre',
+      id: "OTHER",
+      name: "Autre",
     },
   ];
 
-  const [reportOption, setReportOption] = React.useState('OTHER');
-  const [reportText, setReportText] = React.useState('');
+  const [reportOption, setReportOption] = React.useState("OTHER");
+  const [reportText, setReportText] = React.useState("");
 
   return (
     <Modal
@@ -74,7 +80,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
       onBackdropPress={() => setVisible(false)}
       onBackButtonPress={() => setVisible(false)}
       onSwipeComplete={() => setVisible(false)}
-      swipeDirection={['down']}
+      swipeDirection={["down"]}
       style={styles.bottomModal}
     >
       <Card>
@@ -85,23 +91,27 @@ const ReportModal: React.FC<ReportModalProps> = ({
               <View style={styles.contentContainer}>
                 <View style={styles.centerIllustrationContainer}>
                   <Text>Reporter ce contenu</Text>
-                  <Text>Nous vous contacterons si nécéssaire pour avoir plus de détails</Text>
+                  <Text>
+                    Nous vous contacterons si nécéssaire pour avoir plus de
+                    détails
+                  </Text>
                 </View>
               </View>
               {state.error && (
                 <ErrorMessage
                   type="axios"
                   strings={{
-                    what: 'le signalement du contenu',
-                    contentSingular: 'Le contenu',
+                    what: "le signalement du contenu",
+                    contentSingular: "Le contenu",
                   }}
                   error={state.error}
                   retry={() =>
-                    report(contentId, `${reportOption}${reportText ? `- ${reportText}` : ''}`).then(
-                      () => {
-                        setReportText(''), setVisible(false);
-                      },
-                    )
+                    report(
+                      contentId,
+                      `${reportOption}${reportText ? `- ${reportText}` : ""}`
+                    ).then(() => {
+                      setReportText(""), setVisible(false);
+                    })
                   }
                 />
               )}
@@ -113,22 +123,31 @@ const ReportModal: React.FC<ReportModalProps> = ({
             return (
               <View>
                 <List.Item
+                  titleStyle={{
+                    color: account.loggedIn ? colors.text : colors.disabled,
+                  }}
                   title={item.name}
                   onPress={() => setReportOption(item.id)}
                   left={() =>
-                    Platform.OS !== 'ios' && (
+                    Platform.OS !== "ios" && (
                       <RadioButton
+                        disabled={!account.loggedIn}
                         color={colors.primary}
-                        status={item.id === reportOption ? 'checked' : 'unchecked'}
+                        status={
+                          item.id === reportOption ? "checked" : "unchecked"
+                        }
                         onPress={() => setReportOption(item.id)}
                       />
                     )
                   }
                   right={() =>
-                    Platform.OS === 'ios' && (
+                    Platform.OS === "ios" && (
                       <RadioButton
+                        disabled={!account.loggedIn}
                         color={colors.primary}
-                        status={item.id === reportOption ? 'checked' : 'unchecked'}
+                        status={
+                          item.id === reportOption ? "checked" : "unchecked"
+                        }
                         onPress={() => setReportOption(item.id)}
                       />
                     )
@@ -143,6 +162,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
                 <Divider />
                 <View style={styles.container}>
                   <TextInput
+                    disabled={!account.loggedIn}
                     mode="outlined"
                     multiline
                     label="Autres informations (facultatif)"
@@ -154,22 +174,53 @@ const ReportModal: React.FC<ReportModalProps> = ({
                 </View>
                 <Divider />
                 <View style={styles.contentContainer}>
-                  <Button
-                    mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                    color={colors.primary}
-                    uppercase={Platform.OS !== 'ios'}
-                    onPress={() =>
-                      report(
-                        contentId,
-                        `${reportOption}${reportText ? `- ${reportText}` : ''}`,
-                      ).then(() => {
-                        setReportText(''), setVisible(false);
-                      })
-                    }
-                    style={{ flex: 1 }}
-                  >
-                    Reporter
-                  </Button>
+                  {account.loggedIn ? (
+                    <Button
+                      mode={Platform.OS === "ios" ? "outlined" : "contained"}
+                      color={colors.primary}
+                      uppercase={Platform.OS !== "ios"}
+                      onPress={() =>
+                        report(
+                          contentId,
+                          `${reportOption}${
+                            reportText ? `- ${reportText}` : ""
+                          }`
+                        ).then(() => {
+                          setReportText(""), setVisible(false);
+                        })
+                      }
+                      style={{ flex: 1 }}
+                    >
+                      Signaler
+                    </Button>
+                  ) : (
+                    <View>
+                      <Text>Connectez vous pour signaler un contenu</Text>
+                      <Text>
+                        <Text
+                          onPress={() =>
+                            navigation.navigate("Auth", {
+                              scrReportereen: "Login",
+                            })
+                          }
+                          style={[styles.link, styles.primaryText]}
+                        >
+                          Se connecter
+                        </Text>
+                        <Text> ou </Text>
+                        <Text
+                          onPress={() =>
+                            navigation.navigate("Auth", {
+                              screen: "Create",
+                            })
+                          }
+                          style={[styles.link, styles.primaryText]}
+                        >
+                          créér un compte
+                        </Text>
+                      </Text>
+                    </View>
+                  )}
                 </View>
               </View>
             );
@@ -181,4 +232,11 @@ const ReportModal: React.FC<ReportModalProps> = ({
   );
 };
 
-export default ReportModal;
+const mapStateToProps = (state: State) => {
+  const { account } = state;
+  return {
+    account,
+  };
+};
+
+export default connect(mapStateToProps)(ReportModal);

@@ -1,15 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { View, Linking } from 'react-native';
-import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
-import { Drawer, Title, ProgressBar, useTheme } from 'react-native-paper';
-import { connect } from 'react-redux';
-import TopicIcon from '@assets/images/topic-icon.svg';
+import React from "react";
+import PropTypes from "prop-types";
+import { View, Linking } from "react-native";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+} from "@react-navigation/drawer";
+import { Drawer, Title, ProgressBar, useTheme } from "react-native-paper";
+import { connect } from "react-redux";
+import TopicIcon from "@assets/images/topic-icon.svg";
 
-import getNavigatorStyles from '@styles/NavStyles';
-import { fetchLocationData } from '@redux/actions/data/location';
-import ErrorMessage from '@components/ErrorMessage';
-import HomeTwoNavigator from './HomeTwo';
+import getNavigatorStyles from "@styles/NavStyles";
+import { fetchLocationData } from "@redux/actions/data/location";
+import ErrorMessage from "@components/ErrorMessage";
+import HomeTwoNavigator from "./HomeTwo";
 
 const DrawerNav = createDrawerNavigator();
 
@@ -41,9 +44,9 @@ function CustomDrawerContent({
             <ErrorMessage
               type="axios"
               strings={{
-                what: 'la mise à jour du profil',
-                contentPlural: 'des informations de profil',
-                contentSingular: 'Le profil',
+                what: "la mise à jour du profil",
+                contentPlural: "des informations de profil",
+                contentSingular: "Le profil",
               }}
               error={[
                 location.state.fetch.error,
@@ -54,12 +57,12 @@ function CustomDrawerContent({
             />
           )}
           <View style={navigatorStyles.profileIconContainer}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TopicIcon
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {/*<TopicIcon
                 style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
                 height={55}
                 width={55}
-              />
+              />*/}
               {loggedIn ? (
                 <View>
                   <Title
@@ -67,11 +70,15 @@ function CustomDrawerContent({
                     ellipsizeMode="tail"
                     numberOfLines={1}
                   >
-                    {genName(accountInfo?.user) || `@${accountInfo?.user?.info?.username || '...'}`}
+                    {genName(accountInfo?.user) ||
+                      `@${accountInfo?.user?.info?.username || "..."}`}
                   </Title>
                   {genName(accountInfo?.user) ? (
                     <Title
-                      style={[navigatorStyles.subtitle, { width: 200, marginTop: -8 }]}
+                      style={[
+                        navigatorStyles.subtitle,
+                        { width: 200, marginTop: -8 },
+                      ]}
                       ellipsizeMode="tail"
                       numberOfLines={1}
                     >
@@ -93,7 +100,7 @@ function CustomDrawerContent({
             icon="school"
             label={school?.shortName || school?.name}
             onPress={() => {
-              console.log('School pressed');
+              console.log("School pressed");
             }}
           />
         ))}
@@ -113,9 +120,9 @@ function CustomDrawerContent({
             icon="account-outline"
             onPress={() => {
               navigation.closeDrawer();
-              navigation.navigate('Main', {
-                screen: 'More',
-                params: { screen: 'Profile', params: { screen: 'Profile' } },
+              navigation.navigate("Main", {
+                screen: "More",
+                params: { screen: "Profile", params: { screen: "Profile" } },
               });
             }}
           />
@@ -124,28 +131,28 @@ function CustomDrawerContent({
             icon="account-group-outline"
             onPress={() => {
               navigation.closeDrawer();
-              navigation.navigate('Main', {
-                screen: 'More',
-                params: { screen: 'MyGroups', params: { screen: 'List' } },
+              navigation.navigate("Main", {
+                screen: "More",
+                params: { screen: "MyGroups", params: { screen: "List" } },
               });
             }}
           />
           {permissions?.some(
             (p) =>
-              p?.permission === 'article.verification.view' ||
-              p?.permission === 'event.verification.view' ||
-              p?.permission === 'petition.verification.view' ||
-              p?.permission === 'place.verification.view' ||
-              p?.permission === 'group.verification.view',
+              p?.permission === "article.verification.view" ||
+              p?.permission === "event.verification.view" ||
+              p?.permission === "petition.verification.view" ||
+              p?.permission === "place.verification.view" ||
+              p?.permission === "group.verification.view"
           ) && (
             <Drawer.Item
               label="Modération"
               icon="shield-check-outline"
               onPress={() => {
                 navigation.closeDrawer();
-                navigation.navigate('Main', {
-                  screen: 'More',
-                  params: { screen: 'Moderation', params: { screen: 'List' } },
+                navigation.navigate("Main", {
+                  screen: "More",
+                  params: { screen: "Moderation", params: { screen: "List" } },
                 });
               }}
             />
@@ -158,8 +165,8 @@ function CustomDrawerContent({
             icon="account-outline"
             onPress={() => {
               navigation.closeDrawer();
-              navigation.navigate('Auth', {
-                screen: 'Login',
+              navigation.navigate("Auth", {
+                screen: "Login",
               });
             }}
           />
@@ -168,8 +175,8 @@ function CustomDrawerContent({
             icon="account-plus-outline"
             onPress={() => {
               navigation.closeDrawer();
-              navigation.navigate('Auth', {
-                screen: 'Create',
+              navigation.navigate("Auth", {
+                screen: "Create",
               });
             }}
           />
@@ -181,9 +188,9 @@ function CustomDrawerContent({
           icon="settings-outline"
           onPress={() => {
             navigation.closeDrawer();
-            navigation.navigate('Main', {
-              screen: 'More',
-              params: { screen: 'Settings', params: { screen: 'List' } },
+            navigation.navigate("Main", {
+              screen: "More",
+              params: { screen: "Settings", params: { screen: "List" } },
             });
           }}
         />
@@ -192,9 +199,9 @@ function CustomDrawerContent({
           icon="information-outline"
           onPress={() => {
             navigation.closeDrawer();
-            navigation.navigate('Main', {
-              screen: 'More',
-              params: { screen: 'About', params: { screen: 'List' } },
+            navigation.navigate("Main", {
+              screen: "More",
+              params: { screen: "About", params: { screen: "List" } },
             });
           }}
         />
@@ -221,7 +228,9 @@ function HomeOneNavigator() {
   return (
     <DrawerNav.Navigator
       initialRouteName="Home2"
-      drawerContent={({ navigation }) => <CustomDrawerContentRedux navigation={navigation} />}
+      drawerContent={({ navigation }) => (
+        <CustomDrawerContentRedux navigation={navigation} />
+      )}
       drawerStyle={navigatorStyles.drawerStyle}
       edgeWidth={100}
     >
