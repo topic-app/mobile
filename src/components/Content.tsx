@@ -12,7 +12,10 @@ import { connect } from "react-redux";
 type Props = ContentType & { preferences: Preferences };
 
 const Content: React.FC<Props> = ({ parser, data, preferences }) => {
-  const styles = getStyles(useTheme());
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
+
   if (parser === "markdown") {
     return (
       <Markdown
@@ -30,6 +33,16 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
           heading4: { fontSize: Math.floor(preferences.fontSize * 1.2) },
           heading5: { fontSize: preferences.fontSize },
           heading6: { fontSize: Math.floor(preferences.fontSize * 0.7) },
+          strong: preferences.stripFormatting ? { fontWeight: "normal" } : {},
+          em: preferences.stripFormatting ? { fontStyle: "normal" } : {},
+          s: preferences.stripFormatting ? { textDecorationLine: "none" } : {},
+          blockquote: {
+            borderColor: colors.primary,
+            borderWidth: 1,
+            borderRadius: 5,
+            backgroundColor: colors.surface,
+            fontStyle: preferences.stripFormatting ? "normal" : "italic",
+          },
         }}
         rules={{
           image: (
