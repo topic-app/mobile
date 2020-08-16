@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider as PaperProvider } from "react-native-paper";
-// import { useColorScheme, Platform } from "react-native";
+import { useColorScheme, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { connect } from "react-redux";
 
@@ -18,7 +18,7 @@ type Props = {
 const StoreApp: React.FC<Props> = ({ preferences }) => {
   let theme = themes[preferences.theme] || "light";
 
-  const colorScheme = "light"; // useColorScheme();
+  const colorScheme = useColorScheme();
 
   if (preferences.useSystemTheme) {
     theme = themes[colorScheme === "dark" ? "dark" : "light"];

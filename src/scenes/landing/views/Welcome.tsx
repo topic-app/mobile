@@ -83,7 +83,7 @@ const LandingWelcome: React.FC<Props> = ({ navigation }) => {
       <ScrollView>
         <View style={landingStyles.headerContainer}>
           <View style={landingStyles.centerContainer}>
-            {/*<TopicIcon height={256} width={256} />*/}
+            <TopicIcon height={256} width={256} />
             <Text theme={DarkTheme} style={landingStyles.title}>
               Topic
             </Text>

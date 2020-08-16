@@ -104,11 +104,14 @@ const themes = {
     name: "Amoled",
     value: "amoled",
     ...darkBase,
-    appBar: "#000000",
-    tabBackground: "#000000",
-    drawerBackground: "#000000",
-    background: "#000000",
-    surface: "#000000",
+    colors: {
+      ...darkBase.colors,
+      appBar: "#000000",
+      tabBackground: "#000000",
+      drawerBackground: "#000000",
+      background: "#000000",
+      surface: "#000000",
+    },
   },
 };
 

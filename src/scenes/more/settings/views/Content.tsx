@@ -38,13 +38,15 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
   return (
     <View style={styles.page}>
       <ScrollView>
-        <View style={styles.container}>
-          <Card>
-            <View style={styles.contentContainer}>
-              <Content parser="markdown" data={testData} />
-            </View>
-          </Card>
-        </View>
+        <ScrollView height={300}>
+          <View style={styles.container}>
+            <Card>
+              <View style={styles.contentContainer}>
+                <Content parser="markdown" data={testData} />
+              </View>
+            </Card>
+          </View>
+        </ScrollView>
         <List.Section>
           <Divider />
           <List.Item
@@ -72,7 +74,6 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
-                  fontSize: preferences.fontSize,
                 }}
                 onPress={() => updatePrefs({ fontFamily: "Roboto" })}
                 mode={preferences.fontFamily === "Roboto" ? "outlined" : "text"}
@@ -90,7 +91,6 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
-                  fontSize: preferences.fontSize,
                 }}
                 onPress={() => updatePrefs({ fontFamily: "Roboto Slab" })}
                 mode={
@@ -109,7 +109,6 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
-                  fontSize: preferences.fontSize,
                 }}
                 onPress={() => updatePrefs({ fontFamily: "Roboto Mono" })}
                 mode={
@@ -124,7 +123,6 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
-                  fontSize: preferences.fontSize,
                 }}
                 onPress={() => updatePrefs({ fontFamily: "Open Dyslexic" })}
                 mode={
