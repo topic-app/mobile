@@ -8,6 +8,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@expo-google-fonts/roboto": "^0.1.0",
+    "@expo-google-fonts/rubik": "^0.1.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/netinfo": "^5.9.5",
     "@react-native-community/slider": "^3.0.0-rc.2",
