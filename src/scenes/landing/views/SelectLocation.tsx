@@ -370,8 +370,14 @@ const WelcomeLocation: React.FC<Props> = ({
       <TranslucentStatusBar backgroundColor={colors.background} />
       <View style={landingStyles.headerContainer}>
         <View style={landingStyles.centerIllustrationContainer}>
-          <Illustration name="location-select" height={200} width={200} />
-          <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
+          <CollapsibleView collapsed={!!searchText}>
+            <Illustration name="location-select" height={200} width={200} />
+          </CollapsibleView>
+          <View style={!!searchText && { marginTop: 30 }}>
+            <Text style={landingStyles.sectionTitle}>
+              Choisissez votre école
+            </Text>
+          </View>
         </View>
       </View>
       <View style={landingStyles.searchContainer}>
@@ -504,35 +510,46 @@ const WelcomeLocation: React.FC<Props> = ({
           }
         />
       )}
-      <CollapsibleView collapsed={selected.length !== 0}>
-        <View style={landingStyles.contentContainer}>
-          <Text>
-            Par défaut, vous verrez les articles déstinés à votre école, ainsi
-            que les articles du département dans lequel se trouve l&apos;école
-            et de la France entière
-          </Text>
-        </View>
-      </CollapsibleView>
+      <View style={{ marginBottom: -20 }}>
+        <CollapsibleView collapsed={selected.length !== 0}>
+          <View style={landingStyles.contentContainer}>
+            <Text>
+              Par défaut, vous verrez les articles déstinés à votre école, ainsi
+              que les articles du département dans lequel se trouve l&apos;école
+              et de la France entière
+            </Text>
+          </View>
+        </CollapsibleView>
 
-      <CollapsibleView collapsed={selected.length === 0}>
-        <ChipAddList
-          setList={(item) =>
-            [setSelectedSchools, setSelectedDepartments, setSelectedOthers][
-              ["school", "department", "other"].indexOf(item.type)
-            ](
-              [selectedSchools, selectedDepartments, selectedOthers][
+        <CollapsibleView collapsed={selected.length === 0}>
+          <ChipAddList
+            setList={(item) =>
+              [setSelectedSchools, setSelectedDepartments, setSelectedOthers][
                 ["school", "department", "other"].indexOf(item.type)
-              ]?.filter((i) => i !== item.key)
-            )
-          }
-          data={selected.map((s) => persistentData.find((p) => p.key === s))}
-          chipProps={{ icon: "close", rightAction: true }}
-        />
-      </CollapsibleView>
+              ](
+                [selectedSchools, selectedDepartments, selectedOthers][
+                  ["school", "department", "other"].indexOf(item.type)
+                ]?.filter((i) => i !== item.key)
+              )
+            }
+            data={selected.map((s) => persistentData.find((p) => p.key === s))}
+            chipProps={{ icon: "close", rightAction: true }}
+          />
+        </CollapsibleView>
+      </View>
       <View style={landingStyles.contentContainer}>
         <View style={landingStyles.buttonContainer}>
           <Button
-            mode={Platform.OS === "ios" ? "outlined" : "contained"}
+            mode={
+              Platform.OS === "ios" ||
+              !(
+                selectedSchools.length ||
+                selectedDepartments.length ||
+                selectedOthers.length
+              )
+                ? "outlined"
+                : "contained"
+            }
             color={colors.primary}
             uppercase={Platform.OS !== "ios"}
             onPress={() => {
@@ -587,7 +604,11 @@ const WelcomeLocation: React.FC<Props> = ({
             }}
             style={{ flex: 1 }}
           >
-            Confirmer
+            {selectedSchools.length ||
+            selectedDepartments.length ||
+            selectedOthers.length
+              ? "Confirmer"
+              : "Passer"}
           </Button>
         </View>
       </View>

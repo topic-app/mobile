@@ -2,8 +2,8 @@
  * File containing frequently used types to be used in multiple places through the project.
  */
 import theme from "@styles/Theme";
-import { SchoolPreload, DepartmentPreload } from "@root/common/ts/api";
-import { LocationRequestState } from "@root/common/ts/requestState";
+import { SchoolPreload, DepartmentPreload } from "@ts/api";
+import { LocationRequestState } from "@ts/requestState";
 
 export * from "./api";
 export * from "./requestState";
