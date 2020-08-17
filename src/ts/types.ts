@@ -21,6 +21,7 @@ export type Preferences = {
   syncLists: boolean;
   fontSize: number;
   stripFormatting: boolean;
+  fontFamily: string;
 };
 
 export type LocationList = {

@@ -17,6 +17,11 @@ import {
   Roboto_400Regular,
   Roboto_400Regular_Italic,
 } from "@expo-google-fonts/roboto";
+import { RobotoSlab_400Regular } from "@expo-google-fonts/roboto-slab";
+import {
+  RobotoMono_400Regular,
+  RobotoMono_400Regular_Italic,
+} from "@expo-google-fonts/roboto-mono";
 import "moment/locale/fr";
 
 // import { enableScreens } from 'react-native-screens';
@@ -41,6 +46,10 @@ function App() {
     "Rubik-Medium_Italic": Rubik_500Medium_Italic,
     "Rubik-Bold": Rubik_700Bold,
     "Rubik-Bold_Italic": Rubik_700Bold_Italic,
+    "Roboto-Slab": RobotoSlab_400Regular,
+    "Roboto-Slab_Italic": Roboto_400Regular_Italic,
+    "Roboto-Mono": RobotoMono_400Regular,
+    "Roboto-Mono_Italic": RobotoMono_400Regular_Italic,
   });
 
   if (!fontsLoaded) {

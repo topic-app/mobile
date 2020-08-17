@@ -25,7 +25,11 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
           linkify: true,
         }).disable(["html_block", "html_inline"])}
         style={{
-          body: { ...styles.text, fontSize: preferences.fontSize },
+          body: {
+            ...styles.text,
+            fontSize: preferences.fontSize,
+            fontFamily: preferences.fontFamily,
+          },
           link: styles.primaryText,
           heading1: { fontSize: Math.floor(preferences.fontSize * 2) },
           heading2: { fontSize: Math.floor(preferences.fontSize * 1.8) },

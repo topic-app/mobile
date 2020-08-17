@@ -76,6 +76,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
+                  fontFamily: "Roboto",
                 }}
                 onPress={() => updatePrefs({ fontFamily: "Roboto" })}
                 mode={preferences.fontFamily === "Roboto" ? "outlined" : "text"}
@@ -93,10 +94,11 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
+                  fontFamily: "Roboto-Slab",
                 }}
-                onPress={() => updatePrefs({ fontFamily: "Roboto Slab" })}
+                onPress={() => updatePrefs({ fontFamily: "Roboto-Slab" })}
                 mode={
-                  preferences.fontFamily === "Roboto Slab" ? "outlined" : "text"
+                  preferences.fontFamily === "Roboto-Slab" ? "outlined" : "text"
                 }
               >
                 Serif
@@ -111,10 +113,11 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
+                  fontFamily: "Roboto-Mono",
                 }}
-                onPress={() => updatePrefs({ fontFamily: "Roboto Mono" })}
+                onPress={() => updatePrefs({ fontFamily: "Roboto-Mono" })}
                 mode={
-                  preferences.fontFamily === "Roboto Mono" ? "outlined" : "text"
+                  preferences.fontFamily === "Roboto-Mono" ? "outlined" : "text"
                 }
               >
                 Mono
@@ -126,9 +129,9 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 labelStyle={{
                   color: colors.text,
                 }}
-                onPress={() => updatePrefs({ fontFamily: "Open Dyslexic" })}
+                onPress={() => updatePrefs({ fontFamily: "Open-Dyslexia" })}
                 mode={
-                  preferences.fontFamily === "Open Dyslexic"
+                  preferences.fontFamily === "Open-Dyslexia"
                     ? "outlined"
                     : "text"
                 }
