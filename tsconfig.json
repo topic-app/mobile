@@ -45,7 +45,7 @@
       "@src/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@assets/*": ["./src/assets/*"],
-      "@redux/*": ["./common/redux/*"],
+      "@redux/*": ["./src/redux/*"],
       "@styles/*": ["./src/styles/*"],
       "@utils/*": ["./src/utils/*"],
       "@ts/*": ["./src/ts/*"]

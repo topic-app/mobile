@@ -1,6 +1,6 @@
-import { request } from '@utils/index';
-import Store from '@redux/store';
-import shortid from 'shortid';
+import { request } from "@utils/index";
+import Store from "@redux/store";
+import shortid from "shortid";
 
 /**
  * @docs actionCreators
@@ -22,7 +22,7 @@ function addToListCreator({
   url,
   params,
   id,
-  stateName = 'info',
+  stateName = "info",
 }) {
   return (dispatch, getState) => {
     const state = {
@@ -35,11 +35,13 @@ function addToListCreator({
       error: null,
     };
     dispatch(state);
-    request(url, 'get', params)
+    request(url, "get", params)
       .then((result) => {
         const { lists } = Store.getState()[dataType];
         if (
-          lists.find((l) => l.id === id)?.items.some((i) => i._id === result.data[resType][0]?._id)
+          lists
+            .find((l) => l.id === id)
+            ?.items.some((i) => i._id === result.data[resType][0]?._id)
         ) {
           return;
         }
@@ -94,8 +96,8 @@ function addListCreator({
   update,
   dataType,
   name,
-  icon = 'checkbox-blank-circle',
-  description = '',
+  icon = "checkbox-blank-circle",
+  description = "",
 }) {
   return {
     type: update,
@@ -112,7 +114,15 @@ function addListCreator({
   };
 }
 
-function modifyListCreator({ update, dataType, id, name, icon, description, items }) {
+function modifyListCreator({
+  update,
+  dataType,
+  id,
+  name,
+  icon,
+  description,
+  items,
+}) {
   return {
     type: update,
     data: Store.getState()[dataType].lists.map((l) => {
@@ -199,6 +209,20 @@ function deleteQuickCreator({ updateQuicks, dataType, id }) {
   };
 }
 
+function updateCreationDataCreator({ updateCreationData, fields }) {
+  return {
+    type: updateCreationData,
+    data: fields,
+  };
+}
+
+function clearCreationDataCreator({ updateCreationData }) {
+  return {
+    type: updateCreationData,
+    data: {},
+  };
+}
+
 export {
   addToListCreator,
   removeFromListCreator,
@@ -212,4 +236,6 @@ export {
   updatePrefsCreator,
   addQuickCreator,
   deleteQuickCreator,
+  updateCreationDataCreator,
+  clearCreationDataCreator,
 };

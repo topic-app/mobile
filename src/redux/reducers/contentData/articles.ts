@@ -6,9 +6,10 @@ import {
   UPDATE_ARTICLES_READ,
   UPDATE_ARTICLES_PREFS,
   UPDATE_ARTICLES_QUICKS,
-} from '@ts/redux';
+  UPDATE_ARTICLES_CREATION_DATA,
+} from "@ts/redux";
 
-import { config } from '@root/app.json';
+import { config } from "@root/app.json";
 
 const initialState: ArticlesDataState = {
   params: {},
@@ -16,6 +17,7 @@ const initialState: ArticlesDataState = {
   prefs: config.articles.defaults,
   quicks: config.articles.quicks,
   read: [],
+  creationData: {},
 };
 
 /**
@@ -27,7 +29,10 @@ const initialState: ArticlesDataState = {
  * @param {object} action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
-function articleDataReducer(state = initialState, action: ArticlesActionTypes): ArticlesDataState {
+function articleDataReducer(
+  state = initialState,
+  action: ArticlesActionTypes
+): ArticlesDataState {
   switch (action.type) {
     case UPDATE_ARTICLES_PARAMS:
       return {
@@ -53,6 +58,11 @@ function articleDataReducer(state = initialState, action: ArticlesActionTypes): 
       return {
         ...state,
         prefs: action.data,
+      };
+    case UPDATE_ARTICLES_CREATION_DATA:
+      return {
+        ...state,
+        creationData: action.data,
       };
     default:
       return state;
