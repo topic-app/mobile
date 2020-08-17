@@ -2,11 +2,8 @@
   "name": "Topic",
   "displayName": "Topic",
   "config": {
-    "logger": {
-      "level": "debug"
-    },
     "api": {
-      "url": "http://api-dev.topicapp.fr/v1",
+      "url": "https://api-dev.topicapp.fr/v1",
       "retryTime": 10
     },
     "cdn": {
