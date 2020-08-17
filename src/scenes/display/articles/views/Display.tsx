@@ -164,7 +164,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                   screen: "Group",
                   params: {
                     screen: "Display",
-                    params: { id: article.group._id },
+                    params: { id: article.group?._id },
                   },
                 },
               })
@@ -172,7 +172,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
             badge={
               account.loggedIn &&
               account.accountInfo.user &&
-              following?.groups.includes(article.group._id)
+              following?.groups.includes(article.group?._id)
                 ? "account-heart"
                 : null
             }
