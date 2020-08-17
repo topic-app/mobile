@@ -1,9 +1,21 @@
-import React from 'react';
-import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, useTheme } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
+import React from "react";
+import {
+  View,
+  Animated,
+  ActivityIndicator,
+  AccessibilityInfo,
+} from "react-native";
+import {
+  ProgressBar,
+  Banner,
+  Text,
+  Subheading,
+  FAB,
+  useTheme,
+} from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
+import { StackScreenProps } from "@react-navigation/stack";
+import { connect } from "react-redux";
 
 import {
   State,
@@ -15,14 +27,15 @@ import {
   Preferences,
   ArticleQuickItem,
   ArticleRequestState,
-} from '@ts/types';
-import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
-import { updateArticles, searchArticles } from '@redux/actions/api/articles';
-import getStyles from '@styles/Styles';
+  Account,
+} from "@ts/types";
+import { AnimatingHeader, ErrorMessage, TabChipList } from "@components/index";
+import { updateArticles, searchArticles } from "@redux/actions/api/articles";
+import getStyles from "@styles/Styles";
 
-import ArticleListCard from '../components/Card';
-import ArticleEmptyList from '../components/EmptyList';
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
+import ArticleListCard from "../components/Card";
+import ArticleEmptyList from "../components/EmptyList";
+import { HomeTwoNavParams } from "../../HomeTwo.ios";
 
 type Category = {
   key: string;
@@ -34,7 +47,7 @@ type Category = {
   params?: object;
 };
 
-type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
+type ArticleListProps = StackScreenProps<HomeTwoNavParams, "Article"> & {
   articles: (ArticlePreload | Article)[];
   search: ArticlePreload[];
   lists: ArticleListItem[];
@@ -43,6 +56,7 @@ type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   articlePrefs: ArticlePrefs;
   preferences: Preferences;
   state: ArticleRequestState;
+  account: Account;
 };
 
 const ArticleList: React.FC<ArticleListProps> = ({
@@ -56,6 +70,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
   state,
   articlePrefs,
   preferences,
+  account,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -65,36 +80,36 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   const potentialCategories = [
     {
-      key: 'all',
-      title: 'Tous',
+      key: "all",
+      title: "Tous",
       data: articles,
-      type: 'category',
+      type: "category",
     },
   ];
 
   if (preferences.history) {
     potentialCategories.unshift({
-      key: 'unread',
-      title: 'Non lus',
+      key: "unread",
+      title: "Non lus",
       data: articles.filter((a) => !read.some((r) => r.id === a._id)),
-      type: 'category',
+      type: "category",
     });
   }
 
   const categories: Category[] = [];
 
-  articlePrefs.categories.forEach((c) => {
+  articlePrefs.categories?.forEach((c) => {
     const currentCategory = potentialCategories.find((d) => d.key === c);
     if (currentCategory) categories.push(currentCategory);
   });
 
   const tabGroups: { key: string; data: Category[] }[] = [
     {
-      key: 'categories',
+      key: "categories",
       data: categories,
     },
     {
-      key: 'lists',
+      key: "lists",
       data: lists.map((l) => ({
         key: l.id,
         title: l.name,
@@ -102,26 +117,26 @@ const ArticleList: React.FC<ArticleListProps> = ({
         icon: l.icon,
         data: l.items,
         list: true,
-        type: 'list',
+        type: "list",
       })),
     },
     {
-      key: 'quicks',
+      key: "quicks",
       data: quicks.map((q) => {
         let params = {};
-        let icon = 'alert-decagram';
+        let icon = "alert-decagram";
         switch (q.type) {
-          case 'tag':
+          case "tag":
             params = { tags: [q.id] };
-            icon = 'pound';
+            icon = "pound";
             break;
-          case 'user':
+          case "user":
             params = { users: [q.id] };
-            icon = 'account';
+            icon = "account";
             break;
-          case 'group':
+          case "group":
             params = { groups: [q.id] };
-            icon = 'account-multiple';
+            icon = "account-multiple";
             break;
         }
         return {
@@ -131,13 +146,15 @@ const ArticleList: React.FC<ArticleListProps> = ({
           data: search,
           params,
           quickType: q.type,
-          type: 'quick',
+          type: "quick",
         };
       }),
     },
   ];
 
-  const [tab, setTab] = React.useState(route.params?.initialList || tabGroups[0].data[0].key);
+  const [tab, setTab] = React.useState(
+    route.params?.initialList || tabGroups[0].data[0].key
+  );
   const [chipTab, setChipTab] = React.useState(tab);
 
   const getSection = (tabKey?: string) =>
@@ -150,8 +167,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   useFocusEffect(
     React.useCallback(() => {
-      updateArticles('initial');
-    }, [null]),
+      updateArticles("initial");
+    }, [null])
   );
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
@@ -163,8 +180,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
     if (noAnimation) {
       setChipTab(tabKey);
-      if (newSection.key === 'quicks') {
-        searchArticles('initial', '', newCategory.params, false, false);
+      if (newSection.key === "quicks") {
+        searchArticles("initial", "", newCategory.params, false, false);
       }
       setTab(tabKey);
     } else {
@@ -174,8 +191,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
         toValue: 0,
         duration: 100,
       }).start(async () => {
-        if (newSection.key === 'quicks') {
-          await searchArticles('initial', '', newCategory.params, false, false);
+        if (newSection.key === "quicks") {
+          await searchArticles("initial", "", newCategory.params, false, false);
         }
         setTab(tabKey);
         Animated.timing(fadeAnim, {
@@ -197,47 +214,47 @@ const ArticleList: React.FC<ArticleListProps> = ({
         title="Actus"
         actions={[
           {
-            icon: 'magnify',
+            icon: "magnify",
             onPress: () =>
-              navigation.navigate('Main', {
-                screen: 'Search',
+              navigation.navigate("Main", {
+                screen: "Search",
                 params: {
-                  screen: 'Search',
-                  params: { initialCategory: 'articles', previous: 'Actus' },
+                  screen: "Search",
+                  params: { initialCategory: "articles", previous: "Actus" },
                 },
               }),
           },
         ]}
         overflow={[
           {
-            title: 'Catégories',
+            title: "Catégories",
             onPress: () =>
-              navigation.navigate('Main', {
-                screen: 'Configure',
+              navigation.navigate("Main", {
+                screen: "Configure",
                 params: {
-                  screen: 'Article',
+                  screen: "Article",
                 },
               }),
           },
           {
-            title: 'Localisation',
+            title: "Localisation",
             onPress: () =>
-              navigation.navigate('Main', {
-                screen: 'Params',
+              navigation.navigate("Main", {
+                screen: "Params",
                 params: {
-                  screen: 'Article',
+                  screen: "Article",
                 },
               }),
           },
           ...(preferences.history
             ? [
                 {
-                  title: 'Historique',
+                  title: "Historique",
                   onPress: () =>
-                    navigation.navigate('Main', {
-                      screen: 'History',
+                    navigation.navigate("Main", {
+                      screen: "History",
                       params: {
-                        screen: 'Article',
+                        screen: "Article",
                       },
                     }),
                 },
@@ -245,44 +262,47 @@ const ArticleList: React.FC<ArticleListProps> = ({
             : []),
         ]}
       >
-        {(state.list.loading.initial || state.search.loading.initial) && (
+        {(state.list.loading.initial || state.search?.loading.initial) && (
           <ProgressBar indeterminate style={{ marginTop: -4 }} />
         )}
-        {state.list.error || state.search.error ? (
+        {state.list.error || state.search?.error ? (
           <ErrorMessage
             type="axios"
             strings={{
-              what: 'la récupération des articles',
-              contentPlural: 'des articles',
+              what: "la récupération des articles",
+              contentPlural: "des articles",
               contentSingular: "La liste d'articles",
             }}
-            error={[state.list.error, state.search.error]}
-            retry={() => updateArticles('initial')}
+            error={[state.list.error, state.search?.error]}
+            retry={() => updateArticles("initial")}
           />
         ) : null}
       </AnimatingHeader>
       <Animated.FlatList
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-          useNativeDriver: true,
-        })}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          {
+            useNativeDriver: true,
+          }
+        )}
         data={listData || []}
         refreshing={
-          (section.key === 'categories' && state.list.loading.refresh) ||
-          (section.key === 'quicks' && state.search.loading.refresh)
+          (section.key === "categories" && state.list.loading.refresh) ||
+          (section.key === "quicks" && state.search?.loading.refresh)
         }
         onRefresh={() => {
-          if (section.key === 'categories') {
-            updateArticles('refresh');
-          } else if (section.key === 'quicks') {
-            searchArticles('refresh', '', category.params, false, false);
+          if (section.key === "categories") {
+            updateArticles("refresh");
+          } else if (section.key === "quicks") {
+            searchArticles("refresh", "", category.params, false, false);
           }
         }}
         onEndReached={() => {
-          if (section.key === 'categories') {
-            updateArticles('next');
-          } else if (section.key === 'quicks') {
+          if (section.key === "categories") {
+            updateArticles("next");
+          } else if (section.key === "quicks") {
             console.log(category.params);
-            searchArticles('next', '', category.params, false, false);
+            searchArticles("next", "", category.params, false, false);
           }
         }}
         ListHeaderComponent={() => (
@@ -292,10 +312,10 @@ const ArticleList: React.FC<ArticleListProps> = ({
               selected={chipTab}
               setSelected={changeList}
               configure={() =>
-                navigation.navigate('Main', {
-                  screen: 'Configure',
+                navigation.navigate("Main", {
+                  screen: "Configure",
                   params: {
-                    screen: 'Article',
+                    screen: "Article",
                   },
                 })
               }
@@ -315,6 +335,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
               sectionKey={section.key}
               reqState={state}
               navigation={navigation}
+              changeTab={changeList}
             />
           </Animated.View>
         )}
@@ -322,8 +343,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
         keyExtractor={(article: Article) => article._id}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {((section.key === 'categories' && state.list.loading.next) ||
-              (section.key === 'quicks' && state.search.loading.next)) && (
+            {((section.key === "categories" && state.list.loading.next) ||
+              (section.key === "quicks" && state.search.loading.next)) && (
               <ActivityIndicator size="large" color={colors.primary} />
             )}
           </View>
@@ -338,16 +359,16 @@ const ArticleList: React.FC<ArticleListProps> = ({
               historyActive={preferences.history}
               lists={lists}
               navigate={() =>
-                navigation.navigate('Main', {
-                  screen: 'Display',
+                navigation.navigate("Main", {
+                  screen: "Display",
                   params: {
-                    screen: 'Article',
+                    screen: "Article",
                     params: {
-                      screen: 'Display',
+                      screen: "Display",
                       params: {
                         id: article._id,
                         title: article.title,
-                        useLists: section.key === 'lists',
+                        useLists: section.key === "lists",
                       },
                     },
                   },
@@ -357,12 +378,30 @@ const ArticleList: React.FC<ArticleListProps> = ({
           </Animated.View>
         )}
       />
+      {account.loggedIn &&
+        account.permissions?.some((p) => p.permission === "article.add") && (
+          <FAB
+            icon="pencil"
+            onPress={() =>
+              navigation.navigate("Main", {
+                screen: "Add",
+                params: {
+                  screen: "Article",
+                  params: {
+                    screen: "Add",
+                  },
+                },
+              })
+            }
+            style={styles.bottomRightFab}
+          />
+        )}
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData, preferences } = state;
+  const { articles, articleData, preferences, account } = state;
   return {
     articles: articles.data,
     search: articles.search,
@@ -371,6 +410,7 @@ const mapStateToProps = (state: State) => {
     quicks: articleData.quicks,
     read: articleData.read,
     state: articles.state,
+    account,
     preferences,
   };
 };

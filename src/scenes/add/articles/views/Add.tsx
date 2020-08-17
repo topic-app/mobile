@@ -64,7 +64,6 @@ const ArticleAdd: React.FC<Props> = ({
             retry={add}
           />
         )}
-
         <ScrollView>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
