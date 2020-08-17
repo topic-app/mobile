@@ -1,15 +1,15 @@
 /**
  * File containing frequently used types to be used in multiple places through the project.
  */
-import theme from "@styles/Theme";
-import { SchoolPreload, DepartmentPreload } from "@ts/api";
-import { LocationRequestState } from "@ts/requestState";
+import theme from '@styles/Theme';
+import { SchoolPreload, DepartmentPreload } from './api';
+import { LocationRequestState } from './requestState';
 
-export * from "./api";
-export * from "./requestState";
-export * from "./redux";
-export type { RootState as State } from "@redux/reducers/index";
-export type { Theme } from "@styles/Theme";
+export * from './api';
+export * from './requestState';
+export * from './redux';
+export type { RootState as State } from '@redux/reducers/index';
+export type { Theme } from '@styles/Theme';
 
 export type Preferences = {
   // This is equivalent to JS's Object.keys() for types (hover over theme for more info)

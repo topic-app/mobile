@@ -1,14 +1,11 @@
-import React from "react";
-import {
-  createStackNavigator,
-  TransitionPresets,
-} from "@react-navigation/stack";
+import React from 'react';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
-import Store from "@redux/store";
+import Store from '@redux/store';
 
-import RootNavigator from "./scenes/Root";
-import AuthStackNavigator from "./scenes/auth/index";
-import LandingStackNavigator from "./scenes/landing/index";
+import RootNavigator from './scenes/Root';
+import AuthStackNavigator from './scenes/auth/index';
+import LandingStackNavigator from './scenes/landing/index';
 
 export type AppStackParams = {
   Auth: undefined;
@@ -21,7 +18,7 @@ const Stack = createStackNavigator<AppStackParams>();
 function AppStackNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName={Store.getState().location.selected ? "Root" : "Landing"}
+      initialRouteName={Store.getState().location.selected ? 'Root' : 'Landing'}
       headerMode="none"
       screenOptions={TransitionPresets.SlideFromRightIOS}
     >

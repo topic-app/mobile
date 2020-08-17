@@ -1,48 +1,51 @@
 import {
   Article,
   ArticlePreload,
-  ArticleRequestState,
   Comment,
-  CommentRequestState,
   Department,
   DepartmentPreload,
-  DepartmentRequestState,
   Event,
   EventPreload,
-  EventRequestState,
   Group,
   GroupPreload,
-  GroupRequestState,
   Petition,
   PetitionPreload,
-  PetitionRequestState,
   Place,
   PlacePreload,
-  PlaceRequestState,
   School,
   SchoolPreload,
-  SchoolRequestState,
   Tag,
   TagPreload,
-  TagRequestState,
   User,
   UserPreload,
+} from './api';
+
+import {
+  ArticleRequestState,
+  CommentRequestState,
+  DepartmentRequestState,
+  EventRequestState,
+  GroupRequestState,
+  PetitionRequestState,
+  PlaceRequestState,
+  SchoolRequestState,
+  TagRequestState,
   UserRequestState,
-} from "@ts/types";
+} from './requestState';
 
 // Articles
-export const UPDATE_ARTICLES_STATE = "UPDATE_ARTICLES_STATE";
-export const UPDATE_ARTICLES_DATA = "UPDATE_ARTICLES_DATA";
-export const UPDATE_ARTICLES_ITEM = "UPDATE_ARTICLES_ITEM";
-export const UPDATE_ARTICLES_VERIFICATION = "UPDATE_ARTICLES_VERIFICATION";
-export const UPDATE_ARTICLES_SEARCH = "UPDATE_ARTICLES_SEARCH";
-export const UPDATE_ARTICLES_PARAMS = "UPDATE_ARTICLES_PARAMS";
-export const UPDATE_ARTICLES_LISTS = "UPDATE_ARTICLES_LISTS";
-export const UPDATE_ARTICLES_READ = "UPDATE_ARTICLES_READ";
-export const UPDATE_ARTICLES_PREFS = "UPDATE_ARTICLES_PREFS";
-export const UPDATE_ARTICLES_QUICKS = "UPDATE_ARTICLES_QUICKS";
-export const UPDATE_ARTICLES_CREATION_DATA = "UPDATE_ARTICLES_CREATION_DATA";
-export const CLEAR_ARTICLES = "CLEAR_ARTICLES";
+export const UPDATE_ARTICLES_STATE = 'UPDATE_ARTICLES_STATE';
+export const UPDATE_ARTICLES_DATA = 'UPDATE_ARTICLES_DATA';
+export const UPDATE_ARTICLES_ITEM = 'UPDATE_ARTICLES_ITEM';
+export const UPDATE_ARTICLES_VERIFICATION = 'UPDATE_ARTICLES_VERIFICATION';
+export const UPDATE_ARTICLES_SEARCH = 'UPDATE_ARTICLES_SEARCH';
+export const UPDATE_ARTICLES_PARAMS = 'UPDATE_ARTICLES_PARAMS';
+export const UPDATE_ARTICLES_LISTS = 'UPDATE_ARTICLES_LISTS';
+export const UPDATE_ARTICLES_READ = 'UPDATE_ARTICLES_READ';
+export const UPDATE_ARTICLES_PREFS = 'UPDATE_ARTICLES_PREFS';
+export const UPDATE_ARTICLES_QUICKS = 'UPDATE_ARTICLES_QUICKS';
+export const UPDATE_ARTICLES_CREATION_DATA = 'UPDATE_ARTICLES_CREATION_DATA';
+export const CLEAR_ARTICLES = 'CLEAR_ARTICLES';
 
 export type ArticleListItem = {
   id: string;
@@ -59,7 +62,7 @@ export type ArticleParams = {
 };
 
 export type ArticleQuickItem = {
-  type: "tag" | "user" | "group";
+  type: 'tag' | 'user' | 'group';
   id: string;
   title: string;
 };
@@ -95,7 +98,7 @@ export type ArticleCreationData = {
   summary?: string;
   tags?: string[];
   content?: {
-    parser: "plaintext" | "markdown";
+    parser: 'plaintext' | 'markdown';
     data: string;
   };
 };
@@ -185,10 +188,10 @@ export type ArticlesActionTypes =
   | ClearArticlesAction;
 
 // Comments
-export const UPDATE_COMMENTS_STATE = "UPDATE_COMMENTS_STATE";
-export const UPDATE_COMMENTS_DATA = "UPDATE_COMMENTS_DATA";
-export const UPDATE_COMMENTS_SEARCH = "UPDATE_COMMENTS_SEARCH";
-export const CLEAR_COMMENTS = "CLEAR_COMMENTS";
+export const UPDATE_COMMENTS_STATE = 'UPDATE_COMMENTS_STATE';
+export const UPDATE_COMMENTS_DATA = 'UPDATE_COMMENTS_DATA';
+export const UPDATE_COMMENTS_SEARCH = 'UPDATE_COMMENTS_SEARCH';
+export const CLEAR_COMMENTS = 'CLEAR_COMMENTS';
 
 export type CommentsState = {
   data: Comment[];
@@ -223,12 +226,12 @@ export type CommentsActionTypes =
   | ClearCommentsAction;
 
 // Departments
-export const UPDATE_DEPARTMENTS_STATE = "UPDATE_DEPARTMENTS_STATE";
-export const UPDATE_DEPARTMENTS_DATA = "UPDATE_DEPARTMENTS_DATA";
-export const UPDATE_DEPARTMENTS_ITEM = "UPDATE_DEPARTMENTS_ITEM";
-export const UPDATE_DEPARTMENTS_ITEMS = "UPDATE_DEPARTMENTS_ITEMS";
-export const UPDATE_DEPARTMENTS_SEARCH = "UPDATE_DEPARTMENTS_SEARCH";
-export const CLEAR_DEPARTMENTS = "CLEAR_DEPARTMENTS";
+export const UPDATE_DEPARTMENTS_STATE = 'UPDATE_DEPARTMENTS_STATE';
+export const UPDATE_DEPARTMENTS_DATA = 'UPDATE_DEPARTMENTS_DATA';
+export const UPDATE_DEPARTMENTS_ITEM = 'UPDATE_DEPARTMENTS_ITEM';
+export const UPDATE_DEPARTMENTS_ITEMS = 'UPDATE_DEPARTMENTS_ITEMS';
+export const UPDATE_DEPARTMENTS_SEARCH = 'UPDATE_DEPARTMENTS_SEARCH';
+export const CLEAR_DEPARTMENTS = 'CLEAR_DEPARTMENTS';
 
 export type DepartmentsState = {
   data: (Department | DepartmentPreload)[];
@@ -277,11 +280,11 @@ export type DepartmentsActionTypes =
   | ClearDepartmentsAction;
 
 // Events
-export const UPDATE_EVENTS_STATE = "UPDATE_EVENTS_STATE";
-export const UPDATE_EVENTS_DATA = "UPDATE_EVENTS_DATA";
-export const UPDATE_EVENTS_ITEM = "UPDATE_EVENTS_ITEM";
-export const UPDATE_EVENTS_SEARCH = "UPDATE_EVENTS_SEARCH";
-export const CLEAR_EVENTS = "CLEAR_EVENTS";
+export const UPDATE_EVENTS_STATE = 'UPDATE_EVENTS_STATE';
+export const UPDATE_EVENTS_DATA = 'UPDATE_EVENTS_DATA';
+export const UPDATE_EVENTS_ITEM = 'UPDATE_EVENTS_ITEM';
+export const UPDATE_EVENTS_SEARCH = 'UPDATE_EVENTS_SEARCH';
+export const CLEAR_EVENTS = 'CLEAR_EVENTS';
 
 export type EventsState = {
   data: (Event | EventPreload)[];
@@ -323,11 +326,11 @@ export type EventsActionTypes =
   | ClearEventsAction;
 
 // Groups
-export const UPDATE_GROUPS_STATE = "UPDATE_GROUPS_STATE";
-export const UPDATE_GROUPS_DATA = "UPDATE_GROUPS_DATA";
-export const UPDATE_GROUPS_ITEM = "UPDATE_GROUPS_ITEM";
-export const UPDATE_GROUPS_SEARCH = "UPDATE_GROUPS_SEARCH";
-export const CLEAR_GROUPS = "CLEAR_GROUPS";
+export const UPDATE_GROUPS_STATE = 'UPDATE_GROUPS_STATE';
+export const UPDATE_GROUPS_DATA = 'UPDATE_GROUPS_DATA';
+export const UPDATE_GROUPS_ITEM = 'UPDATE_GROUPS_ITEM';
+export const UPDATE_GROUPS_SEARCH = 'UPDATE_GROUPS_SEARCH';
+export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
   data: (Group | GroupPreload)[];
@@ -369,11 +372,11 @@ export type GroupsActionTypes =
   | ClearGroupsAction;
 
 // Petitions
-export const UPDATE_PETITIONS_STATE = "UPDATE_PETITIONS_STATE";
-export const UPDATE_PETITIONS_DATA = "UPDATE_PETITIONS_DATA";
-export const UPDATE_PETITIONS_ITEM = "UPDATE_PETITIONS_ITEM";
-export const UPDATE_PETITIONS_SEARCH = "UPDATE_PETITIONS_SEARCH";
-export const CLEAR_PETITIONS = "CLEAR_PETITIONS";
+export const UPDATE_PETITIONS_STATE = 'UPDATE_PETITIONS_STATE';
+export const UPDATE_PETITIONS_DATA = 'UPDATE_PETITIONS_DATA';
+export const UPDATE_PETITIONS_ITEM = 'UPDATE_PETITIONS_ITEM';
+export const UPDATE_PETITIONS_SEARCH = 'UPDATE_PETITIONS_SEARCH';
+export const CLEAR_PETITIONS = 'CLEAR_PETITIONS';
 
 export type PetitionsState = {
   data: (Petition | PetitionPreload)[];
@@ -415,11 +418,11 @@ export type PetitionsActionTypes =
   | ClearPetitionsAction;
 
 // Places
-export const UPDATE_PLACES_STATE = "UPDATE_PLACES_STATE";
-export const UPDATE_PLACES_DATA = "UPDATE_PLACES_DATA";
-export const UPDATE_PLACES_ITEM = "UPDATE_PLACES_ITEM";
-export const UPDATE_PLACES_SEARCH = "UPDATE_PLACES_SEARCH";
-export const CLEAR_PLACES = "CLEAR_PLACES";
+export const UPDATE_PLACES_STATE = 'UPDATE_PLACES_STATE';
+export const UPDATE_PLACES_DATA = 'UPDATE_PLACES_DATA';
+export const UPDATE_PLACES_ITEM = 'UPDATE_PLACES_ITEM';
+export const UPDATE_PLACES_SEARCH = 'UPDATE_PLACES_SEARCH';
+export const CLEAR_PLACES = 'CLEAR_PLACES';
 
 export type PlacesState = {
   data: (Place | PlacePreload)[];
@@ -461,12 +464,12 @@ export type PlacesActionTypes =
   | ClearPlacesAction;
 
 // Schools
-export const UPDATE_SCHOOLS_STATE = "UPDATE_SCHOOLS_STATE";
-export const UPDATE_SCHOOLS_DATA = "UPDATE_SCHOOLS_DATA";
-export const UPDATE_SCHOOLS_ITEM = "UPDATE_SCHOOLS_ITEM";
-export const UPDATE_SCHOOLS_ITEMS = "UPDATE_SCHOOLS_ITEMS";
-export const UPDATE_SCHOOLS_SEARCH = "UPDATE_SCHOOLS_SEARCH";
-export const CLEAR_SCHOOLS = "CLEAR_SCHOOLS";
+export const UPDATE_SCHOOLS_STATE = 'UPDATE_SCHOOLS_STATE';
+export const UPDATE_SCHOOLS_DATA = 'UPDATE_SCHOOLS_DATA';
+export const UPDATE_SCHOOLS_ITEM = 'UPDATE_SCHOOLS_ITEM';
+export const UPDATE_SCHOOLS_ITEMS = 'UPDATE_SCHOOLS_ITEMS';
+export const UPDATE_SCHOOLS_SEARCH = 'UPDATE_SCHOOLS_SEARCH';
+export const CLEAR_SCHOOLS = 'CLEAR_SCHOOLS';
 
 export type SchoolsState = {
   data: (School | SchoolPreload)[];
@@ -515,11 +518,11 @@ export type SchoolsActionTypes =
   | ClearSchoolsAction;
 
 // Tags
-export const UPDATE_TAGS_STATE = "UPDATE_TAGS_STATE";
-export const UPDATE_TAGS_DATA = "UPDATE_TAGS_DATA";
-export const UPDATE_TAGS_ITEM = "UPDATE_TAGS_ITEM";
-export const UPDATE_TAGS_SEARCH = "UPDATE_TAGS_SEARCH";
-export const CLEAR_TAGS = "CLEAR_TAGS";
+export const UPDATE_TAGS_STATE = 'UPDATE_TAGS_STATE';
+export const UPDATE_TAGS_DATA = 'UPDATE_TAGS_DATA';
+export const UPDATE_TAGS_ITEM = 'UPDATE_TAGS_ITEM';
+export const UPDATE_TAGS_SEARCH = 'UPDATE_TAGS_SEARCH';
+export const CLEAR_TAGS = 'CLEAR_TAGS';
 
 export type TagsState = {
   data: (Tag | TagPreload)[];
@@ -561,11 +564,11 @@ export type TagsActionTypes =
   | ClearTagsAction;
 
 // User
-export const UPDATE_USERS_STATE = "UPDATE_USERS_STATE";
-export const UPDATE_USERS_DATA = "UPDATE_USERS_DATA";
-export const UPDATE_USERS_ITEM = "UPDATE_USERS_ITEM";
-export const UPDATE_USERS_SEARCH = "UPDATE_USERS_SEARCH";
-export const CLEAR_USERS = "CLEAR_USERS";
+export const UPDATE_USERS_STATE = 'UPDATE_USERS_STATE';
+export const UPDATE_USERS_DATA = 'UPDATE_USERS_DATA';
+export const UPDATE_USERS_ITEM = 'UPDATE_USERS_ITEM';
+export const UPDATE_USERS_SEARCH = 'UPDATE_USERS_SEARCH';
+export const CLEAR_USERS = 'CLEAR_USERS';
 
 export type UsersState = {
   data: (User | UserPreload)[];
