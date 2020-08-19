@@ -1,4 +1,4 @@
-import Store from "@redux/store";
+import Store from '@redux/store';
 
 import {
   addToListCreator,
@@ -15,7 +15,7 @@ import {
   deleteQuickCreator,
   updateCreationDataCreator,
   clearCreationDataCreator,
-} from "./ActionCreator";
+} from './ActionCreator';
 
 import {
   UPDATE_ARTICLES_QUICKS,
@@ -26,9 +26,9 @@ import {
   UPDATE_ARTICLES_PREFS,
   UPDATE_ARTICLES_PARAMS,
   CLEAR_ARTICLES,
-} from "@ts/types";
+} from '@ts/types';
 
-import { clearCreator } from "../api/ActionCreator";
+import { clearCreator } from '../api/ActionCreator';
 
 /**
  * @docs actions
@@ -40,12 +40,12 @@ async function addArticleToList(articleId, listId) {
     addToListCreator({
       update: UPDATE_ARTICLES_LISTS,
       stateUpdate: UPDATE_ARTICLES_STATE,
-      url: "articles/info",
-      dataType: "articleData",
-      resType: "articles",
+      url: 'articles/info',
+      dataType: 'articleData',
+      resType: 'articles',
       params: { articleId },
       id: listId,
-    })
+    }),
   );
 }
 
@@ -59,10 +59,10 @@ async function removeArticleFromList(articleId, listId) {
   await Store.dispatch(
     removeFromListCreator({
       update: UPDATE_ARTICLES_LISTS,
-      dataType: "articleData",
+      dataType: 'articleData',
       itemId: articleId,
       id: listId,
-    })
+    }),
   );
 }
 
@@ -77,11 +77,11 @@ async function addArticleList(name, icon, description) {
   await Store.dispatch(
     addListCreator({
       update: UPDATE_ARTICLES_LISTS,
-      dataType: "articleData",
+      dataType: 'articleData',
       name,
       icon,
       description,
-    })
+    }),
   );
 }
 
@@ -97,13 +97,13 @@ async function modifyArticleList(listId, name, icon, description, items) {
   await Store.dispatch(
     modifyListCreator({
       update: UPDATE_ARTICLES_LISTS,
-      dataType: "articleData",
+      dataType: 'articleData',
       id: listId,
       name,
       icon,
       description,
       items,
-    })
+    }),
   );
 }
 
@@ -116,9 +116,9 @@ async function deleteArticleList(listId) {
   await Store.dispatch(
     deleteListCreator({
       update: UPDATE_ARTICLES_LISTS,
-      dataType: "articleData",
+      dataType: 'articleData',
       id: listId,
-    })
+    }),
   );
 }
 
@@ -126,9 +126,9 @@ async function addArticleRead(articleId, title, marked = false) {
   await Store.dispatch(
     addReadCreator({
       update: UPDATE_ARTICLES_READ,
-      dataType: "articleData",
+      dataType: 'articleData',
       data: { id: articleId, title, date: new Date(), marked },
-    })
+    }),
   );
 }
 
@@ -136,9 +136,9 @@ async function deleteArticleRead(articleId) {
   await Store.dispatch(
     deleteReadCreator({
       update: UPDATE_ARTICLES_READ,
-      dataType: "articleData",
+      dataType: 'articleData',
       id: articleId,
-    })
+    }),
   );
 }
 
@@ -146,8 +146,8 @@ async function clearArticlesRead() {
   await Store.dispatch(
     clearReadCreator({
       update: UPDATE_ARTICLES_READ,
-      dataType: "articleData",
-    })
+      dataType: 'articleData',
+    }),
   );
 }
 
@@ -161,12 +161,12 @@ async function updateArticleParams(params) {
     updateParamsCreator({
       updateParams: UPDATE_ARTICLES_PARAMS,
       params,
-    })
+    }),
   );
   await Store.dispatch(
     clearCreator({
       clear: CLEAR_ARTICLES,
-    })
+    }),
   );
 }
 
@@ -175,7 +175,7 @@ async function updateArticlePrefs(prefs) {
     updatePrefsCreator({
       updatePrefs: UPDATE_ARTICLES_PREFS,
       prefs,
-    })
+    }),
   );
 }
 
@@ -183,11 +183,11 @@ async function addArticleQuick(type, id, title) {
   await Store.dispatch(
     addQuickCreator({
       updateQuicks: UPDATE_ARTICLES_QUICKS,
-      dataType: "articleData",
+      dataType: 'articleData',
       type,
       id,
       title,
-    })
+    }),
   );
 }
 
@@ -195,9 +195,9 @@ async function deleteArticleQuick(id) {
   await Store.dispatch(
     deleteQuickCreator({
       updateQuicks: UPDATE_ARTICLES_QUICKS,
-      dataType: "articleData",
+      dataType: 'articleData',
       id,
-    })
+    }),
   );
 }
 
@@ -205,8 +205,9 @@ async function updateArticleCreationData(fields) {
   await Store.dispatch(
     updateCreationDataCreator({
       updateCreationData: UPDATE_ARTICLES_CREATION_DATA,
+      dataType: 'articleData',
       fields,
-    })
+    }),
   );
 }
 
@@ -214,7 +215,7 @@ async function clearArticleCreationData() {
   await Store.dispatch(
     clearCreationDataCreator({
       updateCreationData: UPDATE_ARTICLES_CREATION_DATA,
-    })
+    }),
   );
 }
 

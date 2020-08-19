@@ -24,6 +24,11 @@ function getNavigatorStyles(theme: Theme) {
     title: {
       color: colors.drawerContent,
     },
+    topic: {
+      color: colors.drawerContent,
+      fontFamily: 'Rubik-Light',
+      fontSize: 30,
+    },
     subtitle: {
       color: colors.disabled,
     },

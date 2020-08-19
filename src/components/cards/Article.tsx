@@ -4,9 +4,10 @@ import { Card, Paragraph, Text, useTheme, Title, Caption } from 'react-native-pa
 import moment from 'moment';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { ArticlePreload } from '@ts/types';
+import { ArticlePreload, State, Preferences } from '@ts/types';
 import { getImageUrl } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { connect } from 'react-redux';
 
 import { CardBase } from '../Cards';
 import TagList from '../TagList';
@@ -15,13 +16,14 @@ type Props = {
   article: ArticlePreload;
   navigate: StackNavigationProp<any, any>['navigate'];
   unread: boolean;
+  preferences: Preferences;
 };
 
 const screenDimensions = Dimensions.get('window');
 const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
 const imageSize = minWidth / 3.5;
 
-const ArticleCard: React.FC<Props> = ({ article, navigate, unread }) => {
+const ArticleCard: React.FC<Props> = ({ article, navigate, unread, preferences }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -46,7 +48,10 @@ const ArticleCard: React.FC<Props> = ({ article, navigate, unread }) => {
               flex: 1,
             }}
           >
-            <Paragraph numberOfLines={6} style={readStyle}>
+            <Paragraph
+              numberOfLines={6}
+              style={[readStyle, { fontFamily: preferences.fontFamily }]}
+            >
               {article?.summary}
             </Paragraph>
           </View>
@@ -59,4 +64,11 @@ const ArticleCard: React.FC<Props> = ({ article, navigate, unread }) => {
   );
 };
 
-export default ArticleCard;
+const mapStateToProps = (state: State) => {
+  const { preferences } = state;
+  return {
+    preferences,
+  };
+};
+
+export default connect(mapStateToProps)(ArticleCard);

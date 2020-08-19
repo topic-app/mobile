@@ -94,13 +94,12 @@ export type ArticleCreationData = {
     departments?: string[];
     global?: boolean;
   };
+  date?: Date;
   title?: string;
   summary?: string;
   tags?: string[];
-  content?: {
-    parser: 'plaintext' | 'markdown';
-    data: string;
-  };
+  parser: 'plaintext' | 'markdown';
+  data: string;
 };
 
 export type ArticlesDataState = {

@@ -79,7 +79,7 @@ function articleAddCreator({
   };
 }
 
-async function articleAdd(
+async function articleAdd({
   title,
   date,
   location,
@@ -90,8 +90,8 @@ async function articleAdd(
   data,
   preferences,
   tags,
-) {
-  await Store.dispatch(
+}) {
+  return await Store.dispatch(
     articleAddCreator({
       title,
       date,

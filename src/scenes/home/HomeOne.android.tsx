@@ -80,7 +80,7 @@ function CustomDrawerContent({
                   ) : null}
                 </View>
               ) : (
-                <Title style={navigatorStyles.title}>Topic</Title>
+                <Title style={navigatorStyles.topic}>Topic</Title>
               )}
             </View>
           </View>

@@ -1,113 +1,143 @@
-import React from "react";
-import { View, Platform } from "react-native";
-import {
-  Button,
-  RadioButton,
-  HelperText,
-  List,
-  Text,
-  useTheme,
-} from "react-native-paper";
+import React, { useState, createRef } from 'react';
+import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
 
-import { updateArticleCreationData } from "@redux/actions/contentData/articles";
-import { StepperViewPageProps } from "@components/index";
-import { Account, State } from "@ts/types";
-import getStyles from "@styles/Styles";
+import { request } from '@utils/index';
+import { StepperViewPageProps } from '@components/index';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 
-import getAuthStyles from "../styles/Styles";
-import { connect } from "react-redux";
+import getAuthStyles from '../styles/Styles';
 
-type Props = StepperViewPageProps & { account: Account };
+type Props = StepperViewPageProps & { add: Function };
 
-const ArticleAddPageGroup: React.FC<Props> = ({
-  next,
-  account,
-  creationData,
-}) => {
-  const [schools, setSchools] = React.useState([]);
-  const [departments, setDepartments] = React.useState([]);
-  const [global, setGlobal] = React.useState([]);
-  const [showError, setError] = React.useState(false);
+const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
+  const contentInput = createRef<RNTestInput>();
 
-  const submit = () => {
-    if (schools.length !== 0 || departments.length !== 0 || global) {
-      updateArticleCreationData({});
-      next();
-    } else {
-      setError(true);
-    }
+  type InputStateType = {
+    value: string;
+    error: boolean;
+    valid: boolean;
+    message: string;
   };
+
+  let tempContent: InputStateType;
+
+  const [currentContent, setCurrentContent] = useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+
+  function setContent(data: Partial<InputStateType>) {
+    // Because async setState
+    tempContent = { ...currentContent, ...(tempContent ?? {}), ...data };
+    setCurrentContent(tempContent);
+  }
+
+  async function validateContentInput(content: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
+
+    if (content !== '') {
+      if (content.length < 100) {
+        validation = {
+          valid: false,
+          error: true,
+          message: 'Le contenu doit contenir au moins 100 caractères',
+        };
+      } else {
+        validation = { valid: true, error: false };
+      }
+    }
+    setContent(validation);
+    return validation;
+  }
+
+  function preValidateContentInput(content: string) {
+    if (content.length >= 100) {
+      setContent({ valid: false, error: false });
+    }
+  }
+
+  function blurInputs() {
+    contentInput.current?.blur();
+  }
+
+  async function submit() {
+    const contentVal = currentContent.value;
+
+    const content = await validateContentInput(contentVal);
+    if (content.valid) {
+      updateArticleCreationData({ parser: 'markdown', data: contentVal });
+      add();
+    } else {
+      if (!content.valid && !content.error) {
+        setContent({
+          valid: false,
+          error: true,
+          message: 'Contenu requis',
+        });
+      }
+    }
+  }
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
-  const styles = getStyles(theme);
-
-  const selectedGroup = account.groups.find(
-    (g) => g._id === creationData.group
-  );
-  const selectedGroupLocation =
-    selectedGroup &&
-    selectedGroup.roles
-      ?.find((r) => r._id === selectedGroup.membership.role)
-      ?.permissions.find((p) => p.permission === "article.add")?.scope;
-
-  if (!account.loggedIn) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.centerIllustrationContainer}>
-          <Text>Non autorisé</Text>
-        </View>
-      </View>
-    );
-  }
+  const authStyles = getAuthStyles(theme);
 
   return (
-    <View style={articleStyles.formContainer}>
-      <View style={articleStyles.listContainer}>
-        {selectedGroupLocation?.schools.map((s) => (
-          <List.Item
-            title={s.name}
-            description={`École`}
-            left={() =>
-              Platform.OS !== "ios" ? (
-                <RadioButton
-                  status={group === g._id ? "checked" : "unchecked"}
-                  color={colors.primary}
-                  onPress={() => {
-                    setError(false);
-                    setGroup(g._id);
-                  }}
-                />
-              ) : null
-            }
-            right={() =>
-              Platform.OS === "ios" ? (
-                <RadioButton
-                  status={group === g._id ? "checked" : "unchecked"}
-                  color={colors.primary}
-                  onPress={() => {
-                    setError(false);
-                    setGroup(g._id);
-                  }}
-                />
-              ) : null
-            }
-            onPress={() => {
-              setError(false);
-              setGroup(g._id);
-            }}
-          />
-        ))}
-        <HelperText visible={showError}>
-          Vous devez selectionner un groupe
+    <View style={authStyles.formContainer}>
+      <View style={authStyles.textInputContainer}>
+        <TextInput
+          ref={contentInput}
+          label="Écrivez votre article..."
+          multiline
+          numberOfLines={4}
+          value={currentContent.value}
+          error={currentContent.error}
+          disableFullscreenUI
+          autoCapitalize="none"
+          onSubmitEditing={({ nativeEvent }) => {
+            validateContentInput(nativeEvent.text);
+            blurInputs();
+            submit();
+          }}
+          autoCorrect={false}
+          theme={
+            currentContent.valid
+              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+              : theme
+          }
+          mode="outlined"
+          onEndEditing={({ nativeEvent }) => {
+            validateContentInput(nativeEvent.text);
+          }}
+          style={authStyles.textInput}
+          onChangeText={(text) => {
+            setContent({ value: text });
+            preValidateContentInput(text);
+          }}
+        />
+        <HelperText type="error" visible={currentContent.error}>
+          {currentContent.message}
         </HelperText>
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={authStyles.buttonContainer}>
         <Button
-          mode={Platform.OS !== "ios" ? "contained" : "outlined"}
-          uppercase={Platform.OS !== "ios"}
-          onPress={() => submit()}
+          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => prev()}
+          style={{ flex: 1, marginRight: 5 }}
+        >
+          Retour
+        </Button>
+        <Button
+          mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => {
+            blurInputs();
+            submit();
+          }}
           style={{ flex: 1, marginLeft: 5 }}
         >
           Suivant
@@ -117,9 +147,4 @@ const ArticleAddPageGroup: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: State) => {
-  const { account, articles } = state;
-  return { account, creationData: articles.creationData };
-};
-
-export default connect(mapStateToProps)(ArticleAddPageGroup);
+export default ArticleAddPageGeneral;

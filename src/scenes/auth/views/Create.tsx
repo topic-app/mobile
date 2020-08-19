@@ -60,7 +60,7 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
     };
 
     register(reqParams)
-      .then(() => navigation.navigate('CreateSuccess'))
+      .then(() => navigation.replace('CreateSuccess'))
       .catch((e) => {
         logger.info(reqParams);
         logger.error('Failed to create account', e);
@@ -98,7 +98,7 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
           />
         )}
 
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="handled">
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
             <Illustration name="auth-register" height={200} width={200} />
