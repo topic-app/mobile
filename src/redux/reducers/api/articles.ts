@@ -57,6 +57,11 @@ const initialState: ArticlesState = {
         next: false,
       },
     },
+    verification_approve: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 

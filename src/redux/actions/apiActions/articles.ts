@@ -1,7 +1,34 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator } from './ActionCreator';
+import { reportCreator, approveCreator } from './ActionCreator';
 import { UPDATE_ARTICLES_STATE } from '@ts/redux';
+import { State } from '@ts/types';
+
+type ArticleAddProps = {
+  title: string;
+  date: Date;
+  location: {
+    schools: string[];
+    departments: string[];
+    global: boolean;
+  };
+  group: string;
+  image: {
+    image: string;
+    thumbnails: {
+      small?: boolean;
+      medium?: boolean;
+      large?: boolean;
+    };
+  };
+  summary: string;
+  parser: 'markdown' | 'plaintext';
+  data: string;
+  preferences?: {
+    comments?: boolean;
+  };
+  tags: string[];
+};
 
 function articleAddCreator({
   title,
@@ -14,8 +41,8 @@ function articleAddCreator({
   data,
   preferences,
   tags,
-}) {
-  return (dispatch, getState) => {
+}: ArticleAddProps) {
+  return (dispatch: (action: any) => void, getState: () => State) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_ARTICLES_STATE,
@@ -79,35 +106,22 @@ function articleAddCreator({
   };
 }
 
-async function articleAdd({
-  title,
-  date,
-  location,
-  group,
-  image,
-  summary,
-  parser,
-  data,
-  preferences,
-  tags,
-}) {
+async function articleAdd(data: ArticleAddProps) {
+  return await Store.dispatch(articleAddCreator(data));
+}
+
+async function articleVerificationApprove(id: string) {
   return await Store.dispatch(
-    articleAddCreator({
-      title,
-      date,
-      location,
-      group,
-      image,
-      summary,
-      parser,
-      data,
-      preferences,
-      tags,
+    approveCreator({
+      url: 'articles/verification/approve',
+      stateUpdate: UPDATE_ARTICLES_STATE,
+      paramName: 'articleId',
+      id,
     }),
   );
 }
 
-async function articleReport(articleId, reason) {
+async function articleReport(articleId: string, reason: string) {
   await Store.dispatch(
     reportCreator({
       contentId: articleId,
@@ -119,4 +133,4 @@ async function articleReport(articleId, reason) {
   );
 }
 
-export { articleAdd, articleReport };
+export { articleAdd, articleReport, articleVerificationApprove };
