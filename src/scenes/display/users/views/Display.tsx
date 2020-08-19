@@ -13,10 +13,11 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Account, Address, State, User } from '@ts/types';
+import { Account, Address, State, User, UsersState } from '@ts/types';
 import { Avatar, ErrorMessage, InlineCard } from '@components/index';
 import getStyles from '@styles/Styles';
 import { fetchUser } from '@redux/actions/api/users';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomTabView } from '@components/index';
 
 import getUserStyles from '../styles/Styles';
@@ -44,7 +45,7 @@ function genName({ data, info }) {
 
 function UserDisplay({
   account,
-  usersData,
+  users,
   navigation,
   route,
   state,
@@ -53,81 +54,8 @@ function UserDisplay({
   navigation: any;
   route: { params: { id: string } };
   state: { info: { success: boolean; error: any; loading: boolean } };
-  user: User;
+  users: UsersState;
 }): React.ReactNode {
-  let user = {
-    types: ['user'],
-    _id: '5e987098d652f954cc94f565',
-    info: {
-      // Cannot be modified by user
-      // This is all public
-      username: 'test',
-      // image: { type: Image, default: defaults.image },
-      joinDate: Date.now(),
-      avatar: {
-        type: 'color',
-        text: 'T',
-        color: '#455949',
-      },
-      official: false,
-    },
-    data: {
-      // This data can only be shown if public is true, and can be directly modified by user
-      public: true, // Si les infos du profil sont affichées publiquement
-      firstName: 'Hello', // Optionnel
-      lastName: 'Test', // Optionnel
-      following: {
-        groups: [
-          {
-            _id: 'testtesttest',
-            displayName: 'Groupe test 1',
-          },
-          {
-            _id: 'testtesttest',
-            displayName: 'Groupe test 2',
-          },
-        ],
-        users: [
-          {
-            _id: 'testtesttest',
-            displayName: 'User test 1',
-          },
-        ],
-        events: [],
-      },
-      location: {
-        schools: [
-          {
-            _id: 'testtesttest',
-            displayName: 'Centre international de valbonne',
-            address: {
-              shortName: null, // What is shown. Show real address if empty
-              geo: {
-                // GeoJSON object (see https://docs.mongodb.com/manual/reference/geojson/)
-                type: 'Point',
-                coordinates: [1, 2],
-              },
-              address: {
-                number: '45',
-                street: 'Chemin de quelque chose',
-                extra: null,
-                city: 'Ville',
-                code: '01234',
-              },
-              departments: [],
-            },
-          },
-        ],
-        departments: [{ name: 'Alpes-Maritimes', type: 'departement', code: '06000' }],
-        global: true,
-      },
-      description: "Description de l'utilisateur",
-      cache: {
-        followers: 4, // Le nombre de personnes qui suivent l'utilisateur
-      },
-    },
-  };
-
   let groups = [
     {
       _id: 'iddegroupe',
@@ -174,6 +102,13 @@ function UserDisplay({
     },
   ];
 
+  const { id } = route.params || {};
+
+  let user =
+    users.item?._id === id
+      ? users.item
+      : users.data.find((u) => u._id === id) || users.search.find((u) => u._id === id) || null;
+
   const following = account.accountInfo?.user?.data?.following?.groups?.some(
     (g) => g._id === 'iddegroupe',
   );
@@ -186,12 +121,34 @@ function UserDisplay({
     }
   };
 
+  React.useEffect(() => {
+    fetchUser(id);
+  }, [null]);
+
   const theme = useTheme();
   const styles = getStyles(theme);
   const userStyles = getUserStyles(theme);
   const { colors } = theme;
 
-  const { id } = route.params || {};
+  if (!user) {
+    return (
+      <View style={styles.page}>
+        {state.info.loading && <ProgressBar indeterminate />}
+        {state.info.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la mise à jour du profil',
+              contentPlural: 'des informations de profil',
+              contentSingular: 'Le profil',
+            }}
+            error={state.info.error}
+            retry={() => fetchUser(id)}
+          />
+        )}
+      </View>
+    );
+  }
 
   return (
     <View style={styles.page}>
@@ -205,7 +162,7 @@ function UserDisplay({
             contentSingular: 'Le profil',
           }}
           error={state.info.error}
-          retry={() => {}}
+          retry={() => fetchUser(id)}
         />
       )}
       <ScrollView>
@@ -248,7 +205,7 @@ function UserDisplay({
                 user.data.following.users.length +
                 user.data.following.events.length
               ) : (
-                <Icon name="lock-outline" style={{ fontSize: 52 }} />
+                <Icon name="lock-outline" size={52} color={colors.disabled} />
               )}
             </Text>
             <Text>Abonnements </Text>
@@ -267,13 +224,14 @@ function UserDisplay({
                 (styles.container,
                 {
                   alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
                   padding: 10,
                 })
               }
             >
-              <Text style={{ fontSize: 20, color: colors.primary }}>
-                <Icon name="lock" style={{ fontSize: 20 }} /> Compte privé
-              </Text>
+              <Icon name="lock" size={20} style={{ marginRight: 10 }} color={colors.primary} />
+              <Text style={{ fontSize: 20, color: colors.primary }}>Compte privé</Text>
             </View>
             <Divider style={{ height: 2, backgroundColor: colors.primary }} />
             <View style={{ height: 10 }} />
@@ -368,44 +326,9 @@ function UserDisplay({
             <View style={{ height: 20 }} />
           </View>
         )}
-        <List.Subheader>Derniers contenus</List.Subheader>
-        <Divider />
-        <CustomTabView
-          scrollEnabled={false}
-          pages={[
-            {
-              key: 'articles',
-              title: 'Articles',
-              component: (
-                <View style={styles.container}>
-                  <Text>Articles</Text>
-                </View>
-              ),
-            },
-            {
-              key: 'events',
-              title: 'Evènements',
-              component: (
-                <View style={styles.container}>
-                  <Text>Evènements</Text>
-                </View>
-              ),
-            },
-            {
-              key: 'petitions',
-              title: 'Pétitions',
-              component: (
-                <View style={styles.container}>
-                  <Text>Pétitions</Text>
-                </View>
-              ),
-            },
-          ]}
-        />
-        <View style={{ height: 20 }} />
         {user.data.public && (
           <View>
-            <List.Subheader>S'abonner aux groupes et utilisateurs</List.Subheader>
+            <List.Subheader>Abonnements</List.Subheader>
             <Divider />
             <CustomTabView
               scrollEnabled={false}
@@ -447,6 +370,41 @@ function UserDisplay({
             <View style={{ height: 20 }} />
           </View>
         )}
+        <List.Subheader>Derniers contenus</List.Subheader>
+        <Divider />
+        <CustomTabView
+          scrollEnabled={false}
+          pages={[
+            {
+              key: 'articles',
+              title: 'Articles',
+              component: (
+                <View style={styles.container}>
+                  <Text>Articles</Text>
+                </View>
+              ),
+            },
+            {
+              key: 'events',
+              title: 'Evènements',
+              component: (
+                <View style={styles.container}>
+                  <Text>Evènements</Text>
+                </View>
+              ),
+            },
+            {
+              key: 'petitions',
+              title: 'Pétitions',
+              component: (
+                <View style={styles.container}>
+                  <Text>Pétitions</Text>
+                </View>
+              ),
+            },
+          ]}
+        />
+        <View style={{ height: 20 }} />
       </ScrollView>
     </View>
   );
@@ -456,7 +414,7 @@ const mapStateToProps = (state: State) => {
   const { users, account } = state;
   return {
     account,
-    user: users.item,
+    users,
     state: users.state,
   };
 };

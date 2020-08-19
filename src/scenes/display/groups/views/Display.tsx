@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   ScrollView,
   View,
@@ -7,18 +7,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-} from "react-native";
-import { Button, Text, Paragraph, useTheme, Divider } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Avatar from "@components/Avatar";
-import { CategoryTitle } from "@components/Typography";
-import { InlineCard } from "@components/Cards";
-import ErrorMessage from "@components/ErrorMessage";
-import getStyles from "@styles/Styles";
-import { fetchGroup } from "@redux/actions/api/groups";
-import { groupFollow, groupUnfollow } from "@redux/actions/apiActions/groups";
-import { fetchAccount } from "@redux/actions/data/account";
-import { connect } from "react-redux";
+} from 'react-native';
+import { Button, Text, Paragraph, useTheme, Divider } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Avatar from '@components/Avatar';
+import { CategoryTitle } from '@components/Typography';
+import { InlineCard } from '@components/Cards';
+import ErrorMessage from '@components/ErrorMessage';
+import getStyles from '@styles/Styles';
+import { fetchGroup } from '@redux/actions/api/groups';
+import { groupFollow, groupUnfollow } from '@redux/actions/apiActions/groups';
+import { fetchAccount } from '@redux/actions/data/account';
+import { connect } from 'react-redux';
 
 import {
   GroupPreload,
@@ -28,7 +28,7 @@ import {
   GroupRequestState,
   GroupsState,
   State,
-} from "@ts/types";
+} from '@ts/types';
 
 function getAddressString(address: Address) {
   const { number, street, city, code } = address?.address || {};
@@ -67,13 +67,10 @@ function GroupDisplay({
   const group =
     groups.item?._id === id
       ? groups.item
-      : groups.data.find((g) => g._id === id) ||
-        groups.search.find((g) => g._id === id) ||
-        null;
+      : groups.data.find((g) => g._id === id) || groups.search.find((g) => g._id === id) || null;
 
   const following =
-    account.loggedIn &&
-    account.accountInfo.user.data.following.groups.some((g) => g._id === id);
+    account.loggedIn && account.accountInfo.user.data.following.groups.some((g) => g._id === id);
 
   const toggleFollow = () => {
     if (following) {
@@ -91,16 +88,14 @@ function GroupDisplay({
           <ErrorMessage
             type="axios"
             strings={{
-              what: "la récupération de ce groupe",
-              contentSingular: "Le groupe",
+              what: 'la récupération de ce groupe',
+              contentSingular: 'Le groupe',
             }}
             error={state.info.error}
             retry={() => fetchGroup(id)}
           />
         )}
-        {!state.info.error && (
-          <ActivityIndicator size="large" color={colors.primary} />
-        )}
+        {!state.info.error && <ActivityIndicator size="large" color={colors.primary} />}
       </View>
     );
   }
@@ -111,8 +106,8 @@ function GroupDisplay({
         <ErrorMessage
           type="axios"
           strings={{
-            what: "la récupération de ce groupe",
-            contentSingular: "Le groupe",
+            what: 'la récupération de ce groupe',
+            contentSingular: 'Le groupe',
           }}
           error={state.info.error}
           retry={() => fetchGroup(id)}
@@ -122,8 +117,8 @@ function GroupDisplay({
         <ErrorMessage
           type="axios"
           strings={{
-            what: "la modification du suivi",
-            contentSingular: "le suivi",
+            what: 'la modification du suivi',
+            contentSingular: 'le suivi',
           }}
           error={state.info.error}
         />
@@ -131,26 +126,23 @@ function GroupDisplay({
       <ScrollView>
         <View style={{ elevation: 3, backgroundColor: colors.surface }}>
           <View style={{ padding: 15 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Avatar avatar={group?.avatar} style={styles.avatar} />
               <View style={{ paddingLeft: 15, flex: 1 }}>
                 <Text style={{ fontSize: 22 }} numberOfLines={2}>
                   {`${group?.name} `}
-                  {group?.official && (
-                    <Icon name="check-decagram" size={20} color={colors.icon} />
-                  )}
+                  {group?.official && <Icon name="check-decagram" size={20} color={colors.icon} />}
                 </Text>
                 <Text style={{ paddingLeft: 2, color: colors.muted }}>
-                  {group?.members?.length} membres &#xFF65;{" "}
-                  {group?.cache?.followers} abonnés
+                  {group?.members?.length} membres &#xFF65; {group?.cache?.followers} abonnés
                 </Text>
               </View>
             </View>
             {account.loggedIn && (
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
                   paddingTop: 5,
                 }}
               >
@@ -168,10 +160,10 @@ function GroupDisplay({
                         "Vous ne pourrez plus le rejoindre sans l'invitation d'un administrateur du groupe.",
                         [
                           {
-                            text: "Annuler",
+                            text: 'Annuler',
                           },
                         ],
-                        { cancelable: true }
+                        { cancelable: true },
                       )
                     }
                   >
@@ -180,19 +172,17 @@ function GroupDisplay({
                 )}
                 <Button
                   loading={state.follow.loading || accountState.loading}
-                  mode={following ? "outlined" : "contained"}
+                  mode={following ? 'outlined' : 'contained'}
                   style={{
-                    backgroundColor: following
-                      ? colors.surface
-                      : colors.primary,
+                    backgroundColor: following ? colors.surface : colors.primary,
                     borderRadius: 20,
                   }}
                   onPress={toggleFollow}
                 >
                   {state.follow.loading || accountState.loading
-                    ? ""
+                    ? ''
                     : following
-                    ? "Abonné"
+                    ? 'Abonné'
                     : "S'abonner"}
                 </Button>
               </View>
@@ -206,27 +196,21 @@ function GroupDisplay({
               <Paragraph numberOfLines={5}>{group?.summary}</Paragraph>
               {group?.description?.data && (
                 // Only show 'Read more' if there is a description
-                <View style={{ alignItems: "flex-end" }}>
+                <View style={{ alignItems: 'flex-end' }}>
                   <TouchableOpacity
-                    activeOpacity={Platform.OS === "ios" ? 0.2 : 0.6}
+                    activeOpacity={Platform.OS === 'ios' ? 0.2 : 0.6}
                     onPress={() =>
-                      navigation.navigate("Description", {
+                      navigation.navigate('Description', {
                         title: group.name,
                         id: group._id,
                       })
                     }
                   >
-                    <View style={{ flexDirection: "row" }}>
-                      <Text
-                        style={{ color: colors.disabled, alignSelf: "center" }}
-                      >
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={{ color: colors.disabled, alignSelf: 'center' }}>
                         Voir la description complète
                       </Text>
-                      <Icon
-                        name="chevron-right"
-                        color={colors.disabled}
-                        size={23}
-                      />
+                      <Icon name="chevron-right" color={colors.disabled} size={23} />
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -237,7 +221,7 @@ function GroupDisplay({
               <InlineCard
                 icon="map-marker"
                 title="France Entière"
-                onPress={() => console.log("global pressed")}
+                onPress={() => console.log('global pressed')}
               />
             )}
             {group?.location.schools?.map((school) => (
@@ -245,9 +229,7 @@ function GroupDisplay({
                 key={school._id}
                 icon="school"
                 title={school.displayName}
-                subtitle={
-                  getAddressString(school?.address) || school?.shortName
-                }
+                subtitle={getAddressString(school?.address) || school?.shortName}
                 onPress={() => console.log(`school ${school._id} pressed!`)}
               />
             ))}
@@ -268,13 +250,27 @@ function GroupDisplay({
               <InlineCard
                 key={mem._id}
                 title={mem.user.displayName}
-                subtitle={`${
-                  mem.user.data?.public ? `@${mem.user.info.username} - ` : ""
-                }${group.roles.find((r) => r._id === mem.role)?.name}`}
-                badge={mem.role.admin ? "star" : null}
+                subtitle={`${mem.user.data?.public ? `@${mem.user.info.username} - ` : ''}${
+                  group.roles.find((r) => r._id === mem.role)?.name
+                }`}
+                badge={mem.role.admin ? 'star' : null}
                 badgeColor={colors.solid.gold}
                 icon="account"
-                onPress={() => console.log(`user ${mem._id} pressed!`)}
+                onPress={() =>
+                  navigation.navigate('Main', {
+                    screen: 'Display',
+                    params: {
+                      screen: 'User',
+                      params: {
+                        screen: 'Display',
+                        params: {
+                          id: mem.user._id,
+                          title: `@${mem.user.info?.username}`,
+                        },
+                      },
+                    },
+                  })
+                }
               />
             ))}
             <View style={{ height: 40 }} />

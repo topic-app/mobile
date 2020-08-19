@@ -57,7 +57,7 @@ async function fetchUser(userId: string) {
     fetchCreator({
       update: UPDATE_USERS_ITEM,
       stateUpdate: UPDATE_USERS_STATE,
-      url: 'users/list',
+      url: 'users/info',
       dataType: 'users',
       params: { userId },
     }),
