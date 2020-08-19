@@ -1,13 +1,464 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { View, ScrollView, Alert } from 'react-native';
+import {
+  Text,
+  useTheme,
+  Title,
+  Subheading,
+  Divider,
+  Button,
+  List,
+  ProgressBar,
+} from 'react-native-paper';
+import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-function UserDisplay() {
+import { Account, Address, State, User } from '@ts/types';
+import { Avatar, ErrorMessage, InlineCard } from '@components/index';
+import getStyles from '@styles/Styles';
+import { fetchUser } from '@redux/actions/api/users';
+import { CustomTabView } from '@components/index';
+
+import getUserStyles from '../styles/Styles';
+import { fetchAccount } from '@redux/actions/data/account';
+import locationReducer from '@redux/reducers/data/location';
+import departmentReducer from '@redux/reducers/api/departments';
+import { color } from 'react-native-reanimated';
+import { userFollow, userUnfollow } from '@redux/actions/apiActions/users';
+
+function getAddressString(address: Address['address']) {
+  const { number, street, city, code } = address || {};
+  if (number && street && city && code) {
+    return `${number} ${street}, ${code} ${city}`;
+  }
+  if (city) return city;
+  return null;
+}
+
+function genName({ data, info }) {
+  if (data.firstName && data.lastName) {
+    return `${data.firstName} ${data.lastName}`;
+  }
+  return data.firstName || data.lastName || null;
+}
+
+function UserDisplay({
+  account,
+  usersData,
+  navigation,
+  route,
+  state,
+}: {
+  account: Account;
+  navigation: any;
+  route: { params: { id: string } };
+  state: { info: { success: boolean; error: any; loading: boolean } };
+  user: User;
+}): React.ReactNode {
+  let user = {
+    types: ['user'],
+    _id: '5e987098d652f954cc94f565',
+    info: {
+      // Cannot be modified by user
+      // This is all public
+      username: 'test',
+      // image: { type: Image, default: defaults.image },
+      joinDate: Date.now(),
+      avatar: {
+        type: 'color',
+        text: 'T',
+        color: '#455949',
+      },
+      official: false,
+    },
+    data: {
+      // This data can only be shown if public is true, and can be directly modified by user
+      public: true, // Si les infos du profil sont affichées publiquement
+      firstName: 'Hello', // Optionnel
+      lastName: 'Test', // Optionnel
+      following: {
+        groups: [
+          {
+            _id: 'testtesttest',
+            displayName: 'Groupe test 1',
+          },
+          {
+            _id: 'testtesttest',
+            displayName: 'Groupe test 2',
+          },
+        ],
+        users: [
+          {
+            _id: 'testtesttest',
+            displayName: 'User test 1',
+          },
+        ],
+        events: [],
+      },
+      location: {
+        schools: [
+          {
+            _id: 'testtesttest',
+            displayName: 'Centre international de valbonne',
+            address: {
+              shortName: null, // What is shown. Show real address if empty
+              geo: {
+                // GeoJSON object (see https://docs.mongodb.com/manual/reference/geojson/)
+                type: 'Point',
+                coordinates: [1, 2],
+              },
+              address: {
+                number: '45',
+                street: 'Chemin de quelque chose',
+                extra: null,
+                city: 'Ville',
+                code: '01234',
+              },
+              departments: [],
+            },
+          },
+        ],
+        departments: [{ name: 'Alpes-Maritimes', type: 'departement', code: '06000' }],
+        global: true,
+      },
+      description: "Description de l'utilisateur",
+      cache: {
+        followers: 4, // Le nombre de personnes qui suivent l'utilisateur
+      },
+    },
+  };
+
+  let groups = [
+    {
+      _id: 'iddegroupe',
+      name: 'Groupe de test',
+      shortName: 'test',
+      location: {
+        schools: [
+          {
+            _id: 'testtesttest',
+            displayName: 'Centre international de valbonne',
+            address: {
+              shortName: null, // What is shown. Show real address if empty
+              geo: {
+                // GeoJSON object (see https://docs.mongodb.com/manual/reference/geojson/)
+                type: 'Point',
+                coordinates: [1, 2],
+              },
+              address: {
+                number: '45',
+                street: 'Chemin de quelque chose',
+                extra: null,
+                city: 'Ville',
+                code: '01234',
+              },
+              departments: [],
+            },
+          },
+        ],
+        departments: [],
+        global: false,
+      }, //Meme chose que la location d'un utilisateur
+      roles: [
+        {
+          _id: 'testtesttest',
+          name: 'test',
+        },
+      ],
+      members: [
+        {
+          user: 'iddetest', // Le meme _id que dans les données de test
+          role: 'testtesttest',
+        },
+      ],
+    },
+  ];
+
+  const following = account.accountInfo?.user?.data?.following?.groups?.some(
+    (g) => g._id === 'iddegroupe',
+  );
+
+  const toggleFollow = () => {
+    if (following) {
+      userUnfollow(id).then(fetchAccount);
+    } else {
+      userFollow(id).then(fetchAccount);
+    }
+  };
+
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const userStyles = getUserStyles(theme);
+  const { colors } = theme;
+
+  const { id } = route.params || {};
+
   return (
-    <View>
-      <Text>User Display!</Text>
+    <View style={styles.page}>
+      {state.info.loading && <ProgressBar indeterminate />}
+      {state.info.error && (
+        <ErrorMessage
+          type="axios"
+          strings={{
+            what: 'la mise à jour du profil',
+            contentPlural: 'des informations de profil',
+            contentSingular: 'Le profil',
+          }}
+          error={state.info.error}
+          retry={() => {}}
+        />
+      )}
+      <ScrollView>
+        <View style={[styles.contentContainer, { marginTop: 20 }]}>
+          <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
+            <Avatar size={120} avatar={user.info.avatar} />
+          </View>
+          <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
+            {user.data.public ? (
+              <View style={{ alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Title>{genName(user) || `@${user.info.username}`}</Title>
+                  <View style={{ marginLeft: 5 }}>
+                    {user.info.official && (
+                      <Icon name="check-decagram" color={colors.primary} size={20} />
+                    )}
+                  </View>
+                </View>
+                {genName(user) && (
+                  <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                    @{user.info.username}
+                  </Subheading>
+                )}
+              </View>
+            ) : (
+              <Title>@{user.info.username}</Title>
+            )}
+          </View>
+        </View>
+        <Divider style={{ marginVertical: 10 }} />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 40 }}>{user.data.cache.followers || ''}</Text>
+            <Text>Abonnés </Text>
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 40 }}>
+              {user.data.public ? (
+                user.data.following.groups.length +
+                user.data.following.users.length +
+                user.data.following.events.length
+              ) : (
+                <Icon name="lock-outline" style={{ fontSize: 52 }} />
+              )}
+            </Text>
+            <Text>Abonnements </Text>
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 40 }}>{groups.length}</Text>
+            <Text>Groupes</Text>
+          </View>
+        </View>
+        <Divider style={{ marginVertical: 10 }} />
+        {!user.data.public && (
+          <View>
+            <Divider style={{ height: 2, backgroundColor: colors.primary }} />
+            <View
+              style={
+                (styles.container,
+                {
+                  alignItems: 'center',
+                  padding: 10,
+                })
+              }
+            >
+              <Text style={{ fontSize: 20, color: colors.primary }}>
+                <Icon name="lock" style={{ fontSize: 20 }} /> Compte privé
+              </Text>
+            </View>
+            <Divider style={{ height: 2, backgroundColor: colors.primary }} />
+            <View style={{ height: 10 }} />
+          </View>
+        )}
+        {account.loggedIn && (
+          <View style={styles.container}>
+            <Button
+              loading={state.follow?.loading}
+              mode={following ? 'outlined' : 'contained'}
+              style={{
+                backgroundColor: following ? colors.surface : colors.primary,
+                borderRadius: 20,
+              }}
+              onPress={toggleFollow}
+            >
+              {state.follow?.loading ? '' : following ? 'Abonné' : "S'abonner"}
+            </Button>
+          </View>
+        )}
+        <View style={{ height: 10 }} />
+        {(user.data.public || user.data.description === '' || user.data.description === null) && (
+          <View>
+            <List.Subheader>Description</List.Subheader>
+            <Divider />
+            <View style={{ alignItems: 'stretch', marginVertical: 20, marginHorizontal: 10 }}>
+              <Text>{user.data.description}</Text>
+            </View>
+            <View style={{ height: 20 }} />
+          </View>
+        )}
+        {!(groups.length === 0) && (
+          <View>
+            <List.Subheader>Groupes</List.Subheader>
+            <Divider />
+            {groups?.map((group) => (
+              <InlineCard
+                key="iddegroupe"
+                icon="account-group"
+                title={group.name}
+                subtitle={
+                  group.roles.find(
+                    (r) => r._id === group.members.find((m) => m.user === user._id)?.role,
+                  )?.name
+                }
+                onPress={() => console.log(`group ${group._id} pressed!`)}
+              />
+            ))}
+            <View style={{ height: 20 }} />
+          </View>
+        )}
+        {user.data.public && (
+          <View>
+            <List.Subheader>Localisation</List.Subheader>
+            <Divider />
+            <View style={{ marginVertical: 10 }}>
+              {user.data.location.global && (
+                <InlineCard
+                  icon="map-marker"
+                  title="France Entière"
+                  onPress={() => console.log('global pressed')}
+                />
+              )}
+              {user.data.location.schools?.map((school) => (
+                <InlineCard
+                  key={school._id}
+                  icon="school"
+                  title={school.displayName}
+                  subtitle={`${
+                    getAddressString(school.address?.address) || school.address.shortName
+                  }${
+                    school.address.departments[0]
+                      ? `, ${
+                          school.address.departments[0].displayName ||
+                          school.address.departments[0].name
+                        }`
+                      : ' '
+                  }`}
+                  onPress={() => console.log(`school ${school._id} pressed!`)}
+                />
+              ))}
+              {user.data.location.departments?.map((dep) => (
+                <InlineCard
+                  key={dep._id}
+                  icon="map-marker-radius"
+                  title={dep.name}
+                  subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${dep.code}`}
+                  onPress={() => console.log(`department ${dep._id} pressed!`)}
+                />
+              ))}
+            </View>
+            <View style={{ height: 20 }} />
+          </View>
+        )}
+        <List.Subheader>Derniers contenus</List.Subheader>
+        <Divider />
+        <CustomTabView
+          scrollEnabled={false}
+          pages={[
+            {
+              key: 'articles',
+              title: 'Articles',
+              component: (
+                <View style={styles.container}>
+                  <Text>Articles</Text>
+                </View>
+              ),
+            },
+            {
+              key: 'events',
+              title: 'Evènements',
+              component: (
+                <View style={styles.container}>
+                  <Text>Evènements</Text>
+                </View>
+              ),
+            },
+            {
+              key: 'petitions',
+              title: 'Pétitions',
+              component: (
+                <View style={styles.container}>
+                  <Text>Pétitions</Text>
+                </View>
+              ),
+            },
+          ]}
+        />
+        <View style={{ height: 20 }} />
+        {user.data.public && (
+          <View>
+            <List.Subheader>S'abonner aux groupes et utilisateurs</List.Subheader>
+            <Divider />
+            <CustomTabView
+              scrollEnabled={false}
+              pages={[
+                {
+                  key: 'groups',
+                  title: 'Groupes',
+                  component: (
+                    <View style={styles.container}>
+                      {user.data.following.groups?.map((group) => (
+                        <InlineCard
+                          key={group._id}
+                          icon="account-group"
+                          title={group.displayName}
+                          onPress={() => console.log(`group ${group._id} pressed!`)}
+                        />
+                      ))}
+                    </View>
+                  ),
+                },
+                {
+                  key: 'users',
+                  title: 'Utilisateurs',
+                  component: (
+                    <View style={styles.container}>
+                      {user.data.following.users?.map((user) => (
+                        <InlineCard
+                          key={user._id}
+                          icon="account"
+                          title={user.displayName}
+                          onPress={() => console.log(`user ${user._id} pressed!`)}
+                        />
+                      ))}
+                    </View>
+                  ),
+                },
+              ]}
+            />
+            <View style={{ height: 20 }} />
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 }
 
-export default UserDisplay;
+const mapStateToProps = (state: State) => {
+  const { users, account } = state;
+  return {
+    account,
+    user: users.item,
+    state: users.state,
+  };
+};
+
+export default connect(mapStateToProps)(UserDisplay);

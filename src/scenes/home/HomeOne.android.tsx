@@ -177,6 +177,25 @@ function CustomDrawerContent({
       )}
       <Drawer.Section>
         <Drawer.Item
+          label="DEV Users"
+          icon="account-outline"
+          onPress={() => {
+            navigation.closeDrawer();
+            navigation.navigate('Main', {
+              screen: 'Display',
+              params: {
+                screen: 'User',
+                params: {
+                  screen: 'Display',
+                  params: {
+                    id: 'test',
+                  },
+                },
+              },
+            });
+          }}
+        />
+        <Drawer.Item
           label="Paramètres"
           icon="settings-outline"
           onPress={() => {
