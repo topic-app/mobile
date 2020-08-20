@@ -253,10 +253,11 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                       color={colors.primary}
                     />
                     <Text style={{ color: colors.text }}>
-                      Pour vérifier cet article:{'\n'}- Vérifiez que le contenu est bien conforme au
-                      conditions générales d'utilisation{'\n'}- Vérifiez que tous les médias sont
-                      conformes, et que vous avez bien le droit d'utiliser ceux-ci{'\n'}- Visitez
-                      chacun des liens afin de vous assurer que tous les sites sont conformes{'\n'}
+                      Pour vérifier cet article:{'\n'}- Vérifiez que le contenu est bien conforme
+                      aux conditions générales d'utilisation{'\n'}- Vérifiez que tous les médias
+                      sont conformes, et que vous avez bien le droit d'utiliser ceux-ci{'\n'}-
+                      Visitez chacun des liens afin de vous assurer que tous les sites sont
+                      conformes{'\n'}
                       {'\n'}
                       Nous vous rappelons que les contenus suivants ne sont pas autorisés: {'\n'}-
                       Tout contenu illégal{'\n'}- Tout contenu haineux ou discriminatoire{'\n'}-
