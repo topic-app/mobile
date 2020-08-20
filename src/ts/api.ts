@@ -234,6 +234,7 @@ export type GroupMember = {
 export type GroupPreload = {
   _id: string;
   displayName: string;
+  type: string;
   avatar: Avatar;
 };
 

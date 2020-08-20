@@ -150,6 +150,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <InlineCard
             avatar={article.group?.avatar}
             title={article.group?.displayName}
+            subtitle={`Groupe ${article.group?.type}`}
             onPress={() =>
               navigation.push('Main', {
                 screen: 'Display',

@@ -368,6 +368,7 @@ function UserDisplay({
                               key={group._id}
                               avatar={group.avatar}
                               title={group.displayName}
+                              subtitle={`Groupe ${group.type}`}
                               onPress={() =>
                                 navigation.push('Main', {
                                   screen: 'Display',
