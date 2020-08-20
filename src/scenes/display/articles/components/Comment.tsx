@@ -9,7 +9,7 @@ import getStyles from '@styles/Styles';
 import moment from 'moment';
 import getCommentStyles from '../styles/Styles';
 
-function CommentInlineCard({ comment, report, loggedIn }) {
+function CommentInlineCard({ comment, report, loggedIn, navigation }) {
   const { publisher, content, date, parent, parentType, _id: id } = comment;
   const { _id: publisherId, displayName } = publisher[publisher.type] || {};
 
@@ -17,7 +17,22 @@ function CommentInlineCard({ comment, report, loggedIn }) {
   const styles = getStyles(theme);
   const commentStyles = getCommentStyles(theme);
 
-  const navigateToPublisher = () => console.log('go to', publisher.type, publisherId);
+  const navigateToPublisher = () =>
+    navigation.navigate('Main', {
+      screen: 'Display',
+      params: {
+        screen: comment.publisher.type === 'user' ? 'User' : 'Group',
+        params: {
+          screen: 'Display',
+          params: {
+            id:
+              comment.publisher.type === 'user'
+                ? comment.publisher.user?._id
+                : comment.publisher.group?._id,
+          },
+        },
+      },
+    });
 
   const [menuVisible, setMenuVisible] = React.useState(false);
 

@@ -32,16 +32,16 @@ async function request(
       res = await axios.get(endpoint, { params, headers });
     } catch (error) {
       logger.http({
-        status: error.status,
+        status: error?.status,
         method,
         endpoint,
         params,
-        data: error.data,
+        data: error?.data,
       });
       throw {
         success: false,
         reason: 'axios',
-        status: error.status,
+        status: error?.status,
         error,
         res: null,
       };
@@ -60,13 +60,13 @@ async function request(
       };
     }
     logger.http({
-      status: res.status,
+      status: res?.status,
       method,
       endpoint,
       params,
-      data: res.data.info,
+      data: res?.data?.info,
     });
-    throw { success: false, reason: 'success', status: res.status, error: null, res };
+    throw { success: false, reason: 'success', status: res?.status, error: null, res };
   }
   if (method === 'post') {
     let res: AxiosResponse<ApiDataType>;

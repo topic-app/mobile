@@ -1,18 +1,11 @@
-import React from "react";
-import { Text, Title, Divider, List, useTheme } from "react-native-paper";
-import {
-  View,
-  Image,
-  ActivityIndicator,
-  Animated,
-  Platform,
-  Share,
-} from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { connect } from "react-redux";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RouteProp } from "@react-navigation/native";
-import moment from "moment";
+import React from 'react';
+import { Text, Title, Divider, List, useTheme } from 'react-native-paper';
+import { View, Image, ActivityIndicator, Animated, Platform, Share } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
+import moment from 'moment';
 
 import {
   Article,
@@ -24,7 +17,7 @@ import {
   Comment,
   ArticleListItem,
   Preferences,
-} from "@ts/types";
+} from '@ts/types';
 import {
   ErrorMessage,
   Content,
@@ -34,27 +27,24 @@ import {
   AnimatingHeader,
   Illustration,
   ReportModal,
-} from "@components/index";
-import { getImageUrl } from "@utils/index";
-import { articleReport } from "@redux/actions/apiActions/articles";
-import { fetchArticle } from "@redux/actions/api/articles";
-import {
-  addArticleRead,
-  addArticleToList,
-} from "@redux/actions/contentData/articles";
-import { updateComments } from "@redux/actions/api/comments";
-import { commentAdd, commentReport } from "@redux/actions/apiActions/comments";
-import getStyles from "@styles/Styles";
+} from '@components/index';
+import { getImageUrl } from '@utils/index';
+import { articleReport } from '@redux/actions/apiActions/articles';
+import { fetchArticle } from '@redux/actions/api/articles';
+import { addArticleRead, addArticleToList } from '@redux/actions/contentData/articles';
+import { updateComments } from '@redux/actions/api/comments';
+import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
+import getStyles from '@styles/Styles';
 
-import CommentInlineCard from "../components/Comment";
-import AddCommentModal from "../components/AddCommentModal";
-import AddToListModal from "../components/AddToListModal";
-import getArticleStyles from "../styles/Styles";
-import type { ArticleDisplayStackParams } from "../index";
+import CommentInlineCard from '../components/Comment';
+import AddCommentModal from '../components/AddCommentModal';
+import AddToListModal from '../components/AddToListModal';
+import getArticleStyles from '../styles/Styles';
+import type { ArticleDisplayStackParams } from '../index';
 
 // Common types
-type Navigation = StackNavigationProp<ArticleDisplayStackParams, "Display">;
-type Route = RouteProp<ArticleDisplayStackParams, "Display">;
+type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
+type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
 type CombinedReqState = {
   articles: ArticleRequestState;
   comments: CommentRequestState;
@@ -88,15 +78,14 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
     <View style={styles.page}>
       {article.image && (
         <Image
-          source={{ uri: getImageUrl({ image: article.image, size: "large" }) }}
+          source={{ uri: getImageUrl({ image: article.image, size: 'large' }) }}
           style={[styles.image, articleStyles.image]}
         />
       )}
       <View style={styles.contentContainer}>
         <Title style={styles.title}>{article.title}</Title>
         <Text style={styles.subtitle}>
-          Le {moment(article.date).format("LL")} à{" "}
-          {moment(article.date).format("LT")}
+          Le {moment(article.date).format('LL')} à {moment(article.date).format('LT')}
         </Text>
       </View>
       <TagList item={article} />
@@ -104,7 +93,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
         <View
           style={[
             styles.contentContainer,
-            { flexDirection: "row", marginBottom: 0, alignItems: "center" },
+            { flexDirection: 'row', marginBottom: 0, alignItems: 'center' },
           ]}
         >
           <Icon
@@ -116,33 +105,37 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <Title style={{ color: colors.disabled }}>Hors ligne</Title>
         </View>
       )}
-      {reqState.articles.info.loading && (
-        <ActivityIndicator size="large" color={colors.primary} />
-      )}
+      {reqState.articles.info.loading && <ActivityIndicator size="large" color={colors.primary} />}
       {!article.preload && reqState.articles.info.success && (
         <View>
           <View style={styles.contentContainer}>
-            <Content
-              data={article.content.data}
-              parser={article.content.parser}
-            />
+            <Content data={article.content.data} parser={article.content.parser} />
           </View>
           <Divider />
           <View style={styles.container}>
-            <CategoryTitle>
-              Auteur{article.authors?.length > 1 ? "s" : ""}
-            </CategoryTitle>
+            <CategoryTitle>Auteur{article.authors?.length > 1 ? 's' : ''}</CategoryTitle>
           </View>
           {article.authors?.map((author) => (
             <InlineCard
               avatar={author.info?.avatar}
               title={author?.displayName}
-              onPress={() => console.log("navigate to user", author._id)}
+              onPress={() =>
+                navigation.push('Main', {
+                  screen: 'Display',
+                  params: {
+                    screen: 'User',
+                    params: {
+                      screen: 'Display',
+                      params: { id: author?._id, title: author?.displayName },
+                    },
+                  },
+                })
+              }
               badge={
                 account.loggedIn &&
                 account.accountInfo.user &&
                 following?.users.includes(author._id)
-                  ? "account-heart"
+                  ? 'account-heart'
                   : undefined
               }
               badgeColor={colors.valid}
@@ -157,14 +150,15 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <InlineCard
             avatar={article.group?.avatar}
             title={article.group?.displayName}
+            subtitle={`Groupe ${article.group?.type}`}
             onPress={() =>
-              navigation.navigate("Main", {
-                screen: "Display",
+              navigation.push('Main', {
+                screen: 'Display',
                 params: {
-                  screen: "Group",
+                  screen: 'Group',
                   params: {
-                    screen: "Display",
-                    params: { id: article.group?._id },
+                    screen: 'Display',
+                    params: { id: article.group?._id, title: article.group?.displayName },
                   },
                 },
               })
@@ -173,7 +167,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               account.loggedIn &&
               account.accountInfo.user &&
               following?.groups.includes(article.group?._id)
-                ? "account-heart"
+                ? 'account-heart'
                 : null
             }
             badgeColor={colors.valid}
@@ -187,9 +181,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               <List.Item
                 title="Écrire un commentaire"
                 titleStyle={articleStyles.placeholder}
-                right={() => (
-                  <List.Icon icon="comment-plus" color={colors.icon} />
-                )}
+                right={() => <List.Icon icon="comment-plus" color={colors.icon} />}
                 onPress={() => setCommentModalVisible(true)}
               />
             </View>
@@ -201,8 +193,8 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               <Text>
                 <Text
                   onPress={() =>
-                    navigation.navigate("Auth", {
-                      screen: "Login",
+                    navigation.navigate('Auth', {
+                      screen: 'Login',
                     })
                   }
                   style={[styles.link, styles.primaryText]}
@@ -212,8 +204,8 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 <Text style={articleStyles.disabledText}> ou </Text>
                 <Text
                   onPress={() =>
-                    navigation.navigate("Auth", {
-                      screen: "Create",
+                    navigation.navigate('Auth', {
+                      screen: 'Create',
                     })
                   }
                   style={[styles.link, styles.primaryText]}
@@ -229,13 +221,11 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               <ErrorMessage
                 type="axios"
                 strings={{
-                  what: "la récupération des commentaires",
-                  contentPlural: "des commentaires",
+                  what: 'la récupération des commentaires',
+                  contentPlural: 'des commentaires',
                 }}
                 error={reqState.comments.list.error}
-                retry={() =>
-                  updateComments("initial", { parentId: article._id })
-                }
+                retry={() => updateComments('initial', { parentId: article._id })}
               />
             )}
           </View>
@@ -279,10 +269,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const { colors } = theme;
 
   let article: Article | undefined | null;
-  if (
-    useLists &&
-    lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))
-  ) {
+  if (useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))) {
     article = lists
       .find((l: ArticleListItem) => l.items.some((i) => i._id === id))
       ?.items.find((i) => i._id === id);
@@ -290,39 +277,26 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     article =
       item?._id === id
         ? item
-        : data.find((a) => a._id === id) ||
-          search.find((a) => a._id === id) ||
-          null;
+        : data.find((a) => a._id === id) || search.find((a) => a._id === id) || null;
   }
   const articleComments = comments.filter((c) => c.parent === article?._id);
 
   React.useEffect(() => {
-    if (
-      !(
-        useLists &&
-        lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))
-      )
-    ) {
+    if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
       fetchArticle(id).then(() => {
         if (preferences.history) {
           addArticleRead(id, article?.title);
         }
       });
     }
-    updateComments("initial", { parentId: id });
+    updateComments('initial', { parentId: id });
   }, [null]);
 
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
-  const [
-    isArticleReportModalVisible,
-    setArticleReportModalVisible,
-  ] = React.useState(false);
+  const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
   const [isListModalVisible, setListModalVisible] = React.useState(false);
 
-  const [
-    isCommentReportModalVisible,
-    setCommentReportModalVisible,
-  ] = React.useState(false);
+  const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
   const [focusedComment, setFocusedComment] = React.useState(null);
 
   const scrollY = new Animated.Value(0);
@@ -335,7 +309,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           <ErrorMessage
             type="axios"
             strings={{
-              what: "la récupération de cet article",
+              what: 'la récupération de cet article',
               contentSingular: "L'article",
             }}
             error={reqState.articles.info.error}
@@ -355,26 +329,26 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         title={
           route.params.title ||
           (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? "Actus - Hors ligne"
-            : "Actus")
+            ? 'Actus - Hors ligne'
+            : 'Actus')
         }
         subtitle={
           route.params.title &&
           (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? "Actus - Hors ligne"
-            : "Actus")
+            ? 'Actus - Hors ligne'
+            : 'Actus')
         }
         actions={[
           {
-            icon: "playlist-plus",
+            icon: 'playlist-plus',
             onPress: () => setListModalVisible(true),
           },
         ]}
         overflow={[
           {
-            title: "Partager",
+            title: 'Partager',
             onPress:
-              Platform.OS === "ios"
+              Platform.OS === 'ios'
                 ? () =>
                     Share.share({
                       message: `${article?.title} par ${article?.group?.displayName}`,
@@ -387,7 +361,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                     }),
           },
           {
-            title: "Signaler",
+            title: 'Signaler',
             onPress: () => setArticleReportModalVisible(true),
           },
         ]}
@@ -396,7 +370,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           <ErrorMessage
             type="axios"
             strings={{
-              what: "la récupération de cet article",
+              what: 'la récupération de cet article',
               contentSingular: "L'article",
             }}
             error={reqState.articles.info.error}
@@ -405,18 +379,13 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         )}
       </AnimatingHeader>
       <Animated.FlatList
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          {
-            useNativeDriver: true,
-          }
-        )}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+          useNativeDriver: true,
+        })}
         ListHeaderComponent={() => (
           <ArticleDisplayHeader
             article={article}
-            offline={
-              useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            }
+            offline={useLists && lists?.some((l) => l.items?.some((i) => i._id === id))}
             reqState={reqState}
             account={account}
             navigation={navigation}
@@ -426,18 +395,12 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         data={reqState.articles.info.success ? articleComments : []}
         refreshing={reqState.comments.list.loading.refresh}
         onRefresh={() => {
-          if (
-            useLists &&
-            lists?.some((l) => l.items?.some((i) => i._id === id))
-          ) {
+          if (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))) {
             fetchArticle(id);
           } else {
-            addArticleToList(
-              id,
-              lists.find((l) => l.items.some((i) => i._id === id))?.id
-            );
+            addArticleToList(id, lists.find((l) => l.items.some((i) => i._id === id))?.id);
           }
-          updateComments("refresh", { parentId: id });
+          updateComments('refresh', { parentId: id });
         }}
         // onEndReached={() => {
         //   console.log('comment end reached');
@@ -477,6 +440,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               setCommentReportModalVisible(true);
             }}
             loggedIn={account.loggedIn}
+            navigation={navigation}
           />
         )}
       />
@@ -486,9 +450,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         id={id}
         reqState={reqState}
         add={(...data: any) =>
-          commentAdd(...data).then(() =>
-            updateComments("initial", { parentId: id })
-          )
+          commentAdd(...data).then(() => updateComments('initial', { parentId: id }))
         }
       />
       <ReportModal
@@ -506,11 +468,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         state={reqState.comments.report}
         navigation={navigation}
       />
-      <AddToListModal
-        visible={isListModalVisible}
-        setVisible={setListModalVisible}
-        id={id}
-      />
+      <AddToListModal visible={isListModalVisible} setVisible={setListModalVisible} id={id} />
     </View>
   );
 };
