@@ -42,7 +42,12 @@ async function updateGroups(
   );
 }
 
-async function searchGroups(type: 'initial' | 'refresh' | 'next', terms: string, params = {}) {
+async function searchGroups(
+  type: 'initial' | 'refresh' | 'next',
+  terms: string,
+  params = {},
+  search = true,
+) {
   await Store.dispatch(
     updateCreator({
       update: UPDATE_GROUPS_SEARCH,
@@ -50,7 +55,7 @@ async function searchGroups(type: 'initial' | 'refresh' | 'next', terms: string,
       url: 'groups/list',
       dataType: 'groups',
       type,
-      params: { ...params, search: true, terms },
+      params: { ...params, search, terms },
       stateName: 'search',
       listName: 'search',
       clear: type !== 'next',

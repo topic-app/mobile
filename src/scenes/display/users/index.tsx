@@ -14,8 +14,8 @@ function UserDisplayStackNavigator() {
         component={UserDisplay}
         options={({ route }: { route: { params: { title?: string } } }) => ({
           ...HeaderConfig,
-          title: 'Utilisateur',
-          subtitle: route?.params?.title,
+          title: route?.params?.title || 'Utilisateur',
+          subtitle: route?.params?.title && 'Utilisateur - Aperçu',
         })}
       />
     </Stack.Navigator>

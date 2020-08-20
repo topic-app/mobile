@@ -15,9 +15,8 @@ function GroupDisplayStackNavigator() {
         component={GroupDisplay}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: route.params.title || 'Groupe - Aperçu',
+          title: route.params.title || 'Groupe',
           subtitle: route.params.title && 'Groupe - Aperçu',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         })}
       />
       <Stack.Screen
@@ -27,7 +26,6 @@ function GroupDisplayStackNavigator() {
           ...HeaderConfig,
           title: route.params.title || 'Groupe - Description',
           subtitle: route.params.title && 'Groupe - Description',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         })}
       />
     </Stack.Navigator>

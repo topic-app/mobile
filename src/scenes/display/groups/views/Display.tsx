@@ -95,7 +95,11 @@ function GroupDisplay({
             retry={() => fetchGroup(id)}
           />
         )}
-        {!state.info.error && <ActivityIndicator size="large" color={colors.primary} />}
+        {!state.info.error && (
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        )}
       </View>
     );
   }
@@ -189,10 +193,16 @@ function GroupDisplay({
             )}
           </View>
         </View>
+        {state.info.loading && (
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        )}
         {state.info.success && (
           <View>
             <View style={styles.container}>
               <CategoryTitle>Description</CategoryTitle>
+              <Paragraph style={{ color: colors.disabled }}>Groupe {group?.type}</Paragraph>
               <Paragraph numberOfLines={5}>{group?.summary}</Paragraph>
               {group?.description?.data && (
                 // Only show 'Read more' if there is a description
@@ -265,7 +275,7 @@ function GroupDisplay({
                         screen: 'Display',
                         params: {
                           id: mem.user._id,
-                          title: `@${mem.user.info?.username}`,
+                          title: mem.user.info?.username,
                         },
                       },
                     },

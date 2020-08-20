@@ -18,7 +18,7 @@ function MyGroupsListCard({ group, navigate, member, following }) {
         <View>
           <View style={styles.container}>
             <View style={{ flexDirection: 'row' }}>
-              <Avatar name={group.name} imageUrl={group.imageUrl} style={styles.avatar} />
+              <Avatar avatar={group.avatar} style={styles.avatar} />
               <View style={{ flex: 1, paddingLeft: 15 }}>
                 <View>
                   <Title style={{ flex: 1 }} numberOfLines={1}>
