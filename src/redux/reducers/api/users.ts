@@ -35,6 +35,16 @@ const initialState: UsersState = {
       error: null,
       loading: false,
     },
+    follow: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    report: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 

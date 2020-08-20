@@ -194,7 +194,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
                         <Text
                           onPress={() =>
                             navigation.navigate('Auth', {
-                              scrReportereen: 'Login',
+                              screen: 'Login',
                             })
                           }
                           style={[styles.link, styles.primaryText]}

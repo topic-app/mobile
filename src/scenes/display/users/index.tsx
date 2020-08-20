@@ -12,10 +12,8 @@ function UserDisplayStackNavigator() {
       <Stack.Screen
         name="Display"
         component={UserDisplay}
-        options={({ route }: { route: { params: { title?: string } } }) => ({
-          ...HeaderConfig,
-          title: route?.params?.title || 'Utilisateur',
-          subtitle: route?.params?.title && 'Utilisateur - Aperçu',
+        options={() => ({
+          headerShown: false,
         })}
       />
     </Stack.Navigator>
