@@ -84,37 +84,38 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
               p.name === 'article.verification.approve' &&
               (p.scope?.groups?.includes(creationData?.group) ||
                 (p.group === creationData?.group && p.scope?.self)),
-          ) && approved ? (
-            <Text>Article approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
-          ) : (
-            <View>
-              <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous même cet article</Text>
-              <Button
-                uppercase={Platform.OS !== 'ios'}
-                loading={reqState.verification_approve?.loading}
-                mode="outlined"
-                style={{ marginTop: 10 }}
-                onPress={() => {
-                  Alert.alert(
-                    "Approuver l'article?",
-                    "L'article doit ềtre conforme aux conditions d'utilisation.\nVous êtes responsables si l'article ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs",
-                    [
-                      {
-                        text: 'Annuler',
-                      },
-                      {
-                        text: 'Approuver',
-                        onPress: approve,
-                      },
-                    ],
-                    { cancelable: true },
-                  );
-                }}
-              >
-                {reqState.verification_approve?.loading ? '' : 'Approuver'}
-              </Button>
-            </View>
-          )}
+          ) &&
+            (approved ? (
+              <Text>Article approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
+            ) : (
+              <View>
+                <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous même cet article</Text>
+                <Button
+                  uppercase={Platform.OS !== 'ios'}
+                  loading={reqState.verification_approve?.loading}
+                  mode="outlined"
+                  style={{ marginTop: 10 }}
+                  onPress={() => {
+                    Alert.alert(
+                      "Approuver l'article?",
+                      "L'article doit ềtre conforme aux conditions d'utilisation.\nVous êtes responsables si l'article ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs",
+                      [
+                        {
+                          text: 'Annuler',
+                        },
+                        {
+                          text: 'Approuver',
+                          onPress: approve,
+                        },
+                      ],
+                      { cancelable: true },
+                    );
+                  }}
+                >
+                  {reqState.verification_approve?.loading ? '' : 'Approuver'}
+                </Button>
+              </View>
+            ))}
         </View>
         <View style={{ marginBottom: 30 }}>
           <View style={[styles.container, { marginTop: 20 }]}>

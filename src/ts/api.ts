@@ -63,7 +63,7 @@ export type DepartmentPreload = {
   _id: string;
   displayName: string;
   shortName?: string;
-  type: 'region' | 'department' | 'academie';
+  type: 'region' | 'departement' | 'academie';
 };
 
 export type Department = {
@@ -72,7 +72,7 @@ export type Department = {
   shortName?: string;
   aliases: string[];
   code: string; // zipcode
-  type: 'region' | 'department' | 'academie';
+  type: 'region' | 'departement' | 'academie';
   adminGroups: GroupPreload[];
 };
 

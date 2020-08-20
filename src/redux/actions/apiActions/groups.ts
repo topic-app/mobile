@@ -1,5 +1,7 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
+import { reportCreator } from './ActionCreator';
+import { UPDATE_GROUPS_STATE } from '@ts/types';
 
 function groupFollowCreator({ id }: { id: string }) {
   return (dispatch: (action: { type: string; data: any }) => void) => {
@@ -121,4 +123,16 @@ async function groupUnfollow(id: string) {
   );
 }
 
-export { groupFollow, groupUnfollow };
+async function groupReport(groupId: string, reason: string) {
+  await Store.dispatch(
+    reportCreator({
+      contentId: groupId,
+      contentIdName: 'groupId',
+      url: 'groups/report',
+      stateUpdate: UPDATE_GROUPS_STATE,
+      reason,
+    }),
+  );
+}
+
+export { groupFollow, groupUnfollow, groupReport };

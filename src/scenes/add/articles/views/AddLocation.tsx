@@ -22,54 +22,32 @@ type ReduxLocation = {
   departments: string[];
 };
 
-function done(
-  { schools, departments, global }: ReduxLocation,
-  type: 'schools' | 'departements' | 'regions' | 'other',
-  navigation: Navigation,
-) {
-  Promise.all([
-    updateArticleParams({
-      schools,
-      departments,
-      global,
-    }),
-  ]).then(() => {
-    if (type === 'schools') {
-      fetchMultiSchool(schools);
-    } else if (type === 'departements' || type === 'regions') {
-      fetchMultiDepartment(departments);
-    }
-    navigation.goBack();
-  });
-}
-
 type ArticleEditParamsProps = {
   navigation: Navigation;
-  articleParams: ReduxLocation;
   route: {
     params: {
       type: 'schools' | 'departements' | 'regions' | 'other';
       hideSearch: boolean;
+      callback: (location: ReduxLocation) => any;
+      initialData: ReduxLocation;
     };
   };
 };
 
-function ArticleEditParams({ navigation, articleParams, route }: ArticleEditParamsProps) {
-  const { hideSearch, type } = route.params;
+function ArticleAddLocation({ navigation, route }: ArticleEditParamsProps) {
+  const { hideSearch = false, type, initialData, callback } = route.params;
 
   return (
     <LocationSelectPage
-      initialData={articleParams}
+      initialData={initialData}
       type={type}
       hideSearch={hideSearch}
-      callback={(location: ReduxLocation) => done(location, type, navigation)}
+      callback={(location: ReduxLocation) => {
+        callback(location);
+        navigation.goBack();
+      }}
     />
   );
 }
 
-const mapStateToProps = (state: State) => {
-  const { articleData } = state;
-  return { articleParams: articleData.params };
-};
-
-export default connect(mapStateToProps)(ArticleEditParams);
+export default ArticleAddLocation;

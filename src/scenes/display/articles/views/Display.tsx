@@ -261,14 +261,41 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                       {'\n'}
                       Nous vous rappelons que les contenus suivants ne sont pas autorisés: {'\n'}-
                       Tout contenu illégal{'\n'}- Tout contenu haineux ou discriminatoire{'\n'}-
-                      Tout contenu explicite ou qui ne convient pas aux enfants{'\n'}- Toute
-                      atteinte à la propriété intellectuelle{'\n'}- Tout contenu trompeur{'\n'}-
-                      Toute atteinte à la vie privée{'\n'}- Tout contenu publié de façon automatisée
+                      Tout contenu à caractère pornographique ou qui ne convient pas aux enfants
+                      {'\n'}- Toute atteinte à la propriété intellectuelle{'\n'}- Tout contenu
+                      trompeur{'\n'}- Toute atteinte à la vie privée{'\n'}- Tout contenu publié de
+                      façon automatisée
                       {'\n'}- Tout contenu qui pointe vers un site web, logiciel, ou autre média qui
                       ne respecte pas les présentes règles{'\n'}
                       {'\n'}
                       En tant qu'administrateur, vous êtes en partie responsable des contenus
                       publiés, comme détaillé dans la Charte des administrateurs.
+                    </Text>
+                  </View>
+                </Card>
+              </View>
+              <View style={[styles.container, { marginTop: 20 }]}>
+                <Card
+                  elevation={0}
+                  style={{ borderColor: colors.disabled, borderWidth: 1, borderRadius: 5 }}
+                >
+                  <View style={[styles.container, { flexDirection: 'row' }]}>
+                    <Icon
+                      name="link"
+                      style={{ alignSelf: 'flex-start', marginRight: 10 }}
+                      size={24}
+                      color={colors.disabled}
+                    />
+                    <Text style={{ color: colors.text }}>
+                      Liens contenus dans l'article:{'\n'}
+                      {article?.content?.data
+                        ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
+                        .map((u) => (
+                          <Text>
+                            {u}
+                            {'\n'}
+                          </Text>
+                        ))}
                     </Text>
                   </View>
                 </Card>
@@ -404,6 +431,25 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
+        <AnimatingHeader
+          value={scrollY}
+          title={
+            route.params.title ||
+            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+              ? 'Actus - Hors ligne'
+              : verification
+              ? 'Actus - modération'
+              : 'Actus')
+          }
+          subtitle={
+            route.params.title &&
+            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+              ? 'Actus - Hors ligne'
+              : verification
+              ? 'Actus - modération'
+              : 'Actus')
+          }
+        />
         {reqState.articles.info.error && (
           <ErrorMessage
             type="axios"
@@ -416,7 +462,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           />
         )}
         {reqState.articles.info.loading && (
-          <ActivityIndicator size="large" color={colors.primary} />
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
         )}
       </View>
     );

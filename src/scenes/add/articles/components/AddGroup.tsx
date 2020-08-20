@@ -83,7 +83,9 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
             }}
           />
         ))}
-        <HelperText visible={showError}>Vous devez selectionner un groupe</HelperText>
+        <HelperText visible={showError} type="error">
+          Vous devez selectionner un groupe
+        </HelperText>
         {groupsWithPermission.length !== account.groups.length && (
           <Text>
             Certains groups n'apparaissent pas car vous ne pouvez pas écrire d'articles pour ces

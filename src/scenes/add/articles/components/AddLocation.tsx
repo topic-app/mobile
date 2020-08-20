@@ -9,19 +9,59 @@ import {
   Checkbox,
   useTheme,
   Divider,
+  ProgressBar,
 } from 'react-native-paper';
 
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { StepperViewPageProps } from '@components/index';
-import { Account, State, ArticleCreationData } from '@ts/types';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import {
+  Account,
+  State,
+  ArticleCreationData,
+  Location,
+  Department,
+  School,
+  RequestState,
+} from '@ts/types';
 import getStyles from '@styles/Styles';
 
 import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';
 
-type Props = StepperViewPageProps & { account: Account; creationData: ArticleCreationData };
+type Props = StepperViewPageProps & {
+  account: Account;
+  creationData: ArticleCreationData;
+  navigation: any;
+  schoolItems: School[];
+  departmentItems: Department[];
+  locationStates: {
+    schools: {
+      info: RequestState;
+    };
+    departments: {
+      info: RequestState;
+    };
+  };
+};
 
-const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, creationData }) => {
+type ReduxLocation = {
+  schools: string[];
+  departments: string[];
+  global: boolean;
+};
+
+const ArticleAddPageGroup: React.FC<Props> = ({
+  prev,
+  next,
+  account,
+  creationData,
+  navigation,
+  schoolItems,
+  departmentItems,
+  locationStates,
+}) => {
   const [schools, setSchools] = React.useState([]);
   const [departments, setDepartments] = React.useState([]);
   const [global, setGlobal] = React.useState(false);
@@ -53,9 +93,14 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, creationDat
       func(data.filter((j) => j !== i._id));
     } else {
       setError(false);
-      setSchools([...data, i._id]);
+      func([...data, i._id]);
     }
   };
+
+  React.useEffect(() => {
+    fetchMultiSchool(selectedGroupLocation?.schools?.map((s) => s._id));
+    fetchMultiDepartment(selectedGroupLocation?.departments?.map((s) => s._id));
+  }, [null]);
 
   return (
     <View style={articleStyles.formContainer}>
@@ -139,25 +184,125 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, creationDat
         {selectedGroupLocation?.everywhere ? (
           <View>
             <Divider style={{ marginTop: 20 }} />
+            {(locationStates.schools.info.loading || locationStates.departments.info.loading) && (
+              <ProgressBar indeterminate />
+            )}
+            {(locationStates.schools.info.error || locationStates.departments.info.error) && (
+              <ErrorMessage
+                error={[locationStates.schools.info.error, locationStates.departments.info.error]}
+                strings={{
+                  what: "l'ajout de l'article",
+                  contentSingular: "L'article",
+                }}
+                type="axios"
+                retry={() => {
+                  fetchMultiSchool([...schools, ...selectedGroupLocation.schools]);
+                  fetchMultiDepartment([...departments, ...selectedGroupLocation.departments]);
+                }}
+              />
+            )}
             <List.Item
-              title="Toutes les écoles"
+              title="Écoles"
+              description={
+                schools?.length
+                  ? schools
+                      .map(
+                        (s) =>
+                          schoolItems?.find((t) => t._id === s)?.displayName ||
+                          schoolItems?.find((t) => t._id === s)?.name,
+                      )
+                      .join(', ')
+                  : undefined
+              }
               style={{ marginBottom: -20 }}
+              right={() => <List.Icon icon="chevron-right" />}
+              onPress={() =>
+                navigation.navigate('Location', {
+                  type: 'schools',
+                  initialData: { schools, departments, global },
+                  callback: ({ schools: newSchools }: ReduxLocation) => {
+                    fetchMultiSchool(newSchools);
+                    setSchools(newSchools);
+                  },
+                })
+              }
+            />
+            <List.Item
+              title="Départements"
+              description={
+                departments
+                  ?.map((d) =>
+                    departmentItems
+                      .filter((e) => e.type === 'departement')
+                      ?.find((e) => e._id === d),
+                  )
+                  .filter((d) => d)?.length
+                  ? departments
+                      .map(
+                        (d) =>
+                          departmentItems
+                            .filter((e) => e.type === 'departement')
+                            ?.find((e) => e._id === d)?.displayName ||
+                          departmentItems
+                            .filter((e) => e.type === 'departement')
+                            ?.find((e) => e._id === d)?.name,
+                      )
+                      .filter((d) => d)
+                      .join(', ')
+                  : undefined
+              }
+              style={{ marginBottom: -20 }}
+              onPress={() =>
+                navigation.navigate('Location', {
+                  type: 'departements',
+                  initialData: { schools, departments, global },
+                  callback: ({ departments: newDepartments }: ReduxLocation) => {
+                    fetchMultiDepartment(newDepartments);
+                    setDepartments(newDepartments);
+                  },
+                })
+              }
               right={() => <List.Icon icon="chevron-right" />}
             />
             <List.Item
-              title="Tous les départements"
-              style={{ marginBottom: -20 }}
-              right={() => <List.Icon icon="chevron-right" />}
-            />
-            <List.Item
-              title="Toutes les régions"
+              title="Régions"
+              description={
+                departments
+                  ?.map((d) =>
+                    departmentItems.filter((e) => e.type === 'region')?.find((e) => e._id === d),
+                  )
+                  .filter((d) => d)?.length
+                  ? departments
+                      .map(
+                        (d) =>
+                          departmentItems
+                            .filter((e) => e.type === 'region')
+                            ?.find((e) => e._id === d)?.displayName ||
+                          departmentItems
+                            .filter((e) => e.type === 'region')
+                            ?.find((e) => e._id === d)?.name,
+                      )
+                      .filter((d) => d)
+                      .join(', ')
+                  : undefined
+              }
+              onPress={() =>
+                navigation.navigate('Location', {
+                  type: 'regions',
+                  initialData: { schools, departments, global },
+                  callback: ({ departments: newDepartments }: ReduxLocation) => {
+                    fetchMultiDepartment(newDepartments);
+                    setDepartments(newDepartments);
+                  },
+                })
+              }
               right={() => <List.Icon icon="chevron-right" />}
             />
           </View>
         ) : (
           <Text>Vous pouvez publier seulement dans ces localisations</Text>
         )}
-        <HelperText visible={showError}>
+        <HelperText visible={showError} type="error">
           Vous devez selectionner au moins une localisation
         </HelperText>
       </View>
@@ -184,8 +329,17 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, creationDat
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, articleData } = state;
-  return { account, creationData: articleData.creationData };
+  const { account, articleData, schools, departments } = state;
+  return {
+    account,
+    creationData: articleData.creationData,
+    schoolItems: schools.items,
+    departmentItems: departments.items,
+    locationStates: {
+      schools: schools.state,
+      departments: departments.state,
+    },
+  };
 };
 
 export default connect(mapStateToProps)(ArticleAddPageGroup);

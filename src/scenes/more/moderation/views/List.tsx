@@ -53,7 +53,7 @@ const ModerationList: React.FC<Props> = ({ navigation, articlesVerification, acc
 
   React.useEffect(() => {
     fetch();
-  }, []);
+  }, [null]);
 
   console.log(JSON.stringify(selectedGroupsArticle));
 
@@ -102,6 +102,11 @@ const ModerationList: React.FC<Props> = ({ navigation, articlesVerification, acc
                         <FlatList
                           data={articlesVerification}
                           keyExtractor={(i) => i._id}
+                          ListEmptyComponent={
+                            <View style={styles.centerIllustrationContainer}>
+                              <Text>Aucun article en attente de modération</Text>
+                            </View>
+                          }
                           renderItem={({ item }: { item: Article }) => (
                             <View>
                               <ArticleCard

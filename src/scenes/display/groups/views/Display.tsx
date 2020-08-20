@@ -10,13 +10,11 @@ import {
 } from 'react-native';
 import { Button, Text, Paragraph, useTheme, Divider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Avatar from '@components/Avatar';
-import { CategoryTitle } from '@components/Typography';
-import { InlineCard } from '@components/Cards';
+import { Avatar, InlineCard, CategoryTitle, ReportModal } from '@components/index';
 import ErrorMessage from '@components/ErrorMessage';
 import getStyles from '@styles/Styles';
 import { fetchGroup } from '@redux/actions/api/groups';
-import { groupFollow, groupUnfollow } from '@redux/actions/apiActions/groups';
+import { groupFollow, groupUnfollow, groupReport } from '@redux/actions/apiActions/groups';
 import { fetchAccount } from '@redux/actions/data/account';
 import { connect } from 'react-redux';
 
@@ -79,6 +77,8 @@ function GroupDisplay({
       groupFollow(id).then(fetchAccount);
     }
   };
+
+  const [isGroupReportModalVisible, setGroupReportModalVisible] = React.useState(false);
 
   if (!group) {
     // This is when article has not been loaded in list, so we have absolutely no info
@@ -287,6 +287,14 @@ function GroupDisplay({
           </View>
         )}
       </ScrollView>
+
+      <ReportModal
+        visible={isGroupReportModalVisible}
+        setVisible={setGroupReportModalVisible}
+        contentId={id}
+        report={groupReport}
+        state={state.report}
+      />
     </View>
   );
 }

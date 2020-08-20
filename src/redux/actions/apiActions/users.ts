@@ -1,5 +1,7 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
+import { reportCreator } from './ActionCreator';
+import { UPDATE_USERS_STATE } from '@ts/types';
 
 function userFollowCreator({ id }: { id: string }) {
   return (dispatch: (action: { type: string; data: any }) => void) => {
@@ -121,4 +123,16 @@ async function userUnfollow(id: string) {
   );
 }
 
-export { userFollow, userUnfollow };
+async function userReport(userId: string, reason: string) {
+  await Store.dispatch(
+    reportCreator({
+      contentId: userId,
+      contentIdName: 'userId',
+      url: 'users/report',
+      stateUpdate: UPDATE_USERS_STATE,
+      reason,
+    }),
+  );
+}
+
+export { userFollow, userUnfollow, userReport };
