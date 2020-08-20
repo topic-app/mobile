@@ -49,7 +49,8 @@ const ModerationList: React.FC<Props> = ({ navigation, articlesVerification, acc
   const [selectedGroupsArticle, setSelectedGroupsArticle] = React.useState(allowedGroupsArticle);
   const [everywhereArticle, setEverywhereArticle] = React.useState(false);
 
-  const fetch = () => updateArticlesVerification('initial', { groups: selectedGroupsArticle });
+  const fetch = (groups = selectedGroupsArticle, everywhere = everywhereArticle) =>
+    updateArticlesVerification('initial', everywhere ? {} : { groups });
 
   React.useEffect(() => {
     fetch();
@@ -82,7 +83,28 @@ const ModerationList: React.FC<Props> = ({ navigation, articlesVerification, acc
                     component: (
                       <View>
                         <ChipAddList
-                          setList={(data) => console.log(data)}
+                          setList={async (data) => {
+                            if (data.key === 'everywhere') {
+                              setEverywhereArticle(true);
+                              setSelectedGroupsArticle([]);
+                              fetch([], true);
+                            } else {
+                              if (selectedGroupsArticle.includes(data.key)) {
+                                setEverywhereArticle(false);
+                                setSelectedGroupsArticle(
+                                  selectedGroupsArticle.filter((g) => g !== data.key),
+                                );
+                                fetch(
+                                  selectedGroupsArticle.filter((g) => g !== data.key),
+                                  false,
+                                );
+                              } else {
+                                setEverywhereArticle(false);
+                                setSelectedGroupsArticle([...selectedGroupsArticle, data.key]);
+                                fetch([...selectedGroupsArticle, data.key], false);
+                              }
+                            }
+                          }}
                           data={[
                             ...(allowedEverywhereArticle
                               ? [{ key: 'everywhere', title: 'Tous (France entière)' }]
