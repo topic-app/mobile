@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, ScrollView, Alert, ActivityIndicator, FlatList } from 'react-native';
 import {
   Text,
   useTheme,
@@ -23,8 +23,9 @@ import {
   StandardRequestState,
   RequestState,
   RequestStateComplex,
+  Article,
 } from '@ts/types';
-import { Avatar, ErrorMessage, InlineCard } from '@components/index';
+import { Avatar, ErrorMessage, InlineCard, ArticleCard } from '@components/index';
 import getStyles from '@styles/Styles';
 import { fetchUser } from '@redux/actions/api/users';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -37,6 +38,7 @@ import departmentReducer from '@redux/reducers/api/departments';
 import { color } from 'react-native-reanimated';
 import { userFollow, userUnfollow } from '@redux/actions/apiActions/users';
 import { searchGroups } from '@redux/actions/api/groups';
+import { searchArticles } from '@redux/actions/api/articles';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
@@ -62,6 +64,8 @@ function UserDisplay({
   state,
   groups,
   groupsState,
+  articles,
+  articlesState,
 }: {
   account: Account;
   navigation: any;
@@ -70,6 +74,8 @@ function UserDisplay({
   users: UsersState;
   groups: Group[];
   groupsState: { search: RequestStateComplex };
+  articles: Article[];
+  articlesState: { search: RequestStateComplex };
 }): React.ReactNode {
   const { id } = route.params || {};
 
@@ -90,7 +96,8 @@ function UserDisplay({
 
   React.useEffect(() => {
     fetchUser(id);
-    searchGroups('initial', '', { members: [id] }, false);
+    searchGroups('initial', '', { members: [id], number: 0 }, false);
+    searchArticles('initial', '', { authors: [id] }, false);
   }, [null]);
 
   const theme = useTheme();
@@ -105,9 +112,9 @@ function UserDisplay({
           <ErrorMessage
             type="axios"
             strings={{
-              what: 'la mise à jour du profil',
-              contentPlural: 'des informations de profil',
-              contentSingular: 'Le profil',
+              what: "la récupération de l'utilisateur",
+              contentPlural: "des informations de l'utilisateur",
+              contentSingular: "L'utilisateur",
             }}
             error={state.info.error}
             retry={() => fetchUser(id)}
@@ -128,9 +135,9 @@ function UserDisplay({
         <ErrorMessage
           type="axios"
           strings={{
-            what: 'la mise à jour du profil',
-            contentPlural: 'des informations de profil',
-            contentSingular: 'Le profil',
+            what: "la récupération de l'utilisateur",
+            contentPlural: "des informations de l'utilisateur",
+            contentSingular: "L'utilisateur",
           }}
           error={state.info.error}
           retry={() => fetchUser(id)}
@@ -269,7 +276,7 @@ function UserDisplay({
                       contentPlural: 'les groupes',
                     }}
                     error={groupsState.search.error}
-                    retry={() => fetchUser(id)}
+                    retry={() => searchGroups('initial', '', { members: [id], number: 0 }, false)}
                   />
                 )}
                 {groupsState.search.loading.initial && (
@@ -423,41 +430,83 @@ function UserDisplay({
                 <View style={{ height: 20 }} />
               </View>
             )}
-            <List.Subheader>Derniers contenus</List.Subheader>
-            <Divider />
-            <CustomTabView
-              scrollEnabled={false}
-              pages={[
-                {
-                  key: 'articles',
-                  title: 'Articles',
-                  component: (
-                    <View style={styles.container}>
-                      <Text>Articles</Text>
-                    </View>
-                  ),
-                },
-                {
-                  key: 'events',
-                  title: 'Evènements',
-                  component: (
-                    <View style={styles.container}>
-                      <Text>Evènements</Text>
-                    </View>
-                  ),
-                },
-                {
-                  key: 'petitions',
-                  title: 'Pétitions',
-                  component: (
-                    <View style={styles.container}>
-                      <Text>Pétitions</Text>
-                    </View>
-                  ),
-                },
-              ]}
-            />
-            <View style={{ height: 20 }} />
+            {articles.length !== 0 && (
+              <View>
+                <List.Subheader>Derniers contenus</List.Subheader>
+                <Divider />
+                <CustomTabView
+                  scrollEnabled={false}
+                  pages={[
+                    ...(articles.length
+                      ? [
+                          {
+                            key: 'articles',
+                            title: 'Articles',
+                            component: (
+                              <View>
+                                {articlesState.search.error && (
+                                  <ErrorMessage
+                                    type="axios"
+                                    strings={{
+                                      what: 'le chargement des articles',
+                                      contentPlural: 'les articles',
+                                    }}
+                                    error={groupsState.search.error}
+                                    retry={() =>
+                                      searchArticles('initial', '', { authors: [id] }, false)
+                                    }
+                                  />
+                                )}
+                                {articlesState.search.loading.initial && (
+                                  <View style={styles.container}>
+                                    <ActivityIndicator size="large" color={colors.primary} />
+                                  </View>
+                                )}
+                                {articlesState.search.success && (
+                                  <FlatList
+                                    data={articles}
+                                    keyExtractor={(i) => i._id}
+                                    ListFooterComponent={
+                                      articlesState.search.loading.initial ? (
+                                        <View style={[styles.container, { height: 50 }]}>
+                                          <ActivityIndicator size="large" color={colors.primary} />
+                                        </View>
+                                      ) : null
+                                    }
+                                    renderItem={({ item }: { item: Article }) => (
+                                      <ArticleCard
+                                        article={item}
+                                        unread
+                                        navigate={() =>
+                                          navigation.navigate('Main', {
+                                            screen: 'Display',
+                                            params: {
+                                              screen: 'Article',
+                                              params: {
+                                                screen: 'Display',
+                                                params: {
+                                                  id: item._id,
+                                                  title: item.title,
+                                                  useLists: false,
+                                                },
+                                              },
+                                            },
+                                          })
+                                        }
+                                      />
+                                    )}
+                                  />
+                                )}
+                              </View>
+                            ),
+                          },
+                        ]
+                      : []),
+                  ]}
+                />
+                <View style={{ height: 20 }} />
+              </View>
+            )}
           </View>
         )}
       </ScrollView>
@@ -466,13 +515,15 @@ function UserDisplay({
 }
 
 const mapStateToProps = (state: State) => {
-  const { users, account, groups } = state;
+  const { users, account, groups, articles } = state;
   return {
     account,
     users,
     state: users.state,
     groups: groups.search,
     groupsState: groups.state,
+    articles: articles.search,
+    articlesState: articles.state,
   };
 };
 
