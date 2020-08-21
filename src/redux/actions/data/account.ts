@@ -1,6 +1,5 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
-import { config } from '@root/app.json';
 
 import {
   GroupRolePermission,
@@ -9,7 +8,7 @@ import {
   DepartmentPreload,
   Avatar,
 } from '@ts/types';
-import crypto from 'react-native-simple-crypto';
+import { hashPassword } from '@utils/crypto';
 
 function fetchGroupsCreator() {
   return (dispatch, getState) => {
@@ -202,14 +201,7 @@ function loginCreator(fields: LoginFields) {
       });
       try {
         // We also hash passwords on the server, this is just a small extra security
-        let hashedPassword = await crypto.PBKDF2.hash(
-          crypto.utils.convertUtf8ToArrayBuffer(fields.accountInfo.password),
-          crypto.utils.convertUtf8ToArrayBuffer(config.auth.salt),
-          config.auth.iterations,
-          config.auth.keylen,
-          config.auth.digest,
-        );
-        fields.accountInfo.password = crypto.utils.convertArrayBufferToHex(hashedPassword);
+        fields.accountInfo.password = await hashPassword(fields.accountInfo.password);
       } catch (err) {
         return dispatch({
           type: 'UPDATE_ACCOUNT_STATE',
@@ -308,15 +300,7 @@ function registerCreator(fields: RegisterFields) {
         },
       });
       try {
-        // We also hash passwords on the server, this is just a small extra security
-        let hashedPassword = await crypto.PBKDF2.hash(
-          crypto.utils.convertUtf8ToArrayBuffer(fields.accountInfo.password),
-          crypto.utils.convertUtf8ToArrayBuffer(config.auth.salt),
-          config.auth.iterations,
-          config.auth.keylen,
-          config.auth.digest,
-        );
-        fields.accountInfo.password = crypto.utils.convertArrayBufferToHex(hashedPassword);
+        fields.accountInfo.password = await hashPassword(fields.accountInfo.password);
       } catch (err) {
         return dispatch({
           type: 'UPDATE_ACCOUNT_STATE',

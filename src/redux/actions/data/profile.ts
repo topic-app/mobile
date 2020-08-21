@@ -1,7 +1,6 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
-import crypto from 'react-native-simple-crypto';
-import { config } from '@root/app.json';
+import { hashPassword } from '@utils/crypto';
 
 /**
  * @docs actionCreators
@@ -173,18 +172,8 @@ function updatePasswordCreator(password: string) {
         },
       });
 
-      let newPassword;
-
       try {
-        // We also hash passwords on the server, this is just a small extra security
-        const hashedPassword = await crypto.PBKDF2.hash(
-          crypto.utils.convertUtf8ToArrayBuffer(password),
-          crypto.utils.convertUtf8ToArrayBuffer(config.auth.salt),
-          config.auth.iterations,
-          config.auth.keylen,
-          config.auth.digest,
-        );
-        newPassword = crypto.utils.convertArrayBufferToHex(hashedPassword);
+        let newPassword = await hashPassword(password);
         await request('profile/modify/password', 'post', { password: newPassword }, true);
       } catch (error) {
         dispatch({
