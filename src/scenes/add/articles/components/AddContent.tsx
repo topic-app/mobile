@@ -68,8 +68,7 @@ const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
 
     const content = await validateContentInput(contentVal);
     if (content.valid) {
-      updateArticleCreationData({ parser: 'markdown', data: contentVal });
-      add();
+      updateArticleCreationData({ parser: 'markdown', data: contentVal }).then(() => add());
     } else {
       if (!content.valid && !content.error) {
         setContent({
@@ -140,7 +139,7 @@ const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
           }}
           style={{ flex: 1, marginLeft: 5 }}
         >
-          Suivant
+          Publier
         </Button>
       </View>
     </View>

@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HeaderConfig } from '@components/Header';
 import ArticleAdd from './views/Add';
 import ArticleAddSuccess from './views/AddSuccess';
+import ArticleAddLocation from './views/AddLocation';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,14 @@ function ArticleAddStackNavigator() {
         options={{
           title: 'Article ajouté',
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Location"
+        component={ArticleAddLocation}
+        options={{
+          title: 'Localisation',
+          headerShown: true,
         }}
       />
     </Stack.Navigator>

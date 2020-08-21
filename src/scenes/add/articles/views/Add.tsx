@@ -85,7 +85,7 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'location',
                 icon: 'map-marker',
                 title: 'Localisation',
-                component: <ArticleAddPageLocation />,
+                component: <ArticleAddPageLocation navigation={navigation} />,
               },
               {
                 key: 'meta',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Title, Divider, List, useTheme } from 'react-native-paper';
+import { Text, Title, Divider, List, useTheme, Card, Button } from 'react-native-paper';
 import { View, Image, ActivityIndicator, Animated, Platform, Share } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -29,8 +29,8 @@ import {
   ReportModal,
 } from '@components/index';
 import { getImageUrl } from '@utils/index';
-import { articleReport } from '@redux/actions/apiActions/articles';
-import { fetchArticle } from '@redux/actions/api/articles';
+import { articleReport, articleVerificationApprove } from '@redux/actions/apiActions/articles';
+import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
 import { addArticleRead, addArticleToList } from '@redux/actions/contentData/articles';
 import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
@@ -56,7 +56,9 @@ type ArticleDisplayHeaderProps = {
   navigation: Navigation;
   reqState: CombinedReqState;
   account: Account;
+  verification: boolean;
   setCommentModalVisible: (visible: boolean) => void;
+  setArticleReportModalVisible: (visible: boolean) => void;
 };
 
 const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
@@ -65,7 +67,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   reqState,
   account,
   setCommentModalVisible,
+  setArticleReportModalVisible,
   offline,
+  verification,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -172,63 +176,177 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
             }
             badgeColor={colors.valid}
           />
-          <View style={styles.container}>
-            <CategoryTitle>Commentaires</CategoryTitle>
-          </View>
-          <Divider />
-          {account.loggedIn ? (
+          {!verification && (
             <View>
-              <List.Item
-                title="Écrire un commentaire"
-                titleStyle={articleStyles.placeholder}
-                right={() => <List.Icon icon="comment-plus" color={colors.icon} />}
-                onPress={() => setCommentModalVisible(true)}
-              />
-            </View>
-          ) : (
-            <View style={styles.contentContainer}>
-              <Text style={articleStyles.disabledText}>
-                Connectez vous pour écrire un commentaire
-              </Text>
-              <Text>
-                <Text
-                  onPress={() =>
-                    navigation.navigate('Auth', {
-                      screen: 'Login',
-                    })
-                  }
-                  style={[styles.link, styles.primaryText]}
-                >
-                  Se connecter
-                </Text>
-                <Text style={articleStyles.disabledText}> ou </Text>
-                <Text
-                  onPress={() =>
-                    navigation.navigate('Auth', {
-                      screen: 'Create',
-                    })
-                  }
-                  style={[styles.link, styles.primaryText]}
-                >
-                  créér un compte
-                </Text>
-              </Text>
+              <View style={styles.container}>
+                <CategoryTitle>Commentaires</CategoryTitle>
+              </View>
+              <Divider />
+              {account.loggedIn ? (
+                <View>
+                  <List.Item
+                    title="Écrire un commentaire"
+                    titleStyle={articleStyles.placeholder}
+                    right={() => <List.Icon icon="comment-plus" color={colors.icon} />}
+                    onPress={() => setCommentModalVisible(true)}
+                  />
+                </View>
+              ) : (
+                <View style={styles.contentContainer}>
+                  <Text style={articleStyles.disabledText}>
+                    Connectez vous pour écrire un commentaire
+                  </Text>
+                  <Text>
+                    <Text
+                      onPress={() =>
+                        navigation.navigate('Auth', {
+                          screen: 'Login',
+                        })
+                      }
+                      style={[styles.link, styles.primaryText]}
+                    >
+                      Se connecter
+                    </Text>
+                    <Text style={articleStyles.disabledText}> ou </Text>
+                    <Text
+                      onPress={() =>
+                        navigation.navigate('Auth', {
+                          screen: 'Create',
+                        })
+                      }
+                      style={[styles.link, styles.primaryText]}
+                    >
+                      créér un compte
+                    </Text>
+                  </Text>
+                </View>
+              )}
+              <Divider />
+              <View>
+                {reqState.comments.list.error && (
+                  <ErrorMessage
+                    type="axios"
+                    strings={{
+                      what: 'la récupération des commentaires',
+                      contentPlural: 'des commentaires',
+                    }}
+                    error={reqState.comments.list.error}
+                    retry={() => updateComments('initial', { parentId: article._id })}
+                  />
+                )}
+              </View>
             </View>
           )}
-          <Divider />
-          <View>
-            {reqState.comments.list.error && (
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: 'la récupération des commentaires',
-                  contentPlural: 'des commentaires',
-                }}
-                error={reqState.comments.list.error}
-                retry={() => updateComments('initial', { parentId: article._id })}
-              />
-            )}
-          </View>
+
+          {verification && (
+            <View>
+              <View style={[styles.container, { marginTop: 40 }]}>
+                <Card
+                  elevation={0}
+                  style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+                >
+                  <View style={[styles.container, { flexDirection: 'row' }]}>
+                    <Icon
+                      name="shield-alert-outline"
+                      style={{ alignSelf: 'flex-start', marginRight: 10 }}
+                      size={24}
+                      color={colors.primary}
+                    />
+                    <Text style={{ color: colors.text }}>
+                      Pour vérifier cet article:{'\n'}- Vérifiez que le contenu est bien conforme
+                      aux conditions générales d'utilisation{'\n'}- Vérifiez que tous les médias
+                      sont conformes, et que vous avez bien le droit d'utiliser ceux-ci{'\n'}-
+                      Visitez chacun des liens afin de vous assurer que tous les sites sont
+                      conformes{'\n'}
+                      {'\n'}
+                      Nous vous rappelons que les contenus suivants ne sont pas autorisés: {'\n'}-
+                      Tout contenu illégal{'\n'}- Tout contenu haineux ou discriminatoire{'\n'}-
+                      Tout contenu à caractère pornographique ou qui ne convient pas aux enfants
+                      {'\n'}- Toute atteinte à la propriété intellectuelle{'\n'}- Tout contenu
+                      trompeur{'\n'}- Toute atteinte à la vie privée{'\n'}- Tout contenu publié de
+                      façon automatisée
+                      {'\n'}- Tout contenu qui pointe vers un site web, logiciel, ou autre média qui
+                      ne respecte pas les présentes règles{'\n'}
+                      {'\n'}
+                      En tant qu'administrateur, vous êtes en partie responsable des contenus
+                      publiés, comme détaillé dans la Charte des administrateurs.
+                    </Text>
+                  </View>
+                </Card>
+              </View>
+              <View style={[styles.container, { marginTop: 20 }]}>
+                <Card
+                  elevation={0}
+                  style={{ borderColor: colors.disabled, borderWidth: 1, borderRadius: 5 }}
+                >
+                  <View style={[styles.container, { flexDirection: 'row' }]}>
+                    <Icon
+                      name="link"
+                      style={{ alignSelf: 'flex-start', marginRight: 10 }}
+                      size={24}
+                      color={colors.disabled}
+                    />
+                    <Text style={{ color: colors.text }}>
+                      Liens contenus dans l'article:{'\n'}
+                      {article?.content?.data
+                        ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
+                        .map((u) => (
+                          <Text>
+                            {u}
+                            {'\n'}
+                          </Text>
+                        ))}
+                    </Text>
+                  </View>
+                </Card>
+              </View>
+              {reqState.articles.verification_approve?.error && (
+                <ErrorMessage
+                  type="axios"
+                  strings={{
+                    what: "l'approbation de l'article",
+                    contentSingular: "l'article",
+                  }}
+                  error={reqState.articles.verification_approve?.error}
+                  retry={() =>
+                    articleVerificationApprove(article?._id).then(() => navigation.goBack())
+                  }
+                />
+              )}
+              <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                <View style={[styles.container]}>
+                  <Button
+                    mode="outlined"
+                    color={colors.invalid}
+                    contentStyle={{
+                      height: 50,
+                      alignSelf: 'stretch',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => setArticleReportModalVisible(true)}
+                  >
+                    Signaler
+                  </Button>
+                </View>
+                <View style={styles.container}>
+                  <Button
+                    mode="contained"
+                    loading={reqState.articles.verification_approve?.loading}
+                    color={colors.valid}
+                    contentStyle={{
+                      height: 50,
+                      justifyContent: 'center',
+                    }}
+                    onPress={() =>
+                      articleVerificationApprove(article?._id).then(() => navigation.goBack())
+                    }
+                  >
+                    Approuver
+                  </Button>
+                </View>
+              </View>
+            </View>
+          )}
         </View>
       )}
     </View>
@@ -239,7 +357,7 @@ type ArticleDisplayProps = {
   route: Route;
   navigation: Navigation;
   item: Article | null;
-  articles: Article[];
+  data: Article[];
   search: Article[];
   comments: Comment[];
   reqState: CombinedReqState;
@@ -261,7 +379,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   lists,
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
-  const { id, useLists } = route.params;
+  const { id, useLists = false, verification = false } = route.params;
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -281,14 +399,22 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   }
   const articleComments = comments.filter((c) => c.parent === article?._id);
 
-  React.useEffect(() => {
+  const fetch = () => {
     if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
-      fetchArticle(id).then(() => {
-        if (preferences.history) {
-          addArticleRead(id, article?.title);
-        }
-      });
+      if (verification) {
+        fetchArticleVerification(id);
+      } else {
+        fetchArticle(id).then(() => {
+          if (preferences.history) {
+            addArticleRead(id, article?.title);
+          }
+        });
+      }
     }
+  };
+
+  React.useEffect(() => {
+    fetch();
     updateComments('initial', { parentId: id });
   }, [null]);
 
@@ -305,6 +431,25 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
+        <AnimatingHeader
+          value={scrollY}
+          title={
+            route.params.title ||
+            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+              ? 'Actus - Hors ligne'
+              : verification
+              ? 'Actus - modération'
+              : 'Actus')
+          }
+          subtitle={
+            route.params.title &&
+            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+              ? 'Actus - Hors ligne'
+              : verification
+              ? 'Actus - modération'
+              : 'Actus')
+          }
+        />
         {reqState.articles.info.error && (
           <ErrorMessage
             type="axios"
@@ -313,11 +458,13 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               contentSingular: "L'article",
             }}
             error={reqState.articles.info.error}
-            retry={() => fetchArticle(id)}
+            retry={fetch}
           />
         )}
         {reqState.articles.info.loading && (
-          <ActivityIndicator size="large" color={colors.primary} />
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
         )}
       </View>
     );
@@ -330,41 +477,53 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           route.params.title ||
           (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
             ? 'Actus - Hors ligne'
+            : verification
+            ? 'Actus - modération'
             : 'Actus')
         }
         subtitle={
           route.params.title &&
           (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
             ? 'Actus - Hors ligne'
+            : verification
+            ? 'Actus - modération'
             : 'Actus')
         }
-        actions={[
-          {
-            icon: 'playlist-plus',
-            onPress: () => setListModalVisible(true),
-          },
-        ]}
-        overflow={[
-          {
-            title: 'Partager',
-            onPress:
-              Platform.OS === 'ios'
-                ? () =>
-                    Share.share({
-                      message: `${article?.title} par ${article?.group?.displayName}`,
-                      url: `https://go.topicapp.fr/articles/${article?._id}`,
-                    })
-                : () =>
-                    Share.share({
-                      message: `https://go.topicapp.fr/articles/${article?._id}`,
-                      title: `${article?.title} par ${article?.group?.displayName}`,
-                    }),
-          },
-          {
-            title: 'Signaler',
-            onPress: () => setArticleReportModalVisible(true),
-          },
-        ]}
+        actions={
+          verification
+            ? undefined
+            : [
+                {
+                  icon: 'playlist-plus',
+                  onPress: () => setListModalVisible(true),
+                },
+              ]
+        }
+        overflow={
+          verification
+            ? undefined
+            : [
+                {
+                  title: 'Partager',
+                  onPress:
+                    Platform.OS === 'ios'
+                      ? () =>
+                          Share.share({
+                            message: `${article?.title} par ${article?.group?.displayName}`,
+                            url: `https://go.topicapp.fr/articles/${article?._id}`,
+                          })
+                      : () =>
+                          Share.share({
+                            message: `https://go.topicapp.fr/articles/${article?._id}`,
+                            title: `${article?.title} par ${article?.group?.displayName}`,
+                          }),
+                },
+                {
+                  title: 'Signaler',
+                  onPress: () => setArticleReportModalVisible(true),
+                },
+              ]
+        }
       >
         {reqState.articles.info.error && (
           <ErrorMessage
@@ -385,14 +544,16 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         ListHeaderComponent={() => (
           <ArticleDisplayHeader
             article={article}
+            verification={verification}
             offline={useLists && lists?.some((l) => l.items?.some((i) => i._id === id))}
             reqState={reqState}
             account={account}
             navigation={navigation}
             setCommentModalVisible={setCommentModalVisible}
+            setArticleReportModalVisible={setArticleReportModalVisible}
           />
         )}
-        data={reqState.articles.info.success ? articleComments : []}
+        data={reqState.articles.info.success && !verification ? articleComments : []}
         refreshing={reqState.comments.list.loading.refresh}
         onRefresh={() => {
           if (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))) {
@@ -423,7 +584,8 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         }
         ListEmptyComponent={() =>
           reqState.comments.list.success &&
-          reqState.articles.info.success && (
+          reqState.articles.info.success &&
+          !verification && (
             <View style={styles.contentContainer}>
               <View style={styles.centerIllustrationContainer}>
                 <Illustration name="comment-empty" height={200} width={200} />

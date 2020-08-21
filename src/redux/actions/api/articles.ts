@@ -118,4 +118,24 @@ async function fetchArticle(articleId: string) {
   );
 }
 
-export { updateArticles, clearArticles, fetchArticle, searchArticles, updateArticlesVerification };
+async function fetchArticleVerification(articleId: string) {
+  await Store.dispatch(
+    fetchCreator({
+      update: UPDATE_ARTICLES_ITEM,
+      stateUpdate: UPDATE_ARTICLES_STATE,
+      url: 'articles/verification/info',
+      dataType: 'articles',
+      params: { articleId },
+      auth: true,
+    }),
+  );
+}
+
+export {
+  updateArticles,
+  clearArticles,
+  fetchArticle,
+  searchArticles,
+  updateArticlesVerification,
+  fetchArticleVerification,
+};

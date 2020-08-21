@@ -93,7 +93,15 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
     >
       {overflow.map((item, key) => (
         // eslint-disable-next-line react/no-array-index-key
-        <Menu.Item key={key} title={item.title} icon={item.icon} onPress={item.onPress} />
+        <Menu.Item
+          key={key}
+          title={item.title}
+          icon={item.icon}
+          onPress={() => {
+            setMenuVisible(false);
+            if (item.onPress) item.onPress();
+          }}
+        />
       ))}
     </Menu>
   );
