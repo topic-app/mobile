@@ -9,7 +9,7 @@
   },
   "config": {
     "api": {
-      "url": "https://api.topicapp.fr/v1",
+      "url": "http://localhost/api/v1",
       "retryTime": 10
     },
     "links": {
