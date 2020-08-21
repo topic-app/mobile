@@ -1,5 +1,6 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
+import { config } from '@root/app.json';
 
 import {
   GroupRolePermission,
@@ -8,6 +9,7 @@ import {
   DepartmentPreload,
   Avatar,
 } from '@ts/types';
+import crypto from 'react-native-simple-crypto';
 
 function fetchGroupsCreator() {
   return (dispatch, getState) => {
@@ -179,9 +181,14 @@ function updateStateCreator(state) {
   };
 }
 
-function loginCreator(fields) {
+type LoginFields = {
+  accountInfo: { username: string; password: string };
+  device: { type: string; deviceId: null; canNotify: boolean };
+};
+
+function loginCreator(fields: LoginFields) {
   return (dispatch, getState) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       dispatch({
         type: 'UPDATE_ACCOUNT_STATE',
         data: {
@@ -193,9 +200,32 @@ function loginCreator(fields) {
           },
         },
       });
+      try {
+        // We also hash passwords on the server, this is just a small extra security
+        let hashedPassword = await crypto.PBKDF2.hash(
+          crypto.utils.convertUtf8ToArrayBuffer(fields.accountInfo.password),
+          crypto.utils.convertUtf8ToArrayBuffer(config.auth.salt),
+          config.auth.iterations,
+          config.auth.keylen,
+          config.auth.digest,
+        );
+        fields.accountInfo.password = crypto.utils.convertArrayBufferToHex(hashedPassword);
+      } catch (err) {
+        return dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            login: {
+              success: false,
+              loading: false,
+              error: err,
+              incorrect: null,
+            },
+          },
+        });
+      }
       request('auth/login/local', 'post', fields)
         .then((result) => {
-          if (!result.data.correct) {
+          if (!result.data?.correct) {
             dispatch({
               type: 'UPDATE_ACCOUNT_STATE',
               data: {
@@ -247,9 +277,26 @@ function loginCreator(fields) {
   };
 }
 
-function registerCreator(fields) {
+type RegisterFields = {
+  accountInfo: {
+    username: string;
+    email: string;
+    password: string;
+    global: boolean;
+    schools: string[];
+    departments: string[];
+    avatar: Avatar;
+    description: string;
+    public: boolean;
+    firstName: string;
+    lastName: string;
+  };
+  device: { type: string; deviceId: null; canNotify: boolean };
+};
+
+function registerCreator(fields: RegisterFields) {
   return (dispatch, getState) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       dispatch({
         type: 'UPDATE_ACCOUNT_STATE',
         data: {
@@ -260,6 +307,29 @@ function registerCreator(fields) {
           },
         },
       });
+      try {
+        // We also hash passwords on the server, this is just a small extra security
+        let hashedPassword = await crypto.PBKDF2.hash(
+          crypto.utils.convertUtf8ToArrayBuffer(fields.accountInfo.password),
+          crypto.utils.convertUtf8ToArrayBuffer(config.auth.salt),
+          config.auth.iterations,
+          config.auth.keylen,
+          config.auth.digest,
+        );
+        fields.accountInfo.password = crypto.utils.convertArrayBufferToHex(hashedPassword);
+      } catch (err) {
+        return dispatch({
+          type: 'UPDATE_ACCOUNT_STATE',
+          data: {
+            login: {
+              success: false,
+              loading: false,
+              error: err,
+              incorrect: null,
+            },
+          },
+        });
+      }
       request('auth/register/local', 'post', fields)
         .then((result) => {
           dispatch({
@@ -306,10 +376,7 @@ function logoutCreator() {
 
 /* Actions */
 
-async function login(fields: {
-  accountInfo: { username: string; password: string };
-  device: { type: string; deviceId: null; canNotify: boolean };
-}) {
+async function login(fields: LoginFields) {
   await Store.dispatch(loginCreator(fields));
 }
 
@@ -325,22 +392,7 @@ async function updateState(fields: {
   await Store.dispatch(updateStateCreator(fields));
 }
 
-async function register(fields: {
-  accountInfo: {
-    username: string;
-    email: string;
-    password: string;
-    global: boolean;
-    schools: string[];
-    departments: string[];
-    avatar: Avatar;
-    description: string;
-    public: boolean;
-    firstName: string;
-    lastName: string;
-  };
-  device: { type: string; deviceId: null; canNotify: boolean };
-}) {
+async function register(fields: RegisterFields) {
   await Store.dispatch(registerCreator(fields));
 }
 

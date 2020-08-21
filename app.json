@@ -53,6 +53,12 @@
         "categories": ["unread", "all"]
       }
     },
+    "auth": {
+      "salt": "EFoZlnQ9WDYLff8Qnq1QWiVe1Wzf7HjK6uQ2goshuFPFZuQj5gQXTcjhPvEsITAjpsfaYTdJDpnLaW/nKoYDm3FB2kLo0+lzS9gI9271dUnzvy5DZOetP/YMNDn++ApJrsQMeTNJEOIKJ2rLMfx8VaT241Hzvhy80sjWClzHZW0=",
+      "iterations": 10000,
+      "digest": "SHA512",
+      "keylen": 32
+    },
     "comments": {
       "maxCharacters": 500
     },
