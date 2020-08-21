@@ -1,5 +1,6 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
+import { hashPassword } from '@utils/crypto';
 
 /**
  * @docs actionCreators
@@ -172,7 +173,8 @@ function updatePasswordCreator(password: string) {
       });
 
       try {
-        await request('profile/modify/password', 'post', { password }, true);
+        let newPassword = await hashPassword(password);
+        await request('profile/modify/password', 'post', { password: newPassword }, true);
       } catch (error) {
         dispatch({
           type: 'UPDATE_ACCOUNT_STATE',
