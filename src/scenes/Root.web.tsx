@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, useWindowDimensions } from 'react-native';
+import { View, TouchableWithoutFeedback } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { NavigationProp, useLinkProps, Link } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
