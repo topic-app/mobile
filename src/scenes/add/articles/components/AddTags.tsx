@@ -102,6 +102,14 @@ const ArticleAddPageTags: React.FC<Props> = ({
     }
   };
 
+  const fetchNext = () => {
+    if (searchText === '') {
+      updateTags('next');
+    } else {
+      searchTags('next', searchText);
+    }
+  };
+
   const searchChange = (text: string) => {
     if (text !== '') {
       searchTags('initial', text);
@@ -144,7 +152,15 @@ const ArticleAddPageTags: React.FC<Props> = ({
   const ListHeaderComponent = () =>
     (searchText === '' && state.list.loading.initial) ||
     (searchText !== '' && state.search?.loading.initial) ? (
-      <View style={{ height: 4, marginVertical: 5 }}>
+      <View style={{ marginVertical: 5, height: 40, justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    ) : null;
+
+  const ListFooterComponent = () =>
+    (searchText === '' && state.list.loading.next) ||
+    (searchText !== '' && state.search?.loading.next) ? (
+      <View style={{ marginVertical: 5, height: 40, width: 40, justifyContent: 'center' }}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     ) : null;
@@ -203,11 +219,14 @@ const ArticleAddPageTags: React.FC<Props> = ({
       <View style={{ marginTop: 20, height: 40 }}>
         <FlatList
           horizontal
+          onEndReached={fetchNext}
+          onEndReachedThreshold={0.5}
           data={(searchText === '' ? tagsData : tagsSearch).filter(
             (t) => !selectedTags.includes(t._id),
           )}
           ListEmptyComponent={ListEmptyComponent}
           ListHeaderComponent={ListHeaderComponent}
+          ListFooterComponent={ListFooterComponent}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(i) => i._id}
