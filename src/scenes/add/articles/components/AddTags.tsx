@@ -14,6 +14,7 @@ import {
   Card,
   Chip,
 } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
@@ -42,7 +43,6 @@ import getStyles from '@styles/Styles';
 import TagAddModal from './TagAddModal';
 
 import getAuthStyles from '../styles/Styles';
-import { connect } from 'react-redux';
 
 type Props = StepperViewPageProps & {
   account: Account;
@@ -212,7 +212,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
               type="axios"
               error={searchText === '' ? state.list.error : state.search?.error}
               retry={fetch}
-            />
+           />
           )}
         </View>
       </View>
@@ -256,7 +256,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
               size={24}
               color={colors.primary}
             />
-            <Text style={{ color: colors.text, marginRight: 20 }}>
+            <Text style={{ color: colors.text, flex: 1 }}>
               Les tags permettent aux utilisateurs de trouver plus facilement vos articles, et nous
               les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez pour
               rechercher, ou pour créer un nouveau tag si aucun ne correspond.
