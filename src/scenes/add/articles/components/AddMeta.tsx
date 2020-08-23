@@ -10,7 +10,7 @@ import getArticleStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps;
 
-const ArticleAddPageGeneral: React.FC<Props> = ({ next, prev }) => {
+const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   const titleInput = createRef<RNTestInput>();
   const descriptionInput = createRef<RNTestInput>();
 
@@ -253,4 +253,4 @@ const ArticleAddPageGeneral: React.FC<Props> = ({ next, prev }) => {
   );
 };
 
-export default ArticleAddPageGeneral;
+export default ArticleAddPageMeta;

@@ -17,6 +17,7 @@ import {
 } from '@components/index';
 import { register } from '@redux/actions/data/account';
 import { articleAdd } from '@redux/actions/apiActions/articles';
+import { clearArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 
 import type { ArticleStackParams } from '../index';
@@ -25,6 +26,7 @@ import ArticleAddPageGroup from '../components/AddGroup';
 import ArticleAddPageLocation from '../components/AddLocation';
 import ArticleAddPageMeta from '../components/AddMeta';
 import ArticleAddPageContent from '../components/AddContent';
+import ArticleAddPageTags from '../components/AddTags';
 
 type Props = {
   navigation: StackNavigationProp<ArticleStackParams, 'Add'>;
@@ -37,7 +39,7 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
-  const add = () => {
+  const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -45,11 +47,14 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
       location: creationData.location,
       group: creationData.group,
       image: null,
-      parser: creationData.parser,
-      data: creationData.data,
-      tags: [],
+      parser: parser || creationData.parser,
+      data: data || creationData.data,
+      tags: creationData.tags,
       preferences: null,
-    }).then(({ _id }) => navigation.replace('Success', { id: _id, creationData }));
+    }).then(({ _id }) => {
+      navigation.replace('Success', { id: _id, creationData });
+      clearArticleCreationData();
+    });
   };
 
   return (
@@ -92,6 +97,12 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 icon: 'information',
                 title: 'Meta',
                 component: <ArticleAddPageMeta />,
+              },
+              {
+                key: 'tags',
+                icon: 'tag-multiple',
+                title: 'Tags',
+                component: <ArticleAddPageTags />,
               },
               {
                 key: 'content',

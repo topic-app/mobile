@@ -28,7 +28,7 @@ import {
   Illustration,
   ReportModal,
 } from '@components/index';
-import { getImageUrl } from '@utils/index';
+import { getImageUrl, handleUrl } from '@utils/index';
 import { articleReport, articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
 import { addArticleRead, addArticleToList } from '@redux/actions/contentData/articles';
@@ -274,32 +274,38 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                   </View>
                 </Card>
               </View>
-              <View style={[styles.container, { marginTop: 20 }]}>
-                <Card
-                  elevation={0}
-                  style={{ borderColor: colors.disabled, borderWidth: 1, borderRadius: 5 }}
-                >
-                  <View style={[styles.container, { flexDirection: 'row' }]}>
-                    <Icon
-                      name="link"
-                      style={{ alignSelf: 'flex-start', marginRight: 10 }}
-                      size={24}
-                      color={colors.disabled}
-                    />
-                    <Text style={{ color: colors.text }}>
-                      Liens contenus dans l'article:{'\n'}
-                      {article?.content?.data
-                        ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
-                        .map((u) => (
-                          <Text>
-                            {u}
-                            {'\n'}
-                          </Text>
-                        ))}
-                    </Text>
-                  </View>
-                </Card>
-              </View>
+              {article?.content?.data?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
+                ?.length && (
+                <View style={[styles.container, { marginTop: 20 }]}>
+                  <Card
+                    elevation={0}
+                    style={{ borderColor: colors.disabled, borderWidth: 1, borderRadius: 5 }}
+                  >
+                    <View style={[styles.container, { flexDirection: 'row' }]}>
+                      <Icon
+                        name="link"
+                        style={{ alignSelf: 'flex-start', marginRight: 10 }}
+                        size={24}
+                        color={colors.disabled}
+                      />
+                      <Text style={{ color: colors.text }}>
+                        Liens contenus dans l'article:{'\n'}
+                        {article?.content?.data
+                          ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
+                          ?.map((u) => (
+                            <Text
+                              style={{ textDecorationLine: 'underline' }}
+                              onPress={() => handleUrl(u)}
+                            >
+                              {u}
+                              {'\n'}
+                            </Text>
+                          ))}
+                      </Text>
+                    </View>
+                  </Card>
+                </View>
+              )}
               {reqState.articles.verification_approve?.error && (
                 <ErrorMessage
                   type="axios"

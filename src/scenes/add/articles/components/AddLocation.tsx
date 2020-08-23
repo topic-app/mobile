@@ -52,7 +52,7 @@ type ReduxLocation = {
   global: boolean;
 };
 
-const ArticleAddPageGroup: React.FC<Props> = ({
+const ArticleAddPageLocation: React.FC<Props> = ({
   prev,
   next,
   account,
@@ -342,4 +342,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticleAddPageGroup);
+export default connect(mapStateToProps)(ArticleAddPageLocation);
