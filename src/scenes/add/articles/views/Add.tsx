@@ -73,7 +73,7 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
             retry={add}
           />
         )}
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
             <Text style={articleStyles.title}>Écrire un article</Text>
