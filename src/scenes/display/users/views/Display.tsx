@@ -489,7 +489,7 @@ function UserDisplay({
                                       screen: 'User',
                                       params: {
                                         screen: 'Display',
-                                        params: { id: user._id, title: user.displayName },
+                                        params: { id: user._id },
                                       },
                                     },
                                   })

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider, Text } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { connect } from 'react-redux';
+import screens from './screens';
 
 import { Preferences, State } from '@ts/types';
 import themes from '@styles/Theme';
@@ -31,10 +32,17 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
     }, [null]),
   );
 
+  const linking = {
+    prefixes: ['https://topicapp.fr', 'https://beta.topicapp.fr', 'topic://'],
+    config: {
+      screens,
+    },
+  };
+
   return (
     <PaperProvider theme={theme}>
       <>
-        <NavigationContainer>
+        <NavigationContainer linking={linking} fallback={<Text>App loading...</Text>}>
           <AppNavigator />
         </NavigationContainer>
       </>

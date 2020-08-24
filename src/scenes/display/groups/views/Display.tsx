@@ -275,7 +275,6 @@ function GroupDisplay({
                         screen: 'Display',
                         params: {
                           id: mem.user._id,
-                          title: mem.user.info?.username,
                         },
                       },
                     },

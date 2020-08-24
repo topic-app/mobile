@@ -103,24 +103,26 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
           Suivant
         </Button>
       </View>
-      <View style={[styles.container, { marginTop: 40 }]}>
-        <Card
-          elevation={0}
-          style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
-        >
-          <View style={[styles.container, { flexDirection: 'row' }]}>
-            <Icon
-              name="information"
-              style={{ alignSelf: 'center', marginRight: 10 }}
-              size={24}
-              color={colors.primary}
-            />
-            <Text style={{ color: colors.primary }}>
-              Vous pouvez écrire un article depuis votre ordinateur en visitant topicapp.fr
-            </Text>
-          </View>
-        </Card>
-      </View>
+      {Platform.OS !== 'web' && (
+        <View style={[styles.container, { marginTop: 40 }]}>
+          <Card
+            elevation={0}
+            style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+          >
+            <View style={[styles.container, { flexDirection: 'row' }]}>
+              <Icon
+                name="information"
+                style={{ alignSelf: 'center', marginRight: 10 }}
+                size={24}
+                color={colors.primary}
+              />
+              <Text style={{ color: colors.primary }}>
+                Vous pouvez écrire un article depuis votre ordinateur en visitant topicapp.fr
+              </Text>
+            </View>
+          </Card>
+        </View>
+      )}
     </View>
   );
 };

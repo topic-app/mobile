@@ -2,6 +2,7 @@ import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp } from 'react-native';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { NavigationProp } from '@react-navigation/native';
+import getLayout from '@utils/getLayout';
 
 import getNavigatorStyles from '@styles/NavStyles';
 import shortid from 'shortid';
@@ -69,7 +70,11 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
   if (primary) {
     primaryAction = <Appbar.BackAction onPress={primary} />;
   } else if (home) {
-    primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
+    console.log(getLayout());
+    primaryAction =
+      getLayout() === 'desktop' ? null : (
+        <Appbar.Action icon="menu" onPress={navigation.openDrawer} />
+      );
   } else {
     primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
   }
