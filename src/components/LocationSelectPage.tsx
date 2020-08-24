@@ -37,7 +37,6 @@ import {
   searchDepartments,
 } from '@redux/actions/api/departments';
 import { ErrorMessage, CollapsibleView, ChipAddList } from '@components/index';
-
 import getStyles from '@styles/Styles';
 
 import getLandingStyles from '../styles/Styles';

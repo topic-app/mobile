@@ -174,6 +174,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
                                   }),
                         },
                       ],
+                      { cancelable: true },
                     );
                   }}
                 />

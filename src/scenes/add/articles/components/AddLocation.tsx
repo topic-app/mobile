@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Platform } from 'react-native';
 import {
   Button,
-  RadioButton,
   HelperText,
   List,
   Text,
@@ -11,6 +10,7 @@ import {
   Divider,
   ProgressBar,
 } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
@@ -20,15 +20,12 @@ import {
   Account,
   State,
   ArticleCreationData,
-  Location,
   Department,
   School,
   RequestState,
 } from '@ts/types';
-import getStyles from '@styles/Styles';
 
 import getAuthStyles from '../styles/Styles';
-import { connect } from 'react-redux';
 
 type Props = StepperViewPageProps & {
   account: Account;
@@ -52,7 +49,21 @@ type ReduxLocation = {
   global: boolean;
 };
 
-const ArticleAddPageGroup: React.FC<Props> = ({
+const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
+  return {
+    left:
+      Platform.OS !== 'ios'
+        ? () => (
+            <View style={{ justifyContent: 'center' }}>
+              <Checkbox {...props} />
+            </View>
+          )
+        : null,
+    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
+  };
+};
+  
+const ArticleAddPageLocation: React.FC<Props> = ({
   prev,
   next,
   account,
@@ -79,7 +90,6 @@ const ArticleAddPageGroup: React.FC<Props> = ({
   const theme = useTheme();
   const { colors } = theme;
   const articleStyles = getAuthStyles(theme);
-  const styles = getStyles(theme);
 
   const selectedGroup = account.groups.find((g) => g._id === creationData.group);
   const selectedGroupLocation =
@@ -109,24 +119,11 @@ const ArticleAddPageGroup: React.FC<Props> = ({
           <List.Item
             title={s.name}
             description={`École · ${s.address?.shortName || s.address?.address?.city}`}
-            left={() =>
-              Platform.OS !== 'ios' ? (
-                <Checkbox
-                  status={schools.includes(s._id) ? 'checked' : 'unchecked'}
-                  color={colors.primary}
-                  onPress={() => toggle(s, schools, setSchools)}
-                />
-              ) : null
-            }
-            right={() =>
-              Platform.OS === 'ios' ? (
-                <Checkbox
-                  status={schools.includes(s._id) ? 'checked' : 'unchecked'}
-                  color={colors.primary}
-                  onPress={() => toggle(s, schools, setSchools)}
-                />
-              ) : null
-            }
+            {...getListItemCheckbox({
+              status: schools.includes(s._id) ? 'checked' : 'unchecked',
+              color: colors.primary,
+              onPress: () => toggle(s, schools, setSchools),
+            })}
             onPress={() => toggle(s, schools, setSchools)}
           />
         ))}
@@ -134,24 +131,11 @@ const ArticleAddPageGroup: React.FC<Props> = ({
           <List.Item
             title={d.name}
             description={`Département ${d.code}`}
-            left={() =>
-              Platform.OS !== 'ios' ? (
-                <Checkbox
-                  status={departments.includes(d._id) ? 'checked' : 'unchecked'}
-                  color={colors.primary}
-                  onPress={() => toggle(d, departments, setDepartments)}
-                />
-              ) : null
-            }
-            right={() =>
-              Platform.OS === 'ios' ? (
-                <Checkbox
-                  status={schools.includes(d._id) ? 'checked' : 'unchecked'}
-                  color={colors.primary}
-                  onPress={() => toggle(d, departments, setDepartments)}
-                />
-              ) : null
-            }
+            {...getListItemCheckbox({
+              status: departments.includes(d._id) ? 'checked' : 'unchecked',
+              color: colors.primary,
+              onPress: () => toggle(d, departments, setDepartments),
+            })}
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
@@ -160,24 +144,11 @@ const ArticleAddPageGroup: React.FC<Props> = ({
             <List.Item
               title="France entière"
               description="Visible pour tous les utilisateurs"
-              left={() =>
-                Platform.OS !== 'ios' ? (
-                  <Checkbox
-                    status={global ? 'checked' : 'unchecked'}
-                    color={colors.primary}
-                    onPress={() => setGlobal(!global)}
-                  />
-                ) : null
-              }
-              right={() =>
-                Platform.OS === 'ios' ? (
-                  <Checkbox
-                    status={global ? 'checked' : 'unchecked'}
-                    color={colors.primary}
-                    onPress={() => setGlobal(!global)}
-                  />
-                ) : null
-              }
+              {...getListItemCheckbox({
+                status: global ? 'checked' : 'unchecked',
+                color: colors.primary,
+                onPress: () => setGlobal(!global),
+              })}
               onPress={() => setGlobal(!global)}
             />
           ))}
@@ -342,4 +313,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticleAddPageGroup);
+export default connect(mapStateToProps)(ArticleAddPageLocation);

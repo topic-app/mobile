@@ -4,7 +4,10 @@ import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
 
 import { request } from '@utils/index';
 import { StepperViewPageProps } from '@components/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import {
+  updateArticleCreationData,
+  clearArticleCreationData,
+} from '@redux/actions/contentData/articles';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -68,7 +71,8 @@ const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
 
     const content = await validateContentInput(contentVal);
     if (content.valid) {
-      updateArticleCreationData({ parser: 'markdown', data: contentVal }).then(() => add());
+      updateArticleCreationData({ parser: 'markdown', data: contentVal });
+      add('markdown', contentVal);
     } else {
       if (!content.valid && !content.error) {
         setContent({

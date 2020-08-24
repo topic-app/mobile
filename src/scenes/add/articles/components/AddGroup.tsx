@@ -49,32 +49,37 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
       <View style={articleStyles.listContainer}>
         {groupsWithPermission.map((g) => (
           <List.Item
+            key={g._id}
             title={g.name}
             description={`Groupe ${g.type} · Vous êtes ${
               g.roles.find((r) => r._id === g.membership.role)?.name
             }`}
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton
-                  status={group === g._id ? 'checked' : 'unchecked'}
-                  color={colors.primary}
-                  onPress={() => {
-                    setError(false);
-                    setGroup(g._id);
-                  }}
-                />
+                <View style={{ justifyContent: 'center' }}>
+                  <RadioButton
+                    status={group === g._id ? 'checked' : 'unchecked'}
+                    color={colors.primary}
+                    onPress={() => {
+                      setError(false);
+                      setGroup(g._id);
+                    }}
+                  />
+                </View>
               ) : null
             }
             right={() =>
               Platform.OS === 'ios' ? (
-                <RadioButton
-                  status={group === g._id ? 'checked' : 'unchecked'}
-                  color={colors.primary}
-                  onPress={() => {
-                    setError(false);
-                    setGroup(g._id);
-                  }}
-                />
+                <View style={{ justifyContent: 'center' }}>
+                  <RadioButton
+                    status={group === g._id ? 'checked' : 'unchecked'}
+                    color={colors.primary}
+                    onPress={() => {
+                      setError(false);
+                      setGroup(g._id);
+                    }}
+                  />
+                </View>
               ) : null
             }
             onPress={() => {

@@ -32,6 +32,7 @@ function ArticleAddStackNavigator() {
         name="Location"
         component={ArticleAddLocation}
         options={{
+          ...HeaderConfig,
           title: 'Localisation',
           headerShown: true,
         }}
