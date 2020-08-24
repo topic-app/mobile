@@ -1,23 +1,24 @@
-import React from "react";
-import { Platform } from "react-native";
+import React from 'react';
+import { Platform } from 'react-native';
 import {
   createStackNavigator,
   TransitionPresets,
   StackNavigationProp,
-} from "@react-navigation/stack";
-import { connect } from "react-redux";
+} from '@react-navigation/stack';
+import { connect } from 'react-redux';
 
-import { LocationList, State } from "@ts/types";
+import { LocationList, State } from '@ts/types';
 
-import DisplayStackNavigator from "./display/index";
-import AddStackNavigator from "./add/index";
-import MoreStackNavigator from "./more/index";
-import SearchStackNavigator from "./search/index";
-import HomeOneNavigator from "./home/HomeOne";
-import ConfigureStackNavigator from "./configure/index";
-import ParamsStackNavigator from "./params/index";
-import HistoryStackNavigator from "./history/index";
-import UnauthorizedBeta from "@components/UnauthorizedBeta";
+import DisplayStackNavigator from './display/index';
+import AddStackNavigator from './add/index';
+import MoreStackNavigator from './more/index';
+import SearchStackNavigator from './search/index';
+import HomeOneNavigator from './home/HomeOne';
+import ConfigureStackNavigator from './configure/index';
+import ParamsStackNavigator from './params/index';
+import HistoryStackNavigator from './history/index';
+import UnauthorizedBeta from '@components/UnauthorizedBeta';
+import NotFound from './NotFound';
 
 function getNestedParams(route?: { params: object }) {
   let { params } = route;
@@ -28,7 +29,7 @@ function getNestedParams(route?: { params: object }) {
 }
 
 let screenOptions = TransitionPresets.SlideFromRightIOS;
-if (Platform.OS === "ios") {
+if (Platform.OS === 'ios') {
   screenOptions = ({ route }) => {
     if (route.params && getNestedParams(route).noTransition) {
       return {
@@ -57,21 +58,14 @@ type MainNavigatorProps = {
   location: LocationList;
 };
 
-const MainNavigator: React.FC<MainNavigatorProps> = ({
-  navigation,
-  location,
-}) => {
+const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) => {
   if (!location.selected) {
-    navigation.navigate("Landing", {
-      screen: "Welcome",
+    navigation.navigate('Landing', {
+      screen: 'Welcome',
     });
   }
   return (
-    <Stack.Navigator
-      initialRouteName="Home1"
-      headerMode="none"
-      screenOptions={screenOptions}
-    >
+    <Stack.Navigator initialRouteName="Home1" headerMode="none" screenOptions={screenOptions}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
       <Stack.Screen name="Configure" component={ConfigureStackNavigator} />
       <Stack.Screen name="Params" component={ParamsStackNavigator} />
@@ -80,6 +74,7 @@ const MainNavigator: React.FC<MainNavigatorProps> = ({
       <Stack.Screen name="Search" component={UnauthorizedBeta} />
       <Stack.Screen name="History" component={HistoryStackNavigator} />
       <Stack.Screen name="Home1" component={HomeOneNavigator} />
+      <Stack.Screen name="NotFound" component={NotFound} />
     </Stack.Navigator>
   );
 };

@@ -3,7 +3,7 @@
   "displayName": "Topic",
   "config": {
     "api": {
-      "url": "https://api.topicapp.fr/v1",
+      "url": "https://api-dev.topicapp.fr/v1",
       "retryTime": 10
     },
     "cdn": {
@@ -69,7 +69,7 @@
     "dev": {
       "logRequests": false,
       "defaultLocation": {
-        "selected": false,
+        "selected": true,
         "type": "school",
         "schools": [],
         "schoolData": [

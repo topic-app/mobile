@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Linking } from 'react-native';
+import { View, Linking, Platform } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { Drawer, Title, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -55,11 +55,13 @@ function CustomDrawerContent({
           )}
           <View style={navigatorStyles.profileIconContainer}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TopicIcon
-                style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
-                height={55}
-                width={55}
-              />
+              {Platform.OS !== 'web' && (
+                <TopicIcon
+                  style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
+                  height={55}
+                  width={55}
+                />
+              )}
               {loggedIn ? (
                 <View>
                   <Title

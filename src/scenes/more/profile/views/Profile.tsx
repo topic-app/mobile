@@ -155,7 +155,6 @@ function Profile({
                     screen: 'Display',
                     params: {
                       id: account.accountInfo.accountId,
-                      title: account.accountInfo.user?.info?.username,
                     },
                   },
                 },
