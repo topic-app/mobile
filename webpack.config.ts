@@ -10,7 +10,6 @@ const configFactory: ConfigurationFactory = async (env, args) => {
   config.devServer = {
     headers: { 'Access-Control-Allow-Origin': 'https://api-dev.topicapp.fr' },
   };
-  config.entry = './web/server.tsx';
   return config;
 };
 
