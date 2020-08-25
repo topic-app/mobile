@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem } from '@ts/types';
+import { ModalProps, State, EventListItem } from '@ts/types';
 import {
   Divider,
   Button,
@@ -22,7 +22,7 @@ import shortid from 'shortid';
 import { CollapsibleView, Illustration, PlatformTouchable, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
 import { tagAdd } from '@redux/actions/apiActions/tags';
-import getArticleStyles from '../styles/Styles';
+import getEventStyles from '../styles/Styles';
 
 type TagAddModalProps = ModalProps & {
   state: TagRequestState;
@@ -33,7 +33,7 @@ type TagAddModalProps = ModalProps & {
 function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
+  const eventStyles = getEventStyles(theme);
   const { colors } = theme;
 
   const [descriptionText, setDescriptionText] = React.useState('');
@@ -111,11 +111,11 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
               <Divider />
             </View>
             <Divider />
-            <View style={articleStyles.activeCommentContainer}>
+            <View style={eventStyles.activeCommentContainer}>
               <TextInput mode="outlined" label="Nom" value={name} disabled />
             </View>
 
-            <View style={articleStyles.activeCommentContainer}>
+            <View style={eventStyles.activeCommentContainer}>
               <TextInput
                 autoFocus
                 mode="outlined"

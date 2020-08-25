@@ -16,7 +16,7 @@ import {
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
 import {
   StepperViewPageProps,
@@ -30,7 +30,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Account,
   State,
-  ArticleCreationData,
+  EventCreationData,
   Location,
   Department,
   School,
@@ -46,7 +46,7 @@ import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
   account: Account;
-  creationData: ArticleCreationData;
+  creationData: EventCreationData;
   navigation: any;
   tagsData: TagPreload[];
   tagsSearch: TagPreload[];
@@ -59,7 +59,7 @@ type ReduxLocation = {
   global: boolean;
 };
 
-const ArticleAddPageTags: React.FC<Props> = ({
+const EventAddPageTags: React.FC<Props> = ({
   prev,
   next,
   account,
@@ -77,7 +77,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
   const [tagName, setTagName] = React.useState(null);
 
   const submit = () => {
-    updateArticleCreationData({ tags: selectedTags });
+    updateEventCreationData({ tags: selectedTags });
     next();
   };
 
@@ -91,7 +91,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
+  const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   const fetch = () => {
@@ -190,10 +190,10 @@ const ArticleAddPageTags: React.FC<Props> = ({
   );
 
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={eventStyles.formContainer}>
       <View>
         <View>
-          <View style={articleStyles.searchContainer}>
+          <View style={eventStyles.searchContainer}>
             <Searchbar
               ref={inputRef}
               placeholder={`Rechercher ${
@@ -212,7 +212,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
               type="axios"
               error={searchText === '' ? state.list.error : state.search?.error}
               retry={fetch}
-           />
+            />
           )}
         </View>
       </View>
@@ -257,16 +257,16 @@ const ArticleAddPageTags: React.FC<Props> = ({
               color={colors.primary}
             />
             <Text style={{ color: colors.text, flex: 1 }}>
-              Les tags permettent aux utilisateurs de trouver plus facilement vos articles, et nous
-              les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez pour
-              rechercher, ou pour créer un nouveau tag si aucun ne correspond.
+              Les tags permettent aux utilisateurs de trouver plus facilement vos évènements, et
+              nous les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez
+              pour rechercher, ou pour créer un nouveau tag si aucun ne correspond.
             </Text>
           </View>
         </Card>
       </View>
       <View style={{ marginTop: 30 }}>
         <Divider />
-        <View style={articleStyles.buttonContainer}>
+        <View style={eventStyles.buttonContainer}>
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}
@@ -297,14 +297,14 @@ const ArticleAddPageTags: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, articleData, tags } = state;
+  const { account, eventData, tags } = state;
   return {
     account,
-    creationData: articleData.creationData,
+    creationData: eventData.creationData,
     tagsData: tags.data,
     tagsSearch: tags.search,
     state: tags.state,
   };
 };
 
-export default connect(mapStateToProps)(ArticleAddPageTags);
+export default connect(mapStateToProps)(EventAddPageTags);

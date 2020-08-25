@@ -12,24 +12,17 @@ import {
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
-import {
-  Account,
-  State,
-  ArticleCreationData,
-  Department,
-  School,
-  RequestState,
-} from '@ts/types';
+import { Account, State, EventCreationData, Department, School, RequestState } from '@ts/types';
 
 import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
   account: Account;
-  creationData: ArticleCreationData;
+  creationData: EventCreationData;
   navigation: any;
   schoolItems: School[];
   departmentItems: Department[];
@@ -62,8 +55,8 @@ const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
     right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
   };
 };
-  
-const ArticleAddPageLocation: React.FC<Props> = ({
+
+const EventAddPageLocation: React.FC<Props> = ({
   prev,
   next,
   account,
@@ -80,7 +73,7 @@ const ArticleAddPageLocation: React.FC<Props> = ({
 
   const submit = () => {
     if (schools.length !== 0 || departments.length !== 0 || global) {
-      updateArticleCreationData({ location: { schools, departments, global } });
+      updateEventCreationData({ location: { schools, departments, global } });
       next();
     } else {
       setError(true);
@@ -89,14 +82,14 @@ const ArticleAddPageLocation: React.FC<Props> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
+  const eventStyles = getAuthStyles(theme);
 
   const selectedGroup = account.groups.find((g) => g._id === creationData.group);
   const selectedGroupLocation =
     selectedGroup &&
     selectedGroup.roles
       ?.find((r) => r._id === selectedGroup.membership.role)
-      ?.permissions.find((p) => p.permission === 'article.add')?.scope;
+      ?.permissions.find((p) => p.permission === 'event.add')?.scope;
 
   const toggle = (i: { _id: string }, func: Function, data: string[]) => {
     if (data.includes(i._id)) {
@@ -113,8 +106,8 @@ const ArticleAddPageLocation: React.FC<Props> = ({
   }, [null]);
 
   return (
-    <View style={articleStyles.formContainer}>
-      <View style={articleStyles.listContainer}>
+    <View style={eventStyles.formContainer}>
+      <View style={eventStyles.listContainer}>
         {selectedGroupLocation?.schools?.map((s) => (
           <List.Item
             title={s.name}
@@ -162,8 +155,8 @@ const ArticleAddPageLocation: React.FC<Props> = ({
               <ErrorMessage
                 error={[locationStates.schools.info.error, locationStates.departments.info.error]}
                 strings={{
-                  what: "l'ajout de l'article",
-                  contentSingular: "L'article",
+                  what: "l'ajout de l'évènement",
+                  contentSingular: "L'évènement",
                 }}
                 type="axios"
                 retry={() => {
@@ -277,7 +270,7 @@ const ArticleAddPageLocation: React.FC<Props> = ({
           Vous devez selectionner au moins une localisation
         </HelperText>
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
@@ -300,10 +293,10 @@ const ArticleAddPageLocation: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, articleData, schools, departments } = state;
+  const { account, eventData, schools, departments } = state;
   return {
     account,
-    creationData: articleData.creationData,
+    creationData: eventData.creationData,
     schoolItems: schools.items,
     departmentItems: departments.items,
     locationStates: {
@@ -313,4 +306,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticleAddPageLocation);
+export default connect(mapStateToProps)(EventAddPageLocation);

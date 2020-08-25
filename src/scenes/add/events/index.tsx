@@ -3,34 +3,34 @@ import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { HeaderConfig } from '@components/Header';
-import ArticleAdd from './views/Add';
-import ArticleAddSuccess from './views/AddSuccess';
-import ArticleAddLocation from './views/AddLocation';
+import EventAdd from './views/Add';
+import EventAddSuccess from './views/AddSuccess';
+import EventAddLocation from './views/AddLocation';
 
 const Stack = createStackNavigator();
 
-function ArticleAddStackNavigator() {
+function EventAddStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Add">
       <Stack.Screen
         name="Add"
-        component={ArticleAdd}
+        component={EventAdd}
         options={{
-          title: 'Écrire un article',
+          title: 'Créer un évènement',
           headerShown: false,
         }}
       />
       <Stack.Screen
         name="Success"
-        component={ArticleAddSuccess}
+        component={EventAddSuccess}
         options={{
-          title: 'Article ajouté',
+          title: 'Evènement ajouté',
           headerShown: false,
         }}
       />
       <Stack.Screen
         name="Location"
-        component={ArticleAddLocation}
+        component={EventAddLocation}
         options={{
           ...HeaderConfig,
           title: 'Localisation',
@@ -41,4 +41,4 @@ function ArticleAddStackNavigator() {
   );
 }
 
-export default ArticleAddStackNavigator;
+export default EventAddStackNavigator;

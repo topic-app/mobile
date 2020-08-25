@@ -6,7 +6,7 @@ import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
+import { State, EventRequestState, EventCreationData } from '@ts/types';
 import { logger } from '@utils/index';
 import {
   TranslucentStatusBar,
@@ -16,31 +16,31 @@ import {
   PlatformBackButton,
 } from '@components/index';
 import { register } from '@redux/actions/data/account';
-import { articleAdd } from '@redux/actions/apiActions/articles';
-import { clearArticleCreationData } from '@redux/actions/contentData/articles';
+import { eventAdd } from '@redux/actions/apiActions/events';
+import { clearEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
 
-import type { ArticleStackParams } from '../index';
-import getArticleStyles from '../styles/Styles';
-import ArticleAddPageGroup from '../components/AddGroup';
-import ArticleAddPageLocation from '../components/AddLocation';
-import ArticleAddPageMeta from '../components/AddMeta';
-import ArticleAddPageContent from '../components/AddContent';
-import ArticleAddPageTags from '../components/AddTags';
+import type { EventStackParams } from '../index';
+import getEventStyles from '../styles/Styles';
+import EventAddPageGroup from '../components/AddGroup';
+import EventAddPageLocation from '../components/AddLocation';
+import EventAddPageMeta from '../components/AddMeta';
+import EventAddPageContent from '../components/AddContent';
+import EventAddPageTags from '../components/AddTags';
 
 type Props = {
-  navigation: StackNavigationProp<ArticleStackParams, 'Add'>;
-  reqState: ArticleRequestState;
-  creationData?: ArticleCreationData;
+  navigation: StackNavigationProp<EventStackParams, 'Add'>;
+  reqState: EventRequestState;
+  creationData?: EventCreationData;
 };
 
-const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) => {
+const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
+  const eventStyles = getEventStyles(theme);
 
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
-    articleAdd({
+    eventAdd({
       title: creationData.title,
       summary: creationData.summary,
       date: Date.now(),
@@ -53,7 +53,7 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
       preferences: null,
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
-      clearArticleCreationData();
+      clearEventCreationData();
     });
   };
 
@@ -66,8 +66,8 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
           <ErrorMessage
             error={reqState.add?.error}
             strings={{
-              what: "l'ajout de l'article",
-              contentSingular: "L'article",
+              what: "l'ajout de l'évènement",
+              contentSingular: "L'évènement",
             }}
             type="axios"
             retry={add}
@@ -76,7 +76,7 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
         <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
-            <Text style={articleStyles.title}>Ajouter un évènement</Text>
+            <Text style={eventStyles.title}>Créer un évènement</Text>
           </View>
           <StepperView
             pages={[
@@ -84,31 +84,31 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'group',
                 icon: 'account-group',
                 title: 'Groupe',
-                component: <ArticleAddPageGroup />,
+                component: <EventAddPageGroup />,
               },
               {
                 key: 'location',
                 icon: 'map-marker',
                 title: 'Localisation',
-                component: <ArticleAddPageLocation navigation={navigation} />,
+                component: <EventAddPageLocation navigation={navigation} />,
               },
               {
                 key: 'meta',
                 icon: 'information',
                 title: 'Meta',
-                component: <ArticleAddPageMeta />,
+                component: <EventAddPageMeta />,
               },
               {
                 key: 'tags',
                 icon: 'tag-multiple',
                 title: 'Tags',
-                component: <ArticleAddPageTags />,
+                component: <EventAddPageTags />,
               },
               {
                 key: 'content',
                 icon: 'pencil',
                 title: 'Contenu',
-                component: <ArticleAddPageContent add={add} />,
+                component: <EventAddPageContent add={add} />,
               },
             ]}
           />
@@ -119,8 +119,8 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData } = state;
-  return { creationData: articleData.creationData, reqState: articles.state };
+  const { events, eventData } = state;
+  return { creationData: eventData.creationData, reqState: events.state };
 };
 
-export default connect(mapStateToProps)(ArticleAdd);
+export default connect(mapStateToProps)(EventAdd);

@@ -3,7 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import { State } from '@ts/types';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
+import { updateEventParams } from '@redux/actions/contentData/events';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import LocationSelectPage from '@components/LocationSelectPage';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
@@ -11,9 +11,9 @@ import { ErrorMessage } from '@components/index';
 
 import getStyles from '@styles/Styles';
 
-import type { ArticleStackParams } from '../index';
+import type { EventStackParams } from '../index';
 
-type Navigation = StackNavigationProp<ArticleStackParams, 'EditParams'>;
+type Navigation = StackNavigationProp<EventStackParams, 'EditParams'>;
 
 // TODO: Externalize into @ts/redux
 type ReduxLocation = {
@@ -22,7 +22,7 @@ type ReduxLocation = {
   departments: string[];
 };
 
-type ArticleEditParamsProps = {
+type EventEditParamsProps = {
   navigation: Navigation;
   route: {
     params: {
@@ -34,7 +34,7 @@ type ArticleEditParamsProps = {
   };
 };
 
-function ArticleAddLocation({ navigation, route }: ArticleEditParamsProps) {
+function EventAddLocation({ navigation, route }: EventEditParamsProps) {
   const { hideSearch = false, type, initialData, callback } = route.params;
 
   return (
@@ -50,4 +50,4 @@ function ArticleAddLocation({ navigation, route }: ArticleEditParamsProps) {
   );
 }
 
-export default ArticleAddLocation;
+export default EventAddLocation;

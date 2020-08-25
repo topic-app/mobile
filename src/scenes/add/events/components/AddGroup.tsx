@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Platform } from 'react-native';
 import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
 
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { StepperViewPageProps } from '@components/index';
 import { Account, State } from '@ts/types';
 import getStyles from '@styles/Styles';
@@ -13,13 +13,13 @@ import { connect } from 'react-redux';
 
 type Props = StepperViewPageProps & { account: Account };
 
-const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
+const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
   const [group, setGroup] = React.useState(null);
   const [showError, setError] = React.useState(false);
 
   const submit = () => {
     if (group !== null) {
-      updateArticleCreationData({ group });
+      updateEventCreationData({ group });
       next();
     } else {
       setError(true);
@@ -28,10 +28,10 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
+  const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const groupsWithPermission = account.groups.filter((g) =>
-    account.permissions.some((p) => p.group === g._id && p.permission === 'article.add'),
+    account.permissions.some((p) => p.group === g._id && p.permission === 'event.add'),
   );
 
   if (!account.loggedIn) {
@@ -45,8 +45,8 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
   }
 
   return (
-    <View style={articleStyles.formContainer}>
-      <View style={articleStyles.listContainer}>
+    <View style={eventStyles.formContainer}>
+      <View style={eventStyles.listContainer}>
         {groupsWithPermission.map((g) => (
           <List.Item
             key={g._id}
@@ -93,12 +93,12 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
         </HelperText>
         {groupsWithPermission.length !== account.groups.length && (
           <Text>
-            Certains groups n'apparaissent pas car vous ne pouvez pas écrire d'articles pour ces
+            Certains groupes n'apparaissent pas car vous ne pouvez pas écrire d'évènements pour ces
             groupes
           </Text>
         )}
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
@@ -122,7 +122,7 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
                 color={colors.primary}
               />
               <Text style={{ color: colors.primary }}>
-                Vous pouvez écrire un article depuis votre ordinateur en visitant topicapp.fr
+                Vous pouvez créer un évènement depuis votre ordinateur en visitant topicapp.fr
               </Text>
             </View>
           </Card>
@@ -137,4 +137,4 @@ const mapStateToProps = (state: State) => {
   return { account };
 };
 
-export default connect(mapStateToProps)(ArticleAddPageGroup);
+export default connect(mapStateToProps)(EventAddPageGroup);
