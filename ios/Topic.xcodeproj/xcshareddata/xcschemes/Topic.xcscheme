@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "topic2.app"
-               BlueprintName = "topic2"
-               ReferencedContainer = "container:topic2.xcodeproj">
+               BuildableName = "Topic.app"
+               BlueprintName = "Topic"
+               ReferencedContainer = "container:Topic.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "topic2Tests.xctest"
-               BlueprintName = "topic2Tests"
-               ReferencedContainer = "container:topic2.xcodeproj">
+               BuildableName = "TopicTests.xctest"
+               BlueprintName = "TopicTests"
+               ReferencedContainer = "container:Topic.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "topic2.app"
-            BlueprintName = "topic2"
-            ReferencedContainer = "container:topic2.xcodeproj">
+            BuildableName = "Topic.app"
+            BlueprintName = "Topic"
+            ReferencedContainer = "container:Topic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "topic2.app"
-            BlueprintName = "topic2"
-            ReferencedContainer = "container:topic2.xcodeproj">
+            BuildableName = "Topic.app"
+            BlueprintName = "Topic"
+            ReferencedContainer = "container:Topic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -1,4 +1,4 @@
-package com.topic2;
+package fr.topicapp.topic;
 
 import android.os.Bundle;
 
