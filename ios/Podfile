@@ -45,8 +45,8 @@ def flipper_post_install(installer)
   end
 end
 
-target 'topic2' do
-  # Pods for topic2
+target 'Topic' do
+  # Pods for Topic
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"

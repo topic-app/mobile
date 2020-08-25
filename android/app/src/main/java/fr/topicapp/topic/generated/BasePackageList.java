@@ -1,4 +1,4 @@
-package com.topic2.generated;
+package fr.topicapp.topic.generated;
 
 import java.util.Arrays;
 import java.util.List;
