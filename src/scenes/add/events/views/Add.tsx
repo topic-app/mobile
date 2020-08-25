@@ -76,7 +76,7 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
         <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
-            <Text style={articleStyles.title}>Écrire un article</Text>
+            <Text style={articleStyles.title}>Ajouter un évènement</Text>
           </View>
           <StepperView
             pages={[

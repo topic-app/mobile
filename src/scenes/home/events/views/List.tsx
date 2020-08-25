@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Animated, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ProgressBar, useTheme } from 'react-native-paper';
+import { ProgressBar, FAB, useTheme } from 'react-native-paper';
 
 import AnimatingHeader from '@components/AnimatingHeader';
 import { updateEvents } from '@redux/actions/api/events';
@@ -11,7 +11,7 @@ import getStyles from '@styles/Styles';
 
 import { EventCard } from '@components/index';
 
-function EventList({ navigation, events, state }) {
+function EventList({ navigation, events, state, account }) {
   React.useEffect(() => {
     updateEvents('initial');
   }, []);
@@ -96,13 +96,30 @@ function EventList({ navigation, events, state }) {
           />
         )}
       />
+      {account.loggedIn && account.permissions?.some((p) => p.permission === 'event.add') && (
+        <FAB
+          icon="pencil"
+          onPress={() =>
+            navigation.navigate('Main', {
+              screen: 'Add',
+              params: {
+                screen: 'Event',
+                params: {
+                  screen: 'Add',
+                },
+              },
+            })
+          }
+          style={styles.bottomRightFab}
+        />
+      )}
     </View>
   );
 }
 
 const mapStateToProps = (state) => {
-  const { events } = state;
-  return { events: events.data, state: events.state };
+  const { events, account } = state;
+  return { events: events.data, state: events.state, account };
 };
 
 export default connect(mapStateToProps)(EventList);
