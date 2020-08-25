@@ -78,12 +78,13 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    enableHermes: true
+    enableHermes: true // clean and rebuild if changed
 ]
 
 apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/expo-updates/scripts/create-manifest-android.gradle"
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -134,8 +135,9 @@ android {
         applicationId "fr.topicapp.topic"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "0.3"
+        setProperty("archivesBaseName", "Topic-$versionName")
     }
     splits {
         abi {
@@ -146,6 +148,12 @@ android {
         }
     }
     signingConfigs {
+        release {
+            storeFile file('topic.keystore')
+            storePassword 'pourlajeunesse'
+            keyAlias 'topic'
+            keyPassword 'pourlajeunesse'
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -156,13 +164,28 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            debuggable true
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            // TODO: Remove once beta is complete
+            versionNameSuffix "-beta"
+        }
+    }
+
+    def betaTesterName = System.getenv("BETA_TESTER_NAME")
+    if (betaTesterName) {
+        flavorDimensions "name"
+        productFlavors {
+            "$betaTesterName" {
+                versionNameSuffix "-$betaTesterName"
+            }
         }
     }
 
