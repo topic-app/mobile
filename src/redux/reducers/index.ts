@@ -12,6 +12,7 @@ import tagReducer from './api/tags';
 import userReducer from './api/users';
 
 import articleDataReducer from './contentData/articles';
+import eventDataReducer from './contentData/events';
 
 import prefReducer from './data/prefs';
 import accountReducer from './data/account';
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   users: userReducer,
   // contentData
   articleData: articleDataReducer,
+  eventData: eventDataReducer,
   // data
   preferences: prefReducer,
   account: accountReducer,
