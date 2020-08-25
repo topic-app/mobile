@@ -4,16 +4,13 @@ import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
 
 import { request } from '@utils/index';
 import { StepperViewPageProps } from '@components/index';
-import {
-  updateArticleCreationData,
-  clearArticleCreationData,
-} from '@redux/actions/contentData/articles';
+import { updateEventCreationData, clearEventCreationData } from '@redux/actions/contentData/events';
 
 import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & { add: Function };
 
-const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
+const EventAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
   const contentInput = createRef<RNTestInput>();
 
   type InputStateType = {
@@ -71,7 +68,7 @@ const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
 
     const content = await validateContentInput(contentVal);
     if (content.valid) {
-      updateArticleCreationData({ parser: 'markdown', data: contentVal });
+      updateEventCreationData({ parser: 'markdown', data: contentVal });
       add('markdown', contentVal);
     } else {
       if (!content.valid && !content.error) {
@@ -93,7 +90,7 @@ const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
       <View style={authStyles.textInputContainer}>
         <TextInput
           ref={contentInput}
-          label="Écrivez votre article..."
+          label="Écrivez votre évènement..."
           multiline
           numberOfLines={4}
           value={currentContent.value}
@@ -150,4 +147,4 @@ const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
   );
 };
 
-export default ArticleAddPageGeneral;
+export default EventAddPageGeneral;

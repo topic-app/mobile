@@ -5,9 +5,9 @@ import { Text, Button, Divider, Snackbar, useTheme, Card } from 'react-native-pa
 import { StackNavigationProp } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { State, ArticleRequestState, Account } from '@ts/types';
-import { Illustration, ArticleCard, ErrorMessage, TranslucentStatusBar } from '@components/index';
-import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
+import { State, EventRequestState, Account } from '@ts/types';
+import { Illustration, EventCard, ErrorMessage, TranslucentStatusBar } from '@components/index';
+import { eventVerificationApprove } from '@redux/actions/apiActions/events';
 import getStyles from '@styles/Styles';
 
 import type { AuthStackParams } from '../index';
@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParams, 'CreateSuccess'>;
-  reqState: ArticleRequestState;
+  reqState: EventRequestState;
   account: Account;
   route: {
     params: {
@@ -34,7 +34,7 @@ type Props = {
   };
 };
 
-const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, route }) => {
+const EventAddSuccess: React.FC<Props> = ({ navigation, reqState, account, route }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);
@@ -47,7 +47,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
   let groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
 
   const approve = () => {
-    articleVerificationApprove(id).then(() => setApproved(true));
+    eventVerificationApprove(id).then(() => setApproved(true));
   };
 
   return (
@@ -57,8 +57,8 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
           <ErrorMessage
             error={reqState.verification_approve?.error}
             strings={{
-              what: "l'approbation de l'article",
-              contentSingular: "L'article",
+              what: "l'approbation de l'évènement",
+              contentSingular: "L'évènement",
             }}
             type="axios"
             retry={approve}
@@ -69,27 +69,27 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
         <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
           <Illustration name="auth-register-success" height={200} width={200} />
           <Text style={authStyles.title}>
-            Article {approved ? 'publié' : 'en attente de modération'}
+            Evènement {approved ? 'publié' : 'en attente de modération'}
           </Text>
           {!approved && (
             <View>
               <Text style={{ marginTop: 40 }}>
-                Votre article doit être approuvé par un administrateur de {groupName}.
+                Votre évènement doit être approuvé par un administrateur de {groupName}.
               </Text>
-              <Text>Vous serez notifiés par email dès que l'article est approuvé.</Text>
+              <Text>Vous serez notifiés par email dès que l'évènement est approuvé.</Text>
             </View>
           )}
           {account.permissions?.some(
             (p) =>
-              p.name === 'article.verification.approve' &&
+              p.name === 'event.verification.approve' &&
               (p.scope?.groups?.includes(creationData?.group) ||
                 (p.group === creationData?.group && p.scope?.self)),
           ) &&
             (approved ? (
-              <Text>Article approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
+              <Text>Evènement approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
             ) : (
               <View>
-                <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous même cet article</Text>
+                <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous même cet évènement</Text>
                 <Button
                   uppercase={Platform.OS !== 'ios'}
                   loading={reqState.verification_approve?.loading}
@@ -97,8 +97,8 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
                   style={{ marginTop: 10 }}
                   onPress={() => {
                     Alert.alert(
-                      "Approuver l'article?",
-                      "L'article doit ềtre conforme aux conditions d'utilisation.\nVous êtes responsables si l'article ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs",
+                      "Approuver l'évènement ?",
+                      "L'évènement doit ềtre conforme aux conditions d'utilisation.\nVous êtes responsables si l'évènement ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs",
                       [
                         {
                           text: 'Annuler',
@@ -129,7 +129,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
               <View style={[styles.container, { flexDirection: 'row' }]}>
                 <ScrollView horizontal>
                   <Text style={{ color: colors.text, fontSize: 20 }} numberOfLines={1}>
-                    https://go.topicapp.fr/articles/{id}
+                    https://go.topicapp.fr/events/{id}
                   </Text>
                 </ScrollView>
                 <Icon
@@ -138,10 +138,10 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
                   size={24}
                   color={colors.text}
                   onPress={() => {
-                    Clipboard.setString(`https://go.topicapp.fr/articles/${id}`);
+                    Clipboard.setString(`https://go.topicapp.fr/events/${id}`);
                     Alert.alert(
                       'Lien copié',
-                      "Vous ne pourrez pas utiliser ce lien tant que l'article n'aura pas été validé.",
+                      "Vous ne pourrez pas utiliser ce lien tant que l'évènement n'aura pas été validé.",
                       [{ text: 'Fermer' }],
                       { cancelable: true },
                     );
@@ -154,8 +154,8 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
                   color={colors.text}
                   onPress={() => {
                     Alert.alert(
-                      "Partager l'article",
-                      "L'article ne sera pas accessible tant qu'il n'a pas été approuvé",
+                      "Partager l'évènement",
+                      "L'évènement ne sera pas accessible tant qu'il n'a pas été approuvé",
                       [
                         { text: 'Annuler' },
                         {
@@ -165,11 +165,11 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
                               ? () =>
                                   Share.share({
                                     message: `${creationData?.title} par ${groupName}`,
-                                    url: `https://go.topicapp.fr/articles/${id}`,
+                                    url: `https://go.topicapp.fr/events/${id}`,
                                   })
                               : () =>
                                   Share.share({
-                                    message: `https://go.topicapp.fr/articles/${id}`,
+                                    message: `https://go.topicapp.fr/events/${id}`,
                                     title: `${creationData?.title} par ${groupName}`,
                                   }),
                         },
@@ -181,8 +181,8 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
               </View>
             </Card>
           </View>
-          <ArticleCard
-            article={{
+          <EventCard
+            event={{
               ...creationData,
               summary: creationData.summary || creationData.data,
               authors: [
@@ -208,7 +208,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
             onPress={() =>
               navigation.navigate('Main', {
                 screen: 'Home1',
-                params: { screen: 'Home2', params: { screen: 'Article' } },
+                params: { screen: 'Home2', params: { screen: 'Event' } },
               })
             }
             style={{ flex: 1 }}
@@ -222,8 +222,8 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, articles } = state;
-  return { account, reqState: articles.state };
+  const { account, events } = state;
+  return { account, reqState: events.state };
 };
 
-export default connect(mapStateToProps)(ArticleAddSuccess);
+export default connect(mapStateToProps)(EventAddSuccess);

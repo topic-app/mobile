@@ -4,13 +4,13 @@ import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
 
 import { request } from '@utils/index';
 import { StepperViewPageProps, CollapsibleView } from '@components/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
 
-import getArticleStyles from '../styles/Styles';
+import getEventStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps;
 
-const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
+const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   const titleInput = createRef<RNTestInput>();
   const descriptionInput = createRef<RNTestInput>();
 
@@ -123,7 +123,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
     const title = await validateTitleInput(titleVal);
     const description = await validateDescriptionInput(descriptionVal);
     if (title.valid && description.valid) {
-      updateArticleCreationData({ title: titleVal, summary: descriptionVal });
+      updateEventCreationData({ title: titleVal, summary: descriptionVal });
       next();
     } else {
       if (!title.valid && !title.error) {
@@ -138,11 +138,11 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getArticleStyles(theme);
+  const eventStyles = getEventStyles(theme);
 
   return (
-    <View style={articleStyles.formContainer}>
-      <View style={articleStyles.textInputContainer}>
+    <View style={eventStyles.formContainer}>
+      <View style={eventStyles.textInputContainer}>
         <TextInput
           ref={titleInput}
           label="Titre"
@@ -164,7 +164,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           onEndEditing={({ nativeEvent }) => {
             validateTitleInput(nativeEvent.text);
           }}
-          style={articleStyles.textInput}
+          style={eventStyles.textInput}
           onChangeText={(text) => {
             setTitle({ value: text });
             preValidateTitleInput(text);
@@ -174,7 +174,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           {currentTitle.message}
         </HelperText>
       </View>
-      <View style={articleStyles.textInputContainer}>
+      <View style={eventStyles.textInputContainer}>
         <TextInput
           ref={descriptionInput}
           label="Description"
@@ -199,7 +199,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           onEndEditing={({ nativeEvent }) => {
             validateDescriptionInput(nativeEvent.text);
           }}
-          style={articleStyles.textInput}
+          style={eventStyles.textInput}
           onChangeText={(text) => {
             setDescription({ value: text });
             preValidateDescriptionInput(text);
@@ -209,7 +209,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           <HelperText type={currentDescription.value ? 'error' : 'info'} visible>
             {currentDescription.value
               ? currentDescription.message
-              : "Laissez vide pour selectionner les premières lignes de l'article"}
+              : "Laissez vide pour selectionner les premières lignes de l'évènement"}
           </HelperText>
         </CollapsibleView>
         <CollapsibleView collapsed={!currentDescription.value}>
@@ -228,7 +228,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
         </CollapsibleView>
         <View style={{ height: 20 }} />
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
@@ -253,4 +253,4 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   );
 };
 
-export default ArticleAddPageMeta;
+export default EventAddPageMeta;
