@@ -84,37 +84,8 @@
       "defaultLocation": {
         "selected": true,
         "type": "school",
-        "schools": [],
-        "schoolData": [
-          {
-            "_id": "5e9208118851c52a8e6c6f8d",
-            "name": "Centre International de Valbonne",
-            "shortName": "CIV",
-            "type": "lycee",
-            "address": {
-              "shortName": "Sophia-Antipolis, Alpes Maritimes",
-              "coordinates": {
-                "lat": 43.6215017,
-                "lon": 7.0416363
-              },
-              "department": null
-            },
-            "adminGroups": [],
-            "image": {
-              "image": null,
-              "thumbnail": {
-                "small": false,
-                "medium": false,
-                "large": false
-              }
-            },
-            "description": {
-              "parser": "markdown",
-              "data": "Hello there **bold**"
-            },
-            "department": null
-          }
-        ],
+        "schools": ["5f1b0755d8b27b44f07a5afc"],
+        "schoolData": [],
         "departments": [],
         "departmentData": [],
         "global": false
