@@ -4,7 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HeaderConfig } from '@components/Header';
 import EventDisplay from './views/Display';
 
-const Stack = createStackNavigator();
+export type EventDisplayStackParams = {
+  Display: { id: string; title: string };
+};
+
+const Stack = createStackNavigator<EventDisplayStackParams>();
 
 function EventDisplayStackNavigator() {
   return (
