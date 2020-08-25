@@ -1,11 +1,14 @@
 {
   "main": "index.js",
   "scripts": {
-    "android": "react-native run-android",
+    "android": "react-native run-android --appId fr.topicapp.topic.dev",
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "clean:npm": "rm -rf node_modules && npm install",
+    "clean:android": "cd android && ./gradlew clean && cd .."
   },
   "dependencies": {
     "@expo-google-fonts/roboto": "^0.1.0",
@@ -16,6 +19,7 @@
     "@react-native-community/netinfo": "^5.9.5",
     "@react-native-community/slider": "^3.0.0-rc.2",
     "@react-native-community/viewpager": "^4.1.4",
+    "@react-native-mapbox-gl/maps": "^8.1.0-rc.2",
     "@react-navigation/bottom-tabs": "^5.8.0",
     "@react-navigation/core": "^5.12.3",
     "@react-navigation/drawer": "^5.9.0",
@@ -27,6 +31,7 @@
     "axios": "^0.19.2",
     "babel-plugin-inline-import": "^3.0.0",
     "expo": "~38.0.9",
+    "expo-location": "~8.2.1",
     "expo-splash-screen": "^0.5.0",
     "expo-status-bar": "^1.0.0",
     "expo-updates": "~0.2.8",

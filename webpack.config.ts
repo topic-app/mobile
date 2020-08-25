@@ -1,7 +1,8 @@
-const createExpoWebpackConfigAsync = require('@expo/webpack-config');
+import createExpoWebpackConfigAsync from '@expo/webpack-config';
+import { ConfigurationFactory } from 'webpack';
 
-module.exports = async function (env, argv) {
-  const config = await createExpoWebpackConfigAsync(env, argv);
+const configFactory: ConfigurationFactory = async (env, args) => {
+  const config = await createExpoWebpackConfigAsync(env, args);
   config.resolve.alias = {
     'react-native-linear-gradient': 'react-native-web-linear-gradient',
     'react-native-modals': `${env.projectRoot}/src/components/DesktopModals`,
@@ -11,3 +12,5 @@ module.exports = async function (env, argv) {
   };
   return config;
 };
+
+export default configFactory;
