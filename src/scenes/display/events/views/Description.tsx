@@ -10,9 +10,13 @@ import { InlineCard } from '@components/Cards';
 import getEventStyles from '../styles/Styles';
 
 function getPlaceLabels(place) {
+  console.log('>>> Place', JSON.stringify(place, null, 2));
   const { type, address, associatedSchool, associatedPlace } = place;
   switch (type) {
     case 'standalone': {
+      if (!address?.address) {
+        return { title: '', description: '' };
+      }
       const { number, street, extra, city } = address.address;
       return {
         title: address.shortName || `${number}, ${street} ${extra}`,
@@ -20,6 +24,9 @@ function getPlaceLabels(place) {
       };
     }
     case 'school': {
+      if (!associatedSchool?.address?.address) {
+        return { title: '', description: '' };
+      }
       const { number, street, extra, city } = associatedSchool.address.address;
       return {
         title: associatedSchool.displayName,
@@ -29,6 +36,9 @@ function getPlaceLabels(place) {
       };
     }
     case 'place': {
+      if (!associatedPlace?.address?.address) {
+        return { title: '', description: '' };
+      }
       const { number, street, extra, city } = associatedPlace.address.address;
       return {
         title: associatedPlace.displayName,

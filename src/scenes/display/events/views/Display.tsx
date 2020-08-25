@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, ImageBackground } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import TagList from '@components/TagList';
 import CustomTabView from '@components/CustomTabView';
@@ -55,7 +56,7 @@ function EventDisplay({ route, events, state }) {
           <Text style={styles.title}>{event?.title}</Text>
           <Text style={styles.subtitle}>
             {start && end
-              ? `Du ${start.format('DD/MM/YYYY')} au ${end.format('DD/MM/YYYY')}`
+              ? `Du ${moment(start).format('DD/MM/YYYY')} au ${moment(end).format('DD/MM/YYYY')}`
               : 'Aucune Date Spécifiée'}
           </Text>
         </View>
