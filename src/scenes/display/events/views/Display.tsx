@@ -1,21 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, ScrollView, ImageBackground } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import TagList from '@components/TagList';
-import CustomTabView from '@components/CustomTabView';
-import ErrorMessage from '@components/ErrorMessage';
-import getStyles from '@styles/Styles';
+import { State, EventPreload, Event, EventRequestState } from '@ts/types';
+import { TagList, CustomTabView, ErrorMessage } from '@components/index';
 import { fetchEvent } from '@redux/actions/api/events';
+import getStyles from '@styles/Styles';
+
+import type { EventDisplayStackParams } from '../index';
 import EventDisplayProgram from './Program';
 import EventDisplayDescription from './Description';
 import EventDisplayContact from './Contact';
 
-function EventDisplay({ route, events, state }) {
-  const scrollViewRef = React.createRef();
+type EventDisplayProps = StackScreenProps<EventDisplayStackParams, 'Display'> & {
+  events: (EventPreload | Event)[];
+  reqState: EventRequestState;
+};
+
+const EventDisplay: React.FC<EventDisplayProps> = ({ route, events, reqState }) => {
+  const scrollRef = React.createRef<ScrollView>();
   const { id } = route.params;
   React.useEffect(() => {
     fetchEvent(id);
@@ -27,7 +33,7 @@ function EventDisplay({ route, events, state }) {
 
   return (
     <View style={styles.page}>
-      <ScrollView ref={scrollViewRef}>
+      <ScrollView ref={scrollRef}>
         {state.info.error ? (
           <ErrorMessage
             type="axios"
@@ -77,7 +83,7 @@ function EventDisplay({ route, events, state }) {
               key: 'program',
               title: 'Programme',
               component: <EventDisplayProgram event={event} />,
-              onVisible: () => scrollViewRef.current.scrollToEnd({ animated: true }),
+              onVisible: () => scrollViewRef.current?.scrollToEnd({ animated: true }),
             },
             {
               key: 'contact',
@@ -89,39 +95,11 @@ function EventDisplay({ route, events, state }) {
       </ScrollView>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { events } = state;
   return { events: events.data, state: events.state };
 };
 
 export default connect(mapStateToProps)(EventDisplay);
-
-EventDisplay.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  state: PropTypes.shape({
-    info: PropTypes.shape({
-      success: PropTypes.bool,
-      loading: PropTypes.bool,
-      error: PropTypes.shape(),
-    }).isRequired,
-  }).isRequired,
-  events: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      thumbnailUrl: PropTypes.string.isRequired,
-      description: PropTypes.shape({
-        parser: PropTypes.oneOf(['plaintext', 'markdown']),
-        data: PropTypes.string,
-      }).isRequired,
-      group: PropTypes.shape({
-        displayName: PropTypes.string,
-      }).isRequired,
-    }).isRequired,
-  ).isRequired,
-};
