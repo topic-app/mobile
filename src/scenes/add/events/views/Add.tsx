@@ -25,7 +25,9 @@ import getEventStyles from '../styles/Styles';
 import EventAddPageGroup from '../components/AddGroup';
 import EventAddPageLocation from '../components/AddLocation';
 import EventAddPageMeta from '../components/AddMeta';
-import EventAddPageContent from '../components/AddContent';
+import EventAddPageDuration from '../components/AddDuration';
+import EventAddPagePlace from '../components/AddPlace';
+import EventAddPageProgram from '../components/AddProgram';
 import EventAddPageTags from '../components/AddTags';
 
 type Props = {
@@ -95,7 +97,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
               {
                 key: 'meta',
                 icon: 'information',
-                title: 'Meta',
+                title: 'Info',
                 component: <EventAddPageMeta />,
               },
               {
@@ -105,10 +107,22 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
                 component: <EventAddPageTags />,
               },
               {
-                key: 'content',
-                icon: 'pencil',
-                title: 'Contenu',
-                component: <EventAddPageContent add={add} />,
+                key: 'place',
+                icon: 'map',
+                title: 'Lieu',
+                component: <EventAddPagePlace />,
+              },
+              {
+                key: 'duration',
+                icon: 'clock',
+                title: 'Durée',
+                component: <EventAddPageDuration />,
+              },
+              {
+                key: 'program',
+                icon: 'script-text',
+                title: 'Programme',
+                component: <EventAddPageProgram />,
               },
             ]}
           />

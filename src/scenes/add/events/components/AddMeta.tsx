@@ -209,7 +209,7 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           <HelperText type={currentDescription.value ? 'error' : 'info'} visible>
             {currentDescription.value
               ? currentDescription.message
-              : "Laissez vide pour selectionner les premières lignes de l'évènement"}
+              : "Laissez vide pour sélectionner les premières lignes de l'évènement"}
           </HelperText>
         </CollapsibleView>
         <CollapsibleView collapsed={!currentDescription.value}>
