@@ -1,6 +1,12 @@
 {
   "name": "Topic",
   "displayName": "Topic",
+  "expo": {
+    "name": "Topic",
+    "slug": "Topic",
+    "version": "0.3.0",
+    "assetBundlePatterns": ["**/*"]
+  },
   "config": {
     "api": {
       "url": "https://api.topicapp.fr/v1",
