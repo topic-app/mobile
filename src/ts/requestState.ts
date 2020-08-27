@@ -34,7 +34,15 @@ export type TagRequestState = StandardRequestState;
 export type UserRequestState = StandardRequestState;
 export type DepartmentRequestState = StandardRequestState;
 export type EventRequestState = StandardRequestState;
-export type GroupRequestState = StandardRequestState & { follow: RequestState };
+export type GroupRequestState = StandardRequestState & {
+  follow: RequestState;
+  member_add: RequestState;
+  member_delete: RequestState;
+  member_accept: RequestState;
+  member_reject: RequestState;
+  member_leave: RequestState;
+  modify: RequestState;
+};
 
 export type CommentRequestState = {
   list: RequestStateComplex;
@@ -49,6 +57,7 @@ export type AccountRequestState = {
   check: RequestState;
   fetchGroups: RequestState;
   fetchAccount: RequestState;
+  fetchWaitingGroups: RequestState;
 };
 
 export type LocationRequestState = {

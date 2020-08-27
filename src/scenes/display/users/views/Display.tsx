@@ -124,10 +124,15 @@ function UserDisplay({
   const userStyles = getUserStyles(theme);
   const { colors } = theme;
 
+  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [isUserReportModalVisible, setUserReportModalVisible] = React.useState(false);
+
   if (!user) {
     return (
       <View style={styles.page}>
         <SafeAreaView>
+          <PlatformBackButton onPress={navigation.goBack} />
+
           {state.info.error && (
             <ErrorMessage
               type="axios"
@@ -149,9 +154,6 @@ function UserDisplay({
       </View>
     );
   }
-
-  const [menuVisible, setMenuVisible] = React.useState(false);
-  const [isUserReportModalVisible, setUserReportModalVisible] = React.useState(false);
 
   return (
     <View style={styles.page}>
@@ -525,7 +527,7 @@ function UserDisplay({
                                         what: 'le chargement des articles',
                                         contentPlural: 'les articles',
                                       }}
-                                      error={groupsState.search.error}
+                                      error={articlesState.search.error}
                                       retry={() =>
                                         searchArticles('initial', '', { authors: [id] }, false)
                                       }

@@ -1,5 +1,6 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
+import { fetchLocationData } from './location';
 
 import {
   GroupRolePermission,
@@ -18,10 +19,11 @@ function fetchGroupsCreator() {
           type: 'UPDATE_ACCOUNT_GROUPS',
           data: [],
         });
-        return dispatch({
+        dispatch({
           type: 'UPDATE_ACCOUNT_PERMISSIONS',
           data: [],
         });
+        return resolve();
       }
       dispatch({
         type: 'UPDATE_ACCOUNT_STATE',
@@ -95,14 +97,70 @@ function fetchGroupsCreator() {
   };
 }
 
+function fetchWaitingGroupsCreator() {
+  return (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      if (!getState().account.loggedIn) {
+        dispatch({
+          type: 'UPDATE_ACCOUNT_WAITING_GROUPS',
+          data: [],
+        });
+        return resolve();
+      }
+      dispatch({
+        type: 'UPDATE_ACCOUNT_STATE',
+        data: {
+          fetchWaitingGroups: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request('groups/members/waiting', 'get', {}, true)
+        .then((result) => {
+          dispatch({
+            type: 'UPDATE_ACCOUNT_WAITING_GROUPS',
+            data: result.data?.groups,
+          });
+          dispatch({
+            type: 'UPDATE_ACCOUNT_STATE',
+            data: {
+              fetchWaitingGroups: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve();
+        })
+        .catch((err) => {
+          dispatch({
+            type: 'UPDATE_ACCOUNT_STATE',
+            data: {
+              fetchWaitingGroups: {
+                success: false,
+                loading: false,
+                error: err,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
 function fetchAccountCreator() {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       if (!getState().account.loggedIn) {
-        return dispatch({
+        dispatch({
           type: 'LOGOUT',
           data: null,
         });
+        return resolve();
       }
       dispatch({
         type: 'UPDATE_ACCOUNT_STATE',
@@ -140,6 +198,7 @@ function fetchAccountCreator() {
             type: 'UPDATE_LOCATION',
             data,
           });
+          fetchLocationData();
           resolve();
         })
         .catch((err) => {
@@ -246,8 +305,9 @@ function loginCreator(fields: LoginFields) {
             type: 'LOGIN',
             data: result.data,
           });
-          Store.dispatch(fetchAccountCreator());
-          Store.dispatch(fetchGroupsCreator());
+          dispatch(fetchAccountCreator());
+          dispatch(fetchGroupsCreator());
+          dispatch(fetchWaitingGroupsCreator());
           console.log('LoggedIn');
           resolve();
         })
@@ -332,6 +392,7 @@ function registerCreator(fields: RegisterFields) {
           });
           dispatch(fetchAccountCreator());
           dispatch(fetchGroupsCreator());
+          dispatch(fetchWaitingGroupsCreator());
           resolve();
         })
         .catch((err) => {
@@ -408,6 +469,10 @@ async function fetchGroups() {
   await Store.dispatch(fetchGroupsCreator());
 }
 
+async function fetchWaitingGroups() {
+  await Store.dispatch(fetchWaitingGroupsCreator());
+}
+
 async function fetchAccount() {
   await Store.dispatch(fetchAccountCreator());
 }
@@ -416,6 +481,7 @@ export {
   updateCreationData,
   clearCreationData,
   fetchGroups,
+  fetchWaitingGroups,
   fetchAccount,
   register,
   login,

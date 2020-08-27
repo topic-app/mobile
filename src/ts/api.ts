@@ -180,6 +180,9 @@ export type Account = {
   loggedIn: boolean;
   creationData: object | CreationData; // Maybe something better than `object` here
   groups: Group[];
+  waitingGroups: (Group & {
+    waitingMembership: { role: string; permanent: boolean; expiry: Date };
+  })[];
   accountInfo: {
     accountId: string;
     accountToken: string;
@@ -248,7 +251,10 @@ export type Group = {
   handle: string;
   aliases: string;
   summary: string;
-  description: string;
+  description: {
+    data: string;
+    parser: 'markdown' | 'plaintext';
+  };
   location: Location;
   permissions: GroupRolePermission[]; // Not sure how this works
   roles: GroupRole[];

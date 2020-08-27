@@ -7,19 +7,31 @@ import { CategoryTitle } from '@components/Typography';
 import { connect } from 'react-redux';
 import Illustration from '@components/Illustration';
 import { updateGroups } from '@redux/actions/api/groups';
-import { fetchGroups } from '@redux/actions/data/account';
+import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import ErrorMessage from '@components/ErrorMessage';
+import GroupsBanner from '@components/GroupsBanner';
 import GroupListCard from '../components/Card';
+import { Account, GroupsState, GroupRequestState, AccountRequestState } from '@ts/types';
 
-function MyGroupsList({ navigation, account, groups, state, accountState }) {
+type Props = {
+  account: Account;
+  groups: GroupsState;
+  state: GroupRequestState;
+  accountState: AccountRequestState;
+};
+
+function MyGroupsList({ navigation, account, groups, state, accountState }: Props) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  React.useEffect(() => {
-    updateGroups('initial');
+  let fetch = (refresh = 'false') => {
+    updateGroups(refresh ? 'refresh' : 'initial');
+    fetchWaitingGroups();
     fetchGroups();
-  }, [null]);
+  };
+
+  React.useEffect(fetch, [null]);
 
   const data = [
     // Groups where the user is a member
@@ -50,11 +62,12 @@ function MyGroupsList({ navigation, account, groups, state, accountState }) {
 
   return (
     <View style={styles.page}>
-      {state.list.loading.initial ||
-        (accountState.fetchGroups.loading && (
-          <ProgressBar indeterminate style={{ marginTop: -4 }} />
-        ))}
-      {state.list.error || accountState.fetchGroups.error ? (
+      {(state.list.loading.initial ||
+        accountState.fetchGroups?.loading ||
+        accountState.fetchWaitingGroups?.loading) && <ProgressBar indeterminate />}
+      {state.list.error ||
+      accountState.fetchGroups?.error ||
+      accountState.fetchWaitingGroups?.error ? (
         <ErrorMessage
           type="axios"
           strings={{
@@ -62,26 +75,23 @@ function MyGroupsList({ navigation, account, groups, state, accountState }) {
             contentPlural: 'des groupes',
             contentSingular: 'La liste de groupes',
           }}
-          error={[state.list.error, accountState.fetchGroups.error]}
-          retry={() => {
-            updateGroups('initial');
-            fetchGroups();
-          }}
+          error={[
+            state.list.error,
+            accountState.fetchGroups.error,
+            accountState.fetchWaitingGroups.error,
+          ]}
+          retry={fetch}
         />
       ) : null}
       <SectionList
         sections={data}
-        /*
-        refreshing={state.loading.refresh}
-        onRefresh={() => updateArticles('refresh')}
-        onEndReached={() => updateArticles('next')}
-        onEndReachedThreshold={0.5}
+        refreshing={state.list.loading.refresh}
+        onRefresh={() => fetch(true)}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-          {state.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
+            {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
           </View>
         }
-        */
         ListHeaderComponent={() => (
           <View>
             <View style={styles.centerIllustrationContainer}>
@@ -93,6 +103,7 @@ function MyGroupsList({ navigation, account, groups, state, accountState }) {
                 </Text>
               </View>
             </View>
+            <GroupsBanner />
           </View>
         )}
         renderSectionHeader={({ section: { title, data } }) =>

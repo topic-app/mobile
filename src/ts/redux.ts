@@ -607,3 +607,15 @@ export type UsersActionTypes =
   | UpdateUsersItemAction
   | UpdateUsersSearchAction
   | ClearUsersAction;
+
+export type ActionType =
+  | ArticlesActionTypes
+  | EventsActionTypes
+  | CommentsActionTypes
+  | SchoolsActionTypes
+  | DepartmentsActionTypes
+  | UsersActionTypes
+  | GroupsActionTypes
+  | PetitionsActionTypes
+  | TagsActionTypes
+  | PlacesActionTypes;

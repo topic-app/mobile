@@ -8,7 +8,7 @@ import screens from './screens';
 import { Preferences, State } from '@ts/types';
 import themes from '@styles/Theme';
 import { fetchLocationData } from '@redux/actions/data/location';
-import { fetchGroups, fetchAccount } from '@redux/actions/data/account';
+import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 import AppNavigator from './index';
 
 type Props = {
@@ -28,6 +28,7 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
     React.useCallback(() => {
       fetchLocationData().catch((e) => console.log(`fetchLocationData err ${e}`));
       fetchGroups().catch((e) => console.log(`fetchGroups err ${e}`));
+      fetchWaitingGroups().catch((e) => console.log(`fetchWaitingGroups err ${e}`));
       fetchAccount().catch((e) => console.log(`fetchAccount err ${e}`));
     }, [null]),
   );
