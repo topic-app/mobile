@@ -18,24 +18,22 @@ import {
   HelperText,
   TextInput as PaperTextInput,
   Card,
-  Searchbar,
   Text,
   List,
   ThemeProvider,
   useTheme,
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
-import Illustration from '@components/Illustration';
-import Avatar from '@components/Avatar';
 import { connect } from 'react-redux';
 import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
+
+import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
+import getStyles from '@styles/Styles';
+import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
 
-import { CollapsibleView, ErrorMessage } from '@components/index';
-import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
 import getArticleStyles from '../styles/Styles';
 
 type QuickSelectModalProps = ModalProps & {
@@ -151,10 +149,8 @@ function QuickSelectModal({
                 autoFocus
                 placeholder="Rechercher"
                 value={searchText}
-                onChangeText={(text) => {
-                  setSearchText(text);
-                  update(text);
-                }}
+                onChangeText={setSearchText}
+                onIdle={update}
               />
             </View>
             <FlatList

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, ScrollView, TextInput } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
-import { Text, Searchbar, Button, useTheme, Divider } from 'react-native-paper';
+import { Text, Button, useTheme, Divider } from 'react-native-paper';
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Illustration from '@components/Illustration';
 
 import {
+  Searchbar,
+  Illustration,
   CategoriesList,
   ChipAddList,
   ChipSuggestionList,
@@ -180,6 +181,7 @@ const Search: React.FC<SearchProps> = ({ navigation, route }) => {
               setSearchText(props);
               collapseFilter();
             }}
+            onIdle={(value) => console.log('send request', value)}
             value={searchText}
             style={searchStyles.searchbar}
             onSubmitEditing={submitSearch}

@@ -7,9 +7,6 @@ import { updateArticleParams } from '@redux/actions/contentData/articles';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import LocationSelectPage from '@components/LocationSelectPage';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { ErrorMessage } from '@components/index';
-
-import getStyles from '@styles/Styles';
 
 import type { ArticleStackParams } from '../index';
 
