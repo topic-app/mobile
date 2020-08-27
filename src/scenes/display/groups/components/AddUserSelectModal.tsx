@@ -21,7 +21,6 @@ import {
   HelperText,
   TextInput as PaperTextInput,
   Card,
-  Searchbar,
   Text,
   List,
   ThemeProvider,
@@ -36,7 +35,7 @@ import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
 
-import { CollapsibleView, ErrorMessage } from '@components/index';
+import { CollapsibleView, ErrorMessage, Searchbar } from '@components/index';
 import getStyles from '@styles/Styles';
 import { addArticleQuick } from '@redux/actions/contentData/articles';
 import getGroupStyles from '../styles/Styles';
@@ -127,10 +126,8 @@ function AddUserSelectModal({
                 autoFocus
                 placeholder="Rechercher"
                 value={searchText}
-                onChangeText={(text) => {
-                  setSearchText(text);
-                  update(text);
-                }}
+                onChangeText={setSearchText}
+                onIdle={update}
               />
             </View>
             <FlatList

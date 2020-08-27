@@ -6,16 +6,7 @@ import {
   TextInput as RNTextInput,
   ActivityIndicator,
 } from 'react-native';
-import {
-  Text,
-  useTheme,
-  Button,
-  Divider,
-  Searchbar,
-  List,
-  Checkbox,
-  ProgressBar,
-} from 'react-native-paper';
+import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
@@ -36,7 +27,7 @@ import {
   updateDepartments,
   searchDepartments,
 } from '@redux/actions/api/departments';
-import { ErrorMessage, CollapsibleView, ChipAddList } from '@components/index';
+import { ErrorMessage, CollapsibleView, ChipAddList, Searchbar } from '@components/index';
 import getStyles from '@styles/Styles';
 
 import getLandingStyles from '../styles/Styles';
@@ -278,10 +269,8 @@ const WelcomeLocation: React.FC<Props> = ({
             ref={inputRef}
             placeholder="Rechercher"
             value={searchText}
-            onChangeText={(props) => {
-              setSearchText(props);
-              searchChange(props);
-            }}
+            onChangeText={setSearchText}
+            onIdle={searchChange}
           />
         )}
       </View>

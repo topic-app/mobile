@@ -10,7 +10,6 @@ import {
   useTheme,
   Divider,
   ProgressBar,
-  Searchbar,
   Card,
   Chip,
 } from 'react-native-paper';
@@ -25,6 +24,7 @@ import {
   TextChip,
   CollapsibleView,
   CategoryTitle,
+  Searchbar,
 } from '@components/index';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
@@ -200,10 +200,8 @@ const ArticleAddPageTags: React.FC<Props> = ({
                 account.permissions?.some((p) => p.permission === 'tag.add') ? 'ou créer ' : ''
               }un tag`}
               value={searchText}
-              onChangeText={(props) => {
-                setSearchText(props);
-                searchChange(props);
-              }}
+              onChangeText={setSearchText}
+              onIdle={searchChange}
             />
           </View>
           {((searchText === '' && state.list.error) ||
@@ -212,7 +210,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
               type="axios"
               error={searchText === '' ? state.list.error : state.search?.error}
               retry={fetch}
-           />
+            />
           )}
         </View>
       </View>

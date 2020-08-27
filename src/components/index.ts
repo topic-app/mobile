@@ -17,6 +17,7 @@ export { default as TagList } from './TagList';
 export { default as Illustration } from './Illustration';
 export { default as TabChipList } from './TabChipList';
 export { default as ReportModal } from './ReportModal';
+export { default as Searchbar } from './Searchbar';
 export { default as GroupsBanner } from './GroupsBanner';
 export { default as CustomImage } from './CustomImage';
 
