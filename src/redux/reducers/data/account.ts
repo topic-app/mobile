@@ -16,6 +16,7 @@ if (config.dev.defaultAccount) {
   initialState = {
     ...config.dev.defaultAccount,
     groups: [],
+    waitingGroups: [],
     permissions: [],
     state: {
       login: {
@@ -80,6 +81,11 @@ if (config.dev.defaultAccount) {
         success: null,
         error: null,
       },
+      fetchWaitingGroups: {
+        loading: false,
+        success: null,
+        error: null,
+      },
       fetchAccount: {
         loading: false,
         success: null,
@@ -116,6 +122,11 @@ function accountReducer(state = initialState, action) {
         ...state,
         groups: action.data,
       };
+    case 'UPDATE_ACCOUNT_WAITING_GROUPS':
+      return {
+        ...state,
+        waitingGroups: action.data,
+      };
     case 'UPDATE_ACCOUNT_PERMISSIONS':
       return {
         ...state,
@@ -132,9 +143,20 @@ function accountReducer(state = initialState, action) {
         accountInfo: action.data.accountInfo,
         creationData: {},
         state: state.state,
+        permissions: [],
+        groups: [],
+        waitingGroups: [],
       };
     case 'LOGOUT':
-      return { loggedIn: false, accountInfo: {}, creationData: {}, state: state.state };
+      return {
+        loggedIn: false,
+        accountInfo: {},
+        permissions: [],
+        groups: [],
+        waitingGroups: [],
+        creationData: {},
+        state: state.state,
+      };
     default:
       return state;
   }

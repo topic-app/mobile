@@ -1,19 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
-import {
-  View,
-  Platform,
-  Animated,
-  TextInput,
-  FlatList,
-  ViewStyle,
-  StyleProp,
-} from "react-native";
-import { Text, IconButton, useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import color from "color";
+import React from 'react';
+import { View, Platform, Animated, TextInput, FlatList, ViewStyle, StyleProp } from 'react-native';
+import { Text, IconButton, useTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import color from 'color';
 
-import { PlatformTouchable } from "./PlatformComponents";
+import { PlatformTouchable } from './PlatformComponents';
 
 type ChipBaseProps = {
   children: React.ReactNode;
@@ -53,22 +45,20 @@ const ChipBase: React.FC<ChipBaseProps> = ({
   if (!selected) handlePressOut();
 
   const { colors } = useTheme();
-  const selectedBackground = color(colors.primary)
-    .mix(color(colors.background), 0.85)
-    .string();
+  const selectedBackground = color(colors.primary).mix(color(colors.background), 0.85).string();
 
   return (
     <Animated.View
       style={[
         {
-          elevation: Platform.OS === "android" ? elevation : 0,
+          elevation: Platform.OS === 'android' ? elevation : 0,
           backgroundColor: selected ? selectedBackground : colors.background,
-          overflow: "hidden",
+          overflow: 'hidden',
           height: 40,
           borderRadius: 20,
           borderWidth: 0.5,
           borderColor: selected ? colors.primary : colors.disabled,
-          alignItems: "center",
+          alignItems: 'center',
         },
         containerStyle,
       ]}
@@ -82,15 +72,13 @@ const ChipBase: React.FC<ChipBaseProps> = ({
         <View
           style={{
             flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             paddingLeft: 8,
             paddingRight: rightAction ? 0 : 10,
           }}
         >
-          {!rightAction && icon && (
-            <Icon name={icon} size={20} color={colors.icon} />
-          )}
+          {!rightAction && icon && <Icon name={icon} size={20} color={colors.icon} />}
           {children}
           {rightAction && icon && (
             <IconButton
@@ -133,10 +121,10 @@ const TextInputChip: React.FC<TextInputChipProps> = ({
   ...rest
 }) => {
   const textInputRef = React.useRef<TextInput>(null);
-  const [tagText, setTagText] = React.useState("");
+  const [tagText, setTagText] = React.useState('');
 
   const onFinish = () => {
-    if (tagText === "") {
+    if (tagText === '') {
       endInput();
     } else {
       onSubmit(tagText);
@@ -234,8 +222,8 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
 }) => {
   const sortedData = [
     // Bring selected items to the front
-    ...data.filter((item) => keyList.includes(item.key)),
-    ...data.filter((item) => !keyList.includes(item.key)),
+    ...data.filter((item) => keyList.includes(item?.key)),
+    ...data.filter((item) => !keyList.includes(item?.key)),
   ];
 
   return (
@@ -245,13 +233,13 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
       showsHorizontalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
       data={sortedData}
-      keyExtractor={(item) => item.key}
+      keyExtractor={(item) => item?.key}
       renderItem={({ item, index }) => {
         return (
           <TextChip
             icon={item.icon}
             title={item.title}
-            selected={keyList.includes(item.key)}
+            selected={keyList.includes(item?.key)}
             onPress={() => setList(item)}
             containerStyle={[
               {

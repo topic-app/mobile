@@ -45,6 +45,36 @@ const initialState: GroupsState = {
       error: null,
       loading: false,
     },
+    member_add: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    member_delete: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    member_accept: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    member_reject: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    member_leave: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    modify: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 

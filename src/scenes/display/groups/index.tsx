@@ -14,18 +14,9 @@ function GroupDisplayStackNavigator() {
         name="Display"
         component={GroupDisplay}
         options={({ route }) => ({
-          ...HeaderConfig,
+          headerShown: false,
           title: route.params.title || 'Groupe',
           subtitle: route.params.title && 'Groupe - Aperçu',
-        })}
-      />
-      <Stack.Screen
-        name="Description"
-        component={GroupDescription}
-        options={({ route }) => ({
-          ...HeaderConfig,
-          title: route.params.title || 'Groupe - Description',
-          subtitle: route.params.title && 'Groupe - Description',
         })}
       />
     </Stack.Navigator>

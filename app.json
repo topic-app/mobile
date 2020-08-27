@@ -3,8 +3,15 @@
   "displayName": "Topic",
   "config": {
     "api": {
-      "url": "https://api-dev.topicapp.fr/v1",
+      "url": "https://api.topicapp.fr/v1",
       "retryTime": 10
+    },
+    "links": {
+      "privacy": "https://topicapp.fr/legal/confidentialite",
+      "conditions": "https://topicapp.fr/legal/conditions",
+      "mentions": "https://topicapp.fr/legal/mentions",
+      "share": "https://go.topicapp.fr/",
+      "administrator": "https://topicapp.fr/legal/administrateurs"
     },
     "cdn": {
       "image": {
