@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 
 import { CardBase } from '../Cards';
 import TagList from '../TagList';
+import CustomImage from '../CustomImage';
 
 type Props = {
   article: ArticlePreload;
@@ -71,9 +72,11 @@ const ArticleCard: React.FC<Props> = ({
           )}
         </View>
         <View style={{ flexDirection: 'row', paddingTop: 6 }}>
-          <Image
-            source={{ uri: getImageUrl({ image: article?.image, size: 'small' }) }}
-            style={[styles.thumbnail, { width: imageSize, height: imageSize }]}
+          <CustomImage
+            image={article?.image}
+            imageSize="small"
+            width={imageSize}
+            height={imageSize}
           />
           <View
             style={{

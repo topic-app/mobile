@@ -80,7 +80,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
 
   return (
     <View style={styles.page}>
-      {article.image && (
+      {article.image?.image && (
         <Image
           source={{ uri: getImageUrl({ image: article.image, size: 'large' }) }}
           style={[styles.image, articleStyles.image]}
