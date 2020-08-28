@@ -28,6 +28,12 @@ function MainHistory({ navigation, preferences }: MainHistoryProps) {
           right={() => <List.Icon icon="chevron-right" />}
           title="Articles"
         />
+        <List.Item
+          disabled={!preferences.history}
+          onPress={() => navigation.navigate('Event')}
+          right={() => <List.Icon icon="chevron-right" />}
+          title="Événements"
+        />
         <View style={{ height: 20 }} />
         <List.Subheader>Centres d'interêt</List.Subheader>
         <Divider />

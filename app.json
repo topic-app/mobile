@@ -63,7 +63,23 @@
       ],
       "quicks": [],
       "defaults": {
-        "categories": ["unread", "all"]
+        "categories": ["unread", "all"],
+        "hidden": []
+      }
+    },
+    "events": {
+      "lists": [
+        {
+          "id": "0",
+          "name": "Favoris",
+          "icon": "star-outline",
+          "items": []
+        }
+      ],
+      "quicks": [],
+      "defaults": {
+        "categories": ["unread", "all"],
+        "hidden": []
       }
     },
     "auth": {

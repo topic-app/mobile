@@ -1,20 +1,20 @@
 import {
   EventsDataState,
   EventsActionTypes,
-  // UPDATE_EVENTS_PARAMS,
-  // UPDATE_EVENTS_LISTS,
+  UPDATE_EVENTS_PARAMS,
+  UPDATE_EVENTS_LISTS,
   UPDATE_EVENTS_READ,
-  // UPDATE_EVENTS_PREFS,
-  // UPDATE_EVENTS_QUICKS,
+  UPDATE_EVENTS_PREFS,
+  UPDATE_EVENTS_QUICKS,
   UPDATE_EVENTS_CREATION_DATA,
 } from '@ts/redux';
-// import { config } from '@root/app.json';
+import { config } from '@root/app.json';
 
 const initialState: EventsDataState = {
-  // params: {},
-  // lists: config.events.lists,
-  // prefs: config.events.defaults,
-  // quicks: config.events.quicks,
+  params: {},
+  lists: config.events.lists,
+  prefs: config.events.defaults,
+  quicks: config.events.quicks,
   read: [],
   creationData: {},
 };
@@ -30,31 +30,31 @@ const initialState: EventsDataState = {
  */
 function eventDataReducer(state = initialState, action: EventsActionTypes): EventsDataState {
   switch (action.type) {
-    // case UPDATE_EVENTS_PARAMS:
-    //   return {
-    //     ...state,
-    //     params: action.data,
-    //   };
-    // case UPDATE_EVENTS_LISTS:
-    //   return {
-    //     ...state,
-    //     lists: action.data,
-    //   };
+    case UPDATE_EVENTS_PARAMS:
+      return {
+        ...state,
+        params: action.data,
+      };
+    case UPDATE_EVENTS_LISTS:
+      return {
+        ...state,
+        lists: action.data,
+      };
     case UPDATE_EVENTS_READ:
       return {
         ...state,
         read: action.data,
       };
-    // case UPDATE_EVENTS_QUICKS:
-    //   return {
-    //     ...state,
-    //     quicks: action.data,
-    //   };
-    // case UPDATE_EVENTS_PREFS:
-    //   return {
-    //     ...state,
-    //     prefs: action.data,
-    //   };
+    case UPDATE_EVENTS_QUICKS:
+      return {
+        ...state,
+        quicks: action.data,
+      };
+    case UPDATE_EVENTS_PREFS:
+      return {
+        ...state,
+        prefs: action.data,
+      };
     case UPDATE_EVENTS_CREATION_DATA:
       return {
         ...state,

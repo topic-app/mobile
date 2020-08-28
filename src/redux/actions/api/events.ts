@@ -18,36 +18,48 @@ const dateAscSort = (data: Event[]) =>
  * Récupère les infos basiques events depuis le serveur
  * @param next Si il faut récupérer les events après le dernier
  */
-async function updateEvents(type: 'initial' | 'refresh' | 'next', params = {}) {
+async function updateEvents(
+  type: 'initial' | 'refresh' | 'next',
+  params = {},
+  useDefaultParams = true,
+) {
   await Store.dispatch(
     updateCreator({
       update: UPDATE_EVENTS_DATA,
       stateUpdate: UPDATE_EVENTS_STATE,
-      url: '/events/list',
+      url: 'events/list',
       sort: dateAscSort,
       dataType: 'events',
       type,
-      params,
+      params: useDefaultParams ? { ...Store.getState().eventData.params, ...params } : params,
     }),
   );
 }
 
-async function searchEvents(type: 'initial' | 'refresh' | 'next', terms: string, params = {}) {
+async function searchEvents(
+  type: 'initial' | 'refresh' | 'next',
+  terms: string,
+  params = {},
+  search = true,
+  useDefaultParams = false,
+) {
+  console.log(`Search articles ${JSON.stringify(params)}`);
   await Store.dispatch(
     updateCreator({
       update: UPDATE_EVENTS_SEARCH,
       stateUpdate: UPDATE_EVENTS_STATE,
-      url: '/events/list',
-      dataType: 'events',
+      url: 'events/list',
+      dataType: 'articles',
       type,
-      params: { ...params, search: true, terms },
+      params: useDefaultParams
+        ? { ...Store.getState().eventData.params, ...params, search, terms }
+        : { ...params, search, terms },
       stateName: 'search',
       listName: 'search',
       clear: type !== 'next',
     }),
   );
 }
-
 /**
  * @docs actions
  * Récupère toutes les infos publiques d'un seul event
