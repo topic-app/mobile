@@ -2,14 +2,16 @@ import {
   EventsState,
   EventsActionTypes,
   UPDATE_EVENTS_STATE,
-  UPDATE_EVENTS_DATA,
+  UPDATE_EVENTS_UPCOMING_DATA,
+  UPDATE_EVENTS_PASSED_DATA,
   UPDATE_EVENTS_ITEM,
   UPDATE_EVENTS_SEARCH,
   CLEAR_EVENTS,
 } from '@ts/redux';
 
 const initialState: EventsState = {
-  data: [],
+  dataUpcoming: [],
+  dataPassed: [],
   search: [],
   item: null,
   state: {
@@ -54,10 +56,15 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
         ...state,
         state: { ...state.state, ...action.data },
       };
-    case UPDATE_EVENTS_DATA:
+    case UPDATE_EVENTS_UPCOMING_DATA:
       return {
         ...state,
-        data: action.data,
+        dataUpcoming: action.data,
+      };
+    case UPDATE_EVENTS_PASSED_DATA:
+      return {
+        ...state,
+        dataPassed: action.data,
       };
     case UPDATE_EVENTS_ITEM:
       return {
@@ -71,7 +78,8 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
       };
     case CLEAR_EVENTS:
       return {
-        data: action.data.data ? [] : state.data,
+        dataUpcoming: action.data.data ? [] : state.data,
+        dataPassed: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
         item: null,
         state: state.state,

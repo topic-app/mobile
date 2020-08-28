@@ -283,7 +283,8 @@ export type DepartmentsActionTypes =
 // Types pour les actions
 
 export const UPDATE_EVENTS_STATE = 'UPDATE_EVENTS_STATE';
-export const UPDATE_EVENTS_DATA = 'UPDATE_EVENTS_DATA';
+export const UPDATE_EVENTS_UPCOMING_DATA = 'UPDATE_EVENTS_UPCOMING_DATA';
+export const UPDATE_EVENTS_PASSED_DATA = 'UPDATE_EVENTS_PASSED_DATA';
 export const UPDATE_EVENTS_ITEM = 'UPDATE_EVENTS_ITEM';
 export const UPDATE_EVENTS_VERIFICATION = 'UPDATE_EVENTS_VERIFICATION';
 export const UPDATE_EVENTS_SEARCH = 'UPDATE_EVENTS_SEARCH';
@@ -296,7 +297,8 @@ export const UPDATE_EVENTS_CREATION_DATA = 'UPDATE_EVENTS_CREATION_DATA';
 export const CLEAR_EVENTS = 'CLEAR_EVENTS';
 
 export type EventsState = {
-  data: (Event | EventPreload)[];
+  dataUpcoming: (Event | EventPreload)[];
+  dataPassed: (Event | EventPreload)[];
   item: Event | null;
   search: EventPreload[];
   verification: EventPreload[];
@@ -364,8 +366,13 @@ type UpdateEventsStateAction = {
   data: EventRequestState;
 };
 
-type UpdateEventsDataAction = {
-  type: typeof UPDATE_EVENTS_DATA;
+type UpdateEventsUpcomingDataAction = {
+  type: typeof UPDATE_EVENTS_UPCOMING_DATA;
+  data: (Event | EventPreload)[];
+};
+
+type UpdateEventsPassedDataAction = {
+  type: typeof UPDATE_EVENTS_PASSED_DATA;
   data: (Event | EventPreload)[];
 };
 
@@ -419,9 +426,10 @@ type ClearEventsAction = {
   data: { data?: boolean; search?: boolean; verification?: boolean };
 };
 
-export type EventsActionTypes = 
+export type EventsActionTypes =
   | UpdateEventsStateAction
-  | UpdateEventsDataAction
+  | UpdateEventsUpcomingDataAction
+  | UpdateEventsPassedDataAction
   | UpdateEventsItemAction
   | UpdateEventsSearchAction
   | UpdateEventsVerificationAction

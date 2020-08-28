@@ -36,9 +36,9 @@ import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
 
-import CommentInlineCard from '../components/Comment';
-import AddCommentModal from '../components/AddCommentModal';
-import AddToListModal from '../components/AddToListModal';
+import CommentInlineCard from '../../components/Comment';
+import AddCommentModal from '../../components/AddCommentModal';
+import AddToListModal from '../../components/AddToListModal';
 import getArticleStyles from '../styles/Styles';
 import type { ArticleDisplayStackParams } from '../index';
 
@@ -636,7 +636,12 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         state={reqState.comments.report}
         navigation={navigation}
       />
-      <AddToListModal visible={isListModalVisible} setVisible={setListModalVisible} id={id} />
+      <AddToListModal
+        visible={isListModalVisible}
+        setVisible={setListModalVisible}
+        id={id}
+        type="article"
+      />
     </View>
   );
 };

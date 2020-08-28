@@ -18,7 +18,7 @@ import {
   Account,
 } from '@ts/types';
 import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
-import { updateEvents, searchEvents } from '@redux/actions/api/events';
+import { updateUpcomingEvents, updatePassedEvents, searchEvents } from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
 
 import EventListCard from '../components/Card';
@@ -36,7 +36,8 @@ type Category = {
 };
 
 type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
-  events: (EventPreload | Event)[];
+  upcomingEvents: (EventPreload | Event)[];
+  passedEvents: (EventPreload | Event)[];
   search: EventPreload[];
   lists: EventListItem[];
   read: EventReadItem[];
@@ -50,7 +51,8 @@ type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
 const EventList: React.FC<EventListProps> = ({
   navigation,
   route,
-  events,
+  upcomingEvents,
+  passedEvents,
   search,
   lists,
   read,
@@ -68,18 +70,18 @@ const EventList: React.FC<EventListProps> = ({
 
   const potentialCategories = [
     {
-      key: 'all',
+      key: 'upcoming',
       title: 'Tous',
-      data: events,
-      type: 'category',
+      data: upcomingEvents,
+      type: 'upcomingEvents',
     },
   ];
 
   if (preferences.history) {
     potentialCategories.unshift({
-      key: 'unread',
-      title: 'Non lus',
-      data: events.filter((a) => !read.some((r) => r.id === a._id)),
+      key: 'passed',
+      title: 'Finis',
+      data: passedEvents,
       type: 'category',
     });
   }
@@ -140,7 +142,12 @@ const EventList: React.FC<EventListProps> = ({
     },
   ];
 
-  const [tab, setTab] = React.useState(route.params?.initialList || tabGroups[0].data[0].key);
+  const [tab, setTab] = React.useState(
+    route.params?.initialList ||
+      tabGroups[0].data[0]?.key ||
+      tabGroups[1].data[0]?.key ||
+      tabGroups[2].data[0]?.key,
+  );
   const [chipTab, setChipTab] = React.useState(tab);
 
   const getSection = (tabKey?: string) =>
@@ -153,7 +160,8 @@ const EventList: React.FC<EventListProps> = ({
 
   useFocusEffect(
     React.useCallback(() => {
-      updateEvents('initial');
+      updateUpcomingEvents('initial');
+      updatePassedEvents('initial');
     }, [null]),
   );
 
@@ -274,15 +282,19 @@ const EventList: React.FC<EventListProps> = ({
           (section.key === 'quicks' && state.search?.loading.refresh)
         }
         onRefresh={() => {
-          if (section.key === 'categories') {
-            updateEvents('refresh');
+          if (section.key === 'categories' && category.key === 'upcoming') {
+            updateUpcomingEvents('refresh');
+          } else if (section.key === 'categories' && category.key === 'passed') {
+            updatePassedEvents('refresh');
           } else if (section.key === 'quicks') {
             searchEvents('refresh', '', category.params, false, false);
           }
         }}
         onEndReached={() => {
-          if (section.key === 'categories') {
-            updateEvents('next');
+          if (section.key === 'categories' && category.key === 'upcoming') {
+            updateUpcomingEvents('next');
+          } else if (section.key === 'categories' && category.key === 'passed') {
+            updatePassedEvents('next');
           } else if (section.key === 'quicks') {
             console.log(category.params);
             searchEvents('next', '', category.params, false, false);
@@ -385,7 +397,8 @@ const EventList: React.FC<EventListProps> = ({
 const mapStateToProps = (state: State) => {
   const { events, eventData, preferences, account } = state;
   return {
-    events: events.data,
+    upcomingEvents: events.dataUpcoming,
+    passedEvents: events.dataPassed,
     search: events.search,
     eventPrefs: eventData.prefs,
     lists: eventData.lists,
