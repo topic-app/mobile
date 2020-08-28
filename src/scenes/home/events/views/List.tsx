@@ -1,34 +1,203 @@
 import React from 'react';
-import { View, Animated, ActivityIndicator } from 'react-native';
-import PropTypes from 'prop-types';
+import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
+import { ProgressBar, Banner, Text, Subheading, FAB, useTheme } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import { ProgressBar, FAB, useTheme } from 'react-native-paper';
 
-import AnimatingHeader from '@components/AnimatingHeader';
-import { updateEvents } from '@redux/actions/api/events';
-import ErrorMessage from '@components/ErrorMessage';
+import {
+  State,
+  EventListItem,
+  EventReadItem,
+  EventPreload,
+  Event,
+  EventPrefs,
+  Preferences,
+  EventQuickItem,
+  EventRequestState,
+  Account,
+} from '@ts/types';
+import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
+import { updateEvents, searchEvents } from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
 
-import { EventCard } from '@components/index';
+import EventListCard from '../components/Card';
+import EventEmptyList from '../components/EmptyList';
+import { HomeTwoNavParams } from '../../HomeTwo.ios';
 
-function EventList({ navigation, events, state, account }) {
-  React.useEffect(() => {
-    updateEvents('initial');
-  }, []);
+type Category = {
+  key: string;
+  title: string;
+  description?: string;
+  data: any[];
+  type: string;
+  list?: boolean;
+  params?: object;
+};
 
+type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
+  events: (EventPreload | Event)[];
+  search: EventPreload[];
+  lists: EventListItem[];
+  read: EventReadItem[];
+  quicks: EventQuickItem[];
+  eventPrefs: EventPrefs;
+  preferences: Preferences;
+  state: EventRequestState;
+  account: Account;
+};
+
+const EventList: React.FC<EventListProps> = ({
+  navigation,
+  route,
+  events,
+  search,
+  lists,
+  read,
+  quicks,
+  state,
+  eventPrefs,
+  preferences,
+  account,
+}) => {
   const theme = useTheme();
   const { colors } = theme;
+  const styles = getStyles(theme);
 
   const scrollY = new Animated.Value(0);
 
-  const styles = getStyles(theme);
+  const potentialCategories = [
+    {
+      key: 'all',
+      title: 'Tous',
+      data: events,
+      type: 'category',
+    },
+  ];
+
+  if (preferences.history) {
+    potentialCategories.unshift({
+      key: 'unread',
+      title: 'Non lus',
+      data: events.filter((a) => !read.some((r) => r.id === a._id)),
+      type: 'category',
+    });
+  }
+
+  const categories: Category[] = [];
+
+  eventPrefs.categories?.forEach((c) => {
+    const currentCategory = potentialCategories.find((d) => d.key === c);
+    if (currentCategory) categories.push(currentCategory);
+  });
+
+  const tabGroups: { key: string; data: Category[] }[] = [
+    {
+      key: 'categories',
+      data: categories,
+    },
+    {
+      key: 'lists',
+      data: lists.map((l) => ({
+        key: l.id,
+        title: l.name,
+        description: l.description,
+        icon: l.icon,
+        data: l.items,
+        list: true,
+        type: 'list',
+      })),
+    },
+    {
+      key: 'quicks',
+      data: quicks.map((q) => {
+        let params = {};
+        let icon = 'alert-decagram';
+        switch (q.type) {
+          case 'tag':
+            params = { tags: [q.id] };
+            icon = 'pound';
+            break;
+          case 'user':
+            params = { users: [q.id] };
+            icon = 'account';
+            break;
+          case 'group':
+            params = { groups: [q.id] };
+            icon = 'account-multiple';
+            break;
+        }
+        return {
+          key: q.id,
+          title: q.title,
+          icon,
+          data: search,
+          params,
+          quickType: q.type,
+          type: 'quick',
+        };
+      }),
+    },
+  ];
+
+  const [tab, setTab] = React.useState(route.params?.initialList || tabGroups[0].data[0].key);
+  const [chipTab, setChipTab] = React.useState(tab);
+
+  const getSection = (tabKey?: string) =>
+    tabGroups.find((t) => t.data.some((d) => d.key === (tabKey ?? tab)))!;
+  const getCategory = (tabKey?: string) =>
+    getSection(tabKey).data.find((d) => d.key === (tabKey ?? tab))!;
+
+  const section = getSection();
+  const category = getCategory();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      updateEvents('initial');
+    }, [null]),
+  );
+
+  const fadeAnim = React.useRef(new Animated.Value(1)).current;
+
+  const changeList = async (tabKey: string) => {
+    const noAnimation = await AccessibilityInfo.isReduceMotionEnabled();
+    const newSection = getSection(tabKey);
+    const newCategory = getCategory(tabKey);
+
+    if (noAnimation) {
+      setChipTab(tabKey);
+      if (newSection.key === 'quicks') {
+        searchEvents('initial', '', newCategory.params, false, false);
+      }
+      setTab(tabKey);
+    } else {
+      setChipTab(tabKey);
+      Animated.timing(fadeAnim, {
+        useNativeDriver: true,
+        toValue: 0,
+        duration: 100,
+      }).start(async () => {
+        if (newSection.key === 'quicks') {
+          await searchEvents('initial', '', newCategory.params, false, false);
+        }
+        setTab(tabKey);
+        Animated.timing(fadeAnim, {
+          useNativeDriver: true,
+          toValue: 1,
+          duration: 100,
+        }).start();
+      });
+    }
+  };
+
+  const listData = category.data;
 
   return (
     <View style={styles.page}>
       <AnimatingHeader
         home
         value={scrollY}
-        title="Évènements"
+        title="Événements"
         actions={[
           {
             icon: 'magnify',
@@ -37,15 +206,52 @@ function EventList({ navigation, events, state, account }) {
                 screen: 'Search',
                 params: {
                   screen: 'Search',
-                  params: { initialCategory: 'events', previous: 'Évènements' },
+                  params: { initialCategory: 'events', previous: 'Evènements' },
                 },
               }),
           },
         ]}
-        overflow={[{ title: 'Hello', onPress: () => console.log('Hello') }]}
+        overflow={[
+          {
+            title: 'Catégories',
+            onPress: () =>
+              navigation.navigate('Main', {
+                screen: 'Configure',
+                params: {
+                  screen: 'Event',
+                },
+              }),
+          },
+          {
+            title: 'Localisation',
+            onPress: () =>
+              navigation.navigate('Main', {
+                screen: 'Params',
+                params: {
+                  screen: 'Event',
+                },
+              }),
+          },
+          ...(preferences.history
+            ? [
+                {
+                  title: 'Historique',
+                  onPress: () =>
+                    navigation.navigate('Main', {
+                      screen: 'History',
+                      params: {
+                        screen: 'Event',
+                      },
+                    }),
+                },
+              ]
+            : []),
+        ]}
       >
-        {state.list.loading.initial && <ProgressBar indeterminate />}
-        {state.list.error ? (
+        {(state.list.loading.initial || state.search?.loading.initial) && (
+          <ProgressBar indeterminate style={{ marginTop: -4 }} />
+        )}
+        {state.list.error || state.search?.error ? (
           <ErrorMessage
             type="axios"
             strings={{
@@ -53,7 +259,7 @@ function EventList({ navigation, events, state, account }) {
               contentPlural: 'des évènements',
               contentSingular: "La liste d'évènements",
             }}
-            error={state.list.error}
+            error={[state.list.error, state.search?.error]}
             retry={() => updateEvents('initial')}
           />
         ) : null}
@@ -62,38 +268,97 @@ function EventList({ navigation, events, state, account }) {
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
-        data={events}
-        refreshing={state.list.loading.refresh}
-        onRefresh={() => updateEvents('refresh')}
-        onEndReached={() => updateEvents('next')}
+        data={listData || []}
+        refreshing={
+          (section.key === 'categories' && state.list.loading.refresh) ||
+          (section.key === 'quicks' && state.search?.loading.refresh)
+        }
+        onRefresh={() => {
+          if (section.key === 'categories') {
+            updateEvents('refresh');
+          } else if (section.key === 'quicks') {
+            searchEvents('refresh', '', category.params, false, false);
+          }
+        }}
+        onEndReached={() => {
+          if (section.key === 'categories') {
+            updateEvents('next');
+          } else if (section.key === 'quicks') {
+            console.log(category.params);
+            searchEvents('next', '', category.params, false, false);
+          }
+        }}
+        ListHeaderComponent={() => (
+          <View>
+            <TabChipList
+              sections={tabGroups}
+              selected={chipTab}
+              setSelected={changeList}
+              configure={() =>
+                navigation.navigate('Main', {
+                  screen: 'Configure',
+                  params: {
+                    screen: 'Event',
+                  },
+                })
+              }
+            />
+            {category.description ? (
+              <Banner actions={[]} visible>
+                <Subheading>Description</Subheading>
+                <Text>{category.description}</Text>
+              </Banner>
+            ) : null}
+          </View>
+        )}
+        ListEmptyComponent={() => (
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <EventEmptyList
+              tab={tab}
+              sectionKey={section.key}
+              reqState={state}
+              navigation={navigation}
+              changeTab={changeList}
+            />
+          </Animated.View>
+        )}
         onEndReachedThreshold={0.5}
-        keyExtractor={(event) => event._id}
-        ListHeaderComponent={<View style={{ padding: 5 }} />}
+        keyExtractor={(event: Event) => event._id}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
+            {((section.key === 'categories' && state.list.loading.next) ||
+              (section.key === 'quicks' && state.search.loading.next)) && (
+              <ActivityIndicator size="large" color={colors.primary} />
+            )}
           </View>
         }
-        renderItem={(event) => (
-          <EventCard
-            event={event.item}
-            navigate={() =>
-              navigation.navigate('Main', {
-                screen: 'Display',
-                params: {
-                  screen: 'Event',
+        renderItem={({ item: event }: { item: Event }) => (
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <EventListCard
+              event={event}
+              sectionKey={section.key}
+              itemKey={category.key}
+              isRead={read.some((r) => r.id === event._id)}
+              historyActive={preferences.history}
+              lists={lists}
+              navigate={() =>
+                navigation.navigate('Main', {
+                  screen: 'Display',
                   params: {
-                    screen: 'Display',
+                    screen: 'Event',
                     params: {
-                      id: event.item._id,
-                      title: event.item.title,
-                      previous: 'Évènements',
+                      screen: 'Display',
+                      params: {
+                        id: event._id,
+                        title: event.title,
+                        useLists: section.key === 'lists',
+                      },
                     },
                   },
-                },
-              })
-            }
-          />
+                })
+              }
+            />
+          </Animated.View>
         )}
       />
       {account.loggedIn && account.permissions?.some((p) => p.permission === 'event.add') && (
@@ -115,45 +380,21 @@ function EventList({ navigation, events, state, account }) {
       )}
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
-  const { events, account } = state;
-  return { events: events.data, state: events.state, account };
+const mapStateToProps = (state: State) => {
+  const { events, eventData, preferences, account } = state;
+  return {
+    events: events.data,
+    search: events.search,
+    eventPrefs: eventData.prefs,
+    lists: eventData.lists,
+    quicks: eventData.quicks,
+    read: eventData.read,
+    state: events.state,
+    account,
+    preferences,
+  };
 };
 
 export default connect(mapStateToProps)(EventList);
-
-EventList.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  events: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      duration: PropTypes.shape({
-        // start: PropTypes.instanceOf(Date).isRequired,
-        // end: PropTypes.instanceOf(Date).isRequired,
-        start: PropTypes.string,
-        end: PropTypes.string,
-      }).isRequired,
-      description: PropTypes.shape({
-        parser: PropTypes.oneOf(['markdown', 'plaintext']).isRequired,
-        data: PropTypes.string.isRequired,
-      }).isRequired,
-      thumbnailUrl: PropTypes.string,
-    }).isRequired,
-  ).isRequired,
-  state: PropTypes.shape({
-    list: PropTypes.shape({
-      success: PropTypes.bool,
-      loading: PropTypes.shape({
-        next: PropTypes.bool,
-        initial: PropTypes.bool,
-        refresh: PropTypes.bool,
-      }),
-      error: PropTypes.shape(),
-    }).isRequired,
-  }).isRequired,
-};
