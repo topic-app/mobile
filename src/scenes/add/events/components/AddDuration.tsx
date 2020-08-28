@@ -9,7 +9,7 @@ import { Account, State } from '@ts/types';
 import getStyles from '@styles/Styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CustomTabView } from '@components/index';
-
+import moment from 'moment';
 import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';
 import { ListHeading } from '@root/src/scenes/auth/components/ListComponents';
@@ -18,9 +18,10 @@ import { ListItem } from '@root/src/scenes/more/list/components/ListComponents';
 type Props = StepperViewPageProps & { account: Account };
 
 const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
+  const [errorVisible, setErrorVisible] = React.useState(false);
   const [showError, setError] = React.useState(false);
-  const [startDate, setStartDate] = React.useState(new Date());
-  const [endDate, setEndDate] = React.useState(new Date());
+  const [startDate, setStartDate] = React.useState(null);
+  const [endDate, setEndDate] = React.useState(null);
   const [startMode, setStartMode] = React.useState('time');
   const [endMode, setEndMode] = React.useState('time');
   const [startShow, setStartShow] = React.useState(false);
@@ -35,10 +36,13 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
     const currentDate = selectedDate || startDate;
     setStartShow(false);
     setStartDate(currentDate);
-    startMode === 'date' ? showStartMode() : currentDate > endDate && setEndDate(currentDate);
+    startMode === 'date'
+      ? showStartMode()
+      : checkErrors() && endDate != null && currentDate >= endDate && setEndDate(currentDate);
   };
 
   const showStartMode = () => {
+    startDate === null && setStartDate(new Date());
     startMode === 'time' ? setStartMode('date') : setStartMode('time');
     setStartShow(true);
   };
@@ -47,33 +51,32 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
     const currentDate = selectedDate || endDate;
     setEndShow(false);
     setEndDate(currentDate);
-    endMode === 'date' && showEndMode();
+    endMode === 'date' ? showEndMode() : checkErrors();
   };
 
   const showEndMode = () => {
+    endDate === null && setEndDate(new Date());
     endMode === 'time' ? setEndMode('date') : setEndMode('time');
     setEndShow(true);
   };
 
-  const submit = () => {
-    updateEventCreationData({ start: startDate, end: endDate });
-    next();
+  const checkErrors = () => {
+    startDate != null && endDate != null && setErrorVisible(false);
+    +(endDate - startDate).toFixed(2) >= 3.6 && setError(false);
   };
 
-  const months = [
-    'janvier',
-    'février',
-    'mars',
-    'avril',
-    'mai',
-    'juin',
-    'juillet',
-    'août',
-    'septembre',
-    'octobre',
-    'novembre',
-    'décembre',
-  ];
+  const submit = () => {
+    if (startDate != null && endDate != null && +((endDate - startDate) / 10e5).toFixed(2) >= 3.6) {
+      updateEventCreationData({ start: startDate, end: endDate });
+      next();
+    } else {
+      if (startDate === null || endDate === null) {
+        setErrorVisible(true);
+      } else {
+        setError(true);
+      }
+    }
+  };
 
   if (!account.loggedIn) {
     return (
@@ -95,9 +98,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
             style={{ marginHorizontal: 5 }}
             uppercase={false}
           >
-            {startDate.getDate()} {months[startDate.getMonth()]} {startDate.getFullYear()} à{' '}
-            {startDate.getHours() < 10 ? `0${startDate.getHours()}` : startDate.getHours()}h
-            {startDate.getMinutes() < 10 ? `0${startDate.getMinutes()}` : startDate.getMinutes()}
+            {startDate === null ? 'Appuyez pour sélectionner' : moment(startDate).format('LLL')}
           </Button>
           {startShow && (
             <DateTimePicker
@@ -112,16 +113,17 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
           )}
         </View>
         <List.Subheader> Fin de l'évènement </List.Subheader>
+        <HelperText type="error" visible={showError} style={{ marginVertical: -10 }}>
+          Votre évènement doit durer un heure au minimum.
+        </HelperText>
         <View style={styles.container}>
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={false}
             onPress={showEndMode}
-            style={{ marginHorizontal: 5 }}
+            style={{ marginHorizontalbo: 5 }}
           >
-            {endDate.getDate()} {months[endDate.getMonth()]} {endDate.getFullYear()} à{' '}
-            {endDate.getHours() < 10 ? `0${endDate.getHours()}` : endDate.getHours()}h
-            {endDate.getMinutes() < 10 ? `0${endDate.getMinutes()}` : endDate.getMinutes()}
+            {endDate === null ? 'Appuyez pour sélectionner' : moment(endDate).format('LLL')}
           </Button>
           {endShow && (
             <DateTimePicker
@@ -136,13 +138,17 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
           )}
         </View>
       </View>
-      <View style={{ height: 50 }} />
+      <View style={{ marginVertical: 5 }}>
+        <HelperText type="error" visible={errorVisible}>
+          Vous devez sélectionner une date de début et de fin.
+        </HelperText>
+      </View>
       <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
           onPress={() => prev()}
-          style={{ flex: 1, margin: 5 }}
+          style={{ flex: 1, marginHorizontal: 5 }}
         >
           Retour
         </Button>
@@ -150,7 +156,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
           onPress={submit}
-          style={{ flex: 1, margin: 5 }}
+          style={{ flex: 1, marginHorizontal: 5 }}
         >
           Suivant
         </Button>
