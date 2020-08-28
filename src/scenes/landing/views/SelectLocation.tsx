@@ -25,6 +25,7 @@ import {
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
+import { updateEventParams } from '@redux/actions/contentData/events';
 import { updateSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
@@ -68,15 +69,20 @@ function done(
   persistentData: PersistantData[],
   goBack: boolean,
 ) {
-  console.log(persistentData);
-  console.log(
-    selectedSchools
-      .map((s) => persistentData.find((p) => p.key === s)?.departments)
-      .flat()
-      .map((d: Department) => d?._id),
-  );
   selectedSchools = selectedSchools.filter((s) => !!s);
   selectedDepartments = selectedDepartments.filter((s) => !!s);
+  const params = {
+    schools: selectedSchools,
+    departments: [
+      ...selectedDepartments,
+      // Todo: logic to select extra departments
+      ...selectedSchools
+        .map((s) => persistentData.find((p) => p.key === s)?.departments)
+        .flat()
+        .map((d: Department) => d?._id),
+    ],
+    global: true,
+  };
   Promise.all([
     updateLocation({
       selected: true,
@@ -84,24 +90,8 @@ function done(
       departments: selectedDepartments,
       global: selectedOthers.includes('global'),
     }),
-    updateArticleParams({
-      schools: selectedSchools,
-      departments: [
-        ...selectedDepartments,
-        // Todo: logic to select extra departments
-        ...selectedSchools
-          .map((s) => persistentData.find((p) => p.key === s)?.departments)
-          .flat()
-          .map((d: Department) => d?._id),
-      ],
-      global: true,
-    }),
-    ...selectedSchools.map((s) =>
-      addArticleQuick('school', s, persistentData.find((p) => p.key === s)?.title),
-    ),
-    ...selectedDepartments.map((d) =>
-      addArticleQuick('departement', d, persistentData.find((p) => p.key === d)?.title),
-    ),
+    updateArticleParams(params),
+    updateEventParams(params),
   ]).then(() => {
     if (goBack) {
       navigation.goBack();
