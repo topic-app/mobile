@@ -280,8 +280,7 @@ function ArticleLists({
                             <View onStartShouldSetResponder={() => true}>
                               <PlatformTouchable
                                 disabled={
-                                  lists.length === 1 &&
-                                  articlePrefs.hidden.length > categories.length - 1
+                                  lists.length === 1 && articlePrefs.categories?.length === 0
                                 }
                                 onPress={() => {
                                   Alert.alert(
@@ -306,8 +305,7 @@ function ArticleLists({
                                 <List.Icon
                                   icon="delete"
                                   color={
-                                    lists.length === 1 &&
-                                    articlePrefs.hidden.length > categories.length - 1
+                                    lists.length === 1 && articlePrefs.categories?.length === 0
                                       ? colors.disabled
                                       : colors.text
                                   }

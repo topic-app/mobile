@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem, Account } from '@ts/types';
+import { ModalProps, State, ArticleListItem, Account, EventListItem } from '@ts/types';
 import {
   Divider,
   Button,
@@ -24,10 +24,11 @@ import {
   Illustration,
 } from '@components/index';
 import getStyles from '@styles/Styles';
-import getArticleStyles from '../styles/Styles';
+import getArticleStyles from './styles/Styles';
 import { logger } from '@root/src/utils';
 
 import { addArticleToList, addArticleList } from '@redux/actions/contentData/articles';
+import { addEventToList, addEventList } from '@redux/actions/contentData/events';
 
 type CommentPublisher = {
   key: string;
@@ -42,14 +43,25 @@ type CommentPublisher = {
 
 type AddToListModalProps = ModalProps & {
   id: string;
-  lists: ArticleListItem[];
+  articleLists: ArticleListItem[];
+  eventLists: EventListItem[];
+  type: 'article' | 'event';
 };
 
-function AddToListModal({ visible, setVisible, lists, id }: AddToListModalProps) {
+function AddToListModal({
+  visible,
+  setVisible,
+  articleLists,
+  eventLists,
+  id,
+  type,
+}: AddToListModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
+
+  const lists = type === 'article' ? articleLists : eventLists;
 
   const [list, setList] = React.useState(lists[0]?.id);
   const [createList, setCreateList] = React.useState(false);
@@ -200,12 +212,20 @@ function AddToListModal({ visible, setVisible, lists, id }: AddToListModalProps)
                       onPress={() => {
                         if (!createList) {
                           setVisible(false);
-                          addArticleToList(id, list);
+                          if (type === 'article') {
+                            addArticleToList(id, list);
+                          } else {
+                            addEventToList(id, list);
+                          }
                         } else if (createListText === '') {
                           setErrorVisible(true);
                         } else if (!lists.some((l) => l.name === createListText)) {
                           // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
-                          addArticleList(createListText);
+                          if (type === 'article') {
+                            addArticleList(createListText);
+                          } else {
+                            addEventList(createListText);
+                          }
                           setCreateList(false);
                           setCreateListText('');
                         }
@@ -227,9 +247,10 @@ function AddToListModal({ visible, setVisible, lists, id }: AddToListModalProps)
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData } = state;
+  const { articleData, eventData } = state;
   return {
-    lists: articleData.lists,
+    articleLists: articleData.lists,
+    eventLists: eventData.lists,
   };
 };
 

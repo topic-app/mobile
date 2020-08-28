@@ -78,7 +78,7 @@
       ],
       "quicks": [],
       "defaults": {
-        "categories": ["unread", "all"],
+        "categories": ["upcoming", "passed"],
         "hidden": []
       }
     },

@@ -36,28 +36,12 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
     (sectionKey === 'quicks' && reqState.search.success) ||
     sectionKey === 'lists'
   ) {
-    if (tab === 'unread') {
-      return (
-        <View style={styles.centerIllustrationContainer}>
-          <Illustration name="article-completed" height={400} width={400} />
-          <Text>Vous avez lu tous les articles !</Text>
-          <View style={{ marginTop: 30 }}>
-            <Button
-              uppercase={Platform.OS !== 'ios'}
-              mode="outlined"
-              onPress={() => changeTab('all')}
-            >
-              Voir les articles lus
-            </Button>
-          </View>
-        </View>
-      );
-    } else if (tab === 'all') {
+    if (tab === 'upcoming' || tab === 'passed') {
       return (
         <View>
           <View style={styles.centerIllustrationContainer}>
-            <Illustration name="article" height={400} width={400} />
-            <Text>Aucun article pour cette localisation</Text>
+            <Illustration name="event" height={400} width={400} />
+            <Text>Aucun événement {tab === 'upcoming' && 'prévu '}pour cette localisation</Text>
           </View>
           <View style={styles.container}>
             <Button
@@ -81,7 +65,7 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
       return (
         <View style={styles.centerIllustrationContainer}>
           <Illustration name="article-lists" height={400} width={400} />
-          <Text>Aucun article dans cette liste</Text>
+          <Text>Aucun événement dans cette liste</Text>
           <View style={styles.contentContainer}>
             <Text style={articleStyles.captionText}>
               Ajoutez les grâce à l&apos;icone <Icon name="playlist-plus" size={20} />
@@ -92,15 +76,15 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
     } else {
       return (
         <View style={styles.centerIllustrationContainer}>
-          <Illustration name="article" height={400} width={400} />
-          <Text>Aucun article dans cette catégorie</Text>
+          <Illustration name="event" height={400} width={400} />
+          <Text>Aucun événement dans cette catégorie</Text>
         </View>
       );
     }
   } else {
     return (
       <View style={styles.centerIllustrationContainer}>
-        <Illustration name="article-greyed" height={400} width={400} />
+        <Illustration name="event-greyed" height={400} width={400} />
       </View>
     );
   }

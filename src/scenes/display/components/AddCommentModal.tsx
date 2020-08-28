@@ -8,8 +8,7 @@ import { config } from '@root/app.json';
 
 import { CollapsibleView, CategoriesList, PlatformIconButton } from '@components/index';
 import getStyles from '@styles/Styles';
-import { addArticleList } from '@redux/actions/contentData/articles';
-import getArticleStyles from '../styles/Styles';
+import getArticleStyles from './styles/Styles';
 import { logger } from '@root/src/utils';
 
 type CommentPublisher = {

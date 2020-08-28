@@ -17,10 +17,7 @@ function EventDisplayStackNavigator() {
         name="Display"
         component={EventDisplay}
         options={({ route }) => ({
-          ...HeaderConfig,
-          title: route.params.title || 'Évènements - Aperçu',
-          subtitle: route.params.title && 'Évènements - Aperçu',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+          headerShown: false,
         })}
       />
       {/*

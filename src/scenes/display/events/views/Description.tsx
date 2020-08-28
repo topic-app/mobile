@@ -8,6 +8,9 @@ import moment from 'moment';
 import shortid from 'shortid';
 import { InlineCard } from '@components/Cards';
 import getEventStyles from '../styles/Styles';
+import { connect } from 'react-redux';
+import { State, Account } from '@ts/types';
+import { CategoryTitle } from '@components/index';
 
 function getPlaceLabels(place) {
   console.log('>>> Place', JSON.stringify(place, null, 2));
@@ -75,7 +78,13 @@ function getTimeLabels(timeData, startTime, endTime) {
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-function EventDisplayDescription({ event }) {
+type EventDisplayProps = {
+  event: Event;
+  navigation: any;
+  account: Account;
+};
+
+function EventDisplayDescription({ event, navigation, account }: EventDisplayProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
@@ -128,12 +137,6 @@ function EventDisplayDescription({ event }) {
         subtitle={timeString}
         onPress={() => console.log('time pressed, switch to program')}
       />
-      <InlineCard
-        icon="school"
-        title={event.group.displayName}
-        subtitle={event.group.type && `Groupe ${capitalize(event.group.type)}`}
-        onPress={() => console.log('go to group', event.group._id)}
-      />
       <Divider />
       <View style={eventStyles.description}>
         <Content
@@ -141,43 +144,72 @@ function EventDisplayDescription({ event }) {
           data={event?.description?.data}
         />
       </View>
+      <Divider />
+      <View style={styles.container}>
+        <CategoryTitle>Auteur{event.authors?.length > 1 ? 's' : ''}</CategoryTitle>
+      </View>
+      {event.authors?.map((author) => (
+        <InlineCard
+          avatar={author.info?.avatar}
+          title={author?.displayName}
+          onPress={() =>
+            navigation.push('Main', {
+              screen: 'Display',
+              params: {
+                screen: 'User',
+                params: {
+                  screen: 'Display',
+                  params: { id: author?._id, title: author?.displayName },
+                },
+              },
+            })
+          }
+          badge={
+            account.loggedIn &&
+            account.accountInfo?.user?.data?.following?.users.includes(author._id)
+              ? 'account-heart'
+              : undefined
+          }
+          badgeColor={colors.valid}
+          // TODO: Add imageUrl: imageUrl={article.author.imageUrl}
+          // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
+        />
+      ))}
+
+      <View style={styles.container}>
+        <CategoryTitle>Groupe</CategoryTitle>
+      </View>
+      <InlineCard
+        avatar={event.group?.avatar}
+        title={event.group?.displayName}
+        subtitle={`Groupe ${event.group?.type}`}
+        onPress={() =>
+          navigation.push('Main', {
+            screen: 'Display',
+            params: {
+              screen: 'Group',
+              params: {
+                screen: 'Display',
+                params: { id: event.group?._id, title: event.group?.displayName },
+              },
+            },
+          })
+        }
+        badge={
+          account.loggedIn &&
+          account.accountInfo?.user?.data?.following?.groups?.includes(event.group?._id)
+            ? 'account-heart'
+            : null
+        }
+        badgeColor={colors.valid}
+      />
     </View>
   );
 }
 
-export default EventDisplayDescription;
-
-EventDisplayDescription.propTypes = {
-  event: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    thumbnailUrl: PropTypes.string.isRequired,
-    description: PropTypes.shape({
-      parser: PropTypes.oneOf(['plaintext', 'markdown']).isRequired,
-      data: PropTypes.string.isRequired,
-    }).isRequired,
-    group: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      displayName: PropTypes.string.isRequired,
-    }).isRequired,
-    duration: PropTypes.shape({
-      start: PropTypes.string.isRequired,
-      end: PropTypes.string.isRequired,
-    }).isRequired,
-    places: PropTypes.arrayOf(
-      PropTypes.shape({
-        type: PropTypes.string,
-        address: PropTypes.shape({
-          shortName: PropTypes.string,
-          address: PropTypes.string,
-          city: PropTypes.string,
-        }),
-        associatedSchool: PropTypes.shape({
-          displayName: PropTypes.string,
-        }),
-        associatedPlace: PropTypes.shape({
-          displayName: PropTypes.string,
-        }),
-      }),
-    ),
-  }).isRequired,
+const mapStateToProps = (state: State) => {
+  const { account } = state;
+  return { account };
 };
+
+export default connect(mapStateToProps)(EventDisplayDescription);

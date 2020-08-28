@@ -65,27 +65,27 @@ function EventLists({
 
   const categoryTypes: Category[] = [
     {
-      id: 'unread',
-      name: 'Non lus',
+      id: 'upcoming',
+      name: 'Tous (dans le futur)',
       navigate: () =>
         navigation.push('Main', {
           screen: 'Home1',
           params: {
             screen: 'Home2',
-            params: { screen: 'Event', params: { initialList: 'unread' } },
+            params: { screen: 'Event', params: { initialList: 'upcoming' } },
           },
         }),
-      historyDisable: true,
+      historyDisable: false,
     },
     {
-      id: 'all',
-      name: 'Tous',
+      id: 'passed',
+      name: 'Finis (dans le passé)',
       navigate: () =>
         navigation.push('Main', {
           screen: 'Home1',
           params: {
             screen: 'Home2',
-            params: { screen: 'Event', params: { initialList: 'all' } },
+            params: { screen: 'Event', params: { initialList: 'passed' } },
           },
         }),
       historyDisable: false,
@@ -95,14 +95,14 @@ function EventLists({
   let categories: Category[] = [];
 
   categoryTypes.forEach((c, i) => {
-    if (eventPrefs.categories.includes(c.id)) {
-      categories[eventPrefs.categories.indexOf(c.id)] = c;
+    if (eventPrefs.categories?.includes(c.id)) {
+      categories[eventPrefs.categories?.indexOf(c.id)] = c;
     }
   });
 
   categories = [
     ...categories,
-    ...categoryTypes.filter((c) => !eventPrefs.categories.includes(c.id)),
+    ...categoryTypes.filter((c) => !eventPrefs.categories?.includes(c.id)),
   ];
 
   console.log(`Categories ${JSON.stringify(categories)}`);
@@ -170,13 +170,13 @@ function EventLists({
                                   enabled
                                     ? () =>
                                         updateEventPrefs({
-                                          categories: eventPrefs.categories.filter(
+                                          categories: eventPrefs.categories?.filter(
                                             (d) => d !== item.id,
                                           ),
                                         })
                                     : () =>
                                         updateEventPrefs({
-                                          categories: [...eventPrefs.categories, item.id],
+                                          categories: [...(eventPrefs.categories || []), item.id],
                                         })
                                 }
                               />
@@ -260,10 +260,7 @@ function EventLists({
                             </View>
                             <View onStartShouldSetResponder={() => true}>
                               <PlatformTouchable
-                                disabled={
-                                  lists.length === 1 &&
-                                  eventPrefs.hidden.length > categories.length - 1
-                                }
+                                disabled={lists.length === 1 && eventPrefs.categories?.length === 0}
                                 onPress={() => {
                                   Alert.alert(
                                     `Voulez vous vraiment supprimer la liste ${item.name}?`,
@@ -287,8 +284,7 @@ function EventLists({
                                 <List.Icon
                                   icon="delete"
                                   color={
-                                    lists.length === 1 &&
-                                    eventPrefs.hidden.length > categories.length - 1
+                                    lists.length === 1 && eventPrefs.categories?.length === 0
                                       ? colors.disabled
                                       : colors.text
                                   }
@@ -304,14 +300,14 @@ function EventLists({
                     const fromList = lists[from];
                     const toList = lists[to];
 
-                    modifyArticleList(
+                    modifyEventList(
                       fromList.id,
                       toList.name,
                       toList.icon,
                       toList.description,
                       toList.items,
                     );
-                    modifyArticleList(
+                    modifyEventList(
                       toList.id,
                       fromList.name,
                       fromList.icon,
