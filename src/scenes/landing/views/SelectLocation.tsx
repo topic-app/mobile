@@ -7,7 +7,16 @@ import {
   TextInput as RNTextInput,
   ActivityIndicator,
 } from 'react-native';
-import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
+import {
+  Text,
+  useTheme,
+  Button,
+  Divider,
+  Searchbar,
+  List,
+  Checkbox,
+  ProgressBar,
+} from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
@@ -25,6 +34,7 @@ import {
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
+import { updateEventParams } from '@redux/actions/contentData/events';
 import { updateSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
@@ -75,6 +85,18 @@ function done(
       .flat()
       .map((d: Department) => d?._id),
   );
+  const params = {
+    schools: selectedSchools,
+    departments: [
+      ...selectedDepartments,
+      // Todo: logic to select extra departments
+      ...selectedSchools
+        .map((s) => persistentData.find((p) => p.key === s)?.departments)
+        .flat()
+        .map((d: Department) => d?._id),
+    ],
+    global: true,
+  };
   Promise.all([
     updateLocation({
       selected: true,
@@ -82,18 +104,8 @@ function done(
       departments: selectedDepartments,
       global: selectedOthers.includes('global'),
     }),
-    updateArticleParams({
-      schools: selectedSchools,
-      departments: [
-        ...selectedDepartments,
-        // Todo: logic to select extra departments
-        ...selectedSchools
-          .map((s) => persistentData.find((p) => p.key === s)?.departments)
-          .flat()
-          .map((d: Department) => d?._id),
-      ],
-      global: true,
-    }),
+    updateArticleParams(params),
+    updateEventParams(params),
   ]).then(() => {
     if (goBack) {
       navigation.goBack();
