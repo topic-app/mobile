@@ -1,9 +1,9 @@
 import React from 'react';
 import { Text, Platform } from 'react-native';
 
-const BottomModal = () => undefined;
-const SlideAnimation = () => undefined;
-const Modal = () => undefined;
+const BottomModal = () => null;
+const SlideAnimation = () => null;
+const Modal = () => null;
 
 export { BottomModal, SlideAnimation };
 export default Modal;
