@@ -7,16 +7,7 @@ import {
   TextInput as RNTextInput,
   ActivityIndicator,
 } from 'react-native';
-import {
-  Text,
-  useTheme,
-  Button,
-  Divider,
-  Searchbar,
-  List,
-  Checkbox,
-  ProgressBar,
-} from 'react-native-paper';
+import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
