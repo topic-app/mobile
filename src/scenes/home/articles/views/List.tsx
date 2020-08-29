@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
+import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from 'react-native';
 import { ProgressBar, Banner, Text, Subheading, FAB, useTheme } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -160,7 +160,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
   const changeList = async (tabKey: string) => {
-    const noAnimation = await AccessibilityInfo.isReduceMotionEnabled();
+    const noAnimation =
+      Platform.OS !== 'web' ? await AccessibilityInfo.isReduceMotionEnabled() : false;
     const newSection = getSection(tabKey);
     const newCategory = getCategory(tabKey);
 

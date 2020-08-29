@@ -58,7 +58,12 @@ type PlatformBackButtonProps = {
   onPress: () => void;
 };
 
-const PlatformTouchable = Platform.OS === 'ios' ? TouchableHighlight : TouchableNativeFeedback;
+const PlatformTouchable =
+  Platform.OS === 'ios'
+    ? TouchableHighlight
+    : Platform.OS === 'android'
+    ? TouchableNativeFeedback
+    : TouchableRipple;
 const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) => (
   <PlatformIconButton
     icon="arrow-left"

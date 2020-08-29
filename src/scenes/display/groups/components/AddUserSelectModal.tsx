@@ -30,7 +30,7 @@ import { View, Platform, FlatList } from 'react-native';
 import Illustration from '@components/Illustration';
 import Avatar from '@components/Avatar';
 import { connect } from 'react-redux';
-import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
+import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';

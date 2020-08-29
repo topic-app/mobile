@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "react-native-paper";
 import { View, Platform, TextInput, Alert } from "react-native";
-import { BottomModal, SlideAnimation } from "react-native-modals";
+import { BottomModal, SlideAnimation } from '@components/Modals';
 import { connect } from "react-redux";
 
 import { CollapsibleView, ErrorMessage } from "@components/index";

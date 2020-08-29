@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, useTheme } from 'react-native-paper';
-import { ImageStyle } from 'react-native';
+import { ImageStyle, Platform } from 'react-native';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import FitImage from 'react-native-fit-image';
 
@@ -15,6 +15,8 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
+
+  if (Platform.OS === 'web') parser = 'plaintext';
 
   if (parser === 'markdown') {
     return (

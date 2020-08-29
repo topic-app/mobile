@@ -12,7 +12,7 @@ import {
 } from 'react-native-paper';
 import { View, Platform } from 'react-native';
 import { connect } from 'react-redux';
-import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
+import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 
 import { CollapsibleView, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
