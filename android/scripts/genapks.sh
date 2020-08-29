@@ -1,22 +1,21 @@
 #!/usr/bin/env bash
 
 # Variables to change
-BASE_BRANCH=v0.2-beta
+BASE_BRANCH=v0.3-beta
 
 # Get path to script
 SCRIPT_PATH="`dirname \"$0\"`"                  # relative
-SCRIPT_PATH="`( cd \"$SCRIPT_PATH\" && pwd )`"  # absolutized and normalized
-APK_PATH=$SCRIPT_PATH/../app/build/outputs/apk
+MOBILE_PATH="`( cd \"$SCRIPT_PATH/../..\" && pwd )`"  # absolutized and normalized 
 
 # Navigate to android folder
-cd "$SCRIPT_PATH/.."
+cd "$MOBILE_PATH/android"
 
-# Check if beta-testers.txt is present
-NAME_FILE=$SCRIPT_PATH/beta-testers.txt
-if ! [ -f "$NAME_FILE" ]; then
-  echo "beta-testers.txt not found, it should be placed in android/scripts alongside this script."
-  exit 1
-fi
+# Exit on errors
+set -e
+
+set -a # export every variable to environment to be used by child shells
+source "$MOBILE_PATH/.ENV"
+set +a
 
 if [[ $(git diff --stat) != '' ]]; then
   echo "Your git working tree is dirty. This script will fail to checkout ANY branch and will stay on this branch. Please make sure you are on the desired build branch."
@@ -26,8 +25,7 @@ if [[ $(git diff --stat) != '' ]]; then
       echo "Proceeding"
       ;;
     *)
-      echo "Aborting"
-      exit 1
+      echo "Aborting" exit 1
       ;;
   esac
 fi
@@ -47,7 +45,7 @@ esac
 # Store branches and names in arrays
 echo "Fetching branch names for topicapp/mobile (may take a while)"
 BRANCHES=( $( git ls-remote --heads git@gitlab.com:topicapp/mobile | cut -f3- -d / ) )
-NAMES=( $(cat $NAME_FILE) )
+NAMES=("${BETA_TESTER_NAMES[@]}")
 
 # Print branches & names
 echo "Branches (${#BRANCHES[@]}):"
@@ -55,16 +53,26 @@ for i in "${BRANCHES[@]}"; do echo "- $i"; done
 
 if [[ ! " ${BRANCHES[@]} " =~ " $BASE_BRANCH " ]]; then
   echo "No branch '$BASE_BRANCH' found on remote."
-  exit 1
+  read -r -p "Continue with current branch? [Y/n] " response
+  case "$response" in
+    [nN][oO]|[nN])
+      echo "Please push $BASE_BRANCH to topicapp/mobile"
+      exit 1
+      ;;
+    *)
+      echo "Proceeding"
+      ;;
+  esac
 fi
 
 echo "Beta testers (${#NAMES[@]}):"
 for i in "${NAMES[@]}"; do echo "- $i"; done
 
-LB=$'\n'
 
 # Confirm action
-read -r -p "This script will attempt to build ${#NAMES[@]} apks with corresponding version names.${LB}It will try to checkout branch $BASE_BRANCH[-name] and fallback to $BASE_BRANCH.${LB}Proceed? [Y/n] " response
+echo "This script will attempt to build ${#NAMES[@]} apks with corresponding version names."
+echo "It will try to checkout branch $BASE_BRANCH[-name] and fallback to $BASE_BRANCH."
+read -r -p "Proceed? [Y/n] " response
 case "$response" in
   [nN][oO]|[nN])
     echo "Aborting"
@@ -87,13 +95,12 @@ for (( i = 0; i < ${#NAMES[@]}; i++ )); do
   else
     git checkout "$BASE_BRANCH"
   fi
-  # Exit on errors
-  set -e
   ./gradlew assembleRelease
 done
 
-if [ -n "$SCRIPT_PATH" ] && [ -n "$APK_PATH" ]; then
+APK_PATH=$MOBILE_PATH/android/app/build/outputs/apk
+if [ -n "$MOBILE_PATH" ] && [ -n "$APK_PATH" ]; then
   # Move all apks in apks directory and delete remains
-  mv "$APK_PATH/"*"/release/"*".apk" $SCRIPT_PATH/apks
+  mv "$APK_PATH/"*"/release/"*".apk" $MOBILE_PATH/android/scripts/apks
   rm -r "$APK_PATH/"*
 fi
