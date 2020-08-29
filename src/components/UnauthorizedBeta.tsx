@@ -13,7 +13,7 @@ const UnauthorizedBeta = ({ back }) => {
       <View style={styles.centerIllustrationContainer}>
         <Icon name="close" size={128} color={colors.invalid} />
         <Title>Page désactivée</Title>
-        <Text>Vous ne pouvez pas accéder à cette page dans cette version de la bêta</Text>
+        <Text>Vous ne pouvez pas accéder à cette page dans cette version de la bêta :(</Text>
         <View style={styles.container}>
           {back ? (
             <Button mode="outlined" onPress={back}>
