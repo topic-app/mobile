@@ -11,7 +11,7 @@ import {
 } from "react-native-paper";
 import { View, Platform } from "react-native";
 import { connect } from "react-redux";
-import { BottomModal, SlideAnimation } from "react-native-modals";
+import { BottomModal, SlideAnimation } from '@components/Modals';
 
 import getStyles from "@styles/Styles";
 import { ErrorMessage } from "@components/index";

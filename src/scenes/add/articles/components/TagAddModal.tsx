@@ -13,7 +13,7 @@ import {
 } from 'react-native-paper';
 import { View, Platform, Dimensions, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { BottomModal, SlideAnimation } from 'react-native-modals';
+import { BottomModal, SlideAnimation } from '@components/Modals';
 import { logger } from '@utils/index';
 import { TagRequestState, TagsState } from '@ts/types';
 import randomColor from 'randomcolor';

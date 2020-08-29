@@ -1,22 +1,15 @@
-import React from "react";
-import { ModalProps, State, ArticleListItem } from "@ts/types";
-import {
-  Divider,
-  Button,
-  HelperText,
-  Card,
-  ThemeProvider,
-  useTheme,
-} from "react-native-paper";
-import { View, Platform, TextInput, Dimensions } from "react-native";
-import { connect } from "react-redux";
-import { BottomModal, SlideAnimation } from "react-native-modals";
-import { logger } from "@utils/index";
+import React from 'react';
+import { ModalProps, State, ArticleListItem } from '@ts/types';
+import { Divider, Button, HelperText, Card, ThemeProvider, useTheme } from 'react-native-paper';
+import { View, Platform, TextInput, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
+import { BottomModal, SlideAnimation } from '@components/Modals';
+import { logger } from '@utils/index';
 
-import { CollapsibleView } from "@components/index";
-import getStyles from "@styles/Styles";
-import { addArticleList } from "@redux/actions/contentData/articles";
-import getArticleStyles from "../styles/Styles";
+import { CollapsibleView } from '@components/index';
+import getStyles from '@styles/Styles';
+import { addArticleList } from '@redux/actions/contentData/articles';
+import getArticleStyles from '../styles/Styles';
 
 type CreateModalProps = ModalProps & {
   lists: ArticleListItem[];
@@ -28,7 +21,7 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  const [createListText, setCreateListText] = React.useState("");
+  const [createListText, setCreateListText] = React.useState('');
   const [errorVisible, setErrorVisible] = React.useState(false);
 
   return (
@@ -46,7 +39,7 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
       }}
       modalAnimation={
         new SlideAnimation({
-          slideFrom: "bottom",
+          slideFrom: 'bottom',
           useNativeDriver: false,
         })
       }
@@ -73,13 +66,8 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
                   Vous devez entrer un nom
                 </HelperText>
               </CollapsibleView>
-              <CollapsibleView
-                collapsed={!lists.some((l) => l.name === createListText)}
-              >
-                <HelperText
-                  type="error"
-                  visible={lists.some((l) => l.name === createListText)}
-                >
+              <CollapsibleView collapsed={!lists.some((l) => l.name === createListText)}>
+                <HelperText type="error" visible={lists.some((l) => l.name === createListText)}>
                   Une liste avec ce nom existe déjà
                 </HelperText>
               </CollapsibleView>
@@ -87,16 +75,16 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
             <Divider />
             <View style={styles.contentContainer}>
               <Button
-                mode={Platform.OS === "ios" ? "outlined" : "contained"}
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                 color={colors.primary}
-                uppercase={Platform.OS !== "ios"}
+                uppercase={Platform.OS !== 'ios'}
                 onPress={() => {
-                  if (createListText === "") {
+                  if (createListText === '') {
                     setErrorVisible(true);
                   } else if (!lists.some((l) => l.name === createListText)) {
                     // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                     addArticleList(createListText);
-                    setCreateListText("");
+                    setCreateListText('');
                     setVisible(false);
                   }
                 }}

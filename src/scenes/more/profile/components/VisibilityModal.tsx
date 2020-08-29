@@ -12,7 +12,7 @@ import {
 } from "react-native-paper";
 import { View, Platform, FlatList } from "react-native";
 import { ErrorMessage } from "@components/index";
-import { BottomModal, SlideAnimation } from "react-native-modals";
+import { BottomModal, SlideAnimation } from '@components/Modals';
 
 import getStyles from "@styles/Styles";
 import { updateData } from "@redux/actions/data/profile";
