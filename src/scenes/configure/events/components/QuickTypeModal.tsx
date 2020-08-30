@@ -10,7 +10,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
-import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
+import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 
 import getStyles from '@styles/Styles';
 

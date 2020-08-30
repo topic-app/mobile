@@ -3,7 +3,7 @@ import { ModalProps, State, EventListItem } from '@ts/types';
 import { Divider, Button, HelperText, Card, ThemeProvider, useTheme } from 'react-native-paper';
 import { View, Platform, TextInput, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import { BottomModal, SlideAnimation } from 'react-native-modals';
+import { BottomModal, SlideAnimation } from '@components/Modals';
 import { logger } from '@utils/index';
 
 import { CollapsibleView } from '@components/index';

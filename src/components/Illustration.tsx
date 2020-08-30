@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
+import { config } from '@root/app.json';
 
 // Article Illustrations
 import ArticleCompletedLight from '@assets/images/illustrations/articles/articles_completed_light.svg';
@@ -189,6 +190,8 @@ const illustrationList = {
 type Props = SvgProps & { name: keyof typeof illustrationList };
 
 const Illustration: React.FC<Props> = ({ name, ...rest }) => {
+  if (Platform.OS === 'web' || config.hideSvg) return null;
+
   const { dark } = useTheme();
   const Item = dark ? illustrationList[name]?.dark : illustrationList[name]?.light;
 
@@ -199,7 +202,6 @@ const Illustration: React.FC<Props> = ({ name, ...rest }) => {
 
   // eslint-disable-next-line react/jsx-props-no-spreading
   // TEMP: Because web
-  if (Platform.OS === 'web') return null;
   return <Item {...rest} />;
 };
 

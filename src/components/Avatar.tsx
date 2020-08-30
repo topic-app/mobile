@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import color from 'color';
 
 import { Avatar as AvatarType, Theme } from '@ts/types';
-import TopicIcon from '@assets/images/topic-icon.svg';
+// import TopicIcon from '@assets/images/topic-icon.svg';
 
 import { PlatformTouchable } from './PlatformComponents';
 
@@ -84,7 +84,7 @@ const Avatar: React.FC<Props> = ({ name, imageUrl, icon, style, size = 64, onPre
     AvatarComponent = <PaperAvatar.Text label={getInitials(name)} style={style} size={size} />;
   } else {
     // If we cannot use anything, use Topic's Icon as the default; subject to change
-    AvatarComponent = <TopicIcon height={size} width={size} style={style} />;
+    // AvatarComponent = <TopicIcon height={size} width={size} style={style} />;
   }
   if (onPress) {
     return (
