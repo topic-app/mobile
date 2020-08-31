@@ -4,7 +4,7 @@ import { View, Linking, Platform } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { Drawer, Title, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-// import TopicIcon from '@assets/images/topic-icon.svg';
+import TopicIcon from '@assets/images/topic-icon.svg';
 
 import getNavigatorStyles from '@styles/NavStyles';
 import { fetchLocationData } from '@redux/actions/data/location';
@@ -68,13 +68,13 @@ function CustomDrawerContent({
           )}
           <View style={navigatorStyles.profileIconContainer}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {/*Platform.OS !== 'web' && (
+              {Platform.OS !== 'web' && (
                 <TopicIcon
                   style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
                   height={55}
                   width={55}
                 />
-              )*/}
+              )}
               {loggedIn ? (
                 <View>
                   <Title

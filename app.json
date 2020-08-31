@@ -96,7 +96,7 @@
       "exclude": []
     },
     "dev": {
-      "hideSvg": true,
+      "hideSvg": false,
       "logRequests": false,
       "defaultLocation": {
         "selected": false,
