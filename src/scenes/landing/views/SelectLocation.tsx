@@ -465,7 +465,7 @@ const WelcomeLocation: React.FC<Props> = ({
           <View style={landingStyles.contentContainer}>
             <Text>
               Par défaut, vous verrez les articles déstinés à votre école, ainsi que les articles du
-              département dans lequel se trouve l&apos;école et de la France entière
+              département dans lequel elle se trouve et de la France entière
             </Text>
           </View>
         </CollapsibleView>
