@@ -7,6 +7,10 @@ import { StepperViewPageProps } from '@components/index';
 import { Account, State } from '@ts/types';
 import getStyles from '@styles/Styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import PlaceTypeModal from './PlaceTypeModal';
+
+import PlaceAddressModal from './PlaceAddressModal';
+import PlaceSelectModal from './PlaceSelectModal';
 
 import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';
@@ -15,11 +19,23 @@ type Props = StepperViewPageProps & { account: Account };
 
 const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
   const [showError, setError] = React.useState(false);
+  const [isPlaceTypeModalVisible, setPlaceTypeModalVisible] = React.useState(false);
+  const [isPlaceSelectModalVisible, setPlaceSelectModalVisible] = React.useState(false);
+  const [isPlaceAddressModalVisible, setPlaceAddressModalVisible] = React.useState(false);
+  const [placeType, setPlaceType] = React.useState('');
 
   const theme = useTheme();
   const { colors } = theme;
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
+  const [eventPlaces, setEventPlaces] = React.useState([]);
+  const toSelectedType = (data: string) => {
+    setPlaceType(data);
+    setPlaceTypeModalVisible(false);
+    data === 'address' && setPlaceAddressModalVisible(true);
+  };
+  const addEventPlace = (newEventPlace) => setEventPlaces(eventPlaces.concat(newEventPlace));
+
   const submit = () => {
     {
       /* updateEventCreationData({ tags: selectedTags }); */
@@ -39,7 +55,33 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
 
   return (
     <View style={eventStyles.formContainer}>
-      <Text>Place</Text>
+      <View style={styles.container}>
+        <Button
+          mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => {
+            setPlaceTypeModalVisible(true);
+          }}
+        >
+          Ajouter un lieu
+        </Button>
+      </View>
+
+      <PlaceTypeModal
+        visible={isPlaceTypeModalVisible}
+        setVisible={setPlaceTypeModalVisible}
+        next={toSelectedType}
+      />
+      <PlaceSelectModal
+        visible={isPlaceSelectModalVisible}
+        setVisible={setPlaceSelectModalVisible}
+        type={placeType}
+      />
+      <PlaceAddressModal
+        visible={isPlaceAddressModalVisible}
+        setVisible={setPlaceAddressModalVisible}
+      />
+
       <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
