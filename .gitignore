@@ -1,7 +1,7 @@
 # Topic
 #
-beta-testers.txt
 *.apk
+.ENV 
 
 # OSX
 #

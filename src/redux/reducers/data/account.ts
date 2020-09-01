@@ -12,7 +12,7 @@ import { config } from '@root/app.json';
 
 let initialState;
 
-if (config.dev.defaultAccount) {
+if (__DEV__ && config.dev.defaultAccount) {
   initialState = {
     ...config.dev.defaultAccount,
     groups: [],

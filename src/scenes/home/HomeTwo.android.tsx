@@ -3,13 +3,13 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from 'react-native-paper';
 
+import UnauthorizedBeta from '@components/UnauthorizedBeta';
 import getNavigatorStyles from '@styles/NavStyles';
 
 import ArticleList from './articles/views/List';
 import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
-import UnauthorizedBeta from '@components/UnauthorizedBeta';
 
 export type HomeTwoNavParams = {
   Article: { initialList: string } | undefined;

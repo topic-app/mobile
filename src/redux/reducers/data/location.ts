@@ -11,7 +11,7 @@ import { config } from '@root/app.json';
  */
 
 let initialState;
-if (config.dev.defaultLocation) {
+if (__DEV__ && config.dev.defaultLocation) {
   initialState = {
     ...config.dev.defaultLocation,
     state: {

@@ -148,11 +148,12 @@ android {
         }
     }
     signingConfigs {
+        def releaseStorePassword = System.getenv("RELEASE_KEYSTORE_PASSWORD")
         release {
             storeFile file('topic.keystore')
-            storePassword 'pourlajeunesse'
-            keyAlias 'topic'
-            keyPassword 'pourlajeunesse'
+            storePassword "$releaseStorePassword"
+            keyAlias "topic"
+            keyPassword "$releaseStorePassword"
         }
         debug {
             storeFile file('debug.keystore')

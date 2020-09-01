@@ -373,7 +373,7 @@ const EventList: React.FC<EventListProps> = ({
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions?.some((p) => p.permission === 'event.add') && (
+      {/* account.loggedIn && account.permissions?.some((p) => p.permission === 'event.add') && (
         <FAB
           icon="pencil"
           onPress={() =>
@@ -389,7 +389,7 @@ const EventList: React.FC<EventListProps> = ({
           }
           style={styles.bottomRightFab}
         />
-      )}
+        ) */}
     </View>
   );
 };
