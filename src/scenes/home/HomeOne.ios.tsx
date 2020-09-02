@@ -1,13 +1,13 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import HomeTwoNavigator from './HomeTwo';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function HomeOneNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Home2" headerMode="none">
+    <Stack.Navigator initialRouteName="Home2" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home2" component={HomeTwoNavigator} />
     </Stack.Navigator>
   );

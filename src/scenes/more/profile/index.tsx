@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import { HeaderConfig } from '@components/Header';
 
@@ -7,7 +7,7 @@ import Profile from './views/Profile';
 import ProfileAvatar from './views/Avatar';
 import ProfileEdit from './views/Edit';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function ProfileStackNavigator() {
   return (

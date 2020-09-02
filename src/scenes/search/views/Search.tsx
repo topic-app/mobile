@@ -3,7 +3,7 @@ import { View, ScrollView, TextInput } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { Text, Button, useTheme, Divider } from 'react-native-paper';
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'react-native-screens/native-stack';
 
 import {
   Searchbar,

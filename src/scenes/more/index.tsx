@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import { HeaderConfig } from '@components/Header';
 
@@ -12,7 +12,7 @@ import ModerationStackNavigator from './moderation/index';
 import AboutStackNavigator from './about/index';
 import UnauthorizedBeta from '@components/UnauthorizedBeta';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function MoreStackNavigator() {
   return (

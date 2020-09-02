@@ -1,13 +1,13 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import LocationDisplay from './views/Display';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function LocationDisplayStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Display" headerMode="none">
+    <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={LocationDisplay} />
     </Stack.Navigator>
   );

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, Snackbar, useTheme, Card } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'react-native-screens/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { State, ArticleRequestState, Account } from '@ts/types';

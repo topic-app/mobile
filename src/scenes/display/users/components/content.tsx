@@ -1,12 +1,12 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import UserArticles from './content/views/Articles';
 import UserPetitions from './content/views/Petitions';
 import UserEvents from './content/views/Events';
 import UserLocations from './content/views/Locations';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function UserContentStackNavigator() {
   return (

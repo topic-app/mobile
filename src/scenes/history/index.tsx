@@ -1,17 +1,16 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import ArticleHistoryStackNavigator from './articles/index';
 import EventHistoryStackNavigator from './events/index';
 import MainHistoryStackNavigator from './main/index';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function HistoryStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Main" headerMode="none">
+    <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Main" component={MainHistoryStackNavigator} />
-
       <Stack.Screen name="Article" component={ArticleHistoryStackNavigator} />
       <Stack.Screen name="Event" component={EventHistoryStackNavigator} />
     </Stack.Navigator>

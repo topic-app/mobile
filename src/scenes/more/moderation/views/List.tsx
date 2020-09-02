@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ScrollView, FlatList } from 'react-native';
 import { Text, useTheme, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'react-native-screens/native-stack';
 import { connect } from 'react-redux';
 import {
   State,

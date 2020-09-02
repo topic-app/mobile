@@ -1,10 +1,10 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import {
-  createStackNavigator,
+  createNativeStackNavigator,
   TransitionPresets,
   StackNavigationProp,
-} from '@react-navigation/stack';
+} from 'react-native-screens/native-stack';
 import { connect } from 'react-redux';
 
 import { LocationList, State } from '@ts/types';
@@ -28,7 +28,6 @@ function getNestedParams(route?: { params: object }) {
   return params;
 }
 
-let screenOptions = TransitionPresets.SlideFromRightIOS;
 if (Platform.OS === 'ios') {
   screenOptions = ({ route }) => {
     if (route.params && getNestedParams(route).noTransition) {
@@ -51,7 +50,7 @@ export type MainStackParams = {
   History: undefined;
 };
 
-const Stack = createStackNavigator<MainStackParams>();
+const Stack = createNativeStackNavigator<MainStackParams>();
 
 type MainNavigatorProps = {
   navigation: StackNavigationProp<any, any>;
@@ -65,7 +64,7 @@ const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) =
     });
   }
   return (
-    <Stack.Navigator initialRouteName="Home1" headerMode="none" screenOptions={screenOptions}>
+    <Stack.Navigator initialRouteName="Home1" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
       <Stack.Screen name="Configure" component={ConfigureStackNavigator} />
       <Stack.Screen name="Params" component={ParamsStackNavigator} />
