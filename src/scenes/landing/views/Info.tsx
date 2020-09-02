@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Platform, ScrollView } from 'react-native';
+import { View, Platform, Image, ScrollView } from 'react-native';
 import { Text, useTheme, Button, Divider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -133,6 +133,77 @@ function LandingArticles({ navigation, route }) {
                       <Text>
                         Rejoignez des groupes, des associations et des clubs pour écrire des
                         articles et créer des évènements
+                      </Text>
+                    </View>
+                  </View>
+                ),
+              },
+              {
+                key: 'sponsors',
+                title: 'Sponsors',
+                component: (
+                  <View>
+                    <View style={landingStyles.headerContainer}>
+                      <View style={landingStyles.centerIllustrationContainer}>
+                        <Text style={landingStyles.sectionTitle}>Sponsors</Text>
+                      </View>
+                    </View>
+                    <View style={landingStyles.contentContainer}>
+                      <Divider />
+                      <View
+                        style={[
+                          landingStyles.centerIllustrationContainer,
+                          { marginTop: 60, marginBottom: 10 },
+                        ]}
+                      >
+                        <Image
+                          style={{ height: 200 }}
+                          resizeMode="contain"
+                          source={require('@assets/images/sponsors/mgen.png')}
+                        />
+                      </View>
+                      <Text>
+                        La Mutuelle générale de l'Éducation nationale (MGEN) est l’entreprise qui
+                        finance l’application, au niveau des frais de serveur, de publication et des
+                        frais associatifs. Nous les remercions sincèrement pour cette aide qui nous
+                        permet de proposer une application gratuite et sans publicité.
+                      </Text>
+                      <Divider style={{ marginTop: 20 }} />
+                      <View
+                        style={[
+                          landingStyles.centerIllustrationContainer,
+                          { marginTop: 60, marginBottom: 10 },
+                        ]}
+                      >
+                        <Image
+                          style={{ height: 200 }}
+                          resizeMode="contain"
+                          source={require('@assets/images/sponsors/jtac.png')}
+                        />
+                      </View>
+                      <Text>
+                        La Jeunesse des Territoires pour l’Action Culturelle (JTAC) est une
+                        association dont le but est de promouvoir l’accès à la culture et
+                        l’engagement lycéen. C’est une association qui s’aligne parfaitement avec
+                        les buts de notre application, et nous avons donc décidé de développer
+                        l’application en partenariat avec celle-ci.
+                      </Text>
+                      <Divider style={{ marginTop: 20 }} />
+                      <View
+                        style={[
+                          landingStyles.centerIllustrationContainer,
+                          { marginTop: 60, marginBottom: 10 },
+                        ]}
+                      >
+                        <Image
+                          style={{ height: 200 }}
+                          resizeMode="contain"
+                          source={require('@assets/images/sponsors/esper.jpg')}
+                        />
+                      </View>
+                      <Text>
+                        Le collectif d’entreprises L’ESPER nous soutient dans les démarches
+                        administratives et dans la promotion de l’application.
                       </Text>
                     </View>
                   </View>
