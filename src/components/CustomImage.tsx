@@ -24,7 +24,7 @@ const CustomImage: React.FC<CustomImageProps> = ({ image, imageSize, height, wid
       />
     );
   } else {
-    return <View style={[styles.thumbnail, { width, height }]} />;
+    return <View style={{ width, height, flex: 0 }} />;
   }
 };
 
