@@ -126,6 +126,28 @@ const ArticleList: React.FC<ArticleListProps> = ({
             params = { groups: [q.id] };
             icon = 'account-multiple';
             break;
+          case 'school':
+            params = { schools: [q.id] };
+            icon = 'school';
+            break;
+          case 'departement':
+            params = {
+              departments: [q.id],
+            };
+            icon = 'map-marker-radius';
+            break;
+          case 'region':
+            params = {
+              departments: [q.id],
+            };
+            icon = 'map-marker-radius';
+            break;
+          case 'global':
+            params = {
+              global: true,
+            };
+            icon = 'flag';
+            break;
         }
         return {
           key: q.id,
