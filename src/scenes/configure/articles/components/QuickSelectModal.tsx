@@ -10,6 +10,9 @@ import {
   Group,
   User,
   RequestState,
+  DepartmentsState,
+  SchoolsState,
+  ArticleListItem,
 } from '@ts/types';
 import {
   Divider,
@@ -33,6 +36,8 @@ import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
+import { searchSchools, updateSchools } from '@redux/actions/api/schools';
+import { searchDepartments, updateDepartments } from '@redux/actions/api/departments';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -40,10 +45,12 @@ type QuickSelectModalProps = ModalProps & {
   quicks: ArticleQuickItem[];
   editingList: ArticleListItem | null;
   setEditingList: (props: ArticleListItem | null) => void;
-  type: 'tag' | 'group' | 'user';
+  type: 'tag' | 'group' | 'user' | 'school' | 'region' | 'departement';
   tags: TagsState;
   groups: GroupsState;
   users: UsersState;
+  departments: DepartmentsState;
+  schools: SchoolsState;
 };
 
 function QuickSelectModal({
@@ -52,6 +59,8 @@ function QuickSelectModal({
   type,
   tags,
   groups,
+  departments,
+  schools,
   users,
   quicks,
 }: QuickSelectModalProps) {
@@ -91,11 +100,36 @@ function QuickSelectModal({
       icon = 'account-multiple';
       state = groups.state;
       break;
+    case 'school':
+      data = searchText ? schools.search : schools.data;
+      update = (text = searchText) =>
+        text ? searchSchools('initial', text, {}) : updateSchools('initial');
+      icon = 'school';
+      state = schools.state;
+      break;
+    case 'departement':
+      data = (searchText ? departments.search : departments.data).filter(
+        (d) => d.type === 'departement',
+      );
+      update = (text = searchText) =>
+        text ? searchDepartments('initial', text, {}) : updateDepartments('initial');
+      icon = 'map-marker-radius';
+      state = departments.state;
+      break;
+    case 'region':
+      data = (searchText ? departments.search : departments.data).filter(
+        (d) => d.type === 'region',
+      );
+      update = (text = searchText) =>
+        text ? searchDepartments('initial', text, {}) : updateDepartments('initial');
+      icon = 'map-marker-radius';
+      state = departments.state;
+      break;
   }
 
   React.useEffect(() => {
     update();
-  }, [null]);
+  }, [type]);
 
   return (
     <BottomModal
@@ -155,6 +189,7 @@ function QuickSelectModal({
             </View>
             <FlatList
               data={data}
+              style={{ maxHeight: 400 }}
               keyExtractor={(i) => i._id}
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={() => (
@@ -171,6 +206,11 @@ function QuickSelectModal({
                 quicks.some((q) => q.id === item._id) ? null : (
                   <List.Item
                     title={item.name || item.info?.username}
+                    description={
+                      type === 'school'
+                        ? item.address?.address?.city || item.address?.shortName
+                        : undefined
+                    }
                     left={() =>
                       item.avatar || item.info?.avatar ? (
                         <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
@@ -194,12 +234,14 @@ function QuickSelectModal({
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData, tags, groups, users } = state;
+  const { articleData, tags, groups, users, schools, departments } = state;
   return {
     quicks: articleData.quicks,
     tags,
     groups,
     users,
+    schools,
+    departments,
   };
 };
 

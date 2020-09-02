@@ -24,7 +24,7 @@ import {
 } from '@ts/types';
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
+import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
 import { updateSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
@@ -75,6 +75,8 @@ function done(
       .flat()
       .map((d: Department) => d?._id),
   );
+  selectedSchools = selectedSchools.filter((s) => !!s);
+  selectedDepartments = selectedDepartments.filter((s) => !!s);
   Promise.all([
     updateLocation({
       selected: true,
@@ -94,6 +96,12 @@ function done(
       ],
       global: true,
     }),
+    ...selectedSchools.map((s) =>
+      addArticleQuick('school', s, persistentData.find((p) => p.key === s)?.title),
+    ),
+    ...selectedDepartments.map((d) =>
+      addArticleQuick('departement', d, persistentData.find((p) => p.key === d)?.title),
+    ),
   ]).then(() => {
     if (goBack) {
       navigation.goBack();

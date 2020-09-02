@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalProps, ArticleListItem } from '@ts/types';
+import { ModalProps, ArticleListItem, ArticleQuickItem, State } from '@ts/types';
 import {
   Divider,
   Button,
@@ -13,36 +13,41 @@ import { View, Platform, FlatList } from 'react-native';
 import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 
 import getStyles from '@styles/Styles';
+import { connect } from 'react-redux';
 
-type QuickTypeModalProps = ModalProps & { next: (type: string) => void };
+type QuickTypeModalProps = ModalProps & {
+  next: (type: string) => void;
+  articleQuicks: ArticleQuickItem[];
+};
 
-function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
+function QuickTypeModal({ visible, setVisible, next, articleQuicks }: QuickTypeModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [currentType, setCurrentType] = React.useState('tag');
+  const [currentType, setCurrentType] = React.useState('school');
+
+  if (currentType === 'global' && articleQuicks?.some((q) => q.type === 'global')) {
+    setCurrentType('school');
+  }
 
   const quickTypes = [
     {
-      type: 'tag',
-      title: 'Tag',
-      description: "Articles traitant d'un certain sujet ou autour d'un certain thème",
+      type: 'school',
+      title: 'École',
     },
     {
-      type: 'group',
-      title: 'Groupe',
-      description: "Articles écrits par les membres d'un certain groupe",
+      type: 'departement',
+      title: 'Département',
     },
     {
-      type: 'user',
-      title: 'Utilisateur',
-      description: 'Articles écrits par un utilisateur',
+      type: 'region',
+      title: 'Région',
     },
     {
-      type: 'location',
-      title: 'Localisation',
-      description: 'Articles déstinés à une école, à un département, ou à une région',
+      type: 'global',
+      title: 'France entière',
+      disabled: articleQuicks?.some((q) => q.type === 'global'),
     },
   ];
 
@@ -76,28 +81,43 @@ function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
                   <List.Item
                     title={item.title}
                     description={item.description}
-                    onPress={() => {
-                      setCurrentType(item.type);
-                    }}
+                    onPress={
+                      item.disabled
+                        ? undefined
+                        : () => {
+                            setCurrentType(item.type);
+                          }
+                    }
+                    titleStyle={item.disabled ? { color: colors.disabled } : {}}
                     left={() =>
                       Platform.OS !== 'ios' && (
                         <RadioButton
+                          disabled={item.disabled}
                           color={colors.primary}
                           status={item.type === currentType ? 'checked' : 'unchecked'}
-                          onPress={() => {
-                            setCurrentType(item.type);
-                          }}
+                          onPress={
+                            item.disabled
+                              ? undefined
+                              : () => {
+                                  setCurrentType(item.type);
+                                }
+                          }
                         />
                       )
                     }
                     right={() =>
                       Platform.OS === 'ios' && (
                         <RadioButton
+                          disabled={item.disabled}
                           color={colors.primary}
                           status={item.type === currentType ? 'checked' : 'unchecked'}
-                          onPress={() => {
-                            setCurrentType(item.type);
-                          }}
+                          onPress={
+                            item.disabled
+                              ? undefined
+                              : () => {
+                                  setCurrentType(item.type);
+                                }
+                          }
                         />
                       )
                     }
@@ -131,4 +151,9 @@ function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
   );
 }
 
-export default QuickTypeModal;
+const mapStateToProps = (state: State) => {
+  const { articleData } = state;
+  return { articleQuicks: articleData.quicks };
+};
+
+export default connect(mapStateToProps)(QuickTypeModal);

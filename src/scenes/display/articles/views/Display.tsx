@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
+import shortid from 'shortid';
 
 import {
   Article,
@@ -121,6 +122,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           </View>
           {article.authors?.map((author) => (
             <InlineCard
+              key={author?._id}
               avatar={author.info?.avatar}
               title={author?.displayName}
               onPress={() =>
@@ -147,7 +149,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
             />
           ))}
-
+          key={author?._id}
           <View style={styles.container}>
             <CategoryTitle>Groupe</CategoryTitle>
           </View>
@@ -237,7 +239,6 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               </View>
             </View>
           )}
-
           {verification && (
             <View>
               <View style={[styles.container, { marginTop: 40 }]}>
@@ -294,6 +295,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                           ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
                           ?.map((u) => (
                             <Text
+                              key={shortid()}
                               style={{ textDecorationLine: 'underline' }}
                               onPress={() => handleUrl(u)}
                             >

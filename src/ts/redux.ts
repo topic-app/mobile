@@ -62,7 +62,7 @@ export type ArticleParams = {
 };
 
 export type ArticleQuickItem = {
-  type: 'tag' | 'user' | 'group';
+  type: 'tag' | 'user' | 'group' | 'school' | 'departement' | 'region' | 'global';
   id: string;
   title: string;
 };
