@@ -202,8 +202,8 @@ function LandingArticles({ navigation, route }) {
                         />
                       </View>
                       <Text>
-                        Le collectif d’entreprises L’ESPER nous soutient dans les démarches
-                        administratives et dans la promotion de l’application.
+                        Le collectif L’ESPER nous soutient dans les démarches administratives et
+                        dans la promotion de l’application.
                       </Text>
                     </View>
                   </View>
