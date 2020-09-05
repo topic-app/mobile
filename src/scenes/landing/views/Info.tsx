@@ -104,7 +104,7 @@ function LandingArticles({ navigation, route }) {
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
                         <Illustration name="explore" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Carte</Text>
+                        <Text style={landingStyles.sectionTitle}>Explorer</Text>
                       </View>
                     </View>
                     <View style={landingStyles.contentContainer}>

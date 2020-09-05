@@ -20,13 +20,13 @@ import {
 } from '@expo-google-fonts/roboto-mono';
 import 'moment/locale/fr';
 
-// import { enableScreens } from 'react-native-screens';
+import { enableScreens } from 'react-native-screens';
 import Store from '@redux/store';
 
 import StoreApp from './src/StoreApp';
 import errorHandler from './ErrorHandler';
 
-// enableScreens();
+enableScreens();
 
 if (Platform.OS !== 'web') {
   setJSExceptionHandler(errorHandler);
