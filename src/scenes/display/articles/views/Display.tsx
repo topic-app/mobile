@@ -149,7 +149,6 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
             />
           ))}
-          key={author?._id}
           <View style={styles.container}>
             <CategoryTitle>Groupe</CategoryTitle>
           </View>
