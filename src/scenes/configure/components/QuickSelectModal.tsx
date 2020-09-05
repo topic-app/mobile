@@ -13,6 +13,7 @@ import {
   DepartmentsState,
   SchoolsState,
   ArticleListItem,
+  EventQuickItem,
 } from '@ts/types';
 import {
   Divider,
@@ -33,24 +34,27 @@ import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
 import { addArticleQuick } from '@redux/actions/contentData/articles';
+import { addEventQuick } from '@redux/actions/contentData/events';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
 import { searchSchools, updateSchools } from '@redux/actions/api/schools';
 import { searchDepartments, updateDepartments } from '@redux/actions/api/departments';
 
-import getArticleStyles from '../styles/Styles';
+import getArticleStyles from './styles/Styles';
 
 type QuickSelectModalProps = ModalProps & {
-  quicks: ArticleQuickItem[];
+  articleQuicks: ArticleQuickItem[];
+  eventQuicks: EventQuickItem[];
   editingList: ArticleListItem | null;
   setEditingList: (props: ArticleListItem | null) => void;
-  type: 'tag' | 'group' | 'user' | 'school' | 'region' | 'departement';
+  dataType: 'tag' | 'group' | 'user' | 'school' | 'region' | 'departement';
   tags: TagsState;
   groups: GroupsState;
   users: UsersState;
   departments: DepartmentsState;
   schools: SchoolsState;
+  type: 'articles' | 'events';
 };
 
 function QuickSelectModal({
@@ -62,7 +66,9 @@ function QuickSelectModal({
   departments,
   schools,
   users,
-  quicks,
+  articleQuicks,
+  eventQuicks,
+  dataType,
 }: QuickSelectModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -71,6 +77,8 @@ function QuickSelectModal({
 
   const [searchText, setSearchText] = React.useState('');
 
+  const quicks = type === 'articles' ? articleQuicks : eventQuicks;
+
   let data: Tag[] | User[] | Group[] = [];
   let update: (text?: string) => void = () => {};
   let icon = 'alert-decagram';
@@ -78,7 +86,7 @@ function QuickSelectModal({
     list: { loading: { initial: false }, error: true },
     search: { loading: { initial: false }, error: true },
   };
-  switch (type) {
+  switch (dataType) {
     case 'tag':
       data = searchText ? tags.search : tags.data;
       update = (text = searchText) =>
@@ -129,7 +137,7 @@ function QuickSelectModal({
 
   React.useEffect(() => {
     update();
-  }, [type]);
+  }, [dataType]);
 
   return (
     <BottomModal
@@ -156,7 +164,7 @@ function QuickSelectModal({
           <View>
             <View style={{ height: 200 }}>
               <View style={styles.centerIllustrationContainer}>
-                <Illustration name={type} height={200} width={200} />
+                <Illustration name={dataType} height={200} width={200} />
               </View>
             </View>
             <Divider />
@@ -207,7 +215,7 @@ function QuickSelectModal({
                   <List.Item
                     title={item.name || item.info?.username}
                     description={
-                      type === 'school'
+                      dataType === 'school'
                         ? item.address?.address?.city || item.address?.shortName
                         : undefined
                     }
@@ -219,7 +227,11 @@ function QuickSelectModal({
                       )
                     }
                     onPress={() => {
-                      addArticleQuick(type, item._id, item.name || item.info?.username);
+                      if (type === 'articles') {
+                        addArticleQuick(dataType, item._id, item.name || item.info?.username);
+                      } else {
+                        addEventQuick(dataType, item._id, item.name || item.info?.username);
+                      }
                       setVisible(false);
                     }}
                   />
@@ -234,9 +246,10 @@ function QuickSelectModal({
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData, tags, groups, users, schools, departments } = state;
+  const { articleData, eventData, tags, groups, users, schools, departments } = state;
   return {
-    quicks: articleData.quicks,
+    articleQuicks: articleData.quicks,
+    eventQuicks: eventData.quicks,
     tags,
     groups,
     users,

@@ -14,12 +14,17 @@ import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 
 import getStyles from '@styles/Styles';
 
-type QuickTypeModalProps = ModalProps & { next: (type: string) => void };
+type QuickTypeModalProps = ModalProps & {
+  next: (type: string) => void;
+  type: 'articles' | 'events';
+};
 
-function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
+function QuickTypeModal({ visible, setVisible, next, type }: QuickTypeModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
+
+  const contentName = type === 'articles' ? 'Articles' : 'Évènements';
 
   const [currentType, setCurrentType] = React.useState('tag');
 
@@ -27,18 +32,22 @@ function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
     {
       type: 'tag',
       title: 'Tag',
-      description:
-        "Pour rassembler des articles traitant d'un certain sujet ou autour d'un certain thème",
+      description: `${contentName} traitant d'un certain sujet ou autour d'un certain thème`,
     },
     {
       type: 'group',
       title: 'Groupe',
-      description: "Pour voir tous les articles écrits par les membres d'un certain groupe",
+      description: `${contentName} écrits par les membres d'un certain groupe`,
     },
     {
       type: 'user',
       title: 'Utilisateur',
-      description: 'Pour voir tous les articles écrits par un utilisateur',
+      description: `${contentName} écrits par un utilisateur`,
+    },
+    {
+      type: 'location',
+      title: 'Localisation',
+      description: `${contentName} déstinés à une école, à un département, ou à une région`,
     },
   ];
 

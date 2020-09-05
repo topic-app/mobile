@@ -13,13 +13,15 @@ import {
   updateEventPrefs,
   deleteEventQuick,
   modifyEventList,
+  addEventQuick,
 } from '@redux/actions/contentData/events';
 import getArticleStyles from '../styles/Styles';
 
-import CreateModal from '../components/CreateModal';
-import EditModal from '../components/EditModal';
-import QuickTypeModal from '../components/QuickTypeModal';
-import QuickSelectModal from '../components/QuickSelectModal';
+import CreateModal from '../../components/CreateModal';
+import EditModal from '../../components/EditModal';
+import QuickTypeModal from '../../components/QuickTypeModal';
+import QuickSelectModal from '../../components/QuickSelectModal';
+import QuickLocationTypeModal from '../../components/QuickLocationTypeModal';
 
 type EventListsProps = {
   lists: EventListItem[];
@@ -56,11 +58,21 @@ function EventLists({
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
   const [quickType, setQuickType] = React.useState('');
+  const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);
 
   const next = (data: string) => {
-    setQuickType(data);
-    setQuickTypeModalVisible(false);
-    setQuickSelectModalVisible(true);
+    if (data === 'location') {
+      setQuickLocationTypeModalVisible(true);
+      setQuickTypeModalVisible(false);
+    } else if (data === 'global') {
+      addEventQuick('global', 'global', 'France');
+      setQuickLocationTypeModalVisible(false);
+    } else {
+      setQuickType(data);
+      setQuickTypeModalVisible(false);
+      setQuickLocationTypeModalVisible(false);
+      setQuickSelectModalVisible(true);
+    }
   };
 
   const categoryTypes: Category[] = [
@@ -413,14 +425,25 @@ function EventLists({
         }}
       />
 
-      <CreateModal visible={isCreateModalVisible} setVisible={setCreateModalVisible} />
+      <CreateModal
+        visible={isCreateModalVisible}
+        setVisible={setCreateModalVisible}
+        type="events"
+      />
       <EditModal
         visible={isEditModalVisible}
         setVisible={setEditModalVisible}
         editingList={editingList}
         setEditingList={setEditingList}
+        type="events"
+      />
+      <QuickLocationTypeModal
+        visible={isQuickLocationTypeModalVisible}
+        setVisible={setQuickLocationTypeModalVisible}
+        next={next}
       />
       <QuickTypeModal
+        type="events"
         visible={isQuickTypeModalVisible}
         setVisible={setQuickTypeModalVisible}
         next={next}
@@ -428,7 +451,8 @@ function EventLists({
       <QuickSelectModal
         visible={isQuickSelectModalVisible}
         setVisible={setQuickSelectModalVisible}
-        type={quickType}
+        dataType={quickType}
+        type="events"
       />
     </View>
   );
