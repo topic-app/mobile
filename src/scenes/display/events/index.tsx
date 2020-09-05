@@ -4,7 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HeaderConfig } from '@components/Header';
 import EventDisplay from './views/Display';
 
-const Stack = createStackNavigator();
+export type EventDisplayStackParams = {
+  Display: { id: string; title: string };
+};
+
+const Stack = createStackNavigator<EventDisplayStackParams>();
 
 function EventDisplayStackNavigator() {
   return (
@@ -13,10 +17,7 @@ function EventDisplayStackNavigator() {
         name="Display"
         component={EventDisplay}
         options={({ route }) => ({
-          ...HeaderConfig,
-          title: route.params.title || 'Évènements - Aperçu',
-          subtitle: route.params.title && 'Évènements - Aperçu',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
+          headerShown: false,
         })}
       />
       {/*

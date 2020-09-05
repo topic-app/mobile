@@ -162,7 +162,12 @@ const ArticleList: React.FC<ArticleListProps> = ({
     },
   ];
 
-  const [tab, setTab] = React.useState(route.params?.initialList || tabGroups[0].data[0].key);
+  const [tab, setTab] = React.useState(
+    route.params?.initialList ||
+      tabGroups[0].data[0]?.key ||
+      tabGroups[1].data[0]?.key ||
+      tabGroups[2].data[0]?.key,
+  );
   const [chipTab, setChipTab] = React.useState(tab);
 
   const getSection = (tabKey?: string) =>

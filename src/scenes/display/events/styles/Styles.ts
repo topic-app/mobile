@@ -15,7 +15,7 @@ function getEventStyles(theme) {
     },
     description: {
       marginTop: 20,
-      marginVertical: 5,
+      marginHorizontal: 20,
     },
     time: {
       fontWeight: 'bold',

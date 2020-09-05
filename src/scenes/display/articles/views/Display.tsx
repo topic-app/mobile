@@ -37,9 +37,9 @@ import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
 
-import CommentInlineCard from '../components/Comment';
-import AddCommentModal from '../components/AddCommentModal';
-import AddToListModal from '../components/AddToListModal';
+import CommentInlineCard from '../../components/Comment';
+import AddCommentModal from '../../components/AddCommentModal';
+import AddToListModal from '../../components/AddToListModal';
 import getArticleStyles from '../styles/Styles';
 import type { ArticleDisplayStackParams } from '../index';
 
@@ -149,7 +149,6 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
             />
           ))}
-          key={author?._id}
           <View style={styles.container}>
             <CategoryTitle>Groupe</CategoryTitle>
           </View>
@@ -638,7 +637,12 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         state={reqState.comments.report}
         navigation={navigation}
       />
-      <AddToListModal visible={isListModalVisible} setVisible={setListModalVisible} id={id} />
+      <AddToListModal
+        visible={isListModalVisible}
+        setVisible={setListModalVisible}
+        id={id}
+        type="article"
+      />
     </View>
   );
 };

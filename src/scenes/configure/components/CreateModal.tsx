@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem } from '@ts/types';
+import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
 import { Divider, Button, HelperText, Card, ThemeProvider, useTheme } from 'react-native-paper';
 import { View, Platform, TextInput, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
@@ -9,13 +9,16 @@ import { logger } from '@utils/index';
 import { CollapsibleView } from '@components/index';
 import getStyles from '@styles/Styles';
 import { addArticleList } from '@redux/actions/contentData/articles';
-import getArticleStyles from '../styles/Styles';
+import { addEventList } from '@redux/actions/contentData/events';
+import getArticleStyles from './styles/Styles';
 
 type CreateModalProps = ModalProps & {
-  lists: ArticleListItem[];
+  articleLists: ArticleListItem[];
+  eventLists: EventListItem[];
+  type: 'articles' | 'events';
 };
 
-function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
+function CreateModal({ visible, setVisible, articleLists, eventLists, type }: CreateModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -23,6 +26,8 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
 
   const [createListText, setCreateListText] = React.useState('');
   const [errorVisible, setErrorVisible] = React.useState(false);
+
+  const lists = type === 'articles' ? articleLists : eventLists;
 
   return (
     <BottomModal
@@ -83,7 +88,11 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
                     setErrorVisible(true);
                   } else if (!lists.some((l) => l.name === createListText)) {
                     // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
-                    addArticleList(createListText);
+                    if (type === 'articles') {
+                      addArticleList(createListText);
+                    } else {
+                      addEventList(createListText);
+                    }
                     setCreateListText('');
                     setVisible(false);
                   }
@@ -100,9 +109,10 @@ function CreateModal({ visible, setVisible, lists }: CreateModalProps) {
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData } = state;
+  const { articleData, eventData } = state;
   return {
-    lists: articleData.lists,
+    articleLists: articleData.lists,
+    eventLists: eventData.lists,
   };
 };
 

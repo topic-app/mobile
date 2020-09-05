@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem } from '@ts/types';
+import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
 import {
   Divider,
   Button,
@@ -16,19 +16,32 @@ import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 import { CollapsibleView } from '@components/index';
 import getStyles from '@styles/Styles';
 import { modifyArticleList } from '@redux/actions/contentData/articles';
-import getArticleStyles from '../styles/Styles';
+import { modifyEventList } from '@redux/actions/contentData/events';
+import getArticleStyles from './styles/Styles';
 
 type EditModalProps = ModalProps & {
-  lists: ArticleListItem[];
+  articleLists: ArticleListItem[];
+  eventLists: EventListItem[];
   editingList: ArticleListItem | null;
   setEditingList: (props: ArticleListItem | null) => void;
+  type: 'articles' | 'events';
 };
 
-function EditModal({ visible, setVisible, lists, editingList, setEditingList }: EditModalProps) {
+function EditModal({
+  visible,
+  setVisible,
+  articleLists,
+  eventLists,
+  editingList,
+  setEditingList,
+  type,
+}: EditModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
+
+  const lists = type === 'articles' ? articleLists : eventLists;
 
   const [errorVisible, setErrorVisible] = React.useState(false);
 
@@ -112,12 +125,21 @@ function EditModal({ visible, setVisible, lists, editingList, setEditingList }: 
                     !lists.some((l) => l.name === editingList.name && l.id !== editingList.id)
                   ) {
                     // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
-                    modifyArticleList(
-                      editingList.id,
-                      editingList.name,
-                      null,
-                      editingList?.description,
-                    );
+                    if (type === 'articles') {
+                      modifyArticleList(
+                        editingList.id,
+                        editingList.name,
+                        null,
+                        editingList.description,
+                      );
+                    } else {
+                      modifyEventList(
+                        editingList.id,
+                        editingList.name,
+                        null,
+                        editingList.description,
+                      );
+                    }
                     setEditingList(null);
                     setVisible(false);
                   }
@@ -134,9 +156,10 @@ function EditModal({ visible, setVisible, lists, editingList, setEditingList }: 
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData } = state;
+  const { articleData, eventData } = state;
   return {
-    lists: articleData.lists,
+    articleLists: articleData.lists,
+    eventLists: eventData.lists,
   };
 };
 

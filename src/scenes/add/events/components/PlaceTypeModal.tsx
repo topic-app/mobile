@@ -14,35 +14,30 @@ import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 
 import getStyles from '@styles/Styles';
 
-type QuickTypeModalProps = ModalProps & { next: (type: string) => void };
+type PlaceTypeModalProps = ModalProps & { next: (type: string) => void };
 
-function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
+function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [currentType, setCurrentType] = React.useState('tag');
+  const [currentType, setCurrentType] = React.useState('school');
 
-  const quickTypes = [
+  const placeTypes = [
     {
-      type: 'tag',
-      title: 'Tag',
-      description: "Articles traitant d'un certain sujet ou autour d'un certain thème",
+      type: 'school',
+      title: 'Établissement',
+      description: "L'évènement a lieu dans un établissement scolaire",
     },
     {
-      type: 'group',
-      title: 'Groupe',
-      description: "Articles écrits par les membres d'un certain groupe",
+      type: 'place',
+      title: 'Lieu',
+      description: "L'évènement à lieu dans un lieu culturel",
     },
     {
-      type: 'user',
-      title: 'Utilisateur',
-      description: 'Articles écrits par un utilisateur',
-    },
-    {
-      type: 'location',
-      title: 'Localisation',
-      description: 'Articles déstinés à une école, à un département, ou à une région',
+      type: 'address',
+      title: 'Adresse',
+      description: "L'évènement à lieu à une adresse spécifique",
     },
   ];
 
@@ -69,7 +64,7 @@ function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
       <ThemeProvider theme={theme}>
         <Card style={styles.modalCard}>
           <FlatList
-            data={quickTypes}
+            data={placeTypes}
             renderItem={({ item }) => {
               return (
                 <View>
@@ -131,4 +126,4 @@ function QuickTypeModal({ visible, setVisible, next }: QuickTypeModalProps) {
   );
 }
 
-export default QuickTypeModal;
+export default PlaceTypeModal;

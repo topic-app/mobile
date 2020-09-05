@@ -10,9 +10,6 @@ import {
   Group,
   User,
   RequestState,
-  DepartmentsState,
-  SchoolsState,
-  ArticleListItem,
 } from '@ts/types';
 import {
   Divider,
@@ -36,42 +33,32 @@ import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
-import { searchSchools, updateSchools } from '@redux/actions/api/schools';
-import { searchDepartments, updateDepartments } from '@redux/actions/api/departments';
-
-import getArticleStyles from '../styles/Styles';
 
 type QuickSelectModalProps = ModalProps & {
   quicks: ArticleQuickItem[];
   editingList: ArticleListItem | null;
   setEditingList: (props: ArticleListItem | null) => void;
-  type: 'tag' | 'group' | 'user' | 'school' | 'region' | 'departement';
+  type: 'tag' | 'group' | 'user';
   tags: TagsState;
   groups: GroupsState;
   users: UsersState;
-  departments: DepartmentsState;
-  schools: SchoolsState;
 };
 
-function QuickSelectModal({
+function PlaceSelectModal({
   visible,
   setVisible,
   type,
-  tags,
-  groups,
-  departments,
   schools,
-  users,
-  quicks,
-}: QuickSelectModalProps) {
+  places,
+  eventPlaces,
+}: PlaceSelectModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [searchText, setSearchText] = React.useState('');
 
-  let data: Tag[] | User[] | Group[] = [];
+  let data: School[] | Place[] = [];
   let update: (text?: string) => void = () => {};
   let icon = 'alert-decagram';
   let state: { list: RequestState; search: RequestState } = {
@@ -79,57 +66,25 @@ function QuickSelectModal({
     search: { loading: { initial: false }, error: true },
   };
   switch (type) {
-    case 'tag':
-      data = searchText ? tags.search : tags.data;
-      update = (text = searchText) =>
-        text ? searchTags('initial', text, {}) : updateTags('initial');
-      icon = 'pound';
-      state = tags.state;
-      break;
-    case 'user':
-      data = searchText ? users.search : users.data;
-      update = (text = searchText) =>
-        text ? searchUsers('initial', text, {}) : updateUsers('initial');
-      icon = 'account';
-      state = users.state;
-      break;
-    case 'group':
-      data = searchText ? groups.search : groups.data;
-      update = (text = searchText) =>
-        text ? searchGroups('initial', text, {}) : updateGroups('initial');
-      icon = 'account-multiple';
-      state = groups.state;
-      break;
     case 'school':
       data = searchText ? schools.search : schools.data;
       update = (text = searchText) =>
-        text ? searchSchools('initial', text, {}) : updateSchools('initial');
+        text ? searchTags('initial', text, {}) : updateTags('initial');
       icon = 'school';
       state = schools.state;
       break;
-    case 'departement':
-      data = (searchText ? departments.search : departments.data).filter(
-        (d) => d.type === 'departement',
-      );
+    case 'place':
+      data = searchText ? places.search : places.data;
       update = (text = searchText) =>
-        text ? searchDepartments('initial', text, {}) : updateDepartments('initial');
-      icon = 'map-marker-radius';
-      state = departments.state;
-      break;
-    case 'region':
-      data = (searchText ? departments.search : departments.data).filter(
-        (d) => d.type === 'region',
-      );
-      update = (text = searchText) =>
-        text ? searchDepartments('initial', text, {}) : updateDepartments('initial');
-      icon = 'map-marker-radius';
-      state = departments.state;
+        text ? searchUsers('initial', text, {}) : updateUsers('initial');
+      icon = 'account';
+      state = places.state;
       break;
   }
 
   React.useEffect(() => {
     update();
-  }, [type]);
+  }, [null]);
 
   return (
     <BottomModal
@@ -189,7 +144,6 @@ function QuickSelectModal({
             </View>
             <FlatList
               data={data}
-              style={{ maxHeight: 400 }}
               keyExtractor={(i) => i._id}
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={() => (
@@ -203,14 +157,9 @@ function QuickSelectModal({
                 </View>
               )}
               renderItem={({ item }) =>
-                quicks.some((q) => q.id === item._id) ? null : (
+                eventPlaces.some((e) => e.id === item._id) ? null : (
                   <List.Item
                     title={item.name || item.info?.username}
-                    description={
-                      type === 'school'
-                        ? item.address?.address?.city || item.address?.shortName
-                        : undefined
-                    }
                     left={() =>
                       item.avatar || item.info?.avatar ? (
                         <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
@@ -219,7 +168,7 @@ function QuickSelectModal({
                       )
                     }
                     onPress={() => {
-                      addArticleQuick(type, item._id, item.name || item.info?.username);
+                      addEventPlace(type, item._id, item.name || item.info?.username);
                       setVisible(false);
                     }}
                   />
@@ -234,15 +183,13 @@ function QuickSelectModal({
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData, tags, groups, users, schools, departments } = state;
+  const { articleData, tags, groups, users } = state;
   return {
     quicks: articleData.quicks,
     tags,
     groups,
     users,
-    schools,
-    departments,
   };
 };
 
-export default connect(mapStateToProps)(QuickSelectModal);
+export default connect(mapStateToProps)(PlaceSelectModal);

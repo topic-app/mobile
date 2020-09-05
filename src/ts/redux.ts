@@ -279,17 +279,86 @@ export type DepartmentsActionTypes =
   | ClearDepartmentsAction;
 
 // Events
+
+// Types pour les actions
+
 export const UPDATE_EVENTS_STATE = 'UPDATE_EVENTS_STATE';
-export const UPDATE_EVENTS_DATA = 'UPDATE_EVENTS_DATA';
+export const UPDATE_EVENTS_UPCOMING_DATA = 'UPDATE_EVENTS_UPCOMING_DATA';
+export const UPDATE_EVENTS_PASSED_DATA = 'UPDATE_EVENTS_PASSED_DATA';
 export const UPDATE_EVENTS_ITEM = 'UPDATE_EVENTS_ITEM';
+export const UPDATE_EVENTS_VERIFICATION = 'UPDATE_EVENTS_VERIFICATION';
 export const UPDATE_EVENTS_SEARCH = 'UPDATE_EVENTS_SEARCH';
+export const UPDATE_EVENTS_PARAMS = 'UPDATE_EVENTS_PARAMS';
+export const UPDATE_EVENTS_LISTS = 'UPDATE_EVENTS_LISTS';
+export const UPDATE_EVENTS_READ = 'UPDATE_EVENTS_READ';
+export const UPDATE_EVENTS_PREFS = 'UPDATE_EVENTS_PREFS';
+export const UPDATE_EVENTS_QUICKS = 'UPDATE_EVENTS_QUICKS';
+export const UPDATE_EVENTS_CREATION_DATA = 'UPDATE_EVENTS_CREATION_DATA';
 export const CLEAR_EVENTS = 'CLEAR_EVENTS';
 
 export type EventsState = {
-  data: (Event | EventPreload)[];
-  search: EventPreload[];
+  dataUpcoming: (Event | EventPreload)[];
+  dataPassed: (Event | EventPreload)[];
   item: Event | null;
+  search: EventPreload[];
+  verification: EventPreload[];
   state: EventRequestState;
+  creationData: EventCreationData;
+};
+
+export type EventListItem = {
+  id: string;
+  name: string;
+  description?: string;
+  icon: string;
+  items: Event[]; // a besoin d'un refactor
+};
+
+export type EventParams = {
+  schools?: string[];
+  departments?: string[];
+  global?: boolean;
+};
+
+export type EventQuickItem = {
+  type: 'tag' | 'user' | 'group';
+  id: string;
+  title: string;
+};
+
+export type EventPrefs = {
+  categories?: string[];
+};
+
+export type EventReadItem = {
+  id: string;
+  title?: string;
+  date?: Date;
+  marked: boolean;
+};
+
+export type EventCreationData = {
+  group?: string;
+  location?: {
+    schools?: string[];
+    departments?: string[];
+    global?: boolean;
+  };
+  date?: Date;
+  title?: string;
+  summary?: string;
+  tags?: string[];
+  parser: 'plaintext' | 'markdown';
+  data: string;
+};
+
+export type EventsDataState = {
+  params: EventParams;
+  lists: EventListItem[];
+  prefs: EventPrefs;
+  read: EventReadItem[];
+  quicks: EventQuickItem[];
+  creationData: EventCreationData;
 };
 
 type UpdateEventsStateAction = {
@@ -297,8 +366,13 @@ type UpdateEventsStateAction = {
   data: EventRequestState;
 };
 
-type UpdateEventsDataAction = {
-  type: typeof UPDATE_EVENTS_DATA;
+type UpdateEventsUpcomingDataAction = {
+  type: typeof UPDATE_EVENTS_UPCOMING_DATA;
+  data: (Event | EventPreload)[];
+};
+
+type UpdateEventsPassedDataAction = {
+  type: typeof UPDATE_EVENTS_PASSED_DATA;
   data: (Event | EventPreload)[];
 };
 
@@ -312,16 +386,59 @@ type UpdateEventsSearchAction = {
   data: EventPreload[];
 };
 
+type UpdateEventsParamsAction = {
+  type: typeof UPDATE_EVENTS_PARAMS;
+  data: EventParams;
+};
+
+type UpdateEventsListsAction = {
+  type: typeof UPDATE_EVENTS_LISTS;
+  data: EventListItem[];
+};
+
+type UpdateEventsVerificationAction = {
+  type: typeof UPDATE_EVENTS_VERIFICATION;
+  data: EventPreload[];
+};
+
+type UpdateEventsReadAction = {
+  type: typeof UPDATE_EVENTS_READ;
+  data: { id: string }[];
+};
+
+type UpdateEventsPrefsAction = {
+  type: typeof UPDATE_EVENTS_PREFS;
+  data: { hidden?: string[]; default?: string };
+};
+
+type UpdateEventsQuicksAction = {
+  type: typeof UPDATE_EVENTS_QUICKS;
+  data: EventQuickItem[];
+};
+
+type UpdateEventsCreationDataAction = {
+  type: typeof UPDATE_EVENTS_CREATION_DATA;
+  data: EventCreationData;
+};
+
 type ClearEventsAction = {
   type: typeof CLEAR_EVENTS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; verification?: boolean };
 };
 
 export type EventsActionTypes =
   | UpdateEventsStateAction
-  | UpdateEventsDataAction
+  | UpdateEventsUpcomingDataAction
+  | UpdateEventsPassedDataAction
   | UpdateEventsItemAction
   | UpdateEventsSearchAction
+  | UpdateEventsVerificationAction
+  | UpdateEventsParamsAction
+  | UpdateEventsListsAction
+  | UpdateEventsReadAction
+  | UpdateEventsPrefsAction
+  | UpdateEventsQuicksAction
+  | UpdateEventsCreationDataAction
   | ClearEventsAction;
 
 // Groups

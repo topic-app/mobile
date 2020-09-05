@@ -24,11 +24,11 @@ import {
 } from '@redux/actions/contentData/articles';
 import getArticleStyles from '../styles/Styles';
 
-import CreateModal from '../components/CreateModal';
-import EditModal from '../components/EditModal';
-import QuickTypeModal from '../components/QuickTypeModal';
-import QuickSelectModal from '../components/QuickSelectModal';
-import QuickLocationTypeModal from '../components/QuickLocationTypeModal';
+import CreateModal from '../../components/CreateModal';
+import EditModal from '../../components/EditModal';
+import QuickTypeModal from '../../components/QuickTypeModal';
+import QuickSelectModal from '../../components/QuickSelectModal';
+import QuickLocationTypeModal from '../../components/QuickLocationTypeModal';
 
 type ArticleListsProps = {
   lists: ArticleListItem[];
@@ -280,8 +280,7 @@ function ArticleLists({
                             <View onStartShouldSetResponder={() => true}>
                               <PlatformTouchable
                                 disabled={
-                                  lists.length === 1 &&
-                                  articlePrefs.hidden.length > categories.length - 1
+                                  lists.length === 1 && articlePrefs.categories?.length === 0
                                 }
                                 onPress={() => {
                                   Alert.alert(
@@ -306,8 +305,7 @@ function ArticleLists({
                                 <List.Icon
                                   icon="delete"
                                   color={
-                                    lists.length === 1 &&
-                                    articlePrefs.hidden.length > categories.length - 1
+                                    lists.length === 1 && articlePrefs.categories?.length === 0
                                       ? colors.disabled
                                       : colors.text
                                   }
@@ -376,6 +374,7 @@ function ArticleLists({
                   )}
                   renderItem={({ item }) => {
                     let content = { description: 'Erreur', icon: 'alert-decagram' };
+                    console.log(JSON.stringify(item));
                     if (item.type === 'tag') {
                       content = {
                         description: 'Tag',
@@ -453,14 +452,20 @@ function ArticleLists({
         }}
       />
 
-      <CreateModal visible={isCreateModalVisible} setVisible={setCreateModalVisible} />
+      <CreateModal
+        visible={isCreateModalVisible}
+        setVisible={setCreateModalVisible}
+        type="articles"
+      />
       <EditModal
         visible={isEditModalVisible}
         setVisible={setEditModalVisible}
         editingList={editingList}
         setEditingList={setEditingList}
+        type="articles"
       />
       <QuickTypeModal
+        type="articles"
         visible={isQuickTypeModalVisible}
         setVisible={setQuickTypeModalVisible}
         next={next}
@@ -473,7 +478,8 @@ function ArticleLists({
       <QuickSelectModal
         visible={isQuickSelectModalVisible}
         setVisible={setQuickSelectModalVisible}
-        type={quickType}
+        dataType={quickType}
+        type="articles"
       />
     </View>
   );

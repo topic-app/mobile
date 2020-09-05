@@ -7,7 +7,7 @@ import Content from '@components/Content';
 import { PlatformIconButton } from '@components/PlatformComponents';
 import getStyles from '@styles/Styles';
 import moment from 'moment';
-import getCommentStyles from '../styles/Styles';
+import getCommentStyles from './styles/Styles';
 
 function CommentInlineCard({ comment, report, loggedIn, navigation }) {
   const { publisher, content, date, parent, parentType, _id: id } = comment;
