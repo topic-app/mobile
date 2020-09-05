@@ -91,7 +91,7 @@ const EventAddPageLocation: React.FC<Props> = ({
       ?.find((r) => r._id === selectedGroup.membership.role)
       ?.permissions.find((p) => p.permission === 'event.add')?.scope;
 
-  const toggle = (i: { _id: string }, func: Function, data: string[]) => {
+  const toggle = (i: Partial<{ _id: string }>, data: string[], func: (arr: string[]) => void) => {
     if (data.includes(i._id)) {
       func(data.filter((j) => j !== i._id));
     } else {
