@@ -148,7 +148,13 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'legal',
                 icon: 'script-text',
                 title: 'Conditions',
-                component: <AuthCreatePageLegal userEmail={creationData.email} create={create} />,
+                component: (
+                  <AuthCreatePageLegal
+                    userEmail={creationData.email}
+                    create={create}
+                    navigation={navigation}
+                  />
+                ),
               },
             ]}
           />

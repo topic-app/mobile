@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Platform, Linking, TouchableWithoutFeedback } from 'react-native';
+import { View, Platform, Linking, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { HelperText, Button, Checkbox, List, useTheme } from 'react-native-paper';
 
 import { StepperViewPageProps } from '@components/index';
@@ -10,9 +10,10 @@ import { ListHeading, ListItem, ListItemAnchor } from './ListComponents';
 type Props = StepperViewPageProps & {
   create: () => void;
   userEmail?: string;
+  navigation: any;
 };
 
-const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
+const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigation }) => {
   const [terms, setTerms] = useState(false);
   const [email, setEmail] = useState(false);
   const [termsError, setTermsError] = useState({ error: false, message: '' });
@@ -42,8 +43,16 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
     <View style={authStyles.formContainer}>
       <View style={authStyles.descriptionContainer}>
         <View>
-          <TouchableWithoutFeedback
-            onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/privacy')}
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'About',
+                  params: { screen: 'Legal', params: { page: 'confidentialite' } },
+                },
+              })
+            }
           >
             <View style={authStyles.descriptionPartContainer}>
               <ListHeading label="Résumé de la politique de vie privée" />
@@ -76,15 +85,31 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
                 label="Pour plus d'informations, adressez vous à dpo@topicapp.fr"
               />
               <ListItemAnchor
-                onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/privacy')}
+                onPress={() =>
+                  navigation.navigate('Main', {
+                    screen: 'More',
+                    params: {
+                      screen: 'About',
+                      params: { screen: 'Legal', params: { page: 'confidentialite' } },
+                    },
+                  })
+                }
                 icon="arrow-right-bold-circle-outline"
                 label="Voir la politique de vie privée"
                 textStyle={{ color: colors.primary, textDecorationLine: 'underline' }}
               />
             </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/terms/')}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'About',
+                  params: { screen: 'Legal', params: { page: 'conditions' } },
+                },
+              })
+            }
           >
             <View style={authStyles.descriptionPartContainer}>
               <ListHeading label="Résumé des conditions d'utilisation" />
@@ -117,13 +142,21 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create }) => {
                 label="Si vous etes mineur, votre représentant légal doit accepter les conditions d'utilisation et la politique de vie privée aussi"
               />
               <ListItemAnchor
-                onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/terms/')}
+                onPress={() =>
+                  navigation.navigate('Main', {
+                    screen: 'More',
+                    params: {
+                      screen: 'About',
+                      params: { screen: 'Legal', params: { page: 'conditions' } },
+                    },
+                  })
+                }
                 icon="arrow-right-bold-circle-outline"
                 label="Voir les conditions d'utilisation"
                 textStyle={{ color: colors.primary, textDecorationLine: 'underline' }}
               />
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
           <View style={authStyles.descriptionPartContainer}>
             <ListItem
               icon="information-outline"

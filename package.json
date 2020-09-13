@@ -88,6 +88,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "jest-expo": "~38.0.0",
     "metro-react-native-babel-preset": "^0.63.0",
+    "nlf": "^2.1.1",
     "typescript": "~3.9.5"
   },
   "jest": {

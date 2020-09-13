@@ -31,6 +31,7 @@ import {
   SchoolRequestState,
   TagRequestState,
   UserRequestState,
+  LegalRequestState,
 } from './requestState';
 
 // Articles
@@ -725,6 +726,28 @@ export type UsersActionTypes =
   | UpdateUsersSearchAction
   | ClearUsersAction;
 
+export const UPDATE_LEGAL_STATE = 'UPDATE_LEGAL_STATE';
+export const UPDATE_LEGAL = 'UPDATE_LEGAL';
+
+export type LegalState = {
+  conditions: string;
+  confidentialite: string;
+  mentions: string;
+  state: LegalRequestState;
+};
+
+type UpdateLegalStateAction = {
+  type: typeof UPDATE_LEGAL_STATE;
+  data: LegalRequestState;
+};
+
+type UpdateLegalAction = {
+  type: typeof UPDATE_LEGAL;
+  data: Partial<LegalState>;
+};
+
+export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction;
+
 export type ActionType =
   | ArticlesActionTypes
   | EventsActionTypes
@@ -735,4 +758,5 @@ export type ActionType =
   | GroupsActionTypes
   | PetitionsActionTypes
   | TagsActionTypes
-  | PlacesActionTypes;
+  | PlacesActionTypes
+  | LegalActionTypes;

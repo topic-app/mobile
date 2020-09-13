@@ -44,6 +44,12 @@ export type GroupRequestState = StandardRequestState & {
   modify: RequestState;
 };
 
+export type LegalRequestState = {
+  conditions: RequestState;
+  confidentialite: RequestState;
+  mentions: RequestState;
+};
+
 export type CommentRequestState = {
   list: RequestStateComplex;
   search: RequestStateComplex;

@@ -202,8 +202,10 @@ function LandingArticles({ navigation, route }) {
                         />
                       </View>
                       <Text>
-                        Le collectif L’ESPER nous soutient dans les démarches administratives et
-                        dans la promotion de l’application.
+                        L'ESTPER est un regroupement d'organisations qui agissent dans les domaines
+                        de la santé, l'assurance, la banque, le médico-social, l'éducation populaire
+                        ou les activités de loisirs. L'ESPER place l'économie sociale au service de
+                        l'éducation.
                       </Text>
                     </View>
                   </View>
