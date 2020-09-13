@@ -155,21 +155,17 @@ function About({ navigation }) {
                   </View>
                   <List.Item
                     title="Logo et ressources"
-                    description="Par Ella Nitters"
-                    right={() => <List.Icon icon="chevron-right" />}
+                    description="© Ella Nitters"
                   />
                   <List.Item
                     title="Illustrations"
-                    description="undraw.co et d'autres"
-                    right={() => <List.Icon icon="chevron-right" />}
+                    description="© Katerina Limpitsouni (undraw.co)"
+                  />
+                  <List.Item
+                    title="Données cartographiques"
+                    description="© OpenMapTiles © OpenStreetMap Contributors"
                   />
                   <Divider />
-                  <List.Item
-                    title="Librairies"
-                    description="Liste"
-                    right={() => <List.Icon icon="chevron-right" />}
-                    onPress={() => navigation.navigate('Licenses', { page: 'list' })}
-                  />
                   <List.Item
                     title="Librairies"
                     description="Toutes les licenses open-source"

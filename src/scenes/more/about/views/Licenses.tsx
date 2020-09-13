@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Linking, FlatList, Dimensions } from 'react-native';
-import { Text, useTheme, List } from 'react-native-paper';
+import { Text, useTheme, List, Divider } from 'react-native-paper';
 import CustomTabView from '@components/CustomTabView';
 import getStyles from '@styles/Styles';
 import { State, LegalState, LegalRequestState } from '@ts/types';
@@ -17,24 +17,22 @@ type LegalPropTypes = {
   state: LegalRequestState;
 };
 
-type License = {
+type Package = {
   id: string;
   name: string;
-  repository: string;
-  licenseSources: {
-    package: {
-      sources: { license: string; url: string }[];
-    };
-    license: {
-      sources: { text: string; names: () => string[] }[];
-    };
-  };
+  license: string;
+};
+
+type License = {
+  id: string;
+  content: string;
 };
 
 function Legal({ route }: LegalPropTypes) {
   const theme = useTheme();
   const styles = getStyles(theme);
 
+  const packages = require('../data/packages.json');
   const licenses = require('../data/licenses.json');
 
   const { page } = route.params || {};
@@ -44,27 +42,25 @@ function Legal({ route }: LegalPropTypes) {
       <ScrollView>
         {(page === 'list' || page === 'full') && (
           <View>
-            <FlatList
-              data={licenses}
-              keyExtractor={(i) => i.id}
-              renderItem={({ item }: { item: License }) => (
-                <List.Item
-                  key={item.id}
-                  title={item.name}
-                  descriptionNumberOfLines={1000}
-                  description={
-                    page === 'list'
-                      ? `License ${
-                          item.licenseSources.package?.sources[0]?.license ||
-                          item.licenseSources.license?.sources[0]?.names()
-                        }`
-                      : item.licenseSources.license?.sources[0]?.text ||
-                        `License ${item.licenseSources.package?.sources[0]?.license} disponible à ${item.licenseSources.package?.sources[0]?.url}`
-                  }
-                  onPress={() => handleUrl(item.repository)}
-                />
-              )}
-            />
+            {licenses.map((l: License) => (
+              <View style={{ marginTop: 30 }} key={l.id}>
+                <List.Subheader>{l.id}</List.Subheader>
+                <Divider />
+                <View style={styles.contentContainer}>
+                  <Text>
+                    Les librairies suivantes, utilisées par l'application Topic, sont licensées sous{' '}
+                    {l.id} :
+                  </Text>
+                  <FlatList
+                    data={packages.filter((p: Package) => p.license === l.id)}
+                    keyExtractor={(p) => p.id}
+                    renderItem={({ item }: { item: Package }) => <List.Item title={item.id} />}
+                  />
+                  <Text>Contenu de la license:</Text>
+                  <Text>{l.content}</Text>
+                </View>
+              </View>
+            ))}
           </View>
         )}
       </ScrollView>
