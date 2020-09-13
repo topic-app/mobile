@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Variables to change
-BASE_BRANCH=v0.3-beta
+BASE_BRANCH=legal
 
 # Get path to script
 SCRIPT_PATH="`dirname \"$0\"`"                  # relative
-MOBILE_PATH="`( cd \"$SCRIPT_PATH/../..\" && pwd )`"  # absolutized and normalized 
+MOBILE_PATH="`( cd \"$SCRIPT_PATH/../..\" && pwd )`"  # absolutized and normalized
 
 # Navigate to android folder
 cd "$MOBILE_PATH/android"
