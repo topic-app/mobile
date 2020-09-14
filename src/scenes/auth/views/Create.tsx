@@ -119,7 +119,7 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 component: (
                   <AuthCreatePageSchool
                     landing={() =>
-                      navigation.navigate('Landing', {
+                      navigation.push('Landing', {
                         screen: 'SelectLocation',
                         params: { goBack: true },
                       })
@@ -148,7 +148,13 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'legal',
                 icon: 'script-text',
                 title: 'Conditions',
-                component: <AuthCreatePageLegal userEmail={creationData.email} create={create} />,
+                component: (
+                  <AuthCreatePageLegal
+                    userEmail={creationData.email}
+                    create={create}
+                    navigation={navigation}
+                  />
+                ),
               },
             ]}
           />

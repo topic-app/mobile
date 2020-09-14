@@ -10,6 +10,7 @@ import placeReducer from './api/places';
 import schoolReducer from './api/schools';
 import tagReducer from './api/tags';
 import userReducer from './api/users';
+import legalReducer from './api/legal';
 
 import articleDataReducer from './contentData/articles';
 import eventDataReducer from './contentData/events';
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   schools: schoolReducer,
   tags: tagReducer,
   users: userReducer,
+  legal: legalReducer,
   // contentData
   articleData: articleDataReducer,
   eventData: eventDataReducer,
