@@ -7,7 +7,17 @@ import AboutList from './views/List';
 import AboutLegal from './views/Legal';
 import AboutLicenses from './views/Licenses';
 
-const Stack = createStackNavigator();
+export type AboutStackParams = {
+  List: undefined;
+  Legal: {
+    page?: 'list' | 'full' | 'logo' | 'illustrations';
+  };
+  Licenses: {
+    page?: 'list' | 'full' | 'logo' | 'illustrations';
+  };
+};
+
+const Stack = createStackNavigator<AboutStackParams>();
 
 function AboutStackNavigator() {
   return (

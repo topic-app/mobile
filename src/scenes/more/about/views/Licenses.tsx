@@ -1,21 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { View, ScrollView, Linking, FlatList, Dimensions } from 'react-native';
+import { View, SectionList } from 'react-native';
 import { Text, useTheme, List, Divider } from 'react-native-paper';
-import CustomTabView from '@components/CustomTabView';
-import getStyles from '@styles/Styles';
-import { State, LegalState, LegalRequestState } from '@ts/types';
-import { connect } from 'react-redux';
-import LegalPage from '../components/LegalPage';
-import { fetchDocument } from '@redux/actions/api/legal';
-import { handleUrl } from '@utils/index';
+import { StackScreenProps } from '@react-navigation/stack';
 
-type LegalPropTypes = {
-  navigation: any;
-  route: { params: { page?: 'list' | 'full' | 'logo' | 'illustrations' } };
-  legal: LegalState;
-  state: LegalRequestState;
-};
+import getStyles from '@styles/Styles';
+
+import type { AboutStackParams } from '../index';
+import packages from '../data/packages.json';
+import licenses from '../data/licenses.json';
+
+type LicensesPropTypes = StackScreenProps<AboutStackParams, 'Licenses'>;
 
 type Package = {
   id: string;
@@ -28,44 +22,53 @@ type License = {
   content: string;
 };
 
-function Legal({ route }: LegalPropTypes) {
+function Licenses({ route }: LicensesPropTypes) {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const packages = require('../data/packages.json');
-  const licenses = require('../data/licenses.json');
-
   const { page } = route.params || {};
+
+  const licenseData = licenses.map((l: License) => ({
+    id: l.id,
+    content: l.content,
+    data: packages.filter((p: Package) => p.license === l.id),
+  }));
 
   return (
     <View style={styles.page}>
-      <ScrollView>
-        {(page === 'list' || page === 'full') && (
-          <View>
-            {licenses.map((l: License) => (
-              <View style={{ marginTop: 30 }} key={l.id}>
-                <List.Subheader>{l.id}</List.Subheader>
+      {(page === 'list' || page === 'full') && (
+        <View>
+          <SectionList
+            sections={licenseData}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View>
+                <List.Item title={item.id} />
+              </View>
+            )}
+            renderSectionHeader={({ section: { id } }) => (
+              <View style={{ marginTop: 30 }}>
+                <List.Subheader>{id}</List.Subheader>
                 <Divider />
                 <View style={styles.contentContainer}>
                   <Text>
                     Les librairies suivantes, utilisées par l'application Topic, sont licensées sous{' '}
-                    {l.id} :
+                    {id} :
                   </Text>
-                  <FlatList
-                    data={packages.filter((p: Package) => p.license === l.id)}
-                    keyExtractor={(p) => p.id}
-                    renderItem={({ item }: { item: Package }) => <List.Item title={item.id} />}
-                  />
-                  <Text>Contenu de la license:</Text>
-                  <Text>{l.content}</Text>
                 </View>
               </View>
-            ))}
-          </View>
-        )}
-      </ScrollView>
+            )}
+            renderSectionFooter={({ section: { content } }) => (
+              <View>
+                <Text>Contenu de la license:</Text>
+                <Text>{content}</Text>
+              </View>
+            )}
+          />
+        </View>
+      )}
     </View>
   );
 }
 
-export default Legal;
+export default Licenses;

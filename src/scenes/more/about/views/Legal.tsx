@@ -1,17 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, ScrollView } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-import CustomTabView from '@components/CustomTabView';
-import getStyles from '@styles/Styles';
-import { State, LegalState, LegalRequestState } from '@ts/types';
+import { useTheme } from 'react-native-paper';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import LegalPage from '../components/LegalPage';
+
+import { State, LegalState, LegalRequestState } from '@ts/types';
+import { CustomTabView } from '@components/index';
+import getStyles from '@styles/Styles';
 import { fetchDocument } from '@redux/actions/api/legal';
 
-type LegalPropTypes = {
-  navigation: any;
-  route: { params: { page?: 'conditions' | 'conditions' | 'confidentialite' } };
+import type { AboutStackParams } from '../index';
+import LegalPage from '../components/LegalPage';
+
+type LegalPropTypes = StackScreenProps<AboutStackParams, 'Legal'> & {
   legal: LegalState;
   state: LegalRequestState;
 };
