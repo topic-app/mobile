@@ -119,7 +119,7 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 component: (
                   <AuthCreatePageSchool
                     landing={() =>
-                      navigation.navigate('Landing', {
+                      navigation.push('Landing', {
                         screen: 'SelectLocation',
                         params: { goBack: true },
                       })

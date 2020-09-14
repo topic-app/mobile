@@ -47,19 +47,19 @@ function About({ navigation }) {
                     ]}
                   >
                     <TouchableOpacity
-                      onPress={() => navigation.navigate('Legal', { page: 'mentions' })}
+                      onPress={() => navigation.push('Legal', { page: 'mentions' })}
                     >
                       <Text style={styles.link}>Mentions légales</Text>
                     </TouchableOpacity>
                     <Text> - </Text>
                     <TouchableOpacity
-                      onPress={() => navigation.navigate('Legal', { page: 'conditions' })}
+                      onPress={() => navigation.push('Legal', { page: 'conditions' })}
                     >
                       <Text style={styles.link}>Conditions d'utilisation</Text>
                     </TouchableOpacity>
                     <Text> - </Text>
                     <TouchableOpacity
-                      onPress={() => navigation.navigate('Legal', { page: 'confidentialite' })}
+                      onPress={() => navigation.push('Legal', { page: 'confidentialite' })}
                     >
                       <Text style={styles.link}>Politique de confidentialité</Text>
                     </TouchableOpacity>

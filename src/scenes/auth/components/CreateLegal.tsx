@@ -45,7 +45,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigat
         <View>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('Main', {
+              navigation.push('Main', {
                 screen: 'More',
                 params: {
                   screen: 'About',
@@ -86,7 +86,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigat
               />
               <ListItemAnchor
                 onPress={() =>
-                  navigation.navigate('Main', {
+                  navigation.push('Main', {
                     screen: 'More',
                     params: {
                       screen: 'About',
@@ -102,7 +102,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigat
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('Main', {
+              navigation.push('Main', {
                 screen: 'More',
                 params: {
                   screen: 'About',
@@ -143,7 +143,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigat
               />
               <ListItemAnchor
                 onPress={() =>
-                  navigation.navigate('Main', {
+                  navigation.push('Main', {
                     screen: 'More',
                     params: {
                       screen: 'About',
