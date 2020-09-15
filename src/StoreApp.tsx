@@ -41,10 +41,24 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
     },
   };
 
+  const { colors } = theme;
+
+  const navTheme = {
+    dark: theme.dark,
+    colors: {
+      primary: colors.text,
+      background: colors.background,
+      card: colors.appBar,
+      text: colors.text,
+      border: colors.primary,
+      notification: colors.primary,
+    },
+  };
+
   return (
     <PaperProvider theme={theme}>
       <>
-        <NavigationContainer linking={linking} fallback={<AppLoading />} theme={theme}>
+        <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
           <AppNavigator />
         </NavigationContainer>
       </>
