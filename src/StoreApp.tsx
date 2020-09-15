@@ -1,8 +1,9 @@
 import React from 'react';
 import { Provider as PaperProvider, Text } from 'react-native-paper';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { connect } from 'react-redux';
+import { AppLoading } from 'expo';
 import screens from './screens';
 
 import { Preferences, State } from '@ts/types';
@@ -43,7 +44,7 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   return (
     <PaperProvider theme={theme}>
       <>
-        <NavigationContainer linking={linking} fallback={<Text>App loading...</Text>}>
+        <NavigationContainer linking={linking} fallback={<AppLoading />} theme={theme}>
           <AppNavigator />
         </NavigationContainer>
       </>
