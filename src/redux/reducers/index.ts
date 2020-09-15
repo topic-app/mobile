@@ -20,16 +20,18 @@ import accountReducer from './data/account';
 import locationReducer from './data/location';
 import { persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Platform } from 'react-native';
+import localForage from 'localforage';
 
 const accountPersistConfig = {
   key: 'auth',
-  storage: AsyncStorage,
+  storage: Platform.OS === 'web' ? localForage : AsyncStorage,
   whitelist: ['loggedIn', 'accountInfo', 'groups', 'permissions'],
 };
 
 const locationPersistConfig = {
   key: 'location',
-  storage: AsyncStorage,
+  storage: Platform.OS === 'web' ? localForage : AsyncStorage,
   whitelist: ['selected', 'schools', 'departments', 'schoolData', 'departmentData', 'global'],
 };
 
