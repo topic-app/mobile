@@ -330,7 +330,7 @@ function UserDisplay({
                   </View>
                 ))}
               <View style={{ height: 10 }} />
-              {user.data.public && user.data.description && (
+              {user.data?.public && !!user.data?.description && (
                 <View>
                   <List.Subheader>Description</List.Subheader>
                   <Divider />
@@ -340,7 +340,7 @@ function UserDisplay({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {!(groups.length === 0) && (
+              {/*{(groups.length !== 0) && (
                 <View>
                   <List.Subheader>Groupes</List.Subheader>
                   <Divider />
@@ -383,7 +383,7 @@ function UserDisplay({
                     ))}
                   <View style={{ height: 20 }} />
                 </View>
-              )}
+              )}*/}
               {user.data.public && (
                 <View>
                   <List.Subheader>Localisation</List.Subheader>
