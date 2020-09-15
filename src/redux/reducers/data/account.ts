@@ -58,6 +58,7 @@ if (config.dev.defaultAccount) {
     accountInfo: {},
     creationData: {},
     groups: [],
+    waitingGroups: [],
     permissions: [],
     state: {
       login: {

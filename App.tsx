@@ -21,10 +21,12 @@ import {
 import 'moment/locale/fr';
 
 import { enableScreens } from 'react-native-screens';
-import Store from '@redux/store';
+import Store, { Persistor } from '@redux/store';
 
 import StoreApp from './src/StoreApp';
 import errorHandler from './ErrorHandler';
+import { AppLoading } from 'expo';
+import { PersistGate } from 'redux-persist/integration/react';
 
 enableScreens();
 
@@ -49,16 +51,14 @@ function App() {
   });
 
   if (!fontsLoaded) {
-    return (
-      <View>
-        <Text>App loading</Text>
-      </View>
-    );
+    return <AppLoading />;
   }
 
   return (
     <ReduxProvider store={Store}>
-      <StoreApp />
+      <PersistGate persistor={Persistor} loading={<AppLoading />}>
+        <StoreApp />
+      </PersistGate>
     </ReduxProvider>
   );
 }
