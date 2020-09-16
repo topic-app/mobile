@@ -35,7 +35,7 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   );
 
   const linking = {
-    prefixes: ['https://topicapp.fr', 'https://beta.topicapp.fr', 'topic://'],
+    prefixes: ['https://topicapp.fr', 'https://go.topicapp.fr', 'topic://'],
     config: {
       screens,
     },

@@ -75,6 +75,11 @@ export default {
           Display: '/utilisateurs/:id',
         },
       },
+      Article: {
+        screens: {
+          Display: '/articles/:id',
+        },
+      },
     },
   },
   Root: {
