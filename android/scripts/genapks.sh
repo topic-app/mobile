@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Variables to change
-BASE_BRANCH=legal
+BASE_BRANCH=persist
 
 # Get path to script
 SCRIPT_PATH="`dirname \"$0\"`"                  # relative

@@ -18,6 +18,22 @@ import eventDataReducer from './contentData/events';
 import prefReducer from './data/prefs';
 import accountReducer from './data/account';
 import locationReducer from './data/location';
+import { persistReducer } from 'redux-persist';
+import AsyncStorage from '@react-native-community/async-storage';
+import { Platform } from 'react-native';
+import localForage from 'localforage';
+
+const accountPersistConfig = {
+  key: 'auth',
+  storage: Platform.OS === 'web' ? localForage : AsyncStorage,
+  whitelist: ['loggedIn', 'accountInfo', 'groups', 'permissions'],
+};
+
+const locationPersistConfig = {
+  key: 'location',
+  storage: Platform.OS === 'web' ? localForage : AsyncStorage,
+  whitelist: ['selected', 'schools', 'departments', 'schoolData', 'departmentData', 'global'],
+};
 
 const rootReducer = combineReducers({
   // api
@@ -37,8 +53,8 @@ const rootReducer = combineReducers({
   eventData: eventDataReducer,
   // data
   preferences: prefReducer,
-  account: accountReducer,
-  location: locationReducer,
+  account: persistReducer(accountPersistConfig, accountReducer),
+  location: persistReducer(locationPersistConfig, locationReducer),
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
