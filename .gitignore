@@ -23,6 +23,14 @@ DerivedData
 *.ipa
 *.xcuserstate
 
+# Expo and stuff
+.expo/
+.ENV
+google-services.json
+
+# Web
+web-build
+
 # Android/IntelliJ
 build/
 .idea
@@ -41,7 +49,6 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
-!debug.keystore
 
 # fastlane
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
