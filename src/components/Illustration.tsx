@@ -1,5 +1,7 @@
 import React from 'react';
 import { useTheme } from 'react-native-paper';
+import { SvgXml } from 'react-native-svg';
+import { config } from '@root/app.json';
 
 // Article Illustrations
 import ArticleCompletedLight from '@assets/images/illustrations/articles/articles_completed_light.svg';
@@ -67,6 +69,7 @@ import SearchLight from '@assets/images/illustrations/search/search_light.svg';
 import SearchDark from '@assets/images/illustrations/search/search_dark.svg';
 
 import { SvgProps } from 'react-native-svg';
+import { Platform } from 'react-native';
 
 const illustrationList = {
   // Article Illustrations
@@ -187,14 +190,18 @@ const illustrationList = {
 type Props = SvgProps & { name: keyof typeof illustrationList };
 
 const Illustration: React.FC<Props> = ({ name, ...rest }) => {
+  if (Platform.OS === 'web' || config.hideSvg) return null;
+
   const { dark } = useTheme();
   const Item = dark ? illustrationList[name]?.dark : illustrationList[name]?.light;
 
   if (!Item) {
     console.log(`Error: ${name} not found in list of artwork`);
+    return null;
   }
 
   // eslint-disable-next-line react/jsx-props-no-spreading
+  // TEMP: Because web
   return <Item {...rest} />;
 };
 

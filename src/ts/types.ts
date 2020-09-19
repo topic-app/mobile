@@ -2,10 +2,13 @@
  * File containing frequently used types to be used in multiple places through the project.
  */
 import theme from '@styles/Theme';
-import { SchoolPreload, DepartmentPreload } from '@root/common/ts/api';
-import { LocationRequestState } from '@root/common/ts/requestState';
+import { SchoolPreload, DepartmentPreload } from './api';
+import { LocationRequestState } from './requestState';
 
-export * from '@root/common/ts/index';
+export * from './api';
+export * from './requestState';
+export * from './redux';
+export type { RootState as State } from '@redux/reducers/index';
 export type { Theme } from '@styles/Theme';
 
 export type Preferences = {
@@ -16,6 +19,9 @@ export type Preferences = {
   recommendations: boolean;
   syncHistory: boolean;
   syncLists: boolean;
+  fontSize: number;
+  stripFormatting: boolean;
+  fontFamily: string;
 };
 
 export type LocationList = {

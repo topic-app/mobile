@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
-import { View, Platform, UIManager, LayoutAnimation, ViewStyle, StyleProp } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Platform,
+  UIManager,
+  LayoutAnimation,
+  ViewStyle,
+  StyleProp,
+} from "react-native";
 
 const { configureNext, create } = LayoutAnimation;
 
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
@@ -23,7 +33,7 @@ const CollapsibleView: React.FC<Props> = ({
 }) => {
   const [collapsedState, setCollapsedState] = useState(collapsed);
   if (collapsedState !== collapsed) {
-    configureNext(create(duration, 'easeInEaseOut', 'opacity'));
+    configureNext(create(duration, "easeInEaseOut", "opacity"));
     setCollapsedState(collapsed);
   }
   return collapsedState ? null : (

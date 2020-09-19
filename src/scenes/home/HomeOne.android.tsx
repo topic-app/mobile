@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Linking } from 'react-native';
+import { View, Linking, Platform } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { Drawer, Title, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ import TopicIcon from '@assets/images/topic-icon.svg';
 
 import getNavigatorStyles from '@styles/NavStyles';
 import { fetchLocationData } from '@redux/actions/data/location';
+import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import ErrorMessage from '@components/ErrorMessage';
 import HomeTwoNavigator from './HomeTwo';
 
@@ -29,15 +30,26 @@ function CustomDrawerContent({
   permissions,
 }) {
   const navigatorStyles = getNavigatorStyles(useTheme());
+
+  const retryFetch = () => {
+    fetchLocationData();
+    fetchAccount();
+    fetchGroups();
+    fetchWaitingGroups();
+  };
   // console.log(`Location ${JSON.stringify(location)}`);
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <Drawer.Section>
         <View style={navigatorStyles.profileBackground}>
-          {(location.state.fetch.loading ||
-            accountState.fetchAccount.loading ||
-            accountState.fetchGroups.loading) && <ProgressBar indeterminate />}
-          {location.state.fetch.error && (
+          {(location.state.fetch?.loading ||
+            accountState.fetchAccount?.loading ||
+            accountState.fetchGroups?.loading ||
+            accountState.fetchWaitingGroups?.loading) && <ProgressBar indeterminate />}
+          {(location.state.fetch?.error ||
+            accountState.fetchAccount?.error ||
+            accountState.fetchGroups?.error ||
+            accountState.fetchWaitingGroups?.error) && (
             <ErrorMessage
               type="axios"
               strings={{
@@ -49,17 +61,20 @@ function CustomDrawerContent({
                 location.state.fetch.error,
                 accountState.fetchAccount.error,
                 accountState.fetchGroups.error,
+                accountState.fetchWaitingGroups.error,
               ]}
-              retry={fetchLocationData}
+              retry={retryFetch}
             />
           )}
           <View style={navigatorStyles.profileIconContainer}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TopicIcon
-                style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
-                height={55}
-                width={55}
-              />
+              {Platform.OS !== 'web' && (
+                <TopicIcon
+                  style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
+                  height={55}
+                  width={55}
+                />
+              )}
               {loggedIn ? (
                 <View>
                   <Title
@@ -80,7 +95,7 @@ function CustomDrawerContent({
                   ) : null}
                 </View>
               ) : (
-                <Title style={navigatorStyles.title}>Topic</Title>
+                <Title style={navigatorStyles.topic}>Topic</Title>
               )}
             </View>
           </View>

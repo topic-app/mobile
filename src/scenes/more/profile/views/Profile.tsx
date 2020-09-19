@@ -135,13 +135,35 @@ function Profile({
             </Text>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 40 }}>{account.groups.length}</Text>
+            <Text style={{ fontSize: 40 }}>{account.groups?.length}</Text>
             <Text>
               Groupes <Icon name="eye-outline" color={colors.disabled} />
             </Text>
           </View>
         </View>
         <Divider style={{ marginTop: 15 }} />
+        <View style={styles.container}>
+          <Button
+            mode="outlined"
+            style={{ borderRadius: 20 }}
+            onPress={() =>
+              navigation.push('Main', {
+                screen: 'Display',
+                params: {
+                  screen: 'User',
+                  params: {
+                    screen: 'Display',
+                    params: {
+                      id: account.accountInfo.accountId,
+                    },
+                  },
+                },
+              })
+            }
+          >
+            Voir ma page
+          </Button>
+        </View>
         <View>
           <View style={{ height: 40 }} />
           <List.Subheader>Compte</List.Subheader>

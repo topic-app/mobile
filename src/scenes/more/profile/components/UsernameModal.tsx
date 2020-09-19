@@ -1,5 +1,5 @@
-import React from 'react';
-import { ModalProps, State, Account } from '@ts/types';
+import React from "react";
+import { ModalProps, State, Account } from "@ts/types";
 import {
   Divider,
   Button,
@@ -8,17 +8,17 @@ import {
   ThemeProvider,
   Card,
   useTheme,
-} from 'react-native-paper';
-import { View, Platform, TextInput } from 'react-native';
-import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
-import { connect } from 'react-redux';
-import { request } from '@utils/index';
+} from "react-native-paper";
+import { View, Platform, TextInput } from "react-native";
+import { BottomModal, SlideAnimation } from '@components/Modals';
+import { connect } from "react-redux";
+import { request } from "@utils/index";
 
-import { CollapsibleView, ErrorMessage } from '@components/index';
-import getStyles from '@styles/Styles';
-import { updateUsername } from '@redux/actions/data/profile';
-import { fetchAccount } from '@redux/actions/data/account';
-import getArticleStyles from '../styles/Styles';
+import { CollapsibleView, ErrorMessage } from "@components/index";
+import getStyles from "@styles/Styles";
+import { updateUsername } from "@redux/actions/data/profile";
+import { fetchAccount } from "@redux/actions/data/account";
+import getArticleStyles from "../styles/Styles";
 
 type UsernameModalProps = ModalProps & {
   state: { updateProfile: { loading: boolean; error: any } };
@@ -35,7 +35,7 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
   const [usernameValidation, setValidation] = React.useState({
     valid: false,
     error: false,
-    message: '',
+    message: "",
   });
 
   async function validateUsernameInput(username: string) {
@@ -44,7 +44,7 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
       error: false,
     };
 
-    if (username !== '') {
+    if (username !== "") {
       if (username.length < 3) {
         validation = {
           valid: false,
@@ -61,7 +61,9 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
       } else {
         let result;
         try {
-          result = await request('auth/check/local/username', 'get', { username });
+          result = await request("auth/check/local/username", "get", {
+            username,
+          });
         } catch (err) {
           validation = {
             valid: false,
@@ -86,11 +88,11 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
 
   function preValidateUsernameInput(username: string) {
     if (username.length >= 3 && username.match(/^[a-zA-Z0-9_.]+$/i) !== null) {
-      setValidation({ valid: false, error: false, message: '' });
+      setValidation({ valid: false, error: false, message: "" });
     }
   }
 
-  const [username, setUsername] = React.useState('');
+  const [username, setUsername] = React.useState("");
 
   const update = async () => {
     const usernameValidation = await validateUsernameInput(username);
@@ -119,7 +121,7 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
       }}
       modalAnimation={
         new SlideAnimation({
-          slideFrom: 'bottom',
+          slideFrom: "bottom",
           useNativeDriver: false,
         })
       }
@@ -131,8 +133,8 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
             <ErrorMessage
               type="axios"
               strings={{
-                what: 'la modification du compte',
-                contentSingular: 'Le compte',
+                what: "la modification du compte",
+                contentSingular: "Le compte",
               }}
               error={state.updateProfile.error}
               retry={update}
@@ -162,9 +164,9 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
             <Divider />
             <View style={styles.contentContainer}>
               <Button
-                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                mode={Platform.OS === "ios" ? "outlined" : "contained"}
                 color={colors.primary}
-                uppercase={Platform.OS !== 'ios'}
+                uppercase={Platform.OS !== "ios"}
                 onPress={update}
               >
                 Confirmer

@@ -18,6 +18,7 @@ import ConfigureStackNavigator from './configure/index';
 import ParamsStackNavigator from './params/index';
 import HistoryStackNavigator from './history/index';
 import UnauthorizedBeta from '@components/UnauthorizedBeta';
+import NotFound from './NotFound';
 
 function getNestedParams(route?: { params: object }) {
   let { params } = route;
@@ -73,6 +74,7 @@ const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) =
       <Stack.Screen name="Search" component={UnauthorizedBeta} />
       <Stack.Screen name="History" component={HistoryStackNavigator} />
       <Stack.Screen name="Home1" component={HomeOneNavigator} />
+      <Stack.Screen name="NotFound" component={NotFound} />
     </Stack.Navigator>
   );
 };

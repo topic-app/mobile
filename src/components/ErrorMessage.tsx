@@ -6,6 +6,7 @@ import Clipboard from '@react-native-community/clipboard';
 import DeviceInfo from 'react-native-device-info';
 import { connect } from 'react-redux';
 import { request } from '@utils/index';
+import Store from '@redux/store';
 
 import { Error as ErrorType, RequestState, State } from '@ts/types';
 
@@ -21,7 +22,6 @@ type Props = {
   // TODO: Error devrait être qu'un seul type, pas une multitude de types
   error?: RequestState['error'] | ErrorType | ErrorType[];
   id?: string;
-  state: object;
   retry?: () => Promise<any> | void;
   restart?: () => Promise<any> | void;
   back?: () => Promise<any> | void;
@@ -38,7 +38,6 @@ const ErrorMessage: React.FC<Props> = ({
   id = 'Inconnu',
   error = { unknown: true },
   retry,
-  state,
   restart,
   back,
 }) => {
@@ -69,6 +68,8 @@ const ErrorMessage: React.FC<Props> = ({
             }
           }
         }
+
+        let state = Store?.getState() || { error: true };
 
         let responseData = err?.error?.response?.data?.error?.value;
         try {
@@ -102,6 +103,7 @@ Location select.: ${state?.location?.selected}
 Location: Écoles ${state?.location?.schools} | Départements ${
           state?.location?.departments
         } | Global ${state?.location?.global}
+StateError: ${state.error}
 ---
 SYSTEME
 Os: ${await DeviceInfo.getBaseOs()} | ${DeviceInfo.getSystemName()}
@@ -490,8 +492,4 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
   );
 };
 
-const mapStateToProps = (state: State) => {
-  return { state };
-};
-
-export default connect(mapStateToProps)(ErrorMessage);
+export default ErrorMessage;

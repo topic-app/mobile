@@ -2,13 +2,10 @@
   {
     "_id": "1",
     "title": "Ne plus utiliser Windows 7 sur les ordinateurs",
+    "summary": "N'utilisons plus des ordinateurs pourris.",
     "description": "Au lycée, la restauration jette plus de 20kg de nourriture par soir, hors aujourd'hui plus que toujours tout est compté. C'est assez pour nourrir une famille pour une semaine! Il faut que cela s'arrête. Mobilisons-nous contre le gaspillage alimentaire!\n\n#StopAuGaspillageAlimentaire",
+    "type": "goal",
     "status": "open",
-    "voteData": {
-      "type": "goal",
-      "votes": 3734,
-      "goal": 5000
-    },
     "duration": {
       "start": "2020-03-30T19:25:43.511Z",
       "end": "2020-05-30T19:25:43.511Z"
@@ -46,22 +43,23 @@
         "color": "blue",
         "_id": "5198312941723"
       }
-    ]
+    ],
+    "cache": {
+      "signatures": 3500,
+      "goals": [5000],
+      "followers": 315
+    }
   },
-
   {
     "_id": "2",
     "title": "Acheter plus de matériel de sport pour le gymnase",
+    "summary": "On a besoin de plus de matériel de sport.",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
+    "type": "goal",
+    "status": "closed",
     "duration": {
       "start": "2020-04-30T19:25:43.511Z",
       "end": "2020-05-18T19:25:43.511Z"
-    },
-    "status": "rejected",
-    "voteData": {
-      "type": "goal",
-      "votes": 452,
-      "goal": 800
     },
     "publisher": {
       "type": "user",
@@ -91,26 +89,23 @@
         }
       ],
       "departments": []
+    },
+    "cache": {
+      "followers": 0,
+      "signatures": 452,
+      "goals": [800]
     }
   },
-
   {
     "_id": "3",
     "title": "Qu'est-ce que vous aimeriez voir dans le nouvel espace commun?",
+    "summary": "Au CIV, nous avons lancé un nouvel espace commun situé à coté du CDI. Nous aimerions savoir ce que vous voulez que l'on y mette.",
     "description": "Au CIV, nous avons lancé un nouvel espace commun situé à coté du CDI. Nous aimerions savoir ce que vous voulez que l'on y mette.",
+    "type": "multiple",
+    "status": "open",
     "duration": {
       "start": "2020-05-11T19:25:43.511Z",
       "end": "2020-05-21T20:00:00.000Z"
-    },
-    "status": "open",
-    "voteData": {
-      "type": "multiple",
-      "opinions": [
-        { "title": "Espace lecture", "votes": 170 },
-        { "title": "Matériel informatique", "votes": 120 },
-        { "title": "FabLab", "votes": 230 },
-        { "title": "Aide au devoirs", "votes": 70 }
-      ]
     },
     "publisher": {
       "type": "group",
@@ -144,23 +139,28 @@
         }
       ],
       "departments": []
+    },
+    "cache": {
+      "multiple": [
+        { "title": "Espace lecture", "votes": 170 },
+        { "title": "Matériel informatique", "votes": 120 },
+        { "title": "FabLab", "votes": 230 },
+        { "title": "Aide au devoirs", "votes": 70 }
+      ],
+      "followers": 0
     }
   },
 
   {
     "_id": "4",
     "title": "Mettre des chargeurs pour les tablettes de la région dans toutes les salles",
+    "summary": "Nous avons besoin de charger nos tablettes après une journée difficile.",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
-    "date": "jj/mm/aaaa   min/heure",
+    "type": "opinion",
+    "status": "open",
     "duration": {
       "start": "2020-04-11T10:25:43.511Z",
-      "end": "2020-06-30T23:59:59.999Z"
-    },
-    "status": "open",
-    "voteData": {
-      "type": "opinion",
-      "for": 526,
-      "against": 139
+      "end": "2020-07-30T23:59:59.999Z"
     },
     "publisher": {
       "type": "group",
@@ -190,21 +190,25 @@
           "displayName": "Région Sud"
         }
       ]
+    },
+    "cache": {
+      "followers": 0,
+      "double": {
+        "for": 526,
+        "against": 139
+      }
     }
   },
   {
     "_id": "5",
     "title": "Annuler l'épreuve orale de Français pour les premières",
+    "summary": "Nous n'avons pas tous des conditions égales pour l'épreuve orale de français.",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
+    "type": "goal",
+    "status": "answered",
     "duration": {
       "start": "2020-04-30T19:25:43.511Z",
       "end": "2020-06-01T19:25:43.511Z"
-    },
-    "status": "open",
-    "voteData": {
-      "type": "goal",
-      "votes": 72045,
-      "goal": 100000
     },
     "publisher": {
       "type": "group",
@@ -229,21 +233,22 @@
       "global": true,
       "schools": [],
       "departments": []
+    },
+    "cache": {
+      "signatures": 72045,
+      "goals": [100000]
     }
   },
   {
     "_id": "6",
     "title": "Ajouter des bancs dans la cour de récréation",
+    "summary": "Pas de fun dans le changement de meteo, trop prévisible!!!",
     "description": "Pas de fun dans le changement de meteo, trop prévisible!!!",
+    "type": "goal",
+    "status": "answered",
     "duration": {
       "start": "2020-04-30T19:25:43.511Z",
       "end": "2020-05-18T19:25:43.511Z"
-    },
-    "status": "answered",
-    "voteData": {
-      "type": "goal",
-      "votes": 452,
-      "goal": 800
     },
     "publisher": {
       "type": "user",
@@ -273,6 +278,11 @@
         }
       ],
       "departments": []
+    },
+    "cache": {
+      "signatures": 452,
+      "goals": [800],
+      "followers": 0
     }
   }
 ]

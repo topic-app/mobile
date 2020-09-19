@@ -1,8 +1,8 @@
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import { HeaderConfig } from '@components/Header';
-import ArticleConfigure from './views/Configure';
+import { HeaderConfig } from "@components/Header";
+import ArticleConfigure from "./views/Configure";
 
 const Stack = createStackNavigator();
 
@@ -14,8 +14,8 @@ function ArticleListsStackNavigator() {
         component={ArticleConfigure}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Actus',
-          subtitle: 'Configurer',
+          title: "Actus",
+          subtitle: "Configurer",
         })}
       />
     </Stack.Navigator>

@@ -34,10 +34,10 @@ function MoreStackNavigator() {
       />
       <Stack.Screen
         name="Moderation"
-        component={UnauthorizedBeta}
+        component={ModerationStackNavigator}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="About" component={UnauthorizedBeta} options={{ headerShown: false }} />
+      <Stack.Screen name="About" component={AboutStackNavigator} options={{ headerShown: false }} />
       {Platform.OS === 'ios' && (
         <Stack.Screen
           name="List"

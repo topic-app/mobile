@@ -33,6 +33,11 @@ function getStyles(theme: Theme) {
       overflow: 'hidden',
       margin: 0,
     },
+    topic: {
+      color: colors.drawerContent,
+      fontFamily: 'Rubik-Light',
+      fontSize: 30,
+    },
     thumbnail: {
       backgroundColor: colors.image,
       flex: 0,
@@ -65,7 +70,7 @@ function getStyles(theme: Theme) {
       color: colors.placeholder,
     },
     link: {
-      color: '#005ccc',
+      color: colors.primary,
       textDecorationLine: 'underline',
     },
     divider: {

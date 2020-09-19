@@ -1,5 +1,5 @@
-import React from 'react';
-import { ModalProps, State, Account } from '@ts/types';
+import React from "react";
+import { ModalProps, State, Account } from "@ts/types";
 import {
   Divider,
   Button,
@@ -8,18 +8,18 @@ import {
   ThemeProvider,
   Card,
   useTheme,
-} from 'react-native-paper';
-import { View, Platform, TextInput, Alert } from 'react-native';
-import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
-import { connect } from 'react-redux';
-import { request } from '@utils/index';
-import LocalAuthentication from 'rn-local-authentication';
+} from "react-native-paper";
+import { View, Platform, TextInput, Alert } from "react-native";
+import { BottomModal, SlideAnimation } from '@components/Modals';
+import { connect } from "react-redux";
+import { request } from "@utils/index";
+// import LocalAuthentication from 'rn-local-authentication';
 
-import { CollapsibleView, ErrorMessage } from '@components/index';
-import getStyles from '@styles/Styles';
-import { updateEmail } from '@redux/actions/data/profile';
-import { fetchAccount } from '@redux/actions/data/account';
-import getArticleStyles from '../styles/Styles';
+import { CollapsibleView, ErrorMessage } from "@components/index";
+import getStyles from "@styles/Styles";
+import { updateEmail } from "@redux/actions/data/profile";
+import { fetchAccount } from "@redux/actions/data/account";
+import getArticleStyles from "../styles/Styles";
 
 type EmailModalProps = ModalProps & {
   state: { updateProfile: { loading: boolean; error: any } };
@@ -36,32 +36,38 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
   const [emailValidation, setValidation] = React.useState({
     valid: false,
     error: false,
-    message: '',
+    message: "",
   });
 
   async function validateEmailInput(emailText: string) {
     let validation: { valid: boolean; error: any; message?: string } = {
       valid: false,
       error: false,
-      message: '',
+      message: "",
     };
 
-    if (emailText !== '') {
-      if (emailText.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) === null) {
+    if (emailText !== "") {
+      if (
+        emailText.match(
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/
+        ) === null
+      ) {
         validation = {
           valid: false,
           error: true,
-          message: 'Adresse mail incorrecte',
+          message: "Adresse mail incorrecte",
         };
       } else {
         let result;
         try {
-          result = await request('auth/check/local/email', 'get', { email: emailText });
+          result = await request("auth/check/local/email", "get", {
+            email: emailText,
+          });
         } catch (err) {
           validation = {
             valid: false,
             error: true,
-            message: 'Erreur lors de la validation de l&apos;addresse mail',
+            message: "Erreur lors de la validation de l&apos;addresse mail",
           };
         }
         if (result?.data?.emailExists === false) {
@@ -70,7 +76,7 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
           validation = {
             valid: false,
             error: true,
-            message: 'Cette adresse email à déjà été utilisée',
+            message: "Cette adresse email à déjà été utilisée",
           };
         }
       }
@@ -81,13 +87,15 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
   }
 
   function preValidateEmailInput(email: string) {
-    if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) !== null) {
+    if (
+      email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) !== null
+    ) {
       // TODO: Change to emailExists once server is updated
-      setValidation({ valid: false, error: false, message: '' });
+      setValidation({ valid: false, error: false, message: "" });
     }
   }
 
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState("");
 
   const update = async () => {
     const emailValidation = await validateEmailInput(email);
@@ -97,38 +105,38 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
         `Vous ne pourrez plus écrire de contenus tant que vous n'avez pas validé l'email ${email} .`,
         [
           {
-            text: 'Annuler',
+            text: "Annuler",
             onPress: () => {
-              setEmail('');
+              setEmail("");
               setVisible(false);
             },
           },
           {
-            text: 'Changer',
+            text: "Changer",
             onPress: async () => {
               if (await LocalAuthentication.isAvailableAsync()) {
                 LocalAuthentication.authenticateAsync({
                   reason: "Topic App - Changer l'addresse mail",
-                  title: 'Authentification',
+                  title: "Authentification",
                   fallbackEnabled: true,
                   fallbackToPinCodeAction: true,
                 }).then((result) => {
                   if (result.success) {
                     updateEmail(email).then(() => {
-                      setEmail('');
+                      setEmail("");
                       setVisible(false);
                       fetchAccount();
                     });
                   } else {
                     Alert.alert(
                       "Erreur lors de l'authentification",
-                      "Vous pouvez toujours changer le mot de passe depuis l'interface web.",
+                      "Vous pouvez toujours changer le mot de passe depuis l'interface web."
                     );
                   }
                 });
               } else {
                 updateEmail(email).then(() => {
-                  setEmail('');
+                  setEmail("");
                   setVisible(false);
                   fetchAccount();
                 });
@@ -136,7 +144,7 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
             },
           },
         ],
-        { cancelable: true },
+        { cancelable: true }
       );
     } else if (emailValidation.valid) {
     } else {
@@ -149,20 +157,20 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
       visible={visible}
       onTouchOutside={() => {
         setVisible(false);
-        setEmail('');
+        setEmail("");
       }}
       onHardwareBackPress={() => {
         setVisible(false);
-        setEmail('');
+        setEmail("");
         return true;
       }}
       onSwipeOut={() => {
         setVisible(false);
-        setEmail('');
+        setEmail("");
       }}
       modalAnimation={
         new SlideAnimation({
-          slideFrom: 'bottom',
+          slideFrom: "bottom",
           useNativeDriver: false,
         })
       }
@@ -174,8 +182,8 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
             <ErrorMessage
               type="axios"
               strings={{
-                what: 'la modification du compte',
-                contentSingular: 'Le compte',
+                what: "la modification du compte",
+                contentSingular: "Le compte",
               }}
               error={state.updateProfile.error}
               retry={update}
@@ -211,9 +219,9 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
             <Divider />
             <View style={styles.contentContainer}>
               <Button
-                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                mode={Platform.OS === "ios" ? "outlined" : "contained"}
                 color={colors.primary}
-                uppercase={Platform.OS !== 'ios'}
+                uppercase={Platform.OS !== "ios"}
                 onPress={update}
               >
                 Confirmer

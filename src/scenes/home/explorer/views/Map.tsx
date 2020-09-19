@@ -5,11 +5,11 @@ import { Text, FAB, IconButton, useTheme } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import RNLocation from 'react-native-location';
+import * as Location from 'expo-location';
 
-import getStyles from '@styles/Styles';
+import { logger } from '@utils/index';
 import { TranslucentStatusBar } from '@components/Header';
+import getStyles from '@styles/Styles';
 
 import LocationModal from '../components/LocationModal';
 import { buildFeatureCollections } from '../utils/featureCollection';
@@ -17,12 +17,9 @@ import { markerImages } from '../utils/getAsset';
 import getExplorerStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
-RNLocation.configure({
-  androidProvider: 'standard', // Don't pass by Google Location Services
-});
 
 function ExplorerMap({ places, map, tileServerUrl, navigation }) {
-  const cameraRef = React.createRef();
+  const cameraRef = React.createRef<MapboxGL.Camera>();
 
   const [data, setData] = React.useState({ id: null, type: null, name: null });
   const [isModalVisible, setModalVisible] = React.useState(false);
@@ -36,27 +33,21 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
   React.useEffect(() => {
     // Check if Location is requestable
     // If it is, then show the FAB to go to location
-    check(
-      Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-    )
-      .then((result) => {
-        switch (result) {
-          case RESULTS.GRANTED: // Location granted
-            setFabVisible(true);
-            setUserLocation(true);
-            break;
-          case RESULTS.DENIED: // Location not yet requested / can still ask
-            setFabVisible(true);
-            break;
-          default:
-            console.warn('Location unavailable / blocked');
+    Location.getPermissionsAsync()
+      .then(({ status, canAskAgain }) => {
+        // User previously granted permission
+        if (status === Location.PermissionStatus.GRANTED) {
+          logger.verbose('Location previously granted, showing location FAB');
+          setFabVisible(true);
+          setUserLocation(true);
+        } else if (status === Location.PermissionStatus.DENIED && canAskAgain) {
+          logger.info('Location previously denied but can ask again, showing location FAB');
+          setFabVisible(true);
+        } else {
+          logger.info('Location denied, hiding location FAB');
         }
       })
-      .catch((error) => {
-        console.error('Error while checking location\n', error);
-      });
+      .catch((e) => logger.error('Error while requesting user location permission', e));
   }, []);
 
   const onMarkerPress = ({ features }) => {
@@ -71,30 +62,24 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
     setModalVisible(true);
   };
 
-  const requestUserLocation = () => {
-    request(
-      Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-    )
-      .then((result) => {
-        if (result === RESULTS.GRANTED) {
-          setUserLocation(true);
-          RNLocation.getLatestLocation({ timeout: 60000 }).then((location) => {
-            const { longitude, latitude } = location;
-            cameraRef.current.setCamera({
-              centerCoordinate: [longitude, latitude],
-              zoomLevel: 11,
-              animationDuration: 700,
-            });
-          });
-        } else {
-          setFabVisible(false);
-        }
-      })
-      .catch((error) => {
-        console.error('Error while requesting location\n', error);
+  const requestUserLocation = async () => {
+    let status = Location.PermissionStatus.UNDETERMINED;
+    try {
+      status = (await Location.requestPermissionsAsync()).status;
+    } catch (e) {
+      logger.error('Error while requesting user location', e);
+    }
+    if (status === Location.PermissionStatus.GRANTED) {
+      const { coords } = await Location.getCurrentPositionAsync({});
+      cameraRef.current.setCamera({
+        centerCoordinate: [coords.longitude, coords.latitude],
+        zoomLevel: 11,
+        animationDuration: 700,
       });
+    } else {
+      setFabVisible(false);
+      logger.info('Location permission request prompt denied, hiding location FAB.');
+    }
   };
 
   const featureCollections = buildFeatureCollections(places);
@@ -129,7 +114,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
           maxBounds={map.bounds}
           minZoomLevel={map.minZoom}
           maxZoomLevel={map.maxZoom}
-          defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
+          defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }
         />
         <MapboxGL.Images images={markerImages} />
         {featureCollections.map((fc) => {

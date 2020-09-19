@@ -52,12 +52,12 @@ const AuthLogin: React.FC<Props> = ({
       },
     };
     login(fields)
-      .then(() =>
+      .then(() => {
         navigation.navigate('Main', {
           screen: 'Home1',
           params: { screen: 'Home2', params: { screen: 'Article' } },
-        }),
-      )
+        });
+      })
       .catch((e) => console.log(e));
   };
 
@@ -83,7 +83,7 @@ const AuthLogin: React.FC<Props> = ({
           />
         )}
 
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="handled">
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={authStyles.stepIndicatorContainer}>
             <View style={styles.centerIllustrationContainer}>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { ModalProps, ArticleListItem } from '@ts/types';
+import React from "react";
+import { ModalProps, ArticleListItem } from "@ts/types";
 import {
   Divider,
   Button,
@@ -9,22 +9,27 @@ import {
   ThemeProvider,
   useTheme,
   ProgressBar,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import { ErrorMessage } from '@components/index';
-import Modal, { BottomModal, SlideAnimation } from 'react-native-modals';
+} from "react-native-paper";
+import { View, Platform, FlatList } from "react-native";
+import { ErrorMessage } from "@components/index";
+import { BottomModal, SlideAnimation } from '@components/Modals';
 
-import getStyles from '@styles/Styles';
-import { updateData } from '@redux/actions/data/profile';
-import { fetchAccount } from '@redux/actions/data/account';
-import { connect } from 'react-redux';
+import getStyles from "@styles/Styles";
+import { updateData } from "@redux/actions/data/profile";
+import { fetchAccount } from "@redux/actions/data/account";
+import { connect } from "react-redux";
 
 type VisibilityModalProps = ModalProps & {
   isInitialPublic: boolean;
   state: { updateProfile: { loading: boolean; error: any } };
 };
 
-function VisibilityModal({ visible, setVisible, isInitialPublic, state }: VisibilityModalProps) {
+function VisibilityModal({
+  visible,
+  setVisible,
+  isInitialPublic,
+  state,
+}: VisibilityModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -32,12 +37,13 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
   const [isPublic, setPublic] = React.useState(isInitialPublic);
 
   const update = () => {
-    updateData({ public: isPublic, ...(!isPublic ? { firstName: '', lastName: '' } : {}) }).then(
-      () => {
-        setVisible(false);
-        fetchAccount();
-      },
-    );
+    updateData({
+      public: isPublic,
+      ...(!isPublic ? { firstName: "", lastName: "" } : {}),
+    }).then(() => {
+      setVisible(false);
+      fetchAccount();
+    });
   };
 
   return (
@@ -55,7 +61,7 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
       }}
       modalAnimation={
         new SlideAnimation({
-          slideFrom: 'bottom',
+          slideFrom: "bottom",
           useNativeDriver: false,
         })
       }
@@ -68,8 +74,8 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
               <ErrorMessage
                 type="axios"
                 strings={{
-                  what: 'la modification du compte',
-                  contentSingular: 'Le compte',
+                  what: "la modification du compte",
+                  contentSingular: "Le compte",
                 }}
                 error={state.updateProfile.error}
                 retry={update}
@@ -82,10 +88,10 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
                 setPublic(true);
               }}
               left={() =>
-                Platform.OS !== 'ios' && (
+                Platform.OS !== "ios" && (
                   <RadioButton
                     color={colors.primary}
-                    status={isPublic ? 'checked' : 'unchecked'}
+                    status={isPublic ? "checked" : "unchecked"}
                     onPress={() => {
                       setPublic(true);
                     }}
@@ -93,10 +99,10 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
                 )
               }
               right={() =>
-                Platform.OS === 'ios' && (
+                Platform.OS === "ios" && (
                   <RadioButton
                     color={colors.primary}
-                    status={isPublic ? 'checked' : 'unchecked'}
+                    status={isPublic ? "checked" : "unchecked"}
                     onPress={() => {
                       setPublic(true);
                     }}
@@ -111,10 +117,10 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
                 setPublic(false);
               }}
               left={() =>
-                Platform.OS !== 'ios' && (
+                Platform.OS !== "ios" && (
                   <RadioButton
                     color={colors.primary}
-                    status={!isPublic ? 'checked' : 'unchecked'}
+                    status={!isPublic ? "checked" : "unchecked"}
                     onPress={() => {
                       setPublic(false);
                     }}
@@ -122,10 +128,10 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
                 )
               }
               right={() =>
-                Platform.OS === 'ios' && (
+                Platform.OS === "ios" && (
                   <RadioButton
                     color={colors.primary}
-                    status={!isPublic ? 'checked' : 'unchecked'}
+                    status={!isPublic ? "checked" : "unchecked"}
                     onPress={() => {
                       setPublic(false);
                     }}
@@ -138,9 +144,9 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
           <View>
             <View style={styles.contentContainer}>
               <Button
-                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                mode={Platform.OS === "ios" ? "outlined" : "contained"}
                 color={colors.primary}
-                uppercase={Platform.OS !== 'ios'}
+                uppercase={Platform.OS !== "ios"}
                 onPress={update}
               >
                 Confirmer

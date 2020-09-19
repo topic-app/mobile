@@ -42,6 +42,7 @@ const lightBase = {
     warning: '#ed8600',
     text: '#111111',
     anchor: '#3caaff',
+    activeDrawerItem: '#dddddd',
   },
 };
 
@@ -73,6 +74,7 @@ const darkBase = {
     invalid: '#8f4e5a',
     warning: '#a65e00',
     anchor: '#0084ff',
+    activeDrawerItem: '#222222',
   },
 };
 
@@ -99,6 +101,19 @@ const themes = {
     name: 'Sombre',
     value: 'dark',
     ...darkBase,
+  },
+  amoled: {
+    name: 'Amoled',
+    value: 'amoled',
+    ...darkBase,
+    colors: {
+      ...darkBase.colors,
+      appBar: '#000000',
+      tabBackground: '#000000',
+      drawerBackground: '#000000',
+      background: '#000000',
+      surface: '#000000',
+    },
   },
 };
 

@@ -4,8 +4,20 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HeaderConfig } from '@components/Header';
 
 import AboutList from './views/List';
+import AboutLegal from './views/Legal';
+import AboutLicenses from './views/Licenses';
 
-const Stack = createStackNavigator();
+export type AboutStackParams = {
+  List: undefined;
+  Legal: {
+    page?: 'list' | 'full' | 'logo' | 'illustrations';
+  };
+  Licenses: {
+    page?: 'list' | 'full' | 'logo' | 'illustrations';
+  };
+};
+
+const Stack = createStackNavigator<AboutStackParams>();
 
 function AboutStackNavigator() {
   return (
@@ -16,6 +28,22 @@ function AboutStackNavigator() {
         options={{
           ...HeaderConfig,
           title: 'A Propos',
+        }}
+      />
+      <Stack.Screen
+        name="Legal"
+        component={AboutLegal}
+        options={{
+          ...HeaderConfig,
+          title: 'Légal',
+        }}
+      />
+      <Stack.Screen
+        name="Licenses"
+        component={AboutLicenses}
+        options={{
+          ...HeaderConfig,
+          title: 'Licenses',
         }}
       />
     </Stack.Navigator>

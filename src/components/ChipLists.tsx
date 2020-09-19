@@ -222,8 +222,8 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
 }) => {
   const sortedData = [
     // Bring selected items to the front
-    ...data.filter((item) => keyList.includes(item.key)),
-    ...data.filter((item) => !keyList.includes(item.key)),
+    ...data.filter((item) => keyList.includes(item?.key)),
+    ...data.filter((item) => !keyList.includes(item?.key)),
   ];
 
   return (
@@ -233,13 +233,13 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
       showsHorizontalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
       data={sortedData}
-      keyExtractor={(item) => item.key}
+      keyExtractor={(item) => item?.key}
       renderItem={({ item, index }) => {
         return (
           <TextChip
             icon={item.icon}
             title={item.title}
-            selected={keyList.includes(item.key)}
+            selected={keyList.includes(item?.key)}
             onPress={() => setList(item)}
             containerStyle={[
               {

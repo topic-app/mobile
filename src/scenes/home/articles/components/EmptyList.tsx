@@ -1,20 +1,21 @@
-import React from 'react';
-import { View, Platform } from 'react-native';
-import { Button, Text, useTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { StackNavigationProp } from '@react-navigation/stack';
+import React from "react";
+import { View, Platform } from "react-native";
+import { Button, Text, useTheme } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-import { ArticleRequestState } from '@ts/types';
-import { Illustration } from '@components/index';
-import getStyles from '@styles/Styles';
+import { ArticleRequestState } from "@ts/types";
+import { Illustration } from "@components/index";
+import getStyles from "@styles/Styles";
 
-import getArticleStyles from '../styles/Styles';
+import getArticleStyles from "../styles/Styles";
 
 type ArticleEmptyListProps = {
   tab: string;
   sectionKey: string;
   reqState: ArticleRequestState;
   navigation: StackNavigationProp<any, any>;
+  changeTab: (tabKey: string) => void;
 };
 
 const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
@@ -22,6 +23,7 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   sectionKey,
   reqState,
   navigation,
+  changeTab,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -30,18 +32,27 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   console.log(`Key ${sectionKey}`);
 
   if (
-    (sectionKey === 'categories' && reqState.list.success) ||
-    (sectionKey === 'quicks' && reqState.search.success) ||
-    sectionKey === 'lists'
+    (sectionKey === "categories" && reqState.list.success) ||
+    (sectionKey === "quicks" && reqState.search.success) ||
+    sectionKey === "lists"
   ) {
-    if (tab === 'unread') {
+    if (tab === "unread") {
       return (
         <View style={styles.centerIllustrationContainer}>
           <Illustration name="article-completed" height={400} width={400} />
           <Text>Vous avez lu tous les articles !</Text>
+          <View style={{ marginTop: 30 }}>
+            <Button
+              uppercase={Platform.OS !== "ios"}
+              mode="outlined"
+              onPress={() => changeTab("all")}
+            >
+              Voir les articles lus
+            </Button>
+          </View>
         </View>
       );
-    } else if (tab === 'all') {
+    } else if (tab === "all") {
       return (
         <View>
           <View style={styles.centerIllustrationContainer}>
@@ -50,13 +61,13 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
           </View>
           <View style={styles.container}>
             <Button
-              mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-              uppercase={Platform.OS !== 'ios'}
+              mode={Platform.OS !== "ios" ? "outlined" : "text"}
+              uppercase={Platform.OS !== "ios"}
               onPress={() =>
-                navigation.navigate('Main', {
-                  screen: 'Params',
+                navigation.navigate("Main", {
+                  screen: "Params",
                   params: {
-                    screen: 'Article',
+                    screen: "Article",
                   },
                 })
               }
@@ -66,14 +77,15 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
           </View>
         </View>
       );
-    } else if (sectionKey === 'lists') {
+    } else if (sectionKey === "lists") {
       return (
         <View style={styles.centerIllustrationContainer}>
           <Illustration name="article-lists" height={400} width={400} />
           <Text>Aucun article dans cette liste</Text>
           <View style={styles.contentContainer}>
             <Text style={articleStyles.captionText}>
-              Ajoutez les grâce à l&apos;icone <Icon name="playlist-plus" size={20} />
+              Ajoutez les grâce à l&apos;icone{" "}
+              <Icon name="playlist-plus" size={20} />
             </Text>
           </View>
         </View>

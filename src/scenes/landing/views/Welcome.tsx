@@ -5,7 +5,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import shortid from 'shortid';
 
 import TopicIcon from '@assets/images/topic-icon.svg';
-import { TranslucentStatusBar } from '@components/index';
+import { TranslucentStatusBar } from '@components/Header';
+import { PlatformTouchable } from '@components/index';
 import { updateSchools } from '@redux/actions/api/schools';
 import { updateDepartments } from '@redux/actions/api/departments';
 
@@ -97,6 +98,22 @@ const LandingWelcome: React.FC<Props> = ({ navigation }) => {
               </View>
             ))}
           </List.Section>
+          <Divider theme={DarkTheme} />
+          <View>
+            <PlatformTouchable onPress={() => navigation.navigate('Info', { index: 4 })}>
+              <View
+                style={{
+                  marginVertical: 30,
+                  marginHorizontal: 10,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text style={{ color: 'white', opacity: 0.5 }}>Association Topic App</Text>
+                <Text style={{ color: 'white', opacity: 0.5 }}>Sponsors</Text>
+              </View>
+            </PlatformTouchable>
+          </View>
         </View>
       </ScrollView>
       <Divider theme={DarkTheme} />

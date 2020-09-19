@@ -1,11 +1,15 @@
 # Topic
-beta-testers.txt
-apks/
+#
+.ENV
+*.apk
 
 # OSX
+#
 .DS_Store
+*.hprof
 
 # Xcode
+#
 build/
 *.pbxuser
 !default.pbxuser
@@ -22,25 +26,19 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-
-# Expo and stuff
-.expo/
-.ENV
+project.xcworkspace
 google-services.json
 
-# Web
-web-build
-
 # Android/IntelliJ
+#
 build/
 .idea
 .gradle
 local.properties
 *.iml
-android/.gradle/
-android/app/build/
 
 # node.js
+#
 node_modules/
 npm-debug.log
 yarn-error.log
@@ -51,6 +49,7 @@ buck-out/
 *.keystore
 
 # fastlane
+#
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
@@ -60,11 +59,12 @@ buck-out/
 */fastlane/Preview.html
 */fastlane/screenshots
 
-# Bundle artifact
+# Bundle artifacts
 *.jsbundle
 
 # CocoaPods
 /ios/Pods/
 
-# Java
-*.hprof
+# Expo
+.expo/*
+web-build/

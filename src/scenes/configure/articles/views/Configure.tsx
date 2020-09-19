@@ -18,15 +18,17 @@ import getStyles from '@styles/Styles';
 import {
   deleteArticleList,
   updateArticlePrefs,
+  addArticleQuick,
   deleteArticleQuick,
   modifyArticleList,
 } from '@redux/actions/contentData/articles';
 import getArticleStyles from '../styles/Styles';
 
-import CreateModal from '../components/CreateModal';
-import EditModal from '../components/EditModal';
-import QuickTypeModal from '../components/QuickTypeModal';
-import QuickSelectModal from '../components/QuickSelectModal';
+import CreateModal from '../../components/CreateModal';
+import EditModal from '../../components/EditModal';
+import QuickTypeModal from '../../components/QuickTypeModal';
+import QuickSelectModal from '../../components/QuickSelectModal';
+import QuickLocationTypeModal from '../../components/QuickLocationTypeModal';
 
 type ArticleListsProps = {
   lists: ArticleListItem[];
@@ -62,12 +64,22 @@ function ArticleLists({
   const [editingList, setEditingList] = React.useState(null);
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
+  const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);
   const [quickType, setQuickType] = React.useState('');
 
   const next = (data: string) => {
-    setQuickType(data);
-    setQuickTypeModalVisible(false);
-    setQuickSelectModalVisible(true);
+    if (data === 'location') {
+      setQuickLocationTypeModalVisible(true);
+      setQuickTypeModalVisible(false);
+    } else if (data === 'global') {
+      addArticleQuick('global', 'global', 'France');
+      setQuickLocationTypeModalVisible(false);
+    } else {
+      setQuickType(data);
+      setQuickTypeModalVisible(false);
+      setQuickLocationTypeModalVisible(false);
+      setQuickSelectModalVisible(true);
+    }
   };
 
   const categoryTypes: Category[] = [
@@ -102,14 +114,14 @@ function ArticleLists({
   let categories: Category[] = [];
 
   categoryTypes.forEach((c, i) => {
-    if (articlePrefs.categories.includes(c.id)) {
-      categories[articlePrefs.categories.indexOf(c.id)] = c;
+    if (articlePrefs.categories?.includes(c.id)) {
+      categories[articlePrefs.categories?.indexOf(c.id)] = c;
     }
   });
 
   categories = [
     ...categories,
-    ...categoryTypes.filter((c) => !articlePrefs.categories.includes(c.id)),
+    ...categoryTypes.filter((c) => !articlePrefs.categories?.includes(c.id)),
   ];
 
   console.log(`Categories ${JSON.stringify(categories)}`);
@@ -244,7 +256,10 @@ function ArticleLists({
                             screen: 'Home1',
                             params: {
                               screen: 'Home2',
-                              params: { screen: 'Article', params: { initialList: item.id } },
+                              params: {
+                                screen: 'Article',
+                                params: { initialList: item.id },
+                              },
                             },
                           })
                         }
@@ -265,8 +280,7 @@ function ArticleLists({
                             <View onStartShouldSetResponder={() => true}>
                               <PlatformTouchable
                                 disabled={
-                                  lists.length === 1 &&
-                                  articlePrefs.hidden.length > categories.length - 1
+                                  lists.length === 1 && articlePrefs.categories?.length === 0
                                 }
                                 onPress={() => {
                                   Alert.alert(
@@ -291,8 +305,7 @@ function ArticleLists({
                                 <List.Icon
                                   icon="delete"
                                   color={
-                                    lists.length === 1 &&
-                                    articlePrefs.hidden.length > categories.length - 1
+                                    lists.length === 1 && articlePrefs.categories?.length === 0
                                       ? colors.disabled
                                       : colors.text
                                   }
@@ -360,7 +373,8 @@ function ArticleLists({
                     </View>
                   )}
                   renderItem={({ item }) => {
-                    let content = { description: 'Unk', icon: 'error' };
+                    let content = { description: 'Erreur', icon: 'alert-decagram' };
+                    console.log(JSON.stringify(item));
                     if (item.type === 'tag') {
                       content = {
                         description: 'Tag',
@@ -375,6 +389,23 @@ function ArticleLists({
                       content = {
                         description: 'Utilisateur',
                         icon: 'account',
+                      };
+                    } else if (item.type === 'school') {
+                      content = {
+                        description: 'École',
+                        icon: 'school',
+                      };
+                    } else if (item.type === 'departement') {
+                      content = {
+                        description: 'Département',
+                        icon: 'map-marker-radius',
+                      };
+                    } else if (item.type === 'region') {
+                      content = { description: 'Région', icon: 'map-marker-radius' };
+                    } else if (item.type === 'global') {
+                      content = {
+                        description: 'Localisation',
+                        icon: 'flag',
                       };
                     }
                     return (
@@ -421,22 +452,34 @@ function ArticleLists({
         }}
       />
 
-      <CreateModal visible={isCreateModalVisible} setVisible={setCreateModalVisible} />
+      <CreateModal
+        visible={isCreateModalVisible}
+        setVisible={setCreateModalVisible}
+        type="articles"
+      />
       <EditModal
         visible={isEditModalVisible}
         setVisible={setEditModalVisible}
         editingList={editingList}
         setEditingList={setEditingList}
+        type="articles"
       />
       <QuickTypeModal
+        type="articles"
         visible={isQuickTypeModalVisible}
         setVisible={setQuickTypeModalVisible}
+        next={next}
+      />
+      <QuickLocationTypeModal
+        visible={isQuickLocationTypeModalVisible}
+        setVisible={setQuickLocationTypeModalVisible}
         next={next}
       />
       <QuickSelectModal
         visible={isQuickSelectModalVisible}
         setVisible={setQuickSelectModalVisible}
-        type={quickType}
+        dataType={quickType}
+        type="articles"
       />
     </View>
   );

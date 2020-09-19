@@ -1,16 +1,23 @@
-import React from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
-import { List, Avatar, Divider, Banner, Switch, withTheme } from 'react-native-paper';
-import { clearArticlesRead } from '@redux/actions/contentData/articles';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from "react";
+import { View, Text, ScrollView, Alert } from "react-native";
+import {
+  List,
+  Avatar,
+  Divider,
+  Banner,
+  Switch,
+  withTheme,
+} from "react-native-paper";
+import { clearArticlesRead } from "@redux/actions/contentData/articles";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { Illustration } from '@components/index';
-import { updatePrefs } from '@redux/actions/data/prefs';
-import getStyles from '@styles/Styles';
-import themes from '@styles/Theme';
+import { Illustration } from "@components/index";
+import { updatePrefs } from "@redux/actions/data/prefs";
+import getStyles from "@styles/Styles";
+import themes from "@styles/Theme";
 
-import getSettingsStyles from '../styles/Styles';
+import getSettingsStyles from "../styles/Styles";
 
 function SettingsTheme({ preferences, theme, account, navigation }) {
   const styles = getStyles(theme);
@@ -28,12 +35,12 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
         "L'historique actuel et les centres d'interet seront aussi supprimés. Vous n'aurez plus de recommendations.",
         [
           {
-            text: 'Annuler',
+            text: "Annuler",
             onPress: () => {},
-            style: 'cancel',
+            style: "cancel",
           },
           {
-            text: 'Désactiver',
+            text: "Désactiver",
             onPress: () => {
               clearArticlesRead();
               updatePrefs({
@@ -44,7 +51,7 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
             },
           },
         ],
-        { cancelable: true },
+        { cancelable: true }
       );
     }
   };
@@ -56,16 +63,16 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
       });
     } else {
       Alert.alert(
-        'Voulez vous vraiment désactiver les recommendations?',
+        "Voulez vous vraiment désactiver les recommendations?",
         "Les centres d'interet actuels seront aussi supprimés.",
         [
           {
-            text: 'Annuler',
+            text: "Annuler",
             onPress: () => {},
-            style: 'cancel',
+            style: "cancel",
           },
           {
-            text: 'Désactiver',
+            text: "Désactiver",
             onPress: () => {
               updatePrefs({
                 recommendations: false,
@@ -73,7 +80,7 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
             },
           },
         ],
-        { cancelable: true },
+        { cancelable: true }
       );
     }
   };
@@ -86,15 +93,15 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
     } else {
       Alert.alert(
         "Voulez vous vraiment désactiver la synchronisation de l'historique?",
-        'Les données sur le serveur seront supprimées',
+        "Les données sur le serveur seront supprimées",
         [
           {
-            text: 'Annuler',
+            text: "Annuler",
             onPress: () => {},
-            style: 'cancel',
+            style: "cancel",
           },
           {
-            text: 'Désactiver',
+            text: "Désactiver",
             onPress: () => {
               updatePrefs({
                 syncHistory: false,
@@ -102,7 +109,7 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
             },
           },
         ],
-        { cancelable: true },
+        { cancelable: true }
       );
     }
   };
@@ -114,16 +121,16 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
       });
     } else {
       Alert.alert(
-        'Voulez vous vraiment désactiver la synchronisation des listes de contenu?',
-        'Les données sur le serveur seront supprimées',
+        "Voulez vous vraiment désactiver la synchronisation des listes de contenu?",
+        "Les données sur le serveur seront supprimées",
         [
           {
-            text: 'Annuler',
+            text: "Annuler",
             onPress: () => {},
-            style: 'cancel',
+            style: "cancel",
           },
           {
-            text: 'Désactiver',
+            text: "Désactiver",
             onPress: () => {
               updatePrefs({
                 syncLists: false,
@@ -131,7 +138,7 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
             },
           },
         ],
-        { cancelable: true },
+        { cancelable: true }
       );
     }
   };
@@ -187,9 +194,9 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
               visible
               actions={[
                 {
-                  label: 'En savoir plus',
+                  label: "En savoir plus",
                   onPress: () => {
-                    console.log('Read more');
+                    console.log("Read more");
                   },
                 },
               ]}
@@ -201,9 +208,10 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
                 />
               )}
             >
-              Si vous choissisez de synchroniser l'historique, les centres d'interêt ou les listes
-              sur le serveur, ces informations seront chiffrées avec l'aide de votre mot de passe et
-              nous n'y aurons pas accès.
+              Si vous choissisez de synchroniser l'historique, les centres
+              d'interêt ou les listes sur le serveur, ces informations seront
+              chiffrées avec l'aide de votre mot de passe et nous n'y aurons pas
+              accès.
             </Banner>
           </View>
         )}
@@ -218,9 +226,15 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
                 : "Connectez vous pour synchroniser l'historique avec votre compte"
             }
             disabled={!account.loggedIn || !preferences.history}
-            titleStyle={account.loggedIn && preferences.history ? {} : { color: colors.disabled }}
+            titleStyle={
+              account.loggedIn && preferences.history
+                ? {}
+                : { color: colors.disabled }
+            }
             descriptionStyle={
-              account.loggedIn && preferences.history ? {} : { color: colors.disabled }
+              account.loggedIn && preferences.history
+                ? {}
+                : { color: colors.disabled }
             }
             right={() => (
               <Switch
@@ -238,11 +252,13 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
             description={
               account.loggedIn
                 ? "Associer les listes (favoris, pour plus tard...) à votre compte afin de pouvoir y accéder à partir d'autres appareils"
-                : 'Connectez vous pour synchroniser les listes avec votre compte'
+                : "Connectez vous pour synchroniser les listes avec votre compte"
             }
             disabled={!account.loggedIn}
             titleStyle={account.loggedIn ? {} : { color: colors.disabled }}
-            descriptionStyle={account.loggedIn ? {} : { color: colors.disabled }}
+            descriptionStyle={
+              account.loggedIn ? {} : { color: colors.disabled }
+            }
             right={() => (
               <Switch
                 color={colors.primary}
@@ -267,16 +283,18 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
               />
             )}
             onPress={() =>
-              navigation.navigate('Main', {
-                screen: 'History',
+              navigation.navigate("Main", {
+                screen: "History",
                 params: {
-                  screen: 'Main',
+                  screen: "Main",
                 },
               })
             }
             disabled={!preferences.history}
             titleStyle={preferences.history ? {} : { color: colors.disabled }}
-            descriptionStyle={preferences.history ? {} : { color: colors.disabled }}
+            descriptionStyle={
+              preferences.history ? {} : { color: colors.disabled }
+            }
             style={settingsStyles.listItem}
           />
           <List.Item
@@ -284,61 +302,58 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
             onPress={() =>
               Alert.alert(
                 "Voulez vous vraiment supprimer l'entiereté de l'historique?",
-                'Cette action est irréversible',
+                "Cette action est irréversible",
                 [
                   {
-                    text: 'Annuler',
+                    text: "Annuler",
                     onPress: () => {},
-                    style: 'cancel',
+                    style: "cancel",
                   },
                   {
-                    text: 'Supprimer',
+                    text: "Supprimer",
                     onPress: clearArticlesRead,
                   },
                 ],
-                { cancelable: true },
+                { cancelable: true }
               )
             }
             disabled={!preferences.history}
             titleStyle={preferences.history ? {} : { color: colors.disabled }}
-            descriptionStyle={preferences.history ? {} : { color: colors.disabled }}
+            descriptionStyle={
+              preferences.history ? {} : { color: colors.disabled }
+            }
             style={settingsStyles.listItem}
           />
           <List.Item
             title="Supprimer les centres d'interet"
             disabled={!preferences.recommendations}
-            titleStyle={preferences.recommendations ? {} : { color: colors.disabled }}
-            descriptionStyle={preferences.recommendations ? {} : { color: colors.disabled }}
+            titleStyle={
+              preferences.recommendations ? {} : { color: colors.disabled }
+            }
+            descriptionStyle={
+              preferences.recommendations ? {} : { color: colors.disabled }
+            }
             onPress={() =>
               Alert.alert(
                 "Voulez vous vraiment supprimer tous les centres d'interet?",
-                'Cette action est irréversible NON IMPLEMENTÉ',
+                "Cette action est irréversible NON IMPLEMENTÉ",
                 [
                   {
-                    text: 'Annuler',
+                    text: "Annuler",
                     onPress: () => {},
-                    style: 'cancel',
+                    style: "cancel",
                   },
                   /* {
                     text: 'Supprimer',
                     onPress: () => console.log('Delete interests'),
                   }, j */
                 ],
-                { cancelable: true },
+                { cancelable: true }
               )
             }
             style={settingsStyles.listItem}
           />
         </List.Section>
-        <Divider />
-        {account.loggedIn && (
-          <List.Section>
-            <List.Subheader>Compte</List.Subheader>
-            <Divider />
-            <List.Item title="Exporter mes données" style={settingsStyles.listItem} />
-            <List.Item title="Supprimer mon compte" style={settingsStyles.listItem} />
-          </List.Section>
-        )}
       </ScrollView>
     </View>
   );
