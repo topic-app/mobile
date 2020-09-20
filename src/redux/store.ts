@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { Platform } from 'react-native';
 import localForage from 'localforage';
 import AsyncStorage from '@react-native-community/async-storage';
+import { config } from '@root/app.json';
 
 import reducer from './reducers/index';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
@@ -19,6 +20,10 @@ const persistedReducer = persistReducer(persistConfig, reducer);
 const Store = createStore(persistedReducer, applyMiddleware(thunk));
 
 const Persistor = persistStore(Store);
+
+if (config.dev.disablePersist) {
+  Persistor.purge();
+}
 
 export default Store;
 export { Store, Persistor };
