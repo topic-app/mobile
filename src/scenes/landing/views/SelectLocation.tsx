@@ -220,12 +220,6 @@ const WelcomeLocation: React.FC<Props> = ({
           logger.verbose('Location previously granted, showing location FAB');
           setButtonVisible(true);
           setUserLocation(true);
-          console.log('Hello');
-          console.log(
-            JSON.stringify(
-              await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest }),
-            ),
-          );
           const { coords } = await Location.getCurrentPositionAsync({
             accuracy: Location.Accuracy.Highest,
           });
