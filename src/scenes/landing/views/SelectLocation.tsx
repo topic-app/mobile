@@ -435,6 +435,11 @@ const WelcomeLocation: React.FC<Props> = ({
           retry={retry}
         />
       )}
+      {searchText === '' && category === 'schools' && schoolsNear.length > 0 ? (
+        <View style={styles.container}>
+          <List.Subheader>Écoles autour de vous</List.Subheader>
+        </View>
+      ) : null}
     </View>
   );
 
