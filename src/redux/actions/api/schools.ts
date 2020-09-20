@@ -40,8 +40,8 @@ async function updateNearSchools(
   type: 'initial' | 'refresh',
   latitude: number,
   longitude: number,
-  number = 20,
-  maxDistance = 20000,
+  number = 30,
+  maxDistance = 100000,
 ) {
   await Store.dispatch(
     updateCreator({
