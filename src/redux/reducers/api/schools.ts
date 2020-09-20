@@ -6,16 +6,27 @@ import {
   UPDATE_SCHOOLS_ITEM,
   UPDATE_SCHOOLS_ITEMS,
   UPDATE_SCHOOLS_SEARCH,
+  UPDATE_SCHOOLS_NEAR,
   CLEAR_SCHOOLS,
 } from '@ts/redux';
 
 const initialState: SchoolsState = {
   data: [],
   search: [],
+  near: [],
   item: null,
   items: [],
   state: {
     list: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
+    near: {
       success: null,
       error: null,
       loading: {
@@ -61,6 +72,11 @@ function schoolReducer(state = initialState, action: SchoolsActionTypes): School
         ...state,
         data: action.data,
       };
+    case UPDATE_SCHOOLS_NEAR:
+      return {
+        ...state,
+        near: action.data,
+      };
     case UPDATE_SCHOOLS_ITEM:
       return {
         ...state,
@@ -80,7 +96,9 @@ function schoolReducer(state = initialState, action: SchoolsActionTypes): School
       return {
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
+        near: action.data.near ? [] : state.near,
         item: null,
+        items: [],
         state: state.state,
       };
     default:

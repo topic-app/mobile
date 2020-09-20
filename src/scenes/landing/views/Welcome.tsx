@@ -65,7 +65,6 @@ const LandingWelcome: React.FC<Props> = ({ navigation }) => {
 
   React.useEffect(() => {
     // Preload écoles & departments pour utiliser après dans SelectLocation
-    updateSchools('initial');
     updateDepartments('initial');
   }, []);
 
