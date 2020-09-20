@@ -68,7 +68,7 @@ const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) =
       <Stack.Screen name="Params" component={ParamsStackNavigator} />
       <Stack.Screen name="Add" component={AddStackNavigator} />
       <Stack.Screen name="More" component={MoreStackNavigator} />
-      <Stack.Screen name="Search" component={UnauthorizedBeta} />
+      <Stack.Screen name="Search" component={SearchStackNavigator} />
       <Stack.Screen name="History" component={HistoryStackNavigator} />
       <Stack.Screen name="Home1" component={HomeOneNavigator} />
       <Stack.Screen name="NotFound" component={NotFound} />

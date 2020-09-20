@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
-import { View, ScrollView, TextInput } from 'react-native';
+import { View, ScrollView, TextInput, FlatList } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
-import { Text, Button, useTheme, Divider } from 'react-native-paper';
+import { Text, Button, useTheme, Divider, ProgressBar } from 'react-native-paper';
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
+import {
+  ArticlePreload,
+  EventPreload,
+  GroupPreload,
+  UserPreload,
+  State,
+  UserRequestState,
+  GroupRequestState,
+  EventRequestState,
+  ArticleRequestState,
+} from '@ts/types';
 
 import {
   Searchbar,
@@ -13,28 +24,44 @@ import {
   ChipSuggestionList,
   CategoryTitle,
   CollapsibleView,
+  ArticleCard,
+  EventCard,
 } from '@components/index';
 import getStyles from '@styles/Styles';
+import { connect } from 'react-redux';
+import { searchArticles, clearArticles } from '@redux/actions/api/articles';
+import { searchEvents, clearEvents } from '@redux/actions/api/events';
+import { searchGroups, clearGroups } from '@redux/actions/api/groups';
+import { searchUsers, clearUsers } from '@redux/actions/api/users';
 
 import getSearchStyles from '../styles/Styles';
 import { getSuggestions, SuggestionType } from '../utils/suggestions';
 import type { SearchStackParams } from '../index';
 
-const categories = [
-  { key: 'articles', title: 'Articles', icon: 'newspaper', type: 'category' },
-  { key: 'events', title: 'Évènements', icon: 'calendar', type: 'category' },
-  { key: 'petitions', title: 'Pétitions', icon: 'comment-check-outline', type: 'category' },
-  { key: 'locations', title: 'Lieux', icon: 'map-marker-outline', type: 'category' },
-  { key: 'groups', title: 'Groupes', icon: 'account-group-outline', type: 'category' },
-  { key: 'users', title: 'Utilisateurs', icon: 'account-outline', type: 'category' },
-];
-
 type SearchProps = {
   navigation: StackNavigationProp<SearchStackParams, 'Search'>;
   route: RouteProp<SearchStackParams, 'Search'>;
+  articles: ArticlePreload[];
+  events: EventPreload[];
+  groups: GroupPreload[];
+  users: UserPreload[];
+  state: {
+    articles: ArticleRequestState;
+    events: EventRequestState;
+    groups: GroupRequestState;
+    users: UserRequestState;
+  };
 };
 
-const Search: React.FC<SearchProps> = ({ navigation, route }) => {
+const Search: React.FC<SearchProps> = ({
+  navigation,
+  route,
+  articles,
+  events,
+  groups,
+  users,
+  state,
+}) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
@@ -42,7 +69,97 @@ const Search: React.FC<SearchProps> = ({ navigation, route }) => {
 
   const insets = useSafeArea();
 
-  const { initialCategory } = route.params;
+  const { initialCategory } = route.params || { initialCategory: 'articles' };
+
+  const categories = [
+    {
+      key: 'articles',
+      title: 'Articles',
+      icon: 'newspaper',
+      type: 'category',
+      data: articles,
+      func: searchArticles,
+      clear: clearArticles,
+      component: (article: ArticlePreload) => (
+        <ArticleCard
+          navigate={() =>
+            navigation.navigate('Main', {
+              screen: 'Display',
+              params: {
+                screen: 'Article',
+                params: {
+                  screen: 'Display',
+                  params: {
+                    id: article._id,
+                    title: article.title,
+                    useLists: false,
+                  },
+                },
+              },
+            })
+          }
+          unread
+          article={article}
+          verification={false}
+        />
+      ),
+      state: state.articles.search,
+    },
+    {
+      key: 'events',
+      title: 'Évènements',
+      icon: 'calendar',
+      type: 'category',
+      data: events,
+      func: searchEvents,
+      clear: clearEvents,
+      component: (event: EventPreload) => (
+        <EventCard
+          navigate={() =>
+            navigation.navigate('Main', {
+              screen: 'Display',
+              params: {
+                screen: 'Event',
+                params: {
+                  screen: 'Display',
+                  params: {
+                    id: event._id,
+                    title: event.title,
+                    useLists: false,
+                  },
+                },
+              },
+            })
+          }
+          event={event}
+        />
+      ),
+      state: state.events.search,
+    },
+    // { key: 'locations', title: 'Lieux', icon: 'map-marker-outline', type: 'category' },
+    {
+      key: 'groups',
+      title: 'Groupes',
+      icon: 'account-group-outline',
+      type: 'category',
+      data: groups,
+      func: searchGroups,
+      clear: clearGroups,
+      component: (group: GroupPreload) => <View />,
+      state: state.groups.search,
+    },
+    {
+      key: 'users',
+      title: 'Utilisateurs',
+      icon: 'account-outline',
+      type: 'category',
+      data: users,
+      func: searchUsers,
+      clear: clearUsers,
+      component: (user: UserPreload) => <View />,
+      state: state.users.search,
+    },
+  ];
 
   // State related to query, use these values when submitting search
   const [searchText, setSearchText] = useState('');
@@ -156,7 +273,9 @@ const Search: React.FC<SearchProps> = ({ navigation, route }) => {
 
   const submitSearch = () => {
     collapseFilter();
-    console.log(`Search: \nText: ${searchText} \nFilters: ${JSON.stringify(filters)}`);
+    if (searchText !== '') {
+      categories.find((c) => c.key === filters.category)?.func('initial', searchText);
+    }
   };
 
   const searchRef = React.createRef<TextInput>();
@@ -169,50 +288,110 @@ const Search: React.FC<SearchProps> = ({ navigation, route }) => {
 
   return (
     <View style={styles.page}>
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={searchStyles.queryContainer}>
-          <View style={{ height: insets.top, width: '100%' }} />
-          <Searchbar
-            ref={searchRef}
-            icon="arrow-left"
-            onIconPress={navigation.goBack}
-            placeholder="Rechercher"
-            onChangeText={(props) => {
-              setSearchText(props);
-              collapseFilter();
-            }}
-            onIdle={(value) => console.log('send request', value)}
-            value={searchText}
-            style={searchStyles.searchbar}
-            onSubmitEditing={submitSearch}
-          />
-          <CollapsibleView collapsed={!filterCollapsed}>
-            <View style={searchStyles.containerBottom}>
-              <View style={searchStyles.container}>
-                <View style={{ flexDirection: 'row' }}>
-                  <CategoryTitle containerStyle={{ flex: 1 }} numberOfLines={1}>
-                    {categoryName}
-                    {` · ${numFilters} ${numFilters === 1 ? 'filtre actif' : 'filtres actifs'}`}
-                  </CategoryTitle>
-                  <Button
-                    compact
-                    color={colors.subtext}
-                    mode="outlined"
-                    icon="filter-variant"
-                    onPress={expandFilter}
-                  >
-                    Filtres
-                  </Button>
-                </View>
+      <View style={searchStyles.queryContainer}>
+        <View style={{ height: insets.top, width: '100%' }} />
+        <Searchbar
+          ref={searchRef}
+          delay={2000}
+          icon="arrow-left"
+          onIconPress={navigation.goBack}
+          placeholder="Rechercher"
+          onChangeText={(props) => {
+            setSearchText(props);
+            collapseFilter();
+            categories.find((c) => c.key === filters.category)?.clear();
+          }}
+          onIdle={submitSearch}
+          value={searchText}
+          style={searchStyles.searchbar}
+          onSubmitEditing={submitSearch}
+        />
+        <CollapsibleView collapsed={!filterCollapsed}>
+          <View style={searchStyles.containerBottom}>
+            <View style={searchStyles.container}>
+              <View style={{ flexDirection: 'row' }}>
+                <CategoryTitle containerStyle={{ flex: 1 }} numberOfLines={1}>
+                  {categoryName}
+                  {` · ${numFilters} ${numFilters === 1 ? 'filtre actif' : 'filtres actifs'}`}
+                </CategoryTitle>
+                <Button
+                  compact
+                  color={colors.subtext}
+                  mode="outlined"
+                  icon="filter-variant"
+                  onPress={expandFilter}
+                >
+                  Filtres
+                </Button>
               </View>
-              <CollapsibleView
-                collapsed={
-                  nonAddedTags.length === 0 &&
+            </View>
+          </View>
+        </CollapsibleView>
+        <CollapsibleView collapsed={filterCollapsed}>
+          <View>
+            <CategoryTitle icon="shape" containerStyle={searchStyles.container}>
+              Categorie
+            </CategoryTitle>
+            <CategoriesList
+              categories={categories}
+              selected={filters.category}
+              setSelected={(category: any) => setFilters({ ...filters, category })}
+            />
+          </View>
+          <CollapsibleView collapsed={locationData.length === 0}>
+            <CategoryTitle icon="map-marker" containerStyle={searchStyles.container}>
+              Localisation
+            </CategoryTitle>
+            <ChipAddList
+              data={locationData}
+              keyList={filters.locations}
+              setList={toggleSuggestion}
+            />
+          </CollapsibleView>
+          <CollapsibleView collapsed={tagData.length === 0}>
+            <CategoryTitle icon="tag-multiple" containerStyle={searchStyles.container}>
+              Tags
+            </CategoryTitle>
+            <ChipAddList data={tagData} keyList={filters.tags} setList={toggleSuggestion} />
+          </CollapsibleView>
+          <CollapsibleView collapsed={groupData.length === 0}>
+            <CategoryTitle icon="account-multiple" containerStyle={searchStyles.container}>
+              Groupes
+            </CategoryTitle>
+            <ChipAddList data={groupData} keyList={filters.groups} setList={toggleSuggestion} />
+          </CollapsibleView>
+          <View style={[searchStyles.container, searchStyles.containerBottom]}>
+            <Button
+              onPress={collapseFilter}
+              icon="filter-variant"
+              mode="outlined"
+              color={colors.subtext}
+            >
+              Cacher les filtres
+            </Button>
+          </View>
+        </CollapsibleView>
+        {categories.find((c) => c.key === filters.category)?.state?.loading.initial && (
+          <ProgressBar indeterminate style={{ marginTop: -4 }} />
+        )}
+      </View>
+      <View>
+        <FlatList
+          data={searchText === '' ? [] : categories.find((c) => c.key === filters.category)?.data}
+          keyExtractor={(i) => i._id}
+          renderItem={({ item }) =>
+            categories.find((c) => c.key === filters.category)?.component(item)
+          }
+          ListHeaderComponent={
+            <CollapsibleView
+              collapsed={
+                (nonAddedTags.length === 0 &&
                   nonAddedLocations.length === 0 &&
-                  nonAddedGroups.length === 0
-                }
-              >
-                <Divider style={{ marginTop: 10, marginBottom: 5 }} />
+                  nonAddedGroups.length === 0) ||
+                !filterCollapsed
+              }
+            >
+              <View style={{ marginVertical: 10 }}>
                 <View style={searchStyles.suggestionContainer}>
                   <CategoryTitle icon="tag-multiple" containerStyle={{ flex: 1, paddingTop: 0 }}>
                     Suggestions
@@ -223,67 +402,43 @@ const Search: React.FC<SearchProps> = ({ navigation, route }) => {
                   containerStyle={{ paddingVertical: 0 }}
                   setList={addSuggestion}
                 />
-              </CollapsibleView>
-            </View>
-          </CollapsibleView>
-          <CollapsibleView collapsed={filterCollapsed}>
-            <View>
-              <CategoryTitle icon="shape" containerStyle={searchStyles.container}>
-                Categorie
-              </CategoryTitle>
-              <CategoriesList
-                categories={categories}
-                selected={filters.category}
-                setSelected={(category: any) => setFilters({ ...filters, category })}
-              />
-            </View>
-            <CollapsibleView collapsed={locationData.length === 0}>
-              <CategoryTitle icon="map-marker" containerStyle={searchStyles.container}>
-                Localisation
-              </CategoryTitle>
-              <ChipAddList
-                data={locationData}
-                keyList={filters.locations}
-                setList={toggleSuggestion}
-              />
+              </View>
             </CollapsibleView>
-            <CollapsibleView collapsed={tagData.length === 0}>
-              <CategoryTitle icon="tag-multiple" containerStyle={searchStyles.container}>
-                Tags
-              </CategoryTitle>
-              <ChipAddList data={tagData} keyList={filters.tags} setList={toggleSuggestion} />
-            </CollapsibleView>
-            <CollapsibleView collapsed={groupData.length === 0}>
-              <CategoryTitle icon="account-multiple" containerStyle={searchStyles.container}>
-                Groupes
-              </CategoryTitle>
-              <ChipAddList data={groupData} keyList={filters.groups} setList={toggleSuggestion} />
-            </CollapsibleView>
-            <View style={[searchStyles.container, searchStyles.containerBottom]}>
-              <Button
-                onPress={collapseFilter}
-                icon="filter-variant"
-                mode="outlined"
-                color={colors.subtext}
-              >
-                Cacher les filtres
-              </Button>
-            </View>
-          </CollapsibleView>
-        </View>
-        <View>
-          {searchText === '' ? (
-            <View style={styles.centerIllustrationContainer}>
-              <Illustration name="search" height={200} width={200} />
-              <Text>Commencez à taper pour rechercher !</Text>
-            </View>
-          ) : (
-            <Text>Hello</Text>
-          )}
-        </View>
-      </ScrollView>
+          }
+          ListFooterComponent={<View style={{ height: 200 }} />}
+          ListEmptyComponent={
+            searchText === '' ? (
+              <View style={styles.centerIllustrationContainer}>
+                <Illustration name="search" height={200} width={200} />
+                <Text>Commencez à taper pour rechercher !</Text>
+              </View>
+            ) : categories.find((c) => c.key === filters.category)?.state?.loading
+                .initial ? null : (
+              <View style={styles.centerIllustrationContainer}>
+                <Text>Aucun résultat</Text>
+              </View>
+            )
+          }
+        />
+      </View>
     </View>
   );
 };
 
-export default Search;
+const mapStateToProps = (state: State) => {
+  const { articles, events, groups, users } = state;
+  return {
+    articles: articles.search,
+    events: events.search,
+    groups: groups.search,
+    users: users.search,
+    state: {
+      articles: articles.state,
+      events: events.state,
+      groups: groups.state,
+      users: users.state,
+    },
+  };
+};
+
+export default connect(mapStateToProps)(Search);
