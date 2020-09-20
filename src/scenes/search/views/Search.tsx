@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, TextInput, FlatList } from 'react-native';
+import { View, ScrollView, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { Text, Button, useTheme, Divider, ProgressBar } from 'react-native-paper';
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
@@ -14,6 +14,7 @@ import {
   GroupRequestState,
   EventRequestState,
   ArticleRequestState,
+  TagPreload,
 } from '@ts/types';
 
 import {
@@ -26,6 +27,7 @@ import {
   CollapsibleView,
   ArticleCard,
   EventCard,
+  ErrorMessage,
 } from '@components/index';
 import getStyles from '@styles/Styles';
 import { connect } from 'react-redux';
@@ -33,6 +35,7 @@ import { searchArticles, clearArticles } from '@redux/actions/api/articles';
 import { searchEvents, clearEvents } from '@redux/actions/api/events';
 import { searchGroups, clearGroups } from '@redux/actions/api/groups';
 import { searchUsers, clearUsers } from '@redux/actions/api/users';
+import { searchTags } from '@redux/actions/api/tags';
 
 import getSearchStyles from '../styles/Styles';
 import { getSuggestions, SuggestionType } from '../utils/suggestions';
@@ -45,6 +48,7 @@ type SearchProps = {
   events: EventPreload[];
   groups: GroupPreload[];
   users: UserPreload[];
+  tags: TagPreload[];
   state: {
     articles: ArticleRequestState;
     events: EventRequestState;
@@ -60,6 +64,7 @@ const Search: React.FC<SearchProps> = ({
   events,
   groups,
   users,
+  tags,
   state,
 }) => {
   const theme = useTheme();
@@ -195,7 +200,15 @@ const Search: React.FC<SearchProps> = ({
 
   // Fetch new suggestions relevant to the user's search query, every time the user changes the Searchbar input,
   // this componenent gets rerendered and new suggestions are requested
-  const { newTags, newLocations, newGroups } = getSuggestions(searchText, filters);
+  const newTags = tags.map((t) => ({
+    title: t.displayName || t.name,
+    type: 'tags',
+    icon: 'pound',
+    color: t.color,
+    key: t._id,
+  }));
+  const newLocations = [];
+  const newGroups = [];
 
   // Transform array of [{_id: '32133423', displayName: 'informatique'}, ...] into an array readable by ChipAddList
   // => [{ key: '32133423', title: 'informatique', icon: TAG_ICON, type: 'tags'}, ...]
@@ -271,10 +284,19 @@ const Search: React.FC<SearchProps> = ({
     }
   };
 
+  const getParams = () => {
+    let params = {};
+    if (filters.tags) {
+      console.log(filters.tags);
+      params['tags'] = filters.tags;
+    }
+    return params;
+  };
+
   const submitSearch = () => {
     collapseFilter();
     if (searchText !== '') {
-      categories.find((c) => c.key === filters.category)?.func('initial', searchText);
+      categories.find((c) => c.key === filters.category)?.func('initial', searchText, getParams());
     }
   };
 
@@ -285,6 +307,10 @@ const Search: React.FC<SearchProps> = ({
       setImmediate(() => searchRef.current?.focus());
     }, [null]),
   );
+
+  const fetchSuggestions = async (text: string) => {
+    searchTags('initial', text);
+  };
 
   return (
     <View style={styles.page}>
@@ -300,6 +326,7 @@ const Search: React.FC<SearchProps> = ({
             setSearchText(props);
             collapseFilter();
             categories.find((c) => c.key === filters.category)?.clear();
+            fetchSuggestions(props);
           }}
           onIdle={submitSearch}
           value={searchText}
@@ -309,21 +336,23 @@ const Search: React.FC<SearchProps> = ({
         <CollapsibleView collapsed={!filterCollapsed}>
           <View style={searchStyles.containerBottom}>
             <View style={searchStyles.container}>
-              <View style={{ flexDirection: 'row' }}>
-                <CategoryTitle containerStyle={{ flex: 1 }} numberOfLines={1}>
-                  {categoryName}
-                  {` · ${numFilters} ${numFilters === 1 ? 'filtre actif' : 'filtres actifs'}`}
-                </CategoryTitle>
-                <Button
-                  compact
-                  color={colors.subtext}
-                  mode="outlined"
-                  icon="filter-variant"
-                  onPress={expandFilter}
-                >
-                  Filtres
-                </Button>
-              </View>
+              <TouchableOpacity onPress={expandFilter}>
+                <View style={{ flexDirection: 'row' }}>
+                  <CategoryTitle containerStyle={{ flex: 1 }} numberOfLines={1}>
+                    {categoryName}
+                    {` · ${numFilters} ${numFilters === 1 ? 'filtre actif' : 'filtres actifs'}`}
+                  </CategoryTitle>
+                  <Button
+                    compact
+                    color={colors.subtext}
+                    mode="outlined"
+                    icon="filter-variant"
+                    onPress={expandFilter}
+                  >
+                    Filtres
+                  </Button>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </CollapsibleView>
@@ -374,6 +403,13 @@ const Search: React.FC<SearchProps> = ({
         {categories.find((c) => c.key === filters.category)?.state?.loading.initial && (
           <ProgressBar indeterminate style={{ marginTop: -4 }} />
         )}
+        {categories.find((c) => c.key === filters.category)?.state?.error && (
+          <ErrorMessage
+            type="axios"
+            error={categories.find((c) => c.key === filters.category)?.state?.error}
+            strings={{ what: 'La recherche', contentPlural: 'Les résultats' }}
+          />
+        )}
       </View>
       <View>
         <FlatList
@@ -414,7 +450,7 @@ const Search: React.FC<SearchProps> = ({
               </View>
             ) : categories.find((c) => c.key === filters.category)?.state?.loading
                 .initial ? null : (
-              <View style={styles.centerIllustrationContainer}>
+              <View style={[styles.centerIllustrationContainer, styles.container]}>
                 <Text>Aucun résultat</Text>
               </View>
             )
@@ -426,11 +462,14 @@ const Search: React.FC<SearchProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, events, groups, users } = state;
+  const { articles, events, groups, users, tags, schools, departments } = state;
   return {
     articles: articles.search,
     events: events.search,
     groups: groups.search,
+    tags: tags.search,
+    schools: schools.search,
+    departments: departments.search,
     users: users.search,
     state: {
       articles: articles.state,

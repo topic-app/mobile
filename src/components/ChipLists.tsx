@@ -14,6 +14,7 @@ type ChipBaseProps = {
   selected?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   rightAction?: boolean;
+  color?: string;
 };
 
 const ChipBase: React.FC<ChipBaseProps> = ({
@@ -23,6 +24,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
   selected = false,
   containerStyle,
   rightAction = false,
+  color: borderColor,
 }) => {
   const elevation = new Animated.Value(0);
 
@@ -57,7 +59,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
           height: 40,
           borderRadius: 20,
           borderWidth: 0.5,
-          borderColor: selected ? colors.primary : colors.disabled,
+          borderColor: borderColor || (selected ? colors.primary : colors.disabled),
           alignItems: 'center',
         },
         containerStyle,
@@ -283,6 +285,7 @@ const ChipSuggestionList: React.FC<ChipSuggestionListProps> = ({
           <TextChip
             icon={item.icon}
             title={item.title}
+            color={item.color}
             onPress={() => setList(item)}
             containerStyle={[
               {
