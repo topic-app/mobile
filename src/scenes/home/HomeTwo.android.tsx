@@ -58,7 +58,7 @@ function HomeTwoNavigator() {
       <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
       <Tab.Screen name="Event" component={EventList} options={{ title: 'Evènements' }} />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
-      <Tab.Screen name="Explorer" component={UnauthorizedBeta} options={{ title: 'Explorer' }} />
+      <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
     </Tab.Navigator>
   );
 }

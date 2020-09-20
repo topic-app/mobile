@@ -114,7 +114,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
           maxBounds={map.bounds}
           minZoomLevel={map.minZoom}
           maxZoomLevel={map.maxZoom}
-          defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }
+          defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
         />
         <MapboxGL.Images images={markerImages} />
         {featureCollections.map((fc) => {

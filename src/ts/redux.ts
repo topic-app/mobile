@@ -586,6 +586,7 @@ export const UPDATE_SCHOOLS_DATA = 'UPDATE_SCHOOLS_DATA';
 export const UPDATE_SCHOOLS_ITEM = 'UPDATE_SCHOOLS_ITEM';
 export const UPDATE_SCHOOLS_ITEMS = 'UPDATE_SCHOOLS_ITEMS';
 export const UPDATE_SCHOOLS_SEARCH = 'UPDATE_SCHOOLS_SEARCH';
+export const UPDATE_SCHOOLS_NEAR = 'UPDATE_SCHOOLS_NEAR';
 export const CLEAR_SCHOOLS = 'CLEAR_SCHOOLS';
 
 export type SchoolsState = {
@@ -594,6 +595,7 @@ export type SchoolsState = {
   item: School | null;
   items: School[];
   state: SchoolRequestState;
+  near: SchoolPreload[];
 };
 
 type UpdateSchoolsStateAction = {
@@ -621,6 +623,11 @@ type UpdateSchoolsSearchAction = {
   data: SchoolPreload[];
 };
 
+type UpdateSchoolsNearAction = {
+  type: typeof UPDATE_SCHOOLS_NEAR;
+  data: SchoolPreload[];
+};
+
 type ClearSchoolsAction = {
   type: typeof CLEAR_SCHOOLS;
   data: { data?: boolean; search?: boolean };
@@ -632,6 +639,7 @@ export type SchoolsActionTypes =
   | UpdateSchoolsItemAction
   | UpdateSchoolsItemsAction
   | UpdateSchoolsSearchAction
+  | UpdateSchoolsNearAction
   | ClearSchoolsAction;
 
 // Tags

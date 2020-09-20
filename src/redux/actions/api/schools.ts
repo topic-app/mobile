@@ -6,6 +6,7 @@ import {
   UPDATE_SCHOOLS_ITEMS,
   UPDATE_SCHOOLS_SEARCH,
   UPDATE_SCHOOLS_STATE,
+  UPDATE_SCHOOLS_NEAR,
   CLEAR_SCHOOLS,
 } from '@ts/redux';
 
@@ -31,6 +32,28 @@ async function updateSchools(type: 'initial' | 'refresh' | 'next', params = {}) 
       listName: 'data',
       initialNum: 50,
       nextNum: 30,
+    }),
+  );
+}
+
+async function updateNearSchools(
+  type: 'initial' | 'refresh',
+  latitude: number,
+  longitude: number,
+  number = 20,
+  maxDistance = 20000,
+) {
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_SCHOOLS_NEAR,
+      stateUpdate: UPDATE_SCHOOLS_STATE,
+      stateName: 'near',
+      url: 'schools/near',
+      dataType: 'schools',
+      type,
+      params: { latitude, longitude, maxDistance, number },
+      listName: 'near',
+      clear: true,
     }),
   );
 }
@@ -96,4 +119,11 @@ async function clearSchools(data = true, search = true) {
   await Store.dispatch(clearCreator({ clear: CLEAR_SCHOOLS, data, search }));
 }
 
-export { updateSchools, clearSchools, fetchSchool, fetchMultiSchool, searchSchools };
+export {
+  updateSchools,
+  clearSchools,
+  fetchSchool,
+  fetchMultiSchool,
+  searchSchools,
+  updateNearSchools,
+};
