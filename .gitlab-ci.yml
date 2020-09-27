@@ -8,7 +8,6 @@ build app android:
   stage: package
   script:
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
-    -
     - base64 -d $ANDROID_KEYSTORE > android/app/topic.keystore
     - sh gitlab/generate-dotenv.sh > .ENV
     - npm install
