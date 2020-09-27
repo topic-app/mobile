@@ -16,7 +16,6 @@ function SettingsList({ navigation, preferences, account }) {
 
   return (
     <View style={styles.page}>
-      <TranslucentStatusBar />
       <CustomHeaderBar
         navigation={navigation}
         scene={{
