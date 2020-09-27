@@ -118,16 +118,18 @@ const themes = {
     colors: {
       ...darkBase.colors,
       primary: '#ffffff',
-      appBar: common.colors.primary,
+      appBar: common.colors.primaryDarker,
       appBarText: '#ffffff',
-      bottomBar: common.colors.primary,
+      bottomBar: common.colors.primaryDarker,
       bottomBarActive: '#ffffff',
       bottomBarInactive: '#999999',
-      drawerBackground: common.colors.primary,
+      subtext: '#BBBBBB',
+      softContrast: '#999999',
+      drawerBackground: common.colors.primaryDarker,
       // Optional: drawerContent defines text color that rests on the drawer background
       drawerContent: darkBase.colors.text,
-      background: common.colors.primary,
-      surface: common.colors.primaryLighter,
+      background: common.colors.primaryDarker,
+      surface: common.colors.primary,
     },
   },
   dark: {
