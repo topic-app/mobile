@@ -15,8 +15,8 @@ function ArticleConfigureStackNavigator() {
         component={ArticleParams}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Événements',
-          subtitle: 'Localisation',
+          title: 'Localisation',
+          subtitle: 'Évènements',
         })}
       />
       <Stack.Screen
@@ -24,8 +24,8 @@ function ArticleConfigureStackNavigator() {
         component={ArticleEditParams}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Événements',
-          subtitle: 'Localisation',
+          title: 'Localisation',
+          subtitle: 'Évènements',
         })}
       />
     </Stack.Navigator>

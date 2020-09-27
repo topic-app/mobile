@@ -11,7 +11,14 @@ import {
   ArticleRequestState,
   Article,
 } from '@ts/types';
-import { CustomTabView, ChipAddList, ErrorMessage, ArticleCard } from '@components/index';
+import {
+  CustomTabView,
+  ChipAddList,
+  ErrorMessage,
+  ArticleCard,
+  TranslucentStatusBar,
+  CustomHeaderBar,
+} from '@components/index';
 import getStyles from '@styles/Styles';
 import type { ModerationStackParams } from '../index';
 import { updateArticlesVerification } from '@redux/actions/api/articles';
@@ -60,6 +67,17 @@ const ModerationList: React.FC<Props> = ({ navigation, articlesVerification, acc
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        navigation={navigation}
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Modération',
+            },
+          },
+        }}
+      />
       {state.verification_list?.loading.initial && <ProgressBar indeterminate />}
       {state.verification_list?.error && (
         <ErrorMessage

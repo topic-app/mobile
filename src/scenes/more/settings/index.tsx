@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator, TransitionPresets } from 'react-native-screens/native-stack';
 
 import { HeaderConfig } from '@components/Header';
+import { PlatformBackButton } from '@components/index';
 
 import SettingsList from './views/List';
 import SettingsTheme from './views/Theme';
@@ -10,7 +11,7 @@ import SettingsContent from './views/Content';
 
 const Stack = createNativeStackNavigator();
 
-function SettingsStackNavigator() {
+function SettingsStackNavigator({ navigation }) {
   return (
     <Stack.Navigator initialRouteName="List">
       <Stack.Screen
@@ -19,6 +20,7 @@ function SettingsStackNavigator() {
         options={{
           ...HeaderConfig,
           title: 'Paramètres',
+          headerShown: false,
         }}
       />
       <Stack.Screen

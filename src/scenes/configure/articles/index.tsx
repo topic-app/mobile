@@ -1,8 +1,8 @@
-import React from "react";
-import { createNativeStackNavigator } from "react-native-screens/native-stack";
+import React from 'react';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
-import { HeaderConfig } from "@components/Header";
-import ArticleConfigure from "./views/Configure";
+import { HeaderConfig } from '@components/Header';
+import ArticleConfigure from './views/Configure';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,9 +13,7 @@ function ArticleListsStackNavigator() {
         name="Configure"
         component={ArticleConfigure}
         options={({ route }) => ({
-          ...HeaderConfig,
-          title: "Actus",
-          subtitle: "Configurer",
+          headerShown: false,
         })}
       />
     </Stack.Navigator>

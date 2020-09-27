@@ -15,8 +15,7 @@ function MyGroupsStackNavigator() {
         name="List"
         component={MyGroupsList}
         options={{
-          ...HeaderConfig,
-          title: 'Mes Groupes',
+          headerShown: false,
         }}
       />
       <Stack.Screen

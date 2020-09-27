@@ -5,7 +5,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import { State, LegalState, LegalRequestState } from '@ts/types';
-import { CustomTabView } from '@components/index';
+import { CustomTabView, TranslucentStatusBar, CustomHeaderBar } from '@components/index';
 import getStyles from '@styles/Styles';
 import { fetchDocument } from '@redux/actions/api/legal';
 
@@ -33,6 +33,17 @@ function Legal({ navigation, route, legal, state }: LegalPropTypes) {
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        navigation={navigation}
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Légal',
+            },
+          },
+        }}
+      />
       <ScrollView>
         <CustomTabView
           scrollEnabled={false}

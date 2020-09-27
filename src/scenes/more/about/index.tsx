@@ -26,16 +26,14 @@ function AboutStackNavigator() {
         name="List"
         component={AboutList}
         options={{
-          ...HeaderConfig,
-          title: 'A Propos',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="Legal"
         component={AboutLegal}
         options={{
-          ...HeaderConfig,
-          title: 'Légal',
+          headerShown: false,
         }}
       />
       <Stack.Screen

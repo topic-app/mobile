@@ -14,11 +14,7 @@ const Stack = createNativeStackNavigator<ModerationStackParams>();
 function ModerationStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="List">
-      <Stack.Screen
-        name="List"
-        component={ModerationList}
-        options={{ ...HeaderConfig, title: 'Modération' }}
-      />
+      <Stack.Screen name="List" component={ModerationList} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

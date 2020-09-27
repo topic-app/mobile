@@ -14,7 +14,13 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Account, Address, State } from '@ts/types';
-import { Avatar, ErrorMessage, InlineCard } from '@components/index';
+import {
+  Avatar,
+  ErrorMessage,
+  InlineCard,
+  TranslucentStatusBar,
+  CustomHeaderBar,
+} from '@components/index';
 import getStyles from '@styles/Styles';
 import { fetchAccount, logout } from '@redux/actions/data/account';
 
@@ -63,6 +69,17 @@ function Profile({
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        navigation={navigation}
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Profil',
+            },
+          },
+        }}
+      />
       {account.state.fetchAccount.loading && <ProgressBar indeterminate />}
       {account.state.fetchAccount.error && (
         <ErrorMessage

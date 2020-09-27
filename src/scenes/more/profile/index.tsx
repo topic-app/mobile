@@ -16,8 +16,7 @@ function ProfileStackNavigator() {
         name="Profile"
         component={Profile}
         options={{
-          ...HeaderConfig,
-          title: 'Mon Profil',
+          headerShown: false,
         }}
       />
       <Stack.Screen

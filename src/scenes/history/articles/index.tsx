@@ -1,10 +1,10 @@
 import React from 'react';
-import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import { HeaderConfig } from '@components/Header';
 import ArticleHistory from './views/History';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 function ArticleHistoryStackNavigator() {
   return (
@@ -14,8 +14,8 @@ function ArticleHistoryStackNavigator() {
         component={ArticleHistory}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Actus',
-          subtitle: 'Historique',
+          title: 'Historique',
+          subtitle: 'Actus',
         })}
       />
     </Stack.Navigator>

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { View, Appearance } from 'react-native';
 import { connect } from 'react-redux';
 
+import { TranslucentStatusBar, CustomHeaderBar } from '@components/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
 import getSettingsStyles from '../styles/Styles';
@@ -15,6 +16,17 @@ function SettingsList({ navigation, preferences, account }) {
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        navigation={navigation}
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Paramètres',
+            },
+          },
+        }}
+      />
       <List.Section>
         <List.Item
           title="Theme"
