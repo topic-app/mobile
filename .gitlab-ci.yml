@@ -5,7 +5,7 @@ build app android:
   only:
     - tags
   image: reactnativecommunity/react-native-android
-  stage: package
+  stage: build
   script:
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
     - base64 -d $ANDROID_KEYSTORE > android/app/topic.keystore
