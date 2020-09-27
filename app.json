@@ -45,7 +45,8 @@
       "syncLists": true,
       "fontSize": 14,
       "fontFamily": "Roboto",
-      "stripFormatting": false
+      "stripFormatting": false,
+      "themeEasterEggDiscovered": false
     },
     "articles": {
       "lists": [

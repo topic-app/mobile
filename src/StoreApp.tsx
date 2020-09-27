@@ -46,10 +46,10 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   const navTheme = {
     dark: theme.dark,
     colors: {
-      primary: colors.text,
+      primary: colors.appBarText,
       background: colors.background,
       card: colors.appBar,
-      text: colors.text,
+      text: colors.appBarText,
       border: colors.primary,
       notification: colors.primary,
     },

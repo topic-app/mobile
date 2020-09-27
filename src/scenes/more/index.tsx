@@ -16,7 +16,7 @@ const Stack = createNativeStackNavigator();
 
 function MoreStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Profile">
+    <Stack.Navigator initialRouteName="Profile" screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="Profile"
         component={ProfileStackNavigator}
@@ -42,7 +42,7 @@ function MoreStackNavigator() {
         <Stack.Screen
           name="List"
           component={MoreList}
-          options={{ ...HeaderConfig, title: 'Plus', home: true }}
+          options={{ ...HeaderConfig, title: 'Plus' }}
         />
       )}
     </Stack.Navigator>
