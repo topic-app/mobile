@@ -76,7 +76,7 @@ async function searchEvents(
       update: UPDATE_EVENTS_SEARCH,
       stateUpdate: UPDATE_EVENTS_STATE,
       url: 'events/list',
-      dataType: 'articles',
+      dataType: 'events',
       type,
       params: useDefaultParams
         ? { ...Store.getState().eventData.params, ...params, search, terms }

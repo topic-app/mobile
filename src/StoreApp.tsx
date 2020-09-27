@@ -11,6 +11,7 @@ import themes from '@styles/Theme';
 import { fetchLocationData } from '@redux/actions/data/location';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 import AppNavigator from './index';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 type Props = {
   preferences: Preferences;
@@ -56,13 +57,15 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   };
 
   return (
-    <PaperProvider theme={theme}>
-      <>
-        <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
-          <AppNavigator />
-        </NavigationContainer>
-      </>
-    </PaperProvider>
+    <SafeAreaProvider>
+      <PaperProvider theme={theme}>
+        <>
+          <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
+            <AppNavigator />
+          </NavigationContainer>
+        </>
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 };
 
