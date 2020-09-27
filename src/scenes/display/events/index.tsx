@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import { HeaderConfig } from '@components/Header';
 import EventDisplay from './views/Display';
@@ -8,7 +8,7 @@ export type EventDisplayStackParams = {
   Display: { id: string; title: string };
 };
 
-const Stack = createStackNavigator<EventDisplayStackParams>();
+const Stack = createNativeStackNavigator<EventDisplayStackParams>();
 
 function EventDisplayStackNavigator() {
   return (

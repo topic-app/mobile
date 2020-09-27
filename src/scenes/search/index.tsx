@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import Search from './views/Search';
 import SearchTags from './views/Tags';
@@ -11,11 +11,11 @@ export type SearchStackParams = {
   Tags: undefined;
 };
 
-const Stack = createStackNavigator<SearchStackParams>();
+const Stack = createNativeStackNavigator<SearchStackParams>();
 
 function SearchStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Search" headerMode="none">
+    <Stack.Navigator initialRouteName="Search" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="Tags" component={SearchTags} />
     </Stack.Navigator>

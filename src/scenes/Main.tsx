@@ -1,10 +1,10 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import {
-  createStackNavigator,
+  createNativeStackNavigator,
   TransitionPresets,
   StackNavigationProp,
-} from '@react-navigation/stack';
+} from 'react-native-screens/native-stack';
 import { connect } from 'react-redux';
 
 import { LocationList, State } from '@ts/types';
@@ -19,6 +19,7 @@ import ParamsStackNavigator from './params/index';
 import HistoryStackNavigator from './history/index';
 import UnauthorizedBeta from '@components/UnauthorizedBeta';
 import NotFound from './NotFound';
+import { PlatformBackButton } from '@components/index';
 
 function getNestedParams(route?: { params: object }) {
   let { params } = route;
@@ -26,18 +27,6 @@ function getNestedParams(route?: { params: object }) {
     params = params.params;
   }
   return params;
-}
-
-let screenOptions = TransitionPresets.SlideFromRightIOS;
-if (Platform.OS === 'ios') {
-  screenOptions = ({ route }) => {
-    if (route.params && getNestedParams(route).noTransition) {
-      return {
-        cardStyleInterpolator: () => ({ cardStyle: null }),
-      };
-    }
-    return null;
-  };
 }
 
 export type MainStackParams = {
@@ -49,9 +38,11 @@ export type MainStackParams = {
   Search: undefined;
   Home1: undefined;
   History: undefined;
+  Params: undefined;
+  NotFound: undefined;
 };
 
-const Stack = createStackNavigator<MainStackParams>();
+const Stack = createNativeStackNavigator<MainStackParams>();
 
 type MainNavigatorProps = {
   navigation: StackNavigationProp<any, any>;
@@ -64,8 +55,14 @@ const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) =
       screen: 'Welcome',
     });
   }
+
   return (
-    <Stack.Navigator initialRouteName="Home1" headerMode="none" screenOptions={screenOptions}>
+    <Stack.Navigator
+      initialRouteName="Home1"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
       <Stack.Screen name="Configure" component={ConfigureStackNavigator} />
       <Stack.Screen name="Params" component={ParamsStackNavigator} />

@@ -14,8 +14,8 @@ function EventHistoryStackNavigator() {
         component={EventHistory}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Événements',
-          subtitle: 'Historique',
+          title: 'Historique',
+          subtitle: 'Évènements',
         })}
       />
     </Stack.Navigator>

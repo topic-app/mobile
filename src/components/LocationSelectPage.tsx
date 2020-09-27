@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'react-native-screens/native-stack';
 import { connect } from 'react-redux';
 
 import {

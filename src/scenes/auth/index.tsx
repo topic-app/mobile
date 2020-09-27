@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import AuthLoginScreen from './views/Login';
 import AuthCreateScreen from './views/Create';
@@ -13,7 +13,7 @@ export type AuthStackParams = {
   CreateSuccess: undefined;
 };
 
-const Stack = createStackNavigator<AuthStackParams>();
+const Stack = createNativeStackNavigator<AuthStackParams>();
 
 function AuthNavigator() {
   return (

@@ -1,14 +1,14 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import ArticleConfigureStackNavigator from './articles/index';
 import EventConfigureStackNavigator from './events/index';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function ListsStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Article" headerMode="none">
+    <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Article" component={ArticleConfigureStackNavigator} />
       <Stack.Screen name="Event" component={EventConfigureStackNavigator} />
     </Stack.Navigator>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import ArticleDisplay from './views/Display';
 
@@ -7,11 +7,11 @@ export type ArticleDisplayStackParams = {
   Display: { id: string; title: string; useLists: boolean; verification: boolean };
 };
 
-const Stack = createStackNavigator<ArticleDisplayStackParams>();
+const Stack = createNativeStackNavigator<ArticleDisplayStackParams>();
 
 function ArticleDisplayStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Display" headerMode="none">
+    <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={ArticleDisplay} />
     </Stack.Navigator>
   );

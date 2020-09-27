@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import ArticleList from './articles/views/List';
 import EventList from './events/views/List';
@@ -21,7 +21,7 @@ export type HomeTwoNavParams = {
   Explorer: undefined;
 };
 
-const Stack = createStackNavigator<HomeTwoNavParams>();
+const Stack = createNativeStackNavigator<HomeTwoNavParams>();
 
 function HomeTwoNavigator() {
   return (

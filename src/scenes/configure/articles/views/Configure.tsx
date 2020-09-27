@@ -13,7 +13,12 @@ import {
   Account,
   Preferences,
 } from '@ts/types';
-import { PlatformTouchable, Illustration } from '@components/index';
+import {
+  PlatformTouchable,
+  Illustration,
+  TranslucentStatusBar,
+  CustomHeaderBar,
+} from '@components/index';
 import getStyles from '@styles/Styles';
 import {
   deleteArticleList,
@@ -128,6 +133,18 @@ function ArticleLists({
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        navigation={navigation}
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Configurer',
+              subtitle: 'Actus',
+            },
+          },
+        }}
+      />
       <FlatList
         data={['categories', 'lists', 'tags']}
         keyExtractor={(s) => s}

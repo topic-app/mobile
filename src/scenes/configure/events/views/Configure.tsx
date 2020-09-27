@@ -6,7 +6,12 @@ import { connect } from 'react-redux';
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 
 import { State, EventListItem, EventQuickItem, EventPrefs, Account, Preferences } from '@ts/types';
-import { PlatformTouchable, Illustration } from '@components/index';
+import {
+  PlatformTouchable,
+  Illustration,
+  CustomHeaderBar,
+  TranslucentStatusBar,
+} from '@components/index';
 import getStyles from '@styles/Styles';
 import {
   deleteEventList,
@@ -121,6 +126,18 @@ function EventLists({
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        navigation={navigation}
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Configurer',
+              subtitle: 'Évènements',
+            },
+          },
+        }}
+      />
       <FlatList
         data={['categories', 'lists', 'tags']}
         keyExtractor={(s) => s}

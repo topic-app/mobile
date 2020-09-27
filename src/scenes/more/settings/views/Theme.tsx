@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, FlatList, Platform, Appearance } from 'react-native';
-import { List, RadioButton, Divider, withTheme } from 'react-native-paper';
+import { View, FlatList, Platform, Appearance, TouchableWithoutFeedback } from 'react-native';
+import { List, RadioButton, Divider, Text, withTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -16,14 +16,36 @@ function SettingsTheme({ preferences, theme }) {
   const settingsStyles = getSettingsStyles(theme);
   const { colors } = theme;
 
+  const [presses, setPresses] = React.useState(0);
+
   return (
     <View style={styles.page}>
       <FlatList
-        data={Object.values(themes)}
+        data={
+          preferences.themeEasterEggDiscovered
+            ? Object.values(themes)
+            : Object.values(themes).filter((t) => !t.egg)
+        }
         ListHeaderComponent={() => (
           <View>
             <View style={styles.centerIllustrationContainer}>
-              <Illustration name="settings-theme" height={200} width={200} />
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  if (presses > 5) {
+                    updatePrefs({ themeEasterEggDiscovered: true });
+                  }
+                  setPresses(presses + 1);
+                }}
+              >
+                <View>
+                  <Illustration name="settings-theme" height={200} width={200} />
+                  {presses > 5 && (
+                    <Text style={{ marginTop: 10 }}>
+                      Vous avez découvert le thème ultraviolet !
+                    </Text>
+                  )}
+                </View>
+              </TouchableWithoutFeedback>
             </View>
             <Divider style={{ marginTop: 30 }} />
             <List.Item

@@ -28,9 +28,9 @@ function HomeTwoNavigator() {
     <Tab.Navigator
       shifting={false}
       initialRouteName="Article"
-      activeColor={colors.primary}
-      inactiveColor={colors.disabled}
-      barStyle={navigatorStyles.barStyle}
+      activeColor={colors.bottomBarActive}
+      inactiveColor={colors.bottomBarInactive}
+      barStyle={[navigatorStyles.barStyle, { backgroundColor: colors.bottomBar }]}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           let iconName;

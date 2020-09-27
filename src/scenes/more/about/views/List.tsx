@@ -6,6 +6,7 @@ import CustomTabView from '@components/CustomTabView';
 import TopicIcon from '@assets/images/topic-icon.svg';
 import getStyles from '@styles/Styles';
 import getAboutStyles from '../styles/Styles';
+import { CustomHeaderBar, TranslucentStatusBar } from '@components/index';
 
 function About({ navigation }) {
   const theme = useTheme();
@@ -14,6 +15,17 @@ function About({ navigation }) {
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        navigation={navigation}
+        scene={{
+          descriptor: {
+            options: {
+              title: 'À propos',
+            },
+          },
+        }}
+      />
       <ScrollView>
         <CustomTabView
           scrollEnabled={false}
@@ -153,10 +165,7 @@ function About({ navigation }) {
                       license sous laquelle elle se trouve.
                     </Text>
                   </View>
-                  <List.Item
-                    title="Logo et ressources"
-                    description="© Ella Nitters"
-                  />
+                  <List.Item title="Logo et ressources" description="© Ella Nitters" />
                   <List.Item
                     title="Illustrations"
                     description="© Katerina Limpitsouni (undraw.co)"

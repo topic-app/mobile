@@ -4,7 +4,7 @@ import { Text, Card, useTheme } from 'react-native-paper';
 import moment from 'moment';
 import shortid from 'shortid';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'react-native-screens/native-stack';
 
 import { EventPreload } from '@ts/types';
 import { getImageUrl } from '@utils/index';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import { HeaderConfig } from '@components/Header';
 
@@ -17,7 +17,7 @@ export type AboutStackParams = {
   };
 };
 
-const Stack = createStackNavigator<AboutStackParams>();
+const Stack = createNativeStackNavigator<AboutStackParams>();
 
 function AboutStackNavigator() {
   return (
@@ -26,16 +26,14 @@ function AboutStackNavigator() {
         name="List"
         component={AboutList}
         options={{
-          ...HeaderConfig,
-          title: 'A Propos',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="Legal"
         component={AboutLegal}
         options={{
-          ...HeaderConfig,
-          title: 'Légal',
+          headerShown: false,
         }}
       />
       <Stack.Screen

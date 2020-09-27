@@ -1,12 +1,12 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import { HeaderConfig } from '@components/Header';
 
 import MyGroupsList from './views/List';
 import MyGroupsEdit from './views/Edit';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function MyGroupsStackNavigator() {
   return (
@@ -15,8 +15,7 @@ function MyGroupsStackNavigator() {
         name="List"
         component={MyGroupsList}
         options={{
-          ...HeaderConfig,
-          title: 'Mes Groupes',
+          headerShown: false,
         }}
       />
       <Stack.Screen

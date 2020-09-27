@@ -12,6 +12,7 @@ import ErrorMessage from '@components/ErrorMessage';
 import GroupsBanner from '@components/GroupsBanner';
 import GroupListCard from '../components/Card';
 import { Account, GroupsState, GroupRequestState, AccountRequestState } from '@ts/types';
+import { CustomHeaderBar, TranslucentStatusBar } from '@components/index';
 
 type Props = {
   account: Account;
@@ -62,6 +63,17 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        navigation={navigation}
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Mes groupes',
+            },
+          },
+        }}
+      />
       {(state.list.loading.initial ||
         accountState.fetchGroups?.loading ||
         accountState.fetchWaitingGroups?.loading) && <ProgressBar indeterminate />}

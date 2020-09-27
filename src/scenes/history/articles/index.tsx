@@ -14,8 +14,8 @@ function ArticleHistoryStackNavigator() {
         component={ArticleHistory}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: 'Actus',
-          subtitle: 'Historique',
+          title: 'Historique',
+          subtitle: 'Actus',
         })}
       />
     </Stack.Navigator>

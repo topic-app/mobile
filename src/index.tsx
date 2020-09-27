@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { createNativeStackNavigator, TransitionPresets } from 'react-native-screens/native-stack';
 
 import Store from '@redux/store';
 
@@ -13,14 +13,13 @@ export type AppStackParams = {
   Landing: undefined;
 };
 
-const Stack = createStackNavigator<AppStackParams>();
+const Stack = createNativeStackNavigator<AppStackParams>();
 
 function AppStackNavigator() {
   return (
     <Stack.Navigator
       initialRouteName={Store.getState().location.selected ? 'Root' : 'Landing'}
-      headerMode="none"
-      screenOptions={TransitionPresets.SlideFromRightIOS}
+      screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
       <Stack.Screen name="Root" component={RootNavigator} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import MainStackNavigator from './Main';
 
@@ -7,15 +7,11 @@ export type RootNavParams = {
   Main: undefined;
 };
 
-const Stack = createStackNavigator<RootNavParams>();
+const Stack = createNativeStackNavigator<RootNavParams>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator
-      initialRouteName="Main"
-      headerMode="none"
-      screenOptions={TransitionPresets.SlideFromRightIOS}
-    >
+    <Stack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Main" component={MainStackNavigator} />
     </Stack.Navigator>
   );

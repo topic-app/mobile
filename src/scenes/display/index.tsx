@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import ArticleDisplayStackNavigator from './articles/index';
 import PetitionDisplayStackNavigator from './petitions/index';
@@ -9,11 +9,11 @@ import ImageDisplayStackNavigator from './images/index';
 import UserDisplayStackNavigator from './users/index';
 import GroupDisplayStackNavigator from './groups/index';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function DisplayStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Article" headerMode="none">
+    <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Article" component={ArticleDisplayStackNavigator} />
       <Stack.Screen name="Petition" component={PetitionDisplayStackNavigator} />
       <Stack.Screen name="Event" component={EventDisplayStackNavigator} />

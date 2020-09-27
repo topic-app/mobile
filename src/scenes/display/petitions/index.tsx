@@ -1,11 +1,11 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import { HeaderConfig } from '@components/Header';
 import PetitionDisplay from './views/Display';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function PetitionDisplayStackNavigator() {
   return (

@@ -13,9 +13,7 @@ function EventListsStackNavigator() {
         name="Configure"
         component={ArticleConfigure}
         options={({ route }) => ({
-          ...HeaderConfig,
-          title: 'Événements',
-          subtitle: 'Configurer',
+          headerShown: false,
         })}
       />
     </Stack.Navigator>

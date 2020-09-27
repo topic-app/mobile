@@ -1,13 +1,13 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import { HeaderConfig } from '@components/Header';
 import ArticleAdd from './views/Add';
 import ArticleAddSuccess from './views/AddSuccess';
 import ArticleAddLocation from './views/AddLocation';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function ArticleAddStackNavigator() {
   return (

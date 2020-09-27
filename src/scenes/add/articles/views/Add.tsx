@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View, ScrollView } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'react-native-screens/native-stack';
 
 import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import { logger } from '@utils/index';
