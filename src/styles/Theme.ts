@@ -60,7 +60,7 @@ const darkBase = {
     ...common.colors,
     solid: solidDark,
     primary: common.colors.primaryLighter,
-    bottomBar: '#242592',
+    bottomBar: '#242529',
     bottomBarActive: common.colors.primaryLighter,
     bottomBarInactive: '#999999',
     appBar: '#242529',
