@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Variables to change
-BASE_BRANCH=v0.4-beta
+BASE_BRANCH=v0.4.6-beta
 
 # Get path to script
 SCRIPT_PATH="`dirname \"$0\"`"                  # relative
