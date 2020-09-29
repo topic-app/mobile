@@ -409,7 +409,7 @@ function GroupDisplay({
                         </View>
                       )}
                   </View>
-                  {group?.description?.data && (
+                  {group?.description?.data ? (
                     <View>
                       <View style={{ alignItems: 'flex-end' }}>
                         <View style={{ flexDirection: 'row' }}>
@@ -424,7 +424,7 @@ function GroupDisplay({
                         </View>
                       </View>
                     </View>
-                  )}
+                  ) : null}
                 </View>
               </PlatformTouchable>
               <CollapsibleView collapsed={!descriptionVisible}>
@@ -501,6 +501,7 @@ function GroupDisplay({
                 ?.filter((m) => m.user?._id !== account.accountInfo?.accountId)
                 ?.map((mem) => (
                   <View
+                    key={mem._id}
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
