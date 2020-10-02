@@ -80,6 +80,12 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
           <StepperView
             pages={[
               {
+                key: 'place',
+                icon: 'map',
+                title: 'Lieu',
+                component: <EventAddPagePlace />,
+              },
+              {
                 key: 'group',
                 icon: 'account-group',
                 title: 'Groupe',
