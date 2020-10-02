@@ -1,7 +1,12 @@
 package fr.topicapp.topic;
 
 import android.os.Bundle;
-import android.view.WindowManager;
+import android.view.Window;
+import android.view.View;
+import android.graphics.Color;
+import android.view.WindowManager.LayoutParams;
+import android.content.res.Resources;
+import android.content.res.Configuration;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -17,12 +22,41 @@ public class MainActivity extends ReactActivity {
     super.onCreate(savedInstanceState);
     // SplashScreen.show(...) has to be called after super.onCreate(...)
     // Below line is handled by '@expo/configure-splash-screen' command and it's discouraged to modify it manually
-    SplashScreen.show(this, SplashScreenImageResizeMode.CONTAIN, false);
+    SplashScreen.show(this, SplashScreenImageResizeMode.CONTAIN, true);
 
-    // set navigation bar to transparent
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+    // Set Android Navigation Bar to transparent if device is using fullscreen gestures
+    int isEdgeToEdgeEnabled = 0;
+    Resources resources = this.getResources();
+    int resourceId = resources.getIdentifier("config_navBarInteractionMode", "integer", "android");
+    if (resourceId > 0) {
+        isEdgeToEdgeEnabled = resources.getInteger(resourceId);
+    }
+
+    Window window = getWindow();
+
+    // Check if device is using fullscreen gestures
+    if (isEdgeToEdgeEnabled == 2) {
+        window.setFlags(LayoutParams.FLAG_LAYOUT_NO_LIMITS, LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        window.setNavigationBarColor(Color.TRANSPARENT);
+    } else {
+      // Device is using 2-button or 3-button navigation
+      // Change Android Navigation Buttons to correct theme configuration
+      View decorView = window.getDecorView();
+      int flags = decorView.getSystemUiVisibility();
+      switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
+          case Configuration.UI_MODE_NIGHT_YES:
+              window.setNavigationBarColor(0xff000000);
+              flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+              break;
+          case Configuration.UI_MODE_NIGHT_NO:
+              window.setNavigationBarColor(0xffffffff);
+              window.setNavigationBarDividerColor(0xffefefef);
+              flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+              break; 
+      }
+      decorView.setSystemUiVisibility(flags);
+    }
   }
-
 
     /**
      * Returns the name of the main component registered from JavaScript.
