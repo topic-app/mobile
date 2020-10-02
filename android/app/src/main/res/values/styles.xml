@@ -8,5 +8,8 @@
     <!-- Below line is handled by '@expo/configure-splash-screen' command and it's discouraged to modify it manually -->
     <item name="android:windowBackground">@drawable/splashscreen</item>
     <!-- Customize your splash screen theme here -->
+    <item name="android:windowTranslucentNavigation">true</item>
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:navigationBarColor">@android:color/transparent</item>
   </style>
 </resources>
