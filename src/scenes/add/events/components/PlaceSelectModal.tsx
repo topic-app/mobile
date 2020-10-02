@@ -2,12 +2,13 @@ import React from 'react';
 import {
   ModalProps,
   State,
-  ArticleQuickItem,
-  TagsState,
-  GroupsState,
+  SchoolsState,
   UsersState,
-  Tag,
-  Group,
+  EventListItem,
+  EventPlace,
+  PlacesState,
+  Place,
+  School,
   User,
   RequestState,
 } from '@ts/types';
@@ -16,7 +17,7 @@ import {
   ProgressBar,
   Button,
   HelperText,
-  TextInput as PaperTextInput,
+  TextInput,
   Card,
   Text,
   List,
@@ -25,38 +26,39 @@ import {
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
+import { BottomModal, SlideAnimation } from '@components/Modals';
 
-import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
+import { Searchbar, Illustration, Avatar, ErrorMessage, CollapsibleView } from '@components/index';
 import getStyles from '@styles/Styles';
 import { addArticleQuick } from '@redux/actions/contentData/articles';
-import { searchTags, updateTags } from '@redux/actions/api/tags';
-import { searchGroups, updateGroups } from '@redux/actions/api/groups';
-import { searchUsers, updateUsers } from '@redux/actions/api/users';
+import { searchSchools, updateSchools } from '@redux/actions/api/schools';
+import { searchPlaces, updatePlaces } from '@redux/actions/api/places';
 
-type QuickSelectModalProps = ModalProps & {
-  quicks: ArticleQuickItem[];
-  editingList: ArticleListItem | null;
-  setEditingList: (props: ArticleListItem | null) => void;
-  type: 'tag' | 'group' | 'user';
-  tags: TagsState;
-  groups: GroupsState;
-  users: UsersState;
+import { updateEventCreationData } from '@redux/actions/contentData/events';
+
+import getEventStyles from '../styles/Styles';
+
+type EventPlaceSelectModalProps = ModalProps & {
+  eventPlaces: EventPlace[];
+  type: 'school' | 'place';
+  schools: SchoolsState;
+  places: PlacesState;
 };
 
-function PlaceSelectModal({
+function EventPlaceSelectModal({
   visible,
   setVisible,
   type,
   schools,
   places,
   eventPlaces,
-}: PlaceSelectModalProps) {
+}: EventPlaceSelectModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const { colors } = theme;
 
   const [searchText, setSearchText] = React.useState('');
+
+  const eventPlace = eventPlaces;
 
   let data: School[] | Place[] = [];
   let update: (text?: string) => void = () => {};
@@ -69,22 +71,22 @@ function PlaceSelectModal({
     case 'school':
       data = searchText ? schools.search : schools.data;
       update = (text = searchText) =>
-        text ? searchTags('initial', text, {}) : updateTags('initial');
+        text ? searchSchools('initial', text, {}) : updateSchools('initial');
       icon = 'school';
       state = schools.state;
       break;
     case 'place':
       data = searchText ? places.search : places.data;
       update = (text = searchText) =>
-        text ? searchUsers('initial', text, {}) : updateUsers('initial');
-      icon = 'account';
+        text ? searchPlaces('initial', text, {}) : updatePlaces('initial');
+      icon = 'map';
       state = places.state;
       break;
   }
 
   React.useEffect(() => {
     update();
-  }, [null]);
+  }, [type]);
 
   return (
     <BottomModal
@@ -111,7 +113,7 @@ function PlaceSelectModal({
           <View>
             <View style={{ height: 200 }}>
               <View style={styles.centerIllustrationContainer}>
-                <Illustration name={type} height={200} width={200} />
+                <Illustration name="search" height={200} width={200} />
               </View>
             </View>
             <Divider />
@@ -156,24 +158,22 @@ function PlaceSelectModal({
                     ))}
                 </View>
               )}
-              renderItem={({ item }) =>
-                eventPlaces.some((e) => e.id === item._id) ? null : (
-                  <List.Item
-                    title={item.name || item.info?.username}
-                    left={() =>
-                      item.avatar || item.info?.avatar ? (
-                        <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
-                      ) : (
-                        <List.Icon icon={icon} color={item.color} />
-                      )
-                    }
-                    onPress={() => {
-                      addEventPlace(type, item._id, item.name || item.info?.username);
-                      setVisible(false);
-                    }}
-                  />
-                )
-              }
+              renderItem={({ item }) => (
+                <List.Item
+                  title={item.name || item.info?.username}
+                  left={() =>
+                    item.avatar || item.info?.avatar ? (
+                      <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
+                    ) : (
+                      <List.Icon icon={icon} color={item.color} />
+                    )
+                  }
+                  onPress={() => {
+                    updateEventCreationData(type, item._id, item.name || item.info?.username);
+                    setVisible(false);
+                  }}
+                />
+              )}
             />
           </View>
         </Card>
@@ -183,13 +183,11 @@ function PlaceSelectModal({
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData, tags, groups, users } = state;
+  const { schools, places } = state;
   return {
-    quicks: articleData.quicks,
-    tags,
-    groups,
-    users,
+    schools,
+    places,
   };
 };
 
-export default connect(mapStateToProps)(PlaceSelectModal);
+export default connect(mapStateToProps)(EventPlaceSelectModal);

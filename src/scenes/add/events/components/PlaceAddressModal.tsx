@@ -26,6 +26,7 @@ import {
 import { View, Platform, FlatList, TextInput as RNTestInput } from 'react-native';
 import { connect } from 'react-redux';
 import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
 
 import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
@@ -107,12 +108,57 @@ function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
     cityInput.current?.blur();
   }
 
+  async function validateCityInput(city: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
+
+    if (city === undefined) {
+      validation = {
+        valid: false,
+        error: true,
+        message: 'Champ requis',
+      };
+    } else {
+      validation = { valid: true, error: false };
+    }
+    setCity(validation);
+    return validation;
+  }
+
   async function submit() {
-    const NumberVal = currentNumber.value;
-    const StreetVal = currentStreet.value;
-    const CodeVal = currentCode.value;
-    const CityVal = currentCity.value;
+    const numberVal = currentNumber.value;
+    const streetVal = currentStreet.value;
+    const codeVal = currentCode.value;
+    const cityVal = currentCity.value;
+    const city = await validateCityInput(cityVal);
+    if (city.valid) {
+      updateEventCreationData({
+        number: numberVal,
+        street: streetVal,
+        code: codeVal,
+        city: cityVal,
+      });
+      setVisible(false);
+      setNumber({ value: undefined });
+      setStreet({ value: undefined });
+      setCode({ value: undefined });
+      setCity({ value: undefined });
+    } else {
+      if (!city.valid && !city.error) {
+        setCity({
+          valid: false,
+          error: true,
+          message: 'Champ requis',
+        });
+      }
+    }
+  }
+
+  async function cancel() {
     setVisible(false);
+    setNumber({ value: undefined });
+    setStreet({ value: undefined });
+    setCode({ value: undefined });
+    setCity({ value: undefined });
   }
 
   const theme = useTheme();
@@ -216,14 +262,21 @@ function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
                   blurInputs();
                 }}
                 autoCorrect={false}
-                autofocus
-                theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
+                autoFocus
+                theme={
+                  currentCity.valid
+                    ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+                    : theme
+                }
                 mode="outlined"
                 style={eventStyles.textInput}
                 onChangeText={(text) => {
                   setCity({ value: text });
                 }}
               />
+              <HelperText type="error" visible={currentCity.error}>
+                {currentCity.message}
+              </HelperText>
             </View>
             <View style={{ height: 20 }} />
             <View style={eventStyles.buttonContainer}>
@@ -231,6 +284,10 @@ function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}
                 style={{ flex: 1, marginRight: 5 }}
+                onPress={() => {
+                  blurInputs();
+                  cancel();
+                }}
               >
                 {' '}
                 Annuler{' '}

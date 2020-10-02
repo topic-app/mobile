@@ -32,12 +32,12 @@ function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
     {
       type: 'place',
       title: 'Lieu',
-      description: "L'évènement à lieu dans un lieu culturel",
+      description: "L'évènement a lieu dans un lieu culturel",
     },
     {
       type: 'address',
       title: 'Adresse',
-      description: "L'évènement à lieu à une adresse spécifique",
+      description: "L'évènement a lieu à une adresse spécifique",
     },
   ];
 

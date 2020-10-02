@@ -5,6 +5,7 @@ import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'rea
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { StepperViewPageProps } from '@components/index';
 import { Account, State } from '@ts/types';
+import { updateUpcomingEvents, searchEvents } from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PlaceTypeModal from './PlaceTypeModal';
@@ -32,9 +33,9 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
   const toSelectedType = (data: string) => {
     setPlaceType(data);
     setPlaceTypeModalVisible(false);
-    data === 'address' && setPlaceAddressModalVisible(true);
+    data === 'address' ? setPlaceAddressModalVisible(true) : setPlaceSelectModalVisible(true);
   };
-  const addEventPlace = (newEventPlace) => setEventPlaces(eventPlaces.concat(newEventPlace));
+  const addEventPlace = (newEventPlace) => setEventPlaces([...eventPlaces, newEventPlace]);
 
   const submit = () => {
     {
@@ -55,6 +56,18 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
 
   return (
     <View style={eventStyles.formContainer}>
+      {/* <CollapsibleView collapsed={selectedTags.length === 0} style={{ marginTop: 20 }}>
+        <View style={{ marginBottom: 15 }}>
+          <CategoryTitle>Adresse</CategoryTitle>
+        </View>
+        <FlatList
+          vertical
+          data={selectedTags.map((t) => selectedData.find((u) => u?._id === t))}
+          renderItem={renderItem}
+          keyboardShouldPersistTaps="handled"
+          keyExtractor={(i) => i?._id}
+        />
+      </CollapsibleView> */}
       <View style={styles.container}>
         <Button
           mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
