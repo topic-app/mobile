@@ -110,7 +110,7 @@ function LandingArticles({ navigation, route }) {
                     <View style={landingStyles.contentContainer}>
                       <Text>
                         Nous vous proposons une carte interactive des territoires français, où
-                        seront répertoriés avec votre aide, les lieux culturels, les établissements
+                        seront répertoriés, avec votre aide, les lieux culturels, les établissements
                         scolaires et où apparaîtront vos évènements et ceux de la communauté.
                       </Text>
                       <Text>En avant la culture ! En avant l’engagement !</Text>
@@ -132,7 +132,7 @@ function LandingArticles({ navigation, route }) {
                     <View style={landingStyles.contentContainer}>
                       <Text>
                         Rejoignez des groupes, des associations et des clubs pour écrire des
-                        articles et créer des évènements
+                        articles et créer des évènements.
                       </Text>
                     </View>
                   </View>

@@ -283,7 +283,7 @@ function Profile({
             onPress={() => {
               navigation.popToTop();
               Alert.alert(
-                'Se déconnecter?',
+                'Se déconnecter ?',
                 "Les listes et l'historique seront toujours disponibles sur votre téléphone",
                 [
                   {
