@@ -1,10 +1,11 @@
 import React from 'react';
-import { Provider as PaperProvider, Text } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
+import { Provider as PaperProvider, Divider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import { AppLoading } from 'expo';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 import { Preferences, State } from '@ts/types';
 import themes from '@styles/Theme';
@@ -26,6 +27,8 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   if (preferences.useSystemTheme) {
     theme = themes[colorScheme === 'dark' ? 'dark' : 'light'];
   }
+
+  changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);
 
   React.useEffect(
     React.useCallback(() => {

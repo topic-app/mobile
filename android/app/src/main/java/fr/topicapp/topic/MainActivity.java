@@ -50,7 +50,7 @@ public class MainActivity extends ReactActivity {
               break;
           case Configuration.UI_MODE_NIGHT_NO:
               window.setNavigationBarColor(0xffffffff);
-              window.setNavigationBarDividerColor(0xffefefef);
+              // window.setNavigationBarDividerColor(0xffefefef);
               flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
               break; 
       }
