@@ -147,6 +147,7 @@ function EventPlaceSelectModal({
             <FlatList
               data={data}
               keyExtractor={(i) => i._id}
+              style={{ maxHeight: 200 }}
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={() => (
                 <View style={{ minHeight: 50 }}>
