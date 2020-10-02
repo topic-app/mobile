@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Linking, Platform } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text, FAB, IconButton, useTheme } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
@@ -84,7 +84,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
 
   const featureCollections = buildFeatureCollections(places);
 
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
 
   return (
     <View

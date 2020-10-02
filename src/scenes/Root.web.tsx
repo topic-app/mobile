@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
 import { NavigationProp, useLinkProps, Link } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Text, useTheme, IconButton, Divider, Drawer as PaperDrawer } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
+
 import { State, Account } from '@ts/types';
-import AndroidNavigator from './Root.android';
 import getLayout from '@utils/getLayout';
 
+import AndroidNavigator from './Root.android';
 import MainStackNavigator from './Main';
-import { connect } from 'react-redux';
 
 // Can't use BlurView with expo :(
 // import { BlurView, VibrancyView } from '@react-native-community/blur';
@@ -150,8 +150,6 @@ const DrawerContent: React.FC<BottomTabProps> = ({
   const isActive = (name: string) => active === name;
 
   const { colors } = useTheme();
-
-  const { bottom } = useSafeArea(); // get bottom inset
 
   return (
     <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: colors.surface }}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, ScrollView, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text, Button, useTheme, Divider, ProgressBar } from 'react-native-paper';
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -72,7 +72,7 @@ const Search: React.FC<SearchProps> = ({
   const styles = getStyles(theme);
   const searchStyles = getSearchStyles(theme);
 
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
 
   const { initialCategory } = route.params || { initialCategory: 'articles' };
 
