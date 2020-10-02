@@ -204,6 +204,8 @@ function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
                   setCode({ value: text });
                 }}
               />
+            </View>
+            <View style={eventStyles.textInputContainer}>
               <TextInput
                 ref={cityInput}
                 label="Ville"
