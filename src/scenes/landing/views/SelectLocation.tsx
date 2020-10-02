@@ -541,7 +541,7 @@ const WelcomeLocation: React.FC<Props> = ({
         <CollapsibleView collapsed={selected.length !== 0}>
           <View style={landingStyles.contentContainer}>
             <Text>
-              Par défaut, vous verrez les articles déstinés à votre école, ainsi que les articles du
+              Par défaut, vous verrez les articles destinés à votre école, ainsi que les articles du
               département dans lequel elle se trouve et de la France entière
             </Text>
           </View>
@@ -584,7 +584,7 @@ const WelcomeLocation: React.FC<Props> = ({
                 if (Platform.OS !== 'web') {
                   Alert.alert(
                     'Ne pas spécifier de localisation?',
-                    'Vous verrez uniquement les articles déstinés à la france entière',
+                    'Vous verrez uniquement les articles destinés à la france entière',
                     [
                       {
                         text: 'Annuler',
