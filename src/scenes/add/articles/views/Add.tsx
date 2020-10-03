@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { View, ScrollView } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from '@utils/stack';
 
 import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import {
@@ -13,10 +13,9 @@ import {
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
-import { register } from '@redux/actions/data/account';
 import { articleAdd } from '@redux/actions/apiActions/articles';
-import { clearArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
+import { clearArticleCreationData } from '@redux/actions/contentData/articles';
 
 import type { ArticleStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image, Dimensions } from 'react-native';
 import { Card, Paragraph, Text, useTheme, Title, Caption } from 'react-native-paper';
 import moment from 'moment';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
+import { StackNavigationProp } from '@utils/stack';
 
 import { ArticlePreload, State, Preferences } from '@ts/types';
 import { getImageUrl } from '@utils/index';

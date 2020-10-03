@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
+import { StackNavigationProp } from '@utils/stack';
 
 import type { ModerationStackParams } from '../index';
 import getModerationStyles from '../styles/Styles';

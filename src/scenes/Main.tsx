@@ -4,7 +4,7 @@ import {
   createNativeStackNavigator,
   TransitionPresets,
   StackNavigationProp,
-} from 'react-native-screens/native-stack';
+} from '@utils/stack';
 import { connect } from 'react-redux';
 
 import { LocationList, State } from '@ts/types';

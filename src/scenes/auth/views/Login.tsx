@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from '@utils/stack';
 
 import { AccountRequestState, State } from '@ts/types';
 import {

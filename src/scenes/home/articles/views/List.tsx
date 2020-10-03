@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from 'react-native';
 import { ProgressBar, Banner, Text, Subheading, FAB, useTheme } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from 'react-native-screens/native-stack';
+import { StackScreenProps } from '@utils/stack';
 import { connect } from 'react-redux';
 
 import {

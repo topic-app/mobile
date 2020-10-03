@@ -39,11 +39,9 @@ function EventParams({ navigation, params, schools, departments, state }) {
         <View style={styles.centerIllustrationContainer}>
           <Illustration name="configure" height={200} width={200} />
           <View style={[styles.contentContainer, { alignItems: 'center' }]}>
-            <Text>
-              Choissisez les écoles et départements d&apos;ou vous voulez voir les événements
-            </Text>
+            <Text>Choisissez les écoles et départements dont vous voulez voir les évènements.</Text>
 
-            <Text>Ces parametres s&apos;appliquent aux événements seulement. </Text>
+            <Text>Ces paramètres s&apos;appliquent aux évènements seulement. </Text>
             <TouchableWithoutFeedback
               onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })}
             >
