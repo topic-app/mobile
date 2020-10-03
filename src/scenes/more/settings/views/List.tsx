@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, useTheme, Button } from 'react-native-paper';
+import { List, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { View, Appearance } from 'react-native';
 import { connect } from 'react-redux';
@@ -17,7 +17,6 @@ function SettingsList({ navigation, preferences, account }) {
   return (
     <View style={styles.page}>
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {

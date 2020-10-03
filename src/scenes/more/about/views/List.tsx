@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Text, useTheme, Divider, List } from 'react-native-paper';
-import CustomTabView from '@components/CustomTabView';
+
+import { CustomHeaderBar, TranslucentStatusBar, CustomTabView } from '@components/index';
 import TopicIcon from '@assets/images/topic-icon.svg';
 import getStyles from '@styles/Styles';
 import getAboutStyles from '../styles/Styles';
-import { CustomHeaderBar, TranslucentStatusBar } from '@components/index';
 
 function About({ navigation }) {
   const theme = useTheme();
@@ -17,7 +17,6 @@ function About({ navigation }) {
     <View style={styles.page}>
       <TranslucentStatusBar />
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {

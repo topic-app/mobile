@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme, Appbar, Text } from 'react-native-paper';
-import { NavigationProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/core';
 
 import { useSafeAreaInsets } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
@@ -87,12 +87,12 @@ export type CustomHeaderBarProps = {
       };
     };
   };
-  navigation: NavigationProp<any, any>;
 };
 
-const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) => {
+const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scenen }) => {
   const theme = useTheme();
   const navigatorStyles = getNavigatorStyles(theme);
+  const navigation = useNavigation();
 
   const { title, subtitle, headerStyle, primary, home } = scene.descriptor.options;
 
@@ -119,9 +119,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
 };
 
 const HeaderConfig = {
-  header: ({ scene, navigation }: CustomHeaderBarProps) => (
-    <CustomHeaderBar scene={scene} navigation={navigation} />
-  ),
+  header: ({ scene }: CustomHeaderBarProps) => <CustomHeaderBar scene={scene} />,
 };
 
 export { TranslucentStatusBar, HeaderConfig, CustomHeaderBar };

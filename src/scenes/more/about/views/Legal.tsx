@@ -17,7 +17,7 @@ type LegalPropTypes = StackScreenProps<AboutStackParams, 'Legal'> & {
   state: LegalRequestState;
 };
 
-function Legal({ navigation, route, legal, state }: LegalPropTypes) {
+function Legal({ route, legal, state }: LegalPropTypes) {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -35,7 +35,6 @@ function Legal({ navigation, route, legal, state }: LegalPropTypes) {
     <View style={styles.page}>
       <TranslucentStatusBar />
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {
