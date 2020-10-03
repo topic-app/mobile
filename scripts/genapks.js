@@ -143,11 +143,11 @@ const checklist = async () => {
   const builds = [];
 
   config.betaTesterNames.forEach((name, index) => {
-    builds.push(() => {
-      return new Promise((resolve, reject) => {
+    builds.push(async () => {
+      await new Promise((resolve, reject) => {
         console.log(
           '>>> Building APK',
-          index,
+          index + 1,
           'of',
           config.betaTesterNames.length,
           `(${Math.round(index / config.betaTesterNames.length)}%)`,
@@ -166,11 +166,7 @@ const checklist = async () => {
 
         gradlew.stdout.on('data', (data) => process.stdout.write(data));
 
-        gradlew.stderr.on('data', (data) => {
-          console.error(`ERR: ${data}`);
-          console.error(' ❌ Gradle build encoutered error, aborting...');
-          process.exit(1);
-        });
+        gradlew.stderr.on('data', (data) => process.stderr.write(data));
 
         gradlew.on('close', (code) => {
           if (code === 0) {
@@ -182,6 +178,33 @@ const checklist = async () => {
           }
         });
       });
+
+      // Move newly generated apk to android-build folder at root of project
+      // for easy access
+      const androidBuildFolder = path.resolve(projectPath, 'android-build');
+
+      // Create android-build folder if it doesn't exist
+      if (!fs.existsSync(androidBuildFolder)) fs.mkdirSync(androidBuildFolder);
+
+      const apkFolder = path.resolve(projectPath, `android/app/build/outputs/apk/${name}/release`);
+
+      // Find all apks in the folder
+      const apkFileNames = fs.readdirSync(apkFolder).filter((name) => name.endsWith('.apk'));
+
+      if (apkFileNames.length !== 0) {
+        // Choose the first apk in folder
+        const apkName = apkFileNames[0];
+
+        // Move apk to build folder while conserving it's name
+        fs.renameSync(path.resolve(apkFolder, apkName), path.resolve(androidBuildFolder, apkName));
+
+        // Clean up: delete stray folders to not clutter up build folder
+        fs.unlinkSync(path.resolve(apkFolder, 'output.json')); // deletes file
+        fs.rmdirSync(apkFolder);
+        fs.rmdirSync(path.resolve(apkFolder, '..'));
+      } else {
+        console.warn(` ❌ Failed to find apk at ${apkFolder}, skipping file move.`);
+      }
     });
   });
 
