@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, useTheme, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { StackNavigationProp } from '@utils/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { State, ArticleRequestState, Account } from '@ts/types';
 import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';

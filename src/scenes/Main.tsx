@@ -1,10 +1,6 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import {
-  createNativeStackNavigator,
-  TransitionPresets,
-  StackNavigationProp,
-} from '@utils/stack';
+import { createNativeStackNavigator } from '@utils/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import { LocationList, State } from '@ts/types';
@@ -17,9 +13,7 @@ import HomeOneNavigator from './home/HomeOne';
 import ConfigureStackNavigator from './configure/index';
 import ParamsStackNavigator from './params/index';
 import HistoryStackNavigator from './history/index';
-import UnauthorizedBeta from '@components/UnauthorizedBeta';
 import NotFound from './NotFound';
-import { PlatformBackButton } from '@components/index';
 
 function getNestedParams(route?: { params: object }) {
   let { params } = route;

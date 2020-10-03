@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { View, ScrollView } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
-import { StackNavigationProp } from '@utils/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import {

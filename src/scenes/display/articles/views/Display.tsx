@@ -3,7 +3,7 @@ import { Text, Title, Divider, List, useTheme, Card, Button } from 'react-native
 import { View, Image, ActivityIndicator, Animated, Platform, Share } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import { StackNavigationProp } from '@utils/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
 import shortid from 'shortid';
