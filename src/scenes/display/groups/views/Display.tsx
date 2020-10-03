@@ -1,10 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   ScrollView,
   View,
   Platform,
-  TouchableOpacity,
   ActivityIndicator,
   Alert,
   StatusBar,
@@ -21,12 +19,23 @@ import {
   Appbar,
   Subheading,
   Title,
-  List,
   IconButton,
-  Snackbar,
   Banner,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
+
+import {
+  GroupPreload,
+  Group,
+  Account,
+  Address,
+  GroupRequestState,
+  GroupsState,
+  State,
+  ArticleRequestState,
+  Article,
+} from '@ts/types';
 import {
   Avatar,
   InlineCard,
@@ -39,8 +48,9 @@ import {
   PlatformTouchable,
   Content,
   CollapsibleView,
+  ErrorMessage,
+  SafeAreaView,
 } from '@components/index';
-import ErrorMessage from '@components/ErrorMessage';
 import getStyles from '@styles/Styles';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
@@ -52,21 +62,7 @@ import {
   groupMemberLeave,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
-import { connect } from 'react-redux';
 
-import {
-  GroupPreload,
-  Group,
-  Account,
-  Address,
-  GroupRequestState,
-  GroupsState,
-  State,
-  ArticleRequestState,
-  ArticlePreload,
-  Article,
-} from '@ts/types';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import AddUserSelectModal from '../components/AddUserSelectModal';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import EditGroupModal from '../components/EditGroupModal';

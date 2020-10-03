@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Platform, Image, ScrollView } from 'react-native';
 import { Text, useTheme, Button, Divider } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   PlatformBackButton,
   CustomTabView,
   TranslucentStatusBar,
   Illustration,
+  SafeAreaView,
 } from '@components/index';
 import getStyles from '@styles/Styles';
 

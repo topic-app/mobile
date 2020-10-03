@@ -1,10 +1,9 @@
 import React from 'react';
 import { useColorScheme } from 'react-native';
-import { Provider as PaperProvider, Divider } from 'react-native-paper';
+import { Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import { AppLoading } from 'expo';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 import { Preferences, State } from '@ts/types';
@@ -61,15 +60,13 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   };
 
   return (
-    <SafeAreaProvider>
-      <PaperProvider theme={theme}>
-        <>
-          <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
-            <AppNavigator />
-          </NavigationContainer>
-        </>
-      </PaperProvider>
-    </SafeAreaProvider>
+    <PaperProvider theme={theme}>
+      <>
+        <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
+          <AppNavigator />
+        </NavigationContainer>
+      </>
+    </PaperProvider>
   );
 };
 

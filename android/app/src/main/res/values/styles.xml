@@ -9,8 +9,5 @@
     <item name="android:windowBackground">@drawable/splashscreen</item>
     <item name="android:statusBarColor">@color/splashscreen_statusbar_color</item>
     <!-- Customize your splash screen theme here -->
-    <!-- <item name="android:windowTranslucentNavigation">true</item> -->
-    <!-- <item name="android:windowDrawsSystemBarBackgrounds">true</item> -->
-    <!-- <item name="android:navigationBarColor">@android:color/transparent</item> -->
   </style>
 </resources>

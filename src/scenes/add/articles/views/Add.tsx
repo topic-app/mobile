@@ -3,17 +3,15 @@ import { connect } from 'react-redux';
 
 import { View, ScrollView } from 'react-native';
 import { Text, ProgressBar, useTheme } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
-import { logger } from '@utils/index';
 import {
   TranslucentStatusBar,
   StepperView,
   ErrorMessage,
-  Illustration,
   PlatformBackButton,
+  SafeAreaView,
 } from '@components/index';
 import { register } from '@redux/actions/data/account';
 import { articleAdd } from '@redux/actions/apiActions/articles';

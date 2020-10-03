@@ -7,11 +7,11 @@ import {
   ViewStyle,
   StyleProp,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme, Appbar, Text } from 'react-native-paper';
 import { NavigationProp } from '@react-navigation/native';
 
+import { useSafeAreaInsets } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {

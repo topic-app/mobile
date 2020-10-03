@@ -1,18 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
-import { Text, Button, Divider, Snackbar, useTheme, Card } from 'react-native-paper';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, Button, Divider, useTheme, Card } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { State, ArticleRequestState, Account } from '@ts/types';
-import { Illustration, ArticleCard, ErrorMessage, TranslucentStatusBar } from '@components/index';
+import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import getStyles from '@styles/Styles';
 
 import type { AuthStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParams, 'CreateSuccess'>;

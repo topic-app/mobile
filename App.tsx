@@ -21,6 +21,7 @@ import {
 } from '@expo-google-fonts/roboto-mono';
 import { AppLoading } from 'expo';
 import { enableScreens } from 'react-native-screens';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'moment/locale/fr';
 
 import Store, { Persistor } from '@redux/store';
@@ -62,7 +63,9 @@ function App() {
   return (
     <ReduxProvider store={Store}>
       <PersistGate persistor={Persistor} loading={<AppLoading />}>
-        <StoreApp />
+        <SafeAreaProvider>
+          <StoreApp />
+        </SafeAreaProvider>
       </PersistGate>
     </ReduxProvider>
   );

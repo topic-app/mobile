@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, ScrollView, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Text, Button, useTheme, Divider, ProgressBar } from 'react-native-paper';
+import { View, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { Text, Button, useTheme, ProgressBar } from 'react-native-paper';
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { connect } from 'react-redux';
+
 import {
   ArticlePreload,
   EventPreload,
@@ -16,7 +17,6 @@ import {
   ArticleRequestState,
   TagPreload,
 } from '@ts/types';
-
 import {
   Searchbar,
   Illustration,
@@ -29,8 +29,8 @@ import {
   EventCard,
   ErrorMessage,
 } from '@components/index';
+import { useSafeAreaInsets } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { connect } from 'react-redux';
 import { searchArticles, clearArticles } from '@redux/actions/api/articles';
 import { searchEvents, clearEvents } from '@redux/actions/api/events';
 import { searchGroups, clearGroups } from '@redux/actions/api/groups';
