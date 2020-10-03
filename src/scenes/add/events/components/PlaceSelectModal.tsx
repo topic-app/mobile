@@ -43,6 +43,7 @@ type EventPlaceSelectModalProps = ModalProps & {
   type: 'school' | 'place';
   schools: SchoolsState;
   places: PlacesState;
+  add: ({ type, _id, name }: { type: string; _id: string; name: string }) => any;
 };
 
 function EventPlaceSelectModal({
@@ -52,12 +53,12 @@ function EventPlaceSelectModal({
   schools,
   places,
   eventPlaces,
+  add,
 }: EventPlaceSelectModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   const [searchText, setSearchText] = React.useState('');
-
   const eventPlace = eventPlaces;
 
   let data: School[] | Place[] = [];
@@ -79,7 +80,7 @@ function EventPlaceSelectModal({
       data = searchText ? places.search : places.data;
       update = (text = searchText) =>
         text ? searchPlaces('initial', text, {}) : updatePlaces('initial');
-      icon = 'map';
+      icon = 'map-marker-radius';
       state = places.state;
       break;
   }
@@ -166,11 +167,12 @@ function EventPlaceSelectModal({
                     item.avatar || item.info?.avatar ? (
                       <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
                     ) : (
-                      <List.Icon icon={icon} color={item.color} />
+                      <List.Icon icon={icon} />
                     )
                   }
                   onPress={() => {
-                    updateEventCreationData(type, item._id, item.name || item.info?.username);
+                    updateEventCreationData({ type, _id: item._id, name: item.name });
+                    add({ type, _id: item._id, name: item.name });
                     setVisible(false);
                   }}
                 />
@@ -184,8 +186,9 @@ function EventPlaceSelectModal({
 }
 
 const mapStateToProps = (state: State) => {
-  const { schools, places } = state;
+  const { eventData, schools, places } = state;
   return {
+    creationData: eventData.creationData,
     schools,
     places,
   };

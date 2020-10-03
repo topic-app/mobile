@@ -313,12 +313,13 @@ function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData, tags, groups, users } = state;
+  const { eventData, number, street, code, city } = state;
   return {
-    quicks: articleData.quicks,
-    tags,
-    groups,
-    users,
+    creationData: eventData.creationData,
+    number,
+    street,
+    code,
+    city,
   };
 };
 
