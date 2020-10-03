@@ -1,10 +1,16 @@
 import React from 'react';
-import { View, Platform } from 'react-native';
+import { View, Platform, FlatList } from 'react-native';
 import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
 
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-import { StepperViewPageProps } from '@components/index';
-import { Account, State } from '@ts/types';
+import {
+  StepperViewPageProps,
+  TextChip,
+  ErrorMessage,
+  CollapsibleView,
+  CategoryTitle,
+} from '@components/index';
+import { Account, State, EventCreationData, UPDATE_PLACES_DATA } from '@ts/types';
 import { updateUpcomingEvents, searchEvents } from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,9 +22,13 @@ import PlaceSelectModal from './PlaceSelectModal';
 import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';
 
-type Props = StepperViewPageProps & { account: Account };
+type Props = StepperViewPageProps & {
+  account: Account;
+  creationData: EventCreationData;
+  navigation: any;
+};
 
-const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
+const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData }) => {
   const [showError, setError] = React.useState(false);
   const [isPlaceTypeModalVisible, setPlaceTypeModalVisible] = React.useState(false);
   const [isPlaceSelectModalVisible, setPlaceSelectModalVisible] = React.useState(false);
@@ -30,19 +40,38 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const [eventPlaces, setEventPlaces] = React.useState([]);
+  const [placeData, setPlaceData] = React.useState([]);
   const toSelectedType = (data: string) => {
     setPlaceType(data);
     setPlaceTypeModalVisible(false);
     data === 'address' ? setPlaceAddressModalVisible(true) : setPlaceSelectModalVisible(true);
   };
-  const addEventPlace = (newEventPlace) => setEventPlaces([...eventPlaces, newEventPlace]);
+  const addEventPlace = (place: { type: string; _id: string; name: string }) => {
+    setEventPlaces([...eventPlaces, place._id]);
+    setPlaceData([...placeData, place]);
+  };
 
   const submit = () => {
-    {
-      /* updateEventCreationData({ tags: selectedTags }); */
-    }
     next();
   };
+
+  const renderItem = React.useCallback(
+    ({ item = { name: 'INCONNU' } }) => {
+      return (
+        <View style={{ marginHorizontal: 5, alignItems: 'flex-start', paddingBottom: 10 }}>
+          <TextChip
+            title={item.name}
+            onPress={() => {
+              setEventPlaces(eventPlaces.filter((s) => s !== item._id));
+            }}
+            icon={eventPlaces.includes(item._id) ? 'check' : 'pound'}
+            selected={eventPlaces.includes(item._id)}
+          />
+        </View>
+      );
+    },
+    [eventPlaces],
+  );
 
   if (!account.loggedIn) {
     return (
@@ -56,18 +85,16 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
 
   return (
     <View style={eventStyles.formContainer}>
-      {/* <CollapsibleView collapsed={selectedTags.length === 0} style={{ marginTop: 20 }}>
-        <View style={{ marginBottom: 15 }}>
-          <CategoryTitle>Adresse</CategoryTitle>
+      {eventPlaces !== [] && (
+        <View style={{ marginTop: 20 }}>
+          <FlatList
+            data={eventPlaces.map((t) => placeData.find((u) => u?._id === t))}
+            renderItem={renderItem}
+            keyboardShouldPersistTaps="handled"
+            keyExtractor={(i) => i?._id}
+          />
         </View>
-        <FlatList
-          vertical
-          data={selectedTags.map((t) => selectedData.find((u) => u?._id === t))}
-          renderItem={renderItem}
-          keyboardShouldPersistTaps="handled"
-          keyExtractor={(i) => i?._id}
-        />
-      </CollapsibleView> */}
+      )}
       <View style={styles.container}>
         <Button
           mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
@@ -89,6 +116,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
         visible={isPlaceSelectModalVisible}
         setVisible={setPlaceSelectModalVisible}
         type={placeType}
+        add={addEventPlace}
       />
       <PlaceAddressModal
         visible={isPlaceAddressModalVisible}
