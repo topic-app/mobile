@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, FlatList, Platform, Appearance, TouchableWithoutFeedback } from 'react-native';
-import { List, RadioButton, Divider, Text, withTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
+import { List, RadioButton, Divider, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { State } from '@ts/types';
 import { Illustration } from '@components/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
@@ -11,7 +11,15 @@ import themes from '@styles/Theme';
 
 import getSettingsStyles from '../styles/Styles';
 
-function SettingsTheme({ preferences, theme }) {
+type SettingsThemeProps = {
+  preferences: {
+    theme: string;
+    useSystemTheme: boolean;
+  };
+};
+
+const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
+  const theme = useTheme();
   const styles = getStyles(theme);
   const settingsStyles = getSettingsStyles(theme);
   const { colors } = theme;
@@ -112,23 +120,11 @@ function SettingsTheme({ preferences, theme }) {
       />
     </View>
   );
-}
-
-SettingsTheme.propTypes = {
-  preferences: PropTypes.shape({
-    theme: PropTypes.string.isRequired,
-    useSystemTheme: PropTypes.bool.isRequired,
-  }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { preferences } = state;
   return { preferences };
 };
 
-export default connect(mapStateToProps)(withTheme(SettingsTheme));
+export default connect(mapStateToProps)(SettingsTheme);

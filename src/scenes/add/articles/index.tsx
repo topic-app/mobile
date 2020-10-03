@@ -1,6 +1,5 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import { HeaderConfig } from '@components/Header';
 import ArticleAdd from './views/Add';

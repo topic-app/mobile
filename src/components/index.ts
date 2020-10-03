@@ -24,3 +24,4 @@ export { default as CustomImage } from './CustomImage';
 export { default as ArticleCard } from './cards/Article';
 export { default as EventCard } from './cards/Event';
 export { default as PetitionCard } from './cards/Petition';
+export { default as SafeAreaView } from './SafeAreaView';

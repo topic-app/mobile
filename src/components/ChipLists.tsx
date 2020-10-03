@@ -157,6 +157,7 @@ type ListItem = {
   key: string;
   title: string;
   icon?: string;
+  [key: string]: any;
 };
 
 type CategoriesListProps = {

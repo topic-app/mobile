@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Platform, View, FlatList } from 'react-native';
 import { Text, Button, Divider, Snackbar, useTheme } from 'react-native-paper';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { Location, Group, State, GroupRequestState } from '@ts/types';
 import { Illustration } from '@components/index';

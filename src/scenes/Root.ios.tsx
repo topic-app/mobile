@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
 import { NavigationProp } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useSafeAreaInsets } from '@utils/index';
 
 import MainStackNavigator from './Main';
 
@@ -67,7 +68,7 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
 
   const { colors } = useTheme();
 
-  const { bottom } = useSafeArea(); // get bottom inset
+  const { bottom } = useSafeAreaInsets(); // get bottom inset
 
   return (
     <View

@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Card, Text, useTheme } from 'react-native-paper';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 
 import { PetitionStatus, PetitionPreload, Theme } from '@ts/types';

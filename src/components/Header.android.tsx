@@ -2,23 +2,17 @@ import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp } from 'react-native';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
 import { NavigationProp } from '@react-navigation/native';
-import getLayout from '@utils/getLayout';
-
-import getNavigatorStyles from '@styles/NavStyles';
 import shortid from 'shortid';
+
+import { useSafeAreaInsets, getLayout } from '@utils/index';
+import getNavigatorStyles from '@styles/NavStyles';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
   const { colors } = theme;
   const contentTheme = barStyle || theme.statusBarStyle;
   return (
-    <StatusBar
-      translucent
-      backgroundColor={colors.statusBar}
-      barStyle={contentTheme}
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      {...rest}
-    />
+    <StatusBar translucent backgroundColor={colors.statusBar} barStyle={contentTheme} {...rest} />
   );
 };
 
@@ -83,6 +77,8 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
     <Appbar.Action key={shortid()} icon={item.icon} onPress={item.onPress} />
   ));
 
+  const insets = useSafeAreaInsets();
+
   const overflowAction = overflow && (
     <Menu
       visible={menuVisible}
@@ -94,7 +90,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
           color={colors.drawerContent}
         />
       }
-      statusBarHeight={StatusBar.currentHeight}
+      statusBarHeight={insets.top}
     >
       {overflow.map((item, key) => (
         // eslint-disable-next-line react/no-array-index-key
@@ -114,10 +110,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
   return (
     <View style={navigatorStyles.headerSurface}>
       <TranslucentStatusBar />
-      <Appbar.Header
-        style={[navigatorStyles.header, headerStyle]}
-        statusBarHeight={StatusBar.currentHeight}
-      >
+      <Appbar.Header style={[navigatorStyles.header, headerStyle]} statusBarHeight={insets.top}>
         {primaryAction}
         <Appbar.Content title={title} subtitle={subtitle} />
         {secondaryActions}

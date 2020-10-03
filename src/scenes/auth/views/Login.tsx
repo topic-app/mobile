@@ -2,8 +2,7 @@ import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { AccountRequestState, State } from '@ts/types';
 import {
@@ -11,6 +10,7 @@ import {
   ErrorMessage,
   PlatformBackButton,
   Illustration,
+  SafeAreaView,
 } from '@components/index';
 import getStyles from '@styles/Styles';
 import { login } from '@redux/actions/data/account';

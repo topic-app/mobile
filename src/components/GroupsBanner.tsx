@@ -1,13 +1,16 @@
 import React from 'react';
-import { Linking, Alert, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { Banner, Text, Subheading, useTheme, ProgressBar } from 'react-native-paper';
-import { Avatar, ErrorMessage } from '@components/index';
 import { connect } from 'react-redux';
+
+import { config } from '@root/app.json';
+import { State, Account, AccountRequestState, GroupRequestState } from '@ts/types';
 import { handleUrl } from '@utils/index';
 import { groupMemberAccept, groupMemberReject } from '@redux/actions/apiActions/groups';
 import { fetchWaitingGroups, fetchGroups } from '@redux/actions/data/account';
-import { State, Account, AccountRequestState, GroupRequestState } from '@ts/types';
-import { config } from '@root/app.json';
+
+import Avatar from './Avatar';
+import ErrorMessage from './ErrorMessage';
 
 type Props = {
   account: Account;

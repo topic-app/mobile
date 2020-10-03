@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   ScrollView,
-  Alert,
   ActivityIndicator,
   FlatList,
   StatusBar,
@@ -17,7 +16,6 @@ import {
   Divider,
   Button,
   List,
-  ProgressBar,
   Appbar,
   Menu,
 } from 'react-native-paper';
@@ -28,10 +26,8 @@ import {
   Account,
   Address,
   State,
-  User,
   UsersState,
   Group,
-  StandardRequestState,
   RequestState,
   RequestStateComplex,
   Article,
@@ -44,20 +40,17 @@ import {
   TranslucentStatusBar,
   PlatformBackButton,
   ReportModal,
+  CustomTabView,
+  SafeAreaView,
 } from '@components/index';
 import getStyles from '@styles/Styles';
 import { fetchUser } from '@redux/actions/api/users';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { CustomTabView } from '@components/index';
-
-import getUserStyles from '../styles/Styles';
 import { fetchAccount } from '@redux/actions/data/account';
-import locationReducer from '@redux/reducers/data/location';
-import departmentReducer from '@redux/reducers/api/departments';
-import { color } from 'react-native-reanimated';
 import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
 import { searchGroups } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
+
+import getUserStyles from '../styles/Styles';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
