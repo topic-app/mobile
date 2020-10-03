@@ -182,7 +182,7 @@ function GroupDisplay({
                 contentSingular: 'Le groupe',
               }}
               error={state.info.error}
-              retry={() => groupMemberDelete(id, mem.user._id).then(() => fetchGroup(id))}
+              retry={() => groupMemberDelete(id, mem.user?._id).then(() => fetchGroup(id))}
             />
           )}
           {!state.info.error && (
@@ -511,13 +511,13 @@ function GroupDisplay({
                     <View style={{ flexGrow: 1 }}>
                       <InlineCard
                         key={mem._id}
-                        title={mem.user.displayName}
-                        subtitle={`${mem.user.data?.public ? `@${mem.user.info.username} - ` : ''}${
-                          group.roles?.find((r) => r._id === mem.role)?.name
-                        }`}
+                        title={mem.user?.displayName}
+                        subtitle={`${
+                          mem.user?.data?.public ? `@${mem.user?.info?.username} - ` : ''
+                        }${group.roles?.find((r) => r._id === mem.role)?.name}`}
                         badge={group.roles?.find((r) => r._id === mem.role)?.admin ? 'star' : null}
                         badgeColor={colors.solid.gold}
-                        avatar={mem.user.info?.avatar}
+                        avatar={mem.user?.info?.avatar}
                         onPress={() =>
                           navigation.navigate('Main', {
                             screen: 'Display',
@@ -526,7 +526,7 @@ function GroupDisplay({
                               params: {
                                 screen: 'Display',
                                 params: {
-                                  id: mem.user._id,
+                                  id: mem.user?._id,
                                 },
                               },
                             },
@@ -547,7 +547,7 @@ function GroupDisplay({
                           icon="delete"
                           onPress={() => {
                             Alert.alert(
-                              `Retirer @${mem.user.info?.username} de ${group.name} ?`,
+                              `Retirer @${mem.user?.info?.username} de ${group.name} ?`,
                               'Cette action sera publiquement visible.',
                               [
                                 {
@@ -556,7 +556,7 @@ function GroupDisplay({
                                 {
                                   text: 'Retirer',
                                   onPress: () => {
-                                    groupMemberDelete(id, mem.user._id).then(() => fetchGroup(id));
+                                    groupMemberDelete(id, mem.user?._id).then(() => fetchGroup(id));
                                   },
                                 },
                               ],
