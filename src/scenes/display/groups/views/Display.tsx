@@ -1,10 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   ScrollView,
   View,
   Platform,
-  TouchableOpacity,
   ActivityIndicator,
   Alert,
   StatusBar,
@@ -21,12 +19,23 @@ import {
   Appbar,
   Subheading,
   Title,
-  List,
   IconButton,
-  Snackbar,
   Banner,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
+
+import {
+  GroupPreload,
+  Group,
+  Account,
+  Address,
+  GroupRequestState,
+  GroupsState,
+  State,
+  ArticleRequestState,
+  Article,
+} from '@ts/types';
 import {
   Avatar,
   InlineCard,
@@ -39,8 +48,9 @@ import {
   PlatformTouchable,
   Content,
   CollapsibleView,
+  ErrorMessage,
+  SafeAreaView,
 } from '@components/index';
-import ErrorMessage from '@components/ErrorMessage';
 import getStyles from '@styles/Styles';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
@@ -52,21 +62,7 @@ import {
   groupMemberLeave,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
-import { connect } from 'react-redux';
 
-import {
-  GroupPreload,
-  Group,
-  Account,
-  Address,
-  GroupRequestState,
-  GroupsState,
-  State,
-  ArticleRequestState,
-  ArticlePreload,
-  Article,
-} from '@ts/types';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import AddUserSelectModal from '../components/AddUserSelectModal';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import EditGroupModal from '../components/EditGroupModal';
@@ -182,7 +178,7 @@ function GroupDisplay({
                 contentSingular: 'Le groupe',
               }}
               error={state.info.error}
-              retry={() => groupMemberDelete(id, mem.user._id).then(() => fetchGroup(id))}
+              retry={() => groupMemberDelete(id, mem.user?._id).then(() => fetchGroup(id))}
             />
           )}
           {!state.info.error && (
@@ -511,13 +507,13 @@ function GroupDisplay({
                     <View style={{ flexGrow: 1 }}>
                       <InlineCard
                         key={mem._id}
-                        title={mem.user.displayName}
-                        subtitle={`${mem.user.data?.public ? `@${mem.user.info.username} - ` : ''}${
-                          group.roles?.find((r) => r._id === mem.role)?.name
-                        }`}
+                        title={mem.user?.displayName}
+                        subtitle={`${
+                          mem.user?.data?.public ? `@${mem.user?.info?.username} - ` : ''
+                        }${group.roles?.find((r) => r._id === mem.role)?.name}`}
                         badge={group.roles?.find((r) => r._id === mem.role)?.admin ? 'star' : null}
                         badgeColor={colors.solid.gold}
-                        avatar={mem.user.info?.avatar}
+                        avatar={mem.user?.info?.avatar}
                         onPress={() =>
                           navigation.navigate('Main', {
                             screen: 'Display',
@@ -526,7 +522,7 @@ function GroupDisplay({
                               params: {
                                 screen: 'Display',
                                 params: {
-                                  id: mem.user._id,
+                                  id: mem.user?._id,
                                 },
                               },
                             },
@@ -547,7 +543,7 @@ function GroupDisplay({
                           icon="delete"
                           onPress={() => {
                             Alert.alert(
-                              `Retirer @${mem.user.info?.username} de ${group.name} ?`,
+                              `Retirer @${mem.user?.info?.username} de ${group.name} ?`,
                               'Cette action sera publiquement visible.',
                               [
                                 {
@@ -556,7 +552,7 @@ function GroupDisplay({
                                 {
                                   text: 'Retirer',
                                   onPress: () => {
-                                    groupMemberDelete(id, mem.user._id).then(() => fetchGroup(id));
+                                    groupMemberDelete(id, mem.user?._id).then(() => fetchGroup(id));
                                   },
                                 },
                               ],

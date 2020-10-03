@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import UserArticles from './content/views/Articles';
 import UserPetitions from './content/views/Petitions';

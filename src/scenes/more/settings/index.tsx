@@ -1,8 +1,7 @@
 import React from 'react';
-import { createNativeStackNavigator, TransitionPresets } from 'react-native-screens/native-stack';
+import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
-import { PlatformBackButton } from '@components/index';
+import { HeaderConfig } from '@components/index';
 
 import SettingsList from './views/List';
 import SettingsTheme from './views/Theme';
@@ -11,7 +10,7 @@ import SettingsContent from './views/Content';
 
 const Stack = createNativeStackNavigator();
 
-function SettingsStackNavigator({ navigation }) {
+const SettingsStackNavigator: React.FC<{}> = () => {
   return (
     <Stack.Navigator initialRouteName="List">
       <Stack.Screen
@@ -52,6 +51,6 @@ function SettingsStackNavigator({ navigation }) {
       />
     </Stack.Navigator>
   );
-}
+};
 
 export default SettingsStackNavigator;

@@ -5,7 +5,6 @@ import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ViewPager from '@react-native-community/viewpager';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import shortid from 'shortid';
 
 import { RequestState, Theme } from '@ts/types';
@@ -13,6 +12,7 @@ import getStyles from '@styles/Styles';
 
 import { TranslucentStatusBar } from './Header';
 import { PlatformBackButton } from './PlatformComponents';
+import SafeAreaView from './SafeAreaView';
 
 const stepperStyles = StyleSheet.create({
   centerContainer: {

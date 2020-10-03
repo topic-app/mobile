@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator, TransitionPresets } from 'react-native-screens/native-stack';
+import { createNativeStackNavigator, TransitionPresets } from '@utils/stack';
 
 import { HeaderConfig } from '@components/Header';
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { setJSExceptionHandler } from 'react-native-exception-handler';
-import { View, Platform, Text } from 'react-native';
+import { View, Platform, Text, StatusBar } from 'react-native';
 import {
   useFonts,
   Rubik_300Light,
@@ -18,15 +19,15 @@ import {
   RobotoMono_400Regular,
   RobotoMono_400Regular_Italic,
 } from '@expo-google-fonts/roboto-mono';
+import { AppLoading } from 'expo';
+import { enableScreens } from 'react-native-screens';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'moment/locale/fr';
 
-import { enableScreens } from 'react-native-screens';
 import Store, { Persistor } from '@redux/store';
 
 import StoreApp from './src/StoreApp';
 import errorHandler from './ErrorHandler';
-import { AppLoading } from 'expo';
-import { PersistGate } from 'redux-persist/integration/react';
 
 enableScreens();
 
@@ -54,10 +55,17 @@ function App() {
     return <AppLoading />;
   }
 
+  // return (
+  //   <View style={{ flex: 1, backgroundColor: 'red' }}>
+  //     <StatusBar translucent backgroundColor="red" />
+  //   </View>
+  // );
   return (
     <ReduxProvider store={Store}>
       <PersistGate persistor={Persistor} loading={<AppLoading />}>
-        <StoreApp />
+        <SafeAreaProvider>
+          <StoreApp />
+        </SafeAreaProvider>
       </PersistGate>
     </ReduxProvider>
   );

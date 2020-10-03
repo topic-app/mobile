@@ -1,17 +1,18 @@
 import React from 'react';
-import { Provider as PaperProvider, Text } from 'react-native-paper';
-import { useColorScheme, View } from 'react-native';
+import { useColorScheme } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import { AppLoading } from 'expo';
-import screens from './screens';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 import { Preferences, State } from '@ts/types';
 import themes from '@styles/Theme';
 import { fetchLocationData } from '@redux/actions/data/location';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
+
+import screens from './screens';
 import AppNavigator from './index';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 type Props = {
   preferences: Preferences;
@@ -25,6 +26,8 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   if (preferences.useSystemTheme) {
     theme = themes[colorScheme === 'dark' ? 'dark' : 'light'];
   }
+
+  changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);
 
   React.useEffect(
     React.useCallback(() => {
@@ -57,15 +60,13 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   };
 
   return (
-    <SafeAreaProvider>
-      <PaperProvider theme={theme}>
-        <>
-          <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
-            <AppNavigator />
-          </NavigationContainer>
-        </>
-      </PaperProvider>
-    </SafeAreaProvider>
+    <PaperProvider theme={theme}>
+      <>
+        <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
+          <AppNavigator />
+        </NavigationContainer>
+      </>
+    </PaperProvider>
   );
 };
 

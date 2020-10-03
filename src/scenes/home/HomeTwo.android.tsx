@@ -3,13 +3,14 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from 'react-native-paper';
 
+import UnauthorizedBeta from '@components/UnauthorizedBeta';
+import { useSafeAreaInsets } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
 
 import ArticleList from './articles/views/List';
 import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
-import UnauthorizedBeta from '@components/UnauthorizedBeta';
 
 export type HomeTwoNavParams = {
   Article: { initialList: string } | undefined;
@@ -24,13 +25,19 @@ function HomeTwoNavigator() {
   const theme = useTheme();
   const { colors } = theme;
   const navigatorStyles = getNavigatorStyles(theme);
+
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       shifting={false}
       initialRouteName="Article"
       activeColor={colors.bottomBarActive}
       inactiveColor={colors.bottomBarInactive}
-      barStyle={[navigatorStyles.barStyle, { backgroundColor: colors.bottomBar }]}
+      barStyle={[
+        navigatorStyles.barStyle,
+        { backgroundColor: colors.bottomBar, paddingBottom: insets.bottom },
+      ]}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
           let iconName;

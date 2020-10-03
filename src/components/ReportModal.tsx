@@ -13,11 +13,12 @@ import {
   ThemeProvider,
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
-import { BottomModal, SlideAnimation } from './Modals';
 import { connect } from 'react-redux';
 
-import { ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
+
+import ErrorMessage from './ErrorMessage';
+import { BottomModal, SlideAnimation } from './Modals';
 
 type ReportModalProps = ModalProps & {
   report: (articleId: string, reason: string) => any;

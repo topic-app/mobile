@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import * as Location from 'expo-location';
@@ -59,6 +58,7 @@ type ReduxLocation = {
 type PersistantData = {
   key: string;
   title: string;
+  description: string;
   type: 'school' | 'department' | 'region' | 'other';
   departments?: DepartmentPreload[];
 };
@@ -197,7 +197,7 @@ const WelcomeLocation: React.FC<Props> = ({
   const landingStyles = getLandingStyles(theme);
   const styles = getStyles(theme);
 
-  const { goBack = false } = route.params || {};
+  const goBack = route.params?.goBack ?? false;
 
   const [searchText, setSearchText] = React.useState('');
   const scrollRef = React.createRef<FlatList>();
@@ -237,7 +237,7 @@ const WelcomeLocation: React.FC<Props> = ({
   const requestUserLocation = async () => {
     let status, canAskAgain;
     try {
-      let permission = await Permissions.askAsync(Permissions.LOCATION);
+      const permission = await Permissions.askAsync(Permissions.LOCATION);
       status = permission.status;
       canAskAgain = permission.canAskAgain;
     } catch (e) {
@@ -344,15 +344,7 @@ const WelcomeLocation: React.FC<Props> = ({
               setSelected(selected.filter((s) => s !== item.key));
             } else {
               setSelected([...selected, item.key]);
-              setPersistentData([
-                ...persistentData,
-                {
-                  key: item.key,
-                  title: item.title,
-                  type: item.type,
-                  departments: item.departments,
-                },
-              ]);
+              setPersistentData([...persistentData, item]);
             }
           }}
           left={() =>
@@ -550,19 +542,15 @@ const WelcomeLocation: React.FC<Props> = ({
         <CollapsibleView collapsed={selected.length === 0}>
           <ChipAddList
             setList={(item) => {
-              return {
-                school: setSelectedSchools,
-                department: setSelectedDepartments,
-                other: setSelectedOthers,
-              }[item.type](
-                {
-                  school: selectedSchools,
-                  department: selectedDepartments,
-                  other: selectedOthers,
-                }[item.type]?.filter((i) => i !== item.key),
-              );
+              const [data, setData] = {
+                school: [selectedSchools, setSelectedSchools] as const,
+                department: [selectedDepartments, setSelectedDepartments] as const,
+                region: [selectedDepartments, setSelectedDepartments] as const,
+                other: [selectedOthers, setSelectedOthers] as const,
+              }[item.type as PersistantData['type']];
+              setData(data.filter((i) => i !== item.key));
             }}
-            data={selected.map((s) => persistentData.find((p) => p.key === s))}
+            data={selected.map((s) => persistentData.find((p) => p.key === s)!)}
             chipProps={{ icon: 'close', rightAction: true }}
           />
         </CollapsibleView>
