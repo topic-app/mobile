@@ -1,5 +1,5 @@
 import React from 'react';
-import { StackNavigationProp } from 'react-native-screens/native-stack';
+import { StackNavigationProp } from '@utils/stack';
 import { connect } from 'react-redux';
 
 import { State } from '@ts/types';

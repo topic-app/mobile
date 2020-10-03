@@ -2,7 +2,7 @@ import React from "react";
 import { View, Platform } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { StackNavigationProp } from "react-native-screens/native-stack";
+import { StackNavigationProp } from "@utils/stack";
 
 import { ArticleRequestState } from "@ts/types";
 import { Illustration } from "@components/index";

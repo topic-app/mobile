@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import Search from './views/Search';
 import SearchTags from './views/Tags';

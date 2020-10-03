@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import ArticleConfigureStackNavigator from './articles/index';
 import EventConfigureStackNavigator from './events/index';
