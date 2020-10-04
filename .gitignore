@@ -2,6 +2,7 @@
 #
 .ENV
 *.apk
+android-build/
 
 # OSX
 #
