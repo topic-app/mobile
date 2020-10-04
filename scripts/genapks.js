@@ -43,6 +43,25 @@ const checklist = async () => {
     process.exit(1);
   }
 
+  // Check if environment variables for paths are missing (doesnt exit)
+  ['JAVA_HOME', 'ANDROID_SDK_ROOT'].forEach((env) => {
+    if (process.env[env]) {
+      const envExists = fs.existsSync(process.env[env]);
+      if (envExists) {
+        console.log(` ✅ Environment variable '${env}' is valid`);
+      } else {
+        console.error(
+          ` ❌ Environment variable '${env}' is set to invalid directory '${process.env[env]}'`,
+        );
+        process.exit(1);
+      }
+    } else {
+      console.warn(
+        ` 🔶 Environment variable '${env}' does not exist. Gradle will attempt to find path automatically`,
+      );
+    }
+  });
+
   // Check if properties are missing from env file
   ['betaTesterNames', 'releaseKeystorePassword'].forEach((property) => {
     if (config[property]) {
@@ -142,6 +161,8 @@ const checklist = async () => {
 
   const builds = [];
 
+  const showStdout = await yesNo('Show gradle output ?');
+
   config.betaTesterNames.forEach((name, index) => {
     builds.push(async () => {
       await new Promise((resolve, reject) => {
@@ -164,7 +185,9 @@ const checklist = async () => {
           cwd: path.resolve(projectPath, 'android'),
         });
 
-        gradlew.stdout.on('data', (data) => process.stdout.write(data));
+        if (showStdout) {
+          gradlew.stdout.on('data', (data) => process.stdout.write(data));
+        }
 
         gradlew.stderr.on('data', (data) => process.stderr.write(data));
 
