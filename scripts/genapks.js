@@ -53,7 +53,7 @@ const checklist = async () => {
         console.error(
           ` ❌ Environment variable '${env}' is set to invalid directory '${process.env[env]}'`,
         );
-        process.exit(1);
+        hasFoundMistake = true;
       }
     } else {
       console.warn(
