@@ -14,11 +14,11 @@ import {
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
 import { connect } from 'react-redux';
+import { Modal } from '@components/index';
 
 import getStyles from '@styles/Styles';
 
 import ErrorMessage from './ErrorMessage';
-import { BottomModal, SlideAnimation } from './Modals';
 
 type ReportModalProps = ModalProps & {
   report: (articleId: string, reason: string) => any;
@@ -80,46 +80,95 @@ const ReportModal: React.FC<ReportModalProps> = ({
   const [reportText, setReportText] = React.useState('');
 
   return (
-    <BottomModal
-      visible={visible}
-      onTouchOutside={() => {
-        setVisible(false);
-      }}
-      onHardwareBackPress={() => {
-        setVisible(false);
-        return true;
-      }}
-      onSwipeOut={() => {
-        setVisible(false);
-      }}
-      modalAnimation={
-        new SlideAnimation({
-          slideFrom: 'bottom',
-          useNativeDriver: false,
-        })
-      }
-    >
-      <ThemeProvider theme={theme}>
-        <Card style={styles.modalCard}>
-          <FlatList
-            data={reasons}
-            ListHeaderComponent={() => (
-              <View>
-                <View style={styles.contentContainer}>
-                  <View style={styles.centerIllustrationContainer}>
-                    <Text>Reporter ce contenu</Text>
-                    <Text>Nous vous contacterons si nécéssaire pour avoir plus de détails</Text>
-                  </View>
-                </View>
-                {state.error && (
-                  <ErrorMessage
-                    type="axios"
-                    strings={{
-                      what: 'le signalement du contenu',
-                      contentSingular: 'Le contenu',
-                    }}
-                    error={state.error}
-                    retry={() =>
+    <Modal visible={visible} setVisible={setVisible}>
+      <FlatList
+        data={reasons}
+        ListHeaderComponent={() => (
+          <View>
+            <View style={styles.contentContainer}>
+              <View style={styles.centerIllustrationContainer}>
+                <Text>Reporter ce contenu</Text>
+                <Text>Nous vous contacterons si nécéssaire pour avoir plus de détails</Text>
+              </View>
+            </View>
+            {state.error && (
+              <ErrorMessage
+                type="axios"
+                strings={{
+                  what: 'le signalement du contenu',
+                  contentSingular: 'Le contenu',
+                }}
+                error={state.error}
+                retry={() =>
+                  report(contentId, `${reportOption}${reportText ? `- ${reportText}` : ''}`).then(
+                    () => {
+                      setReportText(''), setVisible(false);
+                    },
+                  )
+                }
+              />
+            )}
+            {state.loading && <ProgressBar />}
+            <Divider />
+          </View>
+        )}
+        renderItem={({ item }) => {
+          return (
+            <View>
+              <List.Item
+                titleStyle={{
+                  color: account.loggedIn ? colors.text : colors.disabled,
+                }}
+                title={item.name}
+                onPress={() => setReportOption(item.id)}
+                left={() =>
+                  Platform.OS !== 'ios' && (
+                    <RadioButton
+                      disabled={!account.loggedIn}
+                      color={colors.primary}
+                      status={item.id === reportOption ? 'checked' : 'unchecked'}
+                      onPress={() => setReportOption(item.id)}
+                    />
+                  )
+                }
+                right={() =>
+                  Platform.OS === 'ios' && (
+                    <RadioButton
+                      disabled={!account.loggedIn}
+                      color={colors.primary}
+                      status={item.id === reportOption ? 'checked' : 'unchecked'}
+                      onPress={() => setReportOption(item.id)}
+                    />
+                  )
+                }
+              />
+            </View>
+          );
+        }}
+        ListFooterComponent={() => {
+          return (
+            <View>
+              <Divider />
+              <View style={styles.container}>
+                <TextInput
+                  disabled={!account.loggedIn}
+                  mode="outlined"
+                  multiline
+                  label="Autres informations (facultatif)"
+                  value={reportText}
+                  onChangeText={(text) => {
+                    setReportText(text);
+                  }}
+                />
+              </View>
+              <Divider />
+              <View style={styles.contentContainer}>
+                {account.loggedIn ? (
+                  <Button
+                    mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                    color={colors.primary}
+                    uppercase={Platform.OS !== 'ios'}
+                    onPress={() =>
                       report(
                         contentId,
                         `${reportOption}${reportText ? `- ${reportText}` : ''}`,
@@ -127,117 +176,45 @@ const ReportModal: React.FC<ReportModalProps> = ({
                         setReportText(''), setVisible(false);
                       })
                     }
-                  />
-                )}
-                {state.loading && <ProgressBar />}
-                <Divider />
-              </View>
-            )}
-            renderItem={({ item }) => {
-              return (
-                <View>
-                  <List.Item
-                    titleStyle={{
-                      color: account.loggedIn ? colors.text : colors.disabled,
-                    }}
-                    title={item.name}
-                    onPress={() => setReportOption(item.id)}
-                    left={() =>
-                      Platform.OS !== 'ios' && (
-                        <RadioButton
-                          disabled={!account.loggedIn}
-                          color={colors.primary}
-                          status={item.id === reportOption ? 'checked' : 'unchecked'}
-                          onPress={() => setReportOption(item.id)}
-                        />
-                      )
-                    }
-                    right={() =>
-                      Platform.OS === 'ios' && (
-                        <RadioButton
-                          disabled={!account.loggedIn}
-                          color={colors.primary}
-                          status={item.id === reportOption ? 'checked' : 'unchecked'}
-                          onPress={() => setReportOption(item.id)}
-                        />
-                      )
-                    }
-                  />
-                </View>
-              );
-            }}
-            ListFooterComponent={() => {
-              return (
-                <View>
-                  <Divider />
-                  <View style={styles.container}>
-                    <TextInput
-                      disabled={!account.loggedIn}
-                      mode="outlined"
-                      multiline
-                      label="Autres informations (facultatif)"
-                      value={reportText}
-                      onChangeText={(text) => {
-                        setReportText(text);
-                      }}
-                    />
-                  </View>
-                  <Divider />
-                  <View style={styles.contentContainer}>
-                    {account.loggedIn ? (
-                      <Button
-                        mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                        color={colors.primary}
-                        uppercase={Platform.OS !== 'ios'}
+                    style={{ flex: 1 }}
+                  >
+                    Signaler
+                  </Button>
+                ) : (
+                  <View>
+                    <Text>Connectez vous pour signaler un contenu</Text>
+                    <Text>
+                      <Text
                         onPress={() =>
-                          report(
-                            contentId,
-                            `${reportOption}${reportText ? `- ${reportText}` : ''}`,
-                          ).then(() => {
-                            setReportText(''), setVisible(false);
+                          navigation.navigate('Auth', {
+                            screen: 'Login',
                           })
                         }
-                        style={{ flex: 1 }}
+                        style={[styles.link, styles.primaryText]}
                       >
-                        Signaler
-                      </Button>
-                    ) : (
-                      <View>
-                        <Text>Connectez vous pour signaler un contenu</Text>
-                        <Text>
-                          <Text
-                            onPress={() =>
-                              navigation.navigate('Auth', {
-                                screen: 'Login',
-                              })
-                            }
-                            style={[styles.link, styles.primaryText]}
-                          >
-                            Se connecter
-                          </Text>
-                          <Text> ou </Text>
-                          <Text
-                            onPress={() =>
-                              navigation.navigate('Auth', {
-                                screen: 'Create',
-                              })
-                            }
-                            style={[styles.link, styles.primaryText]}
-                          >
-                            créér un compte
-                          </Text>
-                        </Text>
-                      </View>
-                    )}
+                        Se connecter
+                      </Text>
+                      <Text> ou </Text>
+                      <Text
+                        onPress={() =>
+                          navigation.navigate('Auth', {
+                            screen: 'Create',
+                          })
+                        }
+                        style={[styles.link, styles.primaryText]}
+                      >
+                        créér un compte
+                      </Text>
+                    </Text>
                   </View>
-                </View>
-              );
-            }}
-            keyExtractor={(item) => item.id}
-          />
-        </Card>
-      </ThemeProvider>
-    </BottomModal>
+                )}
+              </View>
+            </View>
+          );
+        }}
+        keyExtractor={(item) => item.id}
+      />
+    </Modal>
   );
 };
 
