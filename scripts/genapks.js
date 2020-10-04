@@ -46,8 +46,8 @@ const checklist = async () => {
   // Check if environment variables for paths are missing (doesnt exit)
   ['JAVA_HOME', 'ANDROID_SDK_ROOT'].forEach((env) => {
     if (process.env[env]) {
-      const envExists = fs.existsSync(process.env[env]);
-      if (envExists) {
+      const varExists = fs.existsSync(process.env[env]);
+      if (varExists) {
         console.log(` ✅ Environment variable '${env}' is valid`);
       } else {
         console.error(
@@ -76,7 +76,7 @@ const checklist = async () => {
 
   // Check if keystore password unlocks keystore
   if (config.releaseKeystorePassword) {
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve) => {
       const keytoolArgs = [
         '-list',
         '-keystore',
@@ -165,7 +165,7 @@ const checklist = async () => {
 
   config.betaTesterNames.forEach((name, index) => {
     builds.push(async () => {
-      await new Promise((resolve, reject) => {
+      await new Promise((resolve) => {
         console.log(
           '>>> Building APK',
           index + 1,
@@ -212,7 +212,7 @@ const checklist = async () => {
       const apkFolder = path.resolve(projectPath, `android/app/build/outputs/apk/${name}/release`);
 
       // Find all apks in the folder
-      const apkFileNames = fs.readdirSync(apkFolder).filter((name) => name.endsWith('.apk'));
+      const apkFileNames = fs.readdirSync(apkFolder).filter((apkName) => apkName.endsWith('.apk'));
 
       if (apkFileNames.length !== 0) {
         // Choose the first apk in folder
