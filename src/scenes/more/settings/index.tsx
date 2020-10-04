@@ -12,16 +12,8 @@ const Stack = createNativeStackNavigator();
 
 const SettingsStackNavigator: React.FC<{}> = () => {
   return (
-    <Stack.Navigator initialRouteName="List">
-      <Stack.Screen
-        name="List"
-        component={SettingsList}
-        options={{
-          ...HeaderConfig,
-          title: 'Paramètres',
-          headerShown: false,
-        }}
-      />
+    <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="List" component={SettingsList} />
       <Stack.Screen
         name="Theme"
         component={SettingsTheme}
@@ -40,15 +32,7 @@ const SettingsStackNavigator: React.FC<{}> = () => {
           subtitle: 'Paramètres',
         }}
       />
-      <Stack.Screen
-        name="Content"
-        component={SettingsContent}
-        options={{
-          ...HeaderConfig,
-          title: 'Contenu et accessibilité',
-          subtitle: 'Paramètres',
-        }}
-      />
+      <Stack.Screen name="Content" component={SettingsContent} />
     </Stack.Navigator>
   );
 };

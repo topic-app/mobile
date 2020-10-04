@@ -3,6 +3,7 @@ import { View, ScrollView, FlatList } from 'react-native';
 import { Text, useTheme, ProgressBar } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
+
 import {
   State,
   ArticlePreload,
@@ -20,8 +21,9 @@ import {
   CustomHeaderBar,
 } from '@components/index';
 import getStyles from '@styles/Styles';
-import type { ModerationStackParams } from '../index';
 import { updateArticlesVerification } from '@redux/actions/api/articles';
+
+import type { ModerationStackParams } from '../index';
 import getModerationStyles from '../styles/Styles';
 
 type Props = {
@@ -33,7 +35,6 @@ type Props = {
 
 const ModerationList: React.FC<Props> = ({ navigation, articlesVerification, account, state }) => {
   const theme = useTheme();
-  const moderationStyles = getModerationStyles(theme);
   const styles = getStyles(theme);
 
   if (!account.loggedIn) {
@@ -69,7 +70,6 @@ const ModerationList: React.FC<Props> = ({ navigation, articlesVerification, acc
     <View style={styles.page}>
       <TranslucentStatusBar />
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {

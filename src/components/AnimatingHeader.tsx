@@ -1,6 +1,5 @@
 import React from 'react';
 import { Platform, Animated, View, ViewStyle, StyleProp } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
 
@@ -19,8 +18,6 @@ const AnimatingHeader: React.FC<Props> = ({
   headerStyle,
   ...rest
 }) => {
-  const navigation = useNavigation();
-
   const headerElevation = value.interpolate({
     inputRange: [0, maxElevation],
     outputRange: [0, maxElevation],
@@ -30,7 +27,6 @@ const AnimatingHeader: React.FC<Props> = ({
   return Platform.OS !== 'ios' ? (
     <Animated.View style={{ backgroundColor: 'white', elevation: headerElevation }}>
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {
@@ -53,7 +49,6 @@ const AnimatingHeader: React.FC<Props> = ({
             },
           },
         }}
-        navigation={navigation}
       />
       {children}
     </View>

@@ -1,12 +1,20 @@
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp } from 'react-native';
 import { Appbar, Menu, useTheme } from 'react-native-paper';
-import { NavigationProp } from '@react-navigation/native';
-
-import getNavigatorStyles from '@styles/NavStyles';
+import { useNavigation } from '@react-navigation/core';
 import shortid from 'shortid';
 
-const TranslucentStatusBar = () => null;
+import { useSafeAreaInsets, getLayout } from '@utils/index';
+import getNavigatorStyles from '@styles/NavStyles';
+
+const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
+  const theme = useTheme();
+  const { colors } = theme;
+  const contentTheme = barStyle || theme.statusBarStyle;
+  return (
+    <StatusBar translucent backgroundColor={colors.statusBar} barStyle={contentTheme} {...rest} />
+  );
+};
 
 type OverflowItem = {
   title: string;
@@ -33,14 +41,14 @@ export type CustomHeaderBarProps = {
       };
     };
   };
-  navigation: NavigationProp<any, any>;
 };
 
-const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) => {
+const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
 
   const navigatorStyles = getNavigatorStyles(useTheme());
   const { colors } = useTheme();
+  const navigation = useNavigation();
 
   const {
     title,
@@ -56,7 +64,11 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
   if (primary) {
     primaryAction = <Appbar.BackAction onPress={primary} />;
   } else if (home) {
-    primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
+    console.log(getLayout());
+    primaryAction =
+      getLayout() === 'desktop' ? null : (
+        <Appbar.Action icon="menu" onPress={navigation.openDrawer} />
+      );
   } else {
     primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
   }
@@ -64,6 +76,8 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
   const secondaryActions = actions.map((item) => (
     <Appbar.Action key={shortid()} icon={item.icon} onPress={item.onPress} />
   ));
+
+  const insets = useSafeAreaInsets();
 
   const overflowAction = overflow && (
     <Menu
@@ -76,7 +90,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
           color={colors.drawerContent}
         />
       }
-      statusBarHeight={StatusBar.currentHeight}
+      statusBarHeight={insets.top}
     >
       {overflow.map((item, key) => (
         // eslint-disable-next-line react/no-array-index-key
@@ -96,10 +110,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene, navigation }) 
   return (
     <View style={navigatorStyles.headerSurface}>
       <TranslucentStatusBar />
-      <Appbar.Header
-        style={[navigatorStyles.header, headerStyle]}
-        statusBarHeight={StatusBar.currentHeight}
-      >
+      <Appbar.Header style={[navigatorStyles.header, headerStyle]} statusBarHeight={insets.top}>
         {primaryAction}
         <Appbar.Content title={title} subtitle={subtitle} />
         {secondaryActions}
@@ -172,58 +183,8 @@ const nativeZoomInPreset = {
 };
 */
 
-const springConfig = {
-  animation: 'spring',
-  config: {
-    damping: 1000,
-    mass: 3,
-    overshootClamping: true,
-    restDisplacementThreshold: 10,
-    restSpeedThreshold: 10,
-    stiffness: 900,
-  },
-};
-
-const SlideRightAndScaleTransition = {
-  gestureDirection: 'horizontal',
-  transitionSpec: {
-    open: springConfig,
-    close: springConfig,
-  },
-  cardStyleInterpolator: ({ current, next, layouts }) => {
-    return {
-      cardStyle: {
-        transform: [
-          {
-            translateX: current.progress.interpolate({
-              inputRange: [0, 1],
-              outputRange: [layouts.screen.width, 0],
-            }),
-          },
-          {
-            scale: next
-              ? next.progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 0.95],
-                })
-              : 1,
-          },
-        ],
-      },
-      overlayStyle: {
-        opacity: current.progress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 0.9],
-        }),
-      },
-    };
-  },
-};
-
 const HeaderConfig = {
-  header: ({ scene, navigation }: CustomHeaderBarProps) => (
-    <CustomHeaderBar scene={scene} navigation={navigation} />
-  ),
+  header: ({ scene }: CustomHeaderBarProps) => <CustomHeaderBar scene={scene} />,
 };
 
 export { TranslucentStatusBar, HeaderConfig, CustomHeaderBar };
