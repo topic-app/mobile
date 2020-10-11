@@ -57,6 +57,7 @@ type ArticleDisplayHeaderProps = {
   navigation: Navigation;
   reqState: CombinedReqState;
   account: Account;
+  commentsDisplayed: boolean;
   verification: boolean;
   setCommentModalVisible: (visible: boolean) => void;
   setArticleReportModalVisible: (visible: boolean) => void;
@@ -67,6 +68,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   navigation,
   reqState,
   account,
+  commentsDisplayed,
   setCommentModalVisible,
   setArticleReportModalVisible,
   offline,
@@ -111,10 +113,10 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
         </View>
       )}
       {reqState.articles.info.loading && <ActivityIndicator size="large" color={colors.primary} />}
-      {!article.preload && reqState.articles.info.success && (
+      {!article.preload && reqState.articles.info.success && article.content && (
         <View>
           <View style={styles.contentContainer}>
-            <Content data={article.content.data} parser={article.content.parser} />
+            <Content data={article.content?.data} parser={article.content?.parser} />
           </View>
           <Divider />
           <View style={styles.container}>
@@ -177,7 +179,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
             }
             badgeColor={colors.valid}
           />
-          {!verification && (
+          {!verification && commentsDisplayed && (
             <View>
               <View style={styles.container}>
                 <CategoryTitle>Commentaires</CategoryTitle>
@@ -388,11 +390,13 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   // Pour changer le type de route.params, voir ../index.tsx
   const { id, useLists = false, verification = false } = route.params;
 
+  const [commentsDisplayed, setCommentsDisplayed] = React.useState(false);
+
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
-
+  fetch;
   let article: Article | undefined | null;
   if (useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))) {
     article = lists
@@ -409,12 +413,13 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const fetch = () => {
     if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
       if (verification) {
-        fetchArticleVerification(id);
+        fetchArticleVerification(id).then(() => setCommentsDisplayed(true));
       } else {
         fetchArticle(id).then(() => {
           if (preferences.history) {
             addArticleRead(id, article?.title);
           }
+          setCommentsDisplayed(true);
         });
       }
     }
@@ -540,7 +545,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               contentSingular: "L'article",
             }}
             error={reqState.articles.info.error}
-            retry={() => fetchArticle(id)}
+            retry={() => fetch()}
           />
         )}
       </AnimatingHeader>
@@ -551,6 +556,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         ListHeaderComponent={() => (
           <ArticleDisplayHeader
             article={article}
+            commentsDisplayed={commentsDisplayed}
             verification={verification}
             offline={useLists && lists?.some((l) => l.items?.some((i) => i._id === id))}
             reqState={reqState}
@@ -561,15 +567,6 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           />
         )}
         data={reqState.articles.info.success && !verification ? articleComments : []}
-        refreshing={reqState.comments.list.loading.refresh}
-        onRefresh={() => {
-          if (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))) {
-            fetchArticle(id);
-          } else {
-            addArticleToList(id, lists.find((l) => l.items.some((i) => i._id === id))?.id);
-          }
-          updateComments('refresh', { parentId: id });
-        }}
         // onEndReached={() => {
         //   console.log('comment end reached');
         //   updateComments('next', { parentId: id });
@@ -592,7 +589,8 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         ListEmptyComponent={() =>
           reqState.comments.list.success &&
           reqState.articles.info.success &&
-          !verification && (
+          !verification &&
+          commentsDisplayed && (
             <View style={styles.contentContainer}>
               <View style={styles.centerIllustrationContainer}>
                 <Illustration name="comment-empty" height={200} width={200} />

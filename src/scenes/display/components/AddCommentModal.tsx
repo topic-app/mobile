@@ -119,15 +119,15 @@ function AddCommentModal({
       </View>
       <Divider style={articleStyles.divider} />
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View>
+        <View style={{ flex: 1, flexGrow: 1 }}>
           <CategoriesList categories={publishers} selected={publisher} setSelected={setPublisher} />
         </View>
         <View
           style={{
-            flex: 1,
             justifyContent: 'flex-end',
             alignItems: 'center',
             flexDirection: 'row',
+            marginLeft: 20,
           }}
         >
           <Text style={{ color: commentCharCountColor }}>
