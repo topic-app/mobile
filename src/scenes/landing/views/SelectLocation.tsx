@@ -90,7 +90,9 @@ function done(
       selected: true,
       schools: selectedSchools,
       departments: selectedDepartments,
-      global: selectedOthers.includes('global'),
+      global:
+        selectedOthers.includes('global') ||
+        (!selectedSchools.length && !selectedDepartments.length),
     }),
     updateArticleParams(params),
     updateEventParams(params),
