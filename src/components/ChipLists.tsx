@@ -14,7 +14,7 @@ import { Text, IconButton, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import color from 'color';
 
-import { PlatformTouchable } from '@components/index';
+import { PlatformTouchable } from './PlatformComponents';
 
 type ChipBaseProps = {
   children: React.ReactNode;
