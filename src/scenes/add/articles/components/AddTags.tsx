@@ -51,6 +51,7 @@ type Props = StepperViewPageProps & {
   tagsData: TagPreload[];
   tagsSearch: TagPreload[];
   state: TagRequestState;
+  navigate: () => void;
 };
 
 type ReduxLocation = {
@@ -61,7 +62,7 @@ type ReduxLocation = {
 
 const ArticleAddPageTags: React.FC<Props> = ({
   prev,
-  next,
+  navigate,
   account,
   creationData,
   navigation,
@@ -78,7 +79,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
 
   const submit = () => {
     updateArticleCreationData({ tags: selectedTags });
-    next();
+    navigate();
   };
 
   const addNewTag = (tag: { _id: string; name: string; color: string }) => {
