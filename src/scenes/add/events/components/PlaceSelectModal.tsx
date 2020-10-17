@@ -43,7 +43,7 @@ type EventPlaceSelectModalProps = ModalProps & {
   type: 'school' | 'place';
   schools: SchoolsState;
   places: PlacesState;
-  add: ({ type, _id, name }: { type: string; _id: string; name: string }) => any;
+  add: ({ type, address, associatedSchool, associatedPlace }: {type : 'school'|'standalone'|'place', address: {shortName:string|null, geo:null, address:{number:string|null,street:string|null,extra:string|null,city:string|null,code:string|null}|null,departments:[]}, associatedSchool: string|null,associatedPlace: string|null,}) => any;
 };
 
 function EventPlaceSelectModal({
@@ -171,8 +171,28 @@ function EventPlaceSelectModal({
                     )
                   }
                   onPress={() => {
-                    updateEventCreationData({ type, _id: item._id, name: item.name });
-                    add({ type, _id: item._id, name: item.name });
+                    type === 'school' ?
+                    updateEventCreationData({
+                      type,
+                      address:{ shortName: item.name, geo:null,address:null, departments:[] },
+                      associatedSchool: item._id,
+                      associatedPlace: null})
+                    && add({
+                      type,
+                      address:{ shortName: item.name, geo:null,address:null, departments:[] },
+                      associatedSchool: item._id,
+                      associatedPlace: null})
+                    :
+                    updateEventCreationData({
+                      type,
+                      address:{ shortName: item.name, geo:null,address:null, departments:[] },
+                      associatedSchool:null ,
+                      associatedPlace:item._id })
+                    && add({
+                      type,
+                      address:{ shortName: item.name, geo:null,address:null, departments:[] },
+                      associatedSchool:null ,
+                      associatedPlace: item._id});
                     setVisible(false);
                   }}
                 />

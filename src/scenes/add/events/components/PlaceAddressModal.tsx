@@ -2,6 +2,7 @@ import React from 'react';
 import {
   ModalProps,
   State,
+  EventPlace,
   ArticleQuickItem,
   TagsState,
   GroupsState,
@@ -36,14 +37,19 @@ import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
 
 import getEventStyles from '../styles/Styles';
+ 
+type PlaceAddressModalProps = ModalProps & {
+  type: 'standalone';
+  eventPlaces:EventPlace[];
+  add: ({ type, address, associatedSchool, associatedPlace }: { type : string, address: {shortName:string|null, geo:null, address:{number:string|null,street:string|null,extra:string|null,city:string|null,code:string|null}|null,departments:[]}, associatedSchool: string|null,associatedPlace: string|null,}) => any;
+};
 
-type PlaceAddressModalProps = ModalProps;
-
-function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
+function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: PlaceAddressModalProps) {
   const numberInput = React.createRef<RNTestInput>();
   const streetInput = React.createRef<RNTestInput>();
   const codeInput = React.createRef<RNTestInput>();
   const cityInput = React.createRef<RNTestInput>();
+  const eventPlace = eventPlaces;
 
   type InputStateType = {
     value: string;
@@ -132,16 +138,21 @@ function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
     const city = await validateCityInput(cityVal);
     if (city.valid) {
       updateEventCreationData({
-        number: numberVal,
-        street: streetVal,
-        code: codeVal,
-        city: cityVal,
+        type,
+        address: {shortName:null, geo:null, address:{number:numberVal,street:streetVal,extra:null,city:cityVal,code:codeVal},departments:[]},
+        associatedSchool: null,
+        associatedPlace: null,
+      });
+      add({type,
+        address: {shortName:null, geo:null, address:{number:numberVal,street:streetVal,extra:null,city:cityVal,code:codeVal},departments:[]},
+        associatedSchool: null,
+        associatedPlace: null,
       });
       setVisible(false);
-      setNumber({ value: undefined });
-      setStreet({ value: undefined });
-      setCode({ value: undefined });
-      setCity({ value: undefined });
+      setCurrentNumber({ value: '' });
+      setCurrentStreet({ value: '' });
+      setCurrentCode({ value: '' });
+      setCurrentCity({ value: '' });
     } else {
       if (!city.valid && !city.error) {
         setCity({
@@ -155,10 +166,10 @@ function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
 
   async function cancel() {
     setVisible(false);
-    setNumber({ value: undefined });
-    setStreet({ value: undefined });
-    setCode({ value: undefined });
-    setCity({ value: undefined });
+    setNumber({ value: '' });
+    setStreet({ value: '' });
+    setCode({ value: '' });
+    setCity({ value: '' });
   }
 
   const theme = useTheme();

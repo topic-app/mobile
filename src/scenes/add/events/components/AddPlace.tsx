@@ -5,6 +5,7 @@ import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'rea
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import {
   StepperViewPageProps,
+  InlineCard,
   TextChip,
   ErrorMessage,
   CollapsibleView,
@@ -40,24 +41,24 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const [eventPlaces, setEventPlaces] = React.useState([]);
-  const [placeData, setPlaceData] = React.useState([]);
   const toSelectedType = (data: string) => {
     setPlaceType(data);
     setPlaceTypeModalVisible(false);
-    data === 'address' ? setPlaceAddressModalVisible(true) : setPlaceSelectModalVisible(true);
+    data === 'standalone' ? setPlaceAddressModalVisible(true) : setPlaceSelectModalVisible(true);
   };
-  const addEventPlace = (place: { type: string; _id: string; name: string }) => {
-    setEventPlaces([...eventPlaces, place._id]);
-    setPlaceData([...placeData, place]);
+  const addEventPlace = (place: {type : 'school'|'standalone'|'place', address: {shortName:string|null, geo:null, address:{number:string|null,street:string|null,extra:string|null,city:string|null,code:string|null}|null,departments:[]}, associatedSchool: string|null,associatedPlace: string|null,}) => {
+    setEventPlaces([...eventPlaces, place]);
   };
+
 
   const submit = () => {
     next();
   };
 
-  const renderItem = React.useCallback(
+  {/* const renderItem = React.useCallback(
     ({ item = { name: 'INCONNU' } }) => {
       return (
+        item.type === 'school' && (
         <View style={{ marginHorizontal: 5, alignItems: 'flex-start', paddingBottom: 10 }}>
           <TextChip
             title={item.name}
@@ -67,11 +68,11 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
             icon={eventPlaces.includes(item._id) ? 'check' : 'pound'}
             selected={eventPlaces.includes(item._id)}
           />
-        </View>
+        </View>)
       );
     },
     [eventPlaces],
-  );
+  ); */}
 
   if (!account.loggedIn) {
     return (
@@ -83,18 +84,22 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
     );
   }
 
+
+
   return (
     <View style={eventStyles.formContainer}>
-      {eventPlaces !== [] && (
+       <List.Subheader> Lieux Sélectionnés </List.Subheader>
+      {eventPlaces.length === 0 && (<View><Text>Aucun lieu sélectionné</Text></View>)}
         <View style={{ marginTop: 20 }}>
-          <FlatList
-            data={eventPlaces.map((t) => placeData.find((u) => u?._id === t))}
-            renderItem={renderItem}
-            keyboardShouldPersistTaps="handled"
-            keyExtractor={(i) => i?._id}
-          />
+          {eventPlaces.map((place) => (
+        <InlineCard
+        icon={place.type === 'school' ? 'school' : place.type === 'place' ? 'map' : 'map-marker'}
+        title={place.type === 'school' || place.type === 'place' ? place.address.shortName : `${place.address.address.number || ''} ${place.address.address.street || ''} ${place.address.address.extra || ''}, ${place.address.address.code || ''} ${place.address.address.city}`}
+        onPress={() => {
+          setEventPlaces(eventPlaces.filter((s) => s !== place));}}
+          />))}
         </View>
-      )}
+        {eventPlaces === [] && (<View> <Text> Aucun lieu sélectionné </Text></View>)}
       <View style={styles.container}>
         <Button
           mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
@@ -121,6 +126,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
       <PlaceAddressModal
         visible={isPlaceAddressModalVisible}
         setVisible={setPlaceAddressModalVisible}
+        add={addEventPlace}
       />
 
       <View style={eventStyles.buttonContainer}>

@@ -14,7 +14,7 @@ import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
 
 import getStyles from '@styles/Styles';
 
-type PlaceTypeModalProps = ModalProps & { next: (type: string) => void };
+type PlaceTypeModalProps = ModalProps & { next: (type: 'school'|'place'|'standalone') => void };
 
 function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
   const theme = useTheme();
@@ -35,7 +35,7 @@ function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
       description: "L'évènement a lieu dans un lieu culturel",
     },
     {
-      type: 'address',
+      type: 'standalone',
       title: 'Adresse',
       description: "L'évènement a lieu à une adresse spécifique",
     },
