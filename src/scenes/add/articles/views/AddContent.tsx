@@ -38,7 +38,6 @@ import ArticleAddPageContent from '../components/AddContent';
 import ArticleAddPageTags from '../components/AddTags';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinkAddModal from '../components/LinkAddModal';
-import TurndownService from 'turndown';
 
 type Props = {
   navigation: StackNavigationProp<ArticleStackParams, 'Add'>;
@@ -99,7 +98,10 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
   const submit = async () => {
     const contentVal = await textEditor?.getContentHtml();
 
+    const TurndownService = require('turndown'); // For some reason turndown isnt compatible with import
     const turndownService = new TurndownService();
+
+    console.log(turndownService.turndown);
 
     // No idea why, this fails with "undefined is not a function" even though turndown is a function (see with console.log)
     const contentMarkdown = turndownService.turndown(contentVal);

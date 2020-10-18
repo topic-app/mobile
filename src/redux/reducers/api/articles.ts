@@ -3,6 +3,7 @@ import {
   ArticlesActionTypes,
   UPDATE_ARTICLES_STATE,
   UPDATE_ARTICLES_DATA,
+  UPDATE_ARTICLES_FOLLOWING,
   UPDATE_ARTICLES_ITEM,
   UPDATE_ARTICLES_VERIFICATION,
   UPDATE_ARTICLES_SEARCH,
@@ -11,6 +12,7 @@ import {
 
 const initialState: ArticlesState = {
   data: [],
+  following: [],
   item: null,
   search: [],
   verification: [],
@@ -80,6 +82,9 @@ const initialState: ArticlesState = {
  * @returns Nouveau state
  */
 function articleReducer(state = initialState, action: ArticlesActionTypes): ArticlesState {
+  if (action.type === UPDATE_ARTICLES_FOLLOWING || action.type === UPDATE_ARTICLES_DATA) {
+    console.log(action.type + ' ' + action.data.length);
+  }
   switch (action.type) {
     case UPDATE_ARTICLES_STATE:
       return {
@@ -90,6 +95,11 @@ function articleReducer(state = initialState, action: ArticlesActionTypes): Arti
       return {
         ...state,
         data: action.data,
+      };
+    case UPDATE_ARTICLES_FOLLOWING:
+      return {
+        ...state,
+        following: action.data,
       };
     case UPDATE_ARTICLES_ITEM:
       return {
