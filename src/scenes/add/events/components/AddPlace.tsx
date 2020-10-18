@@ -55,25 +55,6 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
     next();
   };
 
-  {/* const renderItem = React.useCallback(
-    ({ item = { name: 'INCONNU' } }) => {
-      return (
-        item.type === 'school' && (
-        <View style={{ marginHorizontal: 5, alignItems: 'flex-start', paddingBottom: 10 }}>
-          <TextChip
-            title={item.name}
-            onPress={() => {
-              setEventPlaces(eventPlaces.filter((s) => s !== item._id));
-            }}
-            icon={eventPlaces.includes(item._id) ? 'check' : 'pound'}
-            selected={eventPlaces.includes(item._id)}
-          />
-        </View>)
-      );
-    },
-    [eventPlaces],
-  ); */}
-
   if (!account.loggedIn) {
     return (
       <View style={styles.container}>
@@ -94,7 +75,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
           {eventPlaces.map((place) => (
         <InlineCard
         icon={place.type === 'school' ? 'school' : place.type === 'place' ? 'map' : 'map-marker'}
-        title={place.type === 'school' || place.type === 'place' ? place.address.shortName : `${place.address.address.number || ''} ${place.address.address.street || ''} ${place.address.address.extra || ''}, ${place.address.address.code || ''} ${place.address.address.city}`}
+        title={place.type === 'school' || place.type === 'place' ? place.address.shortName : `${place.address.address.number || ''}${place.address.address.number === '' ? '' : ' '}${place.address.address.street || ''}${place.address.address.extra !== '' ? ', ' : ''}${place.address.address.extra || ''}${(place.address.address.street !== '' || place.address.address.extra !== '') && ', ' || ''}${place.address.address.code || ''} ${place.address.address.city}`}
         onPress={() => {
           setEventPlaces(eventPlaces.filter((s) => s !== place));}}
           />))}

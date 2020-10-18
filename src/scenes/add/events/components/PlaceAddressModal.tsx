@@ -47,6 +47,7 @@ type PlaceAddressModalProps = ModalProps & {
 function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: PlaceAddressModalProps) {
   const numberInput = React.createRef<RNTestInput>();
   const streetInput = React.createRef<RNTestInput>();
+  const extraInput = React.createRef<RNTestInput>();
   const codeInput = React.createRef<RNTestInput>();
   const cityInput = React.createRef<RNTestInput>();
   const eventPlace = eventPlaces;
@@ -60,6 +61,7 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
 
   let tempNumber: InputStateType;
   let tempStreet: InputStateType;
+  let tempExtra: InputStateType;
   let tempCode: InputStateType;
   let tempCity: InputStateType;
 
@@ -70,6 +72,12 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
     message: '',
   });
   const [currentStreet, setCurrentStreet] = React.useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+  const [currentExtra, setCurrentExtra] = React.useState({
     value: '',
     error: false,
     valid: false,
@@ -97,6 +105,10 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
     tempStreet = { ...currentStreet, ...(tempStreet ?? {}), ...data };
     setCurrentStreet(tempStreet);
   }
+  function setExtra(data: Partial<InputStateType>) {
+    tempExtra = { ...currentExtra, ...(tempExtra ?? {}), ...data };
+    setCurrentExtra(tempExtra);
+  }
   function setCode(data: Partial<InputStateType>) {
     // Because async setState
     tempCode = { ...currentCode, ...(tempCode ?? {}), ...data };
@@ -110,6 +122,7 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
   function blurInputs() {
     numberInput.current?.blur();
     streetInput.current?.blur();
+    extraInput.current?.blur();
     codeInput.current?.blur();
     cityInput.current?.blur();
   }
@@ -133,24 +146,20 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
   async function submit() {
     const numberVal = currentNumber.value;
     const streetVal = currentStreet.value;
+    const extraVal = currentExtra.value;
     const codeVal = currentCode.value;
     const cityVal = currentCity.value;
     const city = await validateCityInput(cityVal);
     if (city.valid) {
-      updateEventCreationData({
-        type,
-        address: {shortName:null, geo:null, address:{number:numberVal,street:streetVal,extra:null,city:cityVal,code:codeVal},departments:[]},
-        associatedSchool: null,
-        associatedPlace: null,
-      });
       add({type,
-        address: {shortName:null, geo:null, address:{number:numberVal,street:streetVal,extra:null,city:cityVal,code:codeVal},departments:[]},
+        address: {shortName:null, geo:null, address:{number:numberVal,street:streetVal,extra:extraVal,city:cityVal,code:codeVal},departments:[]},
         associatedSchool: null,
         associatedPlace: null,
       });
       setVisible(false);
       setCurrentNumber({ value: '' });
       setCurrentStreet({ value: '' });
+      setCurrentExtra({ value: '' });
       setCurrentCode({ value: '' });
       setCurrentCity({ value: '' });
     } else {
@@ -168,6 +177,7 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
     setVisible(false);
     setNumber({ value: '' });
     setStreet({ value: '' });
+    setExtra({ value: '' });
     setCode({ value: '' });
     setCity({ value: '' });
   }
@@ -229,7 +239,7 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 error={currentStreet.error}
                 disableFullscreenUI
                 onSubmitEditing={() => {
-                  codeInput.current?.focus();
+                  extraInput.current?.focus();
                 }}
                 autoCorrect={false}
                 autoFocus
@@ -238,6 +248,26 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 style={eventStyles.textInput}
                 onChangeText={(text) => {
                   setStreet({ value: text });
+                }}
+              />
+            </View>
+            <View style={eventStyles.textInputContainer}>
+              <TextInput
+                ref={extraInput}
+                label="Autre"
+                value={currentExtra.value}
+                error={currentExtra.error}
+                disableFullscreenUI
+                onSubmitEditing={() => {
+                  codeInput.current?.focus();
+                }}
+                autoCorrect={false}
+                autoFocus
+                theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
+                mode="outlined"
+                style={eventStyles.textInput}
+                onChangeText={(text) => {
+                  setExtra({ value: text });
                 }}
               />
             </View>
@@ -324,13 +354,9 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
 }
 
 const mapStateToProps = (state: State) => {
-  const { eventData, number, street, code, city } = state;
+  const { eventData} = state;
   return {
     creationData: eventData.creationData,
-    number,
-    street,
-    code,
-    city,
   };
 };
 
