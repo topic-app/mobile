@@ -52,6 +52,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
 
 
   const submit = () => {
+    updateEventCreationData({place: eventPlaces});
     next();
   };
 
