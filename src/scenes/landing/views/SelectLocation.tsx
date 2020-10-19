@@ -74,7 +74,7 @@ function done(
   selectedSchools = selectedSchools.filter((s) => !!s);
   selectedDepartments = selectedDepartments.filter((s) => !!s);
   const params = {
-    schools: selectedSchools,
+    schools: selectedSchools.filter((s) => !!s),
     departments: [
       ...selectedDepartments,
       // Todo: logic to select extra departments
@@ -82,7 +82,7 @@ function done(
         .map((s) => persistentData.find((p) => p.key === s)?.departments)
         .flat()
         .map((d: Department) => d?._id),
-    ],
+    ].filter((d) => !!d),
     global: true,
   };
   Promise.all([
