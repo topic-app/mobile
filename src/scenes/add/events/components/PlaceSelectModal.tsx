@@ -172,23 +172,13 @@ function EventPlaceSelectModal({
                   }
                   onPress={() => {
                     type === 'school' ?
-                    updateEventCreationData({
-                      type,
-                      address:{ shortName: item.name, geo:null,address:null, departments:[] },
-                      associatedSchool: item._id,
-                      associatedPlace: null})
-                    && add({
+                    add({
                       type,
                       address:{ shortName: item.name, geo:null,address:null, departments:[] },
                       associatedSchool: item._id,
                       associatedPlace: null})
                     :
-                    updateEventCreationData({
-                      type,
-                      address:{ shortName: item.name, geo:null,address:null, departments:[] },
-                      associatedSchool:null ,
-                      associatedPlace:item._id })
-                    && add({
+                    add({
                       type,
                       address:{ shortName: item.name, geo:null,address:null, departments:[] },
                       associatedSchool:null ,

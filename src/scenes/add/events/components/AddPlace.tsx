@@ -46,10 +46,10 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
     setPlaceTypeModalVisible(false);
     data === 'standalone' ? setPlaceAddressModalVisible(true) : setPlaceSelectModalVisible(true);
   };
+
   const addEventPlace = (place: {type : 'school'|'standalone'|'place', address: {shortName:string|null, geo:null, address:{number:string|null,street:string|null,extra:string|null,city:string|null,code:string|null}|null,departments:[]}, associatedSchool: string|null,associatedPlace: string|null,}) => {
     setEventPlaces([...eventPlaces, place]);
   };
-
 
   const submit = () => {
     updateEventCreationData({place: eventPlaces});
@@ -76,7 +76,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
           {eventPlaces.map((place) => (
         <InlineCard
         icon={place.type === 'school' ? 'school' : place.type === 'place' ? 'map' : 'map-marker'}
-        title={place.type === 'school' || place.type === 'place' ? place.address.shortName : `${place.address.address.number || ''}${place.address.address.number === '' ? '' : ' '}${place.address.address.street || ''}${place.address.address.extra !== '' ? ', ' : ''}${place.address.address.extra || ''}${(place.address.address.street !== '' || place.address.address.extra !== '') && ', ' || ''}${place.address.address.code || ''} ${place.address.address.city}`}
+        title={place.type === 'school' || place.type === 'place' ? place.address.shortName : `${place.address.address.number || ''}${place.address.address.number === '' ? '' : ' '}${place.address.address.street || ''}${place.address.address.extra !== '' && place.address.address.street !== '' ? ', ' : ''}${place.address.address.extra || ''}${(place.address.address.street !== '' || place.address.address.extra !== '') && ', ' || ''}${place.address.address.code || ''} ${place.address.address.city}`}
         onPress={() => {
           setEventPlaces(eventPlaces.filter((s) => s !== place));}}
           />))}

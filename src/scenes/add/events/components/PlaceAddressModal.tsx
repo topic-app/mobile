@@ -68,25 +68,25 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
   const [currentNumber, setCurrentNumber] = React.useState({
     value: '',
     error: false,
-    valid: false,
+    valid: true,
     message: '',
   });
   const [currentStreet, setCurrentStreet] = React.useState({
     value: '',
     error: false,
-    valid: false,
+    valid: true,
     message: '',
   });
   const [currentExtra, setCurrentExtra] = React.useState({
     value: '',
     error: false,
-    valid: false,
+    valid: true,
     message: '',
   });
   const [currentCode, setCurrentCode] = React.useState({
     value: '',
     error: false,
-    valid: false,
+    valid: true,
     message: '',
   });
   const [currentCity, setCurrentCity] = React.useState({
@@ -127,7 +127,7 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
     cityInput.current?.blur();
   }
 
-  async function validateCityInput(city: string) {
+  const validateCityInput = (city: string) => {
     let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (city === undefined) {
@@ -140,47 +140,117 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
       validation = { valid: true, error: false };
     }
     setCity(validation);
-    return validation;
-  }
+  };
 
-  async function submit() {
+  const validateCodeInput = (code: string) => {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
+
+    if (code !== '' && code.length !== 5) {
+      validation = {
+        valid: false,
+        error: true,
+        message: 'Code postal erroné',
+      };
+    } else {
+      validation = { valid: true, error: false };
+    }
+    setCode(validation);
+  };
+
+  const validateNumberInput = (number: string, street: string) => {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
+
+    if (number !== '' && street === '') {
+      validation = {
+        valid: false,
+        error: true,
+        message: 'Précisez la rue',
+      };
+    } else {
+      validation = { valid: true, error: false };
+    }
+    setNumber(validation);
+  };
+
+  const submit = () => {
     const numberVal = currentNumber.value;
     const streetVal = currentStreet.value;
     const extraVal = currentExtra.value;
     const codeVal = currentCode.value;
     const cityVal = currentCity.value;
-    const city = await validateCityInput(cityVal);
-    if (city.valid) {
+    if (currentCity.valid && currentCode.valid && currentNumber.valid) {
       add({type,
         address: {shortName:null, geo:null, address:{number:numberVal,street:streetVal,extra:extraVal,city:cityVal,code:codeVal},departments:[]},
         associatedSchool: null,
         associatedPlace: null,
       });
       setVisible(false);
-      setCurrentNumber({ value: '' });
-      setCurrentStreet({ value: '' });
-      setCurrentExtra({ value: '' });
-      setCurrentCode({ value: '' });
-      setCurrentCity({ value: '' });
-    } else {
-      if (!city.valid && !city.error) {
-        setCity({
-          valid: false,
-          error: true,
-          message: 'Champ requis',
-        });
-      }
+      setCurrentNumber({
+        value: '',
+        error: false,
+        valid: false,
+        message: '',
+      });
+      setCurrentStreet({
+        value: '',
+        error: false,
+        valid: false,
+        message: '',
+      });
+      setCurrentExtra({
+        value: '',
+        error: false,
+        valid: false,
+        message: '',
+      });
+      setCurrentCode({
+        value: '',
+        error: false,
+        valid: false,
+        message: '',
+      });
+      setCurrentCity({
+        value: '',
+        error: false,
+        valid: false,
+        message: '',
+      });
     }
-  }
+  };
 
-  async function cancel() {
+  const cancel = () => {
     setVisible(false);
-    setNumber({ value: '' });
-    setStreet({ value: '' });
-    setExtra({ value: '' });
-    setCode({ value: '' });
-    setCity({ value: '' });
-  }
+    setNumber({
+      value: '',
+      error: false,
+      valid: false,
+      message: '',
+    });
+    setStreet({
+      value: '',
+      error: false,
+      valid: false,
+      message: '',
+    });
+    setExtra({
+      value: '',
+      error: false,
+      valid: false,
+      message: '',
+    });
+    setCode({
+      value: '',
+      error: false,
+      valid: false,
+      message: '',
+    });
+    setCity({
+      value: '',
+      error: false,
+      valid: false,
+      message: '',
+    });
+  };
 
   const theme = useTheme();
   const { colors } = theme;
@@ -231,6 +301,9 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 }}
               />
             </View>
+            {currentNumber.error && (<HelperText type="error" style={{marginBottom:10, marginTop:-5}}>
+                {currentNumber.message}
+              </HelperText>)}
             <View style={eventStyles.textInputContainer}>
               <TextInput
                 ref={streetInput}
@@ -279,8 +352,12 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 error={currentCode.error}
                 keyboardType="number-pad"
                 disableFullscreenUI
-                onSubmitEditing={() => {
+                onSubmitEditing={({nativeEvent}) => {
+                  validateCodeInput(nativeEvent.text);
                   cityInput.current?.focus();
+                }}
+                onEndEditing={({ nativeEvent }) => {
+                  validateCodeInput(nativeEvent.text);
                 }}
                 autoCorrect={false}
                 autoFocus
@@ -292,6 +369,9 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 }}
               />
             </View>
+            {currentCode.error && (<HelperText type="error" style={{marginBottom:10, marginTop:-5}}>
+                {currentCode.message}
+              </HelperText>)}
             <View style={eventStyles.textInputContainer}>
               <TextInput
                 ref={cityInput}
@@ -299,7 +379,8 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 value={currentCity.value}
                 error={currentCity.error}
                 disableFullscreenUI
-                onSubmitEditing={() => {
+                onSubmitEditing={({nativeEvent}) => {
+                  validateCityInput(nativeEvent.text);
                   blurInputs();
                 }}
                 autoCorrect={false}
@@ -311,11 +392,14 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 }
                 mode="outlined"
                 style={eventStyles.textInput}
+                onEndEditing={({ nativeEvent }) => {
+                  validateCityInput(nativeEvent.text);
+                }}
                 onChangeText={(text) => {
                   setCity({ value: text });
                 }}
               />
-              <HelperText type="error" visible={currentCity.error}>
+              <HelperText type="error" visible={currentCity.error} style={{marginTop:-5}}>
                 {currentCity.message}
               </HelperText>
             </View>
@@ -337,6 +421,9 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                 uppercase={Platform.OS !== 'ios'}
                 onPress={() => {
+                  validateCityInput(currentCity.value);
+                  validateCodeInput(currentCode.value);
+                  validateNumberInput(currentNumber.value, currentStreet.value);
                   blurInputs();
                   submit();
                 }}
