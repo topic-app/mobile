@@ -46,8 +46,6 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -69,5 +67,9 @@
 	<string>YES</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Ajoutez des photos aux articles que vous écrivez</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Trouvez les écoles, évènements et lieux culturels autour de vous</string>
 </dict>
 </plist>

@@ -8,6 +8,11 @@ target 'Topic' do
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
   use_unimodules!
+  
+  permissions_path = "../node_modules/react-native-permissions/ios"
+  pod "Permission-LocationWhenInUse", :path => "#{permissions_path}/LocationWhenInUse.podspec"
+  pod "Permission-MediaLibrary", :path => "#{permissions_path}/MediaLibrary.podspec"
+  pod "Permission-Notifications", :path => "#{permissions_path}/Notifications.podspec"
 
   # Enables Flipper.
   #
