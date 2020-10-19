@@ -1,10 +1,10 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@utils/stack';
 
+import UnauthorizedBeta from '@components/UnauthorizedBeta';
 import ArticleList from './articles/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
-import UnauthorizedBeta from '@components/UnauthorizedBeta';
 
 function getNestedParams(route: { params?: any }) {
   let { params } = route;
@@ -27,20 +27,12 @@ function HomeTwoNavigator() {
   return (
     <Stack.Navigator
       initialRouteName="Article"
-      screenOptions={({ route }) => {
-        if (route.params && getNestedParams(route)?.noTransition) {
-          return {
-            cardStyleInterpolator: () => ({ cardStyle: null }),
-            headerShown: false,
-          };
-        }
-        return { headerShown: false };
-      }}
+      screenOptions={{ headerShown: false, animationEnabled: false }}
     >
       <Stack.Screen name="Article" component={ArticleList} />
-      <Stack.Screen name="Event" component={UnauthorizedBeta} />
+      <Stack.Screen name="Event" component={EventList} />
       {/* <Stack.Screen name="Petition" component={PetitionList} /> */}
-      <Stack.Screen name="Explorer" component={UnauthorizedBeta} options={{ headerShown: false }} />
+      <Stack.Screen name="Explorer" component={ExplorerList} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
