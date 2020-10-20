@@ -5,6 +5,7 @@ import { HeaderConfig } from '@components/Header';
 import ArticleAdd from './views/Add';
 import ArticleAddSuccess from './views/AddSuccess';
 import ArticleAddLocation from './views/AddLocation';
+import ArticleAddContent from './views/AddContent';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,14 @@ function ArticleAddStackNavigator() {
       <Stack.Screen
         name="Add"
         component={ArticleAdd}
+        options={{
+          title: 'Écrire un article',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddContent"
+        component={ArticleAddContent}
         options={{
           title: 'Écrire un article',
           headerShown: false,

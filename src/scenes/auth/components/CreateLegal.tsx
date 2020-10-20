@@ -204,7 +204,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigat
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}
-            onPress={prev}
+            onPress={() => prev()}
             style={{ flex: 1, marginRight: 5 }}
           >
             Retour

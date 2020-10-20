@@ -62,6 +62,8 @@ function AddUserRoleModal({
   const [expiryDate, setExpiryDate] = React.useState(0);
   const [errorVisible, setErrorVisible] = React.useState(false);
 
+  console.log(roles);
+
   let sections = [
     {
       key: 'primary',
@@ -96,7 +98,7 @@ function AddUserRoleModal({
   };
 
   return (
-    <Modal isVisible={visible} setVisible={setVisible}>
+    <Modal visible={visible} setVisible={setVisible}>
       <SectionList
         sections={sections}
         ListHeaderComponent={() => (

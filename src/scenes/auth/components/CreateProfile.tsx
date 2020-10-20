@@ -123,17 +123,13 @@ const AuthCreatePageProfile: React.FC<Props> = ({
   function submit() {
     const firstnameVal = currentFirstname.value;
     const lastnameVal = currentLastname.value;
-    const firstname = validateFirstnameInput(firstnameVal);
-    const lastname = validateLastnameInput(lastnameVal);
-    if ((firstname.valid && lastname.valid) || accountType === 'private') {
-      delete activeAvatar.key;
-      updateCreationData({
-        firstName: firstnameVal,
-        lastName: lastnameVal,
-        avatar: activeAvatar,
-      });
-      next();
-    }
+    delete activeAvatar.key;
+    updateCreationData({
+      firstName: firstnameVal,
+      lastName: lastnameVal,
+      avatar: activeAvatar,
+    });
+    next();
   }
 
   const theme = useTheme();

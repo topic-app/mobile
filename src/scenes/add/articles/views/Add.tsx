@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { View, ScrollView } from 'react-native';
-import { Text, ProgressBar, useTheme } from 'react-native-paper';
+import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { Text, ProgressBar, useTheme, Button, HelperText } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
@@ -15,14 +15,17 @@ import {
 } from '@components/index';
 import { articleAdd } from '@redux/actions/apiActions/articles';
 import getStyles from '@styles/Styles';
-import { clearArticleCreationData } from '@redux/actions/contentData/articles';
+import {
+  clearArticleCreationData,
+  updateArticleCreationData,
+} from '@redux/actions/contentData/articles';
+import { RichToolbar, RichEditor, actions } from 'react-native-pell-rich-editor';
 
 import type { ArticleStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
 import ArticleAddPageGroup from '../components/AddGroup';
 import ArticleAddPageLocation from '../components/AddLocation';
 import ArticleAddPageMeta from '../components/AddMeta';
-import ArticleAddPageContent from '../components/AddContent';
 import ArticleAddPageTags from '../components/AddTags';
 
 type Props = {
@@ -36,46 +39,21 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
-  const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
-    articleAdd({
-      title: creationData.title,
-      summary: creationData.summary,
-      date: Date.now(),
-      location: creationData.location,
-      group: creationData.group,
-      image: null,
-      parser: parser || creationData.parser,
-      data: data || creationData.data,
-      tags: creationData.tags,
-      preferences: null,
-    }).then(({ _id }) => {
-      navigation.replace('Success', { id: _id, creationData });
-      clearArticleCreationData();
-    });
-  };
+  const { colors } = theme;
+
+  const stepperRef = React.useRef(null);
 
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        {reqState.add?.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
-        {reqState.add?.success === false && (
-          <ErrorMessage
-            error={reqState.add?.error}
-            strings={{
-              what: "l'ajout de l'article",
-              contentSingular: "L'article",
-            }}
-            type="axios"
-            retry={add}
-          />
-        )}
         <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
             <Text style={articleStyles.title}>Écrire un article</Text>
           </View>
           <StepperView
+            ref={stepperRef}
             pages={[
               {
                 key: 'group',
@@ -99,13 +77,15 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'tags',
                 icon: 'tag-multiple',
                 title: 'Tags',
-                component: <ArticleAddPageTags />,
+                component: (
+                  <ArticleAddPageTags navigate={() => navigation.navigate('AddContent')} />
+                ),
               },
               {
                 key: 'content',
                 icon: 'pencil',
                 title: 'Contenu',
-                component: <ArticleAddPageContent add={add} />,
+                component: <View />,
               },
             ]}
           />

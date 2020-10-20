@@ -80,7 +80,7 @@ function AddUserSelectModal({
       <View>
         <View style={{ height: 200 }}>
           <View style={styles.centerIllustrationContainer}>
-            <Illustration name="tag" height={200} width={200} />
+            <Illustration name="user" height={200} width={200} />
           </View>
         </View>
         <Divider />
@@ -93,7 +93,7 @@ function AddUserSelectModal({
               contentPlural: 'des utilisateurs',
               contentSingular: "La liste d'utilisateurs",
             }}
-            error={state.add?.error}
+            error={state.search?.error}
             retry={() => update()}
           />
         ) : null}

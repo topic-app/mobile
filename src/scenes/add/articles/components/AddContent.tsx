@@ -1,6 +1,7 @@
 import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
 import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
+import { RichEditor, RichToolbar } from 'react-native-pell-rich-editor';
 
 import { request } from '@utils/index';
 import { StepperViewPageProps } from '@components/index';
@@ -11,9 +12,18 @@ import {
 
 import getAuthStyles from '../styles/Styles';
 
-type Props = StepperViewPageProps & { add: Function };
+type Props = StepperViewPageProps & {
+  add: Function;
+  setToolbarInitialized: (b: boolean) => void;
+  setTextEditor: (a: any) => void;
+};
 
-const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
+const ArticleAddPageGeneral: React.FC<Props> = ({
+  prev,
+  add,
+  setToolbarInitialized,
+  setTextEditor,
+}) => {
   const contentInput = createRef<RNTestInput>();
 
   type InputStateType = {
@@ -91,60 +101,18 @@ const ArticleAddPageGeneral: React.FC<Props> = ({ prev, add }) => {
   return (
     <View style={authStyles.formContainer}>
       <View style={authStyles.textInputContainer}>
-        <TextInput
-          ref={contentInput}
-          label="Écrivez votre article..."
-          multiline
-          numberOfLines={4}
-          value={currentContent.value}
-          error={currentContent.error}
-          disableFullscreenUI
-          autoCapitalize="none"
-          onSubmitEditing={({ nativeEvent }) => {
-            validateContentInput(nativeEvent.text);
-            blurInputs();
-            submit();
-          }}
-          autoCorrect={false}
-          theme={
-            currentContent.valid
-              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-              : theme
-          }
-          mode="outlined"
-          onEndEditing={({ nativeEvent }) => {
-            validateContentInput(nativeEvent.text);
-          }}
-          style={authStyles.textInput}
-          onChangeText={(text) => {
-            setContent({ value: text });
-            preValidateContentInput(text);
-          }}
-        />
-        <HelperText type="error" visible={currentContent.error}>
-          {currentContent.message}
-        </HelperText>
-      </View>
-      <View style={authStyles.buttonContainer}>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={() => prev()}
-          style={{ flex: 1, marginRight: 5 }}
-        >
-          Retour
-        </Button>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={() => {
-            blurInputs();
-            submit();
-          }}
-          style={{ flex: 1, marginLeft: 5 }}
-        >
-          Publier
-        </Button>
+        <View style={{ marginTop: 20 }}>
+          <RichEditor
+            ref={setTextEditor}
+            editorStyle={{
+              backgroundColor: colors.background,
+              color: colors.text,
+              placeholderColor: colors.disabled,
+            }}
+            placeholder="Écrivez votre article"
+            editorInitializedCallback={() => setToolbarInitialized(true)}
+          />
+        </View>
       </View>
     </View>
   );

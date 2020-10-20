@@ -38,6 +38,7 @@ import {
 export const UPDATE_ARTICLES_STATE = 'UPDATE_ARTICLES_STATE';
 export const UPDATE_ARTICLES_DATA = 'UPDATE_ARTICLES_DATA';
 export const UPDATE_ARTICLES_ITEM = 'UPDATE_ARTICLES_ITEM';
+export const UPDATE_ARTICLES_FOLLOWING = 'UPDATE_ARTICLES_FOLLOWING';
 export const UPDATE_ARTICLES_VERIFICATION = 'UPDATE_ARTICLES_VERIFICATION';
 export const UPDATE_ARTICLES_SEARCH = 'UPDATE_ARTICLES_SEARCH';
 export const UPDATE_ARTICLES_PARAMS = 'UPDATE_ARTICLES_PARAMS';
@@ -70,6 +71,7 @@ export type ArticleQuickItem = {
 
 export type ArticlesState = {
   data: ArticlePreload[];
+  following: ArticlePreload[];
   item: Article | null;
   search: ArticlePreload[];
   verification: ArticlePreload[];
@@ -120,6 +122,11 @@ type UpdateArticlesStateAction = {
 
 type UpdateArticlesDataAction = {
   type: typeof UPDATE_ARTICLES_DATA;
+  data: ArticlePreload[];
+};
+
+type UpdateArticlesFollowingAction = {
+  type: typeof UPDATE_ARTICLES_FOLLOWING;
   data: ArticlePreload[];
 };
 
@@ -177,6 +184,7 @@ export type ArticlesActionTypes =
   | UpdateArticlesStateAction
   | UpdateArticlesDataAction
   | UpdateArticlesItemAction
+  | UpdateArticlesFollowingAction
   | UpdateArticlesSearchAction
   | UpdateArticlesVerificationAction
   | UpdateArticlesParamsAction
