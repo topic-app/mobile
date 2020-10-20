@@ -12,15 +12,16 @@ type CustomImageProps = {
   imageSize: 'small' | 'medium' | 'large';
   height: number;
   width: number;
+  style: object;
 };
 
-const CustomImage: React.FC<CustomImageProps> = ({ image, imageSize, height, width }) => {
+const CustomImage: React.FC<CustomImageProps> = ({ image, imageSize, height, width, style }) => {
   const styles = getStyles(useTheme());
   if (image?.image) {
     return (
       <RNImage
         source={{ uri: getImageUrl({ image, size: imageSize }) }}
-        style={[styles.thumbnail, { width, height }]}
+        style={[styles.thumbnail, { width, height }, style]}
       />
     );
   } else {

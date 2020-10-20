@@ -5,5 +5,5 @@ const BottomModal = () => null;
 const SlideAnimation = () => null;
 const Modal = () => null;
 
-export { BottomModal, SlideAnimation };
+export { BottomModal, SlideAnimation, Modal };
 export default Modal;
