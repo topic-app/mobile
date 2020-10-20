@@ -1,56 +1,33 @@
 import React from 'react';
-import {
-  ModalProps,
-  State,
-  EventPlace,
-  ArticleQuickItem,
-  TagsState,
-  GroupsState,
-  UsersState,
-  Tag,
-  Group,
-  User,
-  RequestState,
-} from '@ts/types';
-import {
-  Divider,
-  ProgressBar,
-  Button,
-  HelperText,
-  TextInput,
-  Card,
-  Text,
-  List,
-  ThemeProvider,
-  useTheme,
-} from 'react-native-paper';
-import { View, Platform, FlatList, TextInput as RNTestInput } from 'react-native';
+import { Button, HelperText, TextInput, Card, ThemeProvider, useTheme } from 'react-native-paper';
+import { View, Platform, TextInput as RNTestInput } from 'react-native';
 import { connect } from 'react-redux';
-import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
-import { updateEventCreationData } from '@redux/actions/contentData/events';
+import shortid from 'shortid';
+import { BottomModal, SlideAnimation } from '@components/Modals';
 
-import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
+import { ModalProps, State, EventPlace } from '@ts/types';
 import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
-import { searchTags, updateTags } from '@redux/actions/api/tags';
-import { searchGroups, updateGroups } from '@redux/actions/api/groups';
-import { searchUsers, updateUsers } from '@redux/actions/api/users';
 
 import getEventStyles from '../styles/Styles';
- 
+
 type PlaceAddressModalProps = ModalProps & {
   type: 'standalone';
-  eventPlaces:EventPlace[];
-  add: ({ type, address, associatedSchool, associatedPlace }: { type : string, address: {shortName:string|null, geo:null, address:{number:string|null,street:string|null,extra:string|null,city:string|null,code:string|null}|null,departments:[]}, associatedSchool: string|null,associatedPlace: string|null,}) => any;
+  eventPlaces: EventPlace[];
+  add: (place: EventPlace) => void;
 };
 
-function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: PlaceAddressModalProps) {
+const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
+  visible,
+  setVisible,
+  type,
+  eventPlaces,
+  add,
+}) => {
   const numberInput = React.createRef<RNTestInput>();
   const streetInput = React.createRef<RNTestInput>();
   const extraInput = React.createRef<RNTestInput>();
   const codeInput = React.createRef<RNTestInput>();
   const cityInput = React.createRef<RNTestInput>();
-  const eventPlace = eventPlaces;
 
   type InputStateType = {
     value: string;
@@ -179,8 +156,21 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
     const codeVal = currentCode.value;
     const cityVal = currentCity.value;
     if (currentCity.valid && currentCode.valid && currentNumber.valid) {
-      add({type,
-        address: {shortName:null, geo:null, address:{number:numberVal,street:streetVal,extra:extraVal,city:cityVal,code:codeVal},departments:[]},
+      add({
+        id: shortid(),
+        type,
+        address: {
+          shortName: null,
+          geo: null,
+          address: {
+            number: numberVal,
+            street: streetVal,
+            extra: extraVal,
+            city: cityVal,
+            code: codeVal,
+          },
+          departments: [],
+        },
         associatedSchool: null,
         associatedPlace: null,
       });
@@ -301,9 +291,11 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 }}
               />
             </View>
-            {currentNumber.error && (<HelperText type="error" style={{marginBottom:10, marginTop:-5}}>
+            {currentNumber.error && (
+              <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
                 {currentNumber.message}
-              </HelperText>)}
+              </HelperText>
+            )}
             <View style={eventStyles.textInputContainer}>
               <TextInput
                 ref={streetInput}
@@ -352,7 +344,7 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 error={currentCode.error}
                 keyboardType="number-pad"
                 disableFullscreenUI
-                onSubmitEditing={({nativeEvent}) => {
+                onSubmitEditing={({ nativeEvent }) => {
                   validateCodeInput(nativeEvent.text);
                   cityInput.current?.focus();
                 }}
@@ -369,9 +361,11 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 }}
               />
             </View>
-            {currentCode.error && (<HelperText type="error" style={{marginBottom:10, marginTop:-5}}>
+            {currentCode.error && (
+              <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
                 {currentCode.message}
-              </HelperText>)}
+              </HelperText>
+            )}
             <View style={eventStyles.textInputContainer}>
               <TextInput
                 ref={cityInput}
@@ -379,7 +373,7 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                 value={currentCity.value}
                 error={currentCity.error}
                 disableFullscreenUI
-                onSubmitEditing={({nativeEvent}) => {
+                onSubmitEditing={({ nativeEvent }) => {
                   validateCityInput(nativeEvent.text);
                   blurInputs();
                 }}
@@ -399,7 +393,7 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
                   setCity({ value: text });
                 }}
               />
-              <HelperText type="error" visible={currentCity.error} style={{marginTop:-5}}>
+              <HelperText type="error" visible={currentCity.error} style={{ marginTop: -5 }}>
                 {currentCity.message}
               </HelperText>
             </View>
@@ -438,10 +432,10 @@ function PlaceAddressModal({ visible, setVisible, type, eventPlaces, add  }: Pla
       </ThemeProvider>
     </BottomModal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
-  const { eventData} = state;
+  const { eventData } = state;
   return {
     creationData: eventData.creationData,
   };

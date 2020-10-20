@@ -1,49 +1,29 @@
 import React from 'react';
 import {
-  ModalProps,
-  State,
-  SchoolsState,
-  UsersState,
-  EventListItem,
-  EventPlace,
-  PlacesState,
-  Place,
-  School,
-  User,
-  RequestState,
-} from '@ts/types';
-import {
   Divider,
   ProgressBar,
-  Button,
-  HelperText,
-  TextInput,
   Card,
   Text,
   List,
   ThemeProvider,
   useTheme,
 } from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { BottomModal, SlideAnimation } from '@components/Modals';
 
-import { Searchbar, Illustration, Avatar, ErrorMessage, CollapsibleView } from '@components/index';
+import { ModalProps, State, SchoolsState, EventPlace, PlacesState, RequestState } from '@ts/types';
+import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { searchSchools, updateSchools } from '@redux/actions/api/schools';
 import { searchPlaces, updatePlaces } from '@redux/actions/api/places';
-
-import { updateEventCreationData } from '@redux/actions/contentData/events';
-
-import getEventStyles from '../styles/Styles';
 
 type EventPlaceSelectModalProps = ModalProps & {
   eventPlaces: EventPlace[];
   type: 'school' | 'place';
   schools: SchoolsState;
   places: PlacesState;
-  add: ({ type, address, associatedSchool, associatedPlace }: {type : 'school'|'standalone'|'place', address: {shortName:string|null, geo:null, address:{number:string|null,street:string|null,extra:string|null,city:string|null,code:string|null}|null,departments:[]}, associatedSchool: string|null,associatedPlace: string|null,}) => any;
+  add: (place: EventPlace) => void;
 };
 
 function EventPlaceSelectModal({
@@ -59,27 +39,27 @@ function EventPlaceSelectModal({
   const styles = getStyles(theme);
 
   const [searchText, setSearchText] = React.useState('');
-  const eventPlace = eventPlaces;
 
-  let data: School[] | Place[] = [];
+  let data: EventPlace[] = [];
   let update: (text?: string) => void = () => {};
   let icon = 'alert-decagram';
   let state: { list: RequestState; search: RequestState } = {
     list: { loading: { initial: false }, error: true },
     search: { loading: { initial: false }, error: true },
   };
+
   switch (type) {
     case 'school':
       data = searchText ? schools.search : schools.data;
-      update = (text = searchText) =>
-        text ? searchSchools('initial', text, {}) : updateSchools('initial');
+      update = () =>
+        searchText ? searchSchools('initial', searchText, {}) : updateSchools('initial');
       icon = 'school';
       state = schools.state;
       break;
     case 'place':
       data = searchText ? places.search : places.data;
-      update = (text = searchText) =>
-        text ? searchPlaces('initial', text, {}) : updatePlaces('initial');
+      update = () =>
+        searchText ? searchPlaces('initial', searchText, {}) : updatePlaces('initial');
       icon = 'map-marker-radius';
       state = places.state;
       break;
@@ -171,18 +151,33 @@ function EventPlaceSelectModal({
                     )
                   }
                   onPress={() => {
-                    type === 'school' ?
-                    add({
-                      type,
-                      address:{ shortName: item.name, geo:null,address:null, departments:[] },
-                      associatedSchool: item._id,
-                      associatedPlace: null})
-                    :
-                    add({
-                      type,
-                      address:{ shortName: item.name, geo:null,address:null, departments:[] },
-                      associatedSchool:null ,
-                      associatedPlace: item._id});
+                    if (type === 'school') {
+                      add({
+                        id: item._id,
+                        type,
+                        address: {
+                          shortName: item.name,
+                          geo: null,
+                          address: null,
+                          departments: [],
+                        },
+                        associatedSchool: item._id,
+                        associatedPlace: null,
+                      });
+                    } else {
+                      add({
+                        id: item._id,
+                        type,
+                        address: {
+                          shortName: item.name,
+                          geo: null,
+                          address: null,
+                          departments: [],
+                        },
+                        associatedSchool: null,
+                        associatedPlace: item._id,
+                      });
+                    }
                     setVisible(false);
                   }}
                 />
