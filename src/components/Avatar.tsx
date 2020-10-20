@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ViewStyle, TextStyle, ImageStyle, StyleProp } from 'react-native';
 import { Avatar as PaperAvatar, Text, useTheme } from 'react-native-paper';
+import Image from './CustomImage';
 import LinearGradient from 'react-native-linear-gradient';
 import color from 'color';
 
@@ -22,9 +23,19 @@ type Props = {
   size?: number;
   onPress?: () => void;
   avatar?: AvatarType;
+  large: boolean;
 };
 
-const Avatar: React.FC<Props> = ({ name, imageUrl, icon, style, size = 64, onPress, avatar }) => {
+const Avatar: React.FC<Props> = ({
+  name,
+  imageUrl,
+  icon,
+  style,
+  size = 64,
+  onPress,
+  avatar,
+  large = false,
+}) => {
   const theme: Theme = useTheme();
   const { colors } = theme;
 
@@ -58,6 +69,16 @@ const Avatar: React.FC<Props> = ({ name, imageUrl, icon, style, size = 64, onPre
             {avatar.text?.toUpperCase()}
           </Text>
         </LinearGradient>
+      );
+    } else if (avatar.type === 'image') {
+      AvatarComponent = (
+        <Image
+          height={size}
+          width={size}
+          style={{ borderRadius: size / 2 }}
+          image={avatar.image}
+          imageSize={large ? 'large' : 'small'}
+        />
       );
     } else {
       AvatarComponent = (
