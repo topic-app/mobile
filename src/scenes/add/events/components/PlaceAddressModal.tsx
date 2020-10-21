@@ -25,7 +25,7 @@ import {
 } from 'react-native-paper';
 import { View, Platform, FlatList, TextInput as RNTestInput } from 'react-native';
 import { connect } from 'react-redux';
-import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
+import { Modal } from '@components/index';
 
 import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
@@ -121,135 +121,113 @@ function PlaceAddressModal({ visible, setVisible }: PlaceAddressModalProps) {
   const styles = getStyles(theme);
 
   return (
-    <BottomModal
-      visible={visible}
-      onTouchOutside={() => {
-        setVisible(false);
-      }}
-      onHardwareBackPress={() => {
-        setVisible(false);
-        return true;
-      }}
-      onSwipeOut={() => {
-        setVisible(false);
-      }}
-      modalAnimation={
-        new SlideAnimation({
-          slideFrom: 'bottom',
-          useNativeDriver: false,
-        })
-      }
-    >
-      <ThemeProvider theme={theme}>
-        <Card style={styles.modalCard}>
-          <View style={eventStyles.formContainer}>
-            <View style={eventStyles.textInputContainer}>
-              <TextInput
-                ref={numberInput}
-                label="Numéro de rue"
-                value={currentNumber.value}
-                error={currentNumber.error}
-                keyboardType="default"
-                disableFullscreenUI
-                onSubmitEditing={() => {
-                  streetInput.current?.focus();
-                }}
-                autoCorrect={false}
-                autoFocus
-                theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-                mode="outlined"
-                style={eventStyles.textInput}
-                onChangeText={(text) => {
-                  setNumber({ value: text });
-                }}
-              />
-            </View>
-            <View style={eventStyles.textInputContainer}>
-              <TextInput
-                ref={streetInput}
-                label="Rue"
-                value={currentStreet.value}
-                error={currentStreet.error}
-                disableFullscreenUI
-                onSubmitEditing={() => {
-                  codeInput.current?.focus();
-                }}
-                autoCorrect={false}
-                autoFocus
-                theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-                mode="outlined"
-                style={eventStyles.textInput}
-                onChangeText={(text) => {
-                  setStreet({ value: text });
-                }}
-              />
-            </View>
-            <View style={eventStyles.textInputContainer}>
-              <TextInput
-                ref={codeInput}
-                label="Code Postal"
-                value={currentCode.value}
-                error={currentCode.error}
-                keyboardType="number-pad"
-                disableFullscreenUI
-                onSubmitEditing={() => {
-                  cityInput.current?.focus();
-                }}
-                autoCorrect={false}
-                autoFocus
-                theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-                mode="outlined"
-                style={eventStyles.textInput}
-                onChangeText={(text) => {
-                  setCode({ value: text });
-                }}
-              />
-              <TextInput
-                ref={cityInput}
-                label="Ville"
-                value={currentCity.value}
-                error={currentCity.error}
-                disableFullscreenUI
-                onSubmitEditing={() => {
-                  blurInputs();
-                }}
-                autoCorrect={false}
-                autofocus
-                theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-                mode="outlined"
-                style={eventStyles.textInput}
-                onChangeText={(text) => {
-                  setCity({ value: text });
-                }}
-              />
-            </View>
-            <View style={{ height: 20 }} />
-            <View style={eventStyles.buttonContainer}>
-              <Button
-                mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-                uppercase={Platform.OS !== 'ios'}
-                style={{ flex: 1, marginRight: 5 }}
-              >
-                {' '}
-                Annuler{' '}
-              </Button>
-              <Button
-                mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-                uppercase={Platform.OS !== 'ios'}
-                onPress={() => {
-                  blurInputs();
-                  submit();
-                }}
-                style={{ flex: 1, marginLeft: 5 }}
-              >
-                {' '}
-                Ajouter
-              </Button>
-            </View>
-          </View>
-        </Card>
-      </ThemeProvider>
-    </BottomModal>
+    <Modal visible={visible} setVisible={setVisible}>
+      <View style={eventStyles.formContainer}>
+        <View style={eventStyles.textInputContainer}>
+          <TextInput
+            ref={numberInput}
+            label="Numéro de rue"
+            value={currentNumber.value}
+            error={currentNumber.error}
+            keyboardType="default"
+            disableFullscreenUI
+            onSubmitEditing={() => {
+              streetInput.current?.focus();
+            }}
+            autoCorrect={false}
+            autoFocus
+            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
+            mode="outlined"
+            style={eventStyles.textInput}
+            onChangeText={(text) => {
+              setNumber({ value: text });
+            }}
+          />
+        </View>
+        <View style={eventStyles.textInputContainer}>
+          <TextInput
+            ref={streetInput}
+            label="Rue"
+            value={currentStreet.value}
+            error={currentStreet.error}
+            disableFullscreenUI
+            onSubmitEditing={() => {
+              codeInput.current?.focus();
+            }}
+            autoCorrect={false}
+            autoFocus
+            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
+            mode="outlined"
+            style={eventStyles.textInput}
+            onChangeText={(text) => {
+              setStreet({ value: text });
+            }}
+          />
+        </View>
+        <View style={eventStyles.textInputContainer}>
+          <TextInput
+            ref={codeInput}
+            label="Code Postal"
+            value={currentCode.value}
+            error={currentCode.error}
+            keyboardType="number-pad"
+            disableFullscreenUI
+            onSubmitEditing={() => {
+              cityInput.current?.focus();
+            }}
+            autoCorrect={false}
+            autoFocus
+            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
+            mode="outlined"
+            style={eventStyles.textInput}
+            onChangeText={(text) => {
+              setCode({ value: text });
+            }}
+          />
+          <TextInput
+            ref={cityInput}
+            label="Ville"
+            value={currentCity.value}
+            error={currentCity.error}
+            disableFullscreenUI
+            onSubmitEditing={() => {
+              blurInputs();
+            }}
+            autoCorrect={false}
+            autofocus
+            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
+            mode="outlined"
+            style={eventStyles.textInput}
+            onChangeText={(text) => {
+              setCity({ value: text });
+            }}
+          />
+        </View>
+        <View style={{ height: 20 }} />
+        <View style={eventStyles.buttonContainer}>
+          <Button
+            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+            uppercase={Platform.OS !== 'ios'}
+            style={{ flex: 1, marginRight: 5 }}
+          >
+            {' '}
+            Annuler{' '}
+          </Button>
+          <Button
+            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+            uppercase={Platform.OS !== 'ios'}
+            onPress={() => {
+              blurInputs();
+              submit();
+            }}
+            style={{ flex: 1, marginLeft: 5 }}
+          >
+            {' '}
+            Ajouter
+          </Button>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
