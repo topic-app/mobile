@@ -16,7 +16,7 @@ import { markerImages } from '../utils/getAsset';
 import getExplorerStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
-MapboxGL.setTelemetryEnabled(false);
+// MapboxGL.setTelemetryEnabled(false);
 
 function ExplorerMap({ places, map, tileServerUrl, navigation }) {
   const cameraRef = React.createRef<MapboxGL.Camera>();

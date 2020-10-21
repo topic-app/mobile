@@ -25,7 +25,7 @@ import {
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import Modal, { BottomModal, SlideAnimation } from '@components/Modals';
+import { Modal } from '@components/index';
 
 import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
@@ -33,6 +33,7 @@ import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
+import { BottomModal } from '@root/src/components/Modal.web';
 
 type QuickSelectModalProps = ModalProps & {
   quicks: ArticleQuickItem[];
@@ -87,98 +88,73 @@ function PlaceSelectModal({
   }, [null]);
 
   return (
-    <BottomModal
-      visible={visible}
-      onTouchOutside={() => {
-        setVisible(false);
-      }}
-      onHardwareBackPress={() => {
-        setVisible(false);
-        return true;
-      }}
-      onSwipeOut={() => {
-        setVisible(false);
-      }}
-      modalAnimation={
-        new SlideAnimation({
-          slideFrom: 'bottom',
-          useNativeDriver: false,
-        })
-      }
-    >
-      <ThemeProvider theme={theme}>
-        <Card style={styles.modalCard}>
-          <View>
-            <View style={{ height: 200 }}>
-              <View style={styles.centerIllustrationContainer}>
-                <Illustration name={type} height={200} width={200} />
-              </View>
-            </View>
-            <Divider />
-            {state.list.loading.initial ||
-              (state.search.loading.initial && (
-                <ProgressBar indeterminate style={{ marginTop: -4 }} />
-              ))}
-            {(searchText === '' && state.list.error) ||
-            (searchText !== '' && state.search.error) ? (
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: 'la récupération des données',
-                  contentPlural: 'des données',
-                  contentSingular: 'La liste de données',
-                }}
-                error={[state.list.error, state.search.error]}
-                retry={update}
-              />
-            ) : null}
-
-            <View style={styles.container}>
-              <Searchbar
-                autoFocus
-                placeholder="Rechercher"
-                value={searchText}
-                onChangeText={setSearchText}
-                onIdle={update}
-              />
-            </View>
-            <FlatList
-              data={data}
-              keyExtractor={(i) => i._id}
-              keyboardShouldPersistTaps="handled"
-              ListEmptyComponent={() => (
-                <View style={{ minHeight: 50 }}>
-                  {(searchText === '' && state.list.success) ||
-                    (searchText !== '' && state.search.success && (
-                      <View style={styles.centerIllustrationContainer}>
-                        <Text>Aucun résultat</Text>
-                      </View>
-                    ))}
-                </View>
-              )}
-              renderItem={({ item }) =>
-                eventPlaces.some((e) => e.id === item._id) ? null : (
-                  <List.Item
-                    title={item.name || item.info?.username}
-                    left={() =>
-                      item.avatar || item.info?.avatar ? (
-                        <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
-                      ) : (
-                        <List.Icon icon={icon} color={item.color} />
-                      )
-                    }
-                    onPress={() => {
-                      addEventPlace(type, item._id, item.name || item.info?.username);
-                      setVisible(false);
-                    }}
-                  />
-                )
-              }
-            />
+    <Modal visible={visible} setVisible={setVisible}>
+      <View>
+        <View style={{ height: 200 }}>
+          <View style={styles.centerIllustrationContainer}>
+            <Illustration name={type} height={200} width={200} />
           </View>
-        </Card>
-      </ThemeProvider>
-    </BottomModal>
+        </View>
+        <Divider />
+        {state.list.loading.initial ||
+          (state.search.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />)}
+        {(searchText === '' && state.list.error) || (searchText !== '' && state.search.error) ? (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la récupération des données',
+              contentPlural: 'des données',
+              contentSingular: 'La liste de données',
+            }}
+            error={[state.list.error, state.search.error]}
+            retry={update}
+          />
+        ) : null}
+
+        <View style={styles.container}>
+          <Searchbar
+            autoFocus
+            placeholder="Rechercher"
+            value={searchText}
+            onChangeText={setSearchText}
+            onIdle={update}
+          />
+        </View>
+        <FlatList
+          data={data}
+          keyExtractor={(i) => i._id}
+          keyboardShouldPersistTaps="handled"
+          ListEmptyComponent={() => (
+            <View style={{ minHeight: 50 }}>
+              {(searchText === '' && state.list.success) ||
+                (searchText !== '' && state.search.success && (
+                  <View style={styles.centerIllustrationContainer}>
+                    <Text>Aucun résultat</Text>
+                  </View>
+                ))}
+            </View>
+          )}
+          renderItem={({ item }) =>
+            eventPlaces.some((e) => e.id === item._id) ? null : (
+              <List.Item
+                title={item.name || item.info?.username}
+                left={() =>
+                  item.avatar || item.info?.avatar ? (
+                    <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
+                  ) : (
+                    <List.Icon icon={icon} color={item.color} />
+                  )
+                }
+                onPress={() => {
+                  addEventPlace(type, item._id, item.name || item.info?.username);
+                  setVisible(false);
+                }}
+              />
+            )
+          }
+        />
+      </View>
+    </Modal>
   );
 }
 
