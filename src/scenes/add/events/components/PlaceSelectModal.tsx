@@ -33,7 +33,6 @@ import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
-import { BottomModal } from '@root/src/components/Modal.web';
 
 type QuickSelectModalProps = ModalProps & {
   quicks: ArticleQuickItem[];
