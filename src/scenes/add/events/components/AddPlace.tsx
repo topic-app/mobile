@@ -82,18 +82,19 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
                 title={
                   place.type === 'school' || place.type === 'place'
                     ? place.address.shortName
-                    : `${place.address.address.number || ''}${
+                    : `${place.address.address.number}${
                         place.address.address.number === '' ? '' : ' '
-                      }${place.address.address.street || ''}${
-                        place.address.address.extra !== '' && place.address.address.street !== ''
+                      }${place.address.address.street}${
+                        place.address.address.extra !== '' &&
+                        place.address.address.street !== ''
                           ? ', '
                           : ''
-                      }${place.address.address.extra || ''}${
-                        ((place.address.address.street !== '' ||
-                          place.address.address.extra !== '') &&
-                          ', ') ||
-                        ''
-                      }${place.address.address.code || ''} ${place.address.address.city}`
+                      }${place.address.address.extra}${
+                        place.address.address.street !== '' ||
+                          place.address.address.extra !== ''
+                          ? ', '
+                          : ''
+                      }${place.address.address.code} ${place.address.address.city}`
                 }
                 onPress={() => {
                   setEventPlaces(eventPlaces.filter((s) => s !== place));
