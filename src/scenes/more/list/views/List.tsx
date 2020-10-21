@@ -102,7 +102,7 @@ function MoreList({ navigation, location, accountInfo, permissions, accountState
           {loggedIn ? (
             <List.Section>
               <List.Item
-                title="Mon Profil"
+                title="Mon profil"
                 left={() => <List.Icon icon="account-outline" />}
                 onPress={() => {
                   navigation.navigate('Main', {
@@ -112,7 +112,7 @@ function MoreList({ navigation, location, accountInfo, permissions, accountState
                 }}
               />
               <List.Item
-                title="Mes Groupes"
+                title="Mes groupes"
                 left={() => <List.Icon icon="account-group-outline" />}
                 onPress={() => {
                   navigation.navigate('Main', {
@@ -176,7 +176,7 @@ function MoreList({ navigation, location, accountInfo, permissions, accountState
               }}
             />
             <List.Item
-              title="A Propos"
+              title="À propos"
               left={() => <List.Icon icon="information-outline" />}
               onPress={() => {
                 navigation.navigate('Main', {

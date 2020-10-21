@@ -25,7 +25,7 @@ function ProfileStackNavigator() {
         options={{
           ...HeaderConfig,
           title: 'Avatar',
-          subtitle: 'Mon Profil',
+          subtitle: 'Mon profil',
           overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
         }}
       />

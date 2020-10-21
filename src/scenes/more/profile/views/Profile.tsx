@@ -209,7 +209,7 @@ function Profile({
             </View>
           )}
           <ProfileItem
-            item="Addresse email"
+            item="Adresse email"
             value={account.accountInfo.user.sensitiveData.email}
             editable
             type="private"

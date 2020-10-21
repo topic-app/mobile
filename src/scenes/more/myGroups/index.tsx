@@ -23,8 +23,8 @@ function MyGroupsStackNavigator() {
         component={MyGroupsEdit}
         options={({ route }) => ({
           ...HeaderConfig,
-          title: route.params.title || 'Mes Groupes - Edit',
-          subtitle: route.params.title && 'Mes Groupes - Edit',
+          title: route.params.title || 'Mes groupes - Edit',
+          subtitle: route.params.title && 'Mes groupes - Edit',
         })}
       />
     </Stack.Navigator>

@@ -67,7 +67,7 @@ class AuthCreatePageGeneral extends React.Component {
         validation = {
           emailValid: false,
           emailError: true,
-          emailErrorMessage: 'Addresse mail incorrecte',
+          emailErrorMessage: 'Adresse mail incorrecte',
         };
       } else {
         const result = await request('auth/check/local/email', 'get', { email });
