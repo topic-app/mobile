@@ -104,6 +104,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
           }}
         />
       </View>
+      <View style={{height:20}}/>
       <View style={styles.container}>
         <Button
           mode={Platform.OS === 'ios' ? 'text' : 'outlined'}

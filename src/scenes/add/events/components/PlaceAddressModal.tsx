@@ -307,7 +307,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
                   extraInput.current?.focus();
                 }}
                 autoCorrect={false}
-                autoFocus
                 theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
                 mode="outlined"
                 style={eventStyles.textInput}
@@ -327,7 +326,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
                   codeInput.current?.focus();
                 }}
                 autoCorrect={false}
-                autoFocus
                 theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
                 mode="outlined"
                 style={eventStyles.textInput}
@@ -352,7 +350,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
                   validateCodeInput(nativeEvent.text);
                 }}
                 autoCorrect={false}
-                autoFocus
                 theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
                 mode="outlined"
                 style={eventStyles.textInput}
@@ -378,7 +375,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
                   blurInputs();
                 }}
                 autoCorrect={false}
-                autoFocus
                 theme={
                   currentCity.valid
                     ? { colors: { primary: colors.primary, placeholder: colors.valid } }
