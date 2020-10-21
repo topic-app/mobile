@@ -1,15 +1,14 @@
-// eslint-disable-next-line no-unused-vars
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Image, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button, Divider, Text, withTheme, Card, Title, useTheme } from 'react-native-paper';
+import { Button, Divider, Text, Card, Title, useTheme } from 'react-native-paper';
 import moment from 'moment';
 
+import { ExplorerLocation } from '@ts/types';
 import getStyles from '@styles/Styles';
 import places from '@src/data/explorerListData.json';
 
-import BottomSheet from './BottomSheet';
+import type { MapMarkerDataType } from '../views/Map';
 import getExplorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAsset';
 
@@ -81,113 +80,105 @@ function LocationEvent({ title, summary, imageUrl, date }) {
   );
 }
 
-function renderLocationStats(place) {
-  switch (place.type) {
-    case 'event':
-      return 'Dans X Heures';
-    case 'school':
-      return 'Collège et Lycée'; // TODO: Get info from server
-    case 'museum':
-      return 'Musée';
-    default:
-      return '';
-  }
-}
-
-function renderExtraLocationData(cache) {
-  if (cache && cache.events) {
+function renderExtraLocationData(place: ExplorerLocation.Location) {
+  if (place.type === 'school' && place.data.cache?.events) {
     return (
       <View>
         <Text style={{ fontSize: 17, fontWeight: 'bold', paddingLeft: 12 }}>
-          Prochains Évènements
+          Il y a {place.data.cache.events}
         </Text>
-        {cache.events.map((event) => (
-          <LocationEvent
-            key={event._id}
-            title={event.title}
-            summary={event.summary}
-            date={event.date}
-            imageUrl={event.imageUrl}
-          />
-        ))}
       </View>
     );
   }
   return null;
 }
 
-function LocationModal({ data, hideModal }) {
-  const { icon, color } = genTagDecoration(data.type);
-  const place = places.find((t) => t._id === data.id);
+type LocationModalProps = {
+  mapMarkerData: MapMarkerDataType;
+};
 
+const LocationModal: React.FC<LocationModalProps> = ({ mapMarkerData }) => {
   const theme = useTheme();
+  const place = places.find((t) => t.data._id === mapMarkerData.id) as ExplorerLocation.Location;
+
+  if (!place) {
+    return (
+      <View style={{ flex: 1 }}>
+        <Text>Chargement du lieu</Text>
+      </View>
+    );
+  }
+
   const styles = getStyles(theme);
   const explorerStyles = getExplorerStyles(theme);
 
+  let title = '';
+  let description = '';
+  let stats = '';
+
+  switch (place.type) {
+    case 'event':
+      title = place.data.title;
+      description = place.data.summary;
+      stats = 'Dans X Heures';
+      break;
+    case 'place':
+      title = place.data.displayName;
+      description = place.data.summary;
+      break;
+    case 'school':
+      title = place.data.displayName;
+      break;
+    case 'secret':
+      title = place.data.displayName;
+      description = place.data.summary;
+  }
+
+  const { icon, color } = genTagDecoration(place.type);
+
   return (
-    <View style={{ flex: 1 }}>
-      <BottomSheet hideModal={hideModal}>
-        <View style={explorerStyles.modalContainer}>
-          <View style={explorerStyles.contentContainer}>
-            <View style={explorerStyles.pullUpTabContainer}>
-              <View style={explorerStyles.pullUpTab} />
-            </View>
-
-            <View style={explorerStyles.modalTitleContainer}>
-              <Icon name={icon} style={[{ color }, explorerStyles.modalIcon]} />
-              <Text
-                style={[{ color }, explorerStyles.modalTitle]}
-                ellipsizeMode="tail"
-                adjustsFontSizeToFit
-                numberOfLines={1}
-              >
-                {data.name}
-              </Text>
-            </View>
-
-            <Divider style={styles.divider} />
-
-            <View style={{ height: 40, width: '100%', flexDirection: 'row' }}>
-              <View style={{ justifyContent: 'center' }}>
-                <Title>{renderLocationStats(place)}</Title>
-              </View>
-              <View style={{ justifyContent: 'center', alignItems: 'flex-end', flex: 1 }}>
-                <Button mode="contained" style={{ flex: 1 }}>
-                  Plus d&apos;Infos
-                </Button>
-              </View>
-            </View>
-
-            <Divider style={styles.divider} />
-
-            <Text style={explorerStyles.modalText} numberOfLines={4} ellipsizeMode="tail">
-              {place.summary}
-            </Text>
-
-            <Divider style={styles.divider} />
-          </View>
-          {renderExtraLocationData(place.cache)}
+    <View style={explorerStyles.modalContainer}>
+      <View style={explorerStyles.contentContainer}>
+        <View style={explorerStyles.pullUpTabContainer}>
+          <View style={explorerStyles.pullUpTab} />
         </View>
-      </BottomSheet>
+
+        <View style={explorerStyles.modalTitleContainer}>
+          <Icon name={icon} style={[{ color }, explorerStyles.modalIcon]} />
+          <Text
+            style={[{ color }, explorerStyles.modalTitle]}
+            ellipsizeMode="tail"
+            adjustsFontSizeToFit
+            numberOfLines={1}
+          >
+            {title}
+          </Text>
+        </View>
+
+        <Divider style={styles.divider} />
+
+        <View style={{ height: 40, width: '100%', flexDirection: 'row' }}>
+          <View style={{ justifyContent: 'center' }}>
+            <Title>{stats}</Title>
+          </View>
+          <View style={{ justifyContent: 'center', alignItems: 'flex-end', flex: 1 }}>
+            <Button mode="contained" style={{ flex: 1 }}>
+              Plus d&apos;Infos
+            </Button>
+          </View>
+        </View>
+
+        <Divider style={styles.divider} />
+
+        <Text style={explorerStyles.modalText} numberOfLines={4} ellipsizeMode="tail">
+          {description}
+        </Text>
+
+        <Divider style={styles.divider} />
+      </View>
+      {renderExtraLocationData(place)}
     </View>
   );
-}
-
-export default withTheme(LocationModal);
-
-LocationModal.propTypes = {
-  data: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired,
-  hideModal: PropTypes.func.isRequired,
-  theme: PropTypes.shape({}).isRequired,
 };
 
-LocationEvent.propTypes = {
-  title: PropTypes.string.isRequired,
-  summary: PropTypes.string.isRequired,
-  imageUrl: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
-};
+export default LocationModal;

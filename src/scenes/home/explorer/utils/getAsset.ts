@@ -1,6 +1,8 @@
 /* eslint-disable global-require */
 
-/* 
+import { ExplorerLocation } from '@root/src/ts/api';
+
+/*
 In React Native, Strings are statically analyzed at compile-time,
 so require() statements have to be simple strings, not dynamic ones
 Read more here: https://dev.to/emilios1995/dynamic-imports-in-react-native-9k5
@@ -26,22 +28,26 @@ const markerColors = {
   secret: '#b90007',
 };
 
-function getColorFromType(placeType, markerType) {
-  let color = 'Red';
-  if (placeType === 'secret') {
-    return 'secret';
+function getAssetName(placeType: ExplorerLocation.LocationTypes, markerType: 'circle' | 'pin') {
+  let color: string;
+  switch (placeType) {
+    case 'collection':
+      return 'circleRed';
+    case 'secret':
+      return 'secret';
+    case 'event':
+      color = 'Green';
+      break;
+    case 'place':
+      color = 'Red';
+      break;
+    case 'school':
+      color = 'Purple';
+      break;
+    default:
+      color = 'Red';
   }
-  if (placeType === 'school') {
-    color = 'Purple';
-  } else if (placeType === 'museum') {
-    color = 'Red';
-  } else if (placeType === 'event') {
-    color = 'Green';
-  }
-  if (markerType === 'circle') {
-    return `circle${color}`;
-  }
-  return `pin${color}`;
+  return markerType === 'circle' ? `circle${color}` : `pin${color}`;
 }
 
-export { markerImages, markerColors, getColorFromType };
+export { markerImages, markerColors, getAssetName };

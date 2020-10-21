@@ -1,13 +1,13 @@
+import { Theme } from '@ts/types';
 import { StyleSheet } from 'react-native';
 
-function getExplorerStyles(theme) {
+function getExplorerStyles(theme: Theme) {
   const { colors, dark } = theme;
   return StyleSheet.create({
     modal: {
       margin: 0,
     },
     modalContainer: {
-      flex: 1,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       shadowColor: '#000',

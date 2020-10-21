@@ -5,11 +5,11 @@ import {
   NativeViewGestureHandler,
   State,
   TapGestureHandler,
+  PanGestureHandlerStateChangeEvent,
 } from 'react-native-gesture-handler';
-import PropTypes from 'prop-types';
 
 let { height, width } = Dimensions.get('window');
-let lastOrientation = height > width ? 'portrait' : 'landscape';
+let lastOrientation = height > width ? ('portrait' as const) : ('landscape' as const);
 
 let SNAP_POINTS_FROM_TOP = {
   portrait: [0, height * 0.5, height * 0.71, height],
@@ -22,50 +22,52 @@ if (lastOrientation === 'landscape') {
   };
 }
 
-class BottomSheet extends React.Component {
-  drawer = React.createRef();
+type BottomSheetProps = {
+  timeout?: number;
+  hideModal: () => void;
+};
 
-  scroll = React.createRef();
+const BottomSheet: React.FC<BottomSheetProps> = ({ timeout = 100000, hideModal, children }) => {
+  const isMounted = React.useRef(false);
+  const drawer = React.createRef<PanGestureHandler>();
+  const scroll = React.createRef<NativeViewGestureHandler>();
+  const masterDrawer = React.createRef<TapGestureHandler>();
 
-  masterdrawer = React.createRef();
+  const initSP = SNAP_POINTS_FROM_TOP[lastOrientation];
+  const [snapPointsFromTop, setSnapPointsFromTop] = React.useState(initSP);
+  const [lastSnap, setLastSnap] = React.useState(initSP[initSP.length - 2]);
 
-  drawerheader = React.createRef();
+  // Init animation variables
+  let lastScrollYValue = 0;
+  let dragY = new Animated.Value(0);
+  let translateYOffset = new Animated.Value(0);
+  let translateY: Animated.AnimatedInterpolation = new Animated.Value(0);
+  let onGestureEvent = () => {};
 
-  constructor(props) {
-    super(props);
-    const SP = SNAP_POINTS_FROM_TOP[lastOrientation];
-    const lastSnap = SP[SP.length - 2];
-    this.state = {
-      snapPointsFromTop: SP,
-      lastSnap,
-    };
-    this.initializeSheet(lastSnap, SP);
-  }
-
-  initializeSheet = (startSnap, SP) => {
+  // Set animation variables to correct values
+  const initializeSheet = (startSnap: number, SP: number[]) => {
     const START = SP[0];
     const END = SP[SP.length - 1];
-    this.lastScrollYValue = 0;
-    this.lastScrollY = new Animated.Value(0);
-    this.onRegisterLastScroll = Animated.event(
-      [{ nativeEvent: { contentOffset: { y: this.lastScrollY } } }],
-      { useNativeDriver: true },
-    );
-    this.lastScrollY.addListener(({ value }) => {
-      this.lastScrollYValue = value;
+    const lastScrollY = new Animated.Value(0);
+    // const onRegisterLastScroll = Animated.event(
+    //   [{ nativeEvent: { contentOffset: { y: lastScrollY } } }],
+    //   { useNativeDriver: true },
+    // );
+    lastScrollY.addListener(({ value }) => {
+      lastScrollYValue = value;
     });
 
-    this.dragY = new Animated.Value(0);
-    this.onGestureEvent = Animated.event([{ nativeEvent: { translationY: this.dragY } }], {
+    dragY = new Animated.Value(0);
+    onGestureEvent = Animated.event([{ nativeEvent: { translationY: dragY } }], {
       useNativeDriver: true,
     });
 
-    this.reverseLastScrollY = Animated.multiply(new Animated.Value(-1), this.lastScrollY);
+    const reverseLastScrollY = Animated.multiply(new Animated.Value(-1), lastScrollY);
 
-    this.translateYOffset = new Animated.Value(startSnap);
-    this.translateY = Animated.add(
-      this.translateYOffset,
-      Animated.add(this.dragY, this.reverseLastScrollY),
+    translateYOffset = new Animated.Value(startSnap);
+    translateY = Animated.add(
+      translateYOffset,
+      Animated.add(dragY, reverseLastScrollY),
     ).interpolate({
       inputRange: [START, END],
       outputRange: [START, END],
@@ -73,13 +75,12 @@ class BottomSheet extends React.Component {
     });
   };
 
-  onHandlerStateChange = ({ nativeEvent }) => {
+  const onHandlerStateChange = ({ nativeEvent }: PanGestureHandlerStateChangeEvent) => {
     if (nativeEvent.oldState === State.ACTIVE) {
       const { velocityY } = nativeEvent;
       let { translationY } = nativeEvent;
-      translationY -= this.lastScrollYValue;
+      translationY -= lastScrollYValue;
       const dragToss = 0.05;
-      const { lastSnap, snapPointsFromTop } = this.state;
       const endOffsetY = lastSnap + translationY + dragToss * velocityY;
 
       let destSnapPoint = snapPointsFromTop[0];
@@ -90,13 +91,13 @@ class BottomSheet extends React.Component {
           destSnapPoint = snapPoint;
         }
       }
-      this.setState({ lastSnap: destSnapPoint });
-      this.checkVisible(destSnapPoint);
-      this.translateYOffset.extractOffset();
-      this.translateYOffset.setValue(translationY);
-      this.translateYOffset.flattenOffset();
-      this.dragY.setValue(0);
-      Animated.spring(this.translateYOffset, {
+      setLastSnap(destSnapPoint);
+      checkVisible(destSnapPoint);
+      translateYOffset.extractOffset();
+      translateYOffset.setValue(translationY);
+      translateYOffset.flattenOffset();
+      dragY.setValue(0);
+      Animated.spring(translateYOffset, {
         velocity: velocityY,
         tension: 50,
         friction: 8,
@@ -106,95 +107,83 @@ class BottomSheet extends React.Component {
     }
   };
 
-  checkVisible = (snap) => {
-    const { snapPointsFromTop } = this.state;
+  const checkVisible = (snap: number) => {
     if (snap === snapPointsFromTop[snapPointsFromTop.length - 1]) {
-      const { hideModal } = this.props;
-      this.setState({ lastSnap: snapPointsFromTop[snapPointsFromTop.length - 2] });
-      setTimeout(hideModal, 150);
+      setLastSnap(snapPointsFromTop[snapPointsFromTop.length - 2]);
+      setTimeout(() => {
+        if (isMounted.current) hideModal();
+      }, 150);
     }
   };
 
-  getDeviceOrientation = () => {
+  const getDeviceOrientation = () => {
     height = Dimensions.get('window').height;
     width = Dimensions.get('window').width;
     return height > width ? 'portrait' : 'landscape';
   };
 
-  onLayout = () => {
+  const onLayout = () => {
     // Detect if device has changed rotation
-    const orientation = this.getDeviceOrientation();
+    const orientation = getDeviceOrientation();
     if (orientation !== lastOrientation) {
-      const { lastSnap, snapPointsFromTop } = this.state;
-      const SP = SNAP_POINTS_FROM_TOP[orientation];
-      let LS = SP[SP.length - 2];
+      const newSP = SNAP_POINTS_FROM_TOP[orientation];
+      let LS = newSP[newSP.length - 2];
       if (lastSnap === snapPointsFromTop[0]) {
         // If pull-up menu is in fullscreen, then keep fullscreen after rotation
-        [LS] = SP; // equivalent to LS = SP[0]
+        [LS] = newSP; // equivalent to LS = SP[0]
       }
       lastOrientation = orientation;
-      this.setState({
-        snapPointsFromTop: SP,
-        lastSnap: LS,
-      });
-      this.initializeSheet(LS, SP);
+      setSnapPointsFromTop(newSP);
+      setLastSnap(LS);
+      initializeSheet(LS, newSP);
     }
   };
 
-  render() {
-    const { children, timeout } = this.props;
-    const { lastSnap, snapPointsFromTop } = this.state;
-    return (
-      <TapGestureHandler
-        ref={this.masterdrawer}
-        maxDurationMs={timeout}
-        maxDeltaY={lastSnap - snapPointsFromTop[0]}
-      >
-        <View
-          style={StyleSheet.absoluteFillObject}
-          onLayout={this.onLayout}
-          pointerEvents="box-none"
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  initializeSheet(lastSnap, snapPointsFromTop);
+
+  return (
+    <TapGestureHandler
+      ref={masterDrawer}
+      maxDurationMs={timeout}
+      maxDeltaY={lastSnap - snapPointsFromTop[0]}
+    >
+      <View style={StyleSheet.absoluteFillObject} onLayout={onLayout} pointerEvents="box-none">
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFillObject,
+            {
+              transform: [{ translateY }],
+            },
+          ]}
         >
-          <Animated.View
-            style={[
-              StyleSheet.absoluteFillObject,
-              {
-                transform: [{ translateY: this.translateY }],
-              },
-            ]}
+          <PanGestureHandler
+            ref={drawer}
+            simultaneousHandlers={[scroll, masterDrawer]}
+            shouldCancelWhenOutside={false}
+            onGestureEvent={onGestureEvent}
+            onHandlerStateChange={onHandlerStateChange}
           >
-            <PanGestureHandler
-              ref={this.drawer}
-              simultaneousHandlers={[this.scroll, this.masterdrawer]}
-              shouldCancelWhenOutside={false}
-              onGestureEvent={this.onGestureEvent}
-              onHandlerStateChange={this.onHandlerStateChange}
-            >
-              <Animated.View style={{ flex: 1 }}>
-                <NativeViewGestureHandler
-                  ref={this.scroll}
-                  waitFor={this.masterdrawer}
-                  simultaneousHandlers={this.drawer}
-                >
-                  {children}
-                </NativeViewGestureHandler>
-              </Animated.View>
-            </PanGestureHandler>
-          </Animated.View>
-        </View>
-      </TapGestureHandler>
-    );
-  }
-}
+            <Animated.View style={{ flex: 1 }}>
+              <NativeViewGestureHandler
+                ref={scroll}
+                waitFor={masterDrawer}
+                simultaneousHandlers={drawer}
+              >
+                {children}
+              </NativeViewGestureHandler>
+            </Animated.View>
+          </PanGestureHandler>
+        </Animated.View>
+      </View>
+    </TapGestureHandler>
+  );
+};
 
 export default BottomSheet;
-
-BottomSheet.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
-  hideModal: PropTypes.func.isRequired,
-  timeout: PropTypes.number,
-};
-
-BottomSheet.defaultProps = {
-  timeout: 100000,
-};
