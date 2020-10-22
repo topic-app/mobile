@@ -81,17 +81,11 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
     let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (description !== '') {
-      if (description.length <= 100) {
+      if (description.length >= 500) {
         validation = {
           valid: false,
           error: true,
-          message: 'La description doit contenir au moins 100 caractères.',
-        };
-      } else if (description.length >= 500) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'La description doit contenir moins de 500 caractères.',
+          message: 'Le résumé doit contenir moins de 500 caractères.',
         };
       } else {
         validation = { valid: true, error: false };
@@ -177,7 +171,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
       <View style={articleStyles.textInputContainer}>
         <TextInput
           ref={descriptionInput}
-          label="Description"
+          label="Résumé"
           multiline
           numberOfLines={4}
           value={currentDescription.value}
@@ -216,8 +210,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
             <HelperText
               type={
-                (currentDescription.value.length < 100 || currentDescription.value.length > 500) &&
-                currentDescription.value.length !== 0
+                currentDescription.value.length > 500 && currentDescription.value.length !== 0
                   ? 'error'
                   : 'info'
               }
