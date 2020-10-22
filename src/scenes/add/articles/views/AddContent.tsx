@@ -27,7 +27,7 @@ import {
   clearArticleCreationData,
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
-import { RichToolbar, RichEditor, actions } from 'react-native-pell-rich-editor';
+import { RichToolbar, RichEditor } from '@components/richEditor/index';
 
 import type { ArticleStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
@@ -74,6 +74,8 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
   const [toolbarInitialized, setToolbarInitialized] = React.useState(false);
   const [valid, setValid] = React.useState(true);
 
+  const [markdown, setMarkdown] = React.useState('');
+
   let textEditor = React.useRef<RichEditor>(null);
 
   const setTextEditor = (e: any) => (textEditor = e);
@@ -97,18 +99,11 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
   };
 
   const submit = async () => {
-    const contentVal = await textEditor?.getContentHtml();
 
-    const converter = new showdown.Converter();
-
-    // No idea why, this fails with "undefined is not a function" even though turndown is a function (see with console.log)
-    console.log(converter);
-    const contentMarkdown = converter.makeMarkdown(contentVal);
-
-    const contentValid = contentMarkdown?.length && contentMarkdown?.length > 0;
+    const contentValid = markdown?.length && markdown?.length > 0;
     if (contentValid) {
-      updateArticleCreationData({ parser: 'markdown', data: contentMarkdown });
-      add('markdown', contentVal);
+      updateArticleCreationData({ parser: 'markdown', data: markdown });
+      add('markdown', markdown);
     } else {
       setValid(false);
     }
@@ -162,6 +157,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
               <View style={{ marginTop: 20 }}>
                 <RichEditor
                   ref={setTextEditor}
+                  onChangeMarkdown={(data) => setMarkdown(data)}
                   editorStyle={{
                     backgroundColor: colors.background,
                     color: colors.text,
