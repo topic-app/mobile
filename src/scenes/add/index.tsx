@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@utils/stack';
 import PetitionAddStackNavigator from './petitions/index';
 import EventAddStackNavigator from './events/index';
 import ArticleAddStackNavigator from './articles/index';
+import GroupAddStackNavigator from './groups/index';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,6 +13,7 @@ function AddStackNavigator() {
     <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Article" component={ArticleAddStackNavigator} />
       <Stack.Screen name="Event" component={EventAddStackNavigator} />
+      <Stack.Screen name="Group" component={GroupAddStackNavigator} />
       <Stack.Screen name="Petition" component={PetitionAddStackNavigator} />
     </Stack.Navigator>
   );

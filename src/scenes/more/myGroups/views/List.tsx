@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, SectionList } from 'react-native';
-import { Text, ProgressBar, Divider, useTheme } from 'react-native-paper';
+import { Text, ProgressBar, Divider, useTheme, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Account, GroupsState, GroupRequestState, AccountRequestState } from '@ts/types';
@@ -156,6 +156,21 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
             />
           </>
         )}
+      />
+      <FAB
+        icon="plus"
+        onPress={() =>
+          navigation.navigate('Main', {
+            screen: 'Add',
+            params: {
+              screen: 'Group',
+              params: {
+                screen: 'Add',
+              },
+            },
+          })
+        }
+        style={styles.bottomRightFab}
       />
     </View>
   );

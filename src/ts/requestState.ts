@@ -42,6 +42,7 @@ export type GroupRequestState = StandardRequestState & {
   member_reject: RequestState;
   member_leave: RequestState;
   modify: RequestState;
+  templates: RequestStateComplex;
 };
 
 export type LegalRequestState = {

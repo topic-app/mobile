@@ -18,6 +18,7 @@ import {
   TagPreload,
   User,
   UserPreload,
+  GroupTemplate,
 } from './api';
 
 import {
@@ -455,6 +456,8 @@ export const UPDATE_GROUPS_STATE = 'UPDATE_GROUPS_STATE';
 export const UPDATE_GROUPS_DATA = 'UPDATE_GROUPS_DATA';
 export const UPDATE_GROUPS_ITEM = 'UPDATE_GROUPS_ITEM';
 export const UPDATE_GROUPS_SEARCH = 'UPDATE_GROUPS_SEARCH';
+export const UPDATE_GROUPS_TEMPLATES = 'UPDATE_GROUPS_TEMPLATES';
+export const UPDATE_GROUPS_CREATION_DATA = 'UPDATE_GROUPS_CREATION_DATA';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
@@ -462,6 +465,11 @@ export type GroupsState = {
   search: GroupPreload[];
   item: Group | null;
   state: GroupRequestState;
+  templates: GroupTemplate[];
+};
+
+export type GroupsDataState = {
+  creationData: object;
 };
 
 type UpdateGroupsStateAction = {
@@ -479,6 +487,16 @@ type UpdateGroupsItemAction = {
   data: Group;
 };
 
+type UpdateGroupsTemplatesAction = {
+  type: typeof UPDATE_GROUPS_TEMPLATES;
+  data: GroupTemplate[];
+};
+
+type UpdateGroupsCreationDataAction = {
+  type: typeof UPDATE_GROUPS_CREATION_DATA;
+  data: object;
+};
+
 type UpdateGroupsSearchAction = {
   type: typeof UPDATE_GROUPS_SEARCH;
   data: GroupPreload[];
@@ -494,6 +512,8 @@ export type GroupsActionTypes =
   | UpdateGroupsDataAction
   | UpdateGroupsItemAction
   | UpdateGroupsSearchAction
+  | UpdateGroupsCreationDataAction
+  | UpdateGroupsTemplatesAction
   | ClearGroupsAction;
 
 // Petitions
