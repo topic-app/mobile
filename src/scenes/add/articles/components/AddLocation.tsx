@@ -16,14 +16,7 @@ import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
-import {
-  Account,
-  State,
-  ArticleCreationData,
-  Department,
-  School,
-  RequestState,
-} from '@ts/types';
+import { Account, State, ArticleCreationData, Department, School, RequestState } from '@ts/types';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -62,7 +55,7 @@ const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
     right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
   };
 };
-  
+
 const ArticleAddPageLocation: React.FC<Props> = ({
   prev,
   next,
@@ -139,19 +132,18 @@ const ArticleAddPageLocation: React.FC<Props> = ({
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
-        {selectedGroupLocation?.global ||
-          (selectedGroupLocation?.everywhere && (
-            <List.Item
-              title="France entière"
-              description="Visible pour tous les utilisateurs"
-              {...getListItemCheckbox({
-                status: global ? 'checked' : 'unchecked',
-                color: colors.primary,
-                onPress: () => setGlobal(!global),
-              })}
-              onPress={() => setGlobal(!global)}
-            />
-          ))}
+        {(selectedGroupLocation?.global || selectedGroupLocation?.everywhere) && (
+          <List.Item
+            title="France entière"
+            description="Visible pour tous les utilisateurs"
+            {...getListItemCheckbox({
+              status: global ? 'checked' : 'unchecked',
+              color: colors.primary,
+              onPress: () => setGlobal(!global),
+            })}
+            onPress={() => setGlobal(!global)}
+          />
+        )}
         {selectedGroupLocation?.everywhere ? (
           <View>
             <Divider style={{ marginTop: 20 }} />

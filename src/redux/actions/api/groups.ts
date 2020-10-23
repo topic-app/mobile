@@ -2,6 +2,7 @@ import Store from '@redux/store';
 import { Group } from '@ts/types';
 import {
   UPDATE_GROUPS_DATA,
+  UPDATE_GROUPS_TEMPLATES,
   UPDATE_GROUPS_SEARCH,
   UPDATE_GROUPS_ITEM,
   UPDATE_GROUPS_VERIFICATION,
@@ -126,11 +127,33 @@ async function clearGroups(data = true, search = true) {
   await Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search }));
 }
 
+/**
+ * @docs actions
+ * Récupère les templates de création de groupe
+ * @param next Si il faut récupérer les groups après le dernier
+ */
+async function updateGroupTemplates() {
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_GROUPS_TEMPLATES,
+      stateUpdate: UPDATE_GROUPS_STATE,
+      url: 'groups/templates/list',
+      sort: nameAscSort,
+      stateName: 'templates',
+      dataType: 'templates',
+      type: 'initial',
+      params: {},
+      clear: true,
+    }),
+  );
+}
+
 export {
   updateGroups,
   clearGroups,
   fetchGroup,
   searchGroups,
+  updateGroupTemplates,
   updateGroupsVerification,
   fetchGroupVerification,
 };

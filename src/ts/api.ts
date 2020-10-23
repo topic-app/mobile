@@ -266,6 +266,15 @@ export type Group = {
   tags: TagPreload[];
 };
 
+export type GroupTemplate = {
+  name: string;
+  type: string;
+  summary: string;
+  description: string;
+  permissions: GroupRolePermission[];
+  roles: GroupRole[];
+};
+
 // Article Types
 export type ArticlePreload = {
   _id: string;

@@ -5,6 +5,7 @@ import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_ITEM,
   UPDATE_GROUPS_SEARCH,
+  UPDATE_GROUPS_TEMPLATES,
   UPDATE_GROUPS_VERIFICATION,
   CLEAR_GROUPS,
 } from '@ts/redux';
@@ -14,6 +15,7 @@ const initialState: GroupsState = {
   search: [],
   verification: [],
   item: null,
+  templates: [],
   state: {
     list: {
       success: null,
@@ -22,6 +24,13 @@ const initialState: GroupsState = {
         initial: false,
         refresh: false,
         next: false,
+      },
+    },
+    templates: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
       },
     },
     search: {
@@ -115,6 +124,11 @@ function groupReducer(state = initialState, action: GroupsActionTypes): GroupsSt
       return {
         ...state,
         search: action.data,
+      };
+    case UPDATE_GROUPS_TEMPLATES:
+      return {
+        ...state,
+        templates: action.data,
       };
     case CLEAR_GROUPS:
       return {

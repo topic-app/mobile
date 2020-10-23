@@ -79,18 +79,20 @@ function updateCreator({
         if (!clear) {
           const dbData = getState()[dataType][listName] || []; // The old elements, in redux db
           data = [...dbData]; // Shallow copy of dbData to get rid of reference
-          result.data[dataType].forEach((a: Item) => {
-            const element = { ...a, preload: true };
-            const index = data.findIndex((p) => p._id === a._id);
-            if (index !== -1) {
-              data[index] = element;
-            } else {
-              data.push(element);
-            }
-          });
+          if (result.data) {
+            result.data[dataType].forEach((a: Item) => {
+              const element = { ...a, preload: true };
+              const index = data.findIndex((p) => p._id === a._id);
+              if (index !== -1) {
+                data[index] = element;
+              } else {
+                data.push(element);
+              }
+            });
+          }
           data = sort(data);
         } else {
-          data = result.data[dataType];
+          data = result.data ? result.data[dataType] : [];
         }
         dispatch({
           type: update,
@@ -108,6 +110,7 @@ function updateCreator({
         return dispatch(state);
       })
       .catch((error) => {
+        console.error(error);
         state.data[stateName] = {
           loading: {
             initial: false,
