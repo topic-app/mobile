@@ -2,15 +2,8 @@
 import { config } from '@root/app.json';
 
 const hashPassword = async (password: string) => {
-  /*let hashedPassword = await crypto.PBKDF2.hash(
-    crypto.utils.convertUtf8ToArrayBuffer(password),
-    crypto.utils.convertUtf8ToArrayBuffer(config.auth.salt),
-    config.auth.iterations,
-    config.auth.keylen,
-    config.auth.digest,
-  );
-  return crypto.utils.convertArrayBufferToBase64(hashedPassword);*/
-  return 'supersecurepassword';
+  // For web, we dont hash the password on the client side first, it's hashed twice server-side
+  return password;
 };
 
 export { hashPassword };

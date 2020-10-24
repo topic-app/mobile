@@ -63,7 +63,7 @@ const PlatformTouchable =
     ? TouchableOpacity
     : Platform.OS === 'android'
     ? TouchableNativeFeedback
-    : TouchableRipple;
+    : TouchableOpacity;
 const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) => (
   <PlatformIconButton
     icon="arrow-left"
