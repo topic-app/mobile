@@ -26,6 +26,7 @@ import EventAddPageDuration from '../components/AddDuration';
 import EventAddPagePlace from '../components/AddPlace';
 import EventAddPageProgram from '../components/AddProgram';
 import EventAddPageTags from '../components/AddTags';
+import EventAddPageContact from '../components/AddContact';
 
 type Props = {
   navigation: StackNavigationProp<EventStackParams, 'Add'>;
@@ -114,6 +115,12 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
                 icon: 'clock',
                 title: 'Durée',
                 component: <EventAddPageDuration />,
+              },
+              {
+                key: 'contact',
+                icon: 'at',
+                title: 'Contact',
+                component: <EventAddPageContact />,
               },
               {
                 key: 'program',

@@ -12,6 +12,7 @@ type Props = StepperViewPageProps;
 
 const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   const titleInput = createRef<RNTestInput>();
+  const summaryInput = createRef<RNTestInput>();
   const descriptionInput = createRef<RNTestInput>();
 
   type InputStateType = {
@@ -22,9 +23,16 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   };
 
   let tempTitle: InputStateType;
+  let tempSummary: InputStateType;
   let tempDescription: InputStateType;
 
   const [currentTitle, setCurrentTitle] = useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+  const [currentSummary, setCurrentSummary] = useState({
     value: '',
     error: false,
     valid: false,
@@ -42,7 +50,12 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
     tempTitle = { ...currentTitle, ...(tempTitle ?? {}), ...data };
     setCurrentTitle(tempTitle);
   }
+  function setSummary(data: Partial<InputStateType>) {
+    tempSummary = { ...currentSummary, ...(tempSummary ?? {}), ...data };
+    setCurrentSummary(tempSummary);
+  }
   function setDescription(data: Partial<InputStateType>) {
+    // Because async setState
     tempDescription = { ...currentDescription, ...(tempDescription ?? {}), ...data };
     setCurrentDescription(tempDescription);
   }
@@ -77,21 +90,21 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
     }
   }
 
-  async function validateDescriptionInput(description: string) {
+  async function validateSummaryInput(summary: string) {
     let validation: Partial<InputStateType> = { valid: false, error: false };
 
-    if (description !== '') {
-      if (description.length <= 100) {
+    if (summary !== '') {
+      if (summary.length <= 100) {
         validation = {
           valid: false,
           error: true,
-          message: 'La description doit contenir au moins 100 caractères.',
+          message: 'Le résumé doit contenir au moins 100 caractères.',
         };
-      } else if (description.length >= 500) {
+      } else if (summary.length >= 500) {
         validation = {
           valid: false,
           error: true,
-          message: 'La description doit contenir moins de 500 caractères.',
+          message: 'Le résumé doit contenir moins de 500 caractères.',
         };
       } else {
         validation = { valid: true, error: false };
@@ -100,30 +113,56 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
       validation = { valid: true, error: false };
     }
 
+    setSummary(validation);
+    return validation;
+  }
+
+  function preValidateSummaryInput(summary: string) {
+    if (summary.length >= 100 && summary.length <= 500) {
+      setSummary({ valid: false, error: false });
+    }
+  }
+
+  async function validateDescriptionInput(description: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
+
+    if (description !== '') {
+      if (description.length < 100) {
+        validation = {
+          valid: false,
+          error: true,
+          message: 'La description doit contenir au moins 100 caractères',
+        };
+      } else {
+        validation = { valid: true, error: false };
+      }
+    }
     setDescription(validation);
     return validation;
   }
 
   function preValidateDescriptionInput(description: string) {
-    if (description.length >= 100 && description.length <= 500) {
-      // TODO: Change to descriptionExists once server is updated
+    if (description.length >= 100) {
       setDescription({ valid: false, error: false });
     }
   }
 
+
   function blurInputs() {
     titleInput.current?.blur();
-    descriptionInput.current?.blur();
+    summaryInput.current?.blur();
   }
 
   async function submit() {
     const titleVal = currentTitle.value;
+    const summaryVal = currentSummary.value;
     const descriptionVal = currentDescription.value;
 
     const title = await validateTitleInput(titleVal);
+    const summary = await validateSummaryInput(summaryVal);
     const description = await validateDescriptionInput(descriptionVal);
-    if (title.valid && description.valid) {
-      updateEventCreationData({ title: titleVal, summary: descriptionVal });
+    if (title.valid && summary.valid && description.valid) {
+      updateEventCreationData({ title: titleVal, summary: summaryVal, description: descriptionVal });
       next();
     } else {
       if (!title.valid && !title.error) {
@@ -133,8 +172,15 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           message: 'Titre requis',
         });
       }
+      if (!description.valid && !description.error) {
+        setDescription({
+          valid: false,
+          error: true,
+          message: 'Description requise',
+        });
+      }
     }
-  }
+    }
 
   const theme = useTheme();
   const { colors } = theme;
@@ -151,7 +197,7 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           disableFullscreenUI
           onSubmitEditing={({ nativeEvent }) => {
             validateTitleInput(nativeEvent.text);
-            descriptionInput.current?.focus();
+            summaryInput.current?.focus();
           }}
           autoCorrect={false}
           autoFocus
@@ -176,8 +222,62 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
       </View>
       <View style={eventStyles.textInputContainer}>
         <TextInput
+          ref={summaryInput}
+          label="Résumé"
+          multiline
+          numberOfLines={4}
+          value={currentSummary.value}
+          error={currentSummary.error}
+          disableFullscreenUI
+          autoCapitalize="none"
+          onSubmitEditing={({ nativeEvent }) => {
+            validateSummaryInput(nativeEvent.text);
+            blurInputs();
+            submit();
+          }}
+          autoCorrect={false}
+          theme={
+            currentSummary.valid
+              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+              : theme
+          }
+          mode="outlined"
+          onEndEditing={({ nativeEvent }) => {
+            validateSummaryInput(nativeEvent.text);
+          }}
+          style={eventStyles.textInput}
+          onChangeText={(text) => {
+            setSummary({ value: text });
+            preValidateSummaryInput(text);
+          }}
+        />
+        <CollapsibleView collapsed={!currentSummary.error && !!currentSummary.value}>
+          <HelperText type={currentSummary.value ? 'error' : 'info'} visible>
+            {currentSummary.value
+              ? currentSummary.message
+              : 'Laissez vide pour sélectionner les premières lignes de la description'}
+          </HelperText>
+        </CollapsibleView>
+        <CollapsibleView collapsed={!currentSummary.value}>
+          <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
+            <HelperText
+              type={
+                (currentSummary.value.length < 100 || currentSummary.value.length > 500) &&
+                currentSummary.value.length !== 0
+                  ? 'error'
+                  : 'info'
+              }
+            >
+              {currentSummary.value.length}/500
+            </HelperText>
+          </View>
+        </CollapsibleView>
+        <View style={{ height: 20 }} />
+      </View>
+      <View style={eventStyles.textInputContainer}>
+        <TextInput
           ref={descriptionInput}
-          label="Description"
+          label="Décrivez votre évènement..."
           multiline
           numberOfLines={4}
           value={currentDescription.value}
@@ -205,28 +305,9 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
             preValidateDescriptionInput(text);
           }}
         />
-        <CollapsibleView collapsed={!currentDescription.error && !!currentDescription.value}>
-          <HelperText type={currentDescription.value ? 'error' : 'info'} visible>
-            {currentDescription.value
-              ? currentDescription.message
-              : "Laissez vide pour sélectionner les premières lignes de l'évènement"}
-          </HelperText>
-        </CollapsibleView>
-        <CollapsibleView collapsed={!currentDescription.value}>
-          <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
-            <HelperText
-              type={
-                (currentDescription.value.length < 100 || currentDescription.value.length > 500) &&
-                currentDescription.value.length !== 0
-                  ? 'error'
-                  : 'info'
-              }
-            >
-              {currentDescription.value.length}/500
-            </HelperText>
-          </View>
-        </CollapsibleView>
-        <View style={{ height: 20 }} />
+        <HelperText type="error" visible={currentDescription.error}>
+          {currentDescription.message}
+        </HelperText>
       </View>
       <View style={eventStyles.buttonContainer}>
         <Button
