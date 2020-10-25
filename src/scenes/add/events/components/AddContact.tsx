@@ -1,12 +1,14 @@
 import React, {createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
 import { TextInput, Button, List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Account, State, EventCreationData, EventPlace } from '@ts/types';
+import { Account, State, EventCreationData, EventPlace, User } from '@ts/types';
 import { StepperViewPageProps, InlineCard } from '@components/index';
 import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
+
+import UserSelectModal from './UserSelectModal';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -17,8 +19,9 @@ type Props = StepperViewPageProps & {
 };
 
 const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
- 
   const [showError, setError] = React.useState(false);
+  const [isAddUserModalVisible, setAddUserModalVisible] = React.useState(false);
+  const [eventOrganizers, setEventOrganizers] = React.useState<User[]>([]);
  
   const theme = useTheme();
   const { colors } = theme;
@@ -51,6 +54,13 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
     valid: false,
     message: '',
   });
+
+  const addEventOrganizer = (user: User) => {
+    const previousEventIds = eventOrganizers.map((p) => p._id);
+    if (!previousEventIds.includes(user._id)) {
+      setEventOrganizers([...eventOrganizers, user]);
+    }
+  };
 
   function setPhone(data: Partial<InputStateType>) {
     // Because async setState
@@ -121,6 +131,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
 
   return (
     <View style={eventStyles.formContainer}>
+      <List.Subheader> Numéro de téléphone </List.Subheader>
       <TextInput
         ref={phoneInput}
         label="Numéro de téléphone"
@@ -149,7 +160,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           preValidatePhoneInput(text);
         }}
       />
-
+      <List.Subheader> Adresse mail </List.Subheader>
       <TextInput
         ref={emailInput}
         label="Adresse mail"
@@ -166,7 +177,48 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           setEmail({ value: text });
         }}
       />
+      <List.Subheader> Organisateurs </List.Subheader>
+      {eventOrganizers.length === 0 && (
+        <View>
+          <Text>Aucun organisateur sélectionné</Text>
+        </View>
+      )}
+      <View style={{ marginTop: 10 }}>
+        <FlatList
+          keyExtractor={(user) => user._id}
+          data={eventOrganizers}
+          renderItem={({ item: user }) => {
+            return (
+              <InlineCard
+                avatar ={user.info.avatar}
+                title={user.info.username}
+                onPress={() => {
+                  setEventOrganizers(eventOrganizers.filter((s) => s !== user));
+                }}
+              />
+            );
+          }}
+        />
+      </View>
+      <View style={styles.container}>
+        <Button
+          mode="outlined"
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => {
+          setAddUserModalVisible(true);
+            }}
+        >
+          Ajouter un organisateur
+        </Button>
+      </View>
 
+      <UserSelectModal
+        visible={isAddUserModalVisible}
+        setVisible={setAddUserModalVisible}
+        next={(user) => {
+          addEventOrganizer(user);
+        }}
+      />
       <View style={{height:20}}/>
 
       <View style={eventStyles.buttonContainer}>

@@ -40,8 +40,8 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
   };
 
   const addEventPlace = (place: EventPlace) => {
-    const previousEventIds = eventPlaces.map((p) => p.id);
-    if (!previousEventIds.includes(place.id)) {
+    const previousEventIds = eventPlaces.map((p) => p._id);
+    if (!previousEventIds.includes(place._Evid)) {
       setEventPlaces([...eventPlaces, place]);
     }
   };
