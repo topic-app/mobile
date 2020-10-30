@@ -65,7 +65,6 @@ const ModerationArticles: React.FC<Props> = ({
     fetch();
   }, [null]);
 
-  console.log(JSON.stringify(selectedGroupsArticle));
 
   return (
     <View>
