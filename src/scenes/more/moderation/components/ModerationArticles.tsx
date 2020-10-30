@@ -83,7 +83,7 @@ const ModerationArticles: React.FC<Props> = ({
       )}
       <View>
         <ChipAddList
-          setList={async (data) => {
+          setList={(data) => {
             if (data.key === 'everywhere') {
               setEverywhereArticle(true);
               setSelectedGroupsArticle([]);
