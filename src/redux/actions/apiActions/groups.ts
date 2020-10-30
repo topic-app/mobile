@@ -1,6 +1,6 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator } from './ActionCreator';
+import { reportCreator, approveCreator } from './ActionCreator';
 import { UPDATE_GROUPS_STATE, ActionType } from '@ts/types';
 
 function groupFollowCreator({ id }: { id: string }) {
@@ -531,6 +531,17 @@ async function groupReport(groupId: string, reason: string) {
   );
 }
 
+async function groupVerificationApprove(id: string) {
+  return await Store.dispatch(
+    approveCreator({
+      url: 'groups/verification/approve',
+      stateUpdate: UPDATE_GROUPS_STATE,
+      paramName: 'groupId',
+      id,
+    }),
+  );
+}
+
 export {
   groupFollow,
   groupUnfollow,
@@ -540,5 +551,6 @@ export {
   groupMemberAccept,
   groupMemberReject,
   groupMemberLeave,
+  groupVerificationApprove,
   groupModify,
 };

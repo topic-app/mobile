@@ -455,6 +455,7 @@ export const UPDATE_GROUPS_STATE = 'UPDATE_GROUPS_STATE';
 export const UPDATE_GROUPS_DATA = 'UPDATE_GROUPS_DATA';
 export const UPDATE_GROUPS_ITEM = 'UPDATE_GROUPS_ITEM';
 export const UPDATE_GROUPS_SEARCH = 'UPDATE_GROUPS_SEARCH';
+export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
@@ -479,6 +480,11 @@ type UpdateGroupsItemAction = {
   data: Group;
 };
 
+type UpdateGroupsVerificationAction = {
+  type: typeof UPDATE_GROUPS_VERIFICATION;
+  data: GroupPreload[];
+};
+
 type UpdateGroupsSearchAction = {
   type: typeof UPDATE_GROUPS_SEARCH;
   data: GroupPreload[];
@@ -494,6 +500,7 @@ export type GroupsActionTypes =
   | UpdateGroupsDataAction
   | UpdateGroupsItemAction
   | UpdateGroupsSearchAction
+  | UpdateGroupsVerificationAction
   | ClearGroupsAction;
 
 // Petitions

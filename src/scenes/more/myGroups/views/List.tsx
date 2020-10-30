@@ -10,14 +10,13 @@ import {
   CategoryTitle,
   ErrorMessage,
   GroupsBanner,
+  GroupCard,
   CustomHeaderBar,
   TranslucentStatusBar,
 } from '@components/index';
 import getStyles from '@styles/Styles';
 import { updateGroups } from '@redux/actions/api/groups';
 import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
-
-import GroupListCard from '../components/Card';
 
 type Props = {
   account: Account;
@@ -31,7 +30,7 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  let fetch = (refresh = 'false') => {
+  let fetch = (refresh = false) => {
     updateGroups(refresh ? 'refresh' : 'initial');
     fetchWaitingGroups();
     fetchGroups();
@@ -135,7 +134,7 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
         ListFooterComponent={<View style={[styles.container, { height: 50 }]} />}
         renderItem={({ item }) => (
           <>
-            <GroupListCard
+            <GroupCard
               group={item}
               following={account.accountInfo?.user.data.following.groups.some(
                 (g) => g._id === item._id,
