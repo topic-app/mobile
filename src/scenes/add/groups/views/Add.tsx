@@ -5,7 +5,13 @@ import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text, ProgressBar, useTheme, Button, HelperText } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
+import {
+  State,
+  ArticleRequestState,
+  ArticleCreationData,
+  GroupTemplate,
+  GroupRequestState,
+} from '@ts/types';
 import {
   TranslucentStatusBar,
   StepperView,
@@ -17,18 +23,20 @@ import getStyles from '@styles/Styles';
 
 import type { GroupStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
-import GroupAddPageTemplate from '../components/AddTemplate';
+import GroupAddPageTemplate from '../components/AddTemplate2';
 import GroupAddPageLocation from '../components/AddLocation';
-// import GroupAddPageMeta from '../components/AddMeta';
+import GroupAddPageMeta from '../components/AddMeta';
 // import GroupAddPageProof from '../components/AddProof';
 
 type Props = {
   navigation: StackNavigationProp<GroupStackParams, 'Add'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
+  templates: GroupTemplate[];
+  groupState: GroupRequestState;
 };
 
-const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) => {
+const ArticleAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -36,8 +44,6 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
   const { colors } = theme;
 
   const stepperRef = React.useRef(null);
-
-  console.log(stepperRef.current);
 
   return (
     <View style={styles.page}>
@@ -49,19 +55,24 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
             <Text style={articleStyles.title}>Créer un groupe</Text>
           </View>
           <StepperView
-            ref={stepperRef}
             pages={[
               {
                 key: 'group',
                 icon: 'account-group',
                 title: 'Type',
-                component: <GroupAddPageTemplate />,
+                component: <GroupAddPageTemplate templates={templates} state={groupState} />,
               },
               {
                 key: 'location',
                 icon: 'map-marker',
                 title: 'Localisation',
                 component: <GroupAddPageLocation navigation={navigation} />,
+              },
+              {
+                key: 'meta',
+                icon: 'information',
+                title: 'Info',
+                component: <GroupAddPageMeta />,
               },
             ]}
           />
@@ -72,8 +83,8 @@ const ArticleAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData } = state;
-  return { creationData: articleData.creationData, reqState: articles.state };
+  const { groups } = state;
+  return { groupState: groups.state, templates: groups.templates };
 };
 
 export default connect(mapStateToProps)(ArticleAdd);

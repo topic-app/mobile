@@ -19,8 +19,7 @@ type Props = {
     contentPlural?: string;
     extra?: string;
   };
-  // TODO: Error devrait être qu'un seul type, pas une multitude de types
-  error?: RequestState['error'] | ErrorType | ErrorType[];
+  error?: RequestState['error'] | ErrorType | ErrorType[] | any;
   id?: string;
   retry?: () => Promise<any> | void;
   restart?: () => Promise<any> | void;

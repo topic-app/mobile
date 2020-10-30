@@ -17,6 +17,7 @@ function getPetitionStyles(theme: Theme) {
     },
     textInputContainer: {
       alignSelf: 'stretch',
+      marginBottom: 30,
     },
     buttonContainer: {
       alignSelf: 'center',

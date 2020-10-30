@@ -1,35 +1,27 @@
-import React from 'react';
-import { View, Platform } from 'react-native';
+import React, { useState, createRef } from 'react';
+import { View, Platform, TextInput as RNTestInput } from 'react-native';
 import {
-  Button,
-  RadioButton,
+  TextInput,
   HelperText,
-  List,
-  Text,
+  Button,
   useTheme,
-  Card,
   ProgressBar,
-  Divider,
-  Title,
+  RadioButton,
+  List,
 } from 'react-native-paper';
 
-import { updateGroupCreationData } from '@redux/actions/contentData/groups';
+import { StepperViewPageProps, CollapsibleView, ErrorMessage } from '@components/index';
 import { updateGroupTemplates } from '@redux/actions/api/groups';
-import { StepperViewPageProps, ErrorMessage, Content, CollapsibleView } from '@components/index';
-import { Account, State, GroupTemplate, GroupsState, GroupRequestState } from '@ts/types';
-import getStyles from '@styles/Styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
+import { GroupTemplate, GroupRequestState, State } from '@ts/types';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '@styles/Styles';
+import getGroupStyles from '../styles/Styles';
 import { connect } from 'react-redux';
 
-type Props = StepperViewPageProps & {
-  account: Account;
-  templates: GroupTemplate[];
-  state: GroupRequestState;
-};
+type Props = StepperViewPageProps & { templates: GroupTemplate[]; state: GroupRequestState };
 
-const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, state }) => {
+const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state }) => {
   const [template, setTemplate] = React.useState<string | null>(null);
   const [showError, setError] = React.useState(false);
 
@@ -49,21 +41,11 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
+  const groupStyles = getGroupStyles(theme);
   const styles = getStyles(theme);
 
-  if (!account.loggedIn) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.centerIllustrationContainer}>
-          <Text>Non autorisé</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={groupStyles.formContainer}>
       {state.templates?.loading?.initial ? (
         <ProgressBar indeterminate />
       ) : (
@@ -80,7 +62,7 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
           retry={updateGroupTemplates}
         />
       )}
-      <View style={articleStyles.listContainer}>
+      <View style={groupStyles.listContainer}>
         {templates?.map((t) => (
           <List.Item
             key={t.type}
@@ -124,45 +106,28 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
           Vous devez selectionner un type de groupe
         </HelperText>
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={groupStyles.buttonContainer}>
+        <Button
+          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => prev()}
+          style={{ flex: 1, marginRight: 5 }}
+        >
+          Retour
+        </Button>
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => next()}
-          style={{ flex: 1 }}
+          onPress={() => {
+            submit();
+          }}
+          style={{ flex: 1, marginLeft: 5 }}
         >
           Suivant
         </Button>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={() => prev()}
-          style={{ flex: 1 }}
-        >
-          Precedent
-        </Button>
-      </View>
-      <View style={[styles.container, { marginTop: 60 }]}>
-        <CollapsibleView collapsed={!template}>
-          <View>
-            <Divider style={{ marginBottom: 10 }} />
-            <Title style={{ marginBottom: 20 }}>
-              Groupe {templates.find((t) => t.type === template)?.name}
-            </Title>
-            <Content
-              parser="markdown"
-              data={templates.find((t) => t.type === template)?.description || ''}
-            />
-          </View>
-        </CollapsibleView>
       </View>
     </View>
   );
 };
 
-const mapStateToProps = (state: State) => {
-  const { account, groups } = state;
-  return { account, templates: groups.templates, state: groups.state };
-};
-
-export default ArticleAddPageGroup;
+export default ArticleAddPageTemplate;
