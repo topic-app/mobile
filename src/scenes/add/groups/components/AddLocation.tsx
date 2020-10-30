@@ -16,7 +16,15 @@ import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
-import { Account, State, ArticleCreationData, Department, School, RequestState } from '@ts/types';
+import {
+  Account,
+  State,
+  ArticleCreationData,
+  Department,
+  School,
+  RequestState,
+  LocationList,
+} from '@ts/types';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -24,7 +32,7 @@ type Props = StepperViewPageProps & {
   account: Account;
   creationData: ArticleCreationData;
   navigation: any;
-  location: ReduxLocation;
+  location: LocationList;
   schoolItems: School[];
   departmentItems: Department[];
   locationStates: {
@@ -95,15 +103,10 @@ const ArticleAddPageLocation: React.FC<Props> = ({
     }
   };
 
-  React.useEffect(() => {
-    fetchMultiSchool(location.schools);
-    fetchMultiDepartment(location.departments);
-  }, [null]);
-
   return (
     <View style={articleStyles.formContainer}>
       <View style={articleStyles.listContainer}>
-        {location.schools?.map((s) => (
+        {location.schoolData?.map((s) => (
           <List.Item
             title={s.name}
             description={`École · ${s.address?.shortName || s.address?.address?.city}`}
@@ -115,7 +118,7 @@ const ArticleAddPageLocation: React.FC<Props> = ({
             onPress={() => toggle(s, schools, setSchools)}
           />
         ))}
-        {location.departments?.map((d) => (
+        {location.departmentData?.map((d) => (
           <List.Item
             title={d.name}
             description={`Département ${d.code}`}
