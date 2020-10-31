@@ -1,21 +1,12 @@
 import React from 'react';
-import {
-  StatusBar,
-  View,
-  TouchableOpacity,
-  StatusBarProps,
-  ViewStyle,
-  StyleProp,
-  Dimensions,
-} from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useTheme, Appbar, Text, Menu } from 'react-native-paper';
+import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp, Dimensions } from 'react-native';
+import { Appbar, Text, Menu } from 'react-native-paper';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { BlurView } from '@react-native-community/blur';
-import { PlatformTouchable } from '@components/index';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import shortid from 'shortid';
 
+import { useTheme, useSafeAreaInsets } from '@utils/index';
+import { PlatformTouchable } from '@components/index';
 import getNavigatorStyles from '@styles/NavStyles';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
@@ -23,13 +14,7 @@ const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) =
   const { colors } = theme;
   const contentTheme = barStyle || theme.statusBarStyle;
   return (
-    <StatusBar
-      translucent
-      backgroundColor={colors.statusBar}
-      barStyle={contentTheme}
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      {...rest}
-    />
+    <StatusBar translucent backgroundColor={colors.statusBar} barStyle={contentTheme} {...rest} />
   );
 };
 
@@ -87,7 +72,7 @@ export type CustomHeaderBarProps = {
         primary?: () => void;
         iosLeftAction?: {
           title: string;
-          onPress: Function;
+          onPress: () => void;
         };
         home?: boolean;
         actions?: ActionItem[];
@@ -151,8 +136,8 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
       statusBarHeight={StatusBar.currentHeight}
     >
       {overflow.map((item, key) => (
-        // eslint-disable-next-line react/no-array-index-key
         <Menu.Item
+          // eslint-disable-next-line react/no-array-index-key
           key={key}
           title={item.title}
           icon={item.icon}
@@ -165,10 +150,10 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
     </Menu>
   );
 
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={navigatorStyles.headerSurface}>
+    <View>
       <TranslucentStatusBar />
       <Appbar.Header statusBarHeight={insets.top} style={[navigatorStyles.header, headerStyle]}>
         <View

@@ -1,13 +1,13 @@
 import React from 'react';
-import { Text, useTheme } from 'react-native-paper';
-import { ImageStyle, Platform } from 'react-native';
-import Markdown, { MarkdownIt } from 'react-native-markdown-display';
+import { ImageStyle } from 'react-native';
+import { Text } from 'react-native-paper';
 import FitImage from 'react-native-fit-image';
+import Markdown, { MarkdownIt } from 'react-native-markdown-display';
+import { connect } from 'react-redux';
 
 import { Content as ContentType, State, Preferences } from '@ts/types';
+import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { getImageUrl, handleUrl } from '@utils/index';
-import { connect } from 'react-redux';
 
 type Props = ContentType & { preferences: Preferences };
 
@@ -51,7 +51,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
           },
         }}
         rules={{
-          image: (node, children, parent, imageStyles: { [key: string]: ImageStyle }) => {
+          image: (node, _children, _parent, imageStyles: { [key: string]: ImageStyle }) => {
             const { src } = node.attributes;
 
             return (

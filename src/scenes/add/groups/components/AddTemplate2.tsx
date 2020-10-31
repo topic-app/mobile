@@ -1,23 +1,15 @@
-import React, { useState, createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import {
-  TextInput,
-  HelperText,
-  Button,
-  useTheme,
-  ProgressBar,
-  RadioButton,
-  List,
-} from 'react-native-paper';
+import React from 'react';
+import { View, Platform } from 'react-native';
+import { HelperText, Button, ProgressBar, RadioButton, List } from 'react-native-paper';
 
-import { StepperViewPageProps, CollapsibleView, ErrorMessage } from '@components/index';
+import { GroupTemplate, GroupRequestState } from '@ts/types';
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
 import { updateGroupTemplates } from '@redux/actions/api/groups';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
-import { GroupTemplate, GroupRequestState, State } from '@ts/types';
 
-import getStyles from '@styles/Styles';
 import getGroupStyles from '../styles/Styles';
-import { connect } from 'react-redux';
 
 type Props = StepperViewPageProps & { templates: GroupTemplate[]; state: GroupRequestState };
 
@@ -28,7 +20,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
   const submit = () => {
     if (template) {
       updateGroupCreationData({ type: template });
-      console.log('hello');
+      console.log('no');
       next();
     } else {
       setError(true);
@@ -110,7 +102,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => prev()}
+          onPress={prev}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour
@@ -118,9 +110,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => {
-            submit();
-          }}
+          onPress={submit}
           style={{ flex: 1, marginLeft: 5 }}
         >
           Suivant

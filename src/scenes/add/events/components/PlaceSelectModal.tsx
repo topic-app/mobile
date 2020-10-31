@@ -1,4 +1,8 @@
 import React from 'react';
+import { View, FlatList } from 'react-native';
+import { Divider, ProgressBar, Text, List } from 'react-native-paper';
+import { connect } from 'react-redux';
+
 import {
   ModalProps,
   State,
@@ -6,32 +10,12 @@ import {
   TagsState,
   GroupsState,
   UsersState,
-  Tag,
-  Group,
-  User,
   RequestState,
 } from '@ts/types';
-import {
-  Divider,
-  ProgressBar,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
-  Card,
-  Text,
-  List,
-  ThemeProvider,
-  useTheme,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import { connect } from 'react-redux';
-import { Modal } from '@components/index';
-
-import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
+import { useTheme } from '@utils/index';
+import { Modal, Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { searchTags, updateTags } from '@redux/actions/api/tags';
-import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
 
 type QuickSelectModalProps = ModalProps & {

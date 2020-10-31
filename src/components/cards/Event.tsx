@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Image } from 'react-native';
-import { Text, Card, useTheme } from 'react-native-paper';
-import moment from 'moment';
-import shortid from 'shortid';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Text, Card } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import shortid from 'shortid';
+import moment from 'moment';
 
 import { EventPreload } from '@ts/types';
-import { getImageUrl } from '@utils/index';
+import { useTheme, getImageUrl } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import getCardStyles from './styles/CardStyles';
@@ -33,12 +33,12 @@ function buildDateString(start: string, end: string) {
   return `Prévu - ${startDate.calendar()} (${startDate.fromNow()})`;
 }
 
-type Props = {
+type EventCardProps = {
   event: EventPreload;
   navigate: StackNavigationProp<any, any>['navigate'];
 };
 
-const EventCard: React.FC<Props> = ({ event, navigate }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, navigate }) => {
   const start = event.duration?.start; // Destructure this once duration works on the server
   const end = event.duration?.end;
 

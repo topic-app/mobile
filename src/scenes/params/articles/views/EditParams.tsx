@@ -2,7 +2,7 @@ import React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State } from '@ts/types';
+import { State, ReduxLocation } from '@ts/types';
 import { updateArticleParams } from '@redux/actions/contentData/articles';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import LocationSelectPage from '@components/LocationSelectPage';
@@ -11,13 +11,6 @@ import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import type { ArticleStackParams } from '../index';
 
 type Navigation = StackNavigationProp<ArticleStackParams, 'EditParams'>;
-
-// TODO: Externalize into @ts/redux
-type ReduxLocation = {
-  global: boolean;
-  schools: string[];
-  departments: string[];
-};
 
 function done(
   { schools, departments, global }: ReduxLocation,

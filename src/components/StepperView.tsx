@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
-import { useTheme, Text, withTheme } from 'react-native-paper';
+import { Text, withTheme } from 'react-native-paper';
 import { TabView, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -110,7 +110,9 @@ export type StepperViewPageProps = {
 class StepperView extends React.Component<Props> {
   index = 0;
 
-  setIndex = (i: number) => (this.index = i);
+  setIndex = (i: number) => {
+    this.index = i;
+  };
 
   render() {
     const {

@@ -4,7 +4,7 @@ import { TextInput } from 'react-native';
 
 import { logger } from '@utils/index';
 
-type SearchbarProps = React.ComponentProps<typeof PaperSearchbar> & {
+type SearchbarProps = React.ComponentPropsWithoutRef<typeof PaperSearchbar> & {
   onIdle?: (value: string) => void;
   delay?: number;
 };

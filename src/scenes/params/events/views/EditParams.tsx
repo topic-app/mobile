@@ -2,25 +2,15 @@ import React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State } from '@ts/types';
+import { State, ReduxLocation } from '@ts/types';
 import { updateEventParams } from '@redux/actions/contentData/events';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import LocationSelectPage from '@components/LocationSelectPage';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { ErrorMessage } from '@components/index';
-
-import getStyles from '@styles/Styles';
 
 import type { EventStackParams } from '../index';
 
 type Navigation = StackNavigationProp<EventStackParams, 'EditParams'>;
-
-// TODO: Externalize into @ts/redux
-type ReduxLocation = {
-  global: boolean;
-  schools: string[];
-  departments: string[];
-};
 
 function done(
   { schools, departments, global }: ReduxLocation,

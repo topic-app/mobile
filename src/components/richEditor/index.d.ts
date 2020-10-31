@@ -47,8 +47,8 @@ export interface RichEditorProps extends WebViewProps {
   /**
    * Callback after editor data modification
    */
-  onChange?: () => void;
-  onChangeMarkdown?: () => void;
+  onChange?: (html: string) => void;
+  onChangeMarkdown?: (markdown: string) => void;
 
   /**
    * Callback after height change

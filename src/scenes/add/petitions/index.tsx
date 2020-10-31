@@ -1,11 +1,14 @@
 import React from 'react';
-import { Platform } from 'react-native';
+
 import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
 import PetitionAdd from './views/Add';
 
-const Stack = createNativeStackNavigator();
+export type PetitionAddStackParams = {
+  Add: undefined;
+};
+
+const Stack = createNativeStackNavigator<PetitionAddStackParams>();
 
 function PetitionAddStackNavigator() {
   return (

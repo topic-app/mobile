@@ -1,10 +1,11 @@
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp } from 'react-native';
-import { Appbar, Menu, useTheme } from 'react-native-paper';
+import { Appbar, Menu } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/core';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 import shortid from 'shortid';
 
-import { useSafeAreaInsets, getLayout } from '@utils/index';
+import { useTheme, useSafeAreaInsets, getLayout } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
@@ -48,7 +49,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
 
   const navigatorStyles = getNavigatorStyles(useTheme());
   const { colors } = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   const {
     title,
@@ -93,8 +94,8 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
       statusBarHeight={insets.top}
     >
       {overflow.map((item, key) => (
-        // eslint-disable-next-line react/no-array-index-key
         <Menu.Item
+          // eslint-disable-next-line react/no-array-index-key
           key={key}
           title={item.title}
           icon={item.icon}
@@ -108,7 +109,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   );
 
   return (
-    <View style={navigatorStyles.headerSurface}>
+    <View>
       <TranslucentStatusBar />
       <Appbar.Header style={[navigatorStyles.header, headerStyle]} statusBarHeight={insets.top}>
         {primaryAction}
@@ -119,69 +120,6 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
     </View>
   );
 };
-
-/*
-const nativeZoomInPreset = {
-  gestureDirection: 'horizontal',
-  transitionSpec: {
-    open: {
-      animation: 'spring',
-      config: {
-        damping: 1000,
-        mass: 2,
-        overshootClamping: true,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
-        stiffness: 900,
-      },
-    },
-    close: {
-      animation: 'spring',
-      config: {
-        damping: 1000,
-        mass: 2,
-        overshootClamping: true,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
-        stiffness: 900,
-      },
-    },
-  },
-  cardStyleInterpolator: (p) => {
-    const { current, next } = p;
-    return {
-      cardStyle: {
-        transform: [
-          {
-            scale: current.progress.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.85, 1],
-            }),
-          },
-          {
-            scale: next
-              ? next.progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 1.1],
-                })
-              : 1,
-          },
-        ],
-        opacity: current.progress.interpolate({
-          inputRange: [0, 0.1, 0.1, 1],
-          outputRange: [0, 0, 1, 1],
-        }),
-      },
-      overlayStyle: {
-        opacity: current.progress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 0.5],
-        }),
-      },
-    };
-  },
-};
-*/
 
 const HeaderConfig = {
   header: ({ scene }: CustomHeaderBarProps) => <CustomHeaderBar scene={scene} />,

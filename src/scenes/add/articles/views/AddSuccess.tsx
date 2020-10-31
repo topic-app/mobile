@@ -1,36 +1,22 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
-import { Text, Button, Divider, useTheme, Card } from 'react-native-paper';
+import { Text, Button, Divider, Card } from 'react-native-paper';
+import { StackScreenProps } from '@react-navigation/stack';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 import { State, ArticleRequestState, Account } from '@ts/types';
 import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';
-import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
+import { logger, useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
 
-import type { AuthStackParams } from '../index';
+import type { ArticleAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-type Props = {
-  navigation: StackNavigationProp<AuthStackParams, 'CreateSuccess'>;
+type Props = StackScreenProps<ArticleAddStackParams, 'Success'> & {
   reqState: ArticleRequestState;
   account: Account;
-  route: {
-    params: {
-      id: string;
-      creationData: {
-        title: string;
-        summary: string;
-        image: {
-          image: string;
-        };
-        group: string;
-        data: string;
-      };
-    };
-  };
 };
 
 const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, route }) => {
@@ -43,11 +29,13 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
 
   const { id, creationData } = route?.params || {};
 
-  let groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
+  const groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
 
   const approve = () => {
     articleVerificationApprove(id).then(() => setApproved(true));
   };
+
+  // TODO: Consider using IconButton instead of Icon here
 
   return (
     <View style={styles.page}>
@@ -75,7 +63,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
               <Text style={{ marginTop: 40 }}>
                 Votre article doit être approuvé par un administrateur de {groupName}.
               </Text>
-              <Text>Vous serez notifiés par email dès que l'article est approuvé.</Text>
+              <Text>Vous serez notifiés par email dès que l&apos;article est approuvé.</Text>
             </View>
           )}
           {account.permissions?.some(
@@ -97,7 +85,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
                   onPress={() => {
                     Alert.alert(
                       "Approuver l'article?",
-                      "L'article doit ềtre conforme aux conditions d'utilisation.\nVous êtes responsables si l'article ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs",
+                      "L'article doit ềtre conforme aux conditions d'utilisation.\nVous êtes responsables si l'article ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs.",
                       [
                         {
                           text: 'Annuler',
@@ -186,14 +174,16 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
               summary: creationData.summary || creationData.data,
               authors: [
                 {
+                  _id: account?.accountInfo?.user?._id,
                   displayName: account?.accountInfo?.user?.info?.username,
+                  info: account?.accountInfo.user?.info,
                 },
               ],
               group: {
                 displayName: account?.groups?.find((g) => g._id === creationData?.group)?.name,
               },
             }}
-            navigate={() => null}
+            navigate={() => logger.debug('add/articles/views/AddSuccess: Pressed article card')}
             unread
           />
         </View>

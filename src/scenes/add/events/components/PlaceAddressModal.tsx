@@ -1,38 +1,12 @@
 import React from 'react';
-import {
-  ModalProps,
-  State,
-  ArticleQuickItem,
-  TagsState,
-  GroupsState,
-  UsersState,
-  Tag,
-  Group,
-  User,
-  RequestState,
-} from '@ts/types';
-import {
-  Divider,
-  ProgressBar,
-  Button,
-  HelperText,
-  TextInput,
-  Card,
-  Text,
-  List,
-  ThemeProvider,
-  useTheme,
-} from 'react-native-paper';
-import { View, Platform, FlatList, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { Modal } from '@components/index';
 
-import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
+import { ModalProps, State } from '@ts/types';
+import { Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
-import { searchTags, updateTags } from '@redux/actions/api/tags';
-import { searchGroups, updateGroups } from '@redux/actions/api/groups';
-import { searchUsers, updateUsers } from '@redux/actions/api/users';
 
 import getEventStyles from '../styles/Styles';
 

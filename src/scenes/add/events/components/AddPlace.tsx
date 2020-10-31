@@ -1,19 +1,18 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-import { updateEventCreationData } from '@redux/actions/contentData/events';
-import { StepperViewPageProps } from '@components/index';
 import { Account, State } from '@ts/types';
+import { StepperViewPageProps } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import PlaceTypeModal from './PlaceTypeModal';
 
+import PlaceTypeModal from './PlaceTypeModal';
 import PlaceAddressModal from './PlaceAddressModal';
 import PlaceSelectModal from './PlaceSelectModal';
 
 import getAuthStyles from '../styles/Styles';
-import { connect } from 'react-redux';
 
 type Props = StepperViewPageProps & { account: Account };
 

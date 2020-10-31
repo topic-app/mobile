@@ -1,22 +1,22 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Button,
-  HelperText,
-  List,
-  Text,
-  Checkbox,
-  useTheme,
-  Divider,
-  ProgressBar,
-} from 'react-native-paper';
+import { Button, HelperText, List, Text, Checkbox, Divider, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import {
+  Account,
+  State,
+  EventCreationData,
+  Department,
+  School,
+  ReduxLocation,
+  RequestState,
+} from '@ts/types';
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { useTheme } from '@utils/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
-import { Account, State, EventCreationData, Department, School, RequestState } from '@ts/types';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -34,12 +34,6 @@ type Props = StepperViewPageProps & {
       info: RequestState;
     };
   };
-};
-
-type ReduxLocation = {
-  schools: string[];
-  departments: string[];
-  global: boolean;
 };
 
 const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {

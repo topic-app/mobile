@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, ScrollView, Platform, StyleSheet, BackHandler } from 'react-native';
-import { Text, Button, ProgressBar, useTheme } from 'react-native-paper';
+import { Text, Button, ProgressBar } from 'react-native-paper';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ViewPager from '@react-native-community/viewpager';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import shortid from 'shortid';
 
 import { RequestState, Theme } from '@ts/types';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import { TranslucentStatusBar } from './Header';
@@ -71,7 +72,7 @@ function getStepIndicatorStyles(theme: Theme) {
   };
 }
 
-function iconColor(status: 'finished' | 'unfinished' | 'current', theme: Theme) {
+function iconColor(status: string, theme: Theme) {
   const { colors } = theme;
   switch (status) {
     case 'finished':
@@ -143,7 +144,9 @@ const StepperViewPager: React.FC<Props> = ({
 
   // Handle back button on Android
   if (Platform.OS === 'android') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useFocusEffect(
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       React.useCallback(() => {
         const onBackPress = () => {
           if (currentPage === 0 || reqState.success !== null) {

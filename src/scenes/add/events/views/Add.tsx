@@ -1,9 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
 import { View, ScrollView } from 'react-native';
-import { Text, ProgressBar, useTheme } from 'react-native-paper';
+import { Text, ProgressBar } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { connect } from 'react-redux';
 
 import { State, EventRequestState, EventCreationData } from '@ts/types';
 import {
@@ -13,11 +12,12 @@ import {
   SafeAreaView,
   PlatformBackButton,
 } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
 import { eventAdd } from '@redux/actions/apiActions/events';
 import { clearEventCreationData } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 
-import type { EventStackParams } from '../index';
+import type { EventAddStackParams } from '../index';
 import getEventStyles from '../styles/Styles';
 import EventAddPageGroup from '../components/AddGroup';
 import EventAddPageLocation from '../components/AddLocation';
@@ -28,7 +28,7 @@ import EventAddPageProgram from '../components/AddProgram';
 import EventAddPageTags from '../components/AddTags';
 
 type Props = {
-  navigation: StackNavigationProp<EventStackParams, 'Add'>;
+  navigation: StackNavigationProp<EventAddStackParams, 'Add'>;
   reqState: EventRequestState;
   creationData?: EventCreationData;
 };

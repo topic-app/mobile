@@ -1,38 +1,22 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem } from '@ts/types';
-import {
-  Divider,
-  Button,
-  TextInput,
-  Card,
-  ThemeProvider,
-  Text,
-  useTheme,
-  Title,
-  ProgressBar,
-} from 'react-native-paper';
-import { View, Platform, Dimensions, FlatList } from 'react-native';
+import { Divider, Button, TextInput, Title, ProgressBar } from 'react-native-paper';
+import { View, Platform, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { logger } from '@utils/index';
-import { TagRequestState, TagsState } from '@ts/types';
 import randomColor from 'randomcolor';
 import shortid from 'shortid';
 
-import {
-  CollapsibleView,
-  Illustration,
-  PlatformTouchable,
-  ErrorMessage,
-  Modal,
-} from '@components/index';
+import { ModalProps, State, TagPreload, TagRequestState } from '@ts/types';
+import { Illustration, PlatformTouchable, ErrorMessage, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { tagAdd } from '@redux/actions/apiActions/tags';
+
 import getArticleStyles from '../styles/Styles';
 
 type TagAddModalProps = ModalProps & {
   state: TagRequestState;
   name: string;
-  add: ({ _id, name, color }: { _id: string; name: string; color: string }) => any;
+  add: (tag: TagPreload) => any;
 };
 
 function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps) {
@@ -114,7 +98,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
             }}
           />
         </View>
-        <View style={[styles.activeCommentContainer, { marginVertical: 20 }]}>
+        <View style={[articleStyles.activeCommentContainer, { marginVertical: 20 }]}>
           <FlatList
             horizontal
             onEndReached={() => setColorList([...colorList, ...generateColors()])}

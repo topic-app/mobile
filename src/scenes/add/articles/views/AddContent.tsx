@@ -1,52 +1,42 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { View, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import {
-  Text,
-  ProgressBar,
-  useTheme,
-  Button,
-  HelperText,
-  Title,
-  Divider,
-} from 'react-native-paper';
+import { View, ScrollView, Platform, Alert } from 'react-native';
+import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
-  StepperView,
   ErrorMessage,
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
-import { articleAdd } from '@redux/actions/apiActions/articles';
+import { RichToolbar, RichEditor } from '@components/richEditor/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { articleAdd } from '@redux/actions/apiActions/articles';
 import {
   clearArticleCreationData,
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
-import { RichToolbar, RichEditor } from '@components/richEditor/index';
 
-import type { ArticleStackParams } from '../index';
-import getArticleStyles from '../styles/Styles';
-import ArticleAddPageGroup from '../components/AddGroup';
-import ArticleAddPageLocation from '../components/AddLocation';
-import ArticleAddPageMeta from '../components/AddMeta';
-import ArticleAddPageContent from '../components/AddContent';
-import ArticleAddPageTags from '../components/AddTags';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
-import showdown from 'showdown';
+import getArticleStyles from '../styles/Styles';
 
-type Props = {
-  navigation: StackNavigationProp<ArticleStackParams, 'Add'>;
+type ArticleAddContentProps = {
+  navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
 };
 
-const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData = {} }) => {
+const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
+  navigation,
+  reqState,
+  creationData = {},
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -76,11 +66,9 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
 
   const [markdown, setMarkdown] = React.useState('');
 
-  let textEditor = React.useRef<RichEditor>(null);
+  const textEditorRef = React.createRef<RichEditor>();
 
-  const setTextEditor = (e: any) => (textEditor = e);
-
-  const icon = (icon: string) => {
+  const icon = (name: string) => {
     return ({
       disabled,
       iconSize,
@@ -91,7 +79,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
       selected: boolean;
     }) => (
       <Icon
-        name={icon}
+        name={name}
         color={disabled ? colors.disabled : selected ? colors.primary : colors.text}
         size={iconSize / 2}
       />
@@ -99,7 +87,6 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
   };
 
   const submit = async () => {
-
     const contentValid = markdown?.length && markdown?.length > 0;
     if (contentValid) {
       updateArticleCreationData({ parser: 'markdown', data: markdown });
@@ -156,8 +143,8 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
             <View style={articleStyles.textInputContainer}>
               <View style={{ marginTop: 20 }}>
                 <RichEditor
-                  ref={setTextEditor}
-                  onChangeMarkdown={(data) => setMarkdown(data)}
+                  ref={textEditorRef}
+                  onChangeMarkdown={(data: string) => setMarkdown(data)}
                   editorStyle={{
                     backgroundColor: colors.background,
                     color: colors.text,
@@ -171,9 +158,9 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
           </View>
         </ScrollView>
         <View style={{ backgroundColor: colors.surface }}>
-          {toolbarInitialized && (
+          {toolbarInitialized && textEditorRef.current ? (
             <RichToolbar
-              getEditor={() => textEditor}
+              getEditor={() => textEditorRef.current!}
               actions={[
                 'insertImage',
                 'insertLink',
@@ -205,7 +192,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
                 setLinkAddModalVisible(true);
               }}
             />
-          )}
+          ) : null}
           {!valid && (
             <HelperText type="error" visible={!valid}>
               Veuillez ajouter un contenu
@@ -217,7 +204,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
               uppercase={Platform.OS !== 'ios'}
               loading={reqState.add?.loading}
               onPress={() => {
-                textEditor?.blurContentEditor();
+                textEditorRef.current?.blurContentEditor();
                 submit();
               }}
               style={{ flex: 1, marginLeft: 5 }}
@@ -232,7 +219,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
         setVisible={setLinkAddModalVisible}
         add={(link, name) => {
           setLinkAddModalVisible(false);
-          textEditor?.insertLink(name, link);
+          textEditorRef.current?.insertLink(name, link);
         }}
       />
     </View>

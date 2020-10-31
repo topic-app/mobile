@@ -1,17 +1,10 @@
 import React from 'react';
-import { ModalProps, ArticleListItem } from '@ts/types';
-import {
-  Divider,
-  Button,
-  Card,
-  RadioButton,
-  ThemeProvider,
-  List,
-  useTheme,
-} from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
-import { Modal } from '@components/index';
+import { Divider, Button, RadioButton, List } from 'react-native-paper';
 
+import { ModalProps } from '@ts/types';
+import { Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 type PlaceTypeModalProps = ModalProps & { next: (type: string) => void };

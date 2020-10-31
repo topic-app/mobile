@@ -5,7 +5,7 @@
 // 1. Ensure that both ios and android files present identical types to importers.
 // 2. Allow consumers to import the module as if typescript understood react-native suffixes.
 import * as ios from './Header.ios';
-import * as android from './Header.android';
+import * as android from './Header';
 
 declare var _test: typeof ios;
 declare var _test: typeof android;

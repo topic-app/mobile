@@ -1,40 +1,20 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem } from '@ts/types';
-import {
-  Divider,
-  Button,
-  TextInput,
-  Card,
-  ThemeProvider,
-  Text,
-  useTheme,
-  Title,
-  ProgressBar,
-  HelperText,
-} from 'react-native-paper';
-import { View, Platform, Dimensions, FlatList } from 'react-native';
+import { Divider, Button, TextInput, HelperText } from 'react-native-paper';
+import { View, Platform } from 'react-native';
 import { connect } from 'react-redux';
-import { logger } from '@utils/index';
-import { TagRequestState, TagsState } from '@ts/types';
-import randomColor from 'randomcolor';
-import shortid from 'shortid';
 
-import {
-  CollapsibleView,
-  Illustration,
-  PlatformTouchable,
-  ErrorMessage,
-  Modal,
-} from '@components/index';
+import { ModalProps, State } from '@ts/types';
+import { Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { tagAdd } from '@redux/actions/apiActions/tags';
+
 import getArticleStyles from '../styles/Styles';
 
-type TagAddModalProps = ModalProps & {
+type LinkAddModalProps = ModalProps & {
   add: (link: string, name: string) => any;
 };
 
-function TagAddModal({ visible, setVisible, add }: TagAddModalProps) {
+const LinkAddModal: React.FC<LinkAddModalProps> = ({ visible, setVisible, add }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -50,7 +30,7 @@ function TagAddModal({ visible, setVisible, add }: TagAddModalProps) {
         /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/,
       )
     ) {
-      add(linkText, nameText ? nameText : linkText);
+      add(linkText, nameText || linkText);
       setNameText('');
       setLinkText('');
     } else {
@@ -101,7 +81,7 @@ function TagAddModal({ visible, setVisible, add }: TagAddModalProps) {
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { tags } = state;
@@ -110,4 +90,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(TagAddModal);
+export default connect(mapStateToProps)(LinkAddModal);

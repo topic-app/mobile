@@ -1,23 +1,21 @@
 import React from 'react';
-import { ModalProps, Account, State } from '@ts/types';
 import {
   Divider,
   Button,
   Text,
   TextInput,
-  Card,
-  useTheme,
   RadioButton,
   List,
   ProgressBar,
-  ThemeProvider,
 } from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { Modal } from '@components/index';
 
+import { ModalProps, Account, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
+import Modal from './Modal';
 import ErrorMessage from './ErrorMessage';
 
 type ReportModalProps = ModalProps & {
@@ -74,7 +72,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
       id: 'OTHER',
       name: 'Autre',
     },
-  ];
+  ] as const;
 
   const [reportOption, setReportOption] = React.useState('OTHER');
   const [reportText, setReportText] = React.useState('');
@@ -102,7 +100,8 @@ const ReportModal: React.FC<ReportModalProps> = ({
                 retry={() =>
                   report(contentId, `${reportOption}${reportText ? `- ${reportText}` : ''}`).then(
                     () => {
-                      setReportText(''), setVisible(false);
+                      setReportText('');
+                      setVisible(false);
                     },
                   )
                 }

@@ -22,6 +22,7 @@ export type Content = {
 
 export type TagPreload = {
   _id: string;
+  name?: string;
   displayName: string;
   color: string;
 };
@@ -29,6 +30,7 @@ export type TagPreload = {
 export type Tag = {
   _id: string;
   name: string;
+  displayName: string;
   color: string;
   summary: string;
 };
@@ -282,7 +284,7 @@ export type ArticlePreload = {
   date: string;
   summary: string;
   image: Image;
-  authors: [AuthorPreload];
+  authors: AuthorPreload[];
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];

@@ -1,41 +1,38 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
 
-import { HeaderConfig } from '@components/Header';
+import { EventCreationData, ReduxLocation } from '@ts/types';
+import { createNativeStackNavigator } from '@utils/stack';
+
 import EventAdd from './views/Add';
 import EventAddSuccess from './views/AddSuccess';
 import EventAddLocation from './views/AddLocation';
 
-const Stack = createStackNavigator();
+export type EventAddStackParams = {
+  Add: undefined;
+  Success: { id?: string; creationData?: EventCreationData };
+  Location: {
+    hideSearch: boolean;
+    type: 'schools' | 'departements' | 'regions' | 'other';
+    initialData?: ReduxLocation;
+    callback: (location: ReduxLocation) => any;
+  };
+};
+
+const Stack = createNativeStackNavigator<EventAddStackParams>();
 
 function EventAddStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Add">
-      <Stack.Screen
-        name="Add"
-        component={EventAdd}
-        options={{
-          title: 'Créer un évènement',
-          headerShown: false,
-        }}
-      />
+    <Stack.Navigator initialRouteName="Add" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Add" component={EventAdd} options={{ title: 'Créer un évènement' }} />
       <Stack.Screen
         name="Success"
         component={EventAddSuccess}
-        options={{
-          title: 'Evènement ajouté',
-          headerShown: false,
-        }}
+        options={{ title: 'Evènement ajouté' }}
       />
       <Stack.Screen
         name="Location"
         component={EventAddLocation}
-        options={{
-          ...HeaderConfig,
-          title: 'Localisation',
-          headerShown: true,
-        }}
+        options={{ title: 'Localisation' }}
       />
     </Stack.Navigator>
   );
