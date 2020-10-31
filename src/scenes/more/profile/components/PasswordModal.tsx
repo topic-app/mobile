@@ -1,21 +1,15 @@
 import React from 'react';
-import { ModalProps, State, Account } from '@ts/types';
-import {
-  Divider,
-  Button,
-  HelperText,
-  ProgressBar,
-  ThemeProvider,
-  Card,
-  useTheme,
-} from 'react-native-paper';
+import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { View, Platform, TextInput, Alert } from 'react-native';
 import { connect } from 'react-redux';
 
+import { ModalProps, State } from '@ts/types';
 import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { updatePassword } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
+
 import getArticleStyles from '../styles/Styles';
 // import LocalAuthentication from 'rn-local-authentication';
 
@@ -23,7 +17,7 @@ type PasswordModalProps = ModalProps & {
   state: { updateProfile: { loading: boolean; error: any } };
 };
 
-function PasswordModal({ visible, setVisible, state }: PasswordModalProps) {
+const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const profileStyles = getArticleStyles(theme);
@@ -144,7 +138,7 @@ function PasswordModal({ visible, setVisible, state }: PasswordModalProps) {
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { account } = state;

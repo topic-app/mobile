@@ -1,12 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, ActivityIndicator } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import shortid from 'shortid';
-import { InlineCard } from '@components/Cards';
-import { UserPreload, Event } from '@ts/types';
 
-function EventDisplayContact({ event }: { event: Event }) {
+import { UserPreload, Event } from '@ts/types';
+import { InlineCard } from '@components/Cards';
+import { useTheme } from '@utils/index';
+
+type EventDisplayContactProps = {
+  event: Event;
+};
+
+const EventDisplayContact: React.FC<EventDisplayContactProps> = ({ event }) => {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -36,26 +40,6 @@ function EventDisplayContact({ event }: { event: Event }) {
         ))}
     </View>
   );
-}
+};
 
 export default EventDisplayContact;
-
-EventDisplayContact.propTypes = {
-  event: PropTypes.shape({
-    contact: PropTypes.shape({
-      other: PropTypes.arrayOf(
-        PropTypes.shape({
-          key: PropTypes.string,
-          value: PropTypes.string,
-        }),
-      ),
-      email: PropTypes.string,
-      phone: PropTypes.string,
-    }),
-    members: PropTypes.arrayOf(
-      PropTypes.shape({
-        displayName: PropTypes.string,
-      }),
-    ),
-  }).isRequired,
-};

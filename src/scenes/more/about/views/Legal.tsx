@@ -1,23 +1,23 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import { State, LegalState, LegalRequestState } from '@ts/types';
 import { CustomTabView, TranslucentStatusBar, CustomHeaderBar } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchDocument } from '@redux/actions/api/legal';
 
 import type { AboutStackParams } from '../index';
 import LegalPage from '../components/LegalPage';
 
-type LegalPropTypes = StackScreenProps<AboutStackParams, 'Legal'> & {
+type LegalProps = StackScreenProps<AboutStackParams, 'Legal'> & {
   legal: LegalState;
   state: LegalRequestState;
 };
 
-function Legal({ route, legal, state }: LegalPropTypes) {
+const Legal: React.FC<LegalProps> = ({ route, legal, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -98,7 +98,7 @@ function Legal({ route, legal, state }: LegalPropTypes) {
       </ScrollView>
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { legal } = state;

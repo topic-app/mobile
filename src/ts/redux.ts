@@ -850,6 +850,7 @@ export type Preferences = {
   fontSize: number;
   stripFormatting: boolean;
   fontFamily: string;
+  themeEasterEggDiscovered: boolean;
 };
 
 export type LocationList = {

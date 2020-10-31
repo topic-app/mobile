@@ -1,11 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { View } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 import places from '@src/data/explorerListData.json';
 import { config } from '@root/app.json';
+import { useTheme } from '@utils/index';
+
 import ExplorerMap from './Map';
 
 const map = {

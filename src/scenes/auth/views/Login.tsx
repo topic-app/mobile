@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
-import { Text, Button, ProgressBar, TextInput, HelperText, useTheme } from 'react-native-paper';
+import { Text, Button, ProgressBar, TextInput, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -12,11 +12,12 @@ import {
   Illustration,
   SafeAreaView,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { login } from '@redux/actions/data/account';
 
-import getAuthStyles from '../styles/Styles';
 import type { AuthStackParams } from '../index';
+import getAuthStyles from '../styles/Styles';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParams, 'Login'>;

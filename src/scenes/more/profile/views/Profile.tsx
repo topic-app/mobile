@@ -1,19 +1,18 @@
 import React from 'react';
 import { View, ScrollView, Alert } from 'react-native';
-import {
-  Text,
-  useTheme,
-  Title,
-  Subheading,
-  Divider,
-  Button,
-  List,
-  ProgressBar,
-} from 'react-native-paper';
+import { Text, Title, Subheading, Divider, Button, List, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
+import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Account, Address, State } from '@ts/types';
+import {
+  Account,
+  Address,
+  State,
+  ReduxLocation as OldReduxLocation,
+  SchoolPreload,
+  DepartmentPreload,
+} from '@ts/types';
 import {
   Avatar,
   ErrorMessage,
@@ -21,9 +20,11 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchAccount, logout } from '@redux/actions/data/account';
 
+import { ProfileStackParams } from '../index';
 import ProfileItem from '../components/ProfileItem';
 import VisibilityModal from '../components/VisibilityModal';
 import NameModal from '../components/NameModal';
@@ -47,14 +48,18 @@ function genName({ data, info }) {
   return data.firstName || data.lastName || null;
 }
 
-function Profile({
-  account,
-  location,
-  navigation,
-}: {
+type ReduxLocation = OldReduxLocation & {
+  schoolData: SchoolPreload[];
+  departmentData: DepartmentPreload[];
+};
+
+type ProfileProps = {
   account: Account;
-  navigation: any;
-}): React.ReactNode {
+  location: ReduxLocation;
+  navigation: StackNavigationProp<ProfileStackParams, 'Profile'>;
+};
+
+const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -344,7 +349,7 @@ function Profile({
       <PasswordModal visible={isPasswordVisible} setVisible={setPasswordVisible} />
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { account, location } = state;

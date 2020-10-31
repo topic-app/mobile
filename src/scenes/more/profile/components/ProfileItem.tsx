@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { useTheme, IconButton } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
+
+import { useTheme } from '@utils/index';
 
 import getProfileStyles from '../styles/Styles';
 

@@ -1,15 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { View, Linking, Platform } from 'react-native';
-import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
-import { Drawer, Title, ProgressBar, useTheme } from 'react-native-paper';
+import { View, Platform } from 'react-native';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerNavigationProp,
+} from '@react-navigation/drawer';
+import { Drawer, Title, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
-import TopicIcon from '@assets/images/topic-icon.svg';
 
+import {
+  Account,
+  AccountRequestState,
+  DepartmentPreload,
+  LocationRequestState,
+  SchoolPreload,
+  State,
+} from '@ts/types';
+import { ErrorMessage, Illustration } from '@components/index';
+import { useTheme } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
 import { fetchLocationData } from '@redux/actions/data/location';
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
-import ErrorMessage from '@components/ErrorMessage';
+
 import HomeTwoNavigator from './HomeTwo';
 
 const DrawerNav = createDrawerNavigator();
@@ -21,14 +33,28 @@ function genName({ data, info }) {
   return data?.firstName || data?.lastName || null;
 }
 
-function CustomDrawerContent({
+type CustomDrawerContentProps = {
+  navigation: DrawerNavigationProp<any, any>;
+  loggedIn: boolean;
+  accountInfo: Account['accountInfo'];
+  accountState: AccountRequestState;
+  location: {
+    schoolData: SchoolPreload[];
+    departmentData: DepartmentPreload[];
+    global: boolean;
+    state: LocationRequestState;
+  };
+  // TODO: Add permissions prop
+};
+
+const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
   navigation,
   accountState,
   loggedIn,
-  accountInfo,
+  accountInfo = { user: {} },
   location,
   permissions,
-}) {
+}) => {
   const navigatorStyles = getNavigatorStyles(useTheme());
 
   const retryFetch = () => {
@@ -69,7 +95,8 @@ function CustomDrawerContent({
           <View style={navigatorStyles.profileIconContainer}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               {Platform.OS !== 'web' && (
-                <TopicIcon
+                <Illustration
+                  name="topic-icon"
                   style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
                   height={55}
                   width={55}
@@ -216,9 +243,9 @@ function CustomDrawerContent({
       </Drawer.Section>
     </DrawerContentScrollView>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { account, location } = state;
   return {
     accountInfo: account.accountInfo,
@@ -231,7 +258,7 @@ const mapStateToProps = (state) => {
 
 const CustomDrawerContentRedux = connect(mapStateToProps)(CustomDrawerContent);
 
-function HomeOneNavigator() {
+const HomeOneNavigator: React.FC<{}> = () => {
   const navigatorStyles = getNavigatorStyles(useTheme());
   return (
     <DrawerNav.Navigator
@@ -243,47 +270,6 @@ function HomeOneNavigator() {
       <DrawerNav.Screen name="Home2" component={HomeTwoNavigator} />
     </DrawerNav.Navigator>
   );
-}
+};
 
 export default HomeOneNavigator;
-
-CustomDrawerContent.defaultProps = {
-  accountInfo: {
-    user: {},
-  },
-};
-
-CustomDrawerContent.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
-    closeDrawer: PropTypes.func,
-  }).isRequired,
-  loggedIn: PropTypes.bool.isRequired,
-  accountInfo: PropTypes.shape({
-    user: PropTypes.shape({
-      // Todo
-    }),
-  }),
-  accountState: PropTypes.shape({
-    fetchAccount: PropTypes.shape({
-      loading: PropTypes.bool.isRequired,
-      error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
-    }).isRequired,
-    fetchGroups: PropTypes.shape({
-      loading: PropTypes.bool.isRequired,
-      error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
-    }).isRequired,
-  }),
-  location: PropTypes.shape({
-    schoolData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    departmentData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    global: PropTypes.bool.isRequired,
-    state: PropTypes.shape({
-      fetch: PropTypes.shape({
-        loading: PropTypes.bool.isRequired,
-        error: PropTypes.oneOf([PropTypes.object, null]), // TODO: Better PropTypes
-      }).isRequired,
-    }),
-  }).isRequired,
-};

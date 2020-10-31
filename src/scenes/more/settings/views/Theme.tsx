@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, FlatList, Platform, Appearance, TouchableWithoutFeedback } from 'react-native';
-import { List, RadioButton, Divider, Text, useTheme } from 'react-native-paper';
+import { List, RadioButton, Divider, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { State } from '@ts/types';
+import { Preferences, State } from '@ts/types';
 import { Illustration, CustomHeaderBar } from '@components/index';
+import { useTheme } from '@utils/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
@@ -12,10 +13,7 @@ import themes from '@styles/Theme';
 import getSettingsStyles from '../styles/Styles';
 
 type SettingsThemeProps = {
-  preferences: {
-    theme: string;
-    useSystemTheme: boolean;
-  };
+  preferences: Preferences;
 };
 
 const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {

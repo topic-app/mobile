@@ -2,8 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { Theme } from '@ts/types';
 
-function getEventStyles(theme: Theme) {
-  const { colors } = theme;
+function getEventStyles(_theme: Theme) {
   return StyleSheet.create({});
 }
 

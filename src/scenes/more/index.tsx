@@ -1,8 +1,7 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import MoreList from './list/views/List'; // This is the iOS 'more' menu (equivalent to drawer in Android)
 import ProfileStackNavigator from './profile/index';
@@ -44,13 +43,7 @@ function MoreStackNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="About" component={AboutStackNavigator} options={{ headerShown: false }} />
-      {Platform.OS === 'ios' && (
-        <Stack.Screen
-          name="List"
-          component={MoreList}
-          options={{ ...HeaderConfig, title: 'Plus' }}
-        />
-      )}
+      {Platform.OS === 'ios' && <Stack.Screen name="List" component={MoreList} />}
     </Stack.Navigator>
   );
 }

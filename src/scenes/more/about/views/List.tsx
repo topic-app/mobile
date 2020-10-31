@@ -1,15 +1,25 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { Text, useTheme, Divider, List } from 'react-native-paper';
+import { Text, Divider, List } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import { CustomHeaderBar, TranslucentStatusBar, CustomTabView } from '@components/index';
-import { handleUrl } from '@utils/index';
-import TopicIcon from '@assets/images/topic-icon.svg';
+import {
+  CustomHeaderBar,
+  Illustration,
+  TranslucentStatusBar,
+  CustomTabView,
+} from '@components/index';
+import { useTheme, handleUrl } from '@utils/index';
 import getStyles from '@styles/Styles';
 import getAboutStyles from '../styles/Styles';
 
-function About({ navigation }) {
+import { AboutStackParams } from '../index';
+
+type AboutProps = {
+  navigation: StackNavigationProp<AboutStackParams, 'List'>;
+};
+
+const About: React.FC<AboutProps> = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const aboutStyles = getAboutStyles(theme);
@@ -42,7 +52,7 @@ function About({ navigation }) {
                         { marginTop: 60, marginBottom: 10 },
                       ]}
                     >
-                      <TopicIcon style={{ height: 200, width: 200 }} />
+                      <Illustration name="topic-icon" style={{ height: 200, width: 200 }} />
                     </View>
                   </View>
                   <View style={aboutStyles.headerContainer}>
@@ -198,14 +208,6 @@ function About({ navigation }) {
       </ScrollView>
     </View>
   );
-}
+};
 
 export default About;
-
-About.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
-    closeDrawer: PropTypes.func,
-  }).isRequired,
-};

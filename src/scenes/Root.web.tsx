@@ -2,18 +2,16 @@ import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
 import { NavigationProp, useLinkProps, Link } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Text, useTheme, IconButton, Divider, Drawer as PaperDrawer } from 'react-native-paper';
+import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { State, Account } from '@ts/types';
+import { useTheme } from '@utils/index';
 import getLayout from '@utils/getLayout';
 
 import AndroidNavigator from './Root.android';
 import MainStackNavigator from './Main';
-
-// Can't use BlurView with expo :(
-// import { BlurView, VibrancyView } from '@react-native-community/blur';
 
 type TabItemProps = {
   label: string;
@@ -99,7 +97,7 @@ const DrawerContent: React.FC<BottomTabProps> = ({
             text: 'Mes groups',
             path: '/groupes',
           },
-          /*...(account.permissions?.some(
+          /* ...(account.permissions?.some(
             (p) =>
               p?.permission === 'article.verification.view' ||
               p?.permission === 'event.verification.view' ||
@@ -116,7 +114,7 @@ const DrawerContent: React.FC<BottomTabProps> = ({
                   path: '/moderation',
                 },
               ]
-            : []),*/
+            : []), */
           {
             type: 'divider',
           },
@@ -154,7 +152,7 @@ const DrawerContent: React.FC<BottomTabProps> = ({
   return (
     <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: colors.surface }}>
       <View>
-        <View style={{ height: 70 }}></View>
+        <View style={{ height: 70 }} />
         <Divider style={{ marginVertical: 10 }} />
         {items.map((item) => {
           const onLinkPress = (data: any) => {

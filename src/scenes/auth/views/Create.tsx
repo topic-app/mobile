@@ -1,12 +1,10 @@
 import React from 'react';
+import { View, ScrollView } from 'react-native';
+import { Text, ProgressBar } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { View, ScrollView } from 'react-native';
-import { Text, ProgressBar, useTheme } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
-
 import { State, AccountRequestState, CreationData } from '@ts/types';
-import { logger } from '@utils/index';
 import {
   TranslucentStatusBar,
   StepperView,
@@ -15,6 +13,7 @@ import {
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
+import { logger, useTheme } from '@utils/index';
 import { register } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 

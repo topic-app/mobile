@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getExplorerStyles(theme) {
+import { Theme } from '@ts/types';
+
+function getExplorerStyles(theme: Theme) {
   const { colors, dark } = theme;
   return StyleSheet.create({
     modal: {

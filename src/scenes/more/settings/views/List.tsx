@@ -1,15 +1,25 @@
 import React from 'react';
-import { List, useTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
 import { View, Appearance } from 'react-native';
+import { List } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { TranslucentStatusBar, CustomHeaderBar } from '@components/index';
+import { Account, Preferences, State } from '@ts/types';
+import { CustomHeaderBar } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
-import getSettingsStyles from '../styles/Styles';
 
-function SettingsList({ navigation, preferences, account }) {
+import getSettingsStyles from '../styles/Styles';
+import type { SettingsStackParams } from '../index';
+
+type SettingsListProps = {
+  preferences: Preferences;
+  account: Account;
+  navigation: StackNavigationProp<SettingsStackParams, 'Content'>;
+};
+
+const SettingsList: React.FC<SettingsListProps> = ({ navigation, preferences, account }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const settingsStyles = getSettingsStyles(theme);
@@ -85,21 +95,11 @@ function SettingsList({ navigation, preferences, account }) {
       </List.Section>
     </View>
   );
-}
-
-const mapStateToProps = (state) => {
-  const { preferences, account } = state;
-  return { preferences, account };
 };
 
-SettingsList.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  preferences: PropTypes.shape({
-    theme: PropTypes.string,
-    useSystemTheme: PropTypes.bool.isRequired,
-  }).isRequired,
+const mapStateToProps = (state: State) => {
+  const { preferences, account } = state;
+  return { preferences, account };
 };
 
 export default connect(mapStateToProps)(SettingsList);

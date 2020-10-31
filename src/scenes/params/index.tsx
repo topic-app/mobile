@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { createNativeStackNavigator } from '@utils/stack';
 
 import ArticleConfigureStackNavigator from './articles/index';

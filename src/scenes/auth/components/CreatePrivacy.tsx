@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton, List, useTheme } from 'react-native-paper';
+import { Button, RadioButton, List } from 'react-native-paper';
 
-import { updateCreationData } from '@redux/actions/data/account';
 import { StepperViewPageProps } from '@components/index';
+import { useTheme } from '@utils/index';
+import { updateCreationData } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
 import { ListHeading, ListItem } from './ListComponents';

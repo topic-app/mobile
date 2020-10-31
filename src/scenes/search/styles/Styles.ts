@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getSearchStyles(theme) {
+import { Theme } from '@ts/types';
+
+function getSearchStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     searchbar: {

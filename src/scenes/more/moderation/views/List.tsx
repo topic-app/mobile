@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, FlatList } from 'react-native';
-import { Text, useTheme, ProgressBar } from 'react-native-paper';
+import { Text, ProgressBar } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
@@ -20,6 +20,7 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { updateArticlesVerification } from '@redux/actions/api/articles';
 

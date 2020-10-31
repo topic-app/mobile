@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Linking,
 } from 'react-native';
-import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
+import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import * as Location from 'expo-location';
@@ -26,12 +26,6 @@ import {
   ReduxLocation as OldReduxLocation,
   Account,
 } from '@ts/types';
-import { logger } from '@utils/index';
-import { updateLocation } from '@redux/actions/data/location';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { updateEventParams } from '@redux/actions/contentData/events';
-import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
-import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
   TranslucentStatusBar,
   Illustration,
@@ -41,6 +35,12 @@ import {
   ChipAddList,
   Searchbar,
 } from '@components/index';
+import { useTheme, logger } from '@utils/index';
+import { updateLocation } from '@redux/actions/data/location';
+import { updateArticleParams } from '@redux/actions/contentData/articles';
+import { updateEventParams } from '@redux/actions/contentData/events';
+import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
+import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 
 import getStyles from '@styles/Styles';
 
@@ -162,7 +162,7 @@ function getData(
   return data;
 }
 
-type Props = {
+type WelcomeLocationProps = {
   schoolsNear: (School | SchoolPreload)[];
   departments: (Department | DepartmentPreload)[];
   schoolsSearch: SchoolPreload[];
@@ -178,7 +178,7 @@ type Props = {
   account: Account;
 };
 
-const WelcomeLocation: React.FC<Props> = ({
+const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   schoolsNear,
   departments,
   schoolsSearch,

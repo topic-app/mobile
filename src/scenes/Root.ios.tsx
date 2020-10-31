@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NavigationProp, useNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { BlurView } from '@react-native-community/blur';
+
+import { useTheme } from '@utils/index';
 
 import MainStackNavigator from './Main';
 
@@ -104,7 +105,7 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
 
-  const { bottom } = useSafeArea(); // get bottom inset
+  const { bottom } = useSafeAreaInsets(); // get bottom inset
 
   return (
     <View style={{ color: colors.surface }}>

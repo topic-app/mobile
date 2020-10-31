@@ -1,13 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Dimensions } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
-import { Text, Subheading, useTheme } from 'react-native-paper';
-import moment from 'moment';
+import { Text, Subheading } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import moment from 'moment';
+
+import { Event } from '@ts/types';
+import { useTheme } from '@utils/index';
+
 import EventCalendar from '../components/calendar/EventCalendar';
 
-function EventEntry({ event }) {
+const EventEntry: React.FC<{ event: Event }> = ({ event }) => {
   const { colors } = useTheme();
   return (
     <View>
@@ -21,7 +23,7 @@ function EventEntry({ event }) {
       {event.summary ? <Text style={{ color: colors.disabled }}>{event.summary}</Text> : null}
     </View>
   );
-}
+};
 
 function getLayout() {
   const { height, width } = Dimensions.get('window');
@@ -31,7 +33,7 @@ function getLayout() {
   };
 }
 
-function EventDisplayProgramV2({ event }) {
+const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
   const { program, duration } = event;
   if (Array.isArray(program) && program.length > 0) {
     const elements = program.map((p) => {
@@ -74,21 +76,6 @@ function EventDisplayProgramV2({ event }) {
       <Subheading>Pas de programme</Subheading>
     </View>
   );
-}
-
-export default EventDisplayProgramV2;
-
-const eventPropType = PropTypes.shape({
-  program: PropTypes.arrayOf(PropTypes.shape),
-  duration: PropTypes.shape({
-    start: PropTypes.string,
-  }),
-});
-
-EventDisplayProgramV2.propTypes = {
-  event: eventPropType.isRequired,
 };
 
-EventEntry.propTypes = {
-  event: eventPropType.isRequired,
-};
+export default EventDisplayProgram;

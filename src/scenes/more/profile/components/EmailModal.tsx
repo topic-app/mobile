@@ -1,30 +1,23 @@
 import React from 'react';
-import { ModalProps, State, Account } from '@ts/types';
-import {
-  Divider,
-  Button,
-  HelperText,
-  ProgressBar,
-  ThemeProvider,
-  Card,
-  useTheme,
-} from 'react-native-paper';
+import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { View, Platform, TextInput, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { request } from '@utils/index';
 // import LocalAuthentication from 'rn-local-authentication';
 
+import { ModalProps, State } from '@ts/types';
 import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
+import { useTheme, request } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { updateEmail } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
+
 import getArticleStyles from '../styles/Styles';
 
 type EmailModalProps = ModalProps & {
   state: { updateProfile: { loading: boolean; error: any } };
 };
 
-function EmailModal({ visible, setVisible, state }: EmailModalProps) {
+const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const profileStyles = getArticleStyles(theme);
@@ -178,7 +171,7 @@ function EmailModal({ visible, setVisible, state }: EmailModalProps) {
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { account } = state;

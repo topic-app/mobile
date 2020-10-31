@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, ScrollView, ActivityIndicator } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-import { Content, ErrorMessage } from '@components/index';
-import getStyles from '@styles/Styles';
-import { RequestState } from '@ts/types';
 
-type LegalPropTypes = {
+import { RequestState } from '@ts/types';
+import { Content, ErrorMessage } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
+
+type LegalPageProps = {
   content: string;
   state: RequestState;
   strings: {
@@ -16,7 +17,7 @@ type LegalPropTypes = {
   fetch: () => void;
 };
 
-function LegalPage({ state, content, strings, fetch }: LegalPropTypes) {
+const LegalPage: React.FC<LegalPageProps> = ({ state, content, strings, fetch }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -39,6 +40,6 @@ function LegalPage({ state, content, strings, fetch }: LegalPropTypes) {
       </ScrollView>
     </View>
   );
-}
+};
 
 export default LegalPage;
