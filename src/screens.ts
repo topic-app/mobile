@@ -31,6 +31,11 @@ export default {
           List: '/groupes',
         },
       },
+      Linking: {
+        screens: {
+          Linking: '/linking/:type',
+        },
+      },
     },
   },
   Configure: {
