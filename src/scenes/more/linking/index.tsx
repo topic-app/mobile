@@ -16,7 +16,7 @@ export type LinkingStackParams = {
 
 const Stack = createNativeStackNavigator<LinkingStackParams>();
 
-function ModerationStackNavigator() {
+function LinkingStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Linking">
       <Stack.Screen name="Linking" component={Linking} options={{ headerShown: false }} />
