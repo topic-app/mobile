@@ -107,7 +107,8 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
 
     const phone = await validatePhoneInput(phoneVal);
     if (phone.valid) {
-      updateEventCreationData({ phone: phoneVal, email: emailVal });
+      updateEventCreationData({ phone: phoneVal, email: emailVal, organizers: eventOrganizers });
+      next();
     } else {
       if (!phone.valid && !phone.error) {
         setPhone({

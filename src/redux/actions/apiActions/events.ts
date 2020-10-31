@@ -1,11 +1,18 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator, approveCreator } from './ActionCreator';
 import { UPDATE_EVENTS_STATE } from '@ts/redux';
 import { State } from '@ts/types';
+import { reportCreator, approveCreator } from './ActionCreator';
 
 type EventAddProps = {
   title: string;
+  summary: string;
+  description: string;
+  phone: string;
+  email: string;
+  organizers: string[];
+  start: Date;
+  end: Date;
   date: Date;
   location: {
     schools: string[];
@@ -13,34 +20,32 @@ type EventAddProps = {
     global: boolean;
   };
   group: string;
-  image: {
-    image: string;
-    thumbnails: {
-      small?: boolean;
-      medium?: boolean;
-      large?: boolean;
-    };
-  };
-  summary: string;
+  place: string[];
   parser: 'markdown' | 'plaintext';
-  data: string;
   preferences?: {
     comments?: boolean;
   };
   tags: string[];
+  program: string[];
 };
 
 function eventAddCreator({
   title,
+  summary,
+  description,
+  phone,
+  email,
+  organizers,
+  start,
+  end,
   date,
   location,
   group,
-  image,
-  summary,
+  place,
   parser,
-  data,
   preferences,
   tags,
+  program,
 }: EventAddProps) {
   return (dispatch: (action: any) => void, getState: () => State) => {
     return new Promise((resolve, reject) => {
@@ -60,18 +65,24 @@ function eventAddCreator({
         {
           event: {
             title,
+            summary,
+            description,
+            contact : {
+              phone,
+              email,
+              organizers,
+            },
+            start,
+            end,
             date,
             location,
-            author: getState().account.accountInfo.accountId,
             group,
-            image,
-            summary,
-            tags,
-            content: {
-              parser,
-              data,
-            },
+            place,
+            parser,
             preferences,
+            tags,
+            program,
+            author: getState().account.accountInfo.accountId,
           },
         },
         true,

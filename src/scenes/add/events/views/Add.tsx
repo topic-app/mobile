@@ -39,18 +39,24 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
 
-  const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
+  const add = (parser?: 'markdown' | 'plaintext') => {
     eventAdd({
       title: creationData.title,
       summary: creationData.summary,
+      description: creationData.description,
+      phone: creationData.phone,
+      email: creationData.email,
+      organizers: creationData.organizers,
+      start: creationData.start,
+      end: creationData.end,
       date: Date.now(),
       location: creationData.location,
       group: creationData.group,
-      image: null,
+      place: creationData.place,
       parser: parser || creationData.parser,
-      data: data || creationData.data,
-      tags: creationData.tags,
       preferences: null,
+      tags: creationData.tags,
+      program: creationData.program,
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearEventCreationData();
@@ -126,7 +132,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
                 key: 'program',
                 icon: 'script-text',
                 title: 'Programme',
-                component: <EventAddPageProgram />,
+                component: <EventAddPageProgram add={add} />,
               },
             ]}
           />
