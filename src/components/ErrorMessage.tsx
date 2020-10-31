@@ -1,17 +1,15 @@
 import React from 'react';
-import { Linking, Alert } from 'react-native';
+import { Alert } from 'react-native';
+import { Banner, Avatar } from 'react-native-paper';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { Banner, Avatar, useTheme } from 'react-native-paper';
-import Clipboard from '@react-native-community/clipboard';
 import DeviceInfo from 'react-native-device-info';
-import { connect } from 'react-redux';
-import { request } from '@utils/index';
+
+import { Error as ErrorType, RequestState } from '@ts/types';
+import { useTheme, request } from '@utils/index';
 import Store from '@redux/store';
 
-import { Error as ErrorType, RequestState, State } from '@ts/types';
-
 type Props = {
-  /* Please change me if `'app'` is too vague! */
+  /* Please change me if 'app' is too vague! */
   type: 'axios' | 'app';
   strings: {
     what: string;
@@ -21,9 +19,9 @@ type Props = {
   };
   error?: RequestState['error'] | ErrorType | ErrorType[] | any;
   id?: string;
-  retry?: () => Promise<any> | void;
-  restart?: () => Promise<any> | void;
-  back?: () => Promise<any> | void;
+  retry?: () => any;
+  restart?: () => any;
+  back?: () => any;
 };
 
 const ErrorMessage: React.FC<Props> = ({
@@ -68,16 +66,14 @@ const ErrorMessage: React.FC<Props> = ({
           }
         }
 
-        let state = Store?.getState() || { error: true };
+        const state = Store?.getState() || { error: true };
 
-        let responseData = err?.error?.response?.data?.error?.value;
-        try {
-          responseData = JSON.stringify(err?.error?.response?.data);
-        } catch (err) {}
+        const responseData =
+          err?.error?.response?.data?.error?.value || JSON.stringify(err?.error?.response?.data);
 
-        let now = new Date();
+        const now = new Date();
 
-        let errorString = `
+        const errorString = `
 \`\`\`yaml
 Rapport de bug Topic
 ---
@@ -112,7 +108,7 @@ Modele: Id ${DeviceInfo.getDeviceId()} | Model ${DeviceInfo.getModel()} | Vendor
 Gen ErrorMessage
 \`\`\`  `;
 
-        let strippedErrorString = `
+        const strippedErrorString = `
 \`\`\`yaml
 Rapport de bug Topic (version sans données personelles)
 ---

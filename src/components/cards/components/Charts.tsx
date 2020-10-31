@@ -1,7 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, useTheme, ProgressBar } from 'react-native-paper';
-import _ from 'lodash';
+import { Text, ProgressBar } from 'react-native-paper';
 
 import {
   PetitionVoteData,
@@ -11,6 +10,8 @@ import {
   PetitionVoteDataMultiple,
   Petition,
 } from '@ts/types';
+import { useTheme } from '@utils/index';
+
 import getPetitionStyles from '../styles/PetitionStyles';
 import MultiVote from './MultiVote';
 
@@ -40,7 +41,13 @@ const PetitionGoal: React.FC<PetitionGoalProps> = ({ voteData }) => {
     // TODO: Fix offset, not displaying properly on high density devices
     const offset = vote.toString().length * 2.5;
     // Return left spacing in percentage while making sure it stays in between 0% and 90%
-    return `${_.clamp(Math.round((vote / endGoal) * 100 - offset), 0, 90)}%`;
+    let spacing = Math.round((vote / endGoal) * 100 - offset);
+    if (spacing < 0) {
+      spacing = 0;
+    } else if (spacing > 90) {
+      spacing = 90;
+    }
+    return `${spacing}$`;
   };
 
   return (

@@ -1,16 +1,16 @@
 import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
+import { TextInput, HelperText, Button } from 'react-native-paper';
 
-import { request } from '@utils/index';
 import { StepperViewPageProps, CollapsibleView } from '@components/index';
+import { useTheme } from '@utils/index';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 
 import getArticleStyles from '../styles/Styles';
 
-type Props = StepperViewPageProps;
+type ArticleAddPageMetaProps = StepperViewPageProps;
 
-const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
+const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) => {
   const titleInput = createRef<RNTestInput>();
   const descriptionInput = createRef<RNTestInput>();
 

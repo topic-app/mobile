@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { connect } from 'react-redux';
 import {
   Button,
   RadioButton,
@@ -15,8 +16,9 @@ import { Content } from '@ts/types';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { StepperViewPageProps } from '@components/index';
 import { Account, State } from '@ts/types';
+import { StepperViewPageProps } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';

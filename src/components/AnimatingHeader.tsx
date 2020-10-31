@@ -3,7 +3,7 @@ import { Platform, Animated, View, ViewStyle, StyleProp } from 'react-native';
 
 import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
 
-type Props = CustomHeaderBarProps['scene']['descriptor']['options'] & {
+type AnimatingHeaderProps = CustomHeaderBarProps['scene']['descriptor']['options'] & {
   value: Animated.Value;
   maxElevation?: number;
   children?: React.ReactNode;
@@ -11,7 +11,7 @@ type Props = CustomHeaderBarProps['scene']['descriptor']['options'] & {
   title: string;
 };
 
-const AnimatingHeader: React.FC<Props> = ({
+const AnimatingHeader: React.FC<AnimatingHeaderProps> = ({
   value,
   maxElevation = 10,
   children,
@@ -30,7 +30,7 @@ const AnimatingHeader: React.FC<Props> = ({
         scene={{
           descriptor: {
             options: {
-              headerStyle: { ...headerStyle, elevation: 0 }, // elevation takes precedence
+              headerStyle: [headerStyle, { elevation: 0 }], // elevation takes precedence
               ...rest,
             },
           },

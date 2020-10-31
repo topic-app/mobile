@@ -6,22 +6,19 @@ import {
   HelperText,
   List,
   Text,
-  useTheme,
-  Card,
   ProgressBar,
   Divider,
   Title,
 } from 'react-native-paper';
 
+import { Account, GroupTemplate, GroupRequestState } from '@ts/types';
+import { StepperViewPageProps, ErrorMessage, Content, CollapsibleView } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import { updateGroupTemplates } from '@redux/actions/api/groups';
-import { StepperViewPageProps, ErrorMessage, Content, CollapsibleView } from '@components/index';
-import { Account, State, GroupTemplate, GroupsState, GroupRequestState } from '@ts/types';
-import getStyles from '@styles/Styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import getAuthStyles from '../styles/Styles';
-import { connect } from 'react-redux';
 
 type Props = StepperViewPageProps & {
   account: Account;
@@ -36,7 +33,6 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
   const submit = () => {
     if (template) {
       updateGroupCreationData({ type: template });
-      console.log('hello');
       next();
     } else {
       setError(true);
@@ -128,7 +124,7 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => next()}
+          onPress={submit}
           style={{ flex: 1 }}
         >
           Suivant
@@ -136,7 +132,7 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => prev()}
+          onPress={prev}
           style={{ flex: 1 }}
         >
           Precedent
@@ -158,11 +154,6 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
       </View>
     </View>
   );
-};
-
-const mapStateToProps = (state: State) => {
-  const { account, groups } = state;
-  return { account, templates: groups.templates, state: groups.state };
 };
 
 export default ArticleAddPageGroup;

@@ -1,40 +1,14 @@
 import React from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import { State } from '@ts/types';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { ReduxLocation } from '@ts/types';
 import LocationSelectPage from '@components/LocationSelectPage';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { ErrorMessage } from '@components/index';
 
-import getStyles from '@styles/Styles';
+import type { GroupAddStackParams } from '../index';
 
-import type { ArticleStackParams } from '../index';
+type GroupAddLocationProps = StackScreenProps<GroupAddStackParams, 'Location'>;
 
-type Navigation = StackNavigationProp<ArticleStackParams, 'EditParams'>;
-
-// TODO: Externalize into @ts/redux
-type ReduxLocation = {
-  global: boolean;
-  schools: string[];
-  departments: string[];
-};
-
-type ArticleEditParamsProps = {
-  navigation: Navigation;
-  route: {
-    params: {
-      type: 'schools' | 'departements' | 'regions' | 'other';
-      hideSearch: boolean;
-      callback: (location: ReduxLocation) => any;
-      initialData: ReduxLocation;
-    };
-  };
-};
-
-function ArticleAddLocation({ navigation, route }: ArticleEditParamsProps) {
+const GroupAddLocation: React.FC<GroupAddLocationProps> = ({ navigation, route }) => {
   const { hideSearch = false, type, initialData, callback } = route.params;
 
   return (
@@ -46,8 +20,11 @@ function ArticleAddLocation({ navigation, route }: ArticleEditParamsProps) {
         callback(location);
         navigation.goBack();
       }}
+      headerOptions={{
+        subtitle: 'Créer un groupe',
+      }}
     />
   );
-}
+};
 
-export default ArticleAddLocation;
+export default GroupAddLocation;

@@ -1,326 +1,358 @@
-import React from 'react';
-import { View, Platform } from 'react-native';
-import { TextInput, HelperText, Button, withTheme } from 'react-native-paper';
-import PropTypes from 'prop-types';
+import React, { useState, createRef } from 'react';
+import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { TextInput, HelperText, Button } from 'react-native-paper';
 
+import { useTheme, request } from '@utils/index';
+import { StepperViewPageProps } from '@components/index';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import { request } from '@utils/index';
+
 import getAuthStyles from '../styles/Styles';
 
-class AuthCreatePageGeneral extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: '',
-      titleError: false,
-      titleValid: false,
-      titleErrorMessage: '',
-      email: '',
-      emailError: false,
-      emailValid: false,
-      emailErrorMessage: 'Email Invalide',
-      password: '',
-      passwordError: false,
-      passwordValid: false,
-      passwordErrorMessage: '',
-    };
+type Props = StepperViewPageProps;
 
-    this.emailInput = React.createRef();
-    this.titleInput = React.createRef();
-    this.passwordInput = React.createRef();
+const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
+  const usernameInput = createRef<RNTestInput>();
+  const emailInput = createRef<RNTestInput>();
+  const passwordInput = createRef<RNTestInput>();
+
+  type InputStateType = {
+    value: string;
+    error: boolean;
+    valid: boolean;
+    message: string;
+  };
+
+  let tempUsername: InputStateType;
+  let tempEmail: InputStateType;
+  let tempPassword: InputStateType;
+
+  const [currentUsername, setCurrentUsername] = useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+  const [currentEmail, setCurrentEmail] = useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+  const [currentPassword, setCurrentPassword] = useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+
+  function setUsername(data: Partial<InputStateType>) {
+    // Étant donné que définir le state est asynchrone,
+    // si setUsername est appelé deux fois rapidement, un nom
+    // d'utilisateur peut possiblement remplacer un autre,
+    // nous devons donc utiliser une variable temporaire
+    tempUsername = { ...currentUsername, ...(tempUsername ?? {}), ...data };
+    setCurrentUsername(tempUsername);
+  }
+  function setEmail(data: Partial<InputStateType>) {
+    tempEmail = { ...currentEmail, ...(tempEmail ?? {}), ...data };
+    setCurrentEmail(tempEmail);
+  }
+  function setPassword(data: Partial<InputStateType>) {
+    tempPassword = { ...currentPassword, ...(tempPassword ?? {}), ...data };
+    setCurrentPassword(tempPassword);
   }
 
-  validateTitleInput = async (title) => {
-    let validation = { titleValid: false, titleError: false };
+  async function validateUsernameInput(username: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
 
-    if (title !== '') {
-      if (title.length < 20) {
+    if (username !== '') {
+      if (username.length < 3) {
         validation = {
-          titleValid: false,
-          titleError: true,
-          titleErrorMessage: 'Le titre doit contenir au moins 20 caractères',
+          valid: false,
+          error: true,
+          message: "Le nom d'utilisateur doit contenir au moins 3 caractères",
+        };
+      } else if (username.match(/^[a-zA-Z0-9_.]+$/i) === null) {
+        validation = {
+          valid: false,
+          error: true,
+          message:
+            "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux sauf « _ » et « . »",
         };
       } else {
-        validation = {
-          titleValid: false,
-          titleError: true,
-          titleErrorMessage: "Ce nom d'utilisateur existe déjà",
-        };
+        let result;
+        try {
+          result = await request('auth/check/local/username', 'get', { username });
+        } catch (err) {
+          updateState({ check: { success: false, error: err, loading: false } });
+        }
+        if (result?.data?.usernameExists === false) {
+          validation = { valid: true, error: false };
+        } else {
+          validation = {
+            valid: false,
+            error: true,
+            message: "Ce nom d'utilisateur existe déjà",
+          };
+        }
       }
     }
-
-    this.setState(validation);
+    setUsername(validation);
     return validation;
-  };
+  }
 
-  preValidateTitleInput = async (title) => {
-    if (title.length >= 3 && title.match(/^[a-zA-Z0-9_.]+$/i) !== null) {
-      this.setState({ titleValid: false, titleError: false });
+  function preValidateUsernameInput(username: string) {
+    if (username.length >= 3 && username.match(/^[a-zA-Z0-9_.]+$/i) !== null) {
+      setUsername({ valid: false, error: false });
     }
-  };
+  }
 
-  validateEmailInput = async (email) => {
-    let validation = { emailValid: false, emailError: false };
+  async function validateEmailInput(email: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (email !== '') {
       if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) === null) {
         validation = {
-          emailValid: false,
-          emailError: true,
-          emailErrorMessage: 'Adresse mail incorrecte',
+          valid: false,
+          error: true,
+          message: 'Adresse mail incorrecte',
         };
       } else {
-        const result = await request('auth/check/local/email', 'get', { email });
-        if (result.success && !result.data.emailExists) {
-          validation = { emailValid: true, emailError: false };
-        } else if (result.success) {
-          validation = {
-            emailValid: false,
-            emailError: true,
-            emailErrorMessage: 'Cette adresse email à déjà été utilisée',
-          };
+        let result;
+        try {
+          result = await request('auth/check/local/email', 'get', { email });
+        } catch (err) {
+          updateState({ check: { success: false, error: err, loading: false } });
+        }
+        if (result?.data?.emailExists === false) {
+          validation = { valid: true, error: false };
         } else {
-          updateState({ success: false, error: result.error });
+          validation = {
+            valid: false,
+            error: true,
+            message: 'Cette adresse email à déjà été utilisée',
+          };
         }
       }
     }
 
-    this.setState(validation);
+    setEmail(validation);
     return validation;
-  };
+  }
 
-  preValidateEmailInput = async (email) => {
+  function preValidateEmailInput(email: string) {
     if (email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) !== null) {
       // TODO: Change to emailExists once server is updated
-      this.setState({ emailValid: false, emailError: false });
+      setEmail({ valid: false, error: false });
     }
-  };
+  }
 
-  validatePasswordInput = async (password) => {
-    let validation = { passwordValid: false, passwordError: false };
+  function validatePasswordInput(password: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (password !== '') {
       if (password.length < 8) {
         validation = {
-          passwordValid: false,
-          passwordError: true,
-          passwordErrorMessage: 'Le mot de passe doit contenir au moins 8 caractères',
+          valid: false,
+          error: true,
+          message: 'Le mot de passe doit contenir au moins 8 caractères',
         };
       } else if (password.match(/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/) === null) {
         validation = {
-          passwordValid: false,
-          passwordError: true,
-          passwordErrorMessage:
+          valid: false,
+          error: true,
+          message:
             'Le mot de passe doit contenir au moins un chiffre, une minuscule et une majuscule',
         };
       } else {
-        validation = { passwordValid: true, passwordError: false };
+        validation = { valid: true, error: false };
       }
     }
 
-    this.setState(validation);
+    setPassword(validation);
     return validation;
-  };
+  }
 
-  preValidatePasswordInput = async (password) => {
+  function preValidatePasswordInput(password: string) {
     if (
       password.length >= 8 &&
       password.match(/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/) !== null
     ) {
-      this.setState({ passwordValid: false, passwordError: false });
+      setPassword({ valid: false, error: false });
     }
-  };
-
-  blurInputs = () => {
-    this.titleInput.current.blur();
-    this.emailInput.current.blur();
-    this.passwordInput.current.blur();
-  };
-
-  submit = async () => {
-    updateState({ loading: true }); // Do we need this anymore?
-
-    const title = this.titleInput.current.state.value;
-    const email = this.emailInput.current.state.value;
-    const password = this.passwordInput.current.state.value;
-
-    const { forward } = this.props;
-
-    const { passwordValid, passwordError } = await this.validatePasswordInput(password);
-    const { emailValid, emailError } = await this.validateEmailInput(email);
-    const { titleValid, titleError } = await this.validateTitleInput(title);
-    if (titleValid && emailValid && passwordValid) {
-      this.blurInputs();
-      updateCreationData({ title, email, password });
-      forward();
-    } else {
-      const result = {};
-      if (!titleValid && !titleError) {
-        result.titleValid = false;
-        result.titleError = true;
-        result.titleErrorMessage = "Nom d'utilisateur requis";
-      }
-      if (!emailValid && !emailError) {
-        result.emailValid = false;
-        result.emailError = true;
-        result.emailErrorMessage = 'Adresse mail requise';
-      }
-      if (!passwordValid && !passwordError) {
-        result.passwordValid = false;
-        result.passwordError = true;
-        result.passwordErrorMessage = 'Mot de passe requis';
-      }
-      this.setState(result);
-    }
-    updateState({ loading: false }); // Same here: do we need this?
-  };
-
-  render() {
-    const {
-      title,
-      titleError,
-      titleErrorMessage,
-      titleValid,
-      email,
-      emailError,
-      emailErrorMessage,
-      emailValid,
-      password,
-      passwordError,
-      passwordErrorMessage,
-      passwordValid,
-    } = this.state;
-
-    const { theme } = this.props;
-    const { colors } = theme;
-    const authStyles = getAuthStyles(theme);
-
-    return (
-      <View style={authStyles.formContainer}>
-        <View style={authStyles.textInputContainer}>
-          <TextInput
-            ref={this.titleInput}
-            label="Nom d'Utilisateur"
-            value={title}
-            error={titleError}
-            disableFullscreenUI
-            onSubmitEditing={(info) => {
-              this.validateTitleInput(info.nativeEvent.text);
-              this.emailInput.current.focus();
-            }}
-            autoFocus
-            theme={
-              titleValid
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
-            mode="outlined"
-            onEndEditing={(info) => {
-              this.validateTitleInput(info.nativeEvent.text);
-            }}
-            style={authStyles.textInput}
-            onChangeText={(text) => {
-              this.setState({ title: text });
-              this.preValidateTitleInput(text);
-            }}
-          />
-          <HelperText type="error" visible={titleError}>
-            {titleErrorMessage}
-          </HelperText>
-        </View>
-        <View style={authStyles.textInputContainer}>
-          <TextInput
-            ref={this.emailInput}
-            label="Email"
-            value={email}
-            error={emailError}
-            disableFullscreenUI
-            keyboardType="email-address"
-            autoCompleteType="email"
-            autoCapitalize="none"
-            onSubmitEditing={(info) => {
-              this.validateEmailInput(info.nativeEvent.text);
-              this.passwordInput.current.focus();
-            }}
-            theme={
-              emailValid
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
-            textContentType="emailAddress"
-            mode="outlined"
-            onEndEditing={(info) => {
-              this.validateEmailInput(info.nativeEvent.text);
-            }}
-            style={authStyles.textInput}
-            onChangeText={(text) => {
-              this.setState({ email: text });
-              this.preValidateEmailInput(text);
-            }}
-          />
-          <HelperText type="error" visible={emailError}>
-            {emailErrorMessage}
-          </HelperText>
-        </View>
-        <View style={authStyles.textInputContainer}>
-          <TextInput
-            ref={this.passwordInput}
-            label="Mot de Passe"
-            returnKeyType="go"
-            value={password}
-            disableFullscreenUI
-            error={passwordError}
-            mode="outlined"
-            secureTextEntry
-            onSubmitEditing={(info) => {
-              this.validatePasswordInput(info.nativeEvent.text);
-              this.submit();
-            }}
-            onEndEditing={(info) => {
-              this.validatePasswordInput(info.nativeEvent.text);
-            }}
-            textContentType="password"
-            autoCompleteType="password"
-            style={authStyles.textInput}
-            onChangeText={(text) => {
-              this.setState({ password: text });
-              this.preValidatePasswordInput(text);
-            }}
-            theme={
-              passwordValid
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
-          />
-          <HelperText type="error" visible={passwordError}>
-            {passwordErrorMessage}
-          </HelperText>
-        </View>
-        <View style={authStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              this.submit();
-            }}
-            style={{ flex: 1 }}
-          >
-            Suivant
-          </Button>
-        </View>
-      </View>
-    );
   }
-}
 
-export default withTheme(AuthCreatePageGeneral);
+  function blurInputs() {
+    usernameInput.current?.blur();
+    emailInput.current?.blur();
+    passwordInput.current?.blur();
+  }
 
-AuthCreatePageGeneral.propTypes = {
-  forward: PropTypes.func.isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-      valid: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
+  async function submit() {
+    updateState({ check: { loading: true, success: null, error: null } });
+
+    const usernameVal = currentUsername.value;
+    const emailVal = currentEmail.value;
+    const passwordVal = currentPassword.value;
+
+    const username = await validateUsernameInput(usernameVal);
+    const email = await validateEmailInput(emailVal);
+    const password = validatePasswordInput(passwordVal);
+    if (username.valid && email.valid && password.valid) {
+      updateCreationData({ username: usernameVal, email: emailVal, password: passwordVal });
+      next();
+    } else {
+      if (!username.valid && !username.error) {
+        setUsername({
+          valid: false,
+          error: true,
+          message: "Nom d'utilisateur requis",
+        });
+      }
+      if (!email.valid && !email.error) {
+        setEmail({
+          valid: false,
+          error: true,
+          message: 'Adresse mail requise',
+        });
+      }
+      if (!password.valid && !password.error) {
+        setPassword({
+          valid: false,
+          error: true,
+          message: 'Mot de passe requis',
+        });
+      }
+    }
+    updateState({ check: { loading: false, success: true, error: null } });
+  }
+
+  const theme = useTheme();
+  const { colors } = theme;
+  const authStyles = getAuthStyles(theme);
+
+  return (
+    <View style={authStyles.formContainer}>
+      <View style={authStyles.textInputContainer}>
+        <TextInput
+          ref={usernameInput}
+          label="Nom d'utilisateur"
+          value={currentUsername.value}
+          error={currentUsername.error}
+          disableFullscreenUI
+          autoCompleteType="username"
+          onSubmitEditing={({ nativeEvent }) => {
+            validateUsernameInput(nativeEvent.text);
+            emailInput.current?.focus();
+          }}
+          autoCorrect={false}
+          autoFocus
+          theme={
+            currentUsername.valid
+              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+              : theme
+          }
+          mode="outlined"
+          onEndEditing={({ nativeEvent }) => {
+            validateUsernameInput(nativeEvent.text);
+          }}
+          textContentType="username"
+          style={authStyles.textInput}
+          onChangeText={(text) => {
+            setUsername({ value: text });
+            preValidateUsernameInput(text);
+          }}
+        />
+        <HelperText type="error" visible={currentUsername.error}>
+          {currentUsername.message}
+        </HelperText>
+      </View>
+      <View style={authStyles.textInputContainer}>
+        <TextInput
+          ref={emailInput}
+          label="Email"
+          value={currentEmail.value}
+          error={currentEmail.error}
+          disableFullscreenUI
+          keyboardType="email-address"
+          autoCompleteType="email"
+          autoCapitalize="none"
+          onSubmitEditing={({ nativeEvent }) => {
+            validateEmailInput(nativeEvent.text);
+            passwordInput.current?.focus();
+          }}
+          autoCorrect={false}
+          theme={
+            currentEmail.valid
+              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+              : theme
+          }
+          textContentType="emailAddress"
+          mode="outlined"
+          onEndEditing={({ nativeEvent }) => {
+            validateEmailInput(nativeEvent.text);
+          }}
+          style={authStyles.textInput}
+          onChangeText={(text) => {
+            setEmail({ value: text });
+            preValidateEmailInput(text);
+          }}
+        />
+        <HelperText type="error" visible={currentEmail.error}>
+          {currentEmail.message}
+        </HelperText>
+      </View>
+      <View style={authStyles.textInputContainer}>
+        <TextInput
+          ref={passwordInput}
+          label="Mot de passe"
+          returnKeyType="go"
+          value={currentPassword.value}
+          disableFullscreenUI
+          error={currentPassword.error}
+          mode="outlined"
+          autoCorrect={false}
+          secureTextEntry
+          onSubmitEditing={({ nativeEvent }) => {
+            validatePasswordInput(nativeEvent.text);
+            blurInputs();
+            submit();
+          }}
+          onEndEditing={({ nativeEvent }) => {
+            validatePasswordInput(nativeEvent.text);
+          }}
+          textContentType="password"
+          autoCompleteType="password"
+          style={authStyles.textInput}
+          onChangeText={(text) => {
+            setPassword({ value: text });
+            preValidatePasswordInput(text);
+          }}
+          theme={
+            currentPassword.valid
+              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+              : theme
+          }
+        />
+        <HelperText type="error" visible={currentPassword.error}>
+          {currentPassword.message}
+        </HelperText>
+      </View>
+      <View style={authStyles.buttonContainer}>
+        <Button
+          mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => {
+            blurInputs();
+            submit();
+          }}
+          style={{ flex: 1 }}
+        >
+          Suivant
+        </Button>
+      </View>
+    </View>
+  );
 };
+
+export default AuthCreatePageGeneral;

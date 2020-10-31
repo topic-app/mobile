@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import {
   View,
@@ -10,14 +9,13 @@ import {
   StyleProp,
   TouchableOpacity,
 } from 'react-native';
-import { Text, IconButton, useTheme } from 'react-native-paper';
+import { Text, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import color from 'color';
 
-import { PlatformTouchable } from './PlatformComponents';
+import { useTheme } from '@utils/index';
 
 type ChipBaseProps = {
-  children: React.ReactNode;
   icon?: string;
   onPress?: () => void;
   selected?: boolean;
@@ -107,7 +105,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
   );
 };
 
-type TextChipProps = {
+type TextChipProps = ChipBaseProps & {
   title: string;
 };
 
@@ -166,11 +164,10 @@ type ListItem = {
   key: string;
   title: string;
   icon?: string;
-  [key: string]: any;
 };
 
-type CategoriesListProps = {
-  categories: ListItem[];
+type CategoriesListProps<T extends ListItem> = {
+  categories: T[];
   selected: string;
   setSelected: (key: any) => void;
   containerStyle?: StyleProp<ViewStyle>;
@@ -178,14 +175,14 @@ type CategoriesListProps = {
   chipProps?: object;
 };
 
-const CategoriesList: React.FC<CategoriesListProps> = ({
+const CategoriesList = <T extends ListItem>({
   categories,
   selected,
   setSelected,
   style,
   containerStyle,
   chipProps = {},
-}) => {
+}: CategoriesListProps<T>): React.ReactElement => {
   return (
     <FlatList
       style={[{ paddingVertical: 5 }, containerStyle]}
@@ -215,27 +212,27 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
   );
 };
 
-type ChipAddListProps = {
-  data?: ListItem[];
+type ChipAddListProps<T extends ListItem> = {
+  data?: T[];
   keyList?: string[];
   style?: StyleProp<ViewStyle>;
   containerStyle?: StyleProp<ViewStyle>;
-  setList: (item: ListItem) => void;
-  chipProps?: object;
+  setList: (item: T) => void;
+  chipProps?: Partial<TextChipProps>;
 };
 
-const ChipAddList: React.FC<ChipAddListProps> = ({
+const ChipAddList = <T extends ListItem>({
   data = [],
   keyList = [],
   setList,
   style,
   containerStyle,
   chipProps = {},
-}) => {
+}: ChipAddListProps<T>): React.ReactElement => {
   const sortedData = [
     // Bring selected items to the front
-    ...data.filter((item) => keyList.includes(item?.key)),
-    ...data.filter((item) => !keyList.includes(item?.key)),
+    ...data.filter((item) => keyList.includes(item.key)),
+    ...data.filter((item) => !keyList.includes(item.key)),
   ];
 
   return (
@@ -245,13 +242,13 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
       showsHorizontalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
       data={sortedData}
-      keyExtractor={(item) => item?.key}
+      keyExtractor={(item) => item.key}
       renderItem={({ item, index }) => {
         return (
           <TextChip
             icon={item.icon}
             title={item.title}
-            selected={keyList.includes(item?.key)}
+            selected={keyList.includes(item.key)}
             onPress={() => setList(item)}
             containerStyle={[
               {
@@ -269,19 +266,21 @@ const ChipAddList: React.FC<ChipAddListProps> = ({
   );
 };
 
-type ChipSuggestionListProps = {
-  data?: ListItem[];
-  setList: (item: any) => void;
+type ChipSuggestionListItem = ListItem & { color: string };
+
+type ChipSuggestionListProps<T extends ChipSuggestionListItem> = {
+  data?: T[];
+  setList: (item: T) => void;
   style?: StyleProp<ViewStyle>;
   containerStyle?: StyleProp<ViewStyle>;
 };
 
-const ChipSuggestionList: React.FC<ChipSuggestionListProps> = ({
+const ChipSuggestionList = <T extends ChipSuggestionListItem>({
   data = [],
   setList,
   style,
   containerStyle,
-}) => {
+}: ChipSuggestionListProps<T>): React.ReactElement => {
   return (
     <FlatList
       style={[{ paddingVertical: 5 }, containerStyle]}

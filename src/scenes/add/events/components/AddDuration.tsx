@@ -1,19 +1,17 @@
 import React from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { View, Platform, Alert } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
-
-import { updateEventCreationData } from '@redux/actions/contentData/events';
-import { StepperViewPageProps } from '@components/index';
-import { Account, State } from '@ts/types';
-import getStyles from '@styles/Styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { CustomTabView } from '@components/index';
-import moment from 'moment';
-import getAuthStyles from '../styles/Styles';
+import { View, Platform } from 'react-native';
+import { Button, HelperText, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { ListHeading } from '@root/src/scenes/auth/components/ListComponents';
-import { ListItem } from '@root/src/scenes/more/list/components/ListComponents';
+import moment from 'moment';
+
+import { Account, State } from '@ts/types';
+import { StepperViewPageProps } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
+
+import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & { account: Account };
 
@@ -28,7 +26,6 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   const [endShow, setEndShow] = React.useState(false);
 
   const theme = useTheme();
-  const { colors } = theme;
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 

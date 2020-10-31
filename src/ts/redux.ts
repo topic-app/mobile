@@ -1,3 +1,5 @@
+import themes from '@styles/Theme';
+
 import {
   Article,
   ArticlePreload,
@@ -20,7 +22,6 @@ import {
   UserPreload,
   GroupTemplate,
 } from './api';
-
 import {
   ArticleRequestState,
   CommentRequestState,
@@ -33,6 +34,7 @@ import {
   TagRequestState,
   UserRequestState,
   LegalRequestState,
+  LocationRequestState,
   LinkingRequestState,
 } from './requestState';
 
@@ -830,3 +832,37 @@ export type ActionType =
   | TagsActionTypes
   | PlacesActionTypes
   | LegalActionTypes;
+
+export type ReduxLocation = {
+  global: boolean;
+  schools: string[];
+  departments: string[];
+};
+
+export type Preferences = {
+  // This is equivalent to JS's Object.keys() for types (hover over theme for more info)
+  theme: keyof typeof themes;
+  useSystemTheme: boolean;
+  history: boolean;
+  recommendations: boolean;
+  syncHistory: boolean;
+  syncLists: boolean;
+  fontSize: number;
+  stripFormatting: boolean;
+  fontFamily: string;
+};
+
+export type LocationList = {
+  selected: boolean;
+  global: boolean;
+  schools: string[];
+  schoolData: SchoolPreload[];
+  departments: string[];
+  departmentData: DepartmentPreload[];
+  state: LocationRequestState;
+};
+
+export type ModalProps = {
+  visible: boolean;
+  setVisible: (state: boolean) => void;
+};

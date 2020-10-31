@@ -1,19 +1,20 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
-
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { StepperViewPageProps } from '@components/index';
-import { Account, State } from '@ts/types';
-import getStyles from '@styles/Styles';
+import { Button, RadioButton, HelperText, List, Text, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';
 
-type Props = StepperViewPageProps & { account: Account };
+import { Account, State } from '@ts/types';
+import { StepperViewPageProps } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 
-const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
+import getAuthStyles from '../styles/Styles';
+
+type ArticleAddPageGroupProps = StepperViewPageProps & { account: Account };
+
+const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account }) => {
   const [group, setGroup] = React.useState(null);
   const [showError, setError] = React.useState(false);
 
@@ -93,8 +94,8 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
         </HelperText>
         {groupsWithPermission.length !== account.groups.length && (
           <Text>
-            Certains groups n'apparaissent pas car vous ne pouvez pas écrire d'articles pour ces
-            groupes
+            Certains groups n&apos;apparaissent pas car vous ne pouvez pas écrire d&apos;articles
+            pour ces groupes
           </Text>
         )}
       </View>
@@ -102,7 +103,7 @@ const ArticleAddPageGroup: React.FC<Props> = ({ next, account }) => {
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => submit()}
+          onPress={submit}
           style={{ flex: 1 }}
         >
           Suivant

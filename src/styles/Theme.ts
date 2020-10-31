@@ -1,7 +1,49 @@
 import { DefaultTheme, DarkTheme } from 'react-native-paper';
 import { Platform } from 'react-native';
-import { solidLight, solidDark } from './SolidColors';
+import { paletteLight, paletteDark } from './Palette';
 import fonts from './Fonts';
+
+type BaseThemeType = typeof DefaultTheme & {
+  statusBarStyle: 'light-content' | 'dark-content';
+  colors: {
+    statusBar: string;
+    primary: string;
+    primaryLighter: string;
+    primaryDarker: string;
+    primaryBackground: string;
+    secondary: string;
+    solid: typeof paletteLight;
+    appBar: string;
+    appBarText: string;
+    bottomBar: string;
+    bottomBarActive: string;
+    bottomBarInactive: string;
+    tabBackground: string;
+    drawerBackground: string;
+    drawerContent: string;
+    background: string;
+    softContrast: string;
+    highlight: string;
+    outline: string;
+    image: string;
+    subtext: string;
+    icon: string;
+    muted: string;
+    valid: string;
+    invalid: string;
+    warning: string;
+    anchor: string;
+    activeDrawerItem: string;
+  };
+};
+
+type ThemeName = 'light' | 'purple' | 'ultraviolet' | 'dark' | 'amoled';
+
+type ThemeType = BaseThemeType & {
+  name: string;
+  value: ThemeName;
+  egg?: boolean;
+};
 
 const common = {
   fonts,
@@ -16,14 +58,14 @@ const common = {
   },
 };
 
-const lightBase = {
+const lightBase: BaseThemeType = {
   ...DefaultTheme,
   ...common,
   statusBarStyle: 'dark-content', // The text color of the status bar
   colors: {
     ...DefaultTheme.colors,
     ...common.colors,
-    solid: solidLight,
+    solid: paletteLight,
     appBar: '#ffffff',
     appBarText: '#111111',
     bottomBar: '#ffffff',
@@ -50,7 +92,7 @@ const lightBase = {
   },
 };
 
-const darkBase = {
+const darkBase: BaseThemeType = {
   ...DarkTheme,
   // Note: 'dark: true' is included in ...DarkTheme,
   ...common,
@@ -58,7 +100,7 @@ const darkBase = {
   colors: {
     ...DarkTheme.colors,
     ...common.colors,
-    solid: solidDark,
+    solid: paletteDark,
     primary: common.colors.primaryLighter,
     bottomBar: '#242529',
     bottomBarActive: common.colors.primaryLighter,
@@ -86,7 +128,9 @@ const darkBase = {
   },
 };
 
-const themes = {
+const themes: {
+  [key in ThemeName]: ThemeType;
+} = {
   light: {
     name: 'Clair',
     value: 'light',
@@ -153,9 +197,8 @@ const themes = {
   },
 };
 
-type ValueOf<T> = T[keyof T];
-// Theme is union type of every theme in the `themes` object, equivalent of
-// type Theme = typeof themes.light | typeof themes.purple | ...
-export type Theme = ValueOf<typeof themes>;
+// Eslint needs a bit of help :)
+// eslint-disable-next-line no-undef
+export { ThemeType as Theme };
 
 export default themes;

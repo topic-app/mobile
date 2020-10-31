@@ -1,26 +1,26 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Button,
-  HelperText,
-  List,
-  Text,
-  Checkbox,
-  useTheme,
-  Divider,
-  ProgressBar,
-} from 'react-native-paper';
+import { Button, HelperText, List, Text, Checkbox, Divider, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import {
+  Account,
+  State,
+  ArticleCreationData,
+  Department,
+  School,
+  ReduxLocation,
+  RequestState,
+} from '@ts/types';
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { useTheme } from '@utils/index';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
-import { Account, State, ArticleCreationData, Department, School, RequestState } from '@ts/types';
 
 import getAuthStyles from '../styles/Styles';
 
-type Props = StepperViewPageProps & {
+type ArticleAddPageLocationProps = StepperViewPageProps & {
   account: Account;
   creationData: ArticleCreationData;
   navigation: any;
@@ -34,12 +34,6 @@ type Props = StepperViewPageProps & {
       info: RequestState;
     };
   };
-};
-
-type ReduxLocation = {
-  schools: string[];
-  departments: string[];
-  global: boolean;
 };
 
 const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
@@ -56,7 +50,7 @@ const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
   };
 };
 
-const ArticleAddPageLocation: React.FC<Props> = ({
+const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
   prev,
   next,
   account,
@@ -66,8 +60,8 @@ const ArticleAddPageLocation: React.FC<Props> = ({
   departmentItems,
   locationStates,
 }) => {
-  const [schools, setSchools] = React.useState([]);
-  const [departments, setDepartments] = React.useState([]);
+  const [schools, setSchools] = React.useState<string[]>([]);
+  const [departments, setDepartments] = React.useState<string[]>([]);
   const [global, setGlobal] = React.useState(false);
   const [showError, setError] = React.useState(false);
 
@@ -101,8 +95,10 @@ const ArticleAddPageLocation: React.FC<Props> = ({
   };
 
   React.useEffect(() => {
-    fetchMultiSchool(selectedGroupLocation?.schools?.map((s) => s._id));
-    fetchMultiDepartment(selectedGroupLocation?.departments?.map((s) => s._id));
+    if (selectedGroupLocation?.schools) {
+      fetchMultiSchool(selectedGroupLocation.schools.map((s) => s._id));
+      fetchMultiDepartment(selectedGroupLocation.departments.map((s) => s._id));
+    }
   }, [null]);
 
   return (

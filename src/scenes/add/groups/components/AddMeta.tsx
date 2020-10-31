@@ -1,9 +1,9 @@
 import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
+import { TextInput, HelperText, Button } from 'react-native-paper';
 
 import { StepperViewPageProps, CollapsibleView } from '@components/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 

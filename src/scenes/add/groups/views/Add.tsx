@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { Text, ProgressBar, useTheme, Button, HelperText } from 'react-native-paper';
+import { View, ScrollView } from 'react-native';
+import { Text } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import {
@@ -15,13 +15,13 @@ import {
 import {
   TranslucentStatusBar,
   StepperView,
-  ErrorMessage,
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
-import type { GroupStackParams } from '../index';
+import type { GroupAddStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
 import GroupAddPageTemplate from '../components/AddTemplate2';
 import GroupAddPageLocation from '../components/AddLocation';
@@ -29,7 +29,7 @@ import GroupAddPageMeta from '../components/AddMeta';
 // import GroupAddPageProof from '../components/AddProof';
 
 type Props = {
-  navigation: StackNavigationProp<GroupStackParams, 'Add'>;
+  navigation: StackNavigationProp<GroupAddStackParams, 'Add'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
   templates: GroupTemplate[];

@@ -23,13 +23,14 @@ import {
   DepartmentRequestState,
   State,
   LocationRequestState,
+  ReduxLocation as OldReduxLocation,
   Account,
 } from '@ts/types';
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
-import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
+import { updateArticleParams } from '@redux/actions/contentData/articles';
 import { updateEventParams } from '@redux/actions/contentData/events';
-import { updateSchools, updateNearSchools, searchSchools } from '@redux/actions/api/schools';
+import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
   TranslucentStatusBar,
@@ -48,11 +49,7 @@ import getLandingStyles from '../styles/Styles';
 
 type Navigation = StackNavigationProp<LandingStackParams, 'SelectLocation'>;
 
-// TODO: Externalize into @ts/redux
-type ReduxLocation = {
-  global: boolean;
-  schools: string[];
-  departments: string[];
+type ReduxLocation = OldReduxLocation & {
   schoolData: SchoolPreload[];
   departmentData: DepartmentPreload[];
 };

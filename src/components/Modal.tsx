@@ -1,8 +1,9 @@
 import React from 'react';
+import { Card } from 'react-native-paper';
+import ModalComponent from 'react-native-modal';
+
 import { ModalProps } from '@ts/types';
-import { View } from 'react-native';
-import { Card, useTheme } from 'react-native-paper';
-import { default as ModalComponent } from 'react-native-modal';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 const Modal = ({

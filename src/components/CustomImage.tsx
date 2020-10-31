@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Image as RNImage } from 'react-native';
-import { useTheme } from 'react-native-paper';
 
 import { Image as ImageType } from '@ts/types';
-import { getImageUrl } from '@utils/index';
+import { useTheme, getImageUrl } from '@utils/index';
 
 import getStyles from '../styles/Styles';
 

@@ -1,19 +1,18 @@
 import React from 'react';
-import { View, Image, Dimensions } from 'react-native';
-import { Card, Paragraph, Text, useTheme, Title, Caption } from 'react-native-paper';
-import moment from 'moment';
+import { View, Dimensions } from 'react-native';
+import { Card, Paragraph, Text, Title, Caption } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 import { ArticlePreload, State, Preferences } from '@ts/types';
-import { getImageUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { connect } from 'react-redux';
+import { useTheme } from '@utils/index';
 
 import { CardBase } from '../Cards';
 import TagList from '../TagList';
 import CustomImage from '../CustomImage';
 
-type Props = {
+type ArticleCardProps = {
   article: ArticlePreload;
   navigate: StackNavigationProp<any, any>['navigate'];
   unread: boolean;
@@ -25,7 +24,7 @@ const screenDimensions = Dimensions.get('window');
 const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
 const imageSize = minWidth / 3.5;
 
-const ArticleCard: React.FC<Props> = ({
+const ArticleCard: React.FC<ArticleCardProps> = ({
   article,
   navigate,
   unread = true,
@@ -33,7 +32,6 @@ const ArticleCard: React.FC<Props> = ({
   verification = false,
 }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
   const { colors } = theme;
 
   const readStyle = !unread && { color: colors.disabled };

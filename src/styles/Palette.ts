@@ -6,7 +6,7 @@ function colorShade(color: string, amount: number) {
     )}`;
 }
 
-const solidLight = {
+const paletteLight = {
   // Better colors should be at the top
   red: '#962626',
   green: '#34a115',
@@ -21,11 +21,8 @@ const solidLight = {
   purple: '#6a31a3',
 };
 
-const solidDark: { [key: string]: string } = {};
+const paletteDark = Object.entries(paletteLight)
+  .map(([key, val]) => ({ [key]: colorShade(val, -40) }))
+  .reduce((obj, item) => ({ ...obj, ...item })) as typeof paletteLight;
 
-Object.entries(solidLight).forEach(([key, val]) => {
-  // Darken all values in solidLight by 40 steps
-  solidDark[key] = colorShade(val, -40);
-});
-
-export { solidLight, solidDark };
+export { paletteLight, paletteDark };

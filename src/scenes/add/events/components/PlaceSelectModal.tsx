@@ -1,4 +1,8 @@
 import React from 'react';
+import { View, FlatList } from 'react-native';
+import { Divider, ProgressBar, Text, List } from 'react-native-paper';
+import { connect } from 'react-redux';
+
 import {
   Divider,
   ProgressBar,

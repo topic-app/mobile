@@ -1,21 +1,9 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Button,
-  HelperText,
-  List,
-  Text,
-  Checkbox,
-  useTheme,
-  Divider,
-  ProgressBar,
-} from 'react-native-paper';
+import { Button, HelperText, List, Checkbox, Divider, ProgressBar } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import {
   Account,
   State,
@@ -23,15 +11,22 @@ import {
   Department,
   School,
   RequestState,
+  ReduxLocation,
   LocationList,
 } from '@ts/types';
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { useTheme } from '@utils/index';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
 
 import getAuthStyles from '../styles/Styles';
+import { GroupAddStackParams } from '..';
 
-type Props = StepperViewPageProps & {
+type GroupAddLocationProps = StepperViewPageProps & {
+  navigation: StackNavigationProp<GroupAddStackParams, 'Location'>;
   account: Account;
   creationData: ArticleCreationData;
-  navigation: any;
   location: LocationList;
   schoolItems: School[];
   departmentItems: Department[];
@@ -43,12 +38,6 @@ type Props = StepperViewPageProps & {
       info: RequestState;
     };
   };
-};
-
-type ReduxLocation = {
-  schools: string[];
-  departments: string[];
-  global: boolean;
 };
 
 const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
@@ -65,7 +54,7 @@ const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
   };
 };
 
-const ArticleAddPageLocation: React.FC<Props> = ({
+const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   prev,
   next,
   account,
@@ -296,4 +285,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticleAddPageLocation);
+export default connect(mapStateToProps)(GroupAddLocation);

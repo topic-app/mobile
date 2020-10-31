@@ -1,9 +1,18 @@
 import React from 'react';
-import { Platform, View, ViewStyle, StyleProp, TouchableOpacity } from 'react-native';
-import { IconButton, useTheme, TouchableRipple } from 'react-native-paper';
+import {
+  Platform,
+  View,
+  ViewStyle,
+  StyleProp,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  TouchableNativeFeedbackProps,
+} from 'react-native';
+import { IconButton } from 'react-native-paper';
 import { TouchableHighlight, TouchableNativeFeedback } from 'react-native-gesture-handler';
-import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useTheme } from '@utils/index';
 
 type PlatformIconButtonProps = {
   // TODO: find a way to accept either `icon`, or `iosIcon` and `androidIcon`
@@ -54,6 +63,16 @@ const PlatformIconButton: React.FC<PlatformIconButtonProps> = ({
   );
 };
 
+type PlatformTouchableType = React.ComponentClass<
+  TouchableOpacityProps | TouchableNativeFeedbackProps
+>;
+
+const PlatformTouchable = Platform.select<PlatformTouchableType>({
+  ios: TouchableOpacity,
+  android: TouchableNativeFeedback,
+  default: TouchableOpacity,
+});
+
 type PlatformBackButtonProps = {
   onPress: () => void;
 };
@@ -73,9 +92,5 @@ const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) => (
     onPress={onPress}
   />
 );
-
-PlatformBackButton.propTypes = {
-  onPress: PropTypes.func.isRequired,
-};
 
 export { PlatformBackButton, PlatformIconButton, PlatformTouchable };

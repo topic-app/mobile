@@ -1,11 +1,12 @@
 import React from 'react';
 import { View } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Card, Text, useTheme } from 'react-native-paper';
+import { Card, Text } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment';
 
 import { PetitionStatus, PetitionPreload, Theme } from '@ts/types';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import { CardBase } from '../Cards';
@@ -87,14 +88,7 @@ const StatusChip: React.FC<StatusChipProps> = ({ mode = 'contained', color, icon
         ...viewStyles,
       }}
     >
-      {icon ? (
-        <MaterialCommunityIcons
-          name={icon}
-          color={textColor}
-          size={17}
-          style={{ paddingRight: 2 }}
-        />
-      ) : null}
+      {icon ? <Icon name={icon} color={textColor} size={17} style={{ paddingRight: 2 }} /> : null}
       <Text style={{ color: textColor, fontSize: 13 }}>{label}</Text>
     </View>
   );
