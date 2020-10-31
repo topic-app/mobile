@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Dimensions, Alert } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
-import { EventListItem, Event } from '@ts/types';
+import { Event, EventListItem } from '@ts/types';
 import { EventCard, PlatformTouchable } from '@components/index';
+import { useTheme } from '@utils/index';
 import {
   addEventRead,
   deleteEventRead,
@@ -17,12 +18,12 @@ import getStyles from '@styles/Styles';
 import getArticleStyles from '../styles/Styles';
 
 type EventListCardProps = {
-  article: Article;
+  event: Event;
   sectionKey: string;
   itemKey: string;
   isRead: boolean;
   historyActive: boolean;
-  lists: ArticleListItem[];
+  lists: EventListItem[];
   navigate: () => void;
 };
 

@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getGroupStyles(theme) {
+import { Theme } from '@ts/types';
+
+function getGroupStyles(_theme: Theme) {
   return StyleSheet.create({
     activeCommentContainer: {
       paddingHorizontal: 15,

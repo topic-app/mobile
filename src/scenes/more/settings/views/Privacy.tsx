@@ -1,17 +1,27 @@
 import React from 'react';
 import { View, ScrollView, Alert } from 'react-native';
-import { List, Avatar, Divider, Banner, Switch, withTheme } from 'react-native-paper';
+import { List, Avatar, Divider, Banner, Switch } from 'react-native-paper';
 import { clearArticlesRead } from '@redux/actions/contentData/articles';
-import PropTypes from 'prop-types';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { Preferences, State } from '@ts/types';
 import { Illustration, CustomHeaderBar } from '@components/index';
+import { useTheme } from '@utils/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 
+import type { SettingsStackParams } from '../index';
 import getSettingsStyles from '../styles/Styles';
 
-function SettingsTheme({ preferences, theme, account, navigation }) {
+type SettingsThemeProps = {
+  preferences: Preferences;
+  account: Account;
+  navigation: StackNavigationProp<SettingsStackParams, 'Content'>;
+};
+
+const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, navigation }) => {
+  const theme = useTheme();
   const styles = getStyles(theme);
   const settingsStyles = getSettingsStyles(theme);
   const { colors } = theme;
@@ -342,23 +352,11 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
       </ScrollView>
     </View>
   );
-}
-
-SettingsTheme.propTypes = {
-  preferences: PropTypes.shape({
-    theme: PropTypes.string.isRequired,
-    useSystemTheme: PropTypes.bool.isRequired,
-  }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { preferences, account } = state;
   return { preferences, account };
 };
 
-export default connect(mapStateToProps)(withTheme(SettingsTheme));
+export default connect(mapStateToProps)(SettingsTheme);

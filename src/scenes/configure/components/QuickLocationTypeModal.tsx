@@ -1,26 +1,24 @@
 import React from 'react';
-import { ModalProps, ArticleListItem, ArticleQuickItem, State } from '@ts/types';
-import {
-  Divider,
-  Button,
-  Card,
-  RadioButton,
-  ThemeProvider,
-  List,
-  useTheme,
-} from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
-
-import { Modal } from '@components/index';
-import getStyles from '@styles/Styles';
+import { Divider, Button, RadioButton, List } from 'react-native-paper';
 import { connect } from 'react-redux';
+
+import { ModalProps, ArticleQuickItem, State } from '@ts/types';
+import { Modal } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
 
 type QuickTypeModalProps = ModalProps & {
   next: (type: string) => void;
   articleQuicks: ArticleQuickItem[];
 };
 
-function QuickTypeModal({ visible, setVisible, next, articleQuicks }: QuickTypeModalProps) {
+const QuickTypeModal: React.FC<QuickTypeModalProps> = ({
+  visible,
+  setVisible,
+  next,
+  articleQuicks,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -127,7 +125,7 @@ function QuickTypeModal({ visible, setVisible, next, articleQuicks }: QuickTypeM
       />
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { articleData } = state;

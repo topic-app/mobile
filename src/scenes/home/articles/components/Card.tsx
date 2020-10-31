@@ -1,18 +1,19 @@
 import React from 'react';
 import { View, Dimensions, Alert } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { ArticleListItem, Article } from '@ts/types';
 import { ArticleCard, PlatformTouchable } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
 import {
   addArticleRead,
   deleteArticleRead,
   addArticleToList,
   removeArticleFromList,
 } from '@redux/actions/contentData/articles';
-import getStyles from '@styles/Styles';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -44,7 +45,7 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
 
   const maxLeftActions = (Dimensions.get('window').width - 100) / 120;
 
-  const renderRightActions = (id: string) => {
+  const renderRightActions = (_id: string) => {
     return (
       <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
         {sectionKey !== 'lists' ? (

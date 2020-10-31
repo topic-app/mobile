@@ -1,11 +1,9 @@
 import React from 'react';
-import { ModalProps, State, GroupRole, UserPreload, GroupRequestState } from '@ts/types';
+import { View, Platform, SectionList, TextInput as NativeTextInput } from 'react-native';
 import {
   Divider,
   Button,
   Text,
-  Card,
-  useTheme,
   RadioButton,
   List,
   IconButton,
@@ -15,25 +13,14 @@ import {
   TextInput,
   ProgressBar,
 } from 'react-native-paper';
-import { View, Platform, SectionList, TextInput as NativeTextInput } from 'react-native';
 import { connect } from 'react-redux';
 
+import { ModalProps, State, GroupRole, UserPreload, GroupRequestState } from '@ts/types';
 import { CollapsibleView, CategoryTitle, ErrorMessage, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import getArticleStyles from '../styles/Styles';
 import { groupMemberAdd } from '@redux/actions/apiActions/groups';
 import { fetchGroup } from '@redux/actions/api/groups';
-
-type CommentPublisher = {
-  key: string;
-  title: string;
-  icon: string;
-  publisher: {
-    type: 'user' | 'group';
-    group?: string;
-  };
-  type: 'category';
-};
 
 type AddUserRoleModalProps = ModalProps & {
   roles: GroupRole[];
@@ -43,7 +30,7 @@ type AddUserRoleModalProps = ModalProps & {
   next: () => any;
 };
 
-function AddUserRoleModal({
+const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   visible,
   setVisible,
   roles,
@@ -51,10 +38,9 @@ function AddUserRoleModal({
   group,
   state,
   next,
-}: AddUserRoleModalProps) {
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [primaryRole, setPrimaryRole] = React.useState(null);
@@ -212,7 +198,6 @@ function AddUserRoleModal({
           </View>
         )}
         ListFooterComponent={() => {
-          // eslint-disable-next-line react-hooks/rules-of-hooks
           const setExpiry = () => {
             if (expiryDate) {
               setExpiryDate(0);
@@ -269,7 +254,7 @@ function AddUserRoleModal({
                           {...props}
                           value={expiryDate.toString()}
                           autoCorrect={false}
-                          onChangeText={(text) => setExpiryDate(parseInt(text) || 0)}
+                          onChangeText={(text) => setExpiryDate(parseInt(text, 10) || 0)}
                           keyboardType="number-pad"
                           textAlign="center"
                         />
@@ -302,7 +287,7 @@ function AddUserRoleModal({
       />
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { groups } = state;

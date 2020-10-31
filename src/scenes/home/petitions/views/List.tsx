@@ -1,14 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Animated } from 'react-native';
-import { Button, FAB, useTheme } from 'react-native-paper';
+import { Button, FAB } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import UnauthorizedBeta from '@components/UnauthorizedBeta';
 
+import { Petition, PetitionPreload, State } from '@ts/types';
 import { PetitionCard, AnimatingHeader } from '@components/index';
+import UnauthorizedBeta from '@components/UnauthorizedBeta';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
-function PetitionList({ navigation, petitions }) {
+import type { HomeTwoNavParams } from '../../HomeTwo';
+
+type PetitionListProps = {
+  navigation: StackNavigationProp<HomeTwoNavParams, 'Petition'>;
+  petitions: (PetitionPreload | Petition)[];
+};
+
+const PetitionList: React.FC<PetitionListProps> = ({ navigation, petitions }) => {
   return <UnauthorizedBeta />;
 
   const theme = useTheme();
@@ -90,43 +99,11 @@ function PetitionList({ navigation, petitions }) {
       />
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { petitions } = state;
   return { petitions: petitions.data, state: petitions.state };
 };
 
 export default connect(mapStateToProps)(PetitionList);
-
-PetitionList.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  petitions: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      voteData: PropTypes.shape({
-        type: PropTypes.string.isRequired,
-        goal: PropTypes.number,
-        votes: PropTypes.number,
-        against: PropTypes.number,
-        for: PropTypes.number,
-        multiple: PropTypes.arrayOf(
-          PropTypes.shape({
-            title: PropTypes.string,
-            votes: PropTypes.number,
-          }),
-        ),
-      }).isRequired,
-      duration: PropTypes.shape({
-        start: PropTypes.string.isRequired, // Note: need to change to instanceOf(Date) once we get axios working
-        end: PropTypes.string.isRequired,
-      }).isRequired,
-      description: PropTypes.string,
-      objective: PropTypes.string,
-      votes: PropTypes.string,
-    }),
-  ).isRequired,
-};

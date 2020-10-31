@@ -1,17 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Platform, TouchableOpacity } from 'react-native';
-import { Text, useTheme, IconButton, Menu, Provider, Divider } from 'react-native-paper';
-import Avatar from '@components/Avatar';
-import Content from '@components/Content';
-import { PlatformIconButton } from '@components/PlatformComponents';
-import getStyles from '@styles/Styles';
+import { Text, IconButton, Menu } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
+
+import { Comment } from '@ts/types';
+import { Avatar, Content } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
+
 import getCommentStyles from './styles/Styles';
 
-function CommentInlineCard({ comment, report, loggedIn, navigation }) {
-  const { publisher, content, date, parent, parentType, _id: id } = comment;
-  const { _id: publisherId, displayName } = publisher[publisher.type] || {};
+type CommentInlineCardProps = {
+  comment: Comment;
+  report: (id: string) => any;
+  loggedIn: boolean;
+  navigation: StackNavigationProp<any, any>;
+};
+
+const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
+  comment,
+  report,
+  loggedIn,
+  navigation,
+}) => {
+  const { publisher, content, date, _id: id } = comment;
+  const { displayName } = publisher[publisher.type] || {};
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -72,33 +86,6 @@ function CommentInlineCard({ comment, report, loggedIn, navigation }) {
       </View>
     </View>
   );
-}
+};
 
 export default CommentInlineCard;
-
-CommentInlineCard.propTypes = {
-  comment: PropTypes.shape({
-    publisher: PropTypes.shape({
-      type: PropTypes.oneOf(['user', 'group']).isRequired,
-      user: PropTypes.shape({
-        info: PropTypes.shape({
-          username: PropTypes.string,
-        }),
-        _id: PropTypes.string.isRequired,
-        displayName: PropTypes.string.isRequired,
-      }),
-      group: PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        displayName: PropTypes.string.isRequired,
-      }),
-    }).isRequired,
-    content: PropTypes.shape({
-      parser: PropTypes.oneOf(['plaintext', 'markdown']).isRequired,
-      data: PropTypes.string.isRequired,
-    }).isRequired,
-    date: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired,
-    parent: PropTypes.string.isRequired,
-    parentType: PropTypes.string.isRequired,
-  }).isRequired,
-};

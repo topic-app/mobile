@@ -3,7 +3,7 @@ import 'react-native-gesture-handler';
 import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { setJSExceptionHandler } from 'react-native-exception-handler';
-import { View, Platform, Text, StatusBar } from 'react-native';
+import { Platform } from 'react-native';
 import {
   useFonts,
   Rubik_300Light,

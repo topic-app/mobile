@@ -1,7 +1,7 @@
+import { Theme } from '@root/src/ts/types';
 import { StyleSheet } from 'react-native';
 
-function getEventStyles(theme) {
-  const { colors } = theme;
+function getEventStyles(_theme: Theme) {
   return StyleSheet.create({
     date: {
       fontSize: 15,

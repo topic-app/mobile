@@ -1,6 +1,7 @@
+import { Theme } from '@ts/types';
 import { StyleSheet } from 'react-native';
 
-function getArticleStyles(theme) {
+function getArticleStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     listItem: { padding: 6 },

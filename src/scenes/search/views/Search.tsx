@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import { Text, Button, useTheme, ProgressBar } from 'react-native-paper';
+import { Text, Button, ProgressBar } from 'react-native-paper';
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
@@ -29,7 +29,7 @@ import {
   EventCard,
   ErrorMessage,
 } from '@components/index';
-import { useSafeAreaInsets } from '@utils/index';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { searchArticles, clearArticles } from '@redux/actions/api/articles';
 import { searchEvents, clearEvents } from '@redux/actions/api/events';
@@ -150,7 +150,7 @@ const Search: React.FC<SearchProps> = ({
       data: groups,
       func: searchGroups,
       clear: clearGroups,
-      component: (group: GroupPreload) => <View />,
+      component: (_group: GroupPreload) => <View />,
       state: state.groups.search,
     },
     {
@@ -161,7 +161,7 @@ const Search: React.FC<SearchProps> = ({
       data: users,
       func: searchUsers,
       clear: clearUsers,
-      component: (user: UserPreload) => <View />,
+      component: (_user: UserPreload) => <View />,
       state: state.users.search,
     },
   ];

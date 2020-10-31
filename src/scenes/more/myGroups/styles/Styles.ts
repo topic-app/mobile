@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getMyGroupsStyles(theme) {
-  const { colors } = theme;
+import { Theme } from '@ts/types';
+
+function getMyGroupsStyles(_theme: Theme) {
   return StyleSheet.create({});
 }
 

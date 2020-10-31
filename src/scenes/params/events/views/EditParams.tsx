@@ -1,5 +1,5 @@
 import React from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import { State, ReduxLocation } from '@ts/types';
@@ -8,22 +8,20 @@ import { fetchMultiSchool } from '@redux/actions/api/schools';
 import LocationSelectPage from '@components/LocationSelectPage';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 
-import type { EventStackParams } from '../index';
+import type { EventConfigureStackParams } from '../index';
 
-type Navigation = StackNavigationProp<EventStackParams, 'EditParams'>;
+type Navigation = StackNavigationProp<EventConfigureStackParams, 'EditParams'>;
 
 function done(
   { schools, departments, global }: ReduxLocation,
   type: 'schools' | 'departements' | 'regions' | 'other',
   navigation: Navigation,
 ) {
-  Promise.all([
-    updateEventParams({
-      schools,
-      departments,
-      global,
-    }),
-  ]).then(() => {
+  updateEventParams({
+    schools,
+    departments,
+    global,
+  }).then(() => {
     if (type === 'schools') {
       fetchMultiSchool(schools);
     } else if (type === 'departements' || type === 'regions') {
@@ -33,18 +31,11 @@ function done(
   });
 }
 
-type EventEditParamsProps = {
-  navigation: Navigation;
+type EventEditParamsProps = StackScreenProps<EventConfigureStackParams, 'EditParams'> & {
   eventParams: ReduxLocation;
-  route: {
-    params: {
-      type: 'schools' | 'departements' | 'regions' | 'other';
-      hideSearch: boolean;
-    };
-  };
 };
 
-function EventEditParams({ navigation, eventParams, route }: EventEditParamsProps) {
+const EventEditParams: React.FC<EventEditParamsProps> = ({ navigation, eventParams, route }) => {
   const { hideSearch, type } = route.params;
 
   return (
@@ -55,7 +46,7 @@ function EventEditParams({ navigation, eventParams, route }: EventEditParamsProp
       callback={(location: ReduxLocation) => done(location, type, navigation)}
     />
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { eventData } = state;

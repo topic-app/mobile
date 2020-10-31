@@ -1,10 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
 import UserDisplay from './views/Display';
 
-const Stack = createNativeStackNavigator();
+export type UserDisplayStackParams = {
+  Display: { id: string };
+};
+
+const Stack = createNativeStackNavigator<UserDisplayStackParams>();
 
 function UserDisplayStackNavigator() {
   return (

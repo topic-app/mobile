@@ -1,16 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import { Text, List, Divider, useTheme } from 'react-native-paper';
-import getStyles from '@styles/Styles';
-import Content from '@components/Content';
+import { Text, Divider } from 'react-native-paper';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import shortid from 'shortid';
-import { InlineCard } from '@components/Cards';
-import getEventStyles from '../styles/Styles';
-import { connect } from 'react-redux';
+
 import { State, Account } from '@ts/types';
-import { CategoryTitle } from '@components/index';
+import { useTheme } from '@utils/index';
+import { CategoryTitle, Content, InlineCard } from '@components/index';
+import getStyles from '@styles/Styles';
+
+import getEventStyles from '../styles/Styles';
 
 function getPlaceLabels(place) {
   console.log('>>> Place', JSON.stringify(place, null, 2));

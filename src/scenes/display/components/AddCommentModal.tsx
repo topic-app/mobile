@@ -1,14 +1,13 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem, Account } from '@ts/types';
-import { Divider, Button, Text, Card, useTheme, ThemeProvider } from 'react-native-paper';
-import { View, Platform, TextInput, ActivityIndicator } from 'react-native';
+import { ModalProps, State, Account, CommentRequestState } from '@ts/types';
+import { Divider, Text } from 'react-native-paper';
+import { View, TextInput, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { config } from '@root/app.json';
 
-import { CollapsibleView, CategoriesList, PlatformIconButton, Modal } from '@components/index';
-import getStyles from '@styles/Styles';
+import { config } from '@root/app.json';
+import { CategoriesList, PlatformIconButton, Modal } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import getArticleStyles from './styles/Styles';
-import { logger } from '@root/src/utils';
 
 type CommentPublisher = {
   key: string;
@@ -24,18 +23,18 @@ type CommentPublisher = {
 type AddCommentModalProps = ModalProps & {
   id: string;
   account: Account;
+  reqState: CommentRequestState;
 };
 
-function AddCommentModal({
+const AddCommentModal: React.FC<AddCommentModalProps> = ({
   visible,
   setVisible,
   account,
   reqState,
   id,
   add,
-}: AddCommentModalProps) {
+}) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
@@ -152,7 +151,7 @@ function AddCommentModal({
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { account } = state;

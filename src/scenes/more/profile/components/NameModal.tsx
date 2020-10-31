@@ -1,21 +1,15 @@
 import React from 'react';
-import { ModalProps, State, Account } from '@ts/types';
-import {
-  Divider,
-  Button,
-  TextInput,
-  Card,
-  ThemeProvider,
-  useTheme,
-  ProgressBar,
-} from 'react-native-paper';
+import { Divider, Button, TextInput, ProgressBar } from 'react-native-paper';
 import { View, Platform } from 'react-native';
 import { connect } from 'react-redux';
 
-import getStyles from '@styles/Styles';
+import { ModalProps, State, Account } from '@ts/types';
 import { ErrorMessage, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
 import { updateData } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
+
 import getprofileStyles from '../styles/Styles';
 
 type NameModalProps = ModalProps & {
@@ -23,7 +17,7 @@ type NameModalProps = ModalProps & {
   state: { updateProfile: { loading: boolean; error: any } };
 };
 
-function NameModal({ visible, setVisible, account, state }: NameModalProps) {
+const NameModal: React.FC<NameModalProps> = ({ visible, setVisible, account, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const profileStyles = getprofileStyles(theme);
@@ -94,7 +88,7 @@ function NameModal({ visible, setVisible, account, state }: NameModalProps) {
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { account } = state;

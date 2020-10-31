@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, Title, Divider, List, useTheme, Card, Button } from 'react-native-paper';
 import { View, Image, ActivityIndicator, Animated, Platform, Share } from 'react-native';
+import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -29,19 +29,19 @@ import {
   Illustration,
   ReportModal,
 } from '@components/index';
-import { getImageUrl, handleUrl } from '@utils/index';
+import { useTheme, getImageUrl, handleUrl } from '@utils/index';
+import getStyles from '@styles/Styles';
 import { articleReport, articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
-import { addArticleRead, addArticleToList } from '@redux/actions/contentData/articles';
+import { addArticleRead } from '@redux/actions/contentData/articles';
 import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
-import getStyles from '@styles/Styles';
 
+import type { ArticleDisplayStackParams } from '../index';
 import CommentInlineCard from '../../components/Comment';
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
 import getArticleStyles from '../styles/Styles';
-import type { ArticleDisplayStackParams } from '../index';
 
 // Common types
 type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;

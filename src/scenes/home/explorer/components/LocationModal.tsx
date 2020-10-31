@@ -3,9 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button, Divider, Text, withTheme, Card, Title, useTheme } from 'react-native-paper';
+import { Button, Divider, Text, withTheme, Card, Title } from 'react-native-paper';
 import moment from 'moment';
 
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import places from '@src/data/explorerListData.json';
 

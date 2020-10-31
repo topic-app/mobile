@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Platform, Linking, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
-import { HelperText, Button, Checkbox, List, useTheme } from 'react-native-paper';
+import { View, Platform, TouchableOpacity } from 'react-native';
+import { HelperText, Button, Checkbox, List } from 'react-native-paper';
 
 import { StepperViewPageProps } from '@components/index';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 import { ListHeading, ListItem, ListItemAnchor } from './ListComponents';

@@ -2,7 +2,7 @@ import crypto from 'react-native-simple-crypto';
 import { config } from '@root/app.json';
 
 const hashPassword = async (password: string) => {
-  let hashedPassword = await crypto.PBKDF2.hash(
+  const hashedPassword = await crypto.PBKDF2.hash(
     crypto.utils.convertUtf8ToArrayBuffer(password),
     crypto.utils.convertUtf8ToArrayBuffer(config.auth.salt),
     config.auth.iterations,

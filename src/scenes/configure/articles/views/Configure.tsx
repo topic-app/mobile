@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Divider, Text, List, Button, Switch, useTheme } from 'react-native-paper';
+import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { View, Platform, FlatList, Alert } from 'react-native';
 import { connect } from 'react-redux';
+import { StackNavigationProp } from '@react-navigation/stack';
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 
 import {
@@ -19,6 +19,7 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import {
   deleteArticleList,
@@ -29,6 +30,7 @@ import {
 } from '@redux/actions/contentData/articles';
 import getArticleStyles from '../styles/Styles';
 
+import type { ArticleListsStackParams } from '../index';
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
@@ -41,7 +43,7 @@ type ArticleListsProps = {
   preferences: Preferences;
   articlePrefs: ArticlePrefs;
   account: Account;
-  navigation: any;
+  navigation: StackNavigationProp<ArticleListsStackParams, 'Configure'>;
 };
 
 type Category = {
@@ -518,17 +520,3 @@ const mapStateToProps = (state: State) => {
 };
 
 export default connect(mapStateToProps)(ArticleLists);
-
-ArticleLists.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  state: PropTypes.shape({
-    info: PropTypes.shape({}).isRequired,
-  }).isRequired,
-};

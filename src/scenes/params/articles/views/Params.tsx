@@ -1,16 +1,43 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { ProgressBar, Text, Divider, useTheme } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
 import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { ProgressBar, Text, Divider } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import {
+  ArticleParams,
+  Department,
+  DepartmentRequestState,
+  School,
+  SchoolRequestState,
+  State,
+} from '@ts/types';
 import { ErrorMessage, InlineCard, Illustration } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import getStyles from '@styles/Styles';
+import { ArticleConfigureStackParams } from '..';
 
-function ArticleParams({ navigation, params, schools, departments, state }) {
+type ArticleParamsProps = {
+  navigation: StackNavigationProp<ArticleConfigureStackParams, 'Params'>;
+  params: ArticleParams;
+  schools: School[];
+  departments: Department[];
+  reqState: {
+    schools: SchoolRequestState;
+    departments: DepartmentRequestState;
+  };
+};
+
+const ArticleParams: React.FC<ArticleParamsProps> = ({
+  navigation,
+  params,
+  schools,
+  departments,
+  reqState,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -27,7 +54,7 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
 
   useFocusEffect(React.useCallback(fetch, [null]));
 
-  const states = [state.schools.info, state.departments.info];
+  const states = [reqState.schools.info, reqState.departments.info];
 
   return (
     <View style={styles.page}>
@@ -119,15 +146,15 @@ function ArticleParams({ navigation, params, schools, departments, state }) {
       </ScrollView>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { articleData, schools, departments } = state;
   return {
     params: articleData.params,
     schools: schools.items,
     departments: departments.items,
-    state: {
+    reqState: {
       schools: schools.state,
       departments: departments.state,
     },
@@ -135,38 +162,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(ArticleParams);
-
-const tagPropType = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  displayName: PropTypes.string.isRequired,
-});
-
-ArticleParams.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  params: PropTypes.shape().isRequired,
-  schools: PropTypes.arrayOf(tagPropType).isRequired,
-  departments: PropTypes.arrayOf(tagPropType).isRequired,
-  tags: PropTypes.arrayOf(tagPropType).isRequired,
-  groups: PropTypes.arrayOf(tagPropType).isRequired,
-  state: PropTypes.shape({
-    schools: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    departments: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    tags: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    groups: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-  }).isRequired,
-};

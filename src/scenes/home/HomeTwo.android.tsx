@@ -1,10 +1,9 @@
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useTheme } from 'react-native-paper';
 
 import UnauthorizedBeta from '@components/UnauthorizedBeta';
-import { useSafeAreaInsets } from '@utils/index';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
 
 import ArticleList from './articles/views/List';

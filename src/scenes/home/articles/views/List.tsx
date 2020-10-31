@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, FAB, useTheme } from 'react-native-paper';
+import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@utils/stack';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import {
@@ -18,6 +18,7 @@ import {
   Account,
 } from '@ts/types';
 import { AnimatingHeader, ErrorMessage, TabChipList, GroupsBanner } from '@components/index';
+import { useTheme } from '@utils/index';
 import {
   updateArticles,
   searchArticles,
