@@ -6,6 +6,7 @@ import {
   FlatList,
   TextInput as RNTextInput,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -22,6 +23,7 @@ import {
   DepartmentRequestState,
   State,
   LocationRequestState,
+  Account,
 } from '@ts/types';
 import { logger } from '@utils/index';
 import { updateLocation } from '@redux/actions/data/location';
@@ -176,6 +178,7 @@ type Props = {
   location?: ReduxLocation;
   navigation: Navigation;
   route: { params?: { goBack?: boolean } };
+  account: Account;
 };
 
 const WelcomeLocation: React.FC<Props> = ({
@@ -184,6 +187,7 @@ const WelcomeLocation: React.FC<Props> = ({
   schoolsSearch,
   departmentsSearch,
   state,
+  account,
   location = {
     global: false,
     schools: [],
@@ -211,6 +215,10 @@ const WelcomeLocation: React.FC<Props> = ({
 
   const [buttonVisible, setButtonVisible] = React.useState(false);
   const [userLocation, setUserLocation] = React.useState(false);
+
+  if (Platform.OS === 'web' && !account.loggedIn) {
+    window.location.replace('https://beta.topicapp.fr');
+  }
 
   React.useEffect(() => {
     // Check if Location is requestable
@@ -629,7 +637,7 @@ const WelcomeLocation: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { schools, departments, location } = state;
+  const { schools, departments, location, account } = state;
   return {
     schoolsNear: schools.near,
     departments: departments.data,
@@ -641,6 +649,7 @@ const mapStateToProps = (state: State) => {
       departments: departments.state,
       location: location.state,
     },
+    account,
   };
 };
 
