@@ -70,3 +70,8 @@ export type LocationRequestState = {
   fetch: RequestState;
   update: RequestState;
 };
+
+export type LinkingRequestState = {
+  emailChange: RequestState;
+  emailVerify: RequestState;
+};

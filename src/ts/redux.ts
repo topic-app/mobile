@@ -32,6 +32,7 @@ import {
   TagRequestState,
   UserRequestState,
   LegalRequestState,
+  LinkingRequestState,
 } from './requestState';
 
 // Articles
@@ -770,6 +771,17 @@ type UpdateLegalAction = {
 };
 
 export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction;
+
+export const UPDATE_LINKING_STATE = 'UPDATE_LINKING_STATE';
+export type LinkingState = {
+  state: LinkingRequestState;
+};
+
+type UpdateLinkingStateAction = {
+  type: typeof UPDATE_LINKING_STATE;
+  data: LinkingRequestState;
+};
+export type LinkingActionTypes = UpdateLinkingStateAction;
 
 export type ActionType =
   | ArticlesActionTypes

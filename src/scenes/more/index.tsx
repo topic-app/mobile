@@ -10,6 +10,7 @@ import SettingsStackNavigator from './settings/index';
 import MyGroupStackNavigator from './myGroups/index';
 import ModerationStackNavigator from './moderation/index';
 import AboutStackNavigator from './about/index';
+import LinkingStackNavigator from './linking/index';
 import UnauthorizedBeta from '@components/UnauthorizedBeta';
 
 const Stack = createNativeStackNavigator();
@@ -35,6 +36,11 @@ function MoreStackNavigator() {
       <Stack.Screen
         name="Moderation"
         component={ModerationStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Linking"
+        component={LinkingStackNavigator}
         options={{ headerShown: false }}
       />
       <Stack.Screen name="About" component={AboutStackNavigator} options={{ headerShown: false }} />
