@@ -7,7 +7,7 @@ import { reportCreator, approveCreator } from './ActionCreator';
 type EventAddProps = {
   title: string;
   summary: string;
-  description: string;
+  data: string;
   phone: string;
   email: string;
   organizers: string[];
@@ -20,7 +20,7 @@ type EventAddProps = {
     global: boolean;
   };
   group: string;
-  place: string[];
+  places: string[];
   parser: 'markdown' | 'plaintext';
   preferences?: {
     comments?: boolean;
@@ -32,7 +32,7 @@ type EventAddProps = {
 function eventAddCreator({
   title,
   summary,
-  description,
+  data,
   phone,
   email,
   organizers,
@@ -41,7 +41,7 @@ function eventAddCreator({
   date,
   location,
   group,
-  place,
+  places,
   parser,
   preferences,
   tags,
@@ -66,20 +66,24 @@ function eventAddCreator({
           event: {
             title,
             summary,
-            description,
+            description : {
+              parser,
+              data,
+            },
             contact : {
               phone,
               email,
               organizers,
             },
-            start,
-            end,
+            duration : {
+              start,
+              end,
+            },
             date,
             location,
             group,
-            place,
-            parser,
             preferences,
+            places,
             tags,
             program,
             author: getState().account.accountInfo.accountId,

@@ -43,7 +43,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
     eventAdd({
       title: creationData.title,
       summary: creationData.summary,
-      description: creationData.description,
+      data: creationData.description,
       phone: creationData.phone,
       email: creationData.email,
       organizers: creationData.organizers,
@@ -52,7 +52,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       date: Date.now(),
       location: creationData.location,
       group: creationData.group,
-      place: creationData.place,
+      places: creationData.place,
       parser: parser || creationData.parser,
       preferences: null,
       tags: creationData.tags,
