@@ -11,7 +11,7 @@ export type LinkingStackParams = {
   Linking: {
     type: keyof typeof types;
     [key: string]: string;
-  }
+  };
 };
 
 const Stack = createNativeStackNavigator<LinkingStackParams>();
@@ -24,4 +24,4 @@ function LinkingStackNavigator() {
   );
 }
 
-export default ModerationStackNavigator;
+export default LinkingStackNavigator;
