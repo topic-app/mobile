@@ -8,7 +8,10 @@ import Linking from './views/Linking';
 
 export type LinkingStackParams = {
   // Tried to get typescript to accept any key from types, but no idea how to do that
-  Linking: { type: keyof typeof types } & { [key: string]: string };
+  Linking: {
+    type: keyof typeof types;
+    [key: string]: string;
+  }
 };
 
 const Stack = createNativeStackNavigator<LinkingStackParams>();
