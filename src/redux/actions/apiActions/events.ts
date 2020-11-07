@@ -65,6 +65,7 @@ function eventAddCreator({
         {
           event: {
             title,
+            places,
             summary,
             description : {
               parser,
@@ -83,7 +84,6 @@ function eventAddCreator({
             location,
             group,
             preferences,
-            places,
             tags,
             program,
             author: getState().account.accountInfo.accountId,

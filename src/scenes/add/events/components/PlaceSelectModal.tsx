@@ -157,12 +157,12 @@ function EventPlaceSelectModal({
                         type,
                         address: {
                           shortName: item.name,
-                          geo: null,
-                          address: null,
+                          coordinates: undefined,
+                          address: undefined,
                           departments: [],
                         },
                         associatedSchool: item._id,
-                        associatedPlace: null,
+                        associatedPlace: undefined,
                       });
                     } else {
                       add({
@@ -170,11 +170,11 @@ function EventPlaceSelectModal({
                         type,
                         address: {
                           shortName: item.name,
-                          geo: null,
-                          address: null,
+                          coordinates: undefined,
+                          address: undefined,
                           departments: [],
                         },
-                        associatedSchool: null,
+                        associatedSchool: undefined,
                         associatedPlace: item._id,
                       });
                     }

@@ -158,10 +158,11 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
     if (currentCity.valid && currentCode.valid && currentNumber.valid) {
       add({
         id: shortid(),
-        type,
+        type: 'standalone',
         address: {
-          shortName: null,
-          geo: null,
+          _id: shortid(),
+          shortName: undefined,
+          coordinates: undefined,
           address: {
             number: numberVal,
             street: streetVal,
@@ -171,8 +172,8 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
           },
           departments: [],
         },
-        associatedSchool: null,
-        associatedPlace: null,
+        associatedSchool: undefined,
+        associatedPlace: undefined,
       });
       setVisible(false);
       setCurrentNumber({
