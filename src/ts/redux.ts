@@ -32,12 +32,14 @@ import {
   TagRequestState,
   UserRequestState,
   LegalRequestState,
+  LinkingRequestState,
 } from './requestState';
 
 // Articles
 export const UPDATE_ARTICLES_STATE = 'UPDATE_ARTICLES_STATE';
 export const UPDATE_ARTICLES_DATA = 'UPDATE_ARTICLES_DATA';
 export const UPDATE_ARTICLES_ITEM = 'UPDATE_ARTICLES_ITEM';
+export const UPDATE_ARTICLES_FOLLOWING = 'UPDATE_ARTICLES_FOLLOWING';
 export const UPDATE_ARTICLES_VERIFICATION = 'UPDATE_ARTICLES_VERIFICATION';
 export const UPDATE_ARTICLES_SEARCH = 'UPDATE_ARTICLES_SEARCH';
 export const UPDATE_ARTICLES_PARAMS = 'UPDATE_ARTICLES_PARAMS';
@@ -70,6 +72,7 @@ export type ArticleQuickItem = {
 
 export type ArticlesState = {
   data: ArticlePreload[];
+  following: ArticlePreload[];
   item: Article | null;
   search: ArticlePreload[];
   verification: ArticlePreload[];
@@ -120,6 +123,11 @@ type UpdateArticlesStateAction = {
 
 type UpdateArticlesDataAction = {
   type: typeof UPDATE_ARTICLES_DATA;
+  data: ArticlePreload[];
+};
+
+type UpdateArticlesFollowingAction = {
+  type: typeof UPDATE_ARTICLES_FOLLOWING;
   data: ArticlePreload[];
 };
 
@@ -177,6 +185,7 @@ export type ArticlesActionTypes =
   | UpdateArticlesStateAction
   | UpdateArticlesDataAction
   | UpdateArticlesItemAction
+  | UpdateArticlesFollowingAction
   | UpdateArticlesSearchAction
   | UpdateArticlesVerificationAction
   | UpdateArticlesParamsAction
@@ -457,6 +466,7 @@ export const UPDATE_GROUPS_STATE = 'UPDATE_GROUPS_STATE';
 export const UPDATE_GROUPS_DATA = 'UPDATE_GROUPS_DATA';
 export const UPDATE_GROUPS_ITEM = 'UPDATE_GROUPS_ITEM';
 export const UPDATE_GROUPS_SEARCH = 'UPDATE_GROUPS_SEARCH';
+export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
@@ -481,6 +491,11 @@ type UpdateGroupsItemAction = {
   data: Group;
 };
 
+type UpdateGroupsVerificationAction = {
+  type: typeof UPDATE_GROUPS_VERIFICATION;
+  data: GroupPreload[];
+};
+
 type UpdateGroupsSearchAction = {
   type: typeof UPDATE_GROUPS_SEARCH;
   data: GroupPreload[];
@@ -496,6 +511,7 @@ export type GroupsActionTypes =
   | UpdateGroupsDataAction
   | UpdateGroupsItemAction
   | UpdateGroupsSearchAction
+  | UpdateGroupsVerificationAction
   | ClearGroupsAction;
 
 // Petitions
@@ -765,6 +781,17 @@ type UpdateLegalAction = {
 };
 
 export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction;
+
+export const UPDATE_LINKING_STATE = 'UPDATE_LINKING_STATE';
+export type LinkingState = {
+  state: LinkingRequestState;
+};
+
+type UpdateLinkingStateAction = {
+  type: typeof UPDATE_LINKING_STATE;
+  data: LinkingRequestState;
+};
+export type LinkingActionTypes = UpdateLinkingStateAction;
 
 export type ActionType =
   | ArticlesActionTypes

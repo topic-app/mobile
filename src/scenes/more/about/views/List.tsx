@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Text, useTheme, Divider, List } from 'react-native-paper';
-import CustomTabView from '@components/CustomTabView';
+
+import { CustomHeaderBar, TranslucentStatusBar, CustomTabView } from '@components/index';
+import { handleUrl } from '@utils/index';
 import TopicIcon from '@assets/images/topic-icon.svg';
 import getStyles from '@styles/Styles';
 import getAboutStyles from '../styles/Styles';
-import { CustomHeaderBar, TranslucentStatusBar } from '@components/index';
 
 function About({ navigation }) {
   const theme = useTheme();
@@ -17,7 +18,6 @@ function About({ navigation }) {
     <View style={styles.page}>
       <TranslucentStatusBar />
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {
@@ -165,14 +165,23 @@ function About({ navigation }) {
                       license sous laquelle elle se trouve.
                     </Text>
                   </View>
-                  <List.Item title="Logo et ressources" description="© Ella Nitters" />
+                  <List.Item
+                    title="Logo et ressources"
+                    description="© Ella Nitters (ellanitters.com)"
+                    onPress={() => handleUrl('https://ellanitters.com')}
+                    right={() => <List.Icon icon="open-in-new" />}
+                  />
                   <List.Item
                     title="Illustrations"
                     description="© Katerina Limpitsouni (undraw.co)"
+                    onPress={() => handleUrl('https://undraw.co')}
+                    right={() => <List.Icon icon="open-in-new" />}
                   />
                   <List.Item
                     title="Données cartographiques"
                     description="© OpenMapTiles © OpenStreetMap Contributors"
+                    onPress={() => handleUrl('https://openstreetmap.org/copyright')}
+                    right={() => <List.Icon icon="open-in-new" />}
                   />
                   <Divider />
                   <List.Item

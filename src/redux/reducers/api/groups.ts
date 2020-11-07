@@ -5,12 +5,14 @@ import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_ITEM,
   UPDATE_GROUPS_SEARCH,
+  UPDATE_GROUPS_VERIFICATION,
   CLEAR_GROUPS,
 } from '@ts/redux';
 
 const initialState: GroupsState = {
   data: [],
   search: [],
+  verification: [],
   item: null,
   state: {
     list: {
@@ -103,6 +105,11 @@ function groupReducer(state = initialState, action: GroupsActionTypes): GroupsSt
       return {
         ...state,
         item: action.data,
+      };
+    case UPDATE_GROUPS_VERIFICATION:
+      return {
+        ...state,
+        verification: action.data,
       };
     case UPDATE_GROUPS_SEARCH:
       return {

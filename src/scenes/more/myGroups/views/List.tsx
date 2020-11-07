@@ -2,17 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, SectionList } from 'react-native';
 import { Text, ProgressBar, Divider, useTheme } from 'react-native-paper';
-import getStyles from '@styles/Styles';
-import { CategoryTitle } from '@components/Typography';
 import { connect } from 'react-redux';
-import Illustration from '@components/Illustration';
+
+import { Account, GroupsState, GroupRequestState, AccountRequestState } from '@ts/types';
+import {
+  Illustration,
+  CategoryTitle,
+  ErrorMessage,
+  GroupsBanner,
+  GroupCard,
+  CustomHeaderBar,
+  TranslucentStatusBar,
+} from '@components/index';
+import getStyles from '@styles/Styles';
 import { updateGroups } from '@redux/actions/api/groups';
 import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
-import ErrorMessage from '@components/ErrorMessage';
-import GroupsBanner from '@components/GroupsBanner';
-import GroupListCard from '../components/Card';
-import { Account, GroupsState, GroupRequestState, AccountRequestState } from '@ts/types';
-import { CustomHeaderBar, TranslucentStatusBar } from '@components/index';
 
 type Props = {
   account: Account;
@@ -26,7 +30,7 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  let fetch = (refresh = 'false') => {
+  let fetch = (refresh = false) => {
     updateGroups(refresh ? 'refresh' : 'initial');
     fetchWaitingGroups();
     fetchGroups();
@@ -65,7 +69,6 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
     <View style={styles.page}>
       <TranslucentStatusBar />
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {
@@ -131,7 +134,7 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
         ListFooterComponent={<View style={[styles.container, { height: 50 }]} />}
         renderItem={({ item }) => (
           <>
-            <GroupListCard
+            <GroupCard
               group={item}
               following={account.accountInfo?.user.data.following.groups.some(
                 (g) => g._id === item._id,

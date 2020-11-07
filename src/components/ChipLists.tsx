@@ -1,6 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { View, Platform, Animated, TextInput, FlatList, ViewStyle, StyleProp } from 'react-native';
+import {
+  View,
+  Platform,
+  Animated,
+  TextInput,
+  FlatList,
+  ViewStyle,
+  StyleProp,
+  TouchableOpacity,
+} from 'react-native';
 import { Text, IconButton, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import color from 'color';
@@ -65,7 +74,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
         containerStyle,
       ]}
     >
-      <PlatformTouchable
+      <TouchableOpacity
         disabled={!onPress || rightAction}
         onPress={onPress}
         onPressIn={handlePressIn}
@@ -93,7 +102,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             />
           )}
         </View>
-      </PlatformTouchable>
+      </TouchableOpacity>
     </Animated.View>
   );
 };

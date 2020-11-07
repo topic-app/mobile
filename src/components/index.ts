@@ -20,8 +20,10 @@ export { default as ReportModal } from './ReportModal';
 export { default as Searchbar } from './Searchbar';
 export { default as GroupsBanner } from './GroupsBanner';
 export { default as CustomImage } from './CustomImage';
+export { default as Modal } from './Modal';
 
 export { default as ArticleCard } from './cards/Article';
 export { default as EventCard } from './cards/Event';
+export { default as GroupCard } from './cards/Group';
 export { default as PetitionCard } from './cards/Petition';
 export { default as SafeAreaView } from './SafeAreaView';

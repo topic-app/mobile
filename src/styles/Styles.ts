@@ -98,6 +98,8 @@ function getStyles(theme: Theme) {
     },
     modalCard: {
       borderRadius: 0,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
     },
   });
 }

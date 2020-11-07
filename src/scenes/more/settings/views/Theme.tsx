@@ -4,7 +4,7 @@ import { List, RadioButton, Divider, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { State } from '@ts/types';
-import { Illustration } from '@components/index';
+import { Illustration, CustomHeaderBar } from '@components/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
@@ -28,6 +28,16 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
 
   return (
     <View style={styles.page}>
+      <CustomHeaderBar
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Thème',
+              subtitle: 'Paramètres',
+            },
+          },
+        }}
+      />
       <FlatList
         data={
           preferences.themeEasterEggDiscovered

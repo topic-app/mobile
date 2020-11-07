@@ -3,10 +3,9 @@ import { ModalProps, State, ArticleListItem, Account } from '@ts/types';
 import { Divider, Button, Text, Card, useTheme, ThemeProvider } from 'react-native-paper';
 import { View, Platform, TextInput, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { BottomModal, SlideAnimation } from '@components/Modals';
 import { config } from '@root/app.json';
 
-import { CollapsibleView, CategoriesList, PlatformIconButton } from '@components/index';
+import { CollapsibleView, CategoriesList, PlatformIconButton, Modal } from '@components/index';
 import getStyles from '@styles/Styles';
 import getArticleStyles from './styles/Styles';
 import { logger } from '@root/src/utils';
@@ -93,91 +92,65 @@ function AddCommentModal({
   };
 
   return (
-    <BottomModal
-      visible={visible}
-      onTouchOutside={() => {
-        setVisible(false);
-      }}
-      onHardwareBackPress={() => {
-        setVisible(false);
-        return true;
-      }}
-      onSwipeOut={() => {
-        setVisible(false);
-      }}
-      modalAnimation={
-        new SlideAnimation({
-          slideFrom: 'bottom',
-          useNativeDriver: false,
-        })
-      }
-    >
-      <ThemeProvider theme={theme}>
-        <Card style={styles.modalCard}>
-          {reqState.comments.add.error && (
-            <ErrorMessage
-              type="axios"
-              strings={{
-                what: 'l&apos;ajout du commentaire',
-                contentSingular: 'Le commentaire',
-              }}
-              error={reqState.comments.add.error}
-              retry={submitComment}
+    <Modal visible={visible} setVisible={setVisible}>
+      {reqState.comments.add.error && (
+        <ErrorMessage
+          type="axios"
+          strings={{
+            what: 'l&apos;ajout du commentaire',
+            contentSingular: 'Le commentaire',
+          }}
+          error={reqState.comments.add.error}
+          retry={submitComment}
+        />
+      )}
+      <View style={articleStyles.activeCommentContainer}>
+        <TextInput
+          // TODO: Hook up comments to drafts in redux, so the user sees his comment when he leaves and comes back.
+          // Could possibly also hook it up to drafts with the server in the future.
+          autoFocus
+          placeholder="Écrire un commentaire..."
+          placeholderTextColor={colors.disabled}
+          style={articleStyles.commentInput}
+          multiline
+          value={commentText}
+          onChangeText={setCommentText}
+        />
+      </View>
+      <Divider style={articleStyles.divider} />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flex: 1, flexGrow: 1 }}>
+          <CategoriesList categories={publishers} selected={publisher} setSelected={setPublisher} />
+        </View>
+        <View
+          style={{
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginLeft: 20,
+          }}
+        >
+          <Text style={{ color: commentCharCountColor }}>
+            {commentText.length}/{config.comments.maxCharacters}
+          </Text>
+
+          {reqState.comments.add.loading ? (
+            <ActivityIndicator
+              size="large"
+              color={colors.primary}
+              style={{ marginHorizontal: 7 }}
+            />
+          ) : (
+            <PlatformIconButton
+              color={tooManyChars || commentText.length < 1 ? colors.disabled : colors.primary}
+              icon="send"
+              onPress={tooManyChars || commentText.length < 1 ? undefined : submitComment}
+              style={{ padding: 0 }}
             />
           )}
-          <View style={articleStyles.activeCommentContainer}>
-            <TextInput
-              // TODO: Hook up comments to drafts in redux, so the user sees his comment when he leaves and comes back.
-              // Could possibly also hook it up to drafts with the server in the future.
-              autoFocus
-              placeholder="Écrire un commentaire..."
-              placeholderTextColor={colors.disabled}
-              style={articleStyles.commentInput}
-              multiline
-              value={commentText}
-              onChangeText={setCommentText}
-            />
-          </View>
-          <Divider style={articleStyles.divider} />
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View>
-              <CategoriesList
-                categories={publishers}
-                selected={publisher}
-                setSelected={setPublisher}
-              />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                flexDirection: 'row',
-              }}
-            >
-              <Text style={{ color: commentCharCountColor }}>
-                {commentText.length}/{config.comments.maxCharacters}
-              </Text>
-
-              {reqState.comments.add.loading ? (
-                <ActivityIndicator
-                  size="large"
-                  color={colors.primary}
-                  style={{ marginHorizontal: 7 }}
-                />
-              ) : (
-                <PlatformIconButton
-                  color={tooManyChars || commentText.length < 1 ? colors.disabled : colors.primary}
-                  icon="send"
-                  onPress={tooManyChars || commentText.length < 1 ? undefined : submitComment}
-                  style={{ padding: 0 }}
-                />
-              )}
-            </View>
-          </View>
-        </Card>
-      </ThemeProvider>
-    </BottomModal>
+        </View>
+      </View>
+    </Modal>
   );
 }
 

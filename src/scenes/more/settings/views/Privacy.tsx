@@ -1,14 +1,13 @@
 import React from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { List, Avatar, Divider, Banner, Switch, withTheme } from 'react-native-paper';
 import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { Illustration } from '@components/index';
+import { Illustration, CustomHeaderBar } from '@components/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
-import themes from '@styles/Theme';
 
 import getSettingsStyles from '../styles/Styles';
 
@@ -138,6 +137,16 @@ function SettingsTheme({ preferences, theme, account, navigation }) {
 
   return (
     <View style={styles.page}>
+      <CustomHeaderBar
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Vie privée',
+              subtitle: 'Paramètres',
+            },
+          },
+        }}
+      />
       <ScrollView>
         <View style={styles.centerIllustrationContainer}>
           <Illustration name="settings-privacy" height={200} width={200} />

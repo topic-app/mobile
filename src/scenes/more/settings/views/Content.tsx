@@ -1,33 +1,22 @@
-import React from "react";
-import { View, Text, ScrollView, Alert } from "react-native";
-import {
-  List,
-  Avatar,
-  Divider,
-  Banner,
-  Switch,
-  Button,
-  withTheme,
-  Card,
-} from "react-native-paper";
-import { clearArticlesRead } from "@redux/actions/contentData/articles";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React from 'react';
+import { View, ScrollView } from 'react-native';
+import { List, Divider, Switch, Button, withTheme, Card } from 'react-native-paper';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-import { Illustration, Content } from "@components/index";
-import { updatePrefs } from "@redux/actions/data/prefs";
-import getStyles from "@styles/Styles";
-import themes from "@styles/Theme";
-import Slider from "@react-native-community/slider";
+import { CustomHeaderBar, Content } from '@components/index';
+import { updatePrefs } from '@redux/actions/data/prefs';
+import getStyles from '@styles/Styles';
+import Slider from '@react-native-community/slider';
 
-import getSettingsStyles from "../styles/Styles";
+import getSettingsStyles from '../styles/Styles';
 
-function SettingsTheme({ preferences, theme, account, navigation }) {
+function SettingsContent({ preferences, theme, account, navigation }) {
   const styles = getStyles(theme);
   const settingsStyles = getSettingsStyles(theme);
   const { colors } = theme;
 
-  let testData = `
+  const testData = `
 # Lorem ipsum dolor sit amet
 Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 ### Ut enim ad minim veniam
@@ -39,6 +28,16 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
 
   return (
     <View style={styles.page}>
+      <CustomHeaderBar
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Contenu et accessibilité',
+              subtitle: 'Paramètres',
+            },
+          },
+        }}
+      />
       <ScrollView>
         <ScrollView height={300}>
           <View style={styles.container}>
@@ -51,10 +50,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
         </ScrollView>
         <Divider />
         <List.Section>
-          <List.Item
-            title="Taille du texte"
-            description={`${preferences.fontSize}px`}
-          />
+          <List.Item title="Taille du texte" description={`${preferences.fontSize}px`} />
           <Slider
             minimumValue={12}
             maximumValue={20}
@@ -68,57 +64,44 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
         <List.Section>
           <Divider />
           <List.Item title="Police" />
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          >
-            <View style={[styles.container, { justifyContent: "center" }]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+            <View style={[styles.container, { justifyContent: 'center' }]}>
               <Button
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
-                  fontFamily: "Roboto",
+                  fontFamily: 'Roboto',
                 }}
-                onPress={() => updatePrefs({ fontFamily: "Roboto" })}
-                mode={preferences.fontFamily === "Roboto" ? "outlined" : "text"}
+                onPress={() => updatePrefs({ fontFamily: 'Roboto' })}
+                mode={preferences.fontFamily === 'Roboto' ? 'outlined' : 'text'}
               >
                 Sans serif
               </Button>
             </View>
-            <View
-              style={[
-                styles.container,
-                { marginLeft: 0, justifyContent: "center" },
-              ]}
-            >
+            <View style={[styles.container, { marginLeft: 0, justifyContent: 'center' }]}>
               <Button
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
-                  fontFamily: "Roboto-Slab",
+                  fontFamily: 'Roboto-Slab',
                 }}
-                onPress={() => updatePrefs({ fontFamily: "Roboto-Slab" })}
-                mode={
-                  preferences.fontFamily === "Roboto-Slab" ? "outlined" : "text"
-                }
+                onPress={() => updatePrefs({ fontFamily: 'Roboto-Slab' })}
+                mode={preferences.fontFamily === 'Roboto-Slab' ? 'outlined' : 'text'}
               >
                 Serif
               </Button>
             </View>
           </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
             <View style={styles.container}>
               <Button
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
-                  fontFamily: "Roboto-Mono",
+                  fontFamily: 'Roboto-Mono',
                 }}
-                onPress={() => updatePrefs({ fontFamily: "Roboto-Mono" })}
-                mode={
-                  preferences.fontFamily === "Roboto-Mono" ? "outlined" : "text"
-                }
+                onPress={() => updatePrefs({ fontFamily: 'Roboto-Mono' })}
+                mode={preferences.fontFamily === 'Roboto-Mono' ? 'outlined' : 'text'}
               >
                 Mono
               </Button>
@@ -129,12 +112,8 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 labelStyle={{
                   color: colors.text,
                 }}
-                onPress={() => updatePrefs({ fontFamily: "Open-Dyslexia" })}
-                mode={
-                  preferences.fontFamily === "Open-Dyslexia"
-                    ? "outlined"
-                    : "text"
-                }
+                onPress={() => updatePrefs({ fontFamily: 'Open-Dyslexia' })}
+                mode={preferences.fontFamily === 'Open-Dyslexia' ? 'outlined' : 'text'}
               >
                 Dyslexique
               </Button>
@@ -150,14 +129,10 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
               <Switch
                 color={colors.primary}
                 value={preferences.stripFormatting}
-                onTouchEnd={() =>
-                  updatePrefs({ stripFormatting: !preferences.stripFormatting })
-                }
+                onTouchEnd={() => updatePrefs({ stripFormatting: !preferences.stripFormatting })}
               />
             )}
-            onPress={() =>
-              updatePrefs({ stripFormatting: !preferences.stripFormatting })
-            }
+            onPress={() => updatePrefs({ stripFormatting: !preferences.stripFormatting })}
             style={settingsStyles.listItem}
           />
         </List.Section>
@@ -166,7 +141,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
   );
 }
 
-SettingsTheme.propTypes = {
+SettingsContent.propTypes = {
   preferences: PropTypes.shape({
     theme: PropTypes.string.isRequired,
     useSystemTheme: PropTypes.bool.isRequired,
@@ -183,4 +158,4 @@ const mapStateToProps = (state) => {
   return { preferences, account };
 };
 
-export default connect(mapStateToProps)(withTheme(SettingsTheme));
+export default connect(mapStateToProps)(withTheme(SettingsContent));

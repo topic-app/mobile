@@ -1,5 +1,5 @@
-import React from "react";
-import { ModalProps, State, Account } from "@ts/types";
+import React from 'react';
+import { ModalProps, State, Account } from '@ts/types';
 import {
   Divider,
   Button,
@@ -8,16 +8,15 @@ import {
   ThemeProvider,
   useTheme,
   ProgressBar,
-} from "react-native-paper";
-import { View, Platform } from "react-native";
-import { connect } from "react-redux";
-import { BottomModal, SlideAnimation } from '@components/Modals';
+} from 'react-native-paper';
+import { View, Platform } from 'react-native';
+import { connect } from 'react-redux';
 
-import getStyles from "@styles/Styles";
-import { ErrorMessage } from "@components/index";
-import { updateData } from "@redux/actions/data/profile";
-import { fetchAccount } from "@redux/actions/data/account";
-import getprofileStyles from "../styles/Styles";
+import getStyles from '@styles/Styles';
+import { ErrorMessage, Modal } from '@components/index';
+import { updateData } from '@redux/actions/data/profile';
+import { fetchAccount } from '@redux/actions/data/account';
+import getprofileStyles from '../styles/Styles';
 
 type NameModalProps = ModalProps & {
   account: Account;
@@ -33,12 +32,8 @@ function NameModal({ visible, setVisible, account, state }: NameModalProps) {
   const firstNameInputRef = React.useRef(null);
   const lastNameInputRef = React.useRef(null);
 
-  const [firstName, setFirstName] = React.useState(
-    account.accountInfo?.user?.data?.firstName
-  );
-  const [lastName, setLastName] = React.useState(
-    account.accountInfo?.user?.data?.lastName
-  );
+  const [firstName, setFirstName] = React.useState(account.accountInfo?.user?.data?.firstName);
+  const [lastName, setLastName] = React.useState(account.accountInfo?.user?.data?.lastName);
 
   const update = () => {
     updateData({ firstName, lastName }).then(() => {
@@ -48,78 +43,56 @@ function NameModal({ visible, setVisible, account, state }: NameModalProps) {
   };
 
   return (
-    <BottomModal
-      visible={visible}
-      onTouchOutside={() => {
-        setVisible(false);
-      }}
-      onHardwareBackPress={() => {
-        setVisible(false);
-        return true;
-      }}
-      onSwipeOut={() => {
-        setVisible(false);
-      }}
-      modalAnimation={
-        new SlideAnimation({
-          slideFrom: "bottom",
-          useNativeDriver: false,
-        })
-      }
-    >
-      <ThemeProvider theme={theme}>
-        <Card style={styles.modalCard}>
-          <View>
-            {state.updateProfile.loading && <ProgressBar indeterminate />}
-            {state.updateProfile.error && (
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: "la modification du compte",
-                  contentSingular: "Le compte",
-                }}
-                error={state.updateProfile.error}
-                retry={update}
-              />
-            )}
-            <View style={{ marginHorizontal: 5, marginBottom: 10 }}>
-              <View style={profileStyles.inputContainer}>
-                <TextInput
-                  ref={firstNameInputRef}
-                  autoFocus
-                  mode="outlined"
-                  label="Prénom"
-                  value={firstName}
-                  onChangeText={setFirstName}
-                  onSubmitEditing={() => lastNameInputRef.current?.focus()}
-                />
-              </View>
-              <View style={profileStyles.inputContainer}>
-                <TextInput
-                  ref={lastNameInputRef}
-                  mode="outlined"
-                  label="Nom"
-                  value={lastName}
-                  onChangeText={setLastName}
-                  onSubmitEditing={() => update()}
-                />
-              </View>
-            </View>
-            <Divider style={{ marginTop: 10 }} />
-            <View style={styles.contentContainer}>
-              <Button
-                mode={Platform.OS === "ios" ? "outlined" : "contained"}
-                color={colors.primary}
-                uppercase={Platform.OS !== "ios"}
-                onPress={update}
-              >
-                Confirmer
-              </Button>
-            </View>
+    <Modal visible={visible} setVisible={setVisible}>
+      <View>
+        {state.updateProfile.loading && <ProgressBar indeterminate />}
+        {state.updateProfile.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la modification du compte',
+              contentSingular: 'Le compte',
+            }}
+            error={state.updateProfile.error}
+            retry={update}
+          />
+        )}
+        <View style={{ marginHorizontal: 5, marginBottom: 10 }}>
+          <View style={profileStyles.inputContainer}>
+            <TextInput
+              ref={firstNameInputRef}
+              autoFocus
+              mode="outlined"
+              label="Prénom"
+              value={firstName}
+              onChangeText={setFirstName}
+              onSubmitEditing={() => lastNameInputRef.current?.focus()}
+            />
           </View>
-        </Card>
-      </ThemeProvider>
-    </BottomModal>
+          <View style={profileStyles.inputContainer}>
+            <TextInput
+              ref={lastNameInputRef}
+              mode="outlined"
+              label="Nom"
+              value={lastName}
+              onChangeText={setLastName}
+              onSubmitEditing={() => update()}
+            />
+          </View>
+        </View>
+        <Divider style={{ marginTop: 10 }} />
+        <View style={styles.contentContainer}>
+          <Button
+            mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+            color={colors.primary}
+            uppercase={Platform.OS !== 'ios'}
+            onPress={update}
+          >
+            Confirmer
+          </Button>
+        </View>
+      </View>
+    </Modal>
   );
 }
 

@@ -30,7 +30,6 @@ import NameModal from '../components/NameModal';
 import UsernameModal from '../components/UsernameModal';
 import EmailModal from '../components/EmailModal';
 import PasswordModal from '../components/PasswordModal';
-import getProfileStyles from '../styles/Styles';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
@@ -58,7 +57,6 @@ function Profile({
 }): React.ReactNode {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const profileStyles = getProfileStyles(theme);
   const { colors } = theme;
 
   const [isVisibilityVisible, setVisibilityVisible] = React.useState(false);
@@ -71,7 +69,6 @@ function Profile({
     <View style={styles.page}>
       <TranslucentStatusBar />
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {
@@ -212,7 +209,7 @@ function Profile({
             </View>
           )}
           <ProfileItem
-            item="Addresse email"
+            item="Adresse email"
             value={account.accountInfo.user.sensitiveData.email}
             editable
             type="private"

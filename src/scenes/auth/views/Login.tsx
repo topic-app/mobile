@@ -113,7 +113,7 @@ const AuthLogin: React.FC<Props> = ({
             <View style={authStyles.textInputContainer}>
               <TextInput
                 ref={passwordInput}
-                label="Mot de Passe"
+                label="Mot de passe"
                 value={password}
                 mode="outlined"
                 error={!!reqState.login.incorrect}

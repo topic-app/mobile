@@ -2,6 +2,7 @@ import Store from '@redux/store';
 import {
   UPDATE_ARTICLES_DATA,
   UPDATE_ARTICLES_SEARCH,
+  UPDATE_ARTICLES_FOLLOWING,
   UPDATE_ARTICLES_ITEM,
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
@@ -33,6 +34,38 @@ async function updateArticles(
       dataType: 'articles',
       type,
       params: useDefaultParams ? { ...Store.getState().articleData.params, ...params } : params,
+    }),
+  );
+}
+
+async function updateArticlesFollowing(
+  type: 'initial' | 'refresh' | 'next',
+  params = {},
+  useDefaultParams = true,
+) {
+  if (!Store.getState().account.loggedIn) {
+    return false;
+  }
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_ARTICLES_FOLLOWING,
+      stateUpdate: UPDATE_ARTICLES_STATE,
+      url: 'articles/list',
+      listName: 'following',
+      sort: dateDescSort,
+      dataType: 'articles',
+      type,
+      params: useDefaultParams
+        ? {
+            groups: Store.getState().account?.accountInfo?.user?.data?.following?.groups?.map(
+              (g) => g._id,
+            ),
+            users: Store.getState().account?.accountInfo?.user?.data?.following?.users?.map(
+              (u) => u._id,
+            ),
+            ...params,
+          }
+        : params,
     }),
   );
 }
@@ -133,6 +166,7 @@ async function fetchArticleVerification(articleId: string) {
 
 export {
   updateArticles,
+  updateArticlesFollowing,
   clearArticles,
   fetchArticle,
   searchArticles,

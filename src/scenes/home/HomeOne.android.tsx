@@ -124,7 +124,7 @@ function CustomDrawerContent({
       {loggedIn ? (
         <Drawer.Section>
           <Drawer.Item
-            label="Mon Profil"
+            label="Mon profil"
             icon="account-outline"
             onPress={() => {
               navigation.closeDrawer();
@@ -135,7 +135,7 @@ function CustomDrawerContent({
             }}
           />
           <Drawer.Item
-            label="Mes Groupes"
+            label="Mes groupes"
             icon="account-group-outline"
             onPress={() => {
               navigation.closeDrawer();
@@ -203,7 +203,7 @@ function CustomDrawerContent({
           }}
         />
         <Drawer.Item
-          label="A Propos"
+          label="À propos"
           icon="information-outline"
           onPress={() => {
             navigation.closeDrawer();

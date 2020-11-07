@@ -48,7 +48,7 @@ type Category = {
   id: string;
   name: string;
   navigate: () => any;
-  historyDisable?: boolean;
+  disable?: boolean;
 };
 
 function ArticleLists({
@@ -99,7 +99,7 @@ function ArticleLists({
             params: { screen: 'Article', params: { initialList: 'unread' } },
           },
         }),
-      historyDisable: true,
+      disable: !preferences.history,
     },
     {
       id: 'all',
@@ -112,7 +112,20 @@ function ArticleLists({
             params: { screen: 'Article', params: { initialList: 'all' } },
           },
         }),
-      historyDisable: false,
+      disable: !preferences.history,
+    },
+    {
+      id: 'following',
+      name: 'Suivis',
+      navigate: () =>
+        navigation.push('Main', {
+          screen: 'Home1',
+          params: {
+            screen: 'Home2',
+            params: { screen: 'Article', params: { initialList: 'following' } },
+          },
+        }),
+      disable: !account.loggedIn,
     },
   ];
 
@@ -135,7 +148,6 @@ function ArticleLists({
     <View style={styles.page}>
       <TranslucentStatusBar />
       <CustomHeaderBar
-        navigation={navigation}
         scene={{
           descriptor: {
             options: {
@@ -172,13 +184,13 @@ function ArticleLists({
                       </View>
                     )}
                     renderItem={({ item, move, moveEnd }) => {
-                      const enabled = articlePrefs.categories.some((d) => d === item.id);
+                      const enabled = articlePrefs.categories?.some((d) => d === item.id);
                       return (
                         <List.Item
                           key={item.id}
                           title={item.name}
                           description={
-                            preferences.history || !item.historyDisable
+                            item.disable
                               ? null
                               : "Activez l'historique pour voir les articles non lus"
                           }
@@ -186,21 +198,13 @@ function ArticleLists({
                           onPress={enabled ? item.navigate : () => null}
                           onLongPress={move}
                           disabled={!preferences.history && item.historyDisable}
-                          titleStyle={
-                            preferences.history || !item.historyDisable
-                              ? {}
-                              : { color: colors.disabled }
-                          }
-                          descriptionStyle={
-                            preferences.history || !item.historyDisable
-                              ? {}
-                              : { color: colors.disabled }
-                          }
+                          titleStyle={!item.disable ? {} : { color: colors.disabled }}
+                          descriptionStyle={!item.disable ? {} : { color: colors.disabled }}
                           right={() => (
                             <View style={{ flexDirection: 'row' }}>
                               <Switch
-                                disabled={!preferences.history && item.historyDisable}
-                                value={enabled && (preferences.history || !item.historyDisable)}
+                                disabled={item.disable}
+                                value={enabled && !item.disable}
                                 color={colors.primary}
                                 onTouchEnd={
                                   enabled

@@ -18,7 +18,11 @@ import {
   Account,
 } from '@ts/types';
 import { AnimatingHeader, ErrorMessage, TabChipList, GroupsBanner } from '@components/index';
-import { updateArticles, searchArticles } from '@redux/actions/api/articles';
+import {
+  updateArticles,
+  searchArticles,
+  updateArticlesFollowing,
+} from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
 
 import ArticleListCard from '../components/Card';
@@ -37,6 +41,7 @@ type Category = {
 
 type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   articles: (ArticlePreload | Article)[];
+  followingArticles: (ArticlePreload | Article)[];
   search: ArticlePreload[];
   lists: ArticleListItem[];
   read: ArticleReadItem[];
@@ -51,6 +56,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
   navigation,
   route,
   articles,
+  followingArticles,
   search,
   lists,
   read,
@@ -67,22 +73,36 @@ const ArticleList: React.FC<ArticleListProps> = ({
   const scrollY = new Animated.Value(0);
 
   const potentialCategories = [
+    ...(preferences.history
+      ? [
+          {
+            key: 'unread',
+            title: 'Non lus',
+            data: articles.filter((a) => !read.some((r) => r.id === a._id)),
+            type: 'category',
+          },
+        ]
+      : []),
     {
       key: 'all',
       title: 'Tous',
       data: articles,
       type: 'category',
     },
+    ...(account.loggedIn &&
+    account.accountInfo?.user?.data?.following?.users?.length +
+      account.accountInfo?.user?.data?.following?.groups?.length >
+      0
+      ? [
+          {
+            key: 'following',
+            title: 'Suivis',
+            data: followingArticles,
+            type: 'category',
+          },
+        ]
+      : []),
   ];
-
-  if (preferences.history) {
-    potentialCategories.unshift({
-      key: 'unread',
-      title: 'Non lus',
-      data: articles.filter((a) => !read.some((r) => r.id === a._id)),
-      type: 'category',
-    });
-  }
 
   const categories: Category[] = [];
 
@@ -181,6 +201,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
   useFocusEffect(
     React.useCallback(() => {
       updateArticles('initial');
+      updateArticlesFollowing('initial');
     }, [null]),
   );
 
@@ -415,6 +436,7 @@ const mapStateToProps = (state: State) => {
   const { articles, articleData, preferences, account } = state;
   return {
     articles: articles.data,
+    followingArticles: articles.following,
     search: articles.search,
     articlePrefs: articleData.prefs,
     lists: articleData.lists,

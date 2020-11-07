@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, View, ViewStyle, StyleProp } from 'react-native';
+import { Platform, View, ViewStyle, StyleProp, TouchableOpacity } from 'react-native';
 import { IconButton, useTheme, TouchableRipple } from 'react-native-paper';
 import { TouchableHighlight, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
@@ -60,7 +60,7 @@ type PlatformBackButtonProps = {
 
 const PlatformTouchable =
   Platform.OS === 'ios'
-    ? TouchableHighlight
+    ? TouchableOpacity
     : Platform.OS === 'android'
     ? TouchableNativeFeedback
     : TouchableRipple;
