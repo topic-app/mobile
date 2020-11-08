@@ -262,7 +262,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
             onSubmitEditing={() => {
               streetInput.current?.focus();
             }}
-            autoCorrect={false}
             autoFocus
             theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
             mode="outlined"
@@ -287,7 +286,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
             onSubmitEditing={() => {
               extraInput.current?.focus();
             }}
-            autoCorrect={false}
             theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
             mode="outlined"
             style={eventStyles.textInput}
@@ -306,7 +304,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
             onSubmitEditing={() => {
               codeInput.current?.focus();
             }}
-            autoCorrect={false}
             theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
             mode="outlined"
             style={eventStyles.textInput}
@@ -330,7 +327,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
             onEndEditing={({ nativeEvent }) => {
               validateCodeInput(nativeEvent.text);
             }}
-            autoCorrect={false}
             theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
             mode="outlined"
             style={eventStyles.textInput}

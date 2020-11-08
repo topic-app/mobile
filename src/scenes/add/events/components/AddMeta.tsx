@@ -147,7 +147,6 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
     }
   }
 
-
   function blurInputs() {
     titleInput.current?.blur();
     summaryInput.current?.blur();
@@ -162,7 +161,11 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
     const summary = await validateSummaryInput(summaryVal);
     const description = await validateDescriptionInput(descriptionVal);
     if (title.valid && summary.valid && description.valid) {
-      updateEventCreationData({ title: titleVal, summary: summaryVal, description: descriptionVal });
+      updateEventCreationData({
+        title: titleVal,
+        summary: summaryVal,
+        description: descriptionVal,
+      });
       next();
     } else {
       if (!title.valid && !title.error) {
@@ -180,7 +183,7 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
         });
       }
     }
-    }
+  }
 
   const theme = useTheme();
   const { colors } = theme;
@@ -199,7 +202,6 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
             validateTitleInput(nativeEvent.text);
             summaryInput.current?.focus();
           }}
-          autoCorrect={false}
           autoFocus
           theme={
             currentTitle.valid
@@ -229,13 +231,11 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           value={currentSummary.value}
           error={currentSummary.error}
           disableFullscreenUI
-          autoCapitalize="none"
           onSubmitEditing={({ nativeEvent }) => {
             validateSummaryInput(nativeEvent.text);
             blurInputs();
             submit();
           }}
-          autoCorrect={false}
           theme={
             currentSummary.valid
               ? { colors: { primary: colors.primary, placeholder: colors.valid } }
@@ -283,13 +283,11 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           value={currentDescription.value}
           error={currentDescription.error}
           disableFullscreenUI
-          autoCapitalize="none"
           onSubmitEditing={({ nativeEvent }) => {
             validateDescriptionInput(nativeEvent.text);
             blurInputs();
             submit();
           }}
-          autoCorrect={false}
           theme={
             currentDescription.valid
               ? { colors: { primary: colors.primary, placeholder: colors.valid } }

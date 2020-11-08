@@ -1,4 +1,4 @@
-import React, {createRef } from 'react';
+import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
 import { TextInput, Button, List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -19,13 +19,13 @@ type Props = StepperViewPageProps & {
   navigation: any;
 };
 
-const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
+const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
   const [showError, setError] = React.useState(false);
   const [isAddUserModalVisible, setAddUserModalVisible] = React.useState(false);
   const [isContactAddModalVisible, setContactAddModalVisible] = React.useState(false);
   const [eventOrganizers, setEventOrganizers] = React.useState<User[]>([]);
   const [customContact, setCustomContact] = React.useState<CustomContactType[]>([]);
- 
+
   const theme = useTheme();
   const { colors } = theme;
   const eventStyles = getAuthStyles(theme);
@@ -90,15 +90,15 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
 
   async function validatePhoneInput(content: string) {
     let validation: Partial<InputStateType> = { valid: false, error: false };
-      if (content.length !== 0 && content.length !== 10) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'Entrez un numéro de téléphone valide',
-        };
-      } else {
-        validation = { valid: true, error: false };
-      }
+    if (content.length !== 0 && content.length !== 10) {
+      validation = {
+        valid: false,
+        error: true,
+        message: 'Entrez un numéro de téléphone valide',
+      };
+    } else {
+      validation = { valid: true, error: false };
+    }
     setPhone(validation);
     return validation;
   }
@@ -121,7 +121,12 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
 
     const phone = await validatePhoneInput(phoneVal);
     if (phone.valid) {
-      updateEventCreationData({ phone: phoneVal, email: emailVal, contact: customContact, organizers: eventOrganizers });
+      updateEventCreationData({
+        phone: phoneVal,
+        email: emailVal,
+        contact: customContact,
+        organizers: eventOrganizers,
+      });
       next();
     } else {
       if (!phone.valid && !phone.error) {
@@ -158,7 +163,6 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           validatePhoneInput(nativeEvent.text);
           emailInput.current?.focus();
         }}
-        autoCorrect={false}
         autoFocus
         theme={
           currentPhone.valid
@@ -183,9 +187,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
         error={currentEmail.error}
         keyboardType="email-address"
         disableFullscreenUI
-        autoCorrect={false}
-        theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }
-        }
+        theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
         mode="outlined"
         style={eventStyles.textInput}
         onChangeText={(text) => {
@@ -205,8 +207,8 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           renderItem={({ item: contact }) => {
             return (
               <InlineCard
-                icon= "at"
-                title={contact.value }
+                icon="at"
+                title={contact.value}
                 subtitle={contact.key}
                 onPress={() => {
                   setCustomContact(customContact.filter((s) => s !== contact));
@@ -221,8 +223,8 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           mode="outlined"
           uppercase={Platform.OS !== 'ios'}
           onPress={() => {
-          setContactAddModalVisible(true);
-            }}
+            setContactAddModalVisible(true);
+          }}
         >
           Ajouter
         </Button>
@@ -241,7 +243,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           renderItem={({ item: user }) => {
             return (
               <InlineCard
-                avatar ={user.info.avatar}
+                avatar={user.info.avatar}
                 title={user.info.username}
                 onPress={() => {
                   setEventOrganizers(eventOrganizers.filter((s) => s !== user));
@@ -256,8 +258,8 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           mode="outlined"
           uppercase={Platform.OS !== 'ios'}
           onPress={() => {
-          setAddUserModalVisible(true);
-            }}
+            setAddUserModalVisible(true);
+          }}
         >
           Ajouter
         </Button>
@@ -277,7 +279,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           addCustomContact(contact);
         }}
       />
-      <View style={{height:20}}/>
+      <View style={{ height: 20 }} />
 
       <View style={eventStyles.buttonContainer}>
         <Button

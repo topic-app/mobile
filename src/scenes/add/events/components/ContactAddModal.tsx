@@ -11,7 +11,7 @@ import getStyles from '@styles/Styles';
 import getEventStyles from '../styles/Styles';
 
 type ContactAddModalProps = ModalProps & {
-  add:(contact: CustomContactType) => void;
+  add: (contact: CustomContactType) => void;
 };
 
 type CustomContactType = {
@@ -21,11 +21,7 @@ type CustomContactType = {
   link: string;
 };
 
-const ContactAddModal: React.FC<ContactAddModalProps> = ({
-  visible,
-  setVisible,
-  add,
-}) => {
+const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, add }) => {
   const keyInput = React.createRef<RNTestInput>();
   const valueInput = React.createRef<RNTestInput>();
   const linkInput = React.createRef<RNTestInput>();
@@ -87,7 +83,7 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({
       !currentLink.value.match(
         /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/,
       )
-    ){
+    ) {
       validation = {
         valid: false,
         error: true,
@@ -99,7 +95,8 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({
     setLink(validation);
   };
 
-{/*
+  {
+    /*
   const validateCodeInput = (code: string) => {
     let validation: Partial<InputStateType> = { valid: false, error: false };
 
@@ -129,7 +126,8 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({
     }
     setNumber(validation);
   };
-*/}
+*/
+  }
 
   const submit = () => {
     const keyVal = currentKey.value;
@@ -203,7 +201,6 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({
             onSubmitEditing={() => {
               valueInput.current?.focus();
             }}
-            autoCorrect={false}
             autoFocus
             theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
             mode="outlined"
@@ -228,7 +225,6 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({
             onSubmitEditing={() => {
               linkInput.current?.focus();
             }}
-            autoCorrect={false}
             theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
             mode="outlined"
             style={eventStyles.textInput}
