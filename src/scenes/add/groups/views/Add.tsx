@@ -23,7 +23,7 @@ import getStyles from '@styles/Styles';
 
 import type { GroupAddStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
-import GroupAddPageTemplate from '../components/AddTemplate2';
+import GroupAddPageTemplate from '../components/AddTemplate';
 import GroupAddPageLocation from '../components/AddLocation';
 import GroupAddPageMeta from '../components/AddMeta';
 // import GroupAddPageProof from '../components/AddProof';

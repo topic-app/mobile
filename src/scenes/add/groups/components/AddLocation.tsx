@@ -16,7 +16,7 @@ import {
 } from '@ts/types';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 
@@ -72,7 +72,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 
   const submit = () => {
     if (schools.length !== 0 || departments.length !== 0 || global) {
-      updateArticleCreationData({ location: { schools, departments, global } });
+      updateGroupCreationData({ location: { schools, departments, global } });
       next();
     } else {
       setError(true);
@@ -83,7 +83,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   const { colors } = theme;
   const articleStyles = getAuthStyles(theme);
 
-  const toggle = (i: { _id: string }, func: Function, data: string[]) => {
+  const toggle = (i: { _id: string }, data: string[], func: Function) => {
     if (data.includes(i._id)) {
       func(data.filter((j) => j !== i._id));
     } else {
