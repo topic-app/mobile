@@ -10,6 +10,11 @@ type EventAddProps = {
   data: string;
   phone: string;
   email: string;
+  contact?: {
+    key: string;
+    value: string;
+    link: string;
+ }[];
   organizers: string[];
   start: Date;
   end: Date;
@@ -35,6 +40,7 @@ function eventAddCreator({
   data,
   phone,
   email,
+  contact,
   organizers,
   start,
   end,
@@ -75,6 +81,7 @@ function eventAddCreator({
               phone,
               email,
               organizers,
+              contact,
             },
             duration : {
               start,

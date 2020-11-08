@@ -9,6 +9,7 @@ import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 
 import UserSelectModal from './UserSelectModal';
+import ContactAddModal from './ContactAddModal';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -21,7 +22,9 @@ type Props = StepperViewPageProps & {
 const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
   const [showError, setError] = React.useState(false);
   const [isAddUserModalVisible, setAddUserModalVisible] = React.useState(false);
+  const [isContactAddModalVisible, setContactAddModalVisible] = React.useState(false);
   const [eventOrganizers, setEventOrganizers] = React.useState<User[]>([]);
+  const [customContact, setCustomContact] = React.useState<CustomContactType[]>([]);
  
   const theme = useTheme();
   const { colors } = theme;
@@ -36,6 +39,13 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
     error: boolean;
     valid: boolean;
     message: string;
+  };
+
+  type CustomContactType = {
+    _id: string;
+    key: string;
+    value: string;
+    link: string;
   };
 
   let tempPhone: InputStateType;
@@ -60,6 +70,10 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
     if (!previousEventIds.includes(user._id)) {
       setEventOrganizers([...eventOrganizers, user]);
     }
+  };
+
+  const addCustomContact = (contact: any) => {
+    setCustomContact([...customContact, contact]);
   };
 
   function setPhone(data: Partial<InputStateType>) {
@@ -107,7 +121,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
 
     const phone = await validatePhoneInput(phoneVal);
     if (phone.valid) {
-      updateEventCreationData({ phone: phoneVal, email: emailVal, organizers: eventOrganizers });
+      updateEventCreationData({ phone: phoneVal, email: emailVal, contact: customContact, organizers: eventOrganizers });
       next();
     } else {
       if (!phone.valid && !phone.error) {
@@ -178,6 +192,42 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           setEmail({ value: text });
         }}
       />
+      <List.Subheader> Autre moyen de contact </List.Subheader>
+      {customContact.length === 0 && (
+        <View>
+          <Text>Aucun autre moyen de contact sélectionné</Text>
+        </View>
+      )}
+      <View style={{ marginTop: 10 }}>
+        <FlatList
+          keyExtractor={(contact) => contact._id}
+          data={customContact}
+          renderItem={({ item: contact }) => {
+            return (
+              <InlineCard
+                icon= "at"
+                title={contact.value }
+                subtitle={contact.key}
+                onPress={() => {
+                  setCustomContact(customContact.filter((s) => s !== contact));
+                }}
+              />
+            );
+          }}
+        />
+      </View>
+      <View style={styles.container}>
+        <Button
+          mode="outlined"
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => {
+          setContactAddModalVisible(true);
+            }}
+        >
+          Ajouter
+        </Button>
+      </View>
+
       <List.Subheader> Organisateurs </List.Subheader>
       {eventOrganizers.length === 0 && (
         <View>
@@ -209,7 +259,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
           setAddUserModalVisible(true);
             }}
         >
-          Ajouter un organisateur
+          Ajouter
         </Button>
       </View>
 
@@ -218,6 +268,13 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account}) => {
         setVisible={setAddUserModalVisible}
         next={(user) => {
           addEventOrganizer(user);
+        }}
+      />
+      <ContactAddModal
+        visible={isContactAddModalVisible}
+        setVisible={setContactAddModalVisible}
+        add={(contact) => {
+          addCustomContact(contact);
         }}
       />
       <View style={{height:20}}/>

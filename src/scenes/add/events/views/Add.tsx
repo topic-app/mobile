@@ -46,6 +46,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       data: creationData.description,
       phone: creationData.phone,
       email: creationData.email,
+      contact: creationData.contact,
       organizers: creationData.organizers,
       start: creationData.start,
       end: creationData.end,

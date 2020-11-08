@@ -353,6 +353,11 @@ export type EventCreationData = {
   description?: string;
   phone?: string;
   email?: string;
+  contact?: {
+    key: string;
+    value: string;
+    link: string;
+ }[];
   organizers?: string[];
   start?: Date;
   end?: Date;
