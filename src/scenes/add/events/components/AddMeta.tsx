@@ -94,13 +94,7 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
     let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (summary !== '') {
-      if (summary.length <= 100) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'Le résumé doit contenir au moins 100 caractères.',
-        };
-      } else if (summary.length >= 500) {
+      if (summary.length >= 500) {
         validation = {
           valid: false,
           error: true,
@@ -118,7 +112,7 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   }
 
   function preValidateSummaryInput(summary: string) {
-    if (summary.length >= 100 && summary.length <= 500) {
+    if (summary.length <= 500) {
       setSummary({ valid: false, error: false });
     }
   }
@@ -127,22 +121,14 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
     let validation: Partial<InputStateType> = { valid: false, error: false };
 
     if (description !== '') {
-      if (description.length < 100) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'La description doit contenir au moins 100 caractères',
-        };
-      } else {
-        validation = { valid: true, error: false };
-      }
+      validation = { valid: true, error: false };
     }
     setDescription(validation);
     return validation;
   }
 
   function preValidateDescriptionInput(description: string) {
-    if (description.length >= 100) {
+    if (description !== '') {
       setDescription({ valid: false, error: false });
     }
   }

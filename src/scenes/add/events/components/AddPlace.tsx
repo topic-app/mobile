@@ -64,11 +64,6 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
   return (
     <View style={eventStyles.formContainer}>
       <List.Subheader> Lieux Sélectionnés </List.Subheader>
-      {eventPlaces.length === 0 && (
-        <View>
-          <Text>Aucun lieu sélectionné</Text>
-        </View>
-      )}
       <View style={{ marginTop: 10 }}>
         <FlatList
           keyExtractor={(place) => place._id}
@@ -81,20 +76,18 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
                 }
                 title={
                   place.type === 'school' || place.type === 'place'
-                    ? place.address.shortName
-                    : `${place.address.address.number}${
-                        place.address.address.number === '' ? '' : ' '
-                      }${place.address.address.street}${
-                        place.address.address.extra !== '' &&
-                        place.address.address.street !== ''
+                    ? place.tempName || place.address?.shortName
+                    : `${place.address?.address.number}${
+                        place.address?.address.number === '' ? '' : ' '
+                      }${place.address?.address.street}${
+                        place.address?.address.extra !== '' && place.address?.address.street !== ''
                           ? ', '
                           : ''
-                      }${place.address.address.extra}${
-                        place.address.address.street !== '' ||
-                          place.address.address.extra !== ''
+                      }${place.address?.address.extra}${
+                        place.address?.address.street !== '' || place.address?.address.extra !== ''
                           ? ', '
                           : ''
-                      }${place.address.address.code} ${place.address.address.city}`
+                      }${place.address?.address.code} ${place.address?.address.city}`
                 }
                 onPress={() => {
                   setEventPlaces(eventPlaces.filter((s) => s !== place));
@@ -104,7 +97,6 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
           }}
         />
       </View>
-      <View style={{height:20}}/>
       <View style={styles.container}>
         <Button
           mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
@@ -116,6 +108,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData 
           Ajouter un lieu
         </Button>
       </View>
+      <View style={{ height: 30 }} />
 
       <PlaceTypeModal
         visible={isPlaceTypeModalVisible}

@@ -151,56 +151,59 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
 
   return (
     <View style={eventStyles.formContainer}>
-      <List.Subheader> Numéro de téléphone </List.Subheader>
-      <TextInput
-        ref={phoneInput}
-        label="Numéro de téléphone"
-        value={currentPhone.value}
-        error={currentPhone.error}
-        keyboardType="phone-pad"
-        disableFullscreenUI
-        onSubmitEditing={({ nativeEvent }) => {
-          validatePhoneInput(nativeEvent.text);
-          emailInput.current?.focus();
-        }}
-        autoFocus
-        theme={
-          currentPhone.valid
-            ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-            : theme
-        }
-        mode="outlined"
-        onEndEditing={({ nativeEvent }) => {
-          validatePhoneInput(nativeEvent.text);
-        }}
-        style={eventStyles.textInput}
-        onChangeText={(text) => {
-          setPhone({ value: text });
-          preValidatePhoneInput(text);
-        }}
-      />
-      <List.Subheader> Adresse mail </List.Subheader>
-      <TextInput
-        ref={emailInput}
-        label="Adresse mail"
-        value={currentEmail.value}
-        error={currentEmail.error}
-        keyboardType="email-address"
-        disableFullscreenUI
-        theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-        mode="outlined"
-        style={eventStyles.textInput}
-        onChangeText={(text) => {
-          setEmail({ value: text });
-        }}
-      />
-      <List.Subheader> Autre moyen de contact </List.Subheader>
-      {customContact.length === 0 && (
-        <View>
-          <Text>Aucun autre moyen de contact sélectionné</Text>
-        </View>
-      )}
-      <View style={{ marginTop: 10 }}>
+      <View style={styles.container}>
+        <Text>
+          Les moyens de contact ci-dessous seront visibles publiquement. Vérifiez que vous avez bien
+          l'accord de la personne concernée avant de publier ses informations de contact.
+        </Text>
+      </View>
+      <View style={styles.container}>
+        <TextInput
+          ref={phoneInput}
+          label="Numéro de téléphone (facultatif)"
+          value={currentPhone.value}
+          error={currentPhone.error}
+          keyboardType="phone-pad"
+          disableFullscreenUI
+          onSubmitEditing={({ nativeEvent }) => {
+            validatePhoneInput(nativeEvent.text);
+            emailInput.current?.focus();
+          }}
+          autoFocus
+          theme={
+            currentPhone.valid
+              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+              : theme
+          }
+          mode="outlined"
+          onEndEditing={({ nativeEvent }) => {
+            validatePhoneInput(nativeEvent.text);
+          }}
+          style={eventStyles.textInput}
+          onChangeText={(text) => {
+            setPhone({ value: text });
+            preValidatePhoneInput(text);
+          }}
+        />
+      </View>
+      <View style={styles.container}>
+        <TextInput
+          ref={emailInput}
+          label="Adresse mail (facultatif)"
+          value={currentEmail.value}
+          error={currentEmail.error}
+          keyboardType="email-address"
+          disableFullscreenUI
+          theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
+          mode="outlined"
+          style={eventStyles.textInput}
+          onChangeText={(text) => {
+            setEmail({ value: text });
+          }}
+        />
+      </View>
+      <View style={{ marginTop: 30 }}>
+        <List.Subheader> Autres moyen de contact (réseaux sociaux etc)</List.Subheader>
         <FlatList
           keyExtractor={(contact) => contact._id}
           data={customContact}
@@ -230,13 +233,8 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
         </Button>
       </View>
 
-      <List.Subheader> Organisateurs </List.Subheader>
-      {eventOrganizers.length === 0 && (
-        <View>
-          <Text>Aucun organisateur sélectionné</Text>
-        </View>
-      )}
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 30 }}>
+        <List.Subheader> Organisateurs </List.Subheader>
         <FlatList
           keyExtractor={(user) => user._id}
           data={eventOrganizers}

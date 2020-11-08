@@ -1,6 +1,15 @@
 import React from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
+import {
+  Button,
+  RadioButton,
+  HelperText,
+  List,
+  Text,
+  useTheme,
+  Card,
+  Title,
+} from 'react-native-paper';
 
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { StepperViewPageProps } from '@components/index';
@@ -12,7 +21,7 @@ import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';
 import { add } from 'react-native-reanimated';
 
-type Props = StepperViewPageProps & { account: Account, add: Function };
+type Props = StepperViewPageProps & { account: Account; add: Function };
 
 const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
   const [showError, setError] = React.useState(false);
@@ -43,7 +52,9 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
 
   return (
     <View style={eventStyles.formContainer}>
-      <Text>Programme</Text>
+      <View style={styles.container}>
+        <Title>Aucun programme (non implémenté)</Title>
+      </View>
       <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}

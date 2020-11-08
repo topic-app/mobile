@@ -157,7 +157,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
     const cityVal = currentCity.value;
     if (currentCity.valid && currentCode.valid && currentNumber.valid) {
       add({
-        id: shortid(),
+        _id: shortid(),
         type: 'standalone',
         address: {
           _id: shortid(),
