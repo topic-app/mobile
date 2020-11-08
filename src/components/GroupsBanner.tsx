@@ -28,9 +28,6 @@ const GroupsBanner: React.FC<Props> = ({ account, state, accountState }) => {
 
   return (
     <View>
-      {(state.member_accept?.loading ||
-        state.member_reject?.loading ||
-        accountState.fetchWaitingGroups?.loading) && <ProgressBar indeterminate />}
       {state.member_accept?.error && (
         <ErrorMessage
           type="axios"
