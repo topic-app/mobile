@@ -10,7 +10,7 @@ const hashPassword = async (password: string) => {
     config.auth.digest,
   );
   return crypto.utils.convertArrayBufferToBase64(hashedPassword);*/
-  return 'supersecurepassword';
+  return password;
 };
 
 export { hashPassword };
