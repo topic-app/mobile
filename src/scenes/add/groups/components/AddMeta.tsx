@@ -3,6 +3,7 @@ import { View, Platform, TextInput as RNTestInput } from 'react-native';
 import { TextInput, HelperText, Button } from 'react-native-paper';
 
 import { StepperViewPageProps, CollapsibleView } from '@components/index';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
@@ -216,7 +217,6 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
             validateNameInput(nativeEvent.text);
             shortNameInput.current?.focus();
           }}
-          autoCorrect={false}
           autoFocus
           theme={
             currentName.valid
@@ -250,8 +250,6 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
             validateShortNameInput(nativeEvent.text);
             summaryInput.current?.focus();
           }}
-          autoCorrect={false}
-          autoFocus
           theme={
             currentShortName.valid
               ? { colors: { primary: colors.primary, placeholder: colors.valid } }
@@ -286,7 +284,6 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
             validateSummaryInput(nativeEvent.text);
             descriptionInput.current?.focus();
           }}
-          autoCorrect={false}
           theme={
             currentSummary.valid
               ? { colors: { primary: colors.primary, placeholder: colors.valid } }
@@ -335,7 +332,6 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
             blurInputs();
             submit();
           }}
-          autoCorrect={false}
           theme={
             currentDescription.valid
               ? { colors: { primary: colors.primary, placeholder: colors.valid } }

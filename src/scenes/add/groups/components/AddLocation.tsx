@@ -158,7 +158,9 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
                     .map(
                       (s) =>
                         schoolItems?.find((t) => t._id === s)?.displayName ||
-                        schoolItems?.find((t) => t._id === s)?.name,
+                        location.schoolData?.find((t) => t._id === s)?.displayName ||
+                        schoolItems?.find((t) => t._id === s)?.name ||
+                        location.schoolData?.find((t) => t._id === s)?.name,
                     )
                     .join(', ')
                 : undefined
@@ -190,7 +192,13 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
                         departmentItems
                           .filter((e) => e.type === 'departement')
                           ?.find((e) => e._id === d)?.displayName ||
+                        location.departmentData
+                          .filter((e) => e.type === 'departement')
+                          ?.find((e) => e._id === d)?.displayName ||
                         departmentItems
+                          .filter((e) => e.type === 'departement')
+                          ?.find((e) => e._id === d)?.name ||
+                        location.departmentData
                           .filter((e) => e.type === 'departement')
                           ?.find((e) => e._id === d)?.name,
                     )

@@ -26,7 +26,7 @@ import getArticleStyles from '../styles/Styles';
 import GroupAddPageTemplate from '../components/AddTemplate';
 import GroupAddPageLocation from '../components/AddLocation';
 import GroupAddPageMeta from '../components/AddMeta';
-// import GroupAddPageProof from '../components/AddProof';
+import GroupAddPageProof from '../components/AddProof';
 
 type Props = {
   navigation: StackNavigationProp<GroupAddStackParams, 'Add'>;
@@ -36,7 +36,7 @@ type Props = {
   groupState: GroupRequestState;
 };
 
-const ArticleAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
+const GroupAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -74,6 +74,12 @@ const ArticleAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
                 title: 'Info',
                 component: <GroupAddPageMeta />,
               },
+              {
+                key: 'proof',
+                icon: 'script-text',
+                title: 'Légal',
+                component: <GroupAddPageProof navigation={navigation} />,
+              },
             ]}
           />
         </ScrollView>
@@ -87,4 +93,4 @@ const mapStateToProps = (state: State) => {
   return { groupState: groups.state, templates: groups.templates };
 };
 
-export default connect(mapStateToProps)(ArticleAdd);
+export default connect(mapStateToProps)(GroupAdd);
