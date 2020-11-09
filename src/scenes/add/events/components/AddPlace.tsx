@@ -17,7 +17,7 @@ import getAuthStyles from '../styles/Styles';
 type Props = StepperViewPageProps & {
   account: Account;
   creationData: EventCreationData;
-  navigation: any;
+  navigation: StackNavigationProp<any, any>;
 };
 
 const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData }) => {
