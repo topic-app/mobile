@@ -11,6 +11,7 @@ import {
   Title,
 } from 'react-native-paper';
 
+import { Content } from '@ts/types';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { StepperViewPageProps } from '@components/index';
 import { Account, State } from '@ts/types';
