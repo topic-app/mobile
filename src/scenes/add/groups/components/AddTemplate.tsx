@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { HelperText, Button, ProgressBar, RadioButton, List } from 'react-native-paper';
+import { HelperText, Button, ProgressBar, RadioButton, Text, List, Card } from 'react-native-paper';
 
 import { GroupTemplate, GroupRequestState } from '@ts/types';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { updateGroupTemplates } from '@redux/actions/api/groups';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 
@@ -38,6 +39,25 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
 
   return (
     <View style={groupStyles.formContainer}>
+      <View style={[styles.container, { marginTop: 40 }]}>
+        <Card
+          elevation={0}
+          style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+        >
+          <View style={[styles.container, { flexDirection: 'row' }]}>
+            <Icon
+              name="shield-key-outline"
+              style={{ alignSelf: 'center', marginRight: 10 }}
+              size={24}
+              color={colors.primary}
+            />
+            <Text style={{ color: colors.text, flex: 1 }}>
+              Assurez vous que vous avez bien l'autorisation de créer ce groupe. Nous pourrons vous
+              demander des preuves d'autorité ci nécéssaire.
+            </Text>
+          </View>
+        </Card>
+      </View>
       {state.templates?.loading?.initial ? (
         <ProgressBar indeterminate />
       ) : (

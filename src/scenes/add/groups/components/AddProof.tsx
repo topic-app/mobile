@@ -201,8 +201,9 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
         <ErrorMessage
           error={state.add?.error}
           strings={{
-            what: "l'ajout de l'article",
-            contentSingular: "L'article",
+            what: "l'ajout du groupe",
+            contentSingular: 'Le groupe',
+            contentPlural: 'de groupes (5 maximum)',
           }}
           type="axios"
           retry={submit}

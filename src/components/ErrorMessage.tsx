@@ -357,7 +357,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
         // Type 4f: User has created too many
       } else if (err?.error?.response?.data?.error?.value === 'maximum') {
         message = {
-          icon: 'reload-alert',
+          icon: 'reload',
           text: `Vous avez déjà créée trop ${strings.contentPlural}, merci d'en supprimer ou d'attendre la fermeture/suppression.`,
         };
         if (back) {

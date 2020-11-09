@@ -1,6 +1,15 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, HelperText, List, Checkbox, Divider, ProgressBar } from 'react-native-paper';
+import {
+  Button,
+  HelperText,
+  List,
+  Checkbox,
+  Card,
+  Text,
+  Divider,
+  ProgressBar,
+} from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
@@ -20,8 +29,10 @@ import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 
+import getStyles from '@styles/Styles';
 import getAuthStyles from '../styles/Styles';
 import { GroupAddStackParams } from '..';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type GroupAddLocationProps = StepperViewPageProps & {
   navigation: StackNavigationProp<GroupAddStackParams, 'Location'>;
@@ -82,6 +93,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   const theme = useTheme();
   const { colors } = theme;
   const articleStyles = getAuthStyles(theme);
+  const styles = getStyles(theme);
 
   const toggle = (i: { _id: string }, data: string[], func: Function) => {
     if (data.includes(i._id)) {
@@ -94,6 +106,25 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 
   return (
     <View style={articleStyles.formContainer}>
+      <View style={[styles.container, { marginTop: 40 }]}>
+        <Card
+          elevation={0}
+          style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+        >
+          <View style={[styles.container, { flexDirection: 'row' }]}>
+            <Icon
+              name="information"
+              style={{ alignSelf: 'center', marginRight: 10 }}
+              size={24}
+              color={colors.primary}
+            />
+            <Text style={{ color: colors.text, flex: 1 }}>
+              Vous pourrez publier des contenus dans ces localisations. Séléctionnez uniquement
+              celles qui correspondent à votre champ d'action.
+            </Text>
+          </View>
+        </Card>
+      </View>
       <View style={articleStyles.listContainer}>
         {location.schoolData?.map((s) => (
           <List.Item
@@ -119,18 +150,16 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
-        {location.global && (
-          <List.Item
-            title="France entière"
-            description="Visible pour tous les utilisateurs"
-            {...getListItemCheckbox({
-              status: global ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => setGlobal(!global),
-            })}
-            onPress={() => setGlobal(!global)}
-          />
-        )}
+        <List.Item
+          title="France entière"
+          description="Visible pour tous les utilisateurs"
+          {...getListItemCheckbox({
+            status: global ? 'checked' : 'unchecked',
+            color: colors.primary,
+            onPress: () => setGlobal(!global),
+          })}
+          onPress={() => setGlobal(!global)}
+        />
         <View>
           <Divider style={{ marginTop: 20 }} />
           {(locationStates.schools.info.loading || locationStates.departments.info.loading) && (
