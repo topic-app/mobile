@@ -208,7 +208,6 @@ class AuthCreatePageGeneral extends React.Component {
               this.validateTitleInput(info.nativeEvent.text);
               this.emailInput.current.focus();
             }}
-            autoCorrect={false}
             autoFocus
             theme={
               titleValid
@@ -243,7 +242,6 @@ class AuthCreatePageGeneral extends React.Component {
               this.validateEmailInput(info.nativeEvent.text);
               this.passwordInput.current.focus();
             }}
-            autoCorrect={false}
             theme={
               emailValid
                 ? { colors: { primary: colors.primary, placeholder: colors.valid } }
@@ -273,7 +271,6 @@ class AuthCreatePageGeneral extends React.Component {
             disableFullscreenUI
             error={passwordError}
             mode="outlined"
-            autoCorrect={false}
             secureTextEntry
             onSubmitEditing={(info) => {
               this.validatePasswordInput(info.nativeEvent.text);

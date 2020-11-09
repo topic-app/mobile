@@ -1,90 +1,73 @@
 import React from 'react';
 import {
-  ModalProps,
-  State,
-  ArticleQuickItem,
-  TagsState,
-  GroupsState,
-  UsersState,
-  Tag,
-  Group,
-  User,
-  RequestState,
-} from '@ts/types';
-import {
   Divider,
   ProgressBar,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
   Card,
   Text,
   List,
   ThemeProvider,
   useTheme,
 } from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { Modal } from '@components/index';
 
+import { ModalProps, State, SchoolsState, EventPlace, PlacesState, RequestState } from '@ts/types';
 import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
-import { searchTags, updateTags } from '@redux/actions/api/tags';
-import { searchGroups, updateGroups } from '@redux/actions/api/groups';
-import { searchUsers, updateUsers } from '@redux/actions/api/users';
+import { searchSchools, updateSchools } from '@redux/actions/api/schools';
+import { searchPlaces, updatePlaces } from '@redux/actions/api/places';
 
-type QuickSelectModalProps = ModalProps & {
-  quicks: ArticleQuickItem[];
-  editingList: ArticleListItem | null;
-  setEditingList: (props: ArticleListItem | null) => void;
-  type: 'tag' | 'group' | 'user';
-  tags: TagsState;
-  groups: GroupsState;
-  users: UsersState;
+type EventPlaceSelectModalProps = ModalProps & {
+  eventPlaces: EventPlace[];
+  type: 'school' | 'place';
+  schools: SchoolsState;
+  places: PlacesState;
+  add: (place: EventPlace) => void;
 };
 
-function PlaceSelectModal({
+function EventPlaceSelectModal({
   visible,
   setVisible,
   type,
   schools,
   places,
   eventPlaces,
-}: PlaceSelectModalProps) {
+  add,
+}: EventPlaceSelectModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const { colors } = theme;
 
   const [searchText, setSearchText] = React.useState('');
 
-  let data: School[] | Place[] = [];
+  let data: EventPlace[] = [];
   let update: (text?: string) => void = () => {};
   let icon = 'alert-decagram';
   let state: { list: RequestState; search: RequestState } = {
     list: { loading: { initial: false }, error: true },
     search: { loading: { initial: false }, error: true },
   };
+
   switch (type) {
     case 'school':
       data = searchText ? schools.search : schools.data;
-      update = (text = searchText) =>
-        text ? searchTags('initial', text, {}) : updateTags('initial');
+      update = () =>
+        searchText ? searchSchools('initial', searchText, {}) : updateSchools('initial');
       icon = 'school';
       state = schools.state;
       break;
     case 'place':
       data = searchText ? places.search : places.data;
-      update = (text = searchText) =>
-        text ? searchUsers('initial', text, {}) : updateUsers('initial');
-      icon = 'account';
+      update = () =>
+        searchText ? searchPlaces('initial', searchText, {}) : updatePlaces('initial');
+      icon = 'map-marker-radius';
       state = places.state;
       break;
   }
 
   React.useEffect(() => {
     update();
-  }, [null]);
+  }, [type]);
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
@@ -122,6 +105,7 @@ function PlaceSelectModal({
         <FlatList
           data={data}
           keyExtractor={(i) => i._id}
+          style={{ maxHeight: 200 }}
           keyboardShouldPersistTaps="handled"
           ListEmptyComponent={() => (
             <View style={{ minHeight: 50 }}>
@@ -133,24 +117,40 @@ function PlaceSelectModal({
                 ))}
             </View>
           )}
-          renderItem={({ item }) =>
-            eventPlaces.some((e) => e.id === item._id) ? null : (
-              <List.Item
-                title={item.name || item.info?.username}
-                left={() =>
-                  item.avatar || item.info?.avatar ? (
-                    <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
-                  ) : (
-                    <List.Icon icon={icon} color={item.color} />
-                  )
+          renderItem={({ item }) => (
+            <List.Item
+              title={item.name || item.info?.username}
+              left={() =>
+                item.avatar || item.info?.avatar ? (
+                  <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
+                ) : (
+                  <List.Icon icon={icon} />
+                )
+              }
+              onPress={() => {
+                if (type === 'school') {
+                  add({
+                    id: item._id,
+                    type,
+                    address: null,
+                    tempName: item.name,
+                    associatedSchool: item._id,
+                    associatedPlace: undefined,
+                  });
+                } else {
+                  add({
+                    id: item._id,
+                    type,
+                    address: null,
+                    tempName: item.name,
+                    associatedSchool: undefined,
+                    associatedPlace: item._id,
+                  });
                 }
-                onPress={() => {
-                  addEventPlace(type, item._id, item.name || item.info?.username);
-                  setVisible(false);
-                }}
-              />
-            )
-          }
+                setVisible(false);
+              }}
+            />
+          )}
         />
       </View>
     </Modal>
@@ -158,13 +158,12 @@ function PlaceSelectModal({
 }
 
 const mapStateToProps = (state: State) => {
-  const { articleData, tags, groups, users } = state;
+  const { eventData, schools, places } = state;
   return {
-    quicks: articleData.quicks,
-    tags,
-    groups,
-    users,
+    creationData: eventData.creationData,
+    schools,
+    places,
   };
 };
 
-export default connect(mapStateToProps)(PlaceSelectModal);
+export default connect(mapStateToProps)(EventPlaceSelectModal);

@@ -1,7 +1,17 @@
 import React from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
+import {
+  Button,
+  RadioButton,
+  HelperText,
+  List,
+  Text,
+  useTheme,
+  Card,
+  Title,
+} from 'react-native-paper';
 
+import { Content } from '@ts/types';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { StepperViewPageProps } from '@components/index';
 import { Account, State } from '@ts/types';
@@ -10,10 +20,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';
+import { add } from 'react-native-reanimated';
 
-type Props = StepperViewPageProps & { account: Account };
+type Props = StepperViewPageProps & { account: Account; add: (parser: Content['parser']) => void };
 
-const EventAddPageProgram: React.FC<Props> = ({ next, prev, account }) => {
+const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
   const [showError, setError] = React.useState(false);
 
   const contentInput = React.createRef<RNTestInput>();
@@ -22,10 +33,8 @@ const EventAddPageProgram: React.FC<Props> = ({ next, prev, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const submit = () => {
-    {
-      /* updateEventCreationData({ tags: selectedTags }); */
-    }
-    next();
+    updateEventCreationData({ parser: 'markdown', program: null });
+    add('markdown');
   };
 
   function blurInputs() {
@@ -44,7 +53,9 @@ const EventAddPageProgram: React.FC<Props> = ({ next, prev, account }) => {
 
   return (
     <View style={eventStyles.formContainer}>
-      <Text>Programme</Text>
+      <View style={styles.container}>
+        <Title>Aucun programme (non implémenté)</Title>
+      </View>
       <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}

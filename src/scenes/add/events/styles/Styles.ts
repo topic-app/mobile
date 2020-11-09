@@ -1,7 +1,7 @@
 import { Theme } from '@ts/types';
 import { StyleSheet } from 'react-native';
 
-function getPetitionStyles(theme: Theme) {
+function getEventStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     centerContainer: {
@@ -99,4 +99,4 @@ function getPetitionStyles(theme: Theme) {
   });
 }
 
-export default getPetitionStyles;
+export default getEventStyles;

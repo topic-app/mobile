@@ -26,6 +26,7 @@ import EventAddPageDuration from '../components/AddDuration';
 import EventAddPagePlace from '../components/AddPlace';
 import EventAddPageProgram from '../components/AddProgram';
 import EventAddPageTags from '../components/AddTags';
+import EventAddPageContact from '../components/AddContact';
 
 type Props = {
   navigation: StackNavigationProp<EventStackParams, 'Add'>;
@@ -38,18 +39,25 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
 
-  const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
+  const add = (parser?: 'markdown' | 'plaintext') => {
     eventAdd({
       title: creationData.title,
       summary: creationData.summary,
+      data: creationData.description,
+      phone: creationData.phone,
+      email: creationData.email,
+      contact: creationData.contact,
+      organizers: creationData.organizers,
+      start: creationData.start,
+      end: creationData.end,
       date: Date.now(),
       location: creationData.location,
       group: creationData.group,
-      image: null,
+      places: creationData.place,
       parser: parser || creationData.parser,
-      data: data || creationData.data,
-      tags: creationData.tags,
       preferences: null,
+      tags: creationData.tags,
+      program: creationData.program,
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearEventCreationData();
@@ -116,10 +124,16 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
                 component: <EventAddPageDuration />,
               },
               {
+                key: 'contact',
+                icon: 'at',
+                title: 'Contact',
+                component: <EventAddPageContact />,
+              },
+              {
                 key: 'program',
                 icon: 'script-text',
                 title: 'Programme',
-                component: <EventAddPageProgram />,
+                component: <EventAddPageProgram add={add} />,
               },
             ]}
           />

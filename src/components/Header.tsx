@@ -64,7 +64,6 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   if (primary) {
     primaryAction = <Appbar.BackAction onPress={primary} />;
   } else if (home) {
-    console.log(getLayout());
     primaryAction =
       getLayout() === 'desktop' ? null : (
         <Appbar.Action icon="menu" onPress={navigation.openDrawer} />

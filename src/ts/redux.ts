@@ -348,18 +348,33 @@ export type EventReadItem = {
 };
 
 export type EventCreationData = {
-  group?: string;
+  title?: string;
+  summary?: string;
+  description?: string;
+  phone?: string;
+  email?: string;
+  contact?: {
+    key: string;
+    value: string;
+    link: string;
+ }[];
+  organizers?: string[];
+  start?: Date;
+  end?: Date;
+  date?: Date;
   location?: {
     schools?: string[];
     departments?: string[];
     global?: boolean;
   };
-  date?: Date;
-  title?: string;
-  summary?: string;
+  group?: string;
+  place?: string[];
+  parser?: 'markdown' | 'plaintext';
+  preferences?: {
+    comments?: boolean;
+  };
   tags?: string[];
-  parser: 'plaintext' | 'markdown';
-  data: string;
+  program?: string[];
 };
 
 export type EventsDataState = {

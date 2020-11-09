@@ -119,6 +119,7 @@ const AuthLogin: React.FC<Props> = ({
                 error={!!reqState.login.incorrect}
                 autoCorrect={false}
                 secureTextEntry
+                autoCapitalize="none"
                 onSubmitEditing={() => submit()}
                 textContentType="password"
                 autoCompleteType="password"

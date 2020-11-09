@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
-import { useTheme, Text, withTheme } from 'react-native-paper';
+import { useTheme, Text } from 'react-native-paper';
 import { TabView, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -97,7 +97,6 @@ type Props = {
   swipeEnabled?: boolean;
   hideTabBar?: boolean;
   preloadDistance?: number;
-  theme: any;
 };
 
 export type StepperViewPageProps = {
@@ -107,79 +106,73 @@ export type StepperViewPageProps = {
   setIndex: (newIndex: number) => void;
 };
 
-class StepperView extends React.Component<Props> {
-  index = 0;
+const StepperView: React.FC<Props> = ({
+  pages,
+  title,
+  keyboardDismissMode = 'auto',
+  swipeEnabled = false,
+  hideTabBar = false,
+  preloadDistance = 0,
+}) => {
+  const theme = useTheme();
+  const stepIndicatorStyles = getStepIndicatorStyles(theme);
 
-  setIndex = (i: number) => (this.index = i);
+  const [index, setIndex] = React.useState(0);
 
-  render() {
-    const {
-      pages,
-      title,
-      keyboardDismissMode = 'auto',
-      swipeEnabled = false,
-      hideTabBar = false,
-      preloadDistance = 0,
-      theme,
-    } = this.props;
+  const next = (num = 1) => setIndex(index + num);
+  const prev = (num = 1) => setIndex(index - num);
 
-    const stepIndicatorStyles = getStepIndicatorStyles(theme);
+  const initialLayout = { width: Dimensions.get('window').width };
 
-    const next = (num = 1) => this.setIndex(this.index + num);
-    const prev = (num = 1) => this.setIndex(this.index - num);
+  const renderScene = ({ route }: { route: PageType }) => {
+    return React.cloneElement(pages.find((p) => p.key === route.key)!.component, {
+      next,
+      prev,
+      index,
+      setIndex,
+    });
+  };
 
-    const initialLayout = { width: Dimensions.get('window').width };
+  pages[index]?.onVisible?.();
 
-    const renderScene = ({ route }: { route: PageType }) => {
-      return React.cloneElement(pages.find((p) => p.key === route.key)!.component, {
-        next,
-        prev,
-        index: this.index,
-        setIndex: this.setIndex,
-      });
-    };
+  const StepperTabBar: React.FC<TabBarProps> = ({ navigationState }) => (
+    <View style={stepperStyles.stepIndicatorContainer}>
+      {title ? (
+        <View style={stepperStyles.centerContainer}>
+          <Text style={stepperStyles.title}>{title}</Text>
+        </View>
+      ) : null}
+      <StepIndicator
+        stepCount={pages.length}
+        currentPosition={navigationState.index}
+        labels={pages.map((p) => p.title)}
+        customStyles={stepIndicatorStyles}
+        renderStepIndicator={(params) => (
+          <Icon
+            color={iconColor(params.stepStatus, theme)}
+            size={15}
+            name={pages[params.position].icon}
+          />
+        )}
+      />
+    </View>
+  );
 
-    pages[this.index]?.onVisible?.();
+  return (
+    <View>
+      <TabView
+        lazy={preloadDistance !== null}
+        lazyPreloadDistance={preloadDistance}
+        swipeEnabled={swipeEnabled}
+        navigationState={{ index, routes: pages }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={initialLayout}
+        keyboardDismissMode={keyboardDismissMode}
+        renderTabBar={!hideTabBar ? StepperTabBar : () => null}
+      />
+    </View>
+  );
+};
 
-    const StepperTabBar: React.FC<TabBarProps> = ({ navigationState }) => (
-      <View style={stepperStyles.stepIndicatorContainer}>
-        {title ? (
-          <View style={stepperStyles.centerContainer}>
-            <Text style={stepperStyles.title}>{title}</Text>
-          </View>
-        ) : null}
-        <StepIndicator
-          stepCount={pages.length}
-          currentPosition={navigationState.index}
-          labels={pages.map((p) => p.title)}
-          customStyles={stepIndicatorStyles}
-          renderStepIndicator={(params) => (
-            <Icon
-              color={iconColor(params.stepStatus, theme)}
-              size={15}
-              name={pages[params.position].icon}
-            />
-          )}
-        />
-      </View>
-    );
-
-    return (
-      <View>
-        <TabView
-          lazy={preloadDistance !== null}
-          lazyPreloadDistance={preloadDistance}
-          swipeEnabled={swipeEnabled}
-          navigationState={{ index: this.index, routes: pages }}
-          renderScene={renderScene}
-          onIndexChange={this.setIndex}
-          initialLayout={initialLayout}
-          keyboardDismissMode={keyboardDismissMode}
-          renderTabBar={!hideTabBar ? StepperTabBar : () => null}
-        />
-      </View>
-    );
-  }
-}
-
-export default withTheme(StepperView);
+export default StepperView;

@@ -1,8 +1,8 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator, approveCreator } from './ActionCreator';
 import { UPDATE_ARTICLES_STATE } from '@ts/redux';
 import { State } from '@ts/types';
+import { reportCreator, approveCreator } from './ActionCreator';
 
 type ArticleAddProps = {
   title: string;
