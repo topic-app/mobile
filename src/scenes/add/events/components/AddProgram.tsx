@@ -16,12 +16,9 @@ import { Content } from '@ts/types';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { StepperViewPageProps } from '@components/index';
 import { Account, State } from '@ts/types';
-import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import getAuthStyles from '../styles/Styles';
-import { connect } from 'react-redux';
 import { add } from 'react-native-reanimated';
 
 type Props = StepperViewPageProps & { account: Account; add: (parser: Content['parser']) => void };
