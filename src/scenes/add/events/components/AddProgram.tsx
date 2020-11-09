@@ -21,7 +21,7 @@ import getAuthStyles from '../styles/Styles';
 import { connect } from 'react-redux';
 import { add } from 'react-native-reanimated';
 
-type Props = StepperViewPageProps & { account: Account; add: Function };
+type Props = StepperViewPageProps & { account: Account; add: (parser: Content['parser']) => void };
 
 const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
   const [showError, setError] = React.useState(false);
