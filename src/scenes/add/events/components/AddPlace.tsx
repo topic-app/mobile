@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, View, Platform } from 'react-native';
 import { Button, List, Text, useTheme } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import { Account, State, EventCreationData, EventPlace } from '@ts/types';
