@@ -80,7 +80,6 @@ function commentAddCreator({ publisher, content, parent, parentType }) {
                 },
               },
             });
-            console.log('Added');
             resolve();
           })
           .catch((error) => {

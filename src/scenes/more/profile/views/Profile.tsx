@@ -20,7 +20,7 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchAccount, logout } from '@redux/actions/data/account';
 
@@ -228,7 +228,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
               <InlineCard
                 icon="map-marker"
                 title="France Entière"
-                onPress={() => console.log('global pressed')}
+                onPress={() => logger.warn('global pressed')}
               />
             )}
             {location.schoolData?.map((school) => (
@@ -243,7 +243,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
                     ? `, ${school.departments[0].displayName || school.departments[0].name}`
                     : ''
                 }`}
-                onPress={() => console.log(`school ${school._id} pressed!`)}
+                onPress={() => logger.warn(`school ${school._id} pressed!`)}
               />
             ))}
             {location.departmentData?.map((dep) => (
@@ -252,7 +252,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
                 icon="map-marker-radius"
                 title={dep.name}
                 subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${dep.code}`}
-                onPress={() => console.log(`department ${dep._id} pressed!`)}
+                onPress={() => logger.warn(`department ${dep._id} pressed!`)}
               />
             ))}
             <View style={styles.container}>

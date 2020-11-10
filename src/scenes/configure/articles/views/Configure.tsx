@@ -144,8 +144,6 @@ function ArticleLists({
     ...categoryTypes.filter((c) => !articlePrefs.categories?.includes(c.id)),
   ];
 
-  console.log(`Categories ${JSON.stringify(categories)}`);
-
   return (
     <View style={styles.page}>
       <TranslucentStatusBar />
@@ -397,7 +395,6 @@ function ArticleLists({
                   )}
                   renderItem={({ item }) => {
                     let content = { description: 'Erreur', icon: 'alert-decagram' };
-                    console.log(JSON.stringify(item));
                     if (item.type === 'tag') {
                       content = {
                         description: 'Tag',

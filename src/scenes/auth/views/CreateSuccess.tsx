@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import { Location, Group, State, GroupRequestState } from '@ts/types';
 import { Illustration } from '@components/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { updateGroups } from '@redux/actions/api/groups';
 
@@ -47,7 +47,7 @@ const AuthCreateSuccess: React.FC<Props> = ({ navigation, location, groups, reqS
         theme={{ colors: { accent: colors.primaryLighter } }}
         visible
         onDismiss={() => null}
-        action={{ label: 'Renvoyer', onPress: () => console.log('Resend email') }}
+        action={{ label: 'Renvoyer', onPress: () => logger.warn('Resend email not implemented') }}
       >
         Email de vérification envoyé
       </Snackbar>

@@ -51,7 +51,7 @@ import {
   ErrorMessage,
   SafeAreaView,
 } from '@components/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
@@ -442,7 +442,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <InlineCard
                   icon="map-marker"
                   title="France Entière"
-                  onPress={() => console.log('global pressed')}
+                  onPress={() => logger.warn('global pressed')}
                 />
               )}
               {group?.location.schools?.map((school) => (
@@ -451,7 +451,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   icon="school"
                   title={school.displayName}
                   subtitle={getAddressString(school?.address) || school?.shortName}
-                  onPress={() => console.log(`school ${school._id} pressed!`)}
+                  onPress={() => logger.warn(`school ${school._id} pressed!`)}
                 />
               ))}
               {group?.location.departments?.map((dep) => (
@@ -460,7 +460,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   icon="domain"
                   title={dep.displayName}
                   subtitle="Département"
-                  onPress={() => console.log(`department ${dep._id} pressed!`)}
+                  onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                 />
               ))}
               <Divider />

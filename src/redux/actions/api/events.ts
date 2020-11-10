@@ -70,7 +70,6 @@ async function searchEvents(
   search = true,
   useDefaultParams = false,
 ) {
-  console.log(`Search articles ${JSON.stringify(params)}`);
   await Store.dispatch(
     updateCreator({
       update: UPDATE_EVENTS_SEARCH,
