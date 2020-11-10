@@ -99,7 +99,7 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
   }
 
   if (!(Array.isArray(event?.program) && event?.program?.length > 0)) {
-    logger.error('Invalid Program for event');
+    logger.warn('Invalid Program for event');
     // Handle invalid program
   }
 

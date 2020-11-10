@@ -110,7 +110,6 @@ function updateCreator({
         return dispatch(state);
       })
       .catch((error) => {
-        console.error(error);
         state.data[stateName] = {
           loading: {
             initial: false,

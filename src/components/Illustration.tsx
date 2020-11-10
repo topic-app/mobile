@@ -205,7 +205,7 @@ const Illustration: React.FC<Props> = ({ name, ...rest }) => {
   const Item = dark ? illustrationList[name]?.dark : illustrationList[name]?.light;
 
   if (!Item) {
-    logger.error(`Error: ${name} not found in list of artwork`);
+    logger.warn(`Error: ${name} not found in list of artwork`);
     return null;
   }
 

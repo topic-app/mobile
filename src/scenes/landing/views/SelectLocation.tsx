@@ -238,7 +238,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
           logger.info('Location denied, hiding location FAB');
         }
       })
-      .catch((e) => logger.error('Error while requesting user location permission', e));
+      .catch((e) => logger.warn('Error while requesting user location permission', e));
   }, []);
 
   const requestUserLocation = async () => {
@@ -248,7 +248,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       status = permission.status;
       canAskAgain = permission.canAskAgain;
     } catch (e) {
-      logger.error('Error while requesting user location', e);
+      logger.warn('Error while requesting user location', e);
     }
     if (status === 'granted') {
       const { coords } = await Location.getCurrentPositionAsync({

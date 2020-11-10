@@ -59,7 +59,7 @@ const AuthLogin: React.FC<Props> = ({
           params: { screen: 'Home2', params: { screen: 'Article' } },
         });
       })
-      .catch((e) => logger.error(e));
+      .catch((e) => logger.warn(e));
   };
 
   const theme = useTheme();
