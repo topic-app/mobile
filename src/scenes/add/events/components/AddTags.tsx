@@ -52,7 +52,6 @@ const EventAddPageTags: React.FC<Props> = ({
   };
 
   const addNewTag = (tag: { _id: string; name: string; color: string }) => {
-    console.log(JSON.stringify(tag));
     setSelectedTags([...selectedTags, tag._id]);
     setSelectedData([...selectedData, tag]);
   };

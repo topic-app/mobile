@@ -48,8 +48,6 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   const [expiryDate, setExpiryDate] = React.useState(0);
   const [errorVisible, setErrorVisible] = React.useState(false);
 
-  console.log(roles);
-
   let sections = [
     {
       key: 'primary',

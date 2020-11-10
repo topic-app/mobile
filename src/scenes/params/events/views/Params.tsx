@@ -42,8 +42,6 @@ const EventParamsScreen: React.FC<EventParamsProps> = ({
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  console.log(params);
-
   const fetch = () => {
     if (params.schools) {
       fetchMultiSchool(params.schools);

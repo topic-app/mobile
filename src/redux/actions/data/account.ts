@@ -1,4 +1,4 @@
-import { request } from '@utils/index';
+import { request, logger } from '@utils/index';
 import Store from '@redux/store';
 import { fetchLocationData } from './location';
 
@@ -308,7 +308,7 @@ function loginCreator(fields: LoginFields) {
           dispatch(fetchAccountCreator());
           dispatch(fetchGroupsCreator());
           dispatch(fetchWaitingGroupsCreator());
-          console.log('LoggedIn');
+          logger.debug('Logged in');
           resolve();
         })
         .catch((err) => {

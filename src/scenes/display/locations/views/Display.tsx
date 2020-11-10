@@ -9,9 +9,6 @@ function LocationDisplay({ navigation, route }) {
   const { id } = route.params;
   const place = places.find((t) => t._id === data.id);
 
-  console.log('Full-screen display!');
-  console.log(place);
-
   return (
     <View style={{ flex: 1 }}>
       <Text>I am the full-screen display content</Text>

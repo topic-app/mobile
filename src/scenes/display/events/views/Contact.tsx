@@ -8,9 +8,10 @@ import { useTheme } from '@utils/index';
 
 type EventDisplayContactProps = {
   event: Event;
+  navigation: any;
 };
 
-const EventDisplayContact: React.FC<EventDisplayContactProps> = ({ event }) => {
+const EventDisplayContact: React.FC<EventDisplayContactProps> = ({ event, navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -35,7 +36,18 @@ const EventDisplayContact: React.FC<EventDisplayContactProps> = ({ event }) => {
             icon="account-outline"
             title={mem.displayName}
             subtitle="Organisateur"
-            onPress={() => console.log('go to user', mem._id)}
+            onPress={() =>
+              navigation.push('Main', {
+                screen: 'Display',
+                params: {
+                  screen: 'User',
+                  params: {
+                    screen: 'Display',
+                    params: { id: mem?._id, title: mem?.displayName },
+                  },
+                },
+              })
+            }
           />
         ))}
     </View>

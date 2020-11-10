@@ -287,7 +287,6 @@ const Search: React.FC<SearchProps> = ({
   const getParams = () => {
     let params = {};
     if (filters.tags) {
-      console.log(filters.tags);
       params['tags'] = filters.tags;
     }
     return params;

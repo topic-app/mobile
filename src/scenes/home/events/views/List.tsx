@@ -297,7 +297,6 @@ const EventList: React.FC<EventListProps> = ({
           } else if (section.key === 'categories' && category.key === 'passed') {
             updatePassedEvents('next');
           } else if (section.key === 'quicks') {
-            console.log(category.params);
             searchEvents('next', '', category.params, false, false);
           }
         }}

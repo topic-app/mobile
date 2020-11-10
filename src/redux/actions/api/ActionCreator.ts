@@ -1,4 +1,4 @@
-import { request } from '@utils/index';
+import { request, logger } from '@utils/index';
 import { State, Item } from '@ts/types';
 
 /**
@@ -68,7 +68,7 @@ function updateCreator({
         lastId = elements[elements.length - 1]._id;
         number = nextNum;
       } else {
-        console.log(
+        logger.warn(
           `Warning: Requested state update type 'next' in updateCreator but no elements were found in redux db '${dataType}'`,
         );
       }

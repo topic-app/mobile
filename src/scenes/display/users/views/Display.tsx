@@ -36,7 +36,7 @@ import {
   CustomTabView,
   SafeAreaView,
 } from '@components/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchUser } from '@redux/actions/api/users';
 import { fetchAccount } from '@redux/actions/data/account';
@@ -382,7 +382,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                       <InlineCard
                         icon="map-marker"
                         title="France Entière"
-                        onPress={() => console.log('global pressed')}
+                        onPress={() => logger.warn('global pressed')}
                       />
                     )}
                     {user.data.location.schools?.map((school) => (
@@ -400,7 +400,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                               }`
                             : ' '
                         }`}
-                        onPress={() => console.log(`school ${school._id} pressed!`)}
+                        onPress={() => logger.warn(`school ${school._id} pressed!`)}
                       />
                     ))}
                     {user.data.location.departments?.map((dep) => (
@@ -411,7 +411,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                         subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
                           dep.code
                         }`}
-                        onPress={() => console.log(`department ${dep._id} pressed!`)}
+                        onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                       />
                     ))}
                   </View>

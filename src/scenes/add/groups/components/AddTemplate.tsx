@@ -21,7 +21,6 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
   const submit = () => {
     if (template) {
       updateGroupCreationData({ type: template });
-      console.log('no');
       next();
     } else {
       setError(true);

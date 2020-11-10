@@ -30,8 +30,6 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
-  console.log(`Key ${sectionKey}`);
-
   if (
     (sectionKey === 'categories' && reqState.list.success) ||
     (sectionKey === 'quicks' && reqState.search.success) ||

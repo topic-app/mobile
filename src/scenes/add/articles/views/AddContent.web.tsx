@@ -84,7 +84,6 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
     const converter = new showdown.Converter();
 
     // No idea why, this fails with "undefined is not a function" even though turndown is a function (see with console.log)
-    console.log(converter);
     const contentMarkdown = converter.makeMarkdown(contentVal);
 
     const contentValid = contentMarkdown?.length && contentMarkdown?.length > 0;

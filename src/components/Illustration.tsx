@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import { config } from '@root/app.json';
 
 // Topic Icon
@@ -205,7 +205,7 @@ const Illustration: React.FC<Props> = ({ name, ...rest }) => {
   const Item = dark ? illustrationList[name]?.dark : illustrationList[name]?.light;
 
   if (!Item) {
-    console.log(`Error: ${name} not found in list of artwork`);
+    logger.error(`Error: ${name} not found in list of artwork`);
     return null;
   }
 

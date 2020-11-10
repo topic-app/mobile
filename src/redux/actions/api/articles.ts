@@ -92,7 +92,6 @@ async function searchArticles(
   search = true,
   useDefaultParams = false,
 ) {
-  console.log(`Search articles ${JSON.stringify(params)}`);
   await Store.dispatch(
     updateCreator({
       update: UPDATE_ARTICLES_SEARCH,
