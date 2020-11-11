@@ -24,7 +24,7 @@ type AvatarProps = {
   size?: number;
   onPress?: () => void;
   avatar?: AvatarType;
-  large: boolean;
+  large?: boolean;
 };
 
 const Avatar: React.FC<AvatarProps> = ({

@@ -3,7 +3,7 @@ import { getImageUrl } from './getAssetUrl';
 
 export type ItemData = {
   publisher?: Publisher;
-  authors?: [AuthorPreload];
+  authors?: AuthorPreload[];
   group?: GroupPreload;
   tags?: TagPreload[];
   location?: Location;

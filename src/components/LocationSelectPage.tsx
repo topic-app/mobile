@@ -292,6 +292,10 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
               : [state.schools.search?.error, state.departments.search?.error]
           }
           retry={retry}
+          strings={{
+            what: 'La récupération des localisations',
+            contentPlural: 'Les localisations',
+          }}
         />
       )}
     </View>

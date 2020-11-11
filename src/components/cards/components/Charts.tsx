@@ -60,7 +60,7 @@ const PetitionGoal: React.FC<PetitionGoalProps> = ({ voteData }) => {
         <Text style={[petitionStyles.voteLabel, { left: getLeftSpacing(signatures) }]}>
           {signatures}
         </Text>
-        <Text style={{ position: 'absolute', right: 0, top: -24, color: colors.subtitle }}>
+        <Text style={{ position: 'absolute', right: 0, top: -24, color: colors.subtext }}>
           {endGoal}
         </Text>
       </View>
@@ -104,13 +104,13 @@ type PetitionChartProps = {
 const PetitionChart: React.FC<PetitionChartProps> = ({ type, voteData }) => {
   switch (type) {
     case 'sign':
-      return <PetitionNoGoal voteData={voteData} />;
+      return <PetitionNoGoal voteData={voteData as PetitionVoteDataNoGoal} />;
     case 'goal':
-      return <PetitionGoal voteData={voteData} />;
+      return <PetitionGoal voteData={voteData as PetitionVoteDataGoal} />;
     case 'opinion':
-      return <PetitionDouble voteData={voteData} />;
+      return <PetitionDouble voteData={voteData as PetitionVoteDataDouble} />;
     case 'multiple':
-      return <PetitionMultiple voteData={voteData} />;
+      return <PetitionMultiple voteData={voteData as PetitionVoteDataMultiple} />;
     default:
       return (
         <View>

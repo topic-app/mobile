@@ -123,6 +123,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
                 left={() =>
                   Platform.OS !== 'ios' && (
                     <RadioButton
+                      value=""
                       disabled={!account.loggedIn}
                       color={colors.primary}
                       status={item.id === reportOption ? 'checked' : 'unchecked'}
@@ -133,6 +134,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
                 right={() =>
                   Platform.OS === 'ios' && (
                     <RadioButton
+                      value=""
                       disabled={!account.loggedIn}
                       color={colors.primary}
                       status={item.id === reportOption ? 'checked' : 'unchecked'}

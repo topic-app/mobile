@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { ArticlePreload, State, Preferences } from '@ts/types';
+import { ArticlePreload, ArticleVerificationPreload, State, Preferences } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import { CardBase } from '../Cards';
@@ -13,11 +13,11 @@ import TagList from '../TagList';
 import CustomImage from '../CustomImage';
 
 type ArticleCardProps = {
-  article: ArticlePreload;
+  verification: boolean;
+  article: ArticleVerificationPreload | ArticlePreload;
   navigate: StackNavigationProp<any, any>['navigate'];
   unread: boolean;
   preferences: Preferences;
-  verification: boolean;
 };
 
 const screenDimensions = Dimensions.get('window');
@@ -34,7 +34,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   const theme = useTheme();
   const { colors } = theme;
 
+  // TODO: Find a better way than this
+  const articleVerification = article as ArticleVerificationPreload;
+
   const readStyle = !unread && { color: colors.disabled };
+
+  const verificationColors = ['green', 'yellow', 'yellow', 'orange', 'orange', 'orange'];
 
   return (
     <CardBase onPress={navigate}>
@@ -46,17 +51,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             </Title>
             <Caption>{`Publié ${moment(article?.date).fromNow()}`}</Caption>
           </View>
-          {verification && (
+          {verification && articleVerification?.verification && (
             <View
               style={{
                 borderRadius: 20,
-                backgroundColor: ([
-                  ['green', [0]],
-                  ['yellow', [1, 2]],
-                  ['orange', [3, 4, 5]],
-                ].find((c) => c[1].includes(article?.verification?.bot?.score)) || [
-                  'red',
-                ])[0].toString(),
+                backgroundColor:
+                  verificationColors[articleVerification?.verification?.bot?.score] || 'red',
                 height: 40,
                 width: 40,
                 alignItems: 'center',
@@ -64,7 +64,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
               }}
             >
               <Text style={{ fontSize: 20, color: 'black' }}>
-                {article?.verification?.bot?.score}
+                {articleVerification?.verification?.bot?.score}
               </Text>
             </View>
           )}
@@ -96,14 +96,14 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
       </Card.Content>
       {verification && (
         <Card.Content>
-          {article?.verification?.bot?.flags?.length !== 0 && (
-            <Text>Classifié comme {article?.verification?.bot?.flags?.join(', ')}</Text>
+          {articleVerification?.verification?.bot?.flags?.length !== 0 && (
+            <Text>Classifié comme {articleVerification?.verification?.bot?.flags?.join(', ')}</Text>
           )}
-          {article?.verification?.reports?.length !== 0 && (
-            <Text>Reporté {article?.verification?.reports?.length} fois </Text>
+          {articleVerification?.verification?.reports?.length !== 0 && (
+            <Text>Reporté {articleVerification?.verification?.reports?.length} fois </Text>
           )}
-          {article?.verification?.users?.length !== 0 && (
-            <Text>Approuvé par {article?.verification?.users?.join(', ')}</Text>
+          {articleVerification?.verification?.users?.length !== 0 && (
+            <Text>Approuvé par {articleVerification?.verification?.users?.join(', ')}</Text>
           )}
         </Card.Content>
       )}

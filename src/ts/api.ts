@@ -20,6 +20,21 @@ export type Content = {
   data: string;
 };
 
+export type Verification = {
+  verified: boolean;
+  users?: string[];
+  bot: {
+    score: number;
+    flags: string[];
+  };
+  reports?: { user: UserPreload; date: Date; reason: string }[];
+  data?: {
+    name?: string;
+    id?: string;
+    extra?: string;
+  };
+};
+
 export type TagPreload = {
   _id: string;
   name?: string;
@@ -44,6 +59,7 @@ type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
 
 export type SchoolPreload = {
   _id: string;
+  name: string;
   shortName?: string;
   displayName: string;
   types: SchoolType[];
@@ -63,6 +79,7 @@ export type School = {
 
 export type DepartmentPreload = {
   _id: string;
+  name: string;
   displayName: string;
   shortName?: string;
   type: 'region' | 'departement' | 'academie';
@@ -143,6 +160,7 @@ export type UserPreload = {
 export type User = {
   _id: string;
   name: string;
+  displayName: string;
   info: {
     username: string;
     avatar: Avatar;
@@ -239,20 +257,21 @@ export type GroupMember = {
 export type GroupPreload = {
   _id: string;
   displayName: string;
+  name: string;
+  official: boolean;
   type: string;
   avatar: Avatar;
+  summary: string;
+  cache: {
+    followers: number;
+    members: number;
+  };
 };
 
-export type Group = {
-  _id: string;
-  name: string;
-  type: string; // could be an enum in the future
-  avatar: Avatar;
-  official: boolean;
+export type Group = GroupPreload & {
   shortName?: string;
   handle: string;
   aliases: string;
-  summary: string;
   description: {
     data: string;
     parser: 'markdown' | 'plaintext';
@@ -261,10 +280,6 @@ export type Group = {
   permissions: GroupRolePermission[]; // Not sure how this works
   roles: GroupRole[];
   members: GroupMember[];
-  cache: {
-    followers: number;
-    members: number;
-  };
   tags: TagPreload[];
 };
 
@@ -289,12 +304,18 @@ export type ArticlePreload = {
   location: Location;
   tags: TagPreload[];
 };
+export type ArticleVerificationPreload = ArticlePreload & {
+  verification: Verification;
+};
 
 export type Article = ArticlePreload & {
   content: Content;
   preferences: {
     comments: boolean;
   };
+};
+export type ArticleVerification = Article & {
+  verification: Verification;
 };
 
 // Event Types
@@ -326,6 +347,9 @@ export type EventPreload = {
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
 };
+export type EventVerificationPreload = EventPreload & {
+  verification: Verification;
+};
 
 export type Event = EventPreload & {
   description: Content;
@@ -343,13 +367,16 @@ export type Event = EventPreload & {
     followers: number;
   };
 };
+export type EventVerification = Event & {
+  verification: Verification;
+};
 
 // Place Types (used for Explorer)
 type PlaceType = 'cultural' | 'education' | 'history' | 'tourism' | 'club' | 'other';
 
 export type PlacePreload = {
   _id: string;
-  displayName: string;
+  name: string;
   types: PlaceType[];
   summary: string;
   address: Address;

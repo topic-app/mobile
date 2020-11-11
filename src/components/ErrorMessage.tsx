@@ -66,7 +66,7 @@ const ErrorMessage: React.FC<Props> = ({
           }
         }
 
-        const state = Store?.getState() || { error: true };
+        const state = Store?.getState();
 
         const responseData =
           err?.error?.response?.data?.error?.value || JSON.stringify(err?.error?.response?.data);
@@ -98,7 +98,7 @@ Location select.: ${state?.location?.selected}
 Location: Écoles ${state?.location?.schools} | Départements ${
           state?.location?.departments
         } | Global ${state?.location?.global}
-StateError: ${state.error}
+StateError: ${!state}
 ---
 SYSTEME
 Os: ${await DeviceInfo.getBaseOs()} | ${DeviceInfo.getSystemName()}
@@ -233,7 +233,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
       message = {
         icon: 'file-alert-outline',
         text:
-          "Il semble y avoir un problème avec les données envoyées. Merci de vérifier que les informations sont correctes, ou de signaler un bug si c'est le cas",
+          'L&apos;application a envoyé des données invalides au serveur. Merci de signaler ce bug.',
       };
       if (restart) {
         actions.push({

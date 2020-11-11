@@ -11,7 +11,7 @@ import getStyles from '@styles/Styles';
 
 type MyGroupsListCardProps = {
   group: GroupPreload;
-  navigate: StackNavigationProp<any, any>;
+  navigate: StackNavigationProp<any, any>['navigate'];
   member: boolean;
   following: boolean;
 };

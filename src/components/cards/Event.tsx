@@ -51,7 +51,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, navigate }) => {
     <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
       <Card.Title title={event?.title} subtitle={buildDateString(start, end)} />
       <View style={{ paddingVertical: 5 }}>
-        <TagList item={event} />
+        <TagList item={event} scrollable={false} />
       </View>
       <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
         <View style={{ flexDirection: 'row' }}>

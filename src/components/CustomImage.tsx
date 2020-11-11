@@ -11,7 +11,7 @@ type CustomImageProps = {
   imageSize: 'small' | 'medium' | 'large';
   height: number;
   width: number;
-  style: object;
+  style?: object;
 };
 
 const CustomImage: React.FC<CustomImageProps> = ({ image, imageSize, height, width, style }) => {

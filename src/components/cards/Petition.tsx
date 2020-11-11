@@ -143,12 +143,12 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ navigate, petition }) => {
             )}
           </View>
         </View>
-
+        +
         <PetitionChart voteData={petition.voteData} />
       </Card.Content>
 
       <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-        <TagList item={petition} />
+        <TagList item={petition} scrollable={false} />
       </Card.Content>
     </CardBase>
   );
