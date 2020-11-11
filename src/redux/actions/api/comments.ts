@@ -1,11 +1,11 @@
 import Store from '@redux/store';
-import { Comment } from '@ts/types';
+import { Comment, Item } from '@ts/types';
 import { UPDATE_COMMENTS_DATA, UPDATE_COMMENTS_STATE, CLEAR_COMMENTS } from '@ts/redux';
 
 import { clearCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: Comment[]) =>
-  data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+const dateDescSort = (data: Item[]) =>
+  (data as Comment[]).sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
  * @docs actions

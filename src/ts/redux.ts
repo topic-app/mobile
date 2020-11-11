@@ -869,3 +869,39 @@ export type ModalProps = {
   visible: boolean;
   setVisible: (state: boolean) => void;
 };
+
+export type ElementStringPlural =
+  | 'articles'
+  | 'comments'
+  | 'departments'
+  | 'groups'
+  | 'events'
+  | 'petitions'
+  | 'places'
+  | 'tags'
+  | 'schools'
+  | 'users';
+export type ElementString =
+  | 'article'
+  | 'comment'
+  | 'department'
+  | 'group'
+  | 'event'
+  | 'petition'
+  | 'place'
+  | 'tag'
+  | 'school'
+  | 'user';
+
+export type ElementStringPluralMap = {
+  articles: Article;
+  comments: Comment;
+  departments: Department;
+  groups: Group;
+  events: Event;
+  petitions: Petition;
+  places: Place;
+  tags: Tag;
+  schools: School;
+  users: User;
+};

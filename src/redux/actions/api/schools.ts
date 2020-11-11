@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { School } from '@ts/types';
+import { Item } from '@ts/types';
 import {
   UPDATE_SCHOOLS_DATA,
   UPDATE_SCHOOLS_ITEM,
@@ -12,7 +12,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: School[]) => data; // .sort((a, b) => a?.name?.localCompare(b?.name));
+const nameAscSort = (data: Item[]) => data; // .sort((a, b) => a?.name?.localCompare(b?.name));
 
 /**
  * @docs actions

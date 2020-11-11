@@ -1,5 +1,12 @@
 import { request, logger } from '@utils/index';
-import { State, Item } from '@ts/types';
+import {
+  State,
+  Item,
+  ElementStringPlural,
+  ElementStringPluralMap,
+  DepartmentsState,
+  SchoolsState,
+} from '@ts/types';
 
 /**
  * @docs actionCreators
@@ -19,7 +26,7 @@ type updateCreatorProps = {
   stateUpdate: string;
   url: string;
   sort?: (data: Item[]) => Item[];
-  dataType: string;
+  dataType: ElementStringPlural;
   stateName?: string;
   type?: string;
   params?: object;
@@ -48,20 +55,20 @@ function updateCreator({
   return (dispatch: (action: any) => void, getState: () => State) => {
     let lastId;
     let number = initialNum;
-    const state = {
+    dispatch({
       type: stateUpdate,
-      data: {},
-    };
-    state.data[stateName] = {
-      loading: {
-        initial: type === 'initial',
-        refresh: type === 'refresh',
-        next: type === 'next',
+      data: {
+        [stateName]: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
+        },
       },
-      success: null,
-      error: null,
-    };
-    dispatch(state);
+    });
     if (type === 'next') {
       const elements = getState()[dataType][listName];
       if (elements.length !== 0) {
@@ -75,9 +82,9 @@ function updateCreator({
     }
     request(url, 'get', { lastId, number, ...params }, auth)
       .then((result) => {
-        let data: Array<{ _id: string }>;
+        let data: Array<Item>;
         if (!clear) {
-          const dbData = getState()[dataType][listName] || []; // The old elements, in redux db
+          const dbData = getState()[dataType][listName] || []; // The old elements, in redux db // to actually have type, add as Array<ElementStringPluralMap[typeof dataType]>
           data = [...dbData]; // Shallow copy of dbData to get rid of reference
           if (result.data) {
             result.data[dataType].forEach((a: Item) => {
@@ -98,29 +105,37 @@ function updateCreator({
           type: update,
           data,
         });
-        state.data[stateName] = {
-          loading: {
-            initial: false,
-            refresh: false,
-            next: false,
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: true,
+              error: null,
+            },
           },
-          success: true,
-          error: null,
-        };
-        return dispatch(state);
+        });
       })
       .catch((error) => {
         console.error(error);
-        state.data[stateName] = {
-          loading: {
-            initial: false,
-            refresh: false,
-            next: false,
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
+            },
           },
-          success: false,
-          error,
-        };
-        return dispatch(state);
+        });
       });
   };
 }
@@ -139,7 +154,7 @@ function updateCreator({
 type fetchCreatorProps = {
   update: string;
   stateUpdate: string;
-  dataType: string;
+  dataType: ElementStringPlural;
   url: string;
   params: object;
   stateName?: string;
@@ -158,44 +173,55 @@ function fetchCreator({
 }: fetchCreatorProps) {
   return (dispatch: (action: any) => void, getState: () => State) => {
     return new Promise((resolve, reject) => {
-      const state = {
+      dispatch({
         type: stateUpdate,
-        data: {},
-      };
-      state.data[stateName] = {
-        loading: true,
-        success: null,
-        error: null,
-      };
-
-      dispatch(state);
+        data: {
+          [stateName]: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
       request(url, 'get', params, auth)
         .then((result) => {
-          const data = result.data[dataType][0];
+          const data = result.data && result.data[dataType][0];
           dispatch({
             type: update,
             data: useArray
               ? [
-                  ...(getState()[dataType]?.items || []),
-                  ...(getState()[dataType]?.items?.includes(data?._id) ? [] : [data]),
+                  ...((getState()[dataType] as SchoolsState | DepartmentsState)?.items || []),
+                  ...((getState()[dataType] as SchoolsState | DepartmentsState)?.items?.includes(
+                    data?._id,
+                  )
+                    ? []
+                    : [data]),
                 ] // HACK: Whatever
               : data,
           });
-          state.data[stateName] = {
-            loading: false,
-            success: true,
-            error: null,
-          };
-          dispatch(state);
+          dispatch({
+            type: stateUpdate,
+            data: {
+              [stateName]: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
           resolve();
         })
         .catch((err) => {
-          state.data[stateName] = {
-            loading: false,
-            success: false,
-            error: err,
-          };
-          dispatch(state);
+          dispatch({
+            type: stateUpdate,
+            data: {
+              [stateName]: {
+                loading: false,
+                success: false,
+                error: err,
+              },
+            },
+          });
           reject();
         });
     });

@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Group } from '@ts/types';
+import { Group, Item } from '@ts/types';
 import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_TEMPLATES,
@@ -12,7 +12,8 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Group[]) => data.sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: Item[]) =>
+  (data as Group[]).sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -140,7 +141,7 @@ async function updateGroupTemplates() {
       url: 'groups/templates/list',
       sort: nameAscSort,
       stateName: 'templates',
-      dataType: 'templates',
+      dataType: 'groups', // This is useless but typescript
       type: 'initial',
       params: {},
       clear: true,

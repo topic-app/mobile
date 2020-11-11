@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Place } from '@ts/types';
+import { Place, Item } from '@ts/types';
 import {
   UPDATE_PLACES_DATA,
   UPDATE_PLACES_SEARCH,
@@ -10,7 +10,8 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Place[]) => data.sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: Item[]) =>
+  (data as Place[]).sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions

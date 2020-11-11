@@ -171,9 +171,8 @@ export type User = {
     firstName: string;
     lastName: string;
     following: {
-      groups: string[];
-      users: string[];
-      events: string[];
+      groups: GroupPreload[];
+      users: UserPreload[];
     };
     location: Location;
     description: string;
@@ -199,11 +198,11 @@ export type CreationData = {
 export type Account = {
   loggedIn: boolean;
   creationData: object | CreationData; // Maybe something better than `object` here
-  groups: Group[];
-  waitingGroups: (Group & {
+  groups?: Group[];
+  waitingGroups?: (Group & {
     waitingMembership: { role: string; permanent: boolean; expiry: Date };
   })[];
-  accountInfo: {
+  accountInfo?: {
     accountId: string;
     accountToken: string;
     accountTokenExpiry: string;
@@ -212,7 +211,7 @@ export type Account = {
         email: string;
       };
     };
-  };
+  } | null;
 };
 
 export type AuthorPreload = UserPreload;
@@ -498,5 +497,6 @@ export type Item =
   | Group
   | User
   | Place
+  | Tag
   | Department
   | School;

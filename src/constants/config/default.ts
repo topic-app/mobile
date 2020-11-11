@@ -48,7 +48,7 @@ const defaultConfig: AppConfig = {
   defaults: {
     account: {
       loggedIn: false,
-      accountInfo: {},
+      accountInfo: null,
       creationData: {},
     },
     location: {

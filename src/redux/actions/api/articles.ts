@@ -7,12 +7,12 @@ import {
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
 } from '@ts/redux';
-import { Item, UPDATE_ARTICLES_VERIFICATION } from '@ts/types';
+import { Item, UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
 const dateDescSort = (data: Item[]) =>
-  data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+  (data as Article[]).sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
  * @docs actions

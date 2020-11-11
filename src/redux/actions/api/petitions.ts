@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Petition } from '@ts/types';
+import { Petition, Item } from '@ts/types';
 import {
   UPDATE_PETITIONS_DATA,
   UPDATE_PETITIONS_SEARCH,
@@ -10,8 +10,10 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: Petition[]) =>
-  data.sort((a, b) => (new Date(a.duration.end) > new Date(b.duration.end) ? -1 : 1));
+const dateDescSort = (data: Item[]) =>
+  (data as Petition[]).sort((a, b) =>
+    new Date(a.duration.end) > new Date(b.duration.end) ? -1 : 1,
+  );
 
 /**
  * @docs actions

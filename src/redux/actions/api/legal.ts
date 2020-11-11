@@ -1,4 +1,4 @@
-import { UPDATE_LEGAL, UPDATE_LEGAL_STATE, State } from '@ts/types';
+import { UPDATE_LEGAL, UPDATE_LEGAL_STATE } from '@ts/types';
 import Store from '@redux/store';
 import request from '@utils/request';
 
@@ -6,7 +6,7 @@ type fetchCreatorProps = {
   document: 'conditions' | 'confidentialite' | 'mentions';
 };
 function fetchDocumentCreator({ document }: fetchCreatorProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+  return (dispatch: (action: any) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_LEGAL_STATE,
