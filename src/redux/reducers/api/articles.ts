@@ -82,9 +82,6 @@ const initialState: ArticlesState = {
  * @returns Nouveau state
  */
 function articleReducer(state = initialState, action: ArticlesActionTypes): ArticlesState {
-  if (action.type === UPDATE_ARTICLES_FOLLOWING || action.type === UPDATE_ARTICLES_DATA) {
-    console.log(action.type + ' ' + action.data.length);
-  }
   switch (action.type) {
     case UPDATE_ARTICLES_STATE:
       return {

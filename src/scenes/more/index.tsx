@@ -9,16 +9,38 @@ import SettingsStackNavigator from './settings/index';
 import MyGroupStackNavigator from './myGroups/index';
 import ModerationStackNavigator from './moderation/index';
 import AboutStackNavigator from './about/index';
+import LinkingStackNavigator from './linking/index';
 
 const Stack = createNativeStackNavigator();
 
 function MoreStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Profile" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Profile" component={ProfileStackNavigator} />
-      <Stack.Screen name="Settings" component={SettingsStackNavigator} />
-      <Stack.Screen name="MyGroups" component={MyGroupStackNavigator} />
-      <Stack.Screen name="Moderation" component={ModerationStackNavigator} />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MyGroups"
+        component={MyGroupStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Moderation"
+        component={ModerationStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Linking"
+        component={LinkingStackNavigator}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="About" component={AboutStackNavigator} options={{ headerShown: false }} />
       {Platform.OS === 'ios' && <Stack.Screen name="List" component={MoreList} />}
     </Stack.Navigator>

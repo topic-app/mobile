@@ -100,33 +100,11 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
           {
             text: 'Changer',
             onPress: async () => {
-              if (await LocalAuthentication.isAvailableAsync()) {
-                LocalAuthentication.authenticateAsync({
-                  reason: "Topic App - Changer l'adresse mail",
-                  title: 'Authentification',
-                  fallbackEnabled: true,
-                  fallbackToPinCodeAction: true,
-                }).then((result) => {
-                  if (result.success) {
-                    updateEmail(email).then(() => {
-                      setEmail('');
-                      setVisible(false);
-                      fetchAccount();
-                    });
-                  } else {
-                    Alert.alert(
-                      "Erreur lors de l'authentification",
-                      "Vous pouvez toujours changer le mot de passe depuis l'interface web.",
-                    );
-                  }
-                });
-              } else {
-                updateEmail(email).then(() => {
-                  setEmail('');
-                  setVisible(false);
-                  fetchAccount();
-                });
-              }
+              updateEmail(email).then(() => {
+                setEmail('');
+                setVisible(false);
+                fetchAccount();
+              });
             },
           },
         ],

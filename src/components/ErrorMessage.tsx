@@ -5,7 +5,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import DeviceInfo from 'react-native-device-info';
 
 import { Error as ErrorType, RequestState } from '@ts/types';
-import { useTheme, request } from '@utils/index';
+import { useTheme, request, logger } from '@utils/index';
 import Store from '@redux/store';
 
 type Props = {
@@ -55,7 +55,7 @@ const ErrorMessage: React.FC<Props> = ({
         let errorError = false;
         if (typeof error === 'object') {
           try {
-            console.log(JSON.stringify(error));
+            logger.warn(JSON.stringify(error));
             stringifiedError = JSON.stringify(error);
           } catch (error2) {
             try {
@@ -357,7 +357,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
         // Type 4f: User has created too many
       } else if (err?.error?.response?.data?.error?.value === 'maximum') {
         message = {
-          icon: 'reload-alert',
+          icon: 'reload',
           text: `Vous avez déjà créée trop ${strings.contentPlural}, merci d'en supprimer ou d'attendre la fermeture/suppression.`,
         };
         if (back) {

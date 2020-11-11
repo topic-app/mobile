@@ -14,7 +14,7 @@ import {
   State,
 } from '@ts/types';
 import { ErrorMessage, Illustration } from '@components/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import getNavigatorStyles from '@styles/NavStyles';
 import { fetchLocationData } from '@redux/actions/data/location';
@@ -114,7 +114,7 @@ const MoreList: React.FC<MoreListProps> = ({
                 left={() => <List.Icon icon="school" />}
                 title={school?.shortName || school?.name}
                 onPress={() => {
-                  console.log('School pressed');
+                  logger.warn('School pressed');
                 }}
               />
             ))}

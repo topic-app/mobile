@@ -1,32 +1,20 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Button,
-  RadioButton,
-  HelperText,
-  List,
-  Text,
-  ProgressBar,
-  Divider,
-  Title,
-} from 'react-native-paper';
+import { HelperText, Button, ProgressBar, RadioButton, Text, List, Card } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Account, GroupTemplate, GroupRequestState } from '@ts/types';
-import { StepperViewPageProps, ErrorMessage, Content, CollapsibleView } from '@components/index';
+import { GroupTemplate, GroupRequestState } from '@ts/types';
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import { updateGroupTemplates } from '@redux/actions/api/groups';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 
-import getAuthStyles from '../styles/Styles';
+import getGroupStyles from '../styles/Styles';
 
-type Props = StepperViewPageProps & {
-  account: Account;
-  templates: GroupTemplate[];
-  state: GroupRequestState;
-};
+type Props = StepperViewPageProps & { templates: GroupTemplate[]; state: GroupRequestState };
 
-const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, state }) => {
+const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state }) => {
   const [template, setTemplate] = React.useState<string | null>(null);
   const [showError, setError] = React.useState(false);
 
@@ -45,21 +33,30 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
+  const groupStyles = getGroupStyles(theme);
   const styles = getStyles(theme);
 
-  if (!account.loggedIn) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.centerIllustrationContainer}>
-          <Text>Non autorisé</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={groupStyles.formContainer}>
+      <View style={[styles.container, { marginTop: 40 }]}>
+        <Card
+          elevation={0}
+          style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+        >
+          <View style={[styles.container, { flexDirection: 'row' }]}>
+            <Icon
+              name="shield-key-outline"
+              style={{ alignSelf: 'center', marginRight: 10 }}
+              size={24}
+              color={colors.primary}
+            />
+            <Text style={{ color: colors.text, flex: 1 }}>
+              Assurez vous que vous avez bien l'autorisation de créer ce groupe. Nous pourrons vous
+              demander des preuves d'autorité ci nécéssaire.
+            </Text>
+          </View>
+        </Card>
+      </View>
       {state.templates?.loading?.initial ? (
         <ProgressBar indeterminate />
       ) : (
@@ -76,7 +73,7 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
           retry={updateGroupTemplates}
         />
       )}
-      <View style={articleStyles.listContainer}>
+      <View style={groupStyles.listContainer}>
         {templates?.map((t) => (
           <List.Item
             key={t.type}
@@ -120,40 +117,26 @@ const ArticleAddPageGroup: React.FC<Props> = ({ prev, next, account, templates, 
           Vous devez selectionner un type de groupe
         </HelperText>
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={groupStyles.buttonContainer}>
+        <Button
+          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={prev}
+          style={{ flex: 1, marginRight: 5 }}
+        >
+          Retour
+        </Button>
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
           onPress={submit}
-          style={{ flex: 1 }}
+          style={{ flex: 1, marginLeft: 5 }}
         >
           Suivant
         </Button>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={prev}
-          style={{ flex: 1 }}
-        >
-          Precedent
-        </Button>
-      </View>
-      <View style={[styles.container, { marginTop: 60 }]}>
-        <CollapsibleView collapsed={!template}>
-          <View>
-            <Divider style={{ marginBottom: 10 }} />
-            <Title style={{ marginBottom: 20 }}>
-              Groupe {templates.find((t) => t.type === template)?.name}
-            </Title>
-            <Content
-              parser="markdown"
-              data={templates.find((t) => t.type === template)?.description || ''}
-            />
-          </View>
-        </CollapsibleView>
       </View>
     </View>
   );
 };
 
-export default ArticleAddPageGroup;
+export default ArticleAddPageTemplate;

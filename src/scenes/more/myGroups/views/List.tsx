@@ -10,6 +10,7 @@ import {
   CategoryTitle,
   ErrorMessage,
   GroupsBanner,
+  GroupCard,
   CustomHeaderBar,
   TranslucentStatusBar,
 } from '@components/index';
@@ -19,7 +20,6 @@ import { updateGroups } from '@redux/actions/api/groups';
 import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 
 import { MyGroupsStackParams } from '../index';
-import GroupListCard from '../components/Card';
 
 type MyGroupsListProps = {
   account: Account;
@@ -40,7 +40,7 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const fetch = (refresh = 'false') => {
+  let fetch = (refresh = false) => {
     updateGroups(refresh ? 'refresh' : 'initial');
     fetchWaitingGroups();
     fetchGroups();
@@ -143,7 +143,7 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
         }
         renderItem={({ item }) => (
           <>
-            <GroupListCard
+            <GroupCard
               group={item}
               following={account.accountInfo?.user.data.following.groups.some(
                 (g) => g._id === item._id,

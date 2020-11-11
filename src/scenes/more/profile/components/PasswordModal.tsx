@@ -74,33 +74,11 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
   const update = async () => {
     const passwordValidation = validatePasswordInput(password);
     if (passwordValidation.valid) {
-      if (await LocalAuthentication.isSupportedAsync()) {
-        LocalAuthentication.authenticateAsync({
-          reason: 'Topic App - Changer le mot de passe',
-          title: 'Authentification',
-          fallbackEnabled: true,
-          fallbackToPinCodeAction: true,
-        }).then((result) => {
-          if (result.success) {
-            updatePassword(password).then(() => {
-              setPassword('');
-              setVisible(false);
-              fetchAccount();
-            });
-          } else {
-            Alert.alert(
-              "Erreur lors de l'authentification",
-              "Vous pouvez toujours changer le mot de passe depuis l'interface web.",
-            );
-          }
-        });
-      } else {
-        updatePassword(password).then(() => {
-          setPassword('');
-          setVisible(false);
-          fetchAccount();
-        });
-      }
+      updatePassword(password).then(() => {
+        setPassword('');
+        setVisible(false);
+        fetchAccount();
+      });
     } else {
       passwordInput.current?.focus();
     }

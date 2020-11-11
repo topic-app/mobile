@@ -147,7 +147,6 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
             validateTitleInput(nativeEvent.text);
             descriptionInput.current?.focus();
           }}
-          autoCorrect={false}
           autoFocus
           theme={
             currentTitle.valid
@@ -183,7 +182,6 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
             blurInputs();
             submit();
           }}
-          autoCorrect={false}
           theme={
             currentDescription.valid
               ? { colors: { primary: colors.primary, placeholder: colors.valid } }

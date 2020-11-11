@@ -320,7 +320,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                   {
                     key: 'contact',
                     title: 'Contact',
-                    component: <EventDisplayContact event={event} />,
+                    component: <EventDisplayContact event={event} navigation={navigation} />,
                   },
                 ]}
               />

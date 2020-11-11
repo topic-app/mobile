@@ -124,8 +124,6 @@ function EventLists({
     ...categoryTypes.filter((c) => !eventPrefs.categories?.includes(c.id)),
   ];
 
-  console.log(`Categories ${JSON.stringify(categories)}`);
-
   return (
     <View style={styles.page}>
       <TranslucentStatusBar />

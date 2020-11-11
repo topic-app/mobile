@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, View } from 'react-native';
-import { Banner, Text, Subheading, ProgressBar } from 'react-native-paper';
+import { Banner, Text, Subheading } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Config } from '@constants/index';
@@ -28,9 +28,6 @@ const GroupsBanner: React.FC<Props> = ({ account, state, accountState }) => {
 
   return (
     <View>
-      {(state.member_accept?.loading ||
-        state.member_reject?.loading ||
-        accountState.fetchWaitingGroups?.loading) && <ProgressBar indeterminate />}
       {state.member_accept?.error && (
         <ErrorMessage
           type="axios"

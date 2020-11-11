@@ -334,7 +334,6 @@ const ArticleList: React.FC<ArticleListProps> = ({
           if (section.key === 'categories') {
             updateArticles('next');
           } else if (section.key === 'quicks') {
-            console.log(category.params);
             searchArticles('next', '', category.params, false, false);
           }
         }}

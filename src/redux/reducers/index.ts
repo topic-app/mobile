@@ -12,6 +12,8 @@ import tagReducer from './api/tags';
 import userReducer from './api/users';
 import legalReducer from './api/legal';
 
+import linkingReducer from './api/linking';
+
 import articleDataReducer from './contentData/articles';
 import eventDataReducer from './contentData/events';
 import groupDataReducer from './contentData/groups';
@@ -19,6 +21,7 @@ import groupDataReducer from './contentData/groups';
 import prefReducer from './data/prefs';
 import accountReducer from './data/account';
 import locationReducer from './data/location';
+
 import { persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Platform } from 'react-native';
@@ -57,6 +60,8 @@ const rootReducer = combineReducers({
   preferences: prefReducer,
   account: persistReducer(accountPersistConfig, accountReducer),
   location: persistReducer(locationPersistConfig, locationReducer),
+  // linking
+  linking: linkingReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

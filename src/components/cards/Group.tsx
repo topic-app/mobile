@@ -34,10 +34,13 @@ const MyGroupsListCard: React.FC<MyGroupsListCardProps> = ({
             <View style={{ flexDirection: 'row' }}>
               <Avatar avatar={group.avatar} style={styles.avatar} />
               <View style={{ flex: 1, paddingLeft: 15 }}>
-                <View>
-                  <Title style={{ flex: 1 }} numberOfLines={1}>
-                    {group.name}
-                  </Title>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Title numberOfLines={1}>{group?.name}</Title>
+                  <View style={{ marginLeft: 5 }}>
+                    {group?.official && (
+                      <Icon name="check-decagram" color={colors.primary} size={20} />
+                    )}
+                  </View>
                 </View>
                 <Paragraph style={{ fontSize: 15 }}>
                   <Text style={{ fontSize: 16 }}>{group.cache?.members}</Text> membres &#xFF65;{' '}

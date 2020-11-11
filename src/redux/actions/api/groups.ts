@@ -5,6 +5,7 @@ import {
   UPDATE_GROUPS_TEMPLATES,
   UPDATE_GROUPS_SEARCH,
   UPDATE_GROUPS_ITEM,
+  UPDATE_GROUPS_VERIFICATION,
   UPDATE_GROUPS_STATE,
   CLEAR_GROUPS,
 } from '@ts/redux';
@@ -83,6 +84,43 @@ async function fetchGroup(groupId: string) {
 
 /**
  * @docs actions
+ * Récupère les infos sur les groupes a verifier
+ * @param type [initial, next, refresh] le type de récupération. Si c'est next, il récupère automatiquement les articles après le dernier contenu dans redux
+ * @param terms Le texte pour rechercher
+ * @param params Les paramètres supplémentaires pour la requete (eg. tags, auteurs)
+ */
+async function updateGroupsVerification(type: 'initial' | 'refresh' | 'next', params = {}) {
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_GROUPS_VERIFICATION,
+      stateUpdate: UPDATE_GROUPS_STATE,
+      url: 'groups/verification/list',
+      dataType: 'groups',
+      type,
+      params,
+      stateName: 'verification_list',
+      listName: 'verification',
+      clear: type !== 'next',
+      auth: true,
+    }),
+  );
+}
+
+async function fetchGroupVerification(groupId: string) {
+  await Store.dispatch(
+    fetchCreator({
+      update: UPDATE_GROUPS_ITEM,
+      stateUpdate: UPDATE_GROUPS_STATE,
+      url: 'groups/verification/info',
+      dataType: 'groups',
+      params: { groupId },
+      auth: true,
+    }),
+  );
+}
+
+/**
+ * @docs actions
  * Vide la database redux complètement
  */
 async function clearGroups(data = true, search = true) {
@@ -110,4 +148,12 @@ async function updateGroupTemplates() {
   );
 }
 
-export { updateGroups, clearGroups, fetchGroup, searchGroups, updateGroupTemplates };
+export {
+  updateGroups,
+  clearGroups,
+  fetchGroup,
+  searchGroups,
+  updateGroupTemplates,
+  updateGroupsVerification,
+  fetchGroupVerification,
+};

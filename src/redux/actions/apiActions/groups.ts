@@ -1,7 +1,7 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator } from './ActionCreator';
-import { UPDATE_GROUPS_STATE, ActionType } from '@ts/types';
+import { reportCreator, approveCreator } from './ActionCreator';
+import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, State } from '@ts/types';
 
 function groupFollowCreator({ id }: { id: string }) {
   return (dispatch: (action: ActionType) => void) => {
@@ -452,6 +452,96 @@ function groupModifyCreator({
   };
 }
 
+type GroupAddProps = {
+  name: string;
+  shortName: string;
+  type: string;
+  location: ReduxLocation;
+  summary: string;
+  description: string;
+  parser: string;
+  verification: {
+    name: string;
+    id: string;
+    extra: string;
+  };
+};
+
+function groupAddCreator({
+  name,
+  shortName,
+  type,
+  location,
+  summary,
+  parser,
+  description,
+  verification,
+}: GroupAddProps) {
+  return (dispatch: (action: any) => void, getState: () => State) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          add: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        'groups/templates/add',
+        'post',
+        {
+          group: {
+            name,
+            shortName,
+            summary,
+            description: {
+              parser,
+              data: description,
+            },
+            location,
+            type,
+          },
+          verification,
+        },
+        true,
+      )
+        .then((result) => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              add: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve(result.data);
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              add: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
+async function groupAdd(data: GroupAddProps) {
+  return await Store.dispatch(groupAddCreator(data));
+}
+
 async function groupFollow(id: string) {
   await Store.dispatch(
     groupFollowCreator({
@@ -531,6 +621,17 @@ async function groupReport(groupId: string, reason: string) {
   );
 }
 
+async function groupVerificationApprove(id: string) {
+  return await Store.dispatch(
+    approveCreator({
+      url: 'groups/verification/approve',
+      stateUpdate: UPDATE_GROUPS_STATE,
+      paramName: 'groupId',
+      id,
+    }),
+  );
+}
+
 export {
   groupFollow,
   groupUnfollow,
@@ -540,5 +641,7 @@ export {
   groupMemberAccept,
   groupMemberReject,
   groupMemberLeave,
+  groupVerificationApprove,
   groupModify,
+  groupAdd,
 };

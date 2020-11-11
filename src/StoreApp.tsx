@@ -1,5 +1,5 @@
 import React from 'react';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, Platform } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { connect } from 'react-redux';
@@ -13,6 +13,7 @@ import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/da
 
 import screens from './screens';
 import AppNavigator from './index';
+import { logger } from '@utils/index';
 
 type Props = {
   preferences: Preferences;
@@ -27,14 +28,16 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
     theme = themes[colorScheme === 'dark' ? 'dark' : 'light'];
   }
 
-  changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);
-
+  if (Platform.OS === 'android' && Platform.Version >= 28) {
+    // This only works on android 9 and above
+    changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);
+  }
   React.useEffect(
     React.useCallback(() => {
-      fetchLocationData().catch((e) => console.log(`fetchLocationData err ${e}`));
-      fetchGroups().catch((e) => console.log(`fetchGroups err ${e}`));
-      fetchWaitingGroups().catch((e) => console.log(`fetchWaitingGroups err ${e}`));
-      fetchAccount().catch((e) => console.log(`fetchAccount err ${e}`));
+      fetchLocationData().catch((e) => logger.warn(`fetchLocationData err ${e}`));
+      fetchGroups().catch((e) => logger.warn(`fetchGroups err ${e}`));
+      fetchWaitingGroups().catch((e) => logger.warn(`fetchWaitingGroups err ${e}`));
+      fetchAccount().catch((e) => logger.warn(`fetchAccount err ${e}`));
     }, [null]),
   );
 

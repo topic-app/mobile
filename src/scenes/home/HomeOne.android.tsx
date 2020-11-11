@@ -17,7 +17,7 @@ import {
   State,
 } from '@ts/types';
 import { ErrorMessage, Illustration } from '@components/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
 import { fetchLocationData } from '@redux/actions/data/location';
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
@@ -135,7 +135,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
             icon="school"
             label={school?.shortName || school?.name}
             onPress={() => {
-              console.log('School pressed');
+              logger.warn('School pressed');
             }}
           />
         ))}

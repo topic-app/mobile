@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment';
 
 import { Event } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 
 import EventCalendar from '../components/calendar/EventCalendar';
 
@@ -61,7 +61,7 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
       >
         <EventCalendar
           width={width}
-          eventTapped={(e) => console.log('Test', e)}
+          eventTapped={(e) => logger.warn('Event program detail not implemented', e)}
           events={elements}
           initDate={duration?.start}
           start={startTime}

@@ -16,8 +16,6 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  // if (Platform.OS === 'web') parser = 'plaintext';
-
   if (parser === 'markdown') {
     return (
       <Markdown

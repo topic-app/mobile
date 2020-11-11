@@ -118,7 +118,7 @@ const defaultConfig: AppConfig = {
     keylen: 32,
   },
   logger: {
-    level: 'debug',
+    level: 'warning',
     exclude: [],
   },
   dev: {

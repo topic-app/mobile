@@ -204,14 +204,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, nav
           <View>
             <Banner
               visible
-              actions={[
-                {
-                  label: 'En savoir plus',
-                  onPress: () => {
-                    console.log('Read more');
-                  },
-                },
-              ]}
+              actions={[]}
               icon={({ size }) => (
                 <Avatar.Icon
                   style={{ backgroundColor: colors.primary }}

@@ -23,6 +23,7 @@ import {
   State,
   LocationRequestState,
   ReduxLocation as OldReduxLocation,
+  Account,
 } from '@ts/types';
 import {
   TranslucentStatusBar,
@@ -173,6 +174,7 @@ type WelcomeLocationProps = {
   location?: ReduxLocation;
   navigation: Navigation;
   route: { params?: { goBack?: boolean } };
+  account: Account;
 };
 
 const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
@@ -181,6 +183,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   schoolsSearch,
   departmentsSearch,
   state,
+  account,
   location = {
     global: false,
     schools: [],
@@ -209,6 +212,10 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const [buttonVisible, setButtonVisible] = React.useState(false);
   const [userLocation, setUserLocation] = React.useState(false);
 
+  if (Platform.OS === 'web' && !account.loggedIn) {
+    window.location.replace('https://beta.topicapp.fr');
+  }
+
   React.useEffect(() => {
     // Check if Location is requestable
     // If it is, then show the FAB to go to location
@@ -230,7 +237,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
           logger.info('Location denied, hiding location FAB');
         }
       })
-      .catch((e) => logger.error('Error while requesting user location permission', e));
+      .catch((e) => logger.warn('Error while requesting user location permission', e));
   }, []);
 
   const requestUserLocation = async () => {
@@ -240,7 +247,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       status = permission.status;
       canAskAgain = permission.canAskAgain;
     } catch (e) {
-      logger.error('Error while requesting user location', e);
+      logger.warn('Error while requesting user location', e);
     }
     if (status === 'granted') {
       const { coords } = await Location.getCurrentPositionAsync({
@@ -626,7 +633,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { schools, departments, location } = state;
+  const { schools, departments, location, account } = state;
   return {
     schoolsNear: schools.near,
     departments: departments.data,
@@ -638,6 +645,7 @@ const mapStateToProps = (state: State) => {
       departments: departments.state,
       location: location.state,
     },
+    account,
   };
 };
 

@@ -1,279 +1,387 @@
-import React from 'react';
-import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import { Button, Text, Divider, Card } from 'react-native-paper';
+import React, { useState, createRef } from 'react';
+import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { TextInput, HelperText, Button, ProgressBar, Checkbox, List } from 'react-native-paper';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import RNPickerSelect from 'react-native-picker-select';
 
-import { Account, State, ArticleCreationData, TagRequestState, TagPreload } from '@ts/types';
-import {
-  StepperViewPageProps,
-  ErrorMessage,
-  TextChip,
-  CollapsibleView,
-  CategoryTitle,
-  Searchbar,
-} from '@components/index';
+import { State, GroupRequestState } from '@ts/types';
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { updateTags, searchTags } from '@redux/actions/api/tags';
+import { clearGroupCreationData } from '@redux/actions/contentData/groups';
+import { groupAdd } from '@redux/actions/apiActions/groups';
 
-import getAuthStyles from '../styles/Styles';
+import getArticleStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
-  account: Account;
-  creationData: ArticleCreationData;
+  creationData: object;
+  state: GroupRequestState;
   navigation: any;
-  tagsData: TagPreload[];
-  tagsSearch: TagPreload[];
-  state: TagRequestState;
-  navigate: () => void;
 };
 
-const ArticleAddPageTags: React.FC<Props> = ({
-  prev,
-  navigate,
-  account,
-  creationData,
-  navigation,
-  tagsData,
-  tagsSearch,
-  state,
-}) => {
-  const [selectedTags, setSelectedTags] = React.useState([]);
-  const [selectedData, setSelectedData] = React.useState([]);
-  const [searchText, setSearchText] = React.useState('');
+const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state, navigation }) => {
+  const nameInput = createRef<RNTestInput>();
+  const shortNameInput = createRef<RNTestInput>();
+  const descriptionInput = createRef<RNTestInput>();
 
-  const [tagAddModalVisible, setTagAddModalVisible] = React.useState(false);
-  const [tagName, setTagName] = React.useState(null);
-
-  const submit = () => {
-    updateArticleCreationData({ tags: selectedTags });
-    navigate();
+  type InputStateType = {
+    value: string;
+    error: boolean;
+    valid: boolean;
+    message: string;
   };
 
-  const addNewTag = (tag: { _id: string; name: string; color: string }) => {
-    console.log(JSON.stringify(tag));
-    setSelectedTags([...selectedTags, tag._id]);
-    setSelectedData([...selectedData, tag]);
-  };
+  let tempName: InputStateType;
+  let tempShortName: InputStateType;
+  let tempDescription: InputStateType;
 
-  const inputRef = React.useRef(null);
+  const [currentName, setCurrentName] = useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+  const [currentShortName, setCurrentShortName] = useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+  const [currentDescription, setCurrentDescription] = useState({
+    value: '',
+    error: false,
+    valid: false,
+    message: '',
+  });
+  const [selectedID, setSelectedID] = React.useState('RNA');
+  const [terms, setTerms] = React.useState(false);
+  const [termsError, setTermsError] = React.useState(false);
+  const [identity, setIdentity] = React.useState(false);
+  const [identityError, setIdentityError] = React.useState(false);
+
+  function setName(data: Partial<InputStateType>) {
+    // Because async setState
+    tempName = { ...currentName, ...(tempName ?? {}), ...data };
+    setCurrentName(tempName);
+  }
+  function setShortName(data: Partial<InputStateType>) {
+    tempShortName = { ...currentShortName, ...(tempShortName ?? {}), ...data };
+    setCurrentShortName(tempShortName);
+  }
+  function setDescription(data: Partial<InputStateType>) {
+    tempDescription = { ...currentDescription, ...(tempDescription ?? {}), ...data };
+    setCurrentDescription(tempDescription);
+  }
+
+  async function validateNameInput(name: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
+
+    if (name !== '') {
+      if (name.length <= 2) {
+        validation = {
+          valid: false,
+          error: true,
+          message: 'Votre nom doit contenir au moins 3 caractères',
+        };
+      } else {
+        validation = { valid: true, error: false };
+      }
+    }
+    setName(validation);
+    return validation;
+  }
+
+  function preValidateNameInput(name: string) {
+    if (name.length >= 10 && name.length <= 100) {
+      setName({ valid: false, error: false });
+    }
+  }
+
+  async function validateShortNameInput(name: string) {
+    let validation: Partial<InputStateType> = { valid: false, error: false };
+
+    if (name !== '') {
+      if (name.length <= 1) {
+        validation = {
+          valid: false,
+          error: true,
+          message: "L'acronyme doit contenir au moins 2 caractères",
+        };
+      } else if (name.length >= 15) {
+        validation = {
+          valid: false,
+          error: true,
+          message: "L'acronyme doit contenir moins de 15 caractères",
+        };
+      } else {
+        validation = { valid: true, error: false };
+      }
+    } else {
+      validation = {
+        valid: true,
+        error: false,
+        message: '',
+      };
+    }
+    setShortName(validation);
+    return validation;
+  }
+
+  function preValidateShortNameInput(name: string) {
+    if (name.length >= 1 && name.length <= 15) {
+      setShortName({ valid: false, error: false });
+    }
+  }
+
+  function blurInputs() {
+    nameInput.current?.blur();
+    shortNameInput.current?.blur();
+    descriptionInput.current?.blur();
+  }
+
+  async function submit() {
+    const nameVal = currentName.value;
+    const shortNameVal = currentShortName.value;
+    const descriptionVal = currentDescription.value;
+
+    const name = await validateNameInput(nameVal);
+    const shortName = await validateShortNameInput(shortNameVal);
+    if (name.valid && shortName.valid && terms && identity) {
+      groupAdd({
+        name: creationData.name,
+        shortName: creationData.shortName,
+        summary: creationData.summary,
+        location: creationData.location,
+        type: creationData.type,
+        parser: 'markdown',
+        description: creationData.description,
+        verification: {
+          name: nameVal,
+          id: `${selectedID}: ${shortNameVal}`,
+          extra: descriptionVal,
+        },
+      }).then(({ _id }) => {
+        navigation.replace('Success', { id: _id, creationData });
+        clearGroupCreationData();
+      });
+    } else {
+      if (!name.valid && !name.error) {
+        setName({
+          valid: false,
+          error: true,
+          message: 'Nom complet requis',
+        });
+      } else if (!terms) {
+        setTermsError(true);
+      } else if (!identity) {
+        setIdentityError(true);
+      }
+    }
+  }
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
-  const styles = getStyles(theme);
-
-  const fetch = () => {
-    if (searchText === '') {
-      updateTags('initial');
-    } else {
-      searchTags('initial', searchText);
-    }
-  };
-
-  const fetchNext = () => {
-    if (searchText === '') {
-      updateTags('next');
-    } else {
-      searchTags('next', searchText);
-    }
-  };
-
-  const searchChange = (text: string) => {
-    if (text !== '') {
-      searchTags('initial', text);
-    }
-  };
-
-  React.useEffect(() => {
-    fetch();
-  }, [null]);
-
-  const ListEmptyComponent = () => {
-    return (
-      <View style={{ alignItems: 'flex-start' }}>
-        {searchText !== '' &&
-        state.search?.success &&
-        !selectedData.some((t) => t.name?.toLowerCase() === searchText?.toLowerCase()) &&
-        account.permissions?.some((p) => p.permission === 'tag.add') ? (
-          <TextChip
-            title={`Créer "${searchText.toLowerCase()}"`}
-            icon="plus"
-            onPress={() => {
-              setTagName(searchText.toLowerCase());
-              setTagAddModalVisible(true);
-            }}
-          />
-        ) : (
-          searchText !== '' &&
-          state.search?.success && (
-            <View
-              style={[styles.centerIllustrationContainer, { height: 40, justifyContent: 'center' }]}
-            >
-              <Text>Aucun résultat</Text>
-            </View>
-          )
-        )}
-      </View>
-    );
-  };
-
-  const ListHeaderComponent = () =>
-    (searchText === '' && state.list.loading.initial) ||
-    (searchText !== '' && state.search?.loading.initial) ? (
-      <View style={{ marginVertical: 5, height: 40, justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    ) : null;
-
-  const ListFooterComponent = () =>
-    (searchText === '' && state.list.loading.next) ||
-    (searchText !== '' && state.search?.loading.next) ? (
-      <View style={{ marginVertical: 5, height: 40, width: 40, justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    ) : null;
-
-  const renderItem = React.useCallback(
-    ({ item = { name: 'INCONNU' } }) => {
-      return (
-        <View style={{ marginHorizontal: 5, alignItems: 'flex-start' }}>
-          <TextChip
-            title={item.name}
-            containerStyle={{ borderColor: item.color }}
-            onPress={() => {
-              if (selectedTags.includes(item._id)) {
-                setSelectedTags(selectedTags.filter((s) => s !== item._id));
-              } else {
-                setSelectedTags([...selectedTags, item._id]);
-                setSelectedData([...selectedData, item]);
-              }
-            }}
-            icon={selectedTags.includes(item._id) ? 'check' : 'pound'}
-            selected={selectedTags.includes(item._id)}
-          />
-        </View>
-      );
-    },
-    [selectedTags],
-  );
+  const articleStyles = getArticleStyles(theme);
 
   return (
     <View style={articleStyles.formContainer}>
-      <View>
-        <View>
-          <View style={articleStyles.searchContainer}>
-            <Searchbar
-              ref={inputRef}
-              placeholder={`Rechercher ${
-                account.permissions?.some((p) => p.permission === 'tag.add') ? 'ou créer ' : ''
-              }un tag`}
-              value={searchText}
-              onChangeText={setSearchText}
-              onIdle={searchChange}
+      {state.add?.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
+      {state.add?.success === false && (
+        <ErrorMessage
+          error={state.add?.error}
+          strings={{
+            what: "l'ajout du groupe",
+            contentSingular: 'Le groupe',
+            contentPlural: 'de groupes (5 maximum)',
+          }}
+          type="axios"
+          retry={submit}
+        />
+      )}
+      <View style={articleStyles.textInputContainer}>
+        <TextInput
+          ref={nameInput}
+          label="Votre nom complet"
+          value={currentName.value}
+          error={currentName.error}
+          disableFullscreenUI
+          onSubmitEditing={({ nativeEvent }) => {
+            validateNameInput(nativeEvent.text);
+            shortNameInput.current?.focus();
+          }}
+          autoFocus
+          theme={
+            currentName.valid
+              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+              : theme
+          }
+          mode="outlined"
+          onEndEditing={({ nativeEvent }) => {
+            validateNameInput(nativeEvent.text);
+          }}
+          style={articleStyles.textInput}
+          onChangeText={(text) => {
+            setName({ value: text });
+            preValidateNameInput(text);
+          }}
+        />
+        <HelperText type={currentName.error ? 'error' : 'info'} visible>
+          {currentName.error
+            ? currentName.message
+            : "Donnez votre prénom et votre nom en entier, tel qu'il apparaît sur les documents légaux. En cas de doute sur votre identité ou de contestation, nous pourrons vous demander une pièce d'identité. Ce nom ne sera pas public mais sera retenu jusqu'à la suppression du groupe et ne pourra être modifié."}
+        </HelperText>
+      </View>
+      <View style={articleStyles.textInputContainer}>
+        <View style={{ flexDirection: 'row' }}>
+          <View>
+            <RNPickerSelect
+              placeholder={{}}
+              onValueChange={(val) => setSelectedID(val)}
+              items={[
+                { label: 'RNA', value: 'RNA' },
+                { label: 'SIRET', value: 'SIRET' },
+                { label: 'DUNS', value: 'DUNS' },
+              ]}
+              value={selectedID}
+            >
+              <Button
+                mode="outlined"
+                color={colors.text}
+                style={{ marginTop: 5, height: 60, borderWidth: 1, justifyContent: 'center' }}
+              >
+                {selectedID} <Icon name="menu-down" size={20} color={colors.text} />
+              </Button>
+            </RNPickerSelect>
+          </View>
+          <View style={{ flex: 1, marginLeft: 20 }}>
+            <TextInput
+              ref={shortNameInput}
+              label="Numéro d'identification (facultatif)"
+              value={currentShortName.value}
+              error={currentShortName.error}
+              disableFullscreenUI
+              onSubmitEditing={({ nativeEvent }) => {
+                validateShortNameInput(nativeEvent.text);
+                descriptionInput.current?.focus();
+              }}
+              theme={
+                currentShortName.valid
+                  ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+                  : theme
+              }
+              mode="outlined"
+              onEndEditing={({ nativeEvent }) => {
+                validateShortNameInput(nativeEvent.text);
+              }}
+              style={articleStyles.textInput}
+              onChangeText={(text) => {
+                setShortName({ value: text });
+                preValidateShortNameInput(text);
+              }}
             />
           </View>
-          {((searchText === '' && state.list.error) ||
-            (searchText !== '' && state.search?.error)) && (
-            <ErrorMessage
-              type="axios"
-              error={searchText === '' ? state.list.error : state.search?.error}
-              retry={fetch}
-            />
-          )}
         </View>
+        <HelperText type={currentShortName.error ? 'error' : 'info'} visible>
+          {currentShortName.error
+            ? currentShortName.message
+            : "Vous pouvez fournir votre RNA, SIRET ou autre numéro d'identification. Celui-ci sera public."}
+        </HelperText>
       </View>
-      <View style={{ marginTop: 20, height: 40 }}>
-        <FlatList
-          horizontal
-          onEndReached={fetchNext}
-          onEndReachedThreshold={0.1}
-          data={(searchText === '' ? tagsData : tagsSearch).filter(
-            (t) => !selectedTags.includes(t._id),
-          )}
-          ListEmptyComponent={ListEmptyComponent}
-          ListHeaderComponent={ListHeaderComponent}
-          ListFooterComponent={ListFooterComponent}
-          renderItem={renderItem}
-          keyboardShouldPersistTaps="handled"
-          keyExtractor={(i) => i._id}
+      <View style={articleStyles.textInputContainer}>
+        <TextInput
+          ref={descriptionInput}
+          label="Autres informations de vérification (facultatif)"
+          multiline
+          numberOfLines={8}
+          value={currentDescription.value}
+          error={currentDescription.error}
+          disableFullscreenUI
+          autoCapitalize="none"
+          onSubmitEditing={({ nativeEvent }) => {
+            blurInputs();
+            submit();
+          }}
+          theme={
+            currentDescription.valid
+              ? { colors: { primary: colors.primary, placeholder: colors.valid } }
+              : theme
+          }
+          mode="outlined"
+          style={articleStyles.textInput}
+          onChangeText={(text) => {
+            setDescription({ value: text });
+          }}
         />
+        <HelperText type="info" visible={descriptionInput.current?.isFocused()}>
+          Si vous avez d'autres éléments qui nous permettraient de confirmer votre identité, ajoutez
+          les ici (par exemple: lien vers une publication au Journal Officiel, lien vers les
+          mentions légales de votre organisation...). Ces informations ne seront pas publiques. En
+          cas de doute, nous pourrons aussi vous demander plus d'informations par mail.
+        </HelperText>
       </View>
-      <CollapsibleView collapsed={selectedTags.length === 0} style={{ marginTop: 20 }}>
-        <View style={{ marginBottom: 15 }}>
-          <CategoryTitle>Tags séléctionnés</CategoryTitle>
-        </View>
-        <FlatList
-          horizontal
-          data={selectedTags.map((t) => selectedData.find((u) => u?._id === t))}
-          renderItem={renderItem}
-          keyboardShouldPersistTaps="handled"
-          keyExtractor={(i) => i?._id}
+      <View style={articleStyles.textInputContainer}>
+        <List.Item
+          title="J'accepte la charte des administrateurs de groupes"
+          titleNumberOfLines={10}
+          left={() =>
+            Platform.OS !== 'ios' ? (
+              <Checkbox status={terms ? 'checked' : 'unchecked'} color={colors.primary} />
+            ) : null
+          }
+          right={() =>
+            Platform.OS === 'ios' ? (
+              <Checkbox status={terms ? 'checked' : 'unchecked'} color={colors.primary} />
+            ) : null
+          }
+          onPress={() => setTerms(!terms)}
         />
-      </CollapsibleView>
-      <View style={[styles.container, { marginTop: 40 }]}>
-        <Card
-          elevation={0}
-          style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+        <List.Item
+          title="Je confirme que j'ai bien l'autorité pour créer ce groupe au nom de l'organisation, et que toutes les informations données sont correctes"
+          titleNumberOfLines={10}
+          left={() =>
+            Platform.OS !== 'ios' ? (
+              <Checkbox status={identity ? 'checked' : 'unchecked'} color={colors.primary} />
+            ) : null
+          }
+          right={() =>
+            Platform.OS === 'ios' ? (
+              <Checkbox status={identity ? 'checked' : 'unchecked'} color={colors.primary} />
+            ) : null
+          }
+          onPress={() => setIdentity(!identity)}
+        />
+        <HelperText visible={termsError || identityError} type="error">
+          Vous devez accepter la charte et la déclaration d'authorité pour continuer
+        </HelperText>
+      </View>
+      <View style={articleStyles.buttonContainer}>
+        <Button
+          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => prev()}
+          style={{ flex: 1, marginRight: 5 }}
         >
-          <View style={[styles.container, { flexDirection: 'row' }]}>
-            <Icon
-              name="tag-multiple"
-              style={{ alignSelf: 'center', marginRight: 10 }}
-              size={24}
-              color={colors.primary}
-            />
-            <Text style={{ color: colors.text, flex: 1 }}>
-              Les tags permettent aux utilisateurs de trouver plus facilement vos articles, et nous
-              les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez pour
-              rechercher, ou pour créer un nouveau tag si aucun ne correspond.
-            </Text>
-          </View>
-        </Card>
+          Retour
+        </Button>
+        <Button
+          mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+          uppercase={Platform.OS !== 'ios'}
+          onPress={() => {
+            blurInputs();
+            submit();
+          }}
+          style={{ flex: 1, marginLeft: 5 }}
+        >
+          Créer
+        </Button>
       </View>
-      <View style={{ marginTop: 30 }}>
-        <Divider />
-        <View style={articleStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => prev()}
-            style={{ flex: 1, marginRight: 5 }}
-          >
-            Retour
-          </Button>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={submit}
-            style={{ flex: 1, marginLeft: 5 }}
-          >
-            Suivant
-          </Button>
-        </View>
-      </View>
-
-      <TagAddModal
-        name={tagName}
-        visible={tagAddModalVisible}
-        setVisible={setTagAddModalVisible}
-        add={addNewTag}
-      />
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, articleData, tags } = state;
-  return {
-    account,
-    creationData: articleData.creationData,
-    tagsData: tags.data,
-    tagsSearch: tags.search,
-    state: tags.state,
-  };
+  const { groupData, groups } = state;
+  return { creationData: groupData.creationData, state: groups.state };
 };
 
-export default connect(mapStateToProps)(ArticleAddPageTags);
+export default connect(mapStateToProps)(ArticleAddPageProof);

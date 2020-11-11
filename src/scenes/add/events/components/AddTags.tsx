@@ -52,7 +52,6 @@ const EventAddPageTags: React.FC<Props> = ({
   };
 
   const addNewTag = (tag: { _id: string; name: string; color: string }) => {
-    console.log(JSON.stringify(tag));
     setSelectedTags([...selectedTags, tag._id]);
     setSelectedData([...selectedData, tag]);
   };
@@ -204,7 +203,7 @@ const EventAddPageTags: React.FC<Props> = ({
       </View>
       <CollapsibleView collapsed={selectedTags.length === 0} style={{ marginTop: 20 }}>
         <View style={{ marginBottom: 15 }}>
-          <CategoryTitle>Tags séléctionnés</CategoryTitle>
+          <CategoryTitle>Tags sélectionnés</CategoryTitle>
         </View>
         <FlatList
           horizontal

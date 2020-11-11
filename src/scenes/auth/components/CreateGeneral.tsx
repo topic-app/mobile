@@ -246,6 +246,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
             emailInput.current?.focus();
           }}
           autoCorrect={false}
+          autoCapitalize="none"
           autoFocus
           theme={
             currentUsername.valid
@@ -322,6 +323,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
             validatePasswordInput(nativeEvent.text);
           }}
           textContentType="password"
+          autoCapitalize="none"
           autoCompleteType="password"
           style={authStyles.textInput}
           onChangeText={(text) => {

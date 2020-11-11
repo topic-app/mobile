@@ -47,7 +47,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
           logger.info('Location denied, hiding location FAB');
         }
       })
-      .catch((e) => logger.error('Error while requesting user location permission', e));
+      .catch((e) => logger.warn('Error while requesting user location permission', e));
   }, []);
 
   const onMarkerPress = ({ features }) => {
@@ -67,7 +67,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
     try {
       status = (await Location.requestPermissionsAsync()).status;
     } catch (e) {
-      logger.error('Error while requesting user location', e);
+      logger.warn('Error while requesting user location', e);
     }
     if (status === Location.PermissionStatus.GRANTED) {
       const { coords } = await Location.getCurrentPositionAsync({});

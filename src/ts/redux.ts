@@ -35,6 +35,7 @@ import {
   UserRequestState,
   LegalRequestState,
   LocationRequestState,
+  LinkingRequestState,
 } from './requestState';
 
 // Articles
@@ -352,18 +353,33 @@ export type EventReadItem = {
 };
 
 export type EventCreationData = {
-  group?: string;
+  title?: string;
+  summary?: string;
+  description?: string;
+  phone?: string;
+  email?: string;
+  contact?: {
+    key: string;
+    value: string;
+    link: string;
+  }[];
+  organizers?: string[];
+  start?: Date;
+  end?: Date;
+  date?: Date;
   location?: {
     schools?: string[];
     departments?: string[];
     global?: boolean;
   };
-  date?: Date;
-  title?: string;
-  summary?: string;
+  group?: string;
+  place?: string[];
+  parser?: 'markdown' | 'plaintext';
+  preferences?: {
+    comments?: boolean;
+  };
   tags?: string[];
-  parser: 'plaintext' | 'markdown';
-  data: string;
+  program?: string[];
 };
 
 export type EventsDataState = {
@@ -462,6 +478,7 @@ export const UPDATE_GROUPS_ITEM = 'UPDATE_GROUPS_ITEM';
 export const UPDATE_GROUPS_SEARCH = 'UPDATE_GROUPS_SEARCH';
 export const UPDATE_GROUPS_TEMPLATES = 'UPDATE_GROUPS_TEMPLATES';
 export const UPDATE_GROUPS_CREATION_DATA = 'UPDATE_GROUPS_CREATION_DATA';
+export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
@@ -501,6 +518,11 @@ type UpdateGroupsCreationDataAction = {
   data: object;
 };
 
+type UpdateGroupsVerificationAction = {
+  type: typeof UPDATE_GROUPS_VERIFICATION;
+  data: GroupPreload[];
+};
+
 type UpdateGroupsSearchAction = {
   type: typeof UPDATE_GROUPS_SEARCH;
   data: GroupPreload[];
@@ -518,6 +540,7 @@ export type GroupsActionTypes =
   | UpdateGroupsSearchAction
   | UpdateGroupsCreationDataAction
   | UpdateGroupsTemplatesAction
+  | UpdateGroupsVerificationAction
   | ClearGroupsAction;
 
 // Petitions
@@ -787,6 +810,17 @@ type UpdateLegalAction = {
 };
 
 export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction;
+
+export const UPDATE_LINKING_STATE = 'UPDATE_LINKING_STATE';
+export type LinkingState = {
+  state: LinkingRequestState;
+};
+
+type UpdateLinkingStateAction = {
+  type: typeof UPDATE_LINKING_STATE;
+  data: LinkingRequestState;
+};
+export type LinkingActionTypes = UpdateLinkingStateAction;
 
 export type ActionType =
   | ArticlesActionTypes

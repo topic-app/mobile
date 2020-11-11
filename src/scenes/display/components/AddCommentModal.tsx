@@ -86,7 +86,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
           setCommentText('');
           setVisible(false);
         })
-        .catch((e) => logger.error('Failed to add comment to article', e));
+        .catch((e) => logger.warn('Failed to add comment to article', e));
     }
   };
 

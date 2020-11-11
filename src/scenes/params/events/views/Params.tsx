@@ -32,7 +32,7 @@ type EventParamsProps = {
   };
 };
 
-const EventParams: React.FC<EventParamsProps> = ({
+const EventParamsScreen: React.FC<EventParamsProps> = ({
   navigation,
   params,
   schools,
@@ -41,8 +41,6 @@ const EventParams: React.FC<EventParamsProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-
-  console.log(params);
 
   const fetch = () => {
     if (params.schools) {
@@ -162,4 +160,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(EventParams);
+export default connect(mapStateToProps)(EventParamsScreen);

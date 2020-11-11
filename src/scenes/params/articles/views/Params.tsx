@@ -31,7 +31,7 @@ type ArticleParamsProps = {
   };
 };
 
-const ArticleParams: React.FC<ArticleParamsProps> = ({
+const ArticleParamsScreen: React.FC<ArticleParamsProps> = ({
   navigation,
   params,
   schools,
@@ -40,8 +40,6 @@ const ArticleParams: React.FC<ArticleParamsProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-
-  console.log(params);
 
   const fetch = () => {
     if (params.schools) {
@@ -161,4 +159,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticleParams);
+export default connect(mapStateToProps)(ArticleParamsScreen);

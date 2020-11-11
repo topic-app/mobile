@@ -12,7 +12,7 @@ import {
   Illustration,
   SafeAreaView,
 } from '@components/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { login } from '@redux/actions/data/account';
 
@@ -59,7 +59,7 @@ const AuthLogin: React.FC<Props> = ({
           params: { screen: 'Home2', params: { screen: 'Article' } },
         });
       })
-      .catch((e) => console.log(e));
+      .catch((e) => logger.warn(e));
   };
 
   const theme = useTheme();
@@ -120,6 +120,7 @@ const AuthLogin: React.FC<Props> = ({
                 error={!!reqState.login.incorrect}
                 autoCorrect={false}
                 secureTextEntry
+                autoCapitalize="none"
                 onSubmitEditing={() => submit()}
                 textContentType="password"
                 autoCompleteType="password"

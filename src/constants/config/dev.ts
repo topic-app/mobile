@@ -7,6 +7,7 @@ import { DevAppConfig } from './types';
 
 const config: DevAppConfig = {
   logger: {
+    level: 'debug',
     exclude: ['http'],
   },
   api: {

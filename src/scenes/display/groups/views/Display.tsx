@@ -51,9 +51,9 @@ import {
   ErrorMessage,
   SafeAreaView,
 } from '@components/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { fetchGroup } from '@redux/actions/api/groups';
+import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
 import {
   groupFollow,
@@ -61,6 +61,7 @@ import {
   groupReport,
   groupMemberDelete,
   groupMemberLeave,
+  groupVerificationApprove,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
 
@@ -103,9 +104,12 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const { colors } = theme;
 
   // Pour changer le type de route.params, voir ../index.tsx
-  const { id } = route.params;
+  const { id, verification } = route.params;
+
+  const fetch = verification ? () => fetchGroupVerification(id) : () => fetchGroup(id);
+
   React.useEffect(() => {
-    fetchGroup(id);
+    fetch();
     searchArticles('initial', '', { groups: [id] }, false);
   }, [null]);
 
@@ -137,7 +141,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           text: 'Quitter',
           onPress: () =>
             groupMemberLeave(id).then(() => {
-              fetchGroup(id);
+              fetch();
               fetchGroups();
             }),
         },
@@ -163,7 +167,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
     false,
   );
-  const [descriptionVisible, setDescriptionVisible] = React.useState(false);
+  const [descriptionVisible, setDescriptionVisible] = React.useState(verification || false);
 
   if (!group) {
     // This is when article has not been loaded in list, so we have absolutely no info
@@ -180,7 +184,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 contentSingular: 'Le groupe',
               }}
               error={state.info.error}
-              retry={() => groupMemberDelete(id, mem.user?._id).then(() => fetchGroup(id))}
+              retry={() => groupMemberDelete(id, mem.user?._id).then(() => fetch())}
             />
           )}
           {!state.info.error && (
@@ -205,7 +209,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               contentSingular: 'Le groupe',
             }}
             error={state.info.error}
-            retry={() => fetchGroup(id)}
+            retry={fetch}
           />
         )}
         {state.follow.error && (
@@ -226,7 +230,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               contentSingular: "L'utilisateur",
             }}
             error={state.member_delete?.error}
-            retry={() => fetchGroup(id)}
           />
         )}
         {state.member_leave?.error && (
@@ -336,47 +339,51 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           )}
           {state.info.success && (
             <View>
-              <Divider style={{ marginVertical: 10 }} />
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{group.cache.followers || ''}</Text>
-                  <Text>Abonnés </Text>
-                </View>
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{group.members?.length}</Text>
-                  <Text>Membres </Text>
-                </View>
-              </View>
-              <Divider style={{ marginVertical: 10 }} />
-              {account.loggedIn && (
-                <View style={{ flexDirection: 'row' }}>
-                  {account.groups?.some((g) => g._id === group._id) && (
-                    <View style={[styles.container, { flexGrow: 1 }]}>
-                      <Button
-                        mode="outlined"
-                        uppercase={Platform.OS !== 'ios'}
-                        style={{ borderRadius: 20 }}
-                        loading={state.member_leave?.loading}
-                        onPress={leave}
-                      >
-                        Quitter
-                      </Button>
+              {!verification && (
+                <View>
+                  <Divider style={{ marginVertical: 10 }} />
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={{ fontSize: 40 }}>{group.cache.followers || ''}</Text>
+                      <Text>Abonnés </Text>
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={{ fontSize: 40 }}>{group.members?.length}</Text>
+                      <Text>Membres </Text>
+                    </View>
+                  </View>
+                  <Divider style={{ marginVertical: 10 }} />
+                  {account.loggedIn && (
+                    <View style={{ flexDirection: 'row' }}>
+                      {account.groups?.some((g) => g._id === group._id) && (
+                        <View style={[styles.container, { flexGrow: 1 }]}>
+                          <Button
+                            mode="outlined"
+                            uppercase={Platform.OS !== 'ios'}
+                            style={{ borderRadius: 20 }}
+                            loading={state.member_leave?.loading}
+                            onPress={leave}
+                          >
+                            Quitter
+                          </Button>
+                        </View>
+                      )}
+                      <View style={[styles.container, { flexGrow: 1 }]}>
+                        <Button
+                          loading={state.follow?.loading}
+                          mode={following ? 'outlined' : 'contained'}
+                          uppercase={Platform.OS !== 'ios'}
+                          style={{
+                            backgroundColor: following ? colors.surface : colors.primary,
+                            borderRadius: 20,
+                          }}
+                          onPress={toggleFollow}
+                        >
+                          {following ? 'Abonné' : "S'abonner"}
+                        </Button>
+                      </View>
                     </View>
                   )}
-                  <View style={[styles.container, { flexGrow: 1 }]}>
-                    <Button
-                      loading={state.follow?.loading}
-                      mode={following ? 'outlined' : 'contained'}
-                      uppercase={Platform.OS !== 'ios'}
-                      style={{
-                        backgroundColor: following ? colors.surface : colors.primary,
-                        borderRadius: 20,
-                      }}
-                      onPress={toggleFollow}
-                    >
-                      {following ? 'Abonné' : "S'abonner"}
-                    </Button>
-                  </View>
                 </View>
               )}
               <PlatformTouchable onPress={() => setDescriptionVisible(!descriptionVisible)}>
@@ -435,7 +442,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <InlineCard
                   icon="map-marker"
                   title="France Entière"
-                  onPress={() => console.log('global pressed')}
+                  onPress={() => logger.warn('global pressed')}
                 />
               )}
               {group?.location.schools?.map((school) => (
@@ -444,7 +451,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   icon="school"
                   title={school.displayName}
                   subtitle={getAddressString(school?.address) || school?.shortName}
-                  onPress={() => console.log(`school ${school._id} pressed!`)}
+                  onPress={() => logger.warn(`school ${school._id} pressed!`)}
                 />
               ))}
               {group?.location.departments?.map((dep) => (
@@ -453,7 +460,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   icon="domain"
                   title={dep.displayName}
                   subtitle="Département"
-                  onPress={() => console.log(`department ${dep._id} pressed!`)}
+                  onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                 />
               ))}
               <Divider />
@@ -554,7 +561,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                                 {
                                   text: 'Retirer',
                                   onPress: () => {
-                                    groupMemberDelete(id, mem.user?._id).then(() => fetchGroup(id));
+                                    groupMemberDelete(id, mem.user?._id).then(fetch);
                                   },
                                 },
                               ],
@@ -588,7 +595,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </View>
                 )}
               <View style={{ height: 40 }} />
-              {articles.length !== 0 && (
+              {articles.length !== 0 && !verification && (
                 <View>
                   <View style={styles.container}>
                     <CategoryTitle>Derniers contenus</CategoryTitle>
@@ -668,6 +675,56 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     ]}
                   />
                   <View style={{ height: 20 }} />
+                </View>
+              )}
+              {verification && (
+                <View>
+                  <Divider style={{ marginTop: 30 }} />
+                  <View style={styles.contentContainer}>
+                    <Title>Informations de vérification</Title>
+                  </View>
+                  <View style={styles.contentContainer}>
+                    <Divider style={{ marginBottom: 20 }} />
+                    <Subheading>Nom du créateur</Subheading>
+                    <Text>{group.verification?.data?.name}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Identifiant (RNA, SIRET etc)</Subheading>
+                    <Text>{group.verification?.data?.id || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Données de vérification supplémentaires</Subheading>
+                    <Text>{group.verification?.data?.extra || 'Non spécifié'}</Text>
+                  </View>
+                  {state.verification_approve?.error && (
+                    <ErrorMessage
+                      type="axios"
+                      strings={{
+                        what: "l'approbation du groupe",
+                        contentSingular: 'le groupe',
+                      }}
+                      error={state.verification_approve?.error}
+                      retry={() =>
+                        groupVerificationApprove(group?._id).then(() => navigation.goBack())
+                      }
+                    />
+                  )}
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                    <View style={styles.container}>
+                      <Button
+                        mode="contained"
+                        loading={state.verification_approve?.loading}
+                        color={colors.valid}
+                        contentStyle={{
+                          height: 50,
+                          justifyContent: 'center',
+                        }}
+                        onPress={() =>
+                          groupVerificationApprove(group?._id).then(() => navigation.goBack())
+                        }
+                      >
+                        Approuver
+                      </Button>
+                    </View>
+                  </View>
                 </View>
               )}
             </View>

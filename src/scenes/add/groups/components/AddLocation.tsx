@@ -1,6 +1,16 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, HelperText, List, Checkbox, Divider, ProgressBar } from 'react-native-paper';
+import {
+  Button,
+  HelperText,
+  List,
+  Checkbox,
+  Card,
+  Text,
+  Divider,
+  ProgressBar,
+} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
@@ -16,12 +26,13 @@ import {
 } from '@ts/types';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 
+import type { GroupAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
-import { GroupAddStackParams } from '..';
 
 type GroupAddLocationProps = StepperViewPageProps & {
   navigation: StackNavigationProp<GroupAddStackParams, 'Location'>;
@@ -72,7 +83,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 
   const submit = () => {
     if (schools.length !== 0 || departments.length !== 0 || global) {
-      updateArticleCreationData({ location: { schools, departments, global } });
+      updateGroupCreationData({ location: { schools, departments, global } });
       next();
     } else {
       setError(true);
@@ -82,8 +93,9 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   const theme = useTheme();
   const { colors } = theme;
   const articleStyles = getAuthStyles(theme);
+  const styles = getStyles(theme);
 
-  const toggle = (i: { _id: string }, func: Function, data: string[]) => {
+  const toggle = (i: { _id: string }, data: string[], func: Function) => {
     if (data.includes(i._id)) {
       func(data.filter((j) => j !== i._id));
     } else {
@@ -94,6 +106,25 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 
   return (
     <View style={articleStyles.formContainer}>
+      <View style={[styles.container, { marginTop: 40 }]}>
+        <Card
+          elevation={0}
+          style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+        >
+          <View style={[styles.container, { flexDirection: 'row' }]}>
+            <Icon
+              name="information"
+              style={{ alignSelf: 'center', marginRight: 10 }}
+              size={24}
+              color={colors.primary}
+            />
+            <Text style={{ color: colors.text, flex: 1 }}>
+              Vous pourrez publier des contenus dans ces localisations. Séléctionnez uniquement
+              celles qui correspondent à votre champ d'action.
+            </Text>
+          </View>
+        </Card>
+      </View>
       <View style={articleStyles.listContainer}>
         {location.schoolData?.map((s) => (
           <List.Item
@@ -119,18 +150,16 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
-        {location.global && (
-          <List.Item
-            title="France entière"
-            description="Visible pour tous les utilisateurs"
-            {...getListItemCheckbox({
-              status: global ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => setGlobal(!global),
-            })}
-            onPress={() => setGlobal(!global)}
-          />
-        )}
+        <List.Item
+          title="France entière"
+          description="Visible pour tous les utilisateurs"
+          {...getListItemCheckbox({
+            status: global ? 'checked' : 'unchecked',
+            color: colors.primary,
+            onPress: () => setGlobal(!global),
+          })}
+          onPress={() => setGlobal(!global)}
+        />
         <View>
           <Divider style={{ marginTop: 20 }} />
           {(locationStates.schools.info.loading || locationStates.departments.info.loading) && (
@@ -158,7 +187,9 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
                     .map(
                       (s) =>
                         schoolItems?.find((t) => t._id === s)?.displayName ||
-                        schoolItems?.find((t) => t._id === s)?.name,
+                        location.schoolData?.find((t) => t._id === s)?.displayName ||
+                        schoolItems?.find((t) => t._id === s)?.name ||
+                        location.schoolData?.find((t) => t._id === s)?.name,
                     )
                     .join(', ')
                 : undefined
@@ -190,7 +221,13 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
                         departmentItems
                           .filter((e) => e.type === 'departement')
                           ?.find((e) => e._id === d)?.displayName ||
+                        location.departmentData
+                          .filter((e) => e.type === 'departement')
+                          ?.find((e) => e._id === d)?.displayName ||
                         departmentItems
+                          .filter((e) => e.type === 'departement')
+                          ?.find((e) => e._id === d)?.name ||
+                        location.departmentData
                           .filter((e) => e.type === 'departement')
                           ?.find((e) => e._id === d)?.name,
                     )

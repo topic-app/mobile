@@ -85,9 +85,9 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
     );
   }
   return (
-    <View>
+    <View style={eventStyles.formContainer}>
       <View>
-        <List.Subheader> Début de l'évènement </List.Subheader>
+        <List.Subheader> Début de l&apos;évènement </List.Subheader>
         <View style={styles.container}>
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
@@ -109,7 +109,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
             />
           )}
         </View>
-        <List.Subheader> Fin de l'évènement </List.Subheader>
+        <List.Subheader> Fin de l&apos;évènement </List.Subheader>
         <HelperText type="error" visible={showError} style={{ marginVertical: -10 }}>
           Votre évènement doit durer un heure au minimum.
         </HelperText>
@@ -118,7 +118,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={false}
             onPress={showEndMode}
-            style={{ marginHorizontalbo: 5 }}
+            style={{ marginHorizontal: 5 }}
           >
             {endDate === null ? 'Appuyez pour sélectionner' : moment(endDate).format('LLL')}
           </Button>
