@@ -1,4 +1,4 @@
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
 /**
  * @docs reducers
  * Reducer pour les preferences
@@ -10,96 +10,45 @@ import { config } from '@root/app.json';
  * @returns Nouveau state
  */
 
-let initialState;
-
-if (config.dev.defaultAccount) {
-  initialState = {
-    ...config.dev.defaultAccount,
-    groups: [],
-    waitingGroups: [],
-    permissions: [],
-    state: {
-      login: {
-        loading: false,
-        success: null,
-        error: null,
-        incorrect: null,
-      },
-      register: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      check: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      fetchGroups: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      fetchAccount: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      updateProfile: {
-        loading: false,
-        success: null,
-        error: null,
-      },
+const initialState = {
+  ...Config.defaults.account,
+  groups: [],
+  waitingGroups: [],
+  permissions: [],
+  state: {
+    login: {
+      loading: false,
+      success: null,
+      error: null,
+      incorrect: null,
     },
-  };
-} else {
-  initialState = {
-    loggedIn: false,
-    accountInfo: {},
-    creationData: {},
-    groups: [],
-    waitingGroups: [],
-    permissions: [],
-    state: {
-      login: {
-        loading: false,
-        success: null,
-        error: null,
-        incorrect: null,
-      },
-      register: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      check: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      fetchGroups: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      fetchWaitingGroups: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      fetchAccount: {
-        loading: false,
-        success: null,
-        error: null,
-      },
-      updateProfile: {
-        loading: false,
-        success: null,
-        error: null,
-      },
+    register: {
+      loading: false,
+      success: null,
+      error: null,
     },
-  };
-}
+    check: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    fetchGroups: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    fetchAccount: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    updateProfile: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+  },
+};
 
 function accountReducer(state = initialState, action) {
   switch (action.type) {

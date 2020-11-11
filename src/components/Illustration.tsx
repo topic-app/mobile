@@ -2,8 +2,8 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 
+import { Config } from '@constants/index';
 import { useTheme } from '@utils/index';
-import { config } from '@root/app.json';
 
 // Topic Icon
 import TopicIcon from '@assets/images/topic-icon.svg';
@@ -200,7 +200,7 @@ type Props = SvgProps & { name: keyof typeof illustrationList };
 const Illustration: React.FC<Props> = ({ name, ...rest }) => {
   const { dark } = useTheme();
 
-  if (Platform.OS === 'web' || config.hideSvg) return null;
+  if (Platform.OS === 'web' || Config.dev.hideSvg) return null;
 
   const Item = dark ? illustrationList[name]?.dark : illustrationList[name]?.light;
 

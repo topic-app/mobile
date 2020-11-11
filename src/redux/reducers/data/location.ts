@@ -1,4 +1,21 @@
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
+
+const initialState = {
+  ...Config.defaults.location,
+  state: {
+    fetch: {
+      loading: null,
+      success: null,
+      error: null,
+    },
+    update: {
+      loading: null,
+      success: null,
+      error: null,
+    },
+  },
+};
+
 /**
  * @docs reducers
  * Reducer pour les preferences
@@ -9,47 +26,6 @@ import { config } from '@root/app.json';
  * @param {string} action.data.pref La clé du paramètre à supprimer
  * @returns Nouveau state
  */
-
-let initialState;
-if (config.dev.defaultLocation) {
-  initialState = {
-    ...config.dev.defaultLocation,
-    state: {
-      fetch: {
-        loading: null,
-        success: null,
-        error: null,
-      },
-      update: {
-        loading: null,
-        success: null,
-        error: null,
-      },
-    },
-  };
-} else {
-  initialState = {
-    selected: false,
-    schools: [],
-    schoolData: [],
-    departments: [],
-    departmentData: [],
-    global: null,
-    state: {
-      fetch: {
-        loading: null,
-        success: null,
-        error: null,
-      },
-      update: {
-        loading: null,
-        success: null,
-        error: null,
-      },
-    },
-  };
-}
-
 function locationReducer(state = initialState, action) {
   switch (action.type) {
     case 'UPDATE_LOCATION':

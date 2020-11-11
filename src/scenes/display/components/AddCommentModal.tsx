@@ -4,7 +4,7 @@ import { Divider, Text } from 'react-native-paper';
 import { View, TextInput, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
 import { CategoriesList, PlatformIconButton, Modal } from '@components/index';
 import { useTheme, logger } from '@utils/index';
 import getArticleStyles from './styles/Styles';
@@ -40,12 +40,12 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
 
   const [commentText, setCommentText] = React.useState('');
   const [publisher, setPublisher] = React.useState('user');
-  const tooManyChars = commentText.length > config.comments.maxCharacters;
+  const tooManyChars = commentText.length > Config.content.comments.maxCharacters;
 
   let commentCharCountColor = colors.softContrast;
   if (tooManyChars) {
     commentCharCountColor = colors.error;
-  } else if (commentText.length > 0.9 * config.comments.maxCharacters) {
+  } else if (commentText.length > 0.9 * Config.content.comments.maxCharacters) {
     commentCharCountColor = colors.warning;
   }
 
@@ -130,7 +130,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
           }}
         >
           <Text style={{ color: commentCharCountColor }}>
-            {commentText.length}/{config.comments.maxCharacters}
+            {commentText.length}/{Config.content.comments.maxCharacters}
           </Text>
 
           {reqState.comments.add.loading ? (

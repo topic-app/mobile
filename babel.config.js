@@ -16,6 +16,7 @@ module.exports = function (api) {
             '@styles': './src/styles',
             '@redux': './src/redux',
             '@utils': './src/utils',
+            '@constants': './src/constants',
             '@ts': './src/ts',
           },
           extensions: [

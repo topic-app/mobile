@@ -1,13 +1,13 @@
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import { persistStore, persistReducer } from 'redux-persist';
 import { Platform } from 'react-native';
-import localForage from 'localforage';
+import { createStore, applyMiddleware } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
-import { config } from '@root/app.json';
+import thunk from 'redux-thunk';
+import localForage from 'localforage';
+
+import { Config } from '@constants/index';
 
 import reducer from './reducers/index';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 const persistConfig = {
   key: 'root',
@@ -21,7 +21,7 @@ const Store = createStore(persistedReducer, applyMiddleware(thunk));
 
 const Persistor = persistStore(Store);
 
-if (config.dev.disablePersist) {
+if (Config.dev.disablePersist) {
   Persistor.purge();
 }
 

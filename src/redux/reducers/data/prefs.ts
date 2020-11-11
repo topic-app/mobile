@@ -1,4 +1,4 @@
-import { config } from '../../../../app.json';
+import { Config } from '@constants/index';
 /**
  * @docs reducers
  * Reducer pour les preferences
@@ -10,7 +10,7 @@ import { config } from '../../../../app.json';
  * @returns Nouveau state
  */
 
-const initialState = config.defaults;
+const initialState = Config.defaults.preferences;
 
 function prefReducer(state = initialState, action) {
   const prefs = state;

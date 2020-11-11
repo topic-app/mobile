@@ -1,4 +1,4 @@
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
 import { Linking, Alert } from 'react-native';
 
 const truncate = (str: string, len: number) => {
@@ -115,7 +115,7 @@ function decomposeLink(url: string): DecomposedLink {
 
 function handleUrl(targetUrl: string) {
   const target = decomposeLink(targetUrl);
-  const { allowedSites } = config.content;
+  const { allowedSites } = Config.content;
   if (
     allowedSites.some(({ url, allowSubdomains }) => {
       const { protocol, domain, subdomains } = decomposeLink(url);

@@ -8,13 +8,14 @@ import {
   UPDATE_EVENTS_QUICKS,
   UPDATE_EVENTS_CREATION_DATA,
 } from '@ts/redux';
-import { config } from '@root/app.json';
+
+import { Config } from '@constants/index';
 
 const initialState: EventsDataState = {
   params: {},
-  lists: config.events.lists,
-  prefs: config.events.defaults,
-  quicks: config.events.quicks,
+  lists: Config.defaults.events.lists,
+  prefs: Config.defaults.events.prefs,
+  quicks: Config.defaults.events.quicks,
   read: [],
   creationData: {},
 };

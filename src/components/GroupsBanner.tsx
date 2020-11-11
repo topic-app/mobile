@@ -3,7 +3,7 @@ import { Alert, View } from 'react-native';
 import { Banner, Text, Subheading, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
 import { State, Account, AccountRequestState, GroupRequestState } from '@ts/types';
 import { handleUrl } from '@utils/index';
 import { groupMemberAccept, groupMemberReject } from '@redux/actions/apiActions/groups';
@@ -86,7 +86,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state, accountState }) => {
                   [
                     {
                       text: 'Voir la charte des Administrateurs',
-                      onPress: () => handleUrl(config.links.administrator),
+                      onPress: () => handleUrl(Config.links.administrator),
                     },
                     {
                       text: 'Annuler',

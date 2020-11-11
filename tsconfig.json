@@ -17,6 +17,7 @@
       "@redux/*": ["./src/redux/*"],
       "@styles/*": ["./src/styles/*"],
       "@utils/*": ["./src/utils/*"],
+      "@constants/*": ["./src/constants/*"],
       "@ts/*": ["./src/ts/*"]
     }
   }

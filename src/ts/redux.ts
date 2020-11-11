@@ -84,6 +84,7 @@ export type ArticlesState = {
 
 export type ArticlePrefs = {
   categories?: string[];
+  hidden?: string[];
 };
 
 export type ArticleReadItem = {
@@ -340,6 +341,7 @@ export type EventQuickItem = {
 
 export type EventPrefs = {
   categories?: string[];
+  hidden?: string[];
 };
 
 export type EventReadItem = {
