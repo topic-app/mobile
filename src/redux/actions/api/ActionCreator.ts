@@ -241,11 +241,17 @@ function clearCreator({
   data = true,
   search = true,
   verification = true,
+  following = true,
+  items = true,
+  templates = true,
 }: {
   clear: string;
   data?: boolean;
   search?: boolean;
   verification?: boolean;
+  following?: boolean;
+  items?: boolean;
+  templates?: boolean;
 }) {
   return {
     type: clear,
@@ -253,6 +259,9 @@ function clearCreator({
       search,
       data,
       verification,
+      following,
+      items,
+      templates,
     },
   };
 }

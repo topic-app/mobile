@@ -74,8 +74,10 @@ async function updateArticlesFollowing(
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearArticles(data = true, search = true, verification = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_ARTICLES, data, search, verification }));
+async function clearArticles(data = true, search = true, verification = true, following = true) {
+  await Store.dispatch(
+    clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }),
+  );
 }
 
 /**

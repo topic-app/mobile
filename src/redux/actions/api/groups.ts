@@ -124,8 +124,8 @@ async function fetchGroupVerification(groupId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearGroups(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search }));
+async function clearGroups(data = true, search = true, templates = true) {
+  await Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
 }
 
 /**

@@ -4,7 +4,7 @@ import { Text, ProgressBar } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, AccountRequestState, CreationData } from '@ts/types';
+import { State, AccountRequestState, AccountCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
   StepperView,
@@ -28,7 +28,7 @@ import AuthCreatePageLegal from '../components/CreateLegal';
 type Props = {
   navigation: StackNavigationProp<AuthStackParams, 'Create'>;
   reqState: AccountRequestState;
-  creationData?: CreationData;
+  creationData?: AccountCreationData;
 };
 
 const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }) => {

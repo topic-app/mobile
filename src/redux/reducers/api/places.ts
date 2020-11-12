@@ -30,6 +30,15 @@ const initialState: PlacesState = {
         next: false,
       },
     },
+    near: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
     info: {
       success: null,
       error: null,

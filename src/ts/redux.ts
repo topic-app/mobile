@@ -21,6 +21,12 @@ import {
   User,
   UserPreload,
   GroupTemplate,
+  GroupRolePermission,
+  AccountPermission,
+  AccountInfo,
+  AccountUser,
+  AccountCreationData,
+  WaitingGroup,
 } from './api';
 import {
   ArticleRequestState,
@@ -36,6 +42,7 @@ import {
   LegalRequestState,
   LocationRequestState,
   LinkingRequestState,
+  AccountRequestState,
 } from './requestState';
 
 // Articles
@@ -106,8 +113,8 @@ export type ArticleCreationData = {
   title?: string;
   summary?: string;
   tags?: string[];
-  parser: 'plaintext' | 'markdown';
-  data: string;
+  parser?: 'plaintext' | 'markdown';
+  data?: string;
 };
 
 export type ArticlesDataState = {
@@ -162,7 +169,7 @@ type UpdateArticlesVerificationAction = {
 
 type UpdateArticlesReadAction = {
   type: typeof UPDATE_ARTICLES_READ;
-  data: { id: string }[];
+  data: ArticleReadItem[];
 };
 
 type UpdateArticlesPrefsAction = {
@@ -177,12 +184,12 @@ type UpdateArticlesQuicksAction = {
 
 type UpdateArticlesCreationDataAction = {
   type: typeof UPDATE_ARTICLES_CREATION_DATA;
-  data: ArticleCreationData;
+  data: Partial<ArticleCreationData>;
 };
 
 type ClearArticlesAction = {
   type: typeof CLEAR_ARTICLES;
-  data: { data?: boolean; search?: boolean; verification?: boolean };
+  data: { data?: boolean; search?: boolean; verification?: boolean; following?: boolean };
 };
 
 export type ArticlesActionTypes =
@@ -281,7 +288,7 @@ type UpdateDepartmentsSearchAction = {
 
 type ClearDepartmentsAction = {
   type: typeof CLEAR_DEPARTMENTS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; items?: boolean };
 };
 
 export type DepartmentsActionTypes =
@@ -433,7 +440,7 @@ type UpdateEventsVerificationAction = {
 
 type UpdateEventsReadAction = {
   type: typeof UPDATE_EVENTS_READ;
-  data: { id: string }[];
+  data: EventReadItem[];
 };
 
 type UpdateEventsPrefsAction = {
@@ -448,7 +455,7 @@ type UpdateEventsQuicksAction = {
 
 type UpdateEventsCreationDataAction = {
   type: typeof UPDATE_EVENTS_CREATION_DATA;
-  data: EventCreationData;
+  data: Partial<EventCreationData>;
 };
 
 type ClearEventsAction = {
@@ -485,6 +492,7 @@ export type GroupsState = {
   data: (Group | GroupPreload)[];
   search: GroupPreload[];
   item: Group | null;
+  verification: (Group | GroupPreload)[];
   state: GroupRequestState;
   templates: GroupTemplate[];
 };
@@ -528,7 +536,7 @@ type UpdateGroupsTemplatesAction = {
 
 type UpdateGroupsCreationDataAction = {
   type: typeof UPDATE_GROUPS_CREATION_DATA;
-  data: object;
+  data: Partial<GroupCreationData>;
 };
 
 type UpdateGroupsVerificationAction = {
@@ -543,7 +551,7 @@ type UpdateGroupsSearchAction = {
 
 type ClearGroupsAction = {
   type: typeof CLEAR_GROUPS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; templates?: boolean; verification?: boolean };
 };
 
 export type GroupsActionTypes =
@@ -698,7 +706,7 @@ type UpdateSchoolsNearAction = {
 
 type ClearSchoolsAction = {
   type: typeof CLEAR_SCHOOLS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; near?: boolean };
 };
 
 export type SchoolsActionTypes =
@@ -835,19 +843,6 @@ type UpdateLinkingStateAction = {
 };
 export type LinkingActionTypes = UpdateLinkingStateAction;
 
-export type ActionType =
-  | ArticlesActionTypes
-  | EventsActionTypes
-  | CommentsActionTypes
-  | SchoolsActionTypes
-  | DepartmentsActionTypes
-  | UsersActionTypes
-  | GroupsActionTypes
-  | PetitionsActionTypes
-  | TagsActionTypes
-  | PlacesActionTypes
-  | LegalActionTypes;
-
 // Account
 export const UPDATE_ACCOUNT_GROUPS = 'UPDATE_ACCOUNT_GROUPS';
 export const UPDATE_ACCOUNT_PERMISSIONS = 'UPDATE_ACCOUNT_PERMISSIONS';
@@ -859,13 +854,125 @@ export const UPDATE_ACCOUNT_USER = 'UPDATE_ACCOUNT_USER';
 export const UPDATE_ACCOUNT_CREATION_DATA = 'UPDATE_ACCOUNT_CREATION_DATA';
 export const CLEAR_ACCOUNT_CREATION_DATA = 'CLEAR_ACCOUNT_CREATION_DATA';
 
+type UpdateAccountGroupsAction = {
+  type: typeof UPDATE_ACCOUNT_GROUPS;
+  data: Group[];
+};
+
+type UpdateAccountPermissionsAction = {
+  type: typeof UPDATE_ACCOUNT_PERMISSIONS;
+  data: AccountPermission[];
+};
+
+type UpdateAccountStateAction = {
+  type: typeof UPDATE_ACCOUNT_STATE;
+  data: Partial<AccountRequestState>;
+};
+
+type UpdateAccountWaitingGroupsAction = {
+  type: typeof UPDATE_ACCOUNT_WAITING_GROUPS;
+  data: WaitingGroup[];
+};
+
+type LogoutAction = {
+  type: typeof LOGOUT;
+  data: {};
+};
+
+type LoginAction = {
+  type: typeof LOGIN;
+  data: { accountInfo: AccountInfo };
+};
+
+type UpdateAccountUserAction = {
+  type: typeof UPDATE_ACCOUNT_USER;
+  data: AccountUser;
+};
+
+type UpdateAccountCreationDataAction = {
+  type: typeof UPDATE_ACCOUNT_CREATION_DATA;
+  data: Partial<AccountCreationData>;
+};
+
+type ClearAccountCreationDataAction = {
+  type: typeof CLEAR_ACCOUNT_CREATION_DATA;
+  data: {};
+};
+
+export type AccountActionTypes =
+  | UpdateAccountGroupsAction
+  | UpdateAccountPermissionsAction
+  | UpdateAccountStateAction
+  | UpdateAccountWaitingGroupsAction
+  | LogoutAction
+  | LoginAction
+  | UpdateAccountUserAction
+  | UpdateAccountCreationDataAction
+  | ClearAccountCreationDataAction;
+
 // Location
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';
 export const UPDATE_LOCATION_STATE = 'UPDATE_LOCATION_STATE';
 export const CLEAR_LOCATION = 'CLEAR_LOCATION';
 
+type UpdateLocationAction = {
+  type: typeof UPDATE_LOCATION;
+  data: Partial<LocationList>;
+};
+
+type UpdateLocationStateAction = {
+  type: typeof UPDATE_LOCATION_STATE;
+  data: Partial<LocationRequestState>;
+};
+
+type ClearLocationAction = {
+  type: typeof CLEAR_LOCATION;
+  data: {};
+};
+
+export type LocationActionTypes =
+  | UpdateLocationAction
+  | UpdateLocationStateAction
+  | ClearLocationAction;
+
 // Prefs
 export const SET_PREFS = 'SET_PREFS';
+export const CLEAR_PREF = 'CLEAR_PREF';
+export const CLEAR_ALL_PREFS = 'CLEAR_ALL_PREFS';
+
+type SetPrefAction = {
+  type: typeof SET_PREFS;
+  data: Partial<Preferences>;
+};
+
+type ClearPrefAction = {
+  type: typeof CLEAR_PREF;
+  data: keyof Preferences;
+};
+
+type ClearAllPrefsAction = {
+  type: typeof CLEAR_ALL_PREFS;
+  data: {};
+};
+
+export type PrefActionTypes = SetPrefAction | ClearPrefAction | ClearAllPrefsAction;
+
+// Actions
+export type ActionType =
+  | ArticlesActionTypes
+  | EventsActionTypes
+  | CommentsActionTypes
+  | SchoolsActionTypes
+  | DepartmentsActionTypes
+  | UsersActionTypes
+  | GroupsActionTypes
+  | PetitionsActionTypes
+  | TagsActionTypes
+  | PlacesActionTypes
+  | LegalActionTypes
+  | AccountActionTypes
+  | LocationActionTypes
+  | PrefActionTypes;
 
 // Global stuff
 export type ReduxLocation = {

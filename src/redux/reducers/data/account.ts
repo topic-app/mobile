@@ -1,4 +1,17 @@
 import { Config } from '@constants/index';
+import {
+  Account,
+  LOGOUT,
+  LOGIN,
+  UPDATE_ACCOUNT_USER,
+  UPDATE_ACCOUNT_PERMISSIONS,
+  CLEAR_ACCOUNT_CREATION_DATA,
+  UPDATE_ACCOUNT_STATE,
+  UPDATE_ACCOUNT_GROUPS,
+  UPDATE_ACCOUNT_WAITING_GROUPS,
+  UPDATE_ACCOUNT_CREATION_DATA,
+  AccountActionTypes,
+} from '@ts/types';
 /**
  * @docs reducers
  * Reducer pour les preferences
@@ -10,9 +23,10 @@ import { Config } from '@constants/index';
  * @returns Nouveau state
  */
 
-const initialState = {
+const initialState: Account = {
   ...Config.defaults.account,
   groups: [],
+  creationData: {},
   waitingGroups: [],
   permissions: [],
   state: {
@@ -37,6 +51,11 @@ const initialState = {
       success: null,
       error: null,
     },
+    fetchWaitingGroups: {
+      loading: false,
+      success: null,
+      error: null,
+    },
     fetchAccount: {
       loading: false,
       success: null,
@@ -50,44 +69,44 @@ const initialState = {
   },
 };
 
-function accountReducer(state = initialState, action) {
+function accountReducer(state = initialState, action: AccountActionTypes) {
   switch (action.type) {
-    case 'UPDATE_ACCOUNT_CREATION_DATA':
+    case UPDATE_ACCOUNT_CREATION_DATA:
       return {
         ...state,
         creationData: { ...state.creationData, ...action.data },
       };
-    case 'CLEAR_ACCOUNT_CREATION_DATA':
+    case CLEAR_ACCOUNT_CREATION_DATA:
       return {
         ...state,
         creationData: {},
       };
-    case 'UPDATE_ACCOUNT_STATE':
+    case UPDATE_ACCOUNT_STATE:
       return {
         ...state,
         state: { ...state.state, ...action.data },
       };
-    case 'UPDATE_ACCOUNT_GROUPS':
+    case UPDATE_ACCOUNT_GROUPS:
       return {
         ...state,
         groups: action.data,
       };
-    case 'UPDATE_ACCOUNT_WAITING_GROUPS':
+    case UPDATE_ACCOUNT_WAITING_GROUPS:
       return {
         ...state,
         waitingGroups: action.data,
       };
-    case 'UPDATE_ACCOUNT_PERMISSIONS':
+    case UPDATE_ACCOUNT_PERMISSIONS:
       return {
         ...state,
         permissions: action.data,
       };
-    case 'UPDATE_ACCOUNT_USER':
+    case UPDATE_ACCOUNT_USER:
       return {
         ...state,
         accountInfo: { ...state.accountInfo, user: action.data },
       };
-    case 'LOGIN':
+    case LOGIN:
       return {
         loggedIn: true,
         accountInfo: action.data.accountInfo,
@@ -97,10 +116,10 @@ function accountReducer(state = initialState, action) {
         groups: [],
         waitingGroups: [],
       };
-    case 'LOGOUT':
+    case LOGOUT:
       return {
         loggedIn: false,
-        accountInfo: {},
+        accountInfo: null,
         permissions: [],
         groups: [],
         waitingGroups: [],

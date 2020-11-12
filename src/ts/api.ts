@@ -14,6 +14,8 @@
  * Note: Don't import this file through `common/`, use `import { ... } from '@ts/types'` instead.
  */
 
+import { AccountRequestState } from './requestState'; // Account stuff should probably go in redux.ts but too much risk of breakage
+
 // Common types
 export type Content = {
   parser: 'plaintext' | 'markdown';
@@ -182,36 +184,46 @@ export type User = {
   };
 };
 
-export type CreationData = {
-  avatar: Avatar;
-  username: string;
-  email: string;
-  password: string;
-  global: boolean;
-  schools: string[];
-  departments: string[];
-  accountType: 'public' | 'private';
+export type AccountCreationData = {
+  avatar?: Avatar;
+  username?: string;
+  email?: string;
+  password?: string;
+  global?: boolean;
+  schools?: string[];
+  departments?: string[];
+  accountType?: 'public' | 'private';
   firstName?: string;
   lastName?: string;
 };
 
+export type AccountPermission = GroupRolePermission & { group: string };
+
+export type AccountUser = User & {
+  sensitiveData: {
+    email: string;
+  };
+};
+
+export type AccountInfo = {
+  accountId: string;
+  accountToken: string;
+  accountTokenExpiry: string;
+  user: AccountUser;
+};
+
+export type WaitingGroup = Group & {
+  waitingMembership: { role: string; permanent: boolean; expiry: Date };
+};
+
 export type Account = {
   loggedIn: boolean;
-  creationData: object | CreationData; // Maybe something better than `object` here
+  creationData: AccountCreationData; // Maybe something better than `object` here
   groups?: Group[];
-  waitingGroups?: (Group & {
-    waitingMembership: { role: string; permanent: boolean; expiry: Date };
-  })[];
-  accountInfo?: {
-    accountId: string;
-    accountToken: string;
-    accountTokenExpiry: string;
-    user: User & {
-      sensitiveData: {
-        email: string;
-      };
-    };
-  } | null;
+  permissions: AccountPermission[];
+  waitingGroups?: WaitingGroup[];
+  accountInfo?: AccountInfo | null;
+  state: AccountRequestState;
 };
 
 export type AuthorPreload = UserPreload;

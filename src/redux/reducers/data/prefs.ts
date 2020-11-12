@@ -1,4 +1,5 @@
 import { Config } from '@constants/index';
+import { Preferences, PrefActionTypes, SET_PREFS, CLEAR_PREF, CLEAR_ALL_PREFS } from '@ts/types';
 /**
  * @docs reducers
  * Reducer pour les preferences
@@ -10,17 +11,17 @@ import { Config } from '@constants/index';
  * @returns Nouveau state
  */
 
-const initialState = Config.defaults.preferences;
+const initialState: Preferences = Config.defaults.preferences;
 
-function prefReducer(state = initialState, action) {
+function prefReducer(state = initialState, action: PrefActionTypes) {
   const prefs = state;
   switch (action.type) {
-    case 'SET_PREFS':
+    case SET_PREFS:
       return { ...prefs, ...action.data };
-    case 'CLEAR_PREF':
+    case CLEAR_PREF:
       delete prefs[action.data];
       return prefs;
-    case 'CLEAR_ALL_PREFS':
+    case CLEAR_ALL_PREFS:
       return {};
     default:
       return state;

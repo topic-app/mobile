@@ -1,7 +1,18 @@
-import { LinkingState, LinkingActionType, UPDATE_LINKING_STATE } from '@ts/redux';
+import { LinkingState, LinkingActionTypes, UPDATE_LINKING_STATE } from '@ts/redux';
 
 const initialState: LinkingState = {
-  state: {},
+  state: {
+    emailChange: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    emailVerify: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+  },
 };
 
 /**
@@ -13,7 +24,7 @@ const initialState: LinkingState = {
  * @param {object} action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
-function linkingReducer(state = initialState, action: LinkingActionType): LinkingState {
+function linkingReducer(state = initialState, action: LinkingActionTypes): LinkingState {
   switch (action.type) {
     case UPDATE_LINKING_STATE:
       return {

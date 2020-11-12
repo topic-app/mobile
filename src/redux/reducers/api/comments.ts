@@ -19,6 +19,15 @@ const initialState: CommentsState = {
         next: false,
       },
     },
+    search: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
     add: {
       success: null,
       error: null,

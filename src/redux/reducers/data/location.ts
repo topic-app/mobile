@@ -1,6 +1,13 @@
 import { Config } from '@constants/index';
+import {
+  LocationList,
+  LocationActionTypes,
+  UPDATE_LOCATION,
+  CLEAR_LOCATION,
+  UPDATE_LOCATION_STATE,
+} from '@ts/types';
 
-const initialState = {
+const initialState: LocationList = {
   ...Config.defaults.location,
   state: {
     fetch: {
@@ -26,13 +33,13 @@ const initialState = {
  * @param {string} action.data.pref La clé du paramètre à supprimer
  * @returns Nouveau state
  */
-function locationReducer(state = initialState, action) {
+function locationReducer(state = initialState, action: LocationActionTypes) {
   switch (action.type) {
-    case 'UPDATE_LOCATION':
+    case UPDATE_LOCATION:
       return { ...state, ...action.data };
-    case 'CLEAR_LOCATION':
+    case CLEAR_LOCATION:
       return initialState;
-    case 'UPDATE_LOCATION_STATE':
+    case UPDATE_LOCATION_STATE:
       return { ...state, state: { ...state.state, ...action.data } };
     default:
       return state;

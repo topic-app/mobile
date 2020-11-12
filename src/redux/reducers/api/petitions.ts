@@ -11,7 +11,8 @@ import {
 import data from '../../../data/petitionListData.json';
 
 const initialState: PetitionsState = {
-  data,
+  // data,
+  data: [],
   search: [],
   item: null,
   state: {

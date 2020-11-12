@@ -12,6 +12,8 @@ import {
 const initialState: EventsState = {
   dataUpcoming: [],
   dataPassed: [],
+  creationData: {},
+  verification: [],
   search: [],
   item: null,
   state: {
@@ -78,9 +80,11 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
       };
     case CLEAR_EVENTS:
       return {
-        dataUpcoming: action.data.data ? [] : state.data,
-        dataPassed: action.data.data ? [] : state.data,
+        dataUpcoming: action.data.data ? [] : state.dataUpcoming,
+        dataPassed: action.data.data ? [] : state.dataPassed,
         search: action.data.search ? [] : state.search,
+        verification: action.data.verification ? [] : state.verification,
+        creationData: state.creationData,
         item: null,
         state: state.state,
       };

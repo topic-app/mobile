@@ -1,3 +1,6 @@
+// @ts-nocheck
+// TODO: Not implemented
+
 /**
  * @docs reducers
  * Reducer pour les popups et notifications

@@ -1,6 +1,7 @@
-import Store from '@redux/store';
-
+// @ts-nocheck
 // TODO: Not implemented
+
+import Store from '@redux/store';
 
 /**
  * @docs actionCreators
