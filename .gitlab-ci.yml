@@ -1,5 +1,13 @@
 stages:
   - build
+  - test
+
+typescript tests:
+  stage: test
+  image: node:12-slim
+  script:
+    - npm install
+    - tsc
 
 build app android:
   only:
