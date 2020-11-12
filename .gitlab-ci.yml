@@ -4,7 +4,7 @@ stages:
 
 typescript tests:
   stage: test
-  image: node:12-slim
+  image: node:12
   script:
     - npm install
     - tsc
