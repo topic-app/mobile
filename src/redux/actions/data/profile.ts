@@ -1,6 +1,7 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
 import { hashPassword } from '@utils/crypto';
+import { State, UPDATE_ACCOUNT_STATE, User } from '@ts/types';
 
 /**
  * @docs actionCreators
@@ -8,11 +9,11 @@ import { hashPassword } from '@utils/crypto';
  * @param fields Les données à modifier
  * @returns Action
  */
-function updateDataCreator(fields) {
-  return (dispatch, getState) => {
+function updateDataCreator(fields: Partial<User>) {
+  return (dispatch: (action: any) => void, getState: () => State) => {
     return new Promise(async (resolve, reject) => {
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: true,
@@ -26,7 +27,7 @@ function updateDataCreator(fields) {
         await request('profile/modify/data', 'post', { data: fields }, true);
       } catch (error) {
         dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
+          type: UPDATE_ACCOUNT_STATE,
           data: {
             updateProfile: {
               loading: false,
@@ -40,7 +41,7 @@ function updateDataCreator(fields) {
       }
 
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: false,
@@ -61,10 +62,10 @@ function updateDataCreator(fields) {
  * @returns Action
  */
 function updateUsernameCreator(username: string) {
-  return (dispatch, getState) => {
+  return (dispatch: (action: any) => void) => {
     return new Promise(async (resolve, reject) => {
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: true,
@@ -78,7 +79,7 @@ function updateUsernameCreator(username: string) {
         await request('profile/modify/username', 'post', { username }, true);
       } catch (error) {
         dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
+          type: UPDATE_ACCOUNT_STATE,
           data: {
             updateProfile: {
               loading: false,
@@ -92,7 +93,7 @@ function updateUsernameCreator(username: string) {
       }
 
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: false,
@@ -113,10 +114,10 @@ function updateUsernameCreator(username: string) {
  * @returns Action
  */
 function updateEmailCreator(email: string) {
-  return (dispatch, getState) => {
+  return (dispatch: (action: any) => void) => {
     return new Promise(async (resolve, reject) => {
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: true,
@@ -130,7 +131,7 @@ function updateEmailCreator(email: string) {
         await request('profile/modify/email', 'post', { email }, true);
       } catch (error) {
         dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
+          type: UPDATE_ACCOUNT_STATE,
           data: {
             updateProfile: {
               loading: false,
@@ -144,7 +145,7 @@ function updateEmailCreator(email: string) {
       }
 
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: false,
@@ -159,10 +160,10 @@ function updateEmailCreator(email: string) {
 }
 
 function updatePasswordCreator(password: string) {
-  return (dispatch, getState) => {
+  return (dispatch: (action: any) => void) => {
     return new Promise(async (resolve, reject) => {
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: true,
@@ -177,7 +178,7 @@ function updatePasswordCreator(password: string) {
         await request('profile/modify/password', 'post', { password: newPassword }, true);
       } catch (error) {
         dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
+          type: UPDATE_ACCOUNT_STATE,
           data: {
             updateProfile: {
               loading: false,
@@ -191,7 +192,7 @@ function updatePasswordCreator(password: string) {
       }
 
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: false,
@@ -205,7 +206,7 @@ function updatePasswordCreator(password: string) {
   };
 }
 
-async function updateData(fields) {
+async function updateData(fields: Partial<User>) {
   await Store.dispatch(updateDataCreator(fields));
 }
 

@@ -1,10 +1,17 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
 import { reportCreator } from './ActionCreator';
-import { UPDATE_COMMENTS_STATE } from '@ts/types';
+import { UPDATE_COMMENTS_STATE, Publisher, Content } from '@ts/types';
 
-function commentAddCreator({ publisher, content, parent, parentType }) {
-  return (dispatch, getState) => {
+type commentAddProps = {
+  publisher: Publisher;
+  content: Content;
+  parent: string;
+  parentType: string;
+};
+
+function commentAddCreator({ publisher, content, parent, parentType }: commentAddProps) {
+  return (dispatch: (action: any) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_COMMENTS_STATE,
@@ -30,7 +37,7 @@ function commentAddCreator({ publisher, content, parent, parentType }) {
           },
           true,
         )
-          .then((result) => {
+          .then(() => {
             dispatch({
               type: UPDATE_COMMENTS_STATE,
               data: {
@@ -69,7 +76,7 @@ function commentAddCreator({ publisher, content, parent, parentType }) {
           },
           true,
         )
-          .then((result) => {
+          .then(() => {
             dispatch({
               type: UPDATE_COMMENTS_STATE,
               data: {
@@ -100,7 +107,12 @@ function commentAddCreator({ publisher, content, parent, parentType }) {
   };
 }
 
-async function commentAdd(publisher, content, parent, parentType) {
+async function commentAdd(
+  publisher: Publisher,
+  content: Content,
+  parent: string,
+  parentType: string,
+) {
   await Store.dispatch(
     commentAddCreator({
       publisher,
@@ -111,7 +123,7 @@ async function commentAdd(publisher, content, parent, parentType) {
   );
 }
 
-async function commentReport(commentId, reason) {
+async function commentReport(commentId: string, reason: string) {
   await Store.dispatch(
     reportCreator({
       stateUpdate: UPDATE_COMMENTS_STATE,

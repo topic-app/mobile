@@ -122,7 +122,7 @@ export type ArticlesDataState = {
 // Types pour les actions
 type UpdateArticlesStateAction = {
   type: typeof UPDATE_ARTICLES_STATE;
-  data: ArticleRequestState;
+  data: Partial<ArticleRequestState>;
 };
 
 type UpdateArticlesDataAction = {
@@ -214,7 +214,7 @@ export type CommentsState = {
 
 type UpdateCommentsStateAction = {
   type: typeof UPDATE_COMMENTS_STATE;
-  data: CommentRequestState;
+  data: Partial<CommentRequestState>;
 };
 
 type UpdateCommentsDataAction = {
@@ -256,7 +256,7 @@ export type DepartmentsState = {
 
 type UpdateDepartmentsStateAction = {
   type: typeof UPDATE_DEPARTMENTS_STATE;
-  data: DepartmentRequestState;
+  data: Partial<DepartmentRequestState>;
 };
 
 type UpdateDepartmentsDataAction = {
@@ -393,7 +393,7 @@ export type EventsDataState = {
 
 type UpdateEventsStateAction = {
   type: typeof UPDATE_EVENTS_STATE;
-  data: EventRequestState;
+  data: Partial<EventRequestState>;
 };
 
 type UpdateEventsUpcomingDataAction = {
@@ -489,13 +489,26 @@ export type GroupsState = {
   templates: GroupTemplate[];
 };
 
+export type GroupCreationData = {
+  name?: string;
+  type?: string;
+  location?: {
+    schools?: string[];
+    departments?: string[];
+    global?: boolean;
+  };
+  shortName?: Date;
+  description?: string;
+  summary?: string;
+};
+
 export type GroupsDataState = {
-  creationData: object;
+  creationData: GroupCreationData;
 };
 
 type UpdateGroupsStateAction = {
   type: typeof UPDATE_GROUPS_STATE;
-  data: GroupRequestState;
+  data: Partial<GroupRequestState>;
 };
 
 type UpdateGroupsDataAction = {
@@ -559,7 +572,7 @@ export type PetitionsState = {
 
 type UpdatePetitionsStateAction = {
   type: typeof UPDATE_PETITIONS_STATE;
-  data: PetitionRequestState;
+  data: Partial<PetitionRequestState>;
 };
 
 type UpdatePetitionsDataAction = {
@@ -605,7 +618,7 @@ export type PlacesState = {
 
 type UpdatePlacesStateAction = {
   type: typeof UPDATE_PLACES_STATE;
-  data: PlaceRequestState;
+  data: Partial<PlaceRequestState>;
 };
 
 type UpdatePlacesDataAction = {
@@ -655,7 +668,7 @@ export type SchoolsState = {
 
 type UpdateSchoolsStateAction = {
   type: typeof UPDATE_SCHOOLS_STATE;
-  data: SchoolRequestState;
+  data: Partial<SchoolRequestState>;
 };
 
 type UpdateSchoolsDataAction = {
@@ -713,7 +726,7 @@ export type TagsState = {
 
 type UpdateTagsStateAction = {
   type: typeof UPDATE_TAGS_STATE;
-  data: TagRequestState;
+  data: Partial<TagRequestState>;
 };
 
 type UpdateTagsDataAction = {
@@ -759,7 +772,7 @@ export type UsersState = {
 
 type UpdateUsersStateAction = {
   type: typeof UPDATE_USERS_STATE;
-  data: UserRequestState;
+  data: Partial<UserRequestState>;
 };
 
 type UpdateUsersDataAction = {
@@ -801,7 +814,7 @@ export type LegalState = {
 
 type UpdateLegalStateAction = {
   type: typeof UPDATE_LEGAL_STATE;
-  data: LegalRequestState;
+  data: Partial<LegalRequestState>;
 };
 
 type UpdateLegalAction = {
@@ -818,7 +831,7 @@ export type LinkingState = {
 
 type UpdateLinkingStateAction = {
   type: typeof UPDATE_LINKING_STATE;
-  data: LinkingRequestState;
+  data: Partial<LinkingRequestState>;
 };
 export type LinkingActionTypes = UpdateLinkingStateAction;
 
@@ -835,6 +848,26 @@ export type ActionType =
   | PlacesActionTypes
   | LegalActionTypes;
 
+// Account
+export const UPDATE_ACCOUNT_GROUPS = 'UPDATE_ACCOUNT_GROUPS';
+export const UPDATE_ACCOUNT_PERMISSIONS = 'UPDATE_ACCOUNT_PERMISSIONS';
+export const UPDATE_ACCOUNT_STATE = 'UPDATE_ACCOUNT_STATE';
+export const UPDATE_ACCOUNT_WAITING_GROUPS = 'UPDATE_ACCOUNT_WAITING_GROUPS';
+export const LOGOUT = 'LOGOUT';
+export const LOGIN = 'LOGIN';
+export const UPDATE_ACCOUNT_USER = 'UPDATE_ACCOUNT_USER';
+export const UPDATE_ACCOUNT_CREATION_DATA = 'UPDATE_ACCOUNT_CREATION_DATA';
+export const CLEAR_ACCOUNT_CREATION_DATA = 'CLEAR_ACCOUNT_CREATION_DATA';
+
+// Location
+export const UPDATE_LOCATION = 'UPDATE_LOCATION';
+export const UPDATE_LOCATION_STATE = 'UPDATE_LOCATION_STATE';
+export const CLEAR_LOCATION = 'CLEAR_LOCATION';
+
+// Prefs
+export const SET_PREFS = 'SET_PREFS';
+
+// Global stuff
 export type ReduxLocation = {
   global: boolean;
   schools: string[];
@@ -892,6 +925,12 @@ export type ElementString =
   | 'tag'
   | 'school'
   | 'user';
+export type ElementDataString =
+  | 'articleData'
+  | 'eventData'
+  // | 'petitionData'
+  // | 'placeData'
+  | 'groupData';
 
 export type ElementStringPluralMap = {
   articles: Article;
@@ -905,3 +944,5 @@ export type ElementStringPluralMap = {
   schools: School;
   users: User;
 };
+
+export type ListItem = ArticleListItem | EventListItem;

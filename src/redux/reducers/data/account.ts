@@ -52,12 +52,12 @@ const initialState = {
 
 function accountReducer(state = initialState, action) {
   switch (action.type) {
-    case 'UPDATE_CREATION_DATA':
+    case 'UPDATE_ACCOUNT_CREATION_DATA':
       return {
         ...state,
         creationData: { ...state.creationData, ...action.data },
       };
-    case 'CLEAR_CREATION_DATA':
+    case 'CLEAR_ACCOUNT_CREATION_DATA':
       return {
         ...state,
         creationData: {},

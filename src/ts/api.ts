@@ -245,8 +245,8 @@ export type GroupRole = {
 export type GroupMember = {
   _id: string; // Note: Not really useful
   user: UserPreload;
-  role: GroupRole;
-  secondaryRoles: GroupRole[];
+  role: string;
+  secondaryRoles: string[];
   expiry: {
     permanent: boolean;
     expires?: string;
@@ -280,6 +280,10 @@ export type Group = GroupPreload & {
   roles: GroupRole[];
   members: GroupMember[];
   tags: TagPreload[];
+};
+
+export type GroupWithMembership = Group & {
+  membership: GroupMember;
 };
 
 export type GroupTemplate = {

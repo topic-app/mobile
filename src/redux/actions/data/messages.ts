@@ -1,5 +1,7 @@
 import Store from '@redux/store';
 
+// TODO: Not implemented
+
 /**
  * @docs actionCreators
  * Créateur d'action pour updatePrefsCreator

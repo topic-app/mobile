@@ -1,7 +1,15 @@
 import { request } from '@utils/index';
 
-function reportCreator({ contentId, contentIdName, reason, url, stateUpdate }) {
-  return (dispatch) => {
+type reportCreatorProps = {
+  contentId: string;
+  contentIdName: string;
+  reason: string;
+  url: string;
+  stateUpdate: string;
+};
+
+function reportCreator({ contentId, contentIdName, reason, url, stateUpdate }: reportCreatorProps) {
+  return (dispatch: (action: any) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: stateUpdate,
@@ -52,8 +60,15 @@ function reportCreator({ contentId, contentIdName, reason, url, stateUpdate }) {
   };
 }
 
-function approveCreator({ url, stateUpdate, id, paramName }) {
-  return (dispatch) => {
+type approveCreator = {
+  url: string;
+  stateUpdate: string;
+  id: string;
+  paramName: string;
+};
+
+function approveCreator({ url, stateUpdate, id, paramName }: approveCreator) {
+  return (dispatch: (action: any) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: stateUpdate,

@@ -14,7 +14,7 @@ type EventAddProps = {
     key: string;
     value: string;
     link: string;
- }[];
+  }[];
   organizers: string[];
   start: Date;
   end: Date;
@@ -73,17 +73,17 @@ function eventAddCreator({
             title,
             places,
             summary,
-            description : {
+            description: {
               parser,
               data,
             },
-            contact : {
+            contact: {
               phone,
               email,
               organizers,
               contact,
             },
-            duration : {
+            duration: {
               start,
               end,
             },
@@ -93,7 +93,7 @@ function eventAddCreator({
             preferences,
             tags,
             program,
-            author: getState().account.accountInfo.accountId,
+            author: getState().account.accountInfo?.accountId,
           },
         },
         true,

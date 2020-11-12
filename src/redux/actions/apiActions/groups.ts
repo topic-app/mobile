@@ -7,7 +7,7 @@ function groupFollowCreator({ id }: { id: string }) {
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           follow: {
             loading: true,
@@ -27,7 +27,7 @@ function groupFollowCreator({ id }: { id: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               follow: {
                 loading: false,
@@ -40,7 +40,7 @@ function groupFollowCreator({ id }: { id: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               follow: {
                 loading: false,
@@ -59,7 +59,7 @@ function groupUnfollowCreator({ id }: { id: string }) {
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           follow: {
             loading: true,
@@ -79,7 +79,7 @@ function groupUnfollowCreator({ id }: { id: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               follow: {
                 loading: false,
@@ -92,7 +92,7 @@ function groupUnfollowCreator({ id }: { id: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               follow: {
                 loading: false,
@@ -123,7 +123,7 @@ function groupAddMemberCreator({
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_add: {
             loading: true,
@@ -147,7 +147,7 @@ function groupAddMemberCreator({
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_add: {
                 loading: false,
@@ -160,7 +160,7 @@ function groupAddMemberCreator({
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_add: {
                 loading: false,
@@ -179,7 +179,7 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_delete: {
             loading: true,
@@ -199,7 +199,7 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_delete: {
                 loading: false,
@@ -212,7 +212,7 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_delete: {
                 loading: false,
@@ -231,7 +231,7 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_accept: {
             loading: true,
@@ -250,7 +250,7 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_accept: {
                 loading: false,
@@ -263,7 +263,7 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_accept: {
                 loading: false,
@@ -282,7 +282,7 @@ function groupMemberRejectCreator({ group }: { group: string }) {
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_reject: {
             loading: true,
@@ -301,7 +301,7 @@ function groupMemberRejectCreator({ group }: { group: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_reject: {
                 loading: false,
@@ -314,7 +314,7 @@ function groupMemberRejectCreator({ group }: { group: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_reject: {
                 loading: false,
@@ -333,7 +333,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_leave: {
             loading: true,
@@ -352,7 +352,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_leave: {
                 loading: false,
@@ -365,7 +365,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_leave: {
                 loading: false,
@@ -399,7 +399,7 @@ function groupModifyCreator({
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           modify: {
             loading: true,
@@ -424,7 +424,7 @@ function groupModifyCreator({
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               modify: {
                 loading: false,
@@ -437,7 +437,7 @@ function groupModifyCreator({
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               modify: {
                 loading: false,

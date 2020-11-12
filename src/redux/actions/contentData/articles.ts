@@ -26,6 +26,10 @@ import {
   UPDATE_ARTICLES_PREFS,
   UPDATE_ARTICLES_PARAMS,
   CLEAR_ARTICLES,
+  Item,
+  ArticlePrefs,
+  ArticleCreationData,
+  Article,
 } from '@ts/types';
 
 import { clearCreator } from '../api/ActionCreator';
@@ -35,7 +39,7 @@ import { clearCreator } from '../api/ActionCreator';
  * Ajoute un article à une list
  * @param articleId L'id de l'article à récuperer
  */
-async function addArticleToList(articleId, listId) {
+async function addArticleToList(articleId: string, listId: string) {
   await Store.dispatch(
     addToListCreator({
       update: UPDATE_ARTICLES_LISTS,
@@ -55,7 +59,7 @@ async function addArticleToList(articleId, listId) {
  * @param articleId L'id de l'article à récuperer
  * @param listId La liste de laquelle il faut enlever l'article
  */
-async function removeArticleFromList(articleId, listId) {
+async function removeArticleFromList(articleId: string, listId: string) {
   await Store.dispatch(
     removeFromListCreator({
       update: UPDATE_ARTICLES_LISTS,
@@ -73,7 +77,7 @@ async function removeArticleFromList(articleId, listId) {
  * @param icon
  * @param description
  */
-async function addArticleList(name, icon, description) {
+async function addArticleList(name: string, icon: string, description: string) {
   await Store.dispatch(
     addListCreator({
       update: UPDATE_ARTICLES_LISTS,
@@ -93,7 +97,13 @@ async function addArticleList(name, icon, description) {
  * @param icon
  * @param description
  */
-async function modifyArticleList(listId, name, icon, description, items) {
+async function modifyArticleList(
+  listId: string,
+  name: string,
+  icon: string,
+  description: string,
+  items: Article[],
+) {
   await Store.dispatch(
     modifyListCreator({
       update: UPDATE_ARTICLES_LISTS,
@@ -112,7 +122,7 @@ async function modifyArticleList(listId, name, icon, description, items) {
  * Supprime une liste
  * @param listId L'id de la liste
  */
-async function deleteArticleList(listId) {
+async function deleteArticleList(listId: string) {
   await Store.dispatch(
     deleteListCreator({
       update: UPDATE_ARTICLES_LISTS,
@@ -122,7 +132,7 @@ async function deleteArticleList(listId) {
   );
 }
 
-async function addArticleRead(articleId, title, marked = false) {
+async function addArticleRead(articleId: string, title: string, marked: boolean = false) {
   await Store.dispatch(
     addReadCreator({
       update: UPDATE_ARTICLES_READ,
@@ -132,7 +142,7 @@ async function addArticleRead(articleId, title, marked = false) {
   );
 }
 
-async function deleteArticleRead(articleId) {
+async function deleteArticleRead(articleId: string) {
   await Store.dispatch(
     deleteReadCreator({
       update: UPDATE_ARTICLES_READ,
@@ -156,7 +166,7 @@ async function clearArticlesRead() {
  * Change les parametres de requete pour un article
  * @param articleId L'id de l'article à récuperer
  */
-async function updateArticleParams(params) {
+async function updateArticleParams(params: object) {
   await Store.dispatch(
     updateParamsCreator({
       updateParams: UPDATE_ARTICLES_PARAMS,
@@ -170,7 +180,7 @@ async function updateArticleParams(params) {
   );
 }
 
-async function updateArticlePrefs(prefs) {
+async function updateArticlePrefs(prefs: Partial<ArticlePrefs>) {
   await Store.dispatch(
     updatePrefsCreator({
       updatePrefs: UPDATE_ARTICLES_PREFS,
@@ -179,7 +189,7 @@ async function updateArticlePrefs(prefs) {
   );
 }
 
-async function addArticleQuick(type, id, title) {
+async function addArticleQuick(type: string, id: string, title: string) {
   await Store.dispatch(
     addQuickCreator({
       updateQuicks: UPDATE_ARTICLES_QUICKS,
@@ -191,7 +201,7 @@ async function addArticleQuick(type, id, title) {
   );
 }
 
-async function deleteArticleQuick(id) {
+async function deleteArticleQuick(id: string) {
   await Store.dispatch(
     deleteQuickCreator({
       updateQuicks: UPDATE_ARTICLES_QUICKS,
@@ -201,7 +211,7 @@ async function deleteArticleQuick(id) {
   );
 }
 
-async function updateArticleCreationData(fields) {
+async function updateArticleCreationData(fields: Partial<ArticleCreationData>) {
   await Store.dispatch(
     updateCreationDataCreator({
       updateCreationData: UPDATE_ARTICLES_CREATION_DATA,

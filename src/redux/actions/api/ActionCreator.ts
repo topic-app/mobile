@@ -243,8 +243,8 @@ function clearCreator({
   verification = true,
 }: {
   clear: string;
-  data: boolean;
-  search: boolean;
+  data?: boolean;
+  search?: boolean;
   verification?: boolean;
 }) {
   return {

@@ -1,6 +1,23 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
 import shortid from 'shortid';
+import {
+  ElementStringPlural,
+  ElementDataString,
+  State,
+  ListItem,
+  Article,
+  Item,
+  ArticlePrefs,
+  ArticleParams,
+  EventParams,
+  EventPrefs,
+  ArticleCreationData,
+  EventCreationData,
+  ArticleReadItem,
+  EventReadItem,
+  GroupCreationData,
+} from '@ts/types';
 
 /**
  * @docs actionCreators
@@ -14,6 +31,17 @@ import shortid from 'shortid';
  * @param listId L'id de la liste à laquelle ajouter l'article
  * @returns Action
  */
+type addToListProps = {
+  update: string;
+  stateUpdate: string;
+  dataType: 'articleData' | 'eventData';
+  resType: ElementStringPlural;
+  url: string;
+  params: object;
+  id: string;
+  stateName?: string;
+};
+
 function addToListCreator({
   update,
   stateUpdate,
@@ -23,23 +51,25 @@ function addToListCreator({
   params,
   id,
   stateName = 'info',
-}) {
-  return (dispatch, getState) => {
-    const state = {
+}: addToListProps) {
+  return (dispatch: (action: any) => void, getState: () => State) => {
+    dispatch({
       type: stateUpdate,
-      data: {},
-    };
-    state.data[stateName] = {
-      loading: true,
-      success: null,
-      error: null,
-    };
-    dispatch(state);
+      data: {
+        [stateName]: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
     request(url, 'get', params)
       .then((result) => {
-        const { lists } = Store.getState()[dataType];
+        const { lists }: { lists: ListItem[] } = getState()[dataType];
         if (
-          lists.find((l) => l.id === id)?.items.some((i) => i._id === result.data[resType][0]?._id)
+          lists
+            .find((l) => l.id === id)
+            ?.items.some((i: Item) => i._id === result.data?.[resType][0]?._id)
         ) {
           return;
         }
@@ -49,39 +79,54 @@ function addToListCreator({
             if (l.id === id) {
               return {
                 ...l,
-                items: [...l.items, result.data[resType][0]],
+                items: [...l.items, result.data?.[resType][0]],
               };
             } else {
               return l;
             }
           }),
         });
-        state.data[stateName] = {
-          loading: false,
-          success: true,
-          error: null,
-        };
-        return dispatch(state);
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: false,
+              success: true,
+              error: null,
+            },
+          },
+        });
       })
       .catch((err) => {
-        state.data[stateName] = {
-          loading: false,
-          success: false,
-          error: err,
-        };
-        return dispatch(state);
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: false,
+              success: false,
+              error: err,
+            },
+          },
+        });
       });
   };
 }
 
-function removeFromListCreator({ update, dataType, id, itemId }) {
+type removeFromListProps = {
+  update: string;
+  dataType: 'articleData' | 'eventData';
+  id: string;
+  itemId: string;
+};
+
+function removeFromListCreator({ update, dataType, id, itemId }: removeFromListProps) {
   return {
     type: update,
-    data: Store.getState()[dataType].lists.map((l) => {
+    data: (Store.getState()[dataType].lists as ListItem[]).map((l) => {
       if (l.id === id) {
         return {
           ...l,
-          items: l.items.filter((i) => i._id !== itemId && i.id !== itemId),
+          items: (l.items as Item[]).filter((i) => i._id !== itemId),
         };
       } else {
         return l;
@@ -90,13 +135,21 @@ function removeFromListCreator({ update, dataType, id, itemId }) {
   };
 }
 
+type addListProps = {
+  update: string;
+  dataType: 'articleData' | 'eventData';
+  name: string;
+  icon?: string;
+  description?: string;
+};
+
 function addListCreator({
   update,
   dataType,
   name,
   icon = 'checkbox-blank-circle',
   description = '',
-}) {
+}: addListProps) {
   return {
     type: update,
     data: [
@@ -112,10 +165,27 @@ function addListCreator({
   };
 }
 
-function modifyListCreator({ update, dataType, id, name, icon, description, items }) {
+type modifyListProps = {
+  update: string;
+  dataType: 'articleData' | 'eventData';
+  id: string;
+  name?: string;
+  icon?: string;
+  description?: string;
+  items?: Item[];
+};
+function modifyListCreator({
+  update,
+  dataType,
+  id,
+  name,
+  icon,
+  description,
+  items,
+}: modifyListProps) {
   return {
     type: update,
-    data: Store.getState()[dataType].lists.map((l) => {
+    data: (Store.getState()[dataType].lists as ListItem[]).map((l) => {
       if (l.id === id) {
         return {
           ...l,
@@ -131,14 +201,24 @@ function modifyListCreator({ update, dataType, id, name, icon, description, item
   };
 }
 
-function deleteListCreator({ update, dataType, id }) {
+type deleteListProps = {
+  update: string;
+  dataType: 'articleData' | 'eventData';
+  id: string;
+};
+function deleteListCreator({ update, dataType, id }: deleteListProps) {
   return {
     type: update,
-    data: Store.getState()[dataType].lists.filter((l) => l.id !== id),
+    data: (Store.getState()[dataType].lists as ListItem[]).filter((l) => l.id !== id),
   };
 }
 
-function addReadCreator({ update, dataType, data }) {
+type addReadProps = {
+  update: string;
+  dataType: 'eventData' | 'articleData';
+  data: ArticleReadItem | EventReadItem;
+};
+function addReadCreator({ update, dataType, data }: addReadProps) {
   const { read } = Store.getState()[dataType];
   return {
     type: update,
@@ -146,14 +226,23 @@ function addReadCreator({ update, dataType, data }) {
   };
 }
 
-function deleteReadCreator({ update, dataType, id }) {
+type deleteReadProps = {
+  update: string;
+  dataType: 'articleData' | 'eventData';
+  id: string;
+};
+function deleteReadCreator({ update, dataType, id }: deleteReadProps) {
   return {
     type: update,
     data: Store.getState()[dataType].read.filter((i) => i.id !== id),
   };
 }
 
-function clearReadCreator({ update, dataType }) {
+type clearReadProps = {
+  update: string;
+  dataType: 'articleData' | 'eventData';
+};
+function clearReadCreator({ update, dataType }: clearReadProps) {
   return {
     type: update,
     data: [],
@@ -167,21 +256,36 @@ function clearReadCreator({ update, dataType }) {
  * @param params Les paramètres à mettre à jour
  * @returns Action
  */
-function updateParamsCreator({ updateParams, params }) {
+type updateParamsProps = {
+  updateParams: string;
+  params: Partial<ArticleParams | EventParams>;
+};
+function updateParamsCreator({ updateParams, params }: updateParamsProps) {
   return {
     type: updateParams,
     data: params,
   };
 }
 
-function updatePrefsCreator({ updatePrefs, prefs }) {
+type updatePrefsProps = {
+  updatePrefs: string;
+  prefs: Partial<ArticlePrefs | EventPrefs>;
+};
+function updatePrefsCreator({ updatePrefs, prefs }: updatePrefsProps) {
   return {
     type: updatePrefs,
     data: prefs,
   };
 }
 
-function addQuickCreator({ updateQuicks, dataType, type, id, title }) {
+type addQuickProps = {
+  updateQuicks: string;
+  dataType: 'articleData' | 'eventData';
+  type: string;
+  id: string;
+  title: string;
+};
+function addQuickCreator({ updateQuicks, dataType, type, id, title }: addQuickProps) {
   const { quicks } = Store.getState()[dataType];
   if (quicks.some((q) => q.id === id)) {
     return;
@@ -192,21 +296,38 @@ function addQuickCreator({ updateQuicks, dataType, type, id, title }) {
   };
 }
 
-function deleteQuickCreator({ updateQuicks, dataType, id }) {
+type deleteQuickProps = {
+  updateQuicks: string;
+  dataType: 'articleData' | 'eventData';
+  id: string;
+};
+function deleteQuickCreator({ updateQuicks, dataType, id }: deleteQuickProps) {
   return {
     type: updateQuicks,
     data: Store.getState()[dataType].quicks.filter((q) => q.id !== id),
   };
 }
 
-function updateCreationDataCreator({ updateCreationData, fields, dataType }) {
+type updateCreationDataProps = {
+  updateCreationData: string;
+  fields: Partial<ArticleCreationData | EventCreationData | GroupCreationData>;
+  dataType: 'articleData' | 'eventData' | 'groupData';
+};
+function updateCreationDataCreator({
+  updateCreationData,
+  fields,
+  dataType,
+}: updateCreationDataProps) {
   return {
     type: updateCreationData,
     data: { ...Store.getState()[dataType].creationData, ...fields },
   };
 }
 
-function clearCreationDataCreator({ updateCreationData }) {
+type clearCreationDataProps = {
+  updateCreationData: string;
+};
+function clearCreationDataCreator({ updateCreationData }: clearCreationDataProps) {
   return {
     type: updateCreationData,
     data: {},
