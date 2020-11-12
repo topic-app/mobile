@@ -7,6 +7,7 @@ typescript tests:
   image: node:12
   script:
     - npm install
+    - npm install --global typescript
     - tsc
 
 build app android:
