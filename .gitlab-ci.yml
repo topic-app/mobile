@@ -11,6 +11,8 @@ typescript tests:
     - tsc
 
 build app android:
+  when:
+    - manual
   only:
     - tags
   image: reactnativecommunity/react-native-android
