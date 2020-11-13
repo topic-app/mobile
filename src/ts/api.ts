@@ -138,7 +138,7 @@ export type Avatar = {
   gradient: {
     start: string;
     end: string;
-    angle: string;
+    angle: number;
   };
   text: string;
   image: Image;

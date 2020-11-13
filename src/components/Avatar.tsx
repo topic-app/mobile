@@ -55,7 +55,7 @@ const Avatar: React.FC<AvatarProps> = ({
             justifyContent: 'center',
           }}
           useAngle
-          angle={avatar.gradient.angle}
+          angle={avatar.gradient.angle || 0}
           angleCenter={{ x: 0.5, y: 0.5 }}
         >
           <Text
