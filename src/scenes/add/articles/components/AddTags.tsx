@@ -184,6 +184,10 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
               type="axios"
               error={searchText === '' ? state.list.error : state.search?.error}
               retry={fetch}
+              strings={{
+                what: 'la récupération des tags',
+                contentPlural: 'Les tags',
+              }}
             />
           )}
         </View>

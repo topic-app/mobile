@@ -64,6 +64,7 @@ export type SchoolPreload = {
   name: string;
   shortName?: string;
   displayName: string;
+  address?: Address;
   types: SchoolType[];
 };
 
@@ -82,6 +83,7 @@ export type School = {
 export type DepartmentPreload = {
   _id: string;
   name: string;
+  code: string;
   displayName: string;
   shortName?: string;
   type: 'region' | 'departement' | 'academie';
@@ -92,6 +94,7 @@ export type Department = {
   name: string;
   shortName?: string;
   aliases: string[];
+  displayName?: string;
   code: string; // zipcode
   type: 'region' | 'departement' | 'academie';
   adminGroups: GroupPreload[];
@@ -149,7 +152,7 @@ export type UserPreload = {
   displayName: string;
   info: {
     username: string;
-    avatar: Avatar;
+    avatar?: Avatar;
   };
 };
 
@@ -213,7 +216,7 @@ export type WaitingGroup = Group & {
 export type Account = {
   loggedIn: boolean;
   creationData: AccountCreationData; // Maybe something better than `object` here
-  groups?: Group[];
+  groups?: GroupWithMembership[];
   permissions: AccountPermission[];
   waitingGroups?: WaitingGroup[];
   accountInfo?: AccountInfo | null;
@@ -233,8 +236,8 @@ export type GroupRolePermission = {
     everywhere: boolean;
     global: boolean;
     groups: string[];
-    schools: string[];
-    departments: string[];
+    schools: SchoolPreload[];
+    departments: DepartmentPreload[];
   };
 };
 
@@ -263,13 +266,13 @@ export type GroupPreload = {
   _id: string;
   displayName: string;
   name: string;
-  official: boolean;
+  official?: boolean;
   type: string;
-  avatar: Avatar;
-  summary: string;
+  avatar?: Avatar;
+  summary?: string;
   cache: {
-    followers: number;
-    members: number;
+    followers?: number | null;
+    members?: number | null;
   };
 };
 
@@ -307,7 +310,7 @@ export type ArticlePreload = {
   title: string;
   date: string;
   summary: string;
-  image: Image;
+  image?: Image;
   authors: AuthorPreload[];
   group: GroupPreload;
   location: Location;

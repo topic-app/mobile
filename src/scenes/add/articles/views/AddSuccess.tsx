@@ -32,7 +32,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
   const groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
 
   const approve = () => {
-    articleVerificationApprove(id).then(() => setApproved(true));
+    if (id) articleVerificationApprove(id).then(() => setApproved(true));
   };
 
   // TODO: Consider using IconButton instead of Icon here
@@ -68,8 +68,8 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
           )}
           {account.permissions?.some(
             (p) =>
-              p.name === 'article.verification.approve' &&
-              (p.scope?.groups?.includes(creationData?.group) ||
+              p.permission === 'article.verification.approve' &&
+              (p.scope?.groups?.includes(creationData?.group || '') ||
                 (p.group === creationData?.group && p.scope?.self)),
           ) &&
             (approved ? (
@@ -170,17 +170,27 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
           </View>
           <ArticleCard
             article={{
+              _id: '',
               ...creationData,
-              summary: creationData.summary || creationData.data,
+              summary: creationData?.summary || creationData?.data || '',
               authors: [
                 {
-                  _id: account?.accountInfo?.user?._id,
-                  displayName: account?.accountInfo?.user?.info?.username,
-                  info: account?.accountInfo.user?.info,
+                  _id: account?.accountInfo?.user?._id || '',
+                  displayName: account?.accountInfo?.user?.info?.username || '',
+                  info: account?.accountInfo?.user?.info || { username: '' },
                 },
               ],
               group: {
-                displayName: account?.groups?.find((g) => g._id === creationData?.group)?.name,
+                _id: account?.groups?.find((g) => g._id === creationData?.group)?._id || '',
+                displayName:
+                  account?.groups?.find((g) => g._id === creationData?.group)?.name || '',
+                name: account?.groups?.find((g) => g._id === creationData?.group)?.name || '',
+                official: false,
+                summary: '',
+                cache: {
+                  followers: null,
+                },
+                type: '',
               },
             }}
             navigate={() => logger.debug('add/articles/views/AddSuccess: Pressed article card')}

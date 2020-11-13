@@ -15,7 +15,7 @@ import getAuthStyles from '../styles/Styles';
 type ArticleAddPageGroupProps = StepperViewPageProps & { account: Account };
 
 const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account }) => {
-  const [group, setGroup] = React.useState(null);
+  const [group, setGroup] = React.useState<string | null>(null);
   const [showError, setError] = React.useState(false);
 
   const submit = () => {
@@ -31,7 +31,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
   const { colors } = theme;
   const articleStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
-  const groupsWithPermission = account.groups.filter((g) =>
+  const groupsWithPermission = account.groups?.filter((g) =>
     account.permissions.some((p) => p.group === g._id && p.permission === 'article.add'),
   );
 
@@ -48,7 +48,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
   return (
     <View style={articleStyles.formContainer}>
       <View style={articleStyles.listContainer}>
-        {groupsWithPermission.map((g) => (
+        {groupsWithPermission?.map((g) => (
           <List.Item
             key={g._id}
             title={g.name}
@@ -59,6 +59,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
               Platform.OS !== 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={group === g._id ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {
@@ -73,6 +74,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
               Platform.OS === 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={group === g._id ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {
@@ -92,7 +94,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
         <HelperText visible={showError} type="error">
           Vous devez selectionner un groupe
         </HelperText>
-        {groupsWithPermission.length !== account.groups.length && (
+        {groupsWithPermission?.length !== account.groups?.length && (
           <Text>
             Certains groups n&apos;apparaissent pas car vous ne pouvez pas écrire d&apos;articles
             pour ces groupes

@@ -47,7 +47,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
       parser: 'plaintext',
       data: descriptionText,
     }).then(({ _id }) => {
-      add({ _id, name, color });
+      add({ _id, name, color, displayName: name });
       setDescriptionText('');
       initialColor = randomColor();
       setColor(initialColor);

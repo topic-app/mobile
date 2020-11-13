@@ -78,7 +78,7 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
   const { colors } = theme;
   const articleStyles = getAuthStyles(theme);
 
-  const selectedGroup = account.groups.find((g) => g._id === creationData.group);
+  const selectedGroup = account.groups?.find((g) => g._id === creationData.group);
   const selectedGroupLocation =
     selectedGroup &&
     selectedGroup.roles
@@ -111,9 +111,9 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
             {...getListItemCheckbox({
               status: schools.includes(s._id) ? 'checked' : 'unchecked',
               color: colors.primary,
-              onPress: () => toggle(s, schools, setSchools),
+              onPress: () => toggle(s, setSchools, schools),
             })}
-            onPress={() => toggle(s, schools, setSchools)}
+            onPress={() => toggle(s, setSchools, schools)}
           />
         ))}
         {selectedGroupLocation?.departments?.map((d) => (
@@ -123,9 +123,9 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
             {...getListItemCheckbox({
               status: departments.includes(d._id) ? 'checked' : 'unchecked',
               color: colors.primary,
-              onPress: () => toggle(d, departments, setDepartments),
+              onPress: () => toggle(d, setDepartments, departments),
             })}
-            onPress={() => toggle(d, departments, setDepartments)}
+            onPress={() => toggle(d, setDepartments, departments)}
           />
         ))}
         {(selectedGroupLocation?.global || selectedGroupLocation?.everywhere) && (
@@ -155,8 +155,14 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
                 }}
                 type="axios"
                 retry={() => {
-                  fetchMultiSchool([...schools, ...selectedGroupLocation.schools]);
-                  fetchMultiDepartment([...departments, ...selectedGroupLocation.departments]);
+                  fetchMultiSchool([
+                    ...schools,
+                    ...selectedGroupLocation.schools.map((s) => s._id),
+                  ]);
+                  fetchMultiDepartment([
+                    ...departments,
+                    ...selectedGroupLocation.departments.map((d) => d._id),
+                  ]);
                 }}
               />
             )}
