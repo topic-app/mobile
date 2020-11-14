@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Linking, Platform } from 'react-native';
-import { Text, FAB, IconButton, useTheme } from 'react-native-paper';
+import { Text, FAB, IconButton } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as Location from 'expo-location';
 
-import { logger, useSafeAreaInsets } from '@utils/index';
 import { TranslucentStatusBar } from '@components/Header';
+import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import LocationModal from '../components/LocationModal';
@@ -47,7 +47,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
           logger.info('Location denied, hiding location FAB');
         }
       })
-      .catch((e) => logger.error('Error while requesting user location permission', e));
+      .catch((e) => logger.warn('Error while requesting user location permission', e));
   }, []);
 
   const onMarkerPress = ({ features }) => {
@@ -67,7 +67,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
     try {
       status = (await Location.requestPermissionsAsync()).status;
     } catch (e) {
-      logger.error('Error while requesting user location', e);
+      logger.warn('Error while requesting user location', e);
     }
     if (status === Location.PermissionStatus.GRANTED) {
       const { coords } = await Location.getCurrentPositionAsync({});

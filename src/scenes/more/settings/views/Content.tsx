@@ -1,17 +1,27 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { List, Divider, Switch, Button, withTheme, Card } from 'react-native-paper';
-import PropTypes from 'prop-types';
+import { List, Divider, Switch, Button, Card } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { Preferences, Account, State } from '@ts/types';
 import { CustomHeaderBar, Content } from '@components/index';
+import { useTheme } from '@utils/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import Slider from '@react-native-community/slider';
 
+import type { SettingsStackParams } from '../index';
 import getSettingsStyles from '../styles/Styles';
 
-function SettingsContent({ preferences, theme, account, navigation }) {
+type SettingsContentProps = {
+  preferences: Preferences;
+  account: Account;
+  navigation: StackNavigationProp<SettingsStackParams, 'Content'>;
+};
+
+const SettingsContent: React.FC<SettingsContentProps> = ({ preferences, account, navigation }) => {
+  const theme = useTheme();
   const styles = getStyles(theme);
   const settingsStyles = getSettingsStyles(theme);
   const { colors } = theme;
@@ -139,23 +149,11 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
       </ScrollView>
     </View>
   );
-}
-
-SettingsContent.propTypes = {
-  preferences: PropTypes.shape({
-    theme: PropTypes.string.isRequired,
-    useSystemTheme: PropTypes.bool.isRequired,
-  }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      primary: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { preferences, account } = state;
   return { preferences, account };
 };
 
-export default connect(mapStateToProps)(withTheme(SettingsContent));
+export default connect(mapStateToProps)(SettingsContent);

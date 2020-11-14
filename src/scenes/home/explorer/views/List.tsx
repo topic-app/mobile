@@ -1,11 +1,11 @@
-// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { View } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
+import { Config } from '@constants/index';
 import places from '@src/data/explorerListData.json';
-import { config } from '@root/app.json';
+import { useTheme } from '@utils/index';
+
 import ExplorerMap from './Map';
 
 const map = {
@@ -21,7 +21,7 @@ function ExplorerList({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <ExplorerMap
-        tileServerUrl={`${config.maps.url}styles/${dark ? 'dark' : 'light'}/style.json`}
+        tileServerUrl={`${Config.maps.baseUrl}styles/${dark ? 'dark' : 'light'}/style.json`}
         places={places}
         map={map}
         navigation={navigation}

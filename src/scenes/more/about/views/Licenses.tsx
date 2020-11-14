@@ -1,15 +1,14 @@
 import React from 'react';
 import { View, SectionList } from 'react-native';
-import { Text, useTheme, List, Divider } from 'react-native-paper';
+import { Text, List, Divider } from 'react-native-paper';
 import { StackScreenProps } from '@react-navigation/stack';
 
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import type { AboutStackParams } from '../index';
 import packages from '../data/packages.json';
 import licenses from '../data/licenses.json';
-
-type LicensesPropTypes = StackScreenProps<AboutStackParams, 'Licenses'>;
 
 type Package = {
   id: string;
@@ -22,7 +21,9 @@ type License = {
   content: string;
 };
 
-function Licenses({ route }: LicensesPropTypes) {
+type LicensesProps = StackScreenProps<AboutStackParams, 'Licenses'>;
+
+const Licenses: React.FC<LicensesProps> = ({ route }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -52,8 +53,8 @@ function Licenses({ route }: LicensesPropTypes) {
                 <Divider />
                 <View style={styles.contentContainer}>
                   <Text>
-                    Les librairies suivantes, utilisées par l'application Topic, sont licensées sous{' '}
-                    {id} :
+                    Les librairies suivantes, utilisées par l&amp;application Topic, sont licensées
+                    sous {id} :
                   </Text>
                 </View>
               </View>
@@ -69,6 +70,6 @@ function Licenses({ route }: LicensesPropTypes) {
       )}
     </View>
   );
-}
+};
 
 export default Licenses;

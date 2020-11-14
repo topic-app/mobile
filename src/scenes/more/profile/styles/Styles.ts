@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getProfileStyles(theme) {
+import { Theme } from '@ts/types';
+
+function getProfileStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     profileItem: {

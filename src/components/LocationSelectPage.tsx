@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-  View,
-  Platform,
-  FlatList,
-  TextInput as RNTextInput,
-  ActivityIndicator,
-} from 'react-native';
-import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
+import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
+import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import {
@@ -19,25 +12,17 @@ import {
   SchoolRequestState,
   DepartmentRequestState,
   State,
+  ReduxLocation,
 } from '@ts/types';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { updateSchools, searchSchools, fetchMultiSchool } from '@redux/actions/api/schools';
-import {
-  fetchMultiDepartment,
-  updateDepartments,
-  searchDepartments,
-} from '@redux/actions/api/departments';
-import { ErrorMessage, CollapsibleView, ChipAddList, Searchbar } from '@components/index';
+import { useTheme } from '@utils/index';
+import { updateSchools, searchSchools } from '@redux/actions/api/schools';
+import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import getStyles from '@styles/Styles';
 
-import getLandingStyles from '../styles/Styles';
-
-// TODO: Externalize into @ts/redux
-type ReduxLocation = {
-  global: boolean;
-  schools: string[];
-  departments: string[];
-};
+import ErrorMessage from './ErrorMessage';
+import Searchbar from './Searchbar';
+import getLocationStyles from './styles/LocationSelectPageStyles';
+import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
 
 function done(
   selectedSchools: string[],
@@ -57,11 +42,18 @@ function done(
 
 type DataType = 'school' | 'departement' | 'region' | 'other';
 
+type LocationItem = {
+  key: string;
+  title: string;
+  description: string;
+  type: DataType;
+};
+
 function getData(
   type: DataType,
   locationData: (School | SchoolPreload)[] | (Department | DepartmentPreload)[],
 ) {
-  let data = [
+  let data: LocationItem[] = [
     {
       key: 'global',
       title: 'France entière',
@@ -76,9 +68,7 @@ function getData(
         key: s._id,
         title: s.name,
         description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
-          s?.departments?.length
-            ? `, ${s.departments[0].displayName || s.departments[0].name || 'Inconnu'}`
-            : ''
+          s?.departments?.length ? `, ${s.departments[0].displayName || 'Inconnu'}` : ''
         }`,
         type: 'school',
       };
@@ -92,14 +82,14 @@ function getData(
           key: d._id,
           title: d.name,
           description: `${type === 'departement' ? 'Département' : 'Région'} ${d.code || ''}`,
-          type: 'department',
+          type: 'departement',
         };
       });
   }
   return data;
 }
 
-type Props = {
+type LocationSelectProps = {
   schools: (School | SchoolPreload)[];
   departments: (Department | DepartmentPreload)[];
   schoolsSearch: SchoolPreload[];
@@ -112,9 +102,10 @@ type Props = {
   type: 'schools' | 'departements' | 'regions' | 'other';
   hideSearch?: boolean;
   callback: (location: ReduxLocation) => any;
+  headerOptions?: Partial<CustomHeaderBarProps['scene']['descriptor']['options']>;
 };
 
-const WelcomeLocation: React.FC<Props> = ({
+const LocationSelect: React.FC<LocationSelectProps> = ({
   schools,
   departments,
   schoolsSearch,
@@ -128,17 +119,16 @@ const WelcomeLocation: React.FC<Props> = ({
   type,
   hideSearch,
   callback,
+  headerOptions = {},
 }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const landingStyles = getLandingStyles(theme);
+  const locationStyles = getLocationStyles(theme);
   const styles = getStyles(theme);
-
-  console.log(JSON.stringify(initialData));
 
   const [searchText, setSearchText] = React.useState('');
   const scrollRef = React.createRef<FlatList>();
-  const inputRef = React.createRef<RNTextInput>();
+  const searchbarRef = React.createRef<Searchbar>();
 
   const [selectedSchools, setSelectedSchools] = React.useState(initialData.schools || []);
   const [selectedDepartments, setSelectedDepartments] = React.useState(
@@ -148,7 +138,7 @@ const WelcomeLocation: React.FC<Props> = ({
 
   useFocusEffect(
     React.useCallback(() => {
-      // setImmediate(() => inputRef.current?.focus());
+      // setImmediate(() => searchbarRef.current?.focus());
     }, [null]),
   );
 
@@ -193,7 +183,14 @@ const WelcomeLocation: React.FC<Props> = ({
       }
     }
   };
-  const data = {
+
+  const data: {
+    [key in 'schools' | 'departements' | 'regions' | 'other']: {
+      title: string;
+      key: string;
+      data: LocationItem[];
+    };
+  } = {
     schools: {
       title: 'Écoles',
       key: 'schools',
@@ -216,13 +213,18 @@ const WelcomeLocation: React.FC<Props> = ({
     },
   };
 
+  type renderItemProps = {
+    item: LocationItem;
+  };
+
   const renderItem = React.useCallback(
-    ({ item }) => {
-      let [selected, setSelected] = [
-        [selectedSchools, setSelectedSchools],
-        [selectedDepartments, setSelectedDepartments],
-        [selectedOthers, setSelectedOthers],
-      ][['school', 'department', 'other'].indexOf(item.type)];
+    ({ item }: renderItemProps) => {
+      const [selected, setSelected] = {
+        school: [selectedSchools, setSelectedSchools] as const,
+        departement: [selectedDepartments, setSelectedDepartments] as const,
+        region: [selectedDepartments, setSelectedDepartments] as const,
+        other: [selectedOthers, setSelectedOthers] as const,
+      }[item.type];
       return (
         <List.Item
           title={item.title}
@@ -263,10 +265,10 @@ const WelcomeLocation: React.FC<Props> = ({
 
   const ListHeaderComponent = (
     <View>
-      <View style={landingStyles.searchContainer}>
+      <View style={locationStyles.searchContainer}>
         {!hideSearch && (
           <Searchbar
-            ref={inputRef}
+            ref={searchbarRef}
             placeholder="Rechercher"
             value={searchText}
             onChangeText={setSearchText}
@@ -290,6 +292,10 @@ const WelcomeLocation: React.FC<Props> = ({
               : [state.schools.search?.error, state.departments.search?.error]
           }
           retry={retry}
+          strings={{
+            what: 'La récupération des localisations',
+            contentPlural: 'Les localisations',
+          }}
         />
       )}
     </View>
@@ -298,7 +304,7 @@ const WelcomeLocation: React.FC<Props> = ({
   const ITEM_HEIGHT = 68.5714;
 
   const getItemLayout = React.useCallback(
-    (data, index) => ({
+    (_data, index) => ({
       length: ITEM_HEIGHT,
       offset: ITEM_HEIGHT * index,
       index,
@@ -333,6 +339,16 @@ const WelcomeLocation: React.FC<Props> = ({
 
   return (
     <View style={styles.page}>
+      <CustomHeaderBar
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Localisation',
+              ...headerOptions,
+            },
+          },
+        }}
+      />
       <FlatList
         ref={scrollRef}
         keyboardShouldPersistTaps="handled"
@@ -347,8 +363,8 @@ const WelcomeLocation: React.FC<Props> = ({
         renderItem={renderItem}
       />
       <Divider />
-      <View style={landingStyles.contentContainer}>
-        <View style={landingStyles.buttonContainer}>
+      <View>
+        <View style={locationStyles.buttonContainer}>
           <Button
             mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
             color={colors.primary}
@@ -373,7 +389,7 @@ const WelcomeLocation: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articleData, schools, departments } = state;
+  const { schools, departments } = state;
   return {
     schools: schools.data,
     departments: departments.data,
@@ -383,4 +399,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(WelcomeLocation);
+export default connect(mapStateToProps)(LocationSelect);

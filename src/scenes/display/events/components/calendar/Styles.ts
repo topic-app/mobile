@@ -1,9 +1,11 @@
 import { Platform, StyleSheet } from 'react-native';
 
+import { Theme } from '@ts/types';
+
 // const eventPaddingLeft = 4
 const leftMargin = 50 - 1;
 
-export default function getCalendarStyles(theme, calendarHeight) {
+export default function getCalendarStyles(theme: Theme, calendarHeight: number) {
   const { colors } = theme;
   return StyleSheet.create({
     container: {

@@ -1,3 +1,6 @@
+// @ts-nocheck
+// TODO: Not implemented
+
 import Store from '@redux/store';
 
 /**

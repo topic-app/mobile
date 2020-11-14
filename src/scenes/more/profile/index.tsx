@@ -1,43 +1,25 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import Profile from './views/Profile';
 import ProfileAvatar from './views/Avatar';
 import ProfileEdit from './views/Edit';
 
+export type ProfileStackParams = {
+  Profile: undefined;
+  Avatar: undefined;
+  Edit: undefined;
+};
+
 const Stack = createNativeStackNavigator();
 
 function ProfileStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Profile">
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Avatar"
-        component={ProfileAvatar}
-        options={{
-          ...HeaderConfig,
-          title: 'Avatar',
-          subtitle: 'Mon profil',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
-        }}
-      />
-      <Stack.Screen
-        name="Edit"
-        component={ProfileEdit}
-        options={{
-          ...HeaderConfig,
-          title: 'Profile: Edit',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
-        }}
-      />
+    <Stack.Navigator initialRouteName="Profile" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Avatar" component={ProfileAvatar} />
+      <Stack.Screen name="Edit" component={ProfileEdit} />
     </Stack.Navigator>
   );
 }

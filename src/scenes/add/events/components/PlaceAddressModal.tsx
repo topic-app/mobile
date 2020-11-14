@@ -1,11 +1,12 @@
 import React from 'react';
-import { Button, HelperText, TextInput, Card, ThemeProvider, useTheme } from 'react-native-paper';
+import { Button, HelperText, TextInput } from 'react-native-paper';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
-import { Modal } from '@components/index';
 
 import { ModalProps, State, EventPlace } from '@ts/types';
+import { Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import getEventStyles from '../styles/Styles';

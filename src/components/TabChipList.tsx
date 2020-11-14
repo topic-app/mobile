@@ -1,32 +1,33 @@
 import React from 'react';
 import { View, SectionList } from 'react-native';
-import { IconButton, useTheme } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
+
+import { useTheme } from '@utils/index';
 
 import { TextChip } from './ChipLists';
 
 type ListItem = {
   key: string;
-  title?: string;
-  icon?: string;
   data: {
     key: string;
-    title?: string;
+    title: string;
+    icon?: string;
   }[];
 };
 
-type TabChipListProps = {
-  sections: ListItem[];
+type TabChipListProps<T extends ListItem> = {
+  sections: T[];
   selected: string;
   setSelected: (key: string) => void;
   configure?: () => void;
 };
 
-const TabChipList: React.FC<TabChipListProps> = ({
+const TabChipList = <T extends ListItem>({
   sections,
   selected,
   setSelected,
   configure,
-}) => {
+}: TabChipListProps<T>): React.ReactElement => {
   const theme = useTheme();
   const { colors } = theme;
   return (

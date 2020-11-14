@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, TextStyle, ViewStyle, TextProps, StyleProp } from 'react-native';
-import { useTheme, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useTheme } from '@utils/index';
 
 type CategoryTitleProps = TextProps & {
   icon?: string;
-  iconStyle?: StyleProp<TextStyle>;
+  iconStyle?: StyleProp<any>;
   containerStyle?: StyleProp<ViewStyle>;
 };
 
@@ -29,8 +31,6 @@ const CategoryTitle: React.FC<CategoryTitleProps> = ({
         />
       )}
       <Text
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...textProps}
         style={[
           {
             fontWeight: 'bold',
@@ -40,6 +40,7 @@ const CategoryTitle: React.FC<CategoryTitleProps> = ({
           },
           style,
         ]}
+        {...textProps}
       >
         {children}
       </Text>

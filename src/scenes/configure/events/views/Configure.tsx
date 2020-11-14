@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Divider, Text, List, Button, Switch, useTheme } from 'react-native-paper';
 import { View, Platform, FlatList, Alert } from 'react-native';
+import { Divider, Text, List, Button, Switch } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 
@@ -12,6 +12,7 @@ import {
   CustomHeaderBar,
   TranslucentStatusBar,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import {
   deleteEventList,
@@ -22,6 +23,7 @@ import {
 } from '@redux/actions/contentData/events';
 import getArticleStyles from '../styles/Styles';
 
+import { EventListsStackParams } from '../index';
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
@@ -34,7 +36,7 @@ type EventListsProps = {
   preferences: Preferences;
   eventPrefs: EventPrefs;
   account: Account;
-  navigation: any;
+  navigation: StackNavigationProp<EventListsStackParams, 'Configure'>;
 };
 
 type Category = {
@@ -121,8 +123,6 @@ function EventLists({
     ...categories,
     ...categoryTypes.filter((c) => !eventPrefs.categories?.includes(c.id)),
   ];
-
-  console.log(`Categories ${JSON.stringify(categories)}`);
 
   return (
     <View style={styles.page}>
@@ -486,17 +486,3 @@ const mapStateToProps = (state: State) => {
 };
 
 export default connect(mapStateToProps)(EventLists);
-
-EventLists.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  state: PropTypes.shape({
-    info: PropTypes.shape({}).isRequired,
-  }).isRequired,
-};

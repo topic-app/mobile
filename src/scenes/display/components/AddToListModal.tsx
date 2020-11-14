@@ -1,45 +1,24 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem, Account, EventListItem } from '@ts/types';
+import { View, Platform, TextInput, FlatList } from 'react-native';
 import {
   Divider,
   Button,
   Text,
-  Card,
-  useTheme,
   RadioButton,
   List,
   IconButton,
   HelperText,
-  ThemeProvider,
 } from 'react-native-paper';
-import { View, Platform, TextInput, ActivityIndicator, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { config } from '@root/app.json';
 
-import {
-  CollapsibleView,
-  CategoriesList,
-  PlatformIconButton,
-  Illustration,
-  Modal,
-} from '@components/index';
+import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
+import { CollapsibleView, Illustration, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import getArticleStyles from './styles/Styles';
-import { logger } from '@root/src/utils';
-
 import { addArticleToList, addArticleList } from '@redux/actions/contentData/articles';
 import { addEventToList, addEventList } from '@redux/actions/contentData/events';
 
-type CommentPublisher = {
-  key: string;
-  title: string;
-  icon: string;
-  publisher: {
-    type: 'user' | 'group';
-    group?: string;
-  };
-  type: 'category';
-};
+import getArticleStyles from './styles/Styles';
 
 type AddToListModalProps = ModalProps & {
   id: string;
@@ -48,14 +27,14 @@ type AddToListModalProps = ModalProps & {
   type: 'article' | 'event';
 };
 
-function AddToListModal({
+const AddToListModal: React.FC<AddToListModalProps> = ({
   visible,
   setVisible,
   articleLists,
   eventLists,
   id,
   type,
-}: AddToListModalProps) {
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -219,7 +198,7 @@ function AddToListModal({
       />
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { articleData, eventData } = state;

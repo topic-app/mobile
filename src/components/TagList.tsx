@@ -1,8 +1,8 @@
 import React from 'react';
 import { FlatList, View } from 'react-native';
-import { Chip, useTheme } from 'react-native-paper';
+import { Chip } from 'react-native-paper';
 
-import { genTagListData, ItemData } from '@utils/index';
+import { useTheme, genTagListData, ItemData } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import Avatar from './Avatar';

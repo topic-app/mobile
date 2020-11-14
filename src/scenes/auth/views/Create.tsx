@@ -1,12 +1,10 @@
 import React from 'react';
+import { View, ScrollView } from 'react-native';
+import { Text, ProgressBar } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { View, ScrollView } from 'react-native';
-import { Text, ProgressBar, useTheme } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
-
-import { State, AccountRequestState, CreationData } from '@ts/types';
-import { logger } from '@utils/index';
+import { State, AccountRequestState, AccountCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
   StepperView,
@@ -15,6 +13,7 @@ import {
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
+import { logger, useTheme } from '@utils/index';
 import { register } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 
@@ -29,7 +28,7 @@ import AuthCreatePageLegal from '../components/CreateLegal';
 type Props = {
   navigation: StackNavigationProp<AuthStackParams, 'Create'>;
   reqState: AccountRequestState;
-  creationData?: CreationData;
+  creationData?: AccountCreationData;
 };
 
 const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }) => {
@@ -63,7 +62,7 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
       .then(() => navigation.replace('CreateSuccess'))
       .catch((e) => {
         logger.info(reqParams);
-        logger.error('Failed to create account', e);
+        logger.warn('Failed to create account', e);
       });
   };
 

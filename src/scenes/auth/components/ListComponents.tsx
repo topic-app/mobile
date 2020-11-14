@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, TouchableOpacity, Platform, TextStyle, StyleProp } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Text } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useTheme } from '@utils/index';
 
 type ListHeadingProps = {
   label: string;
@@ -22,7 +24,7 @@ const ListItem: React.FC<ListItemProps> = ({ icon, iconColor, label, textStyle }
   const { colors } = useTheme();
   return (
     <View style={{ flexDirection: 'row' }}>
-      <MaterialCommunityIcons
+      <Icon
         style={{ paddingTop: 2.5, paddingRight: 3 }}
         size={15}
         color={iconColor ?? colors.icon}

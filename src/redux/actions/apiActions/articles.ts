@@ -62,7 +62,7 @@ function articleAddCreator({
             title,
             date,
             location,
-            author: getState().account.accountInfo.accountId,
+            author: getState().account.accountInfo?.accountId,
             group,
             image,
             summary,

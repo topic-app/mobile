@@ -1,4 +1,4 @@
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
 
 const logTypes = ['critical', 'error', 'warning', 'info', 'http', 'verbose', 'debug'] as const;
 
@@ -11,10 +11,10 @@ const logObj = (data: any) => {
   return truncatedStr;
 };
 
-type LevelType = typeof logTypes[number];
+export type LogLevel = typeof logTypes[number];
 
 type ConfigureType = {
-  level: LevelType;
+  level: LogLevel;
 };
 
 type HTTPLog = {
@@ -26,7 +26,7 @@ type HTTPLog = {
 };
 
 class Logger {
-  level: LevelType;
+  level: LogLevel;
 
   constructor({ level }: ConfigureType) {
     if (!logTypes.includes(level)) {
@@ -35,10 +35,10 @@ class Logger {
     this.level = level;
   }
 
-  private shouldLog(level: LevelType) {
+  private shouldLog(level: LogLevel) {
     return (
       logTypes.indexOf(level) <= logTypes.indexOf(this.level) &&
-      !config.logger?.exclude?.includes(level)
+      !Config.logger.exclude.includes(level)
     );
   }
 
@@ -80,6 +80,6 @@ class Logger {
   }
 }
 
-const logger = new Logger({ level: config.logger?.level as LevelType });
+const logger = new Logger({ level: Config.logger.level as LogLevel });
 
 export default logger;

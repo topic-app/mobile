@@ -1,30 +1,15 @@
 import React from 'react';
-import { View, ScrollView, FlatList } from 'react-native';
-import { Text, useTheme, ProgressBar } from 'react-native-paper';
+import { View, ScrollView } from 'react-native';
+import { Text } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import {
-  State,
-  ArticlePreload,
-  Account,
-  GroupRolePermission,
-  ArticleRequestState,
-  Article,
-} from '@ts/types';
-import {
-  CustomTabView,
-  ChipAddList,
-  ErrorMessage,
-  ArticleCard,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components/index';
+import { State, Account } from '@ts/types';
+import { CustomTabView, TranslucentStatusBar, CustomHeaderBar } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { updateArticlesVerification } from '@redux/actions/api/articles';
 
 import type { ModerationStackParams } from '../index';
-import getModerationStyles from '../styles/Styles';
 import ModerationArticles from '../components/ModerationArticles';
 import ModerationGroups from '../components/ModerationGroups';
 

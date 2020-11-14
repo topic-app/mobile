@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Platform, Image, ScrollView } from 'react-native';
-import { Text, useTheme, Button, Divider } from 'react-native-paper';
+import { Text, Button, Divider } from 'react-native-paper';
+import { StackScreenProps } from '@react-navigation/stack';
 
 import {
   PlatformBackButton,
@@ -10,11 +10,15 @@ import {
   Illustration,
   SafeAreaView,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import getLandingStyles from '../styles/Styles';
+import type { LandingStackParams } from '../index';
 
-function LandingArticles({ navigation, route }) {
+type LandingArticlesProps = StackScreenProps<LandingStackParams, 'Info'>;
+
+const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
@@ -231,18 +235,6 @@ function LandingArticles({ navigation, route }) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 export default LandingArticles;
-
-LandingArticles.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      index: PropTypes.number.isRequired,
-    }),
-  }).isRequired,
-};

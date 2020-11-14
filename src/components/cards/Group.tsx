@@ -1,13 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import { Text, Paragraph, Title, Card, useTheme } from 'react-native-paper';
-import { PlatformTouchable } from '@components/PlatformComponents';
-import Avatar from '@components/Avatar';
-import getStyles from '@styles/Styles';
+import { Text, Paragraph, Title, Card } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-function MyGroupsListCard({ group, navigate, member, following }) {
+import { GroupPreload } from '@ts/types';
+import { Avatar, PlatformTouchable } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
+
+type MyGroupsListCardProps = {
+  group: GroupPreload;
+  navigate: StackNavigationProp<any, any>['navigate'];
+  member?: boolean;
+  following?: boolean;
+};
+
+const MyGroupsListCard: React.FC<MyGroupsListCardProps> = ({
+  group,
+  navigate,
+  member = false,
+  following = false,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -20,10 +34,13 @@ function MyGroupsListCard({ group, navigate, member, following }) {
             <View style={{ flexDirection: 'row' }}>
               <Avatar avatar={group.avatar} style={styles.avatar} />
               <View style={{ flex: 1, paddingLeft: 15 }}>
-                <View>
-                  <Title style={{ flex: 1 }} numberOfLines={1}>
-                    {group.name}
-                  </Title>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Title numberOfLines={1}>{group?.name}</Title>
+                  <View style={{ marginLeft: 5 }}>
+                    {group?.official && (
+                      <Icon name="check-decagram" color={colors.primary} size={20} />
+                    )}
+                  </View>
                 </View>
                 <Paragraph style={{ fontSize: 15 }}>
                   <Text style={{ fontSize: 16 }}>{group.cache?.members}</Text> membres &#xFF65;{' '}
@@ -43,34 +60,6 @@ function MyGroupsListCard({ group, navigate, member, following }) {
       </PlatformTouchable>
     </Card>
   );
-}
+};
 
 export default MyGroupsListCard;
-
-MyGroupsListCard.propTypes = {
-  group: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string,
-    description: PropTypes.shape({
-      parser: PropTypes.oneOf(['plaintext', 'markdown']),
-      data: PropTypes.string,
-    }),
-    location: PropTypes.shape({
-      global: PropTypes.bool,
-      schools: PropTypes.arrayOf(PropTypes.object),
-      departments: PropTypes.arrayOf(PropTypes.object),
-    }).isRequired,
-    cache: PropTypes.shape({
-      followers: PropTypes.number.isRequired,
-      members: PropTypes.number.isRequired,
-    }),
-    userInfo: PropTypes.shape({
-      isMember: PropTypes.bool.isRequired,
-      isFollowing: PropTypes.bool.isRequired,
-    }).isRequired,
-  }).isRequired,
-  navigate: PropTypes.func.isRequired,
-};

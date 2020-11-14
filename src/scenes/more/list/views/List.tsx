@@ -1,16 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, ScrollView } from 'react-native';
-import { useTheme, ProgressBar, Title, List, Divider } from 'react-native-paper';
-import TopicIcon from '@assets/images/topic-icon.svg';
+import { ProgressBar, Title, List, Divider } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
+import {
+  Account,
+  AccountRequestState,
+  DepartmentPreload,
+  LocationRequestState,
+  SchoolPreload,
+  State,
+} from '@ts/types';
+import { ErrorMessage, Illustration } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import getNavigatorStyles from '@styles/NavStyles';
 import { fetchLocationData } from '@redux/actions/data/location';
-import ErrorMessage from '@components/ErrorMessage';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 function genName({ data, info }) {
   if (data?.firstName && data?.lastName) {
@@ -19,7 +26,28 @@ function genName({ data, info }) {
   return data?.firstName || data?.lastName || null;
 }
 
-function MoreList({ navigation, location, accountInfo, permissions, accountState, loggedIn }) {
+type MoreListProps = {
+  navigation: StackNavigationProp<any, any>;
+  loggedIn: boolean;
+  accountInfo: Account['accountInfo'];
+  accountState: AccountRequestState;
+  location: {
+    schoolData: SchoolPreload[];
+    departmentData: DepartmentPreload[];
+    global: boolean;
+    state: LocationRequestState;
+  };
+  // TODO: Add permissions prop
+};
+
+const MoreList: React.FC<MoreListProps> = ({
+  navigation,
+  location,
+  accountInfo,
+  permissions,
+  accountState,
+  loggedIn,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const navigatorStyles = getNavigatorStyles(theme);
@@ -50,7 +78,8 @@ function MoreList({ navigation, location, accountInfo, permissions, accountState
             )}
             <View style={navigatorStyles.profileIconContainer}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <TopicIcon
+                <Illustration
+                  name="topic-icon"
                   style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
                   height={55}
                   width={55}
@@ -85,7 +114,7 @@ function MoreList({ navigation, location, accountInfo, permissions, accountState
                 left={() => <List.Icon icon="school" />}
                 title={school?.shortName || school?.name}
                 onPress={() => {
-                  console.log('School pressed');
+                  logger.warn('School pressed');
                 }}
               />
             ))}
@@ -190,9 +219,9 @@ function MoreList({ navigation, location, accountInfo, permissions, accountState
       </SafeAreaView>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { account, location } = state;
   return {
     accountInfo: account.accountInfo,
@@ -204,14 +233,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(MoreList);
-
-MoreList.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
-    closeDrawer: PropTypes.func,
-  }).isRequired,
-  theme: PropTypes.shape({
-    colors: PropTypes.object.isRequired,
-  }).isRequired,
-};

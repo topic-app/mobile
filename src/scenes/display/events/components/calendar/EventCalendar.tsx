@@ -1,11 +1,13 @@
 import React from 'react';
 import { VirtualizedList, View, TouchableOpacity, Dimensions } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import moment from 'moment';
 import shortid from 'shortid';
+
+import { useTheme } from '@utils/index';
 
 import DayView from './DayView';
 import getCalendarStyles from './Styles';

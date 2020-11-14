@@ -26,6 +26,11 @@ import {
   UPDATE_EVENTS_PREFS,
   UPDATE_EVENTS_PARAMS,
   CLEAR_EVENTS,
+  Item,
+  Event,
+  EventParams,
+  EventPrefs,
+  EventCreationData,
 } from '@ts/types';
 
 import { clearCreator } from '../api/ActionCreator';
@@ -35,7 +40,7 @@ import { clearCreator } from '../api/ActionCreator';
  * Ajoute un évènement à une list
  * @param eventId L'id de l'évènement à récuperer
  */
-async function addEventToList(eventId, listId) {
+async function addEventToList(eventId: string, listId: string) {
   await Store.dispatch(
     addToListCreator({
       update: UPDATE_EVENTS_LISTS,
@@ -55,7 +60,7 @@ async function addEventToList(eventId, listId) {
  * @param eventId L'id de l'évènement à récuperer
  * @param listId La liste de laquelle il faut enlever l'évènement
  */
-async function removeEventFromList(eventId, listId) {
+async function removeEventFromList(eventId: string, listId: string) {
   await Store.dispatch(
     removeFromListCreator({
       update: UPDATE_EVENTS_LISTS,
@@ -73,7 +78,7 @@ async function removeEventFromList(eventId, listId) {
  * @param icon
  * @param description
  */
-async function addEventList(name, icon, description) {
+async function addEventList(name: string, icon: string, description: string) {
   await Store.dispatch(
     addListCreator({
       update: UPDATE_EVENTS_LISTS,
@@ -93,7 +98,13 @@ async function addEventList(name, icon, description) {
  * @param icon
  * @param description
  */
-async function modifyEventList(listId, name, icon, description, items) {
+async function modifyEventList(
+  listId: string,
+  name: string,
+  icon: string,
+  description: string,
+  items: Event[],
+) {
   await Store.dispatch(
     modifyListCreator({
       update: UPDATE_EVENTS_LISTS,
@@ -112,7 +123,7 @@ async function modifyEventList(listId, name, icon, description, items) {
  * Supprime une liste
  * @param listId L'id de la liste
  */
-async function deleteEventList(listId) {
+async function deleteEventList(listId: string) {
   await Store.dispatch(
     deleteListCreator({
       update: UPDATE_EVENTS_LISTS,
@@ -122,7 +133,7 @@ async function deleteEventList(listId) {
   );
 }
 
-async function addEventRead(eventId, title, marked = false) {
+async function addEventRead(eventId: string, title: string, marked = false) {
   await Store.dispatch(
     addReadCreator({
       update: UPDATE_EVENTS_READ,
@@ -132,7 +143,7 @@ async function addEventRead(eventId, title, marked = false) {
   );
 }
 
-async function deleteEventRead(eventId) {
+async function deleteEventRead(eventId: string) {
   await Store.dispatch(
     deleteReadCreator({
       update: UPDATE_EVENTS_READ,
@@ -156,7 +167,7 @@ async function clearEventsRead() {
  * Change les parametres de requete pour un évènement
  * @param eventId L'id de l'évènement à récuperer
  */
-async function updateEventParams(params) {
+async function updateEventParams(params: Partial<EventParams>) {
   await Store.dispatch(
     updateParamsCreator({
       updateParams: UPDATE_EVENTS_PARAMS,
@@ -170,7 +181,7 @@ async function updateEventParams(params) {
   );
 }
 
-async function updateEventPrefs(prefs) {
+async function updateEventPrefs(prefs: Partial<EventPrefs>) {
   await Store.dispatch(
     updatePrefsCreator({
       updatePrefs: UPDATE_EVENTS_PREFS,
@@ -179,7 +190,7 @@ async function updateEventPrefs(prefs) {
   );
 }
 
-async function addEventQuick(type, id, title) {
+async function addEventQuick(type: string, id: string, title: string) {
   await Store.dispatch(
     addQuickCreator({
       updateQuicks: UPDATE_EVENTS_QUICKS,
@@ -191,7 +202,7 @@ async function addEventQuick(type, id, title) {
   );
 }
 
-async function deleteEventQuick(id) {
+async function deleteEventQuick(id: string) {
   await Store.dispatch(
     deleteQuickCreator({
       updateQuicks: UPDATE_EVENTS_QUICKS,
@@ -201,7 +212,7 @@ async function deleteEventQuick(id) {
   );
 }
 
-async function updateEventCreationData(fields) {
+async function updateEventCreationData(fields: Partial<EventCreationData>) {
   await Store.dispatch(
     updateCreationDataCreator({
       updateCreationData: UPDATE_EVENTS_CREATION_DATA,

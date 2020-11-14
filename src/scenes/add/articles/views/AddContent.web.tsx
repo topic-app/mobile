@@ -1,46 +1,32 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
-import { View, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import {
-  Text,
-  ProgressBar,
-  useTheme,
-  Button,
-  HelperText,
-  Title,
-  Divider,
-} from 'react-native-paper';
+import { View, ScrollView, Platform, Alert } from 'react-native';
+import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import showdown from 'showdown';
 
 import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
-  StepperView,
   ErrorMessage,
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
-import { articleAdd } from '@redux/actions/apiActions/articles';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { articleAdd } from '@redux/actions/apiActions/articles';
 import {
   clearArticleCreationData,
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
 
-import type { ArticleStackParams } from '../index';
-import getArticleStyles from '../styles/Styles';
-import ArticleAddPageGroup from '../components/AddGroup';
-import ArticleAddPageLocation from '../components/AddLocation';
-import ArticleAddPageMeta from '../components/AddMeta';
-import ArticleAddPageContent from '../components/AddContent';
-import ArticleAddPageTags from '../components/AddTags';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
-import showdown from 'showdown';
+import getArticleStyles from '../styles/Styles';
 
 type Props = {
-  navigation: StackNavigationProp<ArticleStackParams, 'Add'>;
+  navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
 };
@@ -70,12 +56,9 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
     });
   };
 
-  const [toolbarInitialized, setToolbarInitialized] = React.useState(false);
   const [valid, setValid] = React.useState(true);
 
-  let textEditor = React.useRef<RichEditor>(null);
-
-  const setTextEditor = (e: any) => (textEditor = e);
+  const textEditorRef = React.createRef<RichEditor>(null);
 
   const icon = (icon: string) => {
     return ({
@@ -96,12 +79,11 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
   };
 
   const submit = async () => {
-    const contentVal = await textEditor?.getContentHtml();
+    const contentVal = await textEditorRef.current?.getContentHtml();
 
     const converter = new showdown.Converter();
 
     // No idea why, this fails with "undefined is not a function" even though turndown is a function (see with console.log)
-    console.log(converter);
     const contentMarkdown = converter.makeMarkdown(contentVal);
 
     const contentValid = contentMarkdown?.length && contentMarkdown?.length > 0;
@@ -172,7 +154,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
               uppercase={Platform.OS !== 'ios'}
               loading={reqState.add?.loading}
               onPress={() => {
-                textEditor?.blurContentEditor();
+                textEditorRef.current?.blurContentEditor();
                 submit();
               }}
               style={{ flex: 1, marginLeft: 5 }}
@@ -187,7 +169,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
         setVisible={setLinkAddModalVisible}
         add={(link, name) => {
           setLinkAddModalVisible(false);
-          textEditor?.insertLink(name, link);
+          textEditorRef.current?.insertLink(name, link);
         }}
       />
     </View>

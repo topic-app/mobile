@@ -1,7 +1,6 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import AboutList from './views/List';
 import AboutLegal from './views/Legal';
@@ -10,7 +9,7 @@ import AboutLicenses from './views/Licenses';
 export type AboutStackParams = {
   List: undefined;
   Legal: {
-    page?: 'list' | 'full' | 'logo' | 'illustrations';
+    page?: ' mentions' | 'conditions' | 'confidentialite';
   };
   Licenses: {
     page?: 'list' | 'full' | 'logo' | 'illustrations';

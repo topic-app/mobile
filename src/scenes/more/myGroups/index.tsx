@@ -1,32 +1,22 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import MyGroupsList from './views/List';
 import MyGroupsEdit from './views/Edit';
 
-const Stack = createNativeStackNavigator();
+export type MyGroupsStackParams = {
+  List: undefined;
+  Edit: undefined;
+};
+
+const Stack = createNativeStackNavigator<MyGroupsStackParams>();
 
 function MyGroupsStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="List">
-      <Stack.Screen
-        name="List"
-        component={MyGroupsList}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Edit"
-        component={MyGroupsEdit}
-        options={({ route }) => ({
-          ...HeaderConfig,
-          title: route.params.title || 'Mes groupes - Edit',
-          subtitle: route.params.title && 'Mes groupes - Edit',
-        })}
-      />
+    <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="List" component={MyGroupsList} />
+      <Stack.Screen name="Edit" component={MyGroupsEdit} />
     </Stack.Navigator>
   );
 }

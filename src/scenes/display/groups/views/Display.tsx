@@ -13,7 +13,6 @@ import {
   Button,
   Text,
   Paragraph,
-  useTheme,
   Divider,
   Menu,
   Appbar,
@@ -22,8 +21,9 @@ import {
   IconButton,
   Banner,
 } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
   GroupPreload,
@@ -51,6 +51,7 @@ import {
   ErrorMessage,
   SafeAreaView,
 } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
@@ -64,6 +65,7 @@ import {
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
 
+import type { GroupDisplayStackParams } from '../index';
 import AddUserSelectModal from '../components/AddUserSelectModal';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import EditGroupModal from '../components/EditGroupModal';
@@ -79,7 +81,7 @@ function getAddressString(address: Address) {
 }
 
 type GroupElement = Group | GroupPreload;
-type GroupDisplayProps = {
+type GroupDisplayProps = StackScreenProps<GroupDisplayStackParams, 'Display'> & {
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
@@ -87,7 +89,7 @@ type GroupDisplayProps = {
   articlesState: ArticleRequestState;
 };
 
-function GroupDisplay({
+const GroupDisplay: React.FC<GroupDisplayProps> = ({
   route,
   navigation,
   groups,
@@ -96,7 +98,7 @@ function GroupDisplay({
   accountState,
   articles,
   articlesState,
-}: GroupDisplayProps) {
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -440,7 +442,7 @@ function GroupDisplay({
                 <InlineCard
                   icon="map-marker"
                   title="France Entière"
-                  onPress={() => console.log('global pressed')}
+                  onPress={() => logger.warn('global pressed')}
                 />
               )}
               {group?.location.schools?.map((school) => (
@@ -449,7 +451,7 @@ function GroupDisplay({
                   icon="school"
                   title={school.displayName}
                   subtitle={getAddressString(school?.address) || school?.shortName}
-                  onPress={() => console.log(`school ${school._id} pressed!`)}
+                  onPress={() => logger.warn(`school ${school._id} pressed!`)}
                 />
               ))}
               {group?.location.departments?.map((dep) => (
@@ -458,7 +460,7 @@ function GroupDisplay({
                   icon="domain"
                   title={dep.displayName}
                   subtitle="Département"
-                  onPress={() => console.log(`department ${dep._id} pressed!`)}
+                  onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                 />
               ))}
               <Divider />
@@ -776,7 +778,7 @@ function GroupDisplay({
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { groups, account, articles } = state;

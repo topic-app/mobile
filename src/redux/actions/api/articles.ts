@@ -7,12 +7,12 @@ import {
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
 } from '@ts/redux';
-import { Item, UPDATE_ARTICLES_VERIFICATION } from '@ts/types';
+import { Item, UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
 const dateDescSort = (data: Item[]) =>
-  data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+  (data as Article[]).sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
  * @docs actions
@@ -74,8 +74,10 @@ async function updateArticlesFollowing(
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearArticles(data = true, search = true, verification = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_ARTICLES, data, search, verification }));
+async function clearArticles(data = true, search = true, verification = true, following = true) {
+  await Store.dispatch(
+    clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }),
+  );
 }
 
 /**
@@ -92,7 +94,6 @@ async function searchArticles(
   search = true,
   useDefaultParams = false,
 ) {
-  console.log(`Search articles ${JSON.stringify(params)}`);
   await Store.dispatch(
     updateCreator({
       update: UPDATE_ARTICLES_SEARCH,

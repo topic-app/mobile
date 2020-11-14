@@ -1,5 +1,15 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
+import {
+  State,
+  ReduxLocation,
+  LocationRequestState,
+  School,
+  Department,
+  UPDATE_LOCATION_STATE,
+  UPDATE_LOCATION,
+  CLEAR_LOCATION,
+} from '@ts/types';
 
 /**
  * @docs actionCreators
@@ -7,11 +17,11 @@ import Store from '@redux/store';
  * @param lastId L'id du dernier article, par ordre chronologique, de la liste d'articles/database redux
  * @returns Action
  */
-function updateLocationCreator(fields) {
-  return (dispatch, getState) => {
+function updateLocationCreator(fields: ReduxLocation) {
+  return (dispatch: (action: any) => void, getState: () => State) => {
     return new Promise(async (resolve, reject) => {
       dispatch({
-        type: 'UPDATE_LOCATION',
+        type: UPDATE_LOCATION,
         data: fields,
       });
       if (!getState().account.loggedIn) {
@@ -19,7 +29,7 @@ function updateLocationCreator(fields) {
         return;
       }
       dispatch({
-        type: 'UPDATE_LOCATION_STATE',
+        type: UPDATE_LOCATION_STATE,
         data: {
           update: {
             loading: true,
@@ -33,7 +43,7 @@ function updateLocationCreator(fields) {
         await request('profile/modify/data', 'post', { data: { location: fields } }, true);
       } catch (error) {
         dispatch({
-          type: 'UPDATE_LOCATION_STATE',
+          type: UPDATE_LOCATION_STATE,
           data: {
             update: {
               loading: false,
@@ -47,7 +57,7 @@ function updateLocationCreator(fields) {
       }
 
       dispatch({
-        type: 'UPDATE_LOCATION_STATE',
+        type: UPDATE_LOCATION_STATE,
         data: {
           update: {
             loading: false,
@@ -63,23 +73,23 @@ function updateLocationCreator(fields) {
 
 function clearLocationCreator() {
   return {
-    type: 'CLEAR_LOCATION',
+    type: CLEAR_LOCATION,
     data: {},
   };
 }
 
-function updateStateCreator(state) {
+function updateStateCreator(state: Partial<LocationRequestState>) {
   return {
-    type: 'UPDATE_LOCATION_STATE',
+    type: UPDATE_LOCATION_STATE,
     data: state,
   };
 }
 
 function fetchLocationDataCreator() {
-  return (dispatch, getState) => {
+  return (dispatch: (action: any) => void, getState: () => State) => {
     return new Promise(async (resolve, reject) => {
       dispatch({
-        type: 'UPDATE_LOCATION_STATE',
+        type: UPDATE_LOCATION_STATE,
         data: {
           fetch: {
             loading: true,
@@ -90,8 +100,8 @@ function fetchLocationDataCreator() {
       });
 
       const { schools, departments } = getState().location;
-      const schoolData = [];
-      const departmentData = [];
+      const schoolData: School[] = [];
+      const departmentData: Department[] = [];
       let error = false;
 
       await Promise.all(
@@ -118,7 +128,7 @@ function fetchLocationDataCreator() {
 
       if (error) {
         dispatch({
-          type: 'UPDATE_LOCATION_STATE',
+          type: UPDATE_LOCATION_STATE,
           data: {
             fetch: {
               loading: false,
@@ -132,7 +142,7 @@ function fetchLocationDataCreator() {
       }
 
       dispatch({
-        type: 'UPDATE_LOCATION_STATE',
+        type: UPDATE_LOCATION_STATE,
         data: {
           fetch: {
             loading: false,
@@ -142,7 +152,7 @@ function fetchLocationDataCreator() {
         },
       });
       dispatch({
-        type: 'UPDATE_LOCATION',
+        type: UPDATE_LOCATION,
         data: {
           schoolData,
           departmentData,
@@ -157,17 +167,17 @@ async function fetchLocationData() {
   await Store.dispatch(fetchLocationDataCreator());
 }
 
-async function updateLocation(fields, fetch = true) {
+async function updateLocation(fields: ReduxLocation, fetch: boolean = true) {
   await Store.dispatch(updateLocationCreator(fields));
   if (fetch) fetchLocationData();
 }
 
-async function updateState(fields) {
+async function updateState(fields: Partial<LocationRequestState>) {
   await Store.dispatch(updateStateCreator(fields));
 }
 
-async function clearLocation(fields) {
-  await Store.dispatch(clearLocationCreator(fields));
+async function clearLocation() {
+  await Store.dispatch(clearLocationCreator());
 }
 
 export { updateLocation, fetchLocationData, updateState, clearLocation };

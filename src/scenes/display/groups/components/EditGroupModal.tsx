@@ -1,24 +1,18 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem, Group } from '@ts/types';
-import {
-  Divider,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
-  Card,
-  ThemeProvider,
-  useTheme,
-} from 'react-native-paper';
 import { View, Platform } from 'react-native';
+import { Divider, Button, HelperText, TextInput as PaperTextInput } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, Modal } from '@components/index';
+import { ModalProps, State, Group } from '@ts/types';
+import { Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { groupModify } from '@redux/actions/apiActions/groups';
 import { fetchGroup } from '@redux/actions/api/groups';
+
 import getArticleStyles from '../styles/Styles';
 
-type EditModalProps = ModalProps & {
+type EditGroupModalProps = ModalProps & {
   group: Group | null;
   editingGroup: {
     shortName: string;
@@ -36,7 +30,13 @@ type EditModalProps = ModalProps & {
   }) => any;
 };
 
-function EditModal({ visible, setVisible, group, editingGroup, setEditingGroup }: EditModalProps) {
+const EditGroupModal: React.FC<EditGroupModalProps> = ({
+  visible,
+  setVisible,
+  group,
+  editingGroup,
+  setEditingGroup,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -50,8 +50,8 @@ function EditModal({ visible, setVisible, group, editingGroup, setEditingGroup }
         <View style={articleStyles.activeCommentContainer}>
           <PaperTextInput mode="outlined" label="Nom" disabled value={group?.name} />
           <HelperText type="info">
-            Pour des raisons de sécurité, nous n'autorisons pas le changement de nom. Envoyez un
-            message à moderation@topicapp.fr si vous voulez changer
+            Pour des raisons de sécurité, nous n&amp;autorisons pas le changement de nom. Envoyez un
+            email à moderation@topicapp.fr si vous voulez changer
           </HelperText>
         </View>
         <View style={articleStyles.activeCommentContainer}>
@@ -91,7 +91,7 @@ function EditModal({ visible, setVisible, group, editingGroup, setEditingGroup }
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { groups } = state;
@@ -100,4 +100,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(EditModal);
+export default connect(mapStateToProps)(EditGroupModal);

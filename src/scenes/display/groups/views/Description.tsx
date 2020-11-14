@@ -1,12 +1,18 @@
 import React from 'react';
 import { View } from 'react-native';
-import PropTypes from 'prop-types';
-import testGroupData from '@src/data/groupListData.json';
-import { Text, useTheme } from 'react-native-paper';
-import getStyles from '@styles/Styles';
-import Content from '@components/Content';
+import { Text } from 'react-native-paper';
+import { StackScreenProps } from '@react-navigation/stack';
 
-function GroupDescription({ route }) {
+import testGroupData from '@src/data/groupListData.json';
+import { Content } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
+
+import type { GroupDisplayStackParams } from '../index';
+
+type GroupDescriptionProps = StackScreenProps<GroupDisplayStackParams, 'Description'> & {};
+
+const GroupDescription: React.FC<GroupDescriptionProps> = ({ route }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -31,14 +37,6 @@ function GroupDescription({ route }) {
       </View>
     </View>
   );
-}
+};
 
 export default GroupDescription;
-
-GroupDescription.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};

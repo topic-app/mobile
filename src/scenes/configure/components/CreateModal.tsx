@@ -1,14 +1,15 @@
 import React from 'react';
 import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
-import { Divider, Button, HelperText, Card, ThemeProvider, useTheme } from 'react-native-paper';
-import { View, Platform, TextInput, Dimensions } from 'react-native';
+import { Divider, Button, HelperText } from 'react-native-paper';
+import { View, Platform, TextInput } from 'react-native';
 import { connect } from 'react-redux';
-import { logger } from '@utils/index';
 
 import { CollapsibleView, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { addArticleList } from '@redux/actions/contentData/articles';
 import { addEventList } from '@redux/actions/contentData/events';
+
 import getArticleStyles from './styles/Styles';
 
 type CreateModalProps = ModalProps & {

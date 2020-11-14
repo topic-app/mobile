@@ -1,3 +1,5 @@
+import themes from '@styles/Theme';
+
 import {
   Article,
   ArticlePreload,
@@ -18,8 +20,15 @@ import {
   TagPreload,
   User,
   UserPreload,
+  GroupTemplate,
+  AccountPermission,
+  AccountInfo,
+  AccountUser,
+  AccountCreationData,
+  WaitingGroup,
+  GroupWithMembership,
+  Account,
 } from './api';
-
 import {
   ArticleRequestState,
   CommentRequestState,
@@ -32,7 +41,9 @@ import {
   TagRequestState,
   UserRequestState,
   LegalRequestState,
+  LocationRequestState,
   LinkingRequestState,
+  AccountRequestState,
 } from './requestState';
 
 // Articles
@@ -82,6 +93,7 @@ export type ArticlesState = {
 
 export type ArticlePrefs = {
   categories?: string[];
+  hidden?: string[];
 };
 
 export type ArticleReadItem = {
@@ -102,8 +114,8 @@ export type ArticleCreationData = {
   title?: string;
   summary?: string;
   tags?: string[];
-  parser: 'plaintext' | 'markdown';
-  data: string;
+  parser?: 'plaintext' | 'markdown';
+  data?: string;
 };
 
 export type ArticlesDataState = {
@@ -118,7 +130,7 @@ export type ArticlesDataState = {
 // Types pour les actions
 type UpdateArticlesStateAction = {
   type: typeof UPDATE_ARTICLES_STATE;
-  data: ArticleRequestState;
+  data: Partial<ArticleRequestState>;
 };
 
 type UpdateArticlesDataAction = {
@@ -158,7 +170,7 @@ type UpdateArticlesVerificationAction = {
 
 type UpdateArticlesReadAction = {
   type: typeof UPDATE_ARTICLES_READ;
-  data: { id: string }[];
+  data: ArticleReadItem[];
 };
 
 type UpdateArticlesPrefsAction = {
@@ -173,12 +185,12 @@ type UpdateArticlesQuicksAction = {
 
 type UpdateArticlesCreationDataAction = {
   type: typeof UPDATE_ARTICLES_CREATION_DATA;
-  data: ArticleCreationData;
+  data: Partial<ArticleCreationData>;
 };
 
 type ClearArticlesAction = {
   type: typeof CLEAR_ARTICLES;
-  data: { data?: boolean; search?: boolean; verification?: boolean };
+  data: { data?: boolean; search?: boolean; verification?: boolean; following?: boolean };
 };
 
 export type ArticlesActionTypes =
@@ -210,7 +222,7 @@ export type CommentsState = {
 
 type UpdateCommentsStateAction = {
   type: typeof UPDATE_COMMENTS_STATE;
-  data: CommentRequestState;
+  data: Partial<CommentRequestState>;
 };
 
 type UpdateCommentsDataAction = {
@@ -252,7 +264,7 @@ export type DepartmentsState = {
 
 type UpdateDepartmentsStateAction = {
   type: typeof UPDATE_DEPARTMENTS_STATE;
-  data: DepartmentRequestState;
+  data: Partial<DepartmentRequestState>;
 };
 
 type UpdateDepartmentsDataAction = {
@@ -277,7 +289,7 @@ type UpdateDepartmentsSearchAction = {
 
 type ClearDepartmentsAction = {
   type: typeof CLEAR_DEPARTMENTS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; items?: boolean };
 };
 
 export type DepartmentsActionTypes =
@@ -338,6 +350,7 @@ export type EventQuickItem = {
 
 export type EventPrefs = {
   categories?: string[];
+  hidden?: string[];
 };
 
 export type EventReadItem = {
@@ -357,7 +370,7 @@ export type EventCreationData = {
     key: string;
     value: string;
     link: string;
- }[];
+  }[];
   organizers?: string[];
   start?: Date;
   end?: Date;
@@ -388,7 +401,7 @@ export type EventsDataState = {
 
 type UpdateEventsStateAction = {
   type: typeof UPDATE_EVENTS_STATE;
-  data: EventRequestState;
+  data: Partial<EventRequestState>;
 };
 
 type UpdateEventsUpcomingDataAction = {
@@ -428,7 +441,7 @@ type UpdateEventsVerificationAction = {
 
 type UpdateEventsReadAction = {
   type: typeof UPDATE_EVENTS_READ;
-  data: { id: string }[];
+  data: EventReadItem[];
 };
 
 type UpdateEventsPrefsAction = {
@@ -443,7 +456,7 @@ type UpdateEventsQuicksAction = {
 
 type UpdateEventsCreationDataAction = {
   type: typeof UPDATE_EVENTS_CREATION_DATA;
-  data: EventCreationData;
+  data: Partial<EventCreationData>;
 };
 
 type ClearEventsAction = {
@@ -471,6 +484,8 @@ export const UPDATE_GROUPS_STATE = 'UPDATE_GROUPS_STATE';
 export const UPDATE_GROUPS_DATA = 'UPDATE_GROUPS_DATA';
 export const UPDATE_GROUPS_ITEM = 'UPDATE_GROUPS_ITEM';
 export const UPDATE_GROUPS_SEARCH = 'UPDATE_GROUPS_SEARCH';
+export const UPDATE_GROUPS_TEMPLATES = 'UPDATE_GROUPS_TEMPLATES';
+export const UPDATE_GROUPS_CREATION_DATA = 'UPDATE_GROUPS_CREATION_DATA';
 export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
@@ -478,12 +493,31 @@ export type GroupsState = {
   data: (Group | GroupPreload)[];
   search: GroupPreload[];
   item: Group | null;
+  verification: (Group | GroupPreload)[];
   state: GroupRequestState;
+  templates: GroupTemplate[];
+};
+
+export type GroupCreationData = {
+  name?: string;
+  type?: string;
+  location?: {
+    schools?: string[];
+    departments?: string[];
+    global?: boolean;
+  };
+  shortName?: Date;
+  description?: string;
+  summary?: string;
+};
+
+export type GroupsDataState = {
+  creationData: GroupCreationData;
 };
 
 type UpdateGroupsStateAction = {
   type: typeof UPDATE_GROUPS_STATE;
-  data: GroupRequestState;
+  data: Partial<GroupRequestState>;
 };
 
 type UpdateGroupsDataAction = {
@@ -494,6 +528,16 @@ type UpdateGroupsDataAction = {
 type UpdateGroupsItemAction = {
   type: typeof UPDATE_GROUPS_ITEM;
   data: Group;
+};
+
+type UpdateGroupsTemplatesAction = {
+  type: typeof UPDATE_GROUPS_TEMPLATES;
+  data: GroupTemplate[];
+};
+
+type UpdateGroupsCreationDataAction = {
+  type: typeof UPDATE_GROUPS_CREATION_DATA;
+  data: Partial<GroupCreationData>;
 };
 
 type UpdateGroupsVerificationAction = {
@@ -508,7 +552,7 @@ type UpdateGroupsSearchAction = {
 
 type ClearGroupsAction = {
   type: typeof CLEAR_GROUPS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; templates?: boolean; verification?: boolean };
 };
 
 export type GroupsActionTypes =
@@ -516,6 +560,8 @@ export type GroupsActionTypes =
   | UpdateGroupsDataAction
   | UpdateGroupsItemAction
   | UpdateGroupsSearchAction
+  | UpdateGroupsCreationDataAction
+  | UpdateGroupsTemplatesAction
   | UpdateGroupsVerificationAction
   | ClearGroupsAction;
 
@@ -535,7 +581,7 @@ export type PetitionsState = {
 
 type UpdatePetitionsStateAction = {
   type: typeof UPDATE_PETITIONS_STATE;
-  data: PetitionRequestState;
+  data: Partial<PetitionRequestState>;
 };
 
 type UpdatePetitionsDataAction = {
@@ -581,7 +627,7 @@ export type PlacesState = {
 
 type UpdatePlacesStateAction = {
   type: typeof UPDATE_PLACES_STATE;
-  data: PlaceRequestState;
+  data: Partial<PlaceRequestState>;
 };
 
 type UpdatePlacesDataAction = {
@@ -631,7 +677,7 @@ export type SchoolsState = {
 
 type UpdateSchoolsStateAction = {
   type: typeof UPDATE_SCHOOLS_STATE;
-  data: SchoolRequestState;
+  data: Partial<SchoolRequestState>;
 };
 
 type UpdateSchoolsDataAction = {
@@ -661,7 +707,7 @@ type UpdateSchoolsNearAction = {
 
 type ClearSchoolsAction = {
   type: typeof CLEAR_SCHOOLS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; near?: boolean };
 };
 
 export type SchoolsActionTypes =
@@ -689,7 +735,7 @@ export type TagsState = {
 
 type UpdateTagsStateAction = {
   type: typeof UPDATE_TAGS_STATE;
-  data: TagRequestState;
+  data: Partial<TagRequestState>;
 };
 
 type UpdateTagsDataAction = {
@@ -735,7 +781,7 @@ export type UsersState = {
 
 type UpdateUsersStateAction = {
   type: typeof UPDATE_USERS_STATE;
-  data: UserRequestState;
+  data: Partial<UserRequestState>;
 };
 
 type UpdateUsersDataAction = {
@@ -777,7 +823,7 @@ export type LegalState = {
 
 type UpdateLegalStateAction = {
   type: typeof UPDATE_LEGAL_STATE;
-  data: LegalRequestState;
+  data: Partial<LegalRequestState>;
 };
 
 type UpdateLegalAction = {
@@ -794,10 +840,127 @@ export type LinkingState = {
 
 type UpdateLinkingStateAction = {
   type: typeof UPDATE_LINKING_STATE;
-  data: LinkingRequestState;
+  data: Partial<LinkingRequestState>;
 };
 export type LinkingActionTypes = UpdateLinkingStateAction;
 
+// Account
+export const UPDATE_ACCOUNT_GROUPS = 'UPDATE_ACCOUNT_GROUPS';
+export const UPDATE_ACCOUNT_PERMISSIONS = 'UPDATE_ACCOUNT_PERMISSIONS';
+export const UPDATE_ACCOUNT_STATE = 'UPDATE_ACCOUNT_STATE';
+export const UPDATE_ACCOUNT_WAITING_GROUPS = 'UPDATE_ACCOUNT_WAITING_GROUPS';
+export const LOGOUT = 'LOGOUT';
+export const LOGIN = 'LOGIN';
+export const UPDATE_ACCOUNT_USER = 'UPDATE_ACCOUNT_USER';
+export const UPDATE_ACCOUNT_CREATION_DATA = 'UPDATE_ACCOUNT_CREATION_DATA';
+export const CLEAR_ACCOUNT_CREATION_DATA = 'CLEAR_ACCOUNT_CREATION_DATA';
+
+export type AccountState = Account;
+
+type UpdateAccountGroupsAction = {
+  type: typeof UPDATE_ACCOUNT_GROUPS;
+  data: GroupWithMembership[];
+};
+
+type UpdateAccountPermissionsAction = {
+  type: typeof UPDATE_ACCOUNT_PERMISSIONS;
+  data: AccountPermission[];
+};
+
+type UpdateAccountStateAction = {
+  type: typeof UPDATE_ACCOUNT_STATE;
+  data: Partial<AccountRequestState>;
+};
+
+type UpdateAccountWaitingGroupsAction = {
+  type: typeof UPDATE_ACCOUNT_WAITING_GROUPS;
+  data: WaitingGroup[];
+};
+
+type LogoutAction = {
+  type: typeof LOGOUT;
+  data: {};
+};
+
+type LoginAction = {
+  type: typeof LOGIN;
+  data: { accountInfo: AccountInfo };
+};
+
+type UpdateAccountUserAction = {
+  type: typeof UPDATE_ACCOUNT_USER;
+  data: AccountUser;
+};
+
+type UpdateAccountCreationDataAction = {
+  type: typeof UPDATE_ACCOUNT_CREATION_DATA;
+  data: Partial<AccountCreationData>;
+};
+
+type ClearAccountCreationDataAction = {
+  type: typeof CLEAR_ACCOUNT_CREATION_DATA;
+  data: {};
+};
+
+export type AccountActionTypes =
+  | UpdateAccountGroupsAction
+  | UpdateAccountPermissionsAction
+  | UpdateAccountStateAction
+  | UpdateAccountWaitingGroupsAction
+  | LogoutAction
+  | LoginAction
+  | UpdateAccountUserAction
+  | UpdateAccountCreationDataAction
+  | ClearAccountCreationDataAction;
+
+// Location
+export const UPDATE_LOCATION = 'UPDATE_LOCATION';
+export const UPDATE_LOCATION_STATE = 'UPDATE_LOCATION_STATE';
+export const CLEAR_LOCATION = 'CLEAR_LOCATION';
+
+type UpdateLocationAction = {
+  type: typeof UPDATE_LOCATION;
+  data: Partial<LocationList>;
+};
+
+type UpdateLocationStateAction = {
+  type: typeof UPDATE_LOCATION_STATE;
+  data: Partial<LocationRequestState>;
+};
+
+type ClearLocationAction = {
+  type: typeof CLEAR_LOCATION;
+  data: {};
+};
+
+export type LocationActionTypes =
+  | UpdateLocationAction
+  | UpdateLocationStateAction
+  | ClearLocationAction;
+
+// Prefs
+export const SET_PREFS = 'SET_PREFS';
+export const CLEAR_PREF = 'CLEAR_PREF';
+export const CLEAR_ALL_PREFS = 'CLEAR_ALL_PREFS';
+
+type SetPrefAction = {
+  type: typeof SET_PREFS;
+  data: Partial<Preferences>;
+};
+
+type ClearPrefAction = {
+  type: typeof CLEAR_PREF;
+  data: keyof Preferences;
+};
+
+type ClearAllPrefsAction = {
+  type: typeof CLEAR_ALL_PREFS;
+  data: {};
+};
+
+export type PrefActionTypes = SetPrefAction | ClearPrefAction | ClearAllPrefsAction;
+
+// Actions
 export type ActionType =
   | ArticlesActionTypes
   | EventsActionTypes
@@ -809,4 +972,77 @@ export type ActionType =
   | PetitionsActionTypes
   | TagsActionTypes
   | PlacesActionTypes
-  | LegalActionTypes;
+  | LegalActionTypes
+  | AccountActionTypes
+  | LocationActionTypes
+  | PrefActionTypes;
+
+// Global stuff
+export type ReduxLocation = {
+  global: boolean;
+  schools: string[];
+  departments: string[];
+};
+
+export type Preferences = {
+  // This is equivalent to JS's Object.keys() for types (hover over theme for more info)
+  theme: keyof typeof themes;
+  useSystemTheme: boolean;
+  history: boolean;
+  recommendations: boolean;
+  syncHistory: boolean;
+  syncLists: boolean;
+  fontSize: number;
+  stripFormatting: boolean;
+  fontFamily: string;
+  themeEasterEggDiscovered: boolean;
+};
+
+export type LocationList = {
+  selected: boolean;
+  global: boolean;
+  schools: string[];
+  schoolData: SchoolPreload[];
+  departments: string[];
+  departmentData: DepartmentPreload[];
+  state: LocationRequestState;
+};
+
+export type ModalProps = {
+  visible: boolean;
+  setVisible: (state: boolean) => void;
+};
+
+export type ElementString =
+  | 'article'
+  | 'comment'
+  | 'department'
+  | 'group'
+  | 'event'
+  | 'petition'
+  | 'place'
+  | 'tag'
+  | 'school'
+  | 'user';
+export type ElementDataString =
+  | 'articleData'
+  | 'eventData'
+  // | 'petitionData'
+  // | 'placeData'
+  | 'groupData';
+
+export type ElementStringPluralMap = {
+  articles: Article;
+  comments: Comment;
+  departments: Department;
+  groups: Group;
+  events: Event;
+  petitions: Petition;
+  places: Place;
+  tags: Tag;
+  schools: School;
+  users: User;
+};
+export type ElementStringPlural = keyof ElementStringPluralMap;
+
+export type ListItem = ArticleListItem | EventListItem;

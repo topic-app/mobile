@@ -1,19 +1,12 @@
 import React from 'react';
-import {
-  Divider,
-  ProgressBar,
-  Card,
-  Text,
-  List,
-  ThemeProvider,
-  useTheme,
-} from 'react-native-paper';
+
+import { Divider, ProgressBar, Text, List } from 'react-native-paper';
 import { View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { Modal } from '@components/index';
 
 import { ModalProps, State, SchoolsState, EventPlace, PlacesState, RequestState } from '@ts/types';
-import { Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
+import { Modal, Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { searchSchools, updateSchools } from '@redux/actions/api/schools';
 import { searchPlaces, updatePlaces } from '@redux/actions/api/places';

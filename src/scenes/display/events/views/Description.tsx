@@ -1,19 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import { Text, List, Divider, useTheme } from 'react-native-paper';
-import getStyles from '@styles/Styles';
-import Content from '@components/Content';
+import { Text, Divider } from 'react-native-paper';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import shortid from 'shortid';
-import { InlineCard } from '@components/Cards';
-import getEventStyles from '../styles/Styles';
-import { connect } from 'react-redux';
+
 import { State, Account } from '@ts/types';
-import { CategoryTitle } from '@components/index';
+import { useTheme, logger } from '@utils/index';
+import { CategoryTitle, Content, InlineCard } from '@components/index';
+import getStyles from '@styles/Styles';
+
+import getEventStyles from '../styles/Styles';
 
 function getPlaceLabels(place) {
-  console.log('>>> Place', JSON.stringify(place, null, 2));
   const { type, address, associatedSchool, associatedPlace } = place;
   switch (type) {
     case 'standalone': {
@@ -100,7 +99,7 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
   }
 
   if (!(Array.isArray(event?.program) && event?.program?.length > 0)) {
-    console.log('Invalid Program!');
+    logger.warn('Invalid Program for event');
     // Handle invalid program
   }
 
@@ -126,7 +125,7 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
               icon="map-marker"
               title={title}
               subtitle={description}
-              onPress={() => console.log('location pressed', place._id)}
+              onPress={() => logger.warn('location press not implemented', place._id)}
             />
           );
         })}
@@ -135,7 +134,7 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
         icon="calendar"
         title={dateString}
         subtitle={timeString}
-        onPress={() => console.log('time pressed, switch to program')}
+        onPress={() => logger.warn('time pressed, switch to program')}
       />
       <Divider />
       <View style={eventStyles.description}>

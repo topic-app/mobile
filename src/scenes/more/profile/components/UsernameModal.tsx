@@ -1,19 +1,11 @@
 import React from 'react';
-import { ModalProps, State, Account } from '@ts/types';
-import {
-  Divider,
-  Button,
-  HelperText,
-  ProgressBar,
-  ThemeProvider,
-  Card,
-  useTheme,
-} from 'react-native-paper';
+import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { View, Platform, TextInput } from 'react-native';
 import { connect } from 'react-redux';
-import { request } from '@utils/index';
 
+import { ModalProps, State } from '@ts/types';
 import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
+import { useTheme, request } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { updateUsername } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
@@ -23,7 +15,7 @@ type UsernameModalProps = ModalProps & {
   state: { updateProfile: { loading: boolean; error: any } };
 };
 
-function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
+const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const profileStyles = getArticleStyles(theme);
@@ -154,7 +146,7 @@ function UsernameModal({ visible, setVisible, state }: UsernameModalProps) {
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { account } = state;

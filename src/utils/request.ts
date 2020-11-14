@@ -24,7 +24,7 @@ async function request(
     params,
   });
   const headers = auth
-    ? { Authorization: `Bearer ${Store.getState().account.accountInfo.accountToken}` }
+    ? { Authorization: `Bearer ${Store.getState().account.accountInfo?.accountToken}` }
     : {};
   if (method === 'get') {
     let res: AxiosResponse<ApiDataType>;

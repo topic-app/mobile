@@ -22,14 +22,12 @@ type Props = StepperViewPageProps & {
 };
 
 const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData }) => {
-  const [showError, setError] = React.useState(false);
   const [isPlaceTypeModalVisible, setPlaceTypeModalVisible] = React.useState(false);
   const [isPlaceSelectModalVisible, setPlaceSelectModalVisible] = React.useState(false);
   const [isPlaceAddressModalVisible, setPlaceAddressModalVisible] = React.useState(false);
   const [placeType, setPlaceType] = React.useState('');
 
   const theme = useTheme();
-  const { colors } = theme;
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 

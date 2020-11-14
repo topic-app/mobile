@@ -1,7 +1,18 @@
 stages:
   - build
+  - test
+
+typescript tests:
+  stage: test
+  image: node:12
+  script:
+    - npm install
+    - npm install --global typescript
+    - tsc
 
 build app android:
+  when:
+    - manual
   only:
     - tags
   image: reactnativecommunity/react-native-android

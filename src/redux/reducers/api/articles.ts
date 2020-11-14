@@ -16,6 +16,7 @@ const initialState: ArticlesState = {
   item: null,
   search: [],
   verification: [],
+  creationData: {},
   state: {
     list: {
       success: null,
@@ -64,21 +65,16 @@ const initialState: ArticlesState = {
       error: null,
       loading: false,
     },
-    verification_info: {
-      success: null,
-      error: null,
-      loading: false,
-    },
   },
 };
 
 /**
  * @docs reducers
  * Reducer pour les articles
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['UPDATE_ARTICLES', 'CLEAR_ARTICLES'] Le type d'action à effectuer: mettre à jour les articles avec action.data ou vider la database
- * @param {object} action.data Les données à remplacer dans la database redux
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Le type d'action à effectuer: mettre à jour les articles avec action.data ou vider la database
+ * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
 function articleReducer(state = initialState, action: ArticlesActionTypes): ArticlesState {
@@ -117,9 +113,11 @@ function articleReducer(state = initialState, action: ArticlesActionTypes): Arti
       return {
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
+        following: action.data.following ? [] : state.following,
         verification: action.data.verification ? [] : state.verification,
         item: null,
         state: state.state,
+        creationData: state.creationData,
       };
     default:
       return state;

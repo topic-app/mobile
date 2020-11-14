@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Dimensions } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import { TabView, TabBar, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
+
+import { useTheme } from '@utils/index';
 
 type TabBarProps = SceneRendererProps & {
   navigationState: NavigationState<Route>;
@@ -57,7 +58,6 @@ const CustomTabView: React.FC<Props> = ({
     ? () => null
     : (props: TabBarProps) => (
         <TabBar
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...props}
           style={{ backgroundColor: 'transparent', elevation: 0, borderWidth: 0 }}
           indicatorStyle={

@@ -15,6 +15,7 @@ function getStyles(theme: Theme) {
       marginVertical: 10,
       marginHorizontal: 20,
     },
+    cardTitle: {},
     card: {
       backgroundColor: colors.surface,
       shadowColor: '#000',

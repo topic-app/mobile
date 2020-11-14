@@ -1,7 +1,8 @@
 import Store from '@redux/store';
-import { Group } from '@ts/types';
+import { Group, Item } from '@ts/types';
 import {
   UPDATE_GROUPS_DATA,
+  UPDATE_GROUPS_TEMPLATES,
   UPDATE_GROUPS_SEARCH,
   UPDATE_GROUPS_ITEM,
   UPDATE_GROUPS_VERIFICATION,
@@ -11,7 +12,8 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Group[]) => data.sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: Item[]) =>
+  (data as Group[]).sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -122,8 +124,29 @@ async function fetchGroupVerification(groupId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearGroups(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search }));
+async function clearGroups(data = true, search = true, templates = true) {
+  await Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
+}
+
+/**
+ * @docs actions
+ * Récupère les templates de création de groupe
+ * @param next Si il faut récupérer les groups après le dernier
+ */
+async function updateGroupTemplates() {
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_GROUPS_TEMPLATES,
+      stateUpdate: UPDATE_GROUPS_STATE,
+      url: 'groups/templates/list',
+      sort: nameAscSort,
+      stateName: 'templates',
+      dataType: 'groups', // This is useless but typescript
+      type: 'initial',
+      params: {},
+      clear: true,
+    }),
+  );
 }
 
 export {
@@ -131,6 +154,7 @@ export {
   clearGroups,
   fetchGroup,
   searchGroups,
+  updateGroupTemplates,
   updateGroupsVerification,
   fetchGroupVerification,
 };

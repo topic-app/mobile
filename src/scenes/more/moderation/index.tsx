@@ -1,7 +1,6 @@
 import React from 'react';
-import { createNativeStackNavigator, TransitionPresets } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import ModerationList from './views/List';
 
@@ -13,8 +12,8 @@ const Stack = createNativeStackNavigator<ModerationStackParams>();
 
 function ModerationStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="List">
-      <Stack.Screen name="List" component={ModerationList} options={{ headerShown: false }} />
+    <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="List" component={ModerationList} />
     </Stack.Navigator>
   );
 }

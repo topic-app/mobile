@@ -1,4 +1,8 @@
+import { Platform } from 'react-native';
 import { combineReducers } from 'redux';
+import { persistReducer } from 'redux-persist';
+import localForage from 'localforage';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import articleReducer from './api/articles';
 import commentReducer from './api/comments';
@@ -16,15 +20,11 @@ import linkingReducer from './api/linking';
 
 import articleDataReducer from './contentData/articles';
 import eventDataReducer from './contentData/events';
+import groupDataReducer from './contentData/groups';
 
 import prefReducer from './data/prefs';
 import accountReducer from './data/account';
 import locationReducer from './data/location';
-
-import { persistReducer } from 'redux-persist';
-import AsyncStorage from '@react-native-community/async-storage';
-import { Platform } from 'react-native';
-import localForage from 'localforage';
 
 const accountPersistConfig = {
   key: 'auth',
@@ -54,6 +54,7 @@ const rootReducer = combineReducers({
   // contentData
   articleData: articleDataReducer,
   eventData: eventDataReducer,
+  groupData: groupDataReducer,
   // data
   preferences: prefReducer,
   account: persistReducer(accountPersistConfig, accountReducer),

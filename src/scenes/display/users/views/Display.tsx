@@ -8,17 +8,8 @@ import {
   Platform,
   Share,
 } from 'react-native';
-import {
-  Text,
-  useTheme,
-  Title,
-  Subheading,
-  Divider,
-  Button,
-  List,
-  Appbar,
-  Menu,
-} from 'react-native-paper';
+import { Text, Title, Subheading, Divider, Button, List, Appbar, Menu } from 'react-native-paper';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -31,6 +22,8 @@ import {
   RequestState,
   RequestStateComplex,
   Article,
+  UserPreload,
+  User,
 } from '@ts/types';
 import {
   Avatar,
@@ -43,6 +36,7 @@ import {
   CustomTabView,
   SafeAreaView,
 } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchUser } from '@redux/actions/api/users';
 import { fetchAccount } from '@redux/actions/data/account';
@@ -50,6 +44,7 @@ import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/
 import { searchGroups } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
 
+import type { UserDisplayStackParams } from '../index';
 import getUserStyles from '../styles/Styles';
 
 function getAddressString(address: Address['address']) {
@@ -61,14 +56,25 @@ function getAddressString(address: Address['address']) {
   return null;
 }
 
-function genName({ data, info }) {
-  if (data.firstName && data.lastName) {
-    return `${data.firstName} ${data.lastName}`;
+function genName(user: User | UserPreload) {
+  const { firstName, lastName } = user.data || {};
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`;
   }
-  return data.firstName || data.lastName || null;
+  return user.name || user.displayName || user.firstName || user.lastName || null;
 }
 
-function UserDisplay({
+type UserDisplayProps = StackScreenProps<UserDisplayStackParams, 'Display'> & {
+  account: Account;
+  state: { info: RequestState };
+  users: UsersState;
+  groups: Group[];
+  groupsState: { search: RequestStateComplex };
+  articles: Article[];
+  articlesState: { search: RequestStateComplex };
+};
+
+const UserDisplay: React.FC<UserDisplayProps> = ({
   account,
   users,
   navigation,
@@ -78,17 +84,7 @@ function UserDisplay({
   groupsState,
   articles,
   articlesState,
-}: {
-  account: Account;
-  navigation: any;
-  route: { params: { id: string } };
-  state: { info: RequestState };
-  users: UsersState;
-  groups: Group[];
-  groupsState: { search: RequestStateComplex };
-  articles: Article[];
-  articlesState: { search: RequestStateComplex };
-}): React.ReactNode {
+}) => {
   const { id } = route.params || {};
 
   let user =
@@ -333,7 +329,7 @@ function UserDisplay({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {/*{(groups.length !== 0) && (
+              {/* {(groups.length !== 0) && (
                 <View>
                   <List.Subheader>Groupes</List.Subheader>
                   <Divider />
@@ -376,7 +372,7 @@ function UserDisplay({
                     ))}
                   <View style={{ height: 20 }} />
                 </View>
-              )}*/}
+              )} */}
               {user.data.public && (
                 <View>
                   <List.Subheader>Localisation</List.Subheader>
@@ -386,7 +382,7 @@ function UserDisplay({
                       <InlineCard
                         icon="map-marker"
                         title="France Entière"
-                        onPress={() => console.log('global pressed')}
+                        onPress={() => logger.warn('global pressed')}
                       />
                     )}
                     {user.data.location.schools?.map((school) => (
@@ -404,7 +400,7 @@ function UserDisplay({
                               }`
                             : ' '
                         }`}
-                        onPress={() => console.log(`school ${school._id} pressed!`)}
+                        onPress={() => logger.warn(`school ${school._id} pressed!`)}
                       />
                     ))}
                     {user.data.location.departments?.map((dep) => (
@@ -415,7 +411,7 @@ function UserDisplay({
                         subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
                           dep.code
                         }`}
-                        onPress={() => console.log(`department ${dep._id} pressed!`)}
+                        onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                       />
                     ))}
                   </View>
@@ -592,7 +588,7 @@ function UserDisplay({
       />
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { users, account, groups, articles } = state;

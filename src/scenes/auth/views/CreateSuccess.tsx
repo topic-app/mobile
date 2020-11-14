@@ -1,13 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Platform, View, FlatList } from 'react-native';
-import { Text, Button, Divider, Snackbar, useTheme } from 'react-native-paper';
+import { Text, Button, Divider, Snackbar } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { connect } from 'react-redux';
 
 import { Location, Group, State, GroupRequestState } from '@ts/types';
 import { Illustration } from '@components/index';
-import { updateGroups } from '@redux/actions/api/groups';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { updateGroups } from '@redux/actions/api/groups';
 
 import type { AuthStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -46,7 +47,7 @@ const AuthCreateSuccess: React.FC<Props> = ({ navigation, location, groups, reqS
         theme={{ colors: { accent: colors.primaryLighter } }}
         visible
         onDismiss={() => null}
-        action={{ label: 'Renvoyer', onPress: () => console.log('Resend email') }}
+        action={{ label: 'Renvoyer', onPress: () => logger.warn('Resend email not implemented') }}
       >
         Email de vérification envoyé
       </Snackbar>

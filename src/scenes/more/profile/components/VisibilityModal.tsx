@@ -1,29 +1,26 @@
 import React from 'react';
-import { ModalProps, ArticleListItem } from '@ts/types';
-import {
-  Divider,
-  Button,
-  Card,
-  RadioButton,
-  List,
-  ThemeProvider,
-  useTheme,
-  ProgressBar,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import { ErrorMessage, Modal } from '@components/index';
+import { Divider, Button, RadioButton, List, ProgressBar } from 'react-native-paper';
+import { View, Platform } from 'react-native';
+import { connect } from 'react-redux';
 
+import { ModalProps } from '@ts/types';
+import { ErrorMessage, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { updateData } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
-import { connect } from 'react-redux';
 
 type VisibilityModalProps = ModalProps & {
   isInitialPublic: boolean;
   state: { updateProfile: { loading: boolean; error: any } };
 };
 
-function VisibilityModal({ visible, setVisible, isInitialPublic, state }: VisibilityModalProps) {
+const VisibilityModal: React.FC<VisibilityModalProps> = ({
+  visible,
+  setVisible,
+  isInitialPublic,
+  state,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -129,7 +126,7 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   const { account } = state;

@@ -1,23 +1,19 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 
-import { HeaderConfig } from '@components/Header';
+import { createNativeStackNavigator } from '@utils/stack';
+
 import EventHistory from './views/History';
 
-const Stack = createStackNavigator();
+export type EventHistoryStackParams = {
+  Params: undefined;
+};
+
+const Stack = createNativeStackNavigator<EventHistoryStackParams>();
 
 function EventHistoryStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Params">
-      <Stack.Screen
-        name="Params"
-        component={EventHistory}
-        options={({ route }) => ({
-          ...HeaderConfig,
-          title: 'Historique',
-          subtitle: 'Évènements',
-        })}
-      />
+      <Stack.Screen name="Params" component={EventHistory} />
     </Stack.Navigator>
   );
 }

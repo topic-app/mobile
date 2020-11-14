@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, Text, useTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Button, Text } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { ArticleRequestState } from '@ts/types';
 import { Illustration } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 import getArticleStyles from '../styles/Styles';
@@ -28,8 +29,6 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
-
-  console.log(`Key ${sectionKey}`);
 
   if (
     (sectionKey === 'categories' && reqState.list.success) ||

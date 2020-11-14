@@ -8,13 +8,14 @@ import {
   UPDATE_EVENTS_QUICKS,
   UPDATE_EVENTS_CREATION_DATA,
 } from '@ts/redux';
-import { config } from '@root/app.json';
+
+import { Config } from '@constants/index';
 
 const initialState: EventsDataState = {
   params: {},
-  lists: config.events.lists,
-  prefs: config.events.defaults,
-  quicks: config.events.quicks,
+  lists: Config.defaults.events.lists,
+  prefs: Config.defaults.events.prefs,
+  quicks: Config.defaults.events.quicks,
   read: [],
   creationData: {},
 };
@@ -22,10 +23,10 @@ const initialState: EventsDataState = {
 /**
  * @docs reducers
  * Reducer pour les évènements
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['UPDATE_EVENTS', 'CLEAR_EVENTS'] Le type d'action à effectuer: mettre à jour les évènements avec action.data ou vider la database
- * @param {object} action.data Les données à remplacer dans la database redux
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Le type d'action à effectuer: mettre à jour les évènements avec action.data ou vider la database
+ * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
 function eventDataReducer(state = initialState, action: EventsActionTypes): EventsDataState {

@@ -1,25 +1,19 @@
 import React from 'react';
-import { Platform } from 'react-native';
+
 import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
 import PetitionDisplay from './views/Display';
+
+export type PetitionDisplayStackParams = {
+  Display: { id: string };
+};
 
 const Stack = createNativeStackNavigator();
 
 function PetitionDisplayStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Display">
-      <Stack.Screen
-        name="Display"
-        component={PetitionDisplay}
-        options={({ route }) => ({
-          ...HeaderConfig,
-          title: route.params.title || 'Pétitions - Aperçu',
-          subtitle: route.params.title && 'Pétitions - Aperçu',
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
-        })}
-      />
+    <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Display" component={PetitionDisplay} />
     </Stack.Navigator>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, FAB, useTheme } from 'react-native-paper';
+import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
@@ -18,6 +18,7 @@ import {
   Account,
 } from '@ts/types';
 import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
+import { useTheme } from '@utils/index';
 import { updateUpcomingEvents, updatePassedEvents, searchEvents } from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
 
@@ -296,7 +297,6 @@ const EventList: React.FC<EventListProps> = ({
           } else if (section.key === 'categories' && category.key === 'passed') {
             updatePassedEvents('next');
           } else if (section.key === 'quicks') {
-            console.log(category.params);
             searchEvents('next', '', category.params, false, false);
           }
         }}

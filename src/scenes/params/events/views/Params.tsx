@@ -1,20 +1,46 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { ProgressBar, Text, Divider, useTheme } from 'react-native-paper';
+import { ProgressBar, Text, Divider } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
+import {
+  EventParams,
+  Department,
+  School,
+  SchoolRequestState,
+  DepartmentRequestState,
+  State,
+} from '@ts/types';
 import { ErrorMessage, InlineCard, Illustration } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import getStyles from '@styles/Styles';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-function EventParams({ navigation, params, schools, departments, state }) {
+import type { EventConfigureStackParams } from '../index';
+
+type EventParamsProps = {
+  navigation: StackNavigationProp<EventConfigureStackParams, 'Params'>;
+  params: EventParams;
+  schools: School[];
+  departments: Department[];
+  reqState: {
+    schools: SchoolRequestState;
+    departments: DepartmentRequestState;
+  };
+};
+
+const EventParamsScreen: React.FC<EventParamsProps> = ({
+  navigation,
+  params,
+  schools,
+  departments,
+  reqState,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-
-  console.log(params);
 
   const fetch = () => {
     if (params.schools) {
@@ -27,7 +53,7 @@ function EventParams({ navigation, params, schools, departments, state }) {
 
   useFocusEffect(React.useCallback(fetch, [null]));
 
-  const states = [state.schools.info, state.departments.info];
+  const states = [reqState.schools.info, reqState.departments.info];
 
   return (
     <View style={styles.page}>
@@ -119,9 +145,9 @@ function EventParams({ navigation, params, schools, departments, state }) {
       </ScrollView>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { eventData, schools, departments } = state;
   return {
     params: eventData.params,
@@ -134,39 +160,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(EventParams);
-
-const tagPropType = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  displayName: PropTypes.string.isRequired,
-});
-
-EventParams.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  params: PropTypes.shape().isRequired,
-  schools: PropTypes.arrayOf(tagPropType).isRequired,
-  departments: PropTypes.arrayOf(tagPropType).isRequired,
-  tags: PropTypes.arrayOf(tagPropType).isRequired,
-  groups: PropTypes.arrayOf(tagPropType).isRequired,
-  state: PropTypes.shape({
-    schools: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    departments: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    tags: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-    groups: PropTypes.shape({
-      info: PropTypes.shape({}).isRequired,
-    }).isRequired,
-  }).isRequired,
-};
+export default connect(mapStateToProps)(EventParamsScreen);

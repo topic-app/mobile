@@ -1,49 +1,50 @@
 import React from 'react';
-import { Text, Title, Divider, List, useTheme, Card, Button } from 'react-native-paper';
-import { View, Image, ActivityIndicator, Animated, Platform, Share } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  View,
+  Image,
+  ActivityIndicator,
+  Animated,
+  Platform,
+  Share,
+  ScrollView,
+} from 'react-native';
+import { Text, Title, Card, Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment';
 
 import {
-  Article,
-  ArticlePreload,
   State,
   CommentRequestState,
   Account,
-  ArticleRequestState,
+  EventRequestState,
   Comment,
   Event,
-  ArticleListItem,
   Preferences,
   EventPreload,
   EventListItem,
 } from '@ts/types';
 import {
   ErrorMessage,
-  Content,
   TagList,
-  InlineCard,
-  CategoryTitle,
   AnimatingHeader,
-  Illustration,
   ReportModal,
   CustomTabView,
 } from '@components/index';
-import { getImageUrl, handleUrl } from '@utils/index';
+import { useTheme, getImageUrl, handleUrl } from '@utils/index';
+import getStyles from '@styles/Styles';
 import { eventReport, eventVerificationApprove } from '@redux/actions/apiActions/events';
 import { fetchEvent, fetchEventVerification } from '@redux/actions/api/events';
-import { addEventRead, addEventToList } from '@redux/actions/contentData/events';
+import { addEventRead } from '@redux/actions/contentData/events';
 import { updateComments } from '@redux/actions/api/comments';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
-import getStyles from '@styles/Styles';
 
-import CommentInlineCard from '../../components/Comment';
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
-import getArticleStyles from '../styles/Styles';
+import getEventStyles from '../styles/Styles';
+
 import type { EventDisplayStackParams } from '../index';
 import EventDisplayDescription from './Description';
 import EventDisplayProgram from './Program';
@@ -53,7 +54,7 @@ import EventDisplayContact from './Contact';
 type Navigation = StackNavigationProp<EventDisplayStackParams, 'Display'>;
 type Route = RouteProp<EventDisplayStackParams, 'Display'>;
 type CombinedReqState = {
-  articles: ArticleRequestState;
+  events: EventRequestState;
   comments: CommentRequestState;
 };
 
@@ -89,7 +90,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
 
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
+  const articleStyles = getEventStyles(theme);
   const { colors } = theme;
 
   let event: Event | undefined | null;
@@ -106,7 +107,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           search.find((a) => a._id === id) ||
           null;
   }
-  const articleComments = comments.filter((c) => c.parent === event?._id);
+  const eventComments = comments.filter((c) => c.parent === event?._id);
 
   const fetch = () => {
     if (!(useLists && lists?.some((l: EventListItem) => l.items?.some((i) => i._id === id)))) {
@@ -127,7 +128,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
     updateComments('initial', { parentId: id });
   }, [null]);
 
-  const scrollViewRef = React.useRef(null);
+  const scrollViewRef = React.createRef<ScrollView>();
 
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
   const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
@@ -161,18 +162,18 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
               : 'Événements')
           }
         />
-        {reqState.articles.info.error && (
+        {reqState.events.info.error && (
           <ErrorMessage
             type="axios"
             strings={{
               what: 'la récupération de cet événement',
               contentSingular: "L'événement",
             }}
-            error={reqState.articles.info.error}
+            error={reqState.events.info.error}
             retry={fetch}
           />
         )}
-        {reqState.articles.info.loading && (
+        {reqState.events.info.loading && (
           <View style={styles.container}>
             <ActivityIndicator size="large" color={colors.primary} />
           </View>
@@ -237,23 +238,23 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
               ]
         }
       >
-        {reqState.articles.info.error && (
+        {reqState.events.info.error && (
           <ErrorMessage
             type="axios"
             strings={{
               what: 'la récupération de cet article',
               contentSingular: "L'article",
             }}
-            error={reqState.articles.info.error}
+            error={reqState.events.info.error}
             retry={() => fetchEvent(id)}
           />
         )}
       </AnimatingHeader>
       <Animated.ScrollView
+        ref={scrollViewRef}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
-        ref={scrollViewRef}
       >
         <View>
           {event.image && (
@@ -319,7 +320,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                   {
                     key: 'contact',
                     title: 'Contact',
-                    component: <EventDisplayContact event={event} />,
+                    component: <EventDisplayContact event={event} navigation={navigation} />,
                   },
                 ]}
               />

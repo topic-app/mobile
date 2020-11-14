@@ -1,5 +1,12 @@
-import { request } from '@utils/index';
-import { State, Item } from '@ts/types';
+import { request, logger } from '@utils/index';
+import {
+  State,
+  Item,
+  ElementStringPlural,
+  ElementStringPluralMap,
+  DepartmentsState,
+  SchoolsState,
+} from '@ts/types';
 
 /**
  * @docs actionCreators
@@ -14,12 +21,12 @@ import { State, Item } from '@ts/types';
  *
  * @returns Action
  */
-type updateCreatorProps = {
+type updateCreatorProps<T extends keyof ElementStringPluralMap> = {
   update: string;
   stateUpdate: string;
   url: string;
-  sort?: (data: Item[]) => Item[];
-  dataType: string;
+  sort?: (data: ElementStringPluralMap[T][]) => ElementStringPluralMap[T][];
+  dataType: T;
   stateName?: string;
   type?: string;
   params?: object;
@@ -30,7 +37,7 @@ type updateCreatorProps = {
   auth?: boolean;
 };
 
-function updateCreator({
+function updateCreator<T extends ElementStringPlural>({
   update,
   stateUpdate,
   url,
@@ -44,80 +51,91 @@ function updateCreator({
   nextNum = 10,
   initialNum = 20,
   auth = false,
-}: updateCreatorProps) {
+}: updateCreatorProps<T>) {
   return (dispatch: (action: any) => void, getState: () => State) => {
     let lastId;
     let number = initialNum;
-    const state = {
+    dispatch({
       type: stateUpdate,
-      data: {},
-    };
-    state.data[stateName] = {
-      loading: {
-        initial: type === 'initial',
-        refresh: type === 'refresh',
-        next: type === 'next',
+      data: {
+        [stateName]: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
+        },
       },
-      success: null,
-      error: null,
-    };
-    dispatch(state);
+    });
     if (type === 'next') {
       const elements = getState()[dataType][listName];
       if (elements.length !== 0) {
         lastId = elements[elements.length - 1]._id;
         number = nextNum;
       } else {
-        console.log(
+        logger.warn(
           `Warning: Requested state update type 'next' in updateCreator but no elements were found in redux db '${dataType}'`,
         );
       }
     }
     request(url, 'get', { lastId, number, ...params }, auth)
       .then((result) => {
-        let data: Array<{ _id: string }>;
+        let data: Array<Item>;
         if (!clear) {
-          const dbData = getState()[dataType][listName] || []; // The old elements, in redux db
+          const dbData = getState()[dataType][listName] || []; // The old elements, in redux db // to actually have type, add as Array<ElementStringPluralMap[typeof dataType]>
           data = [...dbData]; // Shallow copy of dbData to get rid of reference
-          result.data[dataType].forEach((a: Item) => {
-            const element = { ...a, preload: true };
-            const index = data.findIndex((p) => p._id === a._id);
-            if (index !== -1) {
-              data[index] = element;
-            } else {
-              data.push(element);
-            }
-          });
+          if (result.data) {
+            result.data[dataType].forEach((a: Item) => {
+              const element = { ...a, preload: true };
+              const index = data.findIndex((p) => p._id === a._id);
+              if (index !== -1) {
+                data[index] = element;
+              } else {
+                data.push(element);
+              }
+            });
+          }
           data = sort(data);
         } else {
-          data = result.data[dataType];
+          data = result.data ? result.data[dataType] : [];
         }
         dispatch({
           type: update,
           data,
         });
-        state.data[stateName] = {
-          loading: {
-            initial: false,
-            refresh: false,
-            next: false,
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: true,
+              error: null,
+            },
           },
-          success: true,
-          error: null,
-        };
-        return dispatch(state);
+        });
       })
       .catch((error) => {
-        state.data[stateName] = {
-          loading: {
-            initial: false,
-            refresh: false,
-            next: false,
+        console.error(error);
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
+            },
           },
-          success: false,
-          error,
-        };
-        return dispatch(state);
+        });
       });
   };
 }
@@ -136,7 +154,7 @@ function updateCreator({
 type fetchCreatorProps = {
   update: string;
   stateUpdate: string;
-  dataType: string;
+  dataType: ElementStringPlural;
   url: string;
   params: object;
   stateName?: string;
@@ -155,44 +173,55 @@ function fetchCreator({
 }: fetchCreatorProps) {
   return (dispatch: (action: any) => void, getState: () => State) => {
     return new Promise((resolve, reject) => {
-      const state = {
+      dispatch({
         type: stateUpdate,
-        data: {},
-      };
-      state.data[stateName] = {
-        loading: true,
-        success: null,
-        error: null,
-      };
-
-      dispatch(state);
+        data: {
+          [stateName]: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
       request(url, 'get', params, auth)
         .then((result) => {
-          const data = result.data[dataType][0];
+          const data = result.data && result.data[dataType][0];
           dispatch({
             type: update,
             data: useArray
               ? [
-                  ...(getState()[dataType]?.items || []),
-                  ...(getState()[dataType]?.items?.includes(data?._id) ? [] : [data]),
+                  ...((getState()[dataType] as SchoolsState | DepartmentsState)?.items || []),
+                  ...((getState()[dataType] as SchoolsState | DepartmentsState)?.items?.includes(
+                    data?._id,
+                  )
+                    ? []
+                    : [data]),
                 ] // HACK: Whatever
               : data,
           });
-          state.data[stateName] = {
-            loading: false,
-            success: true,
-            error: null,
-          };
-          dispatch(state);
+          dispatch({
+            type: stateUpdate,
+            data: {
+              [stateName]: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
           resolve();
         })
         .catch((err) => {
-          state.data[stateName] = {
-            loading: false,
-            success: false,
-            error: err,
-          };
-          dispatch(state);
+          dispatch({
+            type: stateUpdate,
+            data: {
+              [stateName]: {
+                loading: false,
+                success: false,
+                error: err,
+              },
+            },
+          });
           reject();
         });
     });
@@ -212,11 +241,17 @@ function clearCreator({
   data = true,
   search = true,
   verification = true,
+  following = true,
+  items = true,
+  templates = true,
 }: {
   clear: string;
-  data: boolean;
-  search: boolean;
+  data?: boolean;
+  search?: boolean;
   verification?: boolean;
+  following?: boolean;
+  items?: boolean;
+  templates?: boolean;
 }) {
   return {
     type: clear,
@@ -224,6 +259,9 @@ function clearCreator({
       search,
       data,
       verification,
+      following,
+      items,
+      templates,
     },
   };
 }

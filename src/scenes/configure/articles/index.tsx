@@ -1,21 +1,18 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
 import ArticleConfigure from './views/Configure';
 
-const Stack = createNativeStackNavigator();
+export type ArticleListsStackParams = {
+  Configure: undefined;
+};
+
+const Stack = createNativeStackNavigator<ArticleListsStackParams>();
 
 function ArticleListsStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Configure">
-      <Stack.Screen
-        name="Configure"
-        component={ArticleConfigure}
-        options={({ route }) => ({
-          headerShown: false,
-        })}
-      />
+    <Stack.Navigator initialRouteName="Configure" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Configure" component={ArticleConfigure} />
     </Stack.Navigator>
   );
 }

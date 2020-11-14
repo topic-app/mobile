@@ -1,24 +1,25 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { List, Text, Divider, useTheme } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { View, TouchableWithoutFeedback, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
+import { List, Text, Divider } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import { ArticleReadItem, Preferences } from '@ts/types';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { ErrorMessage, InlineCard, PlatformTouchable } from '@components/index';
+import { ArticleReadItem, Preferences, State } from '@ts/types';
+import { PlatformTouchable } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { deleteArticleRead } from '@redux/actions/contentData/articles';
 
+import { ArticleHistoryStackParams } from '../index';
+
 type ArticleHistoryProps = {
-  navigation: any;
+  navigation: StackNavigationProp<ArticleHistoryStackParams, 'Params'>;
   read: ArticleReadItem[];
   preferences: Preferences;
 };
 
-function ArticleHistory({ navigation, read, preferences }: ArticleHistoryProps) {
+const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, preferences }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -26,7 +27,7 @@ function ArticleHistory({ navigation, read, preferences }: ArticleHistoryProps) 
     return (
       <View style={styles.page}>
         <View style={styles.centerIllustrationContainer}>
-          <Text>L'historique est désactivé</Text>
+          <Text>L&amp;historique est désactivé</Text>
         </View>
       </View>
     );
@@ -41,9 +42,11 @@ function ArticleHistory({ navigation, read, preferences }: ArticleHistoryProps) 
           <List.Item
             title={item.title || 'Article inconnu'}
             description={
-              `Article · ${item.marked ? 'Marqué comme lu' : 'Lu'} le ${moment(item.date).format(
-                'dddd DD MMMM',
-              )} à ${moment(item.date).format('hh:mm')}` || 'Date inconnue'
+              item.date
+                ? `Article · ${item.marked ? 'Marqué comme lu' : 'Lu'} le ${moment(
+                    item.date,
+                  ).format('dddd DD MMMM')} à ${moment(item.date).format('hh:mm')}`
+                : 'Date inconnue'
             }
             right={() => (
               <View onStartShouldSetResponder={() => true}>
@@ -79,9 +82,9 @@ function ArticleHistory({ navigation, read, preferences }: ArticleHistoryProps) 
       />
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { articleData, preferences } = state;
   return {
     read: articleData.read,

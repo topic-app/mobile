@@ -8,10 +8,8 @@ import {
   CLEAR_PETITIONS,
 } from '@ts/redux';
 
-import data from '../../../data/petitionListData.json';
-
 const initialState: PetitionsState = {
-  data,
+  data: [],
   search: [],
   item: null,
   state: {
@@ -43,10 +41,10 @@ const initialState: PetitionsState = {
 /**
  * @docs reducers
  * Reducer pour les petitions
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['UPDATE_PETITIONS', 'CLEAR_PETITIONS'] Le type d'action à effectuer: mettre à jour les petitions avec action.data ou vider la database
- * @param {object} action.data Les données à remplacer dans la database redux
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Le type d'action à effectuer: mettre à jour les petitions avec action.data ou vider la database
+ * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
 function petitionReducer(state = initialState, action: PetitionsActionTypes): PetitionsState {

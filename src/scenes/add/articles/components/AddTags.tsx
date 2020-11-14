@@ -1,50 +1,28 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import {
-  Button,
-  RadioButton,
-  HelperText,
-  List,
-  Text,
-  Checkbox,
-  useTheme,
-  Divider,
-  ProgressBar,
-  Card,
-  Chip,
-} from 'react-native-paper';
+import { Button, Text, Divider, Card } from 'react-native-paper';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { updateTags, searchTags } from '@redux/actions/api/tags';
+import { Account, State, ArticleCreationData, TagRequestState, TagPreload } from '@ts/types';
 import {
   StepperViewPageProps,
   ErrorMessage,
-  ChipBase,
   TextChip,
   CollapsibleView,
   CategoryTitle,
   Searchbar,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-  Account,
-  State,
-  ArticleCreationData,
-  Location,
-  Department,
-  School,
-  RequestState,
-  Tag,
-  TagRequestState,
-  TagPreload,
-} from '@ts/types';
 import getStyles from '@styles/Styles';
-import TagAddModal from './TagAddModal';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { updateTags, searchTags } from '@redux/actions/api/tags';
 
+import TagAddModal from './TagAddModal';
 import getAuthStyles from '../styles/Styles';
 
-type Props = StepperViewPageProps & {
+type ArticleAddPageTagsProps = StepperViewPageProps & {
   account: Account;
   creationData: ArticleCreationData;
   navigation: any;
@@ -54,36 +32,27 @@ type Props = StepperViewPageProps & {
   navigate: () => void;
 };
 
-type ReduxLocation = {
-  schools: string[];
-  departments: string[];
-  global: boolean;
-};
-
-const ArticleAddPageTags: React.FC<Props> = ({
+const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   prev,
   navigate,
   account,
-  creationData,
-  navigation,
   tagsData,
   tagsSearch,
   state,
 }) => {
-  const [selectedTags, setSelectedTags] = React.useState([]);
-  const [selectedData, setSelectedData] = React.useState([]);
+  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
+  const [selectedData, setSelectedData] = React.useState<TagPreload[]>([]);
   const [searchText, setSearchText] = React.useState('');
 
   const [tagAddModalVisible, setTagAddModalVisible] = React.useState(false);
-  const [tagName, setTagName] = React.useState(null);
+  const [tagName, setTagName] = React.useState<string>('');
 
   const submit = () => {
     updateArticleCreationData({ tags: selectedTags });
     navigate();
   };
 
-  const addNewTag = (tag: { _id: string; name: string; color: string }) => {
-    console.log(JSON.stringify(tag));
+  const addNewTag = (tag: { _id: string; displayName: string; color: string }) => {
     setSelectedTags([...selectedTags, tag._id]);
     setSelectedData([...selectedData, tag]);
   };
@@ -167,11 +136,15 @@ const ArticleAddPageTags: React.FC<Props> = ({
     ) : null;
 
   const renderItem = React.useCallback(
-    ({ item = { name: 'INCONNU' } }) => {
+    ({
+      item = { _id: shortid(), displayName: 'INCONNU', color: '#ffffff' },
+    }: {
+      item: TagPreload;
+    }) => {
       return (
         <View style={{ marginHorizontal: 5, alignItems: 'flex-start' }}>
           <TextChip
-            title={item.name}
+            title={item.displayName}
             containerStyle={{ borderColor: item.color }}
             onPress={() => {
               if (selectedTags.includes(item._id)) {
@@ -194,7 +167,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
     <View style={articleStyles.formContainer}>
       <View>
         <View>
-          <View style={articleStyles.searchContainer}>
+          <View>
             <Searchbar
               ref={inputRef}
               placeholder={`Rechercher ${
@@ -211,6 +184,10 @@ const ArticleAddPageTags: React.FC<Props> = ({
               type="axios"
               error={searchText === '' ? state.list.error : state.search?.error}
               retry={fetch}
+              strings={{
+                what: 'la récupération des tags',
+                contentPlural: 'Les tags',
+              }}
             />
           )}
         </View>
@@ -237,7 +214,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
         </View>
         <FlatList
           horizontal
-          data={selectedTags.map((t) => selectedData.find((u) => u?._id === t))}
+          data={selectedTags.map((t) => selectedData.find((u) => u?._id === t)!)}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(i) => i?._id}
@@ -269,7 +246,7 @@ const ArticleAddPageTags: React.FC<Props> = ({
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}
-            onPress={() => prev()}
+            onPress={prev}
             style={{ flex: 1, marginRight: 5 }}
           >
             Retour
@@ -296,10 +273,9 @@ const ArticleAddPageTags: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, articleData, tags } = state;
+  const { account, tags } = state;
   return {
     account,
-    creationData: articleData.creationData,
     tagsData: tags.data,
     tagsSearch: tags.search,
     state: tags.state,

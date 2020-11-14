@@ -12,6 +12,8 @@ import {
 const initialState: EventsState = {
   dataUpcoming: [],
   dataPassed: [],
+  creationData: {},
+  verification: [],
   search: [],
   item: null,
   state: {
@@ -43,10 +45,10 @@ const initialState: EventsState = {
 /**
  * @docs reducers
  * Reducer pour les events
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['UPDATE_EVENTS', 'CLEAR_EVENTS'] Le type d'action à effectuer: mettre à jour les events avec action.data ou vider la database
- * @param {object} action.data Les données à remplacer dans la database redux
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Le type d'action à effectuer: mettre à jour les events avec action.data ou vider la database
+ * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
 function eventReducer(state = initialState, action: EventsActionTypes): EventsState {
@@ -78,9 +80,11 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
       };
     case CLEAR_EVENTS:
       return {
-        dataUpcoming: action.data.data ? [] : state.data,
-        dataPassed: action.data.data ? [] : state.data,
+        dataUpcoming: action.data.data ? [] : state.dataUpcoming,
+        dataPassed: action.data.data ? [] : state.dataPassed,
         search: action.data.search ? [] : state.search,
+        verification: action.data.verification ? [] : state.verification,
+        creationData: state.creationData,
         item: null,
         state: state.state,
       };

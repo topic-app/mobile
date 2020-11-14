@@ -1,17 +1,20 @@
-export type RequestState = {
+type RequestStateBase = {
   success: boolean | null;
   error: null | {
     value: string;
     message: string;
     extraMessage: string;
   };
+};
+
+export type RequestState = RequestStateBase & {
   loading: boolean;
 };
 
-export type RequestStateComplex = RequestState & {
+export type RequestStateComplex = RequestStateBase & {
   loading: {
     initial: boolean;
-    next: boolean;
+    next?: boolean;
     refresh?: boolean;
   };
 };
@@ -31,7 +34,7 @@ export type PetitionRequestState = StandardRequestState;
 export type PlaceRequestState = StandardRequestState & { near: RequestStateComplex };
 export type SchoolRequestState = StandardRequestState & { near: RequestStateComplex };
 export type TagRequestState = StandardRequestState;
-export type UserRequestState = StandardRequestState;
+export type UserRequestState = StandardRequestState & { follow: RequestState };
 export type DepartmentRequestState = StandardRequestState;
 export type EventRequestState = StandardRequestState;
 export type GroupRequestState = StandardRequestState & {
@@ -42,6 +45,7 @@ export type GroupRequestState = StandardRequestState & {
   member_reject: RequestState;
   member_leave: RequestState;
   modify: RequestState;
+  templates: RequestStateComplex;
 };
 
 export type LegalRequestState = {
@@ -64,6 +68,7 @@ export type AccountRequestState = {
   fetchGroups: RequestState;
   fetchAccount: RequestState;
   fetchWaitingGroups: RequestState;
+  updateProfile: RequestState;
 };
 
 export type LocationRequestState = {

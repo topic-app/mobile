@@ -1,14 +1,13 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem, Account } from '@ts/types';
-import { Divider, Button, Text, Card, useTheme, ThemeProvider } from 'react-native-paper';
-import { View, Platform, TextInput, ActivityIndicator } from 'react-native';
+import { ModalProps, State, Account, CommentRequestState } from '@ts/types';
+import { Divider, Text } from 'react-native-paper';
+import { View, TextInput, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { config } from '@root/app.json';
 
-import { CollapsibleView, CategoriesList, PlatformIconButton, Modal } from '@components/index';
-import getStyles from '@styles/Styles';
+import { Config } from '@constants/index';
+import { CategoriesList, PlatformIconButton, Modal } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import getArticleStyles from './styles/Styles';
-import { logger } from '@root/src/utils';
 
 type CommentPublisher = {
   key: string;
@@ -24,29 +23,29 @@ type CommentPublisher = {
 type AddCommentModalProps = ModalProps & {
   id: string;
   account: Account;
+  reqState: CommentRequestState;
 };
 
-function AddCommentModal({
+const AddCommentModal: React.FC<AddCommentModalProps> = ({
   visible,
   setVisible,
   account,
   reqState,
   id,
   add,
-}: AddCommentModalProps) {
+}) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [commentText, setCommentText] = React.useState('');
   const [publisher, setPublisher] = React.useState('user');
-  const tooManyChars = commentText.length > config.comments.maxCharacters;
+  const tooManyChars = commentText.length > Config.content.comments.maxCharacters;
 
   let commentCharCountColor = colors.softContrast;
   if (tooManyChars) {
     commentCharCountColor = colors.error;
-  } else if (commentText.length > 0.9 * config.comments.maxCharacters) {
+  } else if (commentText.length > 0.9 * Config.content.comments.maxCharacters) {
     commentCharCountColor = colors.warning;
   }
 
@@ -87,7 +86,7 @@ function AddCommentModal({
           setCommentText('');
           setVisible(false);
         })
-        .catch((e) => logger.error('Failed to add comment to article', e));
+        .catch((e) => logger.warn('Failed to add comment to article', e));
     }
   };
 
@@ -131,7 +130,7 @@ function AddCommentModal({
           }}
         >
           <Text style={{ color: commentCharCountColor }}>
-            {commentText.length}/{config.comments.maxCharacters}
+            {commentText.length}/{Config.content.comments.maxCharacters}
           </Text>
 
           {reqState.comments.add.loading ? (
@@ -152,7 +151,7 @@ function AddCommentModal({
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { account } = state;

@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Event } from '@ts/types';
+import { Event, Item } from '@ts/types';
 import {
   UPDATE_EVENTS_UPCOMING_DATA,
   UPDATE_EVENTS_VERIFICATION,
@@ -12,11 +12,15 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateAscSort = (data: Event[]) =>
-  data.sort((a, b) => (new Date(a.duration?.start) > new Date(b.duration?.start) ? 1 : -1));
+const dateAscSort = (data: Item[]) =>
+  (data as Event[]).sort((a, b) =>
+    new Date(a.duration?.start) > new Date(b.duration?.start) ? 1 : -1,
+  );
 
-const dateDescSort = (data: Event[]) =>
-  data.sort((a, b) => (new Date(a.duration?.start) > new Date(b.duration?.start) ? -1 : 1));
+const dateDescSort = (data: Item[]) =>
+  (data as Event[]).sort((a, b) =>
+    new Date(a.duration?.start) > new Date(b.duration?.start) ? -1 : 1,
+  );
 
 /**
  * @docs actions
@@ -70,7 +74,6 @@ async function searchEvents(
   search = true,
   useDefaultParams = false,
 ) {
-  console.log(`Search articles ${JSON.stringify(params)}`);
   await Store.dispatch(
     updateCreator({
       update: UPDATE_EVENTS_SEARCH,

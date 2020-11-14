@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
 
 const instance = axios.create({
-  baseURL: config.api.url,
-  timeout: 10000,
+  baseURL: Config.api.baseUrl,
+  timeout: Config.api.timeout,
 });
 
 export default instance;

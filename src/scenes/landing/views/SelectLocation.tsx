@@ -6,9 +6,8 @@ import {
   FlatList,
   TextInput as RNTextInput,
   ActivityIndicator,
-  Linking,
 } from 'react-native';
-import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
+import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import * as Location from 'expo-location';
@@ -23,14 +22,9 @@ import {
   DepartmentRequestState,
   State,
   LocationRequestState,
+  ReduxLocation as OldReduxLocation,
   Account,
 } from '@ts/types';
-import { logger } from '@utils/index';
-import { updateLocation } from '@redux/actions/data/location';
-import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
-import { updateEventParams } from '@redux/actions/contentData/events';
-import { updateSchools, updateNearSchools, searchSchools } from '@redux/actions/api/schools';
-import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
   TranslucentStatusBar,
   Illustration,
@@ -40,6 +34,12 @@ import {
   ChipAddList,
   Searchbar,
 } from '@components/index';
+import { useTheme, logger } from '@utils/index';
+import { updateLocation } from '@redux/actions/data/location';
+import { updateArticleParams } from '@redux/actions/contentData/articles';
+import { updateEventParams } from '@redux/actions/contentData/events';
+import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
+import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 
 import getStyles from '@styles/Styles';
 
@@ -48,11 +48,7 @@ import getLandingStyles from '../styles/Styles';
 
 type Navigation = StackNavigationProp<LandingStackParams, 'SelectLocation'>;
 
-// TODO: Externalize into @ts/redux
-type ReduxLocation = {
-  global: boolean;
-  schools: string[];
-  departments: string[];
+type ReduxLocation = OldReduxLocation & {
   schoolData: SchoolPreload[];
   departmentData: DepartmentPreload[];
 };
@@ -165,7 +161,7 @@ function getData(
   return data;
 }
 
-type Props = {
+type WelcomeLocationProps = {
   schoolsNear: (School | SchoolPreload)[];
   departments: (Department | DepartmentPreload)[];
   schoolsSearch: SchoolPreload[];
@@ -181,7 +177,7 @@ type Props = {
   account: Account;
 };
 
-const WelcomeLocation: React.FC<Props> = ({
+const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   schoolsNear,
   departments,
   schoolsSearch,
@@ -241,7 +237,7 @@ const WelcomeLocation: React.FC<Props> = ({
           logger.info('Location denied, hiding location FAB');
         }
       })
-      .catch((e) => logger.error('Error while requesting user location permission', e));
+      .catch((e) => logger.warn('Error while requesting user location permission', e));
   }, []);
 
   const requestUserLocation = async () => {
@@ -251,7 +247,7 @@ const WelcomeLocation: React.FC<Props> = ({
       status = permission.status;
       canAskAgain = permission.canAskAgain;
     } catch (e) {
-      logger.error('Error while requesting user location', e);
+      logger.warn('Error while requesting user location', e);
     }
     if (status === 'granted') {
       const { coords } = await Location.getCurrentPositionAsync({

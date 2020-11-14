@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Department, UPDATE_DEPARTMENTS_ITEMS } from '@ts/types';
+import { UPDATE_DEPARTMENTS_ITEMS, Item } from '@ts/types';
 import {
   UPDATE_DEPARTMENTS_DATA,
   UPDATE_DEPARTMENTS_STATE,
@@ -10,7 +10,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Department[]) => data; // .sort((a, b) => a.name.localCompare(b.name));
+const nameAscSort = (data: Item[]) => data; // .sort((a, b) => a.name.localCompare(b.name));
 
 /**
  * @docs actions
@@ -86,8 +86,8 @@ async function fetchMultiDepartment(departmentIds: string[]) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearDepartments(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_DEPARTMENTS, data, search }));
+async function clearDepartments(data = true, search = true, items = true) {
+  await Store.dispatch(clearCreator({ clear: CLEAR_DEPARTMENTS, data, search, items }));
 }
 
 export {

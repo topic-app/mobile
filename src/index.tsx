@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator, TransitionPresets } from '@utils/stack';
+import { createNativeStackNavigator } from '@utils/stack';
 
 import Store from '@redux/store';
 
