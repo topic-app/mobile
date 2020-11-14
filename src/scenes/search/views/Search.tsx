@@ -16,6 +16,7 @@ import {
   EventRequestState,
   ArticleRequestState,
   TagPreload,
+  Account,
 } from '@ts/types';
 import {
   Searchbar,
@@ -28,6 +29,7 @@ import {
   ArticleCard,
   EventCard,
   ErrorMessage,
+  GroupCard,
 } from '@components/index';
 import { useTheme, useSafeAreaInsets } from '@utils/index';
 import getStyles from '@styles/Styles';
@@ -55,6 +57,7 @@ type SearchProps = {
     groups: GroupRequestState;
     users: UserRequestState;
   };
+  account: Account;
 };
 
 const Search: React.FC<SearchProps> = ({
@@ -66,6 +69,7 @@ const Search: React.FC<SearchProps> = ({
   users,
   tags,
   state,
+  account,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -150,7 +154,29 @@ const Search: React.FC<SearchProps> = ({
       data: groups,
       func: searchGroups,
       clear: clearGroups,
-      component: (_group: GroupPreload) => <View />,
+      component: (group: GroupPreload) => (
+        <GroupCard
+          group={group}
+          member={account.groups?.some((g) => g._id == group._id)}
+          following={account.accountInfo?.user?.data?.following?.groups?.some(
+            (g) => g._id === group._id,
+          )}
+          navigate={() =>
+            navigation.navigate('Main', {
+              screen: 'Display',
+              params: {
+                screen: 'Group',
+                params: {
+                  screen: 'Display',
+                  params: {
+                    id: group._id,
+                  },
+                },
+              },
+            })
+          }
+        />
+      ),
       state: state.groups.search,
     },
     {
@@ -292,10 +318,12 @@ const Search: React.FC<SearchProps> = ({
     return params;
   };
 
-  const submitSearch = () => {
+  const submitSearch = (text) => {
     collapseFilter();
     if (searchText !== '') {
-      categories.find((c) => c.key === filters.category)?.func('initial', searchText, getParams());
+      categories
+        .find((c) => c.key === filters.category)
+        ?.func('initial', text || searchText, getParams());
     }
   };
 
@@ -461,7 +489,7 @@ const Search: React.FC<SearchProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, events, groups, users, tags, schools, departments } = state;
+  const { articles, events, groups, users, tags, schools, departments, account } = state;
   return {
     articles: articles.search,
     events: events.search,
@@ -476,6 +504,7 @@ const mapStateToProps = (state: State) => {
       groups: groups.state,
       users: users.state,
     },
+    account,
   };
 };
 

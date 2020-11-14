@@ -12,15 +12,15 @@ import getStyles from '@styles/Styles';
 type MyGroupsListCardProps = {
   group: GroupPreload;
   navigate: StackNavigationProp<any, any>['navigate'];
-  member: boolean;
-  following: boolean;
+  member?: boolean;
+  following?: boolean;
 };
 
 const MyGroupsListCard: React.FC<MyGroupsListCardProps> = ({
   group,
   navigate,
-  member,
-  following,
+  member = false,
+  following = false,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
