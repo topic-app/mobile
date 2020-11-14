@@ -1,12 +1,13 @@
 {
+  "private": true,
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android --appId fr.topicapp.topic.dev",
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "jest --detectOpenHandles",
+    "lint": "eslint . --ext .js,.jsx,.json,.ts,.tsx",
     "clean": "npm run clean:npm && npm run clean:android",
     "clean:npm": "rm -rf node_modules && npm install",
     "clean:android": "cd android && ./gradlew clean && cd .."
@@ -30,8 +31,6 @@
     "@react-navigation/material-bottom-tabs": "^5.2.16",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
-    "@types/react-native-vector-icons": "^6.4.5",
-    "@types/react-redux": "^7.1.9",
     "axios": "^0.19.2",
     "babel-plugin-inline-import": "^3.0.0",
     "color": "^3.1.3",
@@ -50,7 +49,7 @@
     "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-native": "^0.63.3",
-    "react-native-device-info": "^5.6.3",
+    "react-native-device-info": "^7.0.2",
     "react-native-draggable-dynamic-flatlist": "^1.0.4",
     "react-native-exception-handler": "^2.10.8",
     "react-native-fit-image": "^1.5.5",
@@ -88,12 +87,16 @@
     "@expo/webpack-config": "^0.12.22",
     "@react-native-community/eslint-config": "^2.0.0",
     "@types/color": "^3.0.1",
+    "@types/jest": "^26.0.15",
     "@types/koa": "^2.11.6",
     "@types/lodash": "^4.14.165",
     "@types/randomcolor": "^0.5.5",
     "@types/react": "~16.9.23",
     "@types/react-dom": "~16.9.8",
     "@types/react-native": "^0.63.34",
+    "@types/react-native-vector-icons": "^6.4.6",
+    "@types/react-redux": "^7.1.11",
+    "@types/react-test-renderer": "^16.9.3",
     "@types/shortid": "0.0.29",
     "@types/showdown": "^1.9.3",
     "@typescript-eslint/eslint-plugin": "^3.9.0",
@@ -104,14 +107,10 @@
     "eslint-import-resolver-babel-module": "^5.1.2",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
-    "jest-expo": "~38.0.0",
+    "jest-expo": "^39.0.0",
     "metro-react-native-babel-preset": "^0.63.0",
     "nlf": "^2.1.1",
     "prompts": "^2.3.2",
     "typescript": "~3.9.5"
-  },
-  "jest": {
-    "preset": "react-native"
-  },
-  "private": true
+  }
 }
