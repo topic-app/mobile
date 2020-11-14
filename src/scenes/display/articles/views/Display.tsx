@@ -95,7 +95,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           Le {moment(article.date).format('LL')} à {moment(article.date).format('LT')}
         </Text>
       </View>
-      <TagList item={article} />
+      <TagList item={article} scrollable />
       {offline && (
         <View
           style={[
@@ -141,8 +141,8 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               }
               badge={
                 account.loggedIn &&
-                account.accountInfo.user &&
-                following?.users.includes(author._id)
+                account.accountInfo?.user &&
+                following?.users.some((u) => u._id == author._id)
                   ? 'account-heart'
                   : undefined
               }
@@ -172,10 +172,10 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
             }
             badge={
               account.loggedIn &&
-              account.accountInfo.user &&
-              following?.groups.includes(article.group?._id)
+              account.accountInfo?.user &&
+              following?.groups.some((g) => g._id == article.group?._id)
                 ? 'account-heart'
-                : null
+                : undefined
             }
             badgeColor={colors.valid}
           />
@@ -294,7 +294,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                         Liens contenus dans l'article:{'\n'}
                         {article?.content?.data
                           ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
-                          ?.map((u) => (
+                          ?.map((u: string) => (
                             <Text
                               key={shortid()}
                               style={{ textDecorationLine: 'underline' }}
@@ -396,7 +396,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
-  fetch;
+
   let article: Article | undefined | null;
   if (useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))) {
     article = lists
@@ -417,7 +417,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
       } else {
         fetchArticle(id).then(() => {
           if (preferences.history) {
-            addArticleRead(id, article?.title);
+            addArticleRead(id, article?.title || 'Article inconnu');
           }
           setCommentsDisplayed(true);
         });
@@ -435,7 +435,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const [isListModalVisible, setListModalVisible] = React.useState(false);
 
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
-  const [focusedComment, setFocusedComment] = React.useState(null);
+  const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
 
   const scrollY = new Animated.Value(0);
 
@@ -630,7 +630,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
       <ReportModal
         visible={isCommentReportModalVisible}
         setVisible={setCommentReportModalVisible}
-        contentId={focusedComment}
+        contentId={focusedComment || ''}
         report={commentReport}
         state={reqState.comments.report}
         navigation={navigation}

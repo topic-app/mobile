@@ -95,7 +95,7 @@ const Avatar: React.FC<AvatarProps> = ({
     AvatarComponent = <PaperAvatar.Image size={size} source={{ uri: imageUrl }} style={style} />;
   } else if (name) {
     AvatarComponent = <PaperAvatar.Text label={getInitials(name)} style={style} size={size} />;
-  } else {
+  } else if (icon) {
     // If we cannot use anything, use Topic's Icon as the default; subject to change
     AvatarComponent = (
       <PaperAvatar.Icon
@@ -105,6 +105,7 @@ const Avatar: React.FC<AvatarProps> = ({
         style={[{ backgroundColor: colors.disabled }, style]}
       />
     );
+  } else {
     AvatarComponent = <Illustration name="topic-icon" height={size} width={size} style={style} />;
   }
   if (onPress) {

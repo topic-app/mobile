@@ -311,6 +311,7 @@ export type ArticlePreload = {
   date: string;
   summary: string;
   image?: Image;
+  preload?: boolean;
   authors: AuthorPreload[];
   group: GroupPreload;
   location: Location;

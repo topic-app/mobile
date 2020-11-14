@@ -155,7 +155,7 @@ const DrawerContent: React.FC<BottomTabProps> = ({
         <View style={{ height: 70 }} />
         <Divider style={{ marginVertical: 10 }} />
         {items.map((item) => {
-          const onLinkPress = (data: any) => {
+          const onLinkPress = () => {
             setActive(item.key);
           };
           if (item.type === 'button') {
@@ -167,15 +167,17 @@ const DrawerContent: React.FC<BottomTabProps> = ({
                   justifyContent: drawerExpanded ? undefined : 'center',
                 }}
               >
-                <Link to={item.path}>
+                <Link to={item.path || ''}>
                   <PaperDrawer.Item
                     style={{
-                      ...(isActive(item.key) ? { backgroundColor: colors.activeDrawerItem } : {}),
+                      ...(isActive(item.key || '')
+                        ? { backgroundColor: colors.activeDrawerItem }
+                        : {}),
                       width: drawerExpanded ? 230 : 40,
                     }}
                     key={item.key}
                     icon={item.icon}
-                    label={drawerExpanded ? item.text : ''}
+                    label={drawerExpanded ? item.text || '' : ''}
                     onPress={onLinkPress}
                   />
                 </Link>
