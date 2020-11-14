@@ -7,8 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { State, Account } from '@ts/types';
-import { useTheme } from '@utils/index';
-import getLayout from '@utils/getLayout';
+import { useTheme, useLayout } from '@utils/index';
 
 import AndroidNavigator from './Root.android';
 import MainStackNavigator from './Main';
@@ -56,7 +55,7 @@ const DrawerContent: React.FC<BottomTabProps> = ({
   setDrawerExpanded,
   account,
 }) => {
-  let items = [
+  const items = [
     {
       key: 'articles',
       type: 'button',
@@ -237,8 +236,10 @@ export type RootNavParams = {
 const Drawer = createDrawerNavigator<RootNavParams>();
 
 function RootNavigator() {
-  if (getLayout() === 'desktop') {
-    let [drawerExpanded, setDrawerExpanded] = React.useState(false);
+  if (useLayout() === 'desktop') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [drawerExpanded, setDrawerExpanded] = React.useState(false);
+
     return (
       <Drawer.Navigator
         initialRouteName="Main"

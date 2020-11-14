@@ -1,7 +1,7 @@
 import { useWindowDimensions, Platform } from 'react-native';
 
-const getLayout = () => {
-  const width = useWindowDimensions().width;
+const useLayout = () => {
+  const { width } = useWindowDimensions();
   if (width > 750 && Platform.OS === 'web') {
     return 'desktop';
   } else {
@@ -9,4 +9,4 @@ const getLayout = () => {
   }
 };
 
-export default getLayout;
+export default useLayout;

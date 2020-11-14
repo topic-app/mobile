@@ -144,7 +144,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ navigate, petition }) => {
           </View>
         </View>
         +
-        <PetitionChart voteData={petition.voteData} />
+        <PetitionChart type={petition.type} voteData={petition.cache} />
       </Card.Content>
 
       <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>

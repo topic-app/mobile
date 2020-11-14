@@ -174,7 +174,8 @@ const ReportModal: React.FC<ReportModalProps> = ({
                         contentId,
                         `${reportOption}${reportText ? `- ${reportText}` : ''}`,
                       ).then(() => {
-                        setReportText(''), setVisible(false);
+                        setReportText('');
+                        setVisible(false);
                       })
                     }
                     style={{ flex: 1 }}

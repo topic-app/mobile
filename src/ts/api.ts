@@ -135,17 +135,25 @@ export type Address = {
   departments: DepartmentPreload[];
 };
 
-export type Avatar = {
-  type: 'color' | 'gradient' | 'image';
-  color: string;
-  gradient: {
-    start: string;
-    end: string;
-    angle: number;
-  };
-  text: string;
-  image: Image;
-};
+export type Avatar =
+  | {
+      type: 'color';
+      color: string;
+      text: string;
+    }
+  | {
+      type: 'gradient';
+      gradient: {
+        start: string;
+        end: string;
+        angle: number;
+      };
+      text: string;
+    }
+  | {
+      type: 'image';
+      image: Image;
+    };
 
 export type UserPreload = {
   _id: string;

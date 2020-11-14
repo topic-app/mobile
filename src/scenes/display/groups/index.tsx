@@ -6,15 +6,16 @@ import GroupDescription from './views/Description';
 
 export type GroupDisplayStackParams = {
   Display: { id: string };
-  // Description: { id: string };
+  Description: { id: string };
 };
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<GroupDisplayStackParams>();
 
 function GroupDisplayStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={GroupDisplay} />
+      <Stack.Screen name="Description" component={GroupDescription} />
     </Stack.Navigator>
   );
 }

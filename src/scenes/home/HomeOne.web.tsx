@@ -1,12 +1,12 @@
 import React from 'react';
 
-import getLayout from '@utils/getLayout';
+import { useLayout } from '@utils/index';
 
 import AndroidNavigator from './HomeOne.android';
 import IosNavigator from './HomeOne.ios';
 
 const HomeOneNavigator = () => {
-  if (getLayout() === 'desktop') {
+  if (useLayout() === 'desktop') {
     return <IosNavigator />;
   } else {
     return <AndroidNavigator />;

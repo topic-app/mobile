@@ -3,7 +3,6 @@ import {
   View,
   Platform,
   Animated,
-  TextInput,
   FlatList,
   ViewStyle,
   StyleProp,
@@ -113,49 +112,6 @@ const TextChip: React.FC<TextChipProps> = ({ title, ...rest }) => {
   return (
     <ChipBase {...rest}>
       <Text style={{ paddingLeft: 6, fontSize: 15 }}>{title}</Text>
-    </ChipBase>
-  );
-};
-
-type TextInputChipProps = {
-  onSubmit: (tagText: string) => void;
-  endInput: () => void;
-  placeholder?: string;
-};
-
-const TextInputChip: React.FC<TextInputChipProps> = ({
-  onSubmit,
-  endInput,
-  placeholder,
-  ...rest
-}) => {
-  const textInputRef = React.useRef<TextInput>(null);
-  const [tagText, setTagText] = React.useState('');
-
-  const onFinish = () => {
-    if (tagText === '') {
-      endInput();
-    } else {
-      onSubmit(tagText);
-      endInput();
-    }
-  };
-
-  return (
-    <ChipBase {...rest}>
-      <TextInput
-        ref={textInputRef}
-        style={{ fontSize: 15, paddingVertical: 3 }}
-        autoFocus
-        blurOnSubmit
-        placeholder={placeholder}
-        autoCapitalize="none"
-        value={tagText}
-        onChangeText={setTagText}
-        onSubmitEditing={onFinish}
-        onEndEditing={onFinish}
-        onBlur={onFinish} // Debatable
-      />
     </ChipBase>
   );
 };

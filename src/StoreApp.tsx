@@ -7,13 +7,13 @@ import { AppLoading } from 'expo';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 import { Preferences, State } from '@ts/types';
+import { logger } from '@utils/index';
 import themes from '@styles/Theme';
 import { fetchLocationData } from '@redux/actions/data/location';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 
 import screens from './screens';
 import AppNavigator from './index';
-import { logger } from '@utils/index';
 
 type Props = {
   preferences: Preferences;
