@@ -1,6 +1,6 @@
 import { Config } from '@constants/index';
+import { logger } from '@root/src/utils';
 import {
-  Account,
   LOGOUT,
   LOGIN,
   UPDATE_ACCOUNT_USER,
@@ -11,19 +11,10 @@ import {
   UPDATE_ACCOUNT_WAITING_GROUPS,
   UPDATE_ACCOUNT_CREATION_DATA,
   AccountActionTypes,
-} from '@ts/types';
-/**
- * @docs reducers
- * Reducer pour les preferences
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['SET_PREF', 'CLEAR_PREF', 'CLEAR_ALL_PREFS'] Stocker des parametres, en supprimer un, supprimer tout
- * @param {object} action.data.prefs Les parametres à stocker
- * @param {string} action.data.pref La clé du paramètre à supprimer
- * @returns Nouveau state
- */
+  AccountState,
+} from '@ts/redux';
 
-const initialState: Account = {
+const initialState: AccountState = {
   ...Config.defaults.account,
   groups: [],
   creationData: {},
@@ -69,7 +60,15 @@ const initialState: Account = {
   },
 };
 
-function accountReducer(state = initialState, action: AccountActionTypes) {
+/**
+ * @docs reducers
+ * Reducer pour le compte
+ * @param state Contient le contenu de la database redux
+ * @param action.type Mettre à jour les données de création de compte,
+ *                    mettre à jour les permissions, etc
+ * @returns Nouveau state
+ */
+function accountReducer(state = initialState, action: AccountActionTypes): AccountState {
   switch (action.type) {
     case UPDATE_ACCOUNT_CREATION_DATA:
       return {
@@ -87,25 +86,41 @@ function accountReducer(state = initialState, action: AccountActionTypes) {
         state: { ...state.state, ...action.data },
       };
     case UPDATE_ACCOUNT_GROUPS:
-      return {
-        ...state,
-        groups: action.data,
-      };
+      if (state.loggedIn) {
+        return {
+          ...state,
+          groups: action.data,
+        };
+      }
+      logger.warn('accountReducer: Attempted to update account groups while not logged in');
+      return state;
     case UPDATE_ACCOUNT_WAITING_GROUPS:
-      return {
-        ...state,
-        waitingGroups: action.data,
-      };
+      if (state.loggedIn) {
+        return {
+          ...state,
+          waitingGroups: action.data,
+        };
+      }
+      logger.warn('accountReducer: Attempted to update account waiting groups while not logged in');
+      return state;
     case UPDATE_ACCOUNT_PERMISSIONS:
-      return {
-        ...state,
-        permissions: action.data,
-      };
+      if (state.loggedIn) {
+        return {
+          ...state,
+          permissions: action.data,
+        };
+      }
+      logger.warn('accountReducer: Attempted to update account permissions while not logged in');
+      return state;
     case UPDATE_ACCOUNT_USER:
-      return {
-        ...state,
-        accountInfo: { ...state.accountInfo, user: action.data },
-      };
+      if (state.loggedIn) {
+        return {
+          ...state,
+          accountInfo: { ...state.accountInfo, user: action.data },
+        };
+      }
+      logger.warn('accountReducer: Attempted to update accountInfo while not logged in');
+      return state;
     case LOGIN:
       return {
         loggedIn: true,
@@ -120,9 +135,6 @@ function accountReducer(state = initialState, action: AccountActionTypes) {
       return {
         loggedIn: false,
         accountInfo: null,
-        permissions: [],
-        groups: [],
-        waitingGroups: [],
         creationData: {},
         state: state.state,
       };

@@ -21,12 +21,13 @@ import {
   User,
   UserPreload,
   GroupTemplate,
-  GroupRolePermission,
   AccountPermission,
   AccountInfo,
   AccountUser,
   AccountCreationData,
   WaitingGroup,
+  GroupWithMembership,
+  Account,
 } from './api';
 import {
   ArticleRequestState,
@@ -854,9 +855,11 @@ export const UPDATE_ACCOUNT_USER = 'UPDATE_ACCOUNT_USER';
 export const UPDATE_ACCOUNT_CREATION_DATA = 'UPDATE_ACCOUNT_CREATION_DATA';
 export const CLEAR_ACCOUNT_CREATION_DATA = 'CLEAR_ACCOUNT_CREATION_DATA';
 
+export type AccountState = Account;
+
 type UpdateAccountGroupsAction = {
   type: typeof UPDATE_ACCOUNT_GROUPS;
-  data: Group[];
+  data: GroupWithMembership[];
 };
 
 type UpdateAccountPermissionsAction = {
@@ -1010,17 +1013,6 @@ export type ModalProps = {
   setVisible: (state: boolean) => void;
 };
 
-export type ElementStringPlural =
-  | 'articles'
-  | 'comments'
-  | 'departments'
-  | 'groups'
-  | 'events'
-  | 'petitions'
-  | 'places'
-  | 'tags'
-  | 'schools'
-  | 'users';
 export type ElementString =
   | 'article'
   | 'comment'
@@ -1051,5 +1043,6 @@ export type ElementStringPluralMap = {
   schools: School;
   users: User;
 };
+export type ElementStringPlural = keyof ElementStringPluralMap;
 
 export type ListItem = ArticleListItem | EventListItem;

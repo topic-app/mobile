@@ -21,12 +21,12 @@ import {
  *
  * @returns Action
  */
-type updateCreatorProps = {
+type updateCreatorProps<T extends keyof ElementStringPluralMap> = {
   update: string;
   stateUpdate: string;
   url: string;
-  sort?: (data: Item[]) => Item[];
-  dataType: ElementStringPlural;
+  sort?: (data: ElementStringPluralMap[T][]) => ElementStringPluralMap[T][];
+  dataType: T;
   stateName?: string;
   type?: string;
   params?: object;
@@ -37,7 +37,7 @@ type updateCreatorProps = {
   auth?: boolean;
 };
 
-function updateCreator({
+function updateCreator<T extends ElementStringPlural>({
   update,
   stateUpdate,
   url,
@@ -51,7 +51,7 @@ function updateCreator({
   nextNum = 10,
   initialNum = 20,
   auth = false,
-}: updateCreatorProps) {
+}: updateCreatorProps<T>) {
   return (dispatch: (action: any) => void, getState: () => State) => {
     let lastId;
     let number = initialNum;

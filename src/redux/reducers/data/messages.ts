@@ -1,19 +1,16 @@
 // @ts-nocheck
 // TODO: Not implemented
 
+const initialState = [];
+
 /**
  * @docs reducers
  * Reducer pour les popups et notifications
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['SET_PREF', 'CLEAR_PREF', 'CLEAR_ALL_PREFS'] Stocker des parametres, en supprimer un, supprimer tout
- * @param {object} action.data.prefs Les parametres à stocker
- * @param {string} action.data.pref La clé du paramètre à supprimer
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Stocker des messages, en supprimer un, supprimer tout
  * @returns Nouveau state
  */
-
-const initialState = [];
-
 function messageReducer(state = initialState, action) {
   const messages = state;
   switch (action.type) {

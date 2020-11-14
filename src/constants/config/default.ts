@@ -49,50 +49,11 @@ const defaultConfig: AppConfig = {
     account: {
       loggedIn: false,
       permissions: [],
-      state: {
-        login: {
-          loading: false,
-          success: null,
-          error: null,
-          incorrect: null,
-        },
-        register: {
-          loading: false,
-          success: null,
-          error: null,
-        },
-        check: {
-          loading: false,
-          success: null,
-          error: null,
-        },
-        fetchGroups: {
-          loading: false,
-          success: null,
-          error: null,
-        },
-        fetchWaitingGroups: {
-          loading: false,
-          success: null,
-          error: null,
-        },
-        fetchAccount: {
-          loading: false,
-          success: null,
-          error: null,
-        },
-        updateProfile: {
-          loading: false,
-          success: null,
-          error: null,
-        },
-      },
       accountInfo: null,
       creationData: {},
     },
     location: {
       selected: false,
-      type: 'school',
       schools: [],
       schoolData: [],
       departments: [],

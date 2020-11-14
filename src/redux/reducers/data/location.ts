@@ -5,18 +5,18 @@ import {
   UPDATE_LOCATION,
   CLEAR_LOCATION,
   UPDATE_LOCATION_STATE,
-} from '@ts/types';
+} from '@ts/redux';
 
 const initialState: LocationList = {
   ...Config.defaults.location,
   state: {
     fetch: {
-      loading: null,
+      loading: false,
       success: null,
       error: null,
     },
     update: {
-      loading: null,
+      loading: false,
       success: null,
       error: null,
     },
@@ -26,11 +26,11 @@ const initialState: LocationList = {
 /**
  * @docs reducers
  * Reducer pour les preferences
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['SET_PREF', 'CLEAR_PREF', 'CLEAR_ALL_PREFS'] Stocker des parametres, en supprimer un, supprimer tout
- * @param {object} action.data.prefs Les parametres à stocker
- * @param {string} action.data.pref La clé du paramètre à supprimer
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Stocker des parametres, en supprimer un, supprimer tout
+ * @param action.data.prefs Les parametres à stocker
+ * @param action.data.pref La clé du paramètre à supprimer
  * @returns Nouveau state
  */
 function locationReducer(state = initialState, action: LocationActionTypes) {

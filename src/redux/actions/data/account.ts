@@ -1,6 +1,5 @@
 import { request, logger } from '@utils/index';
 import Store from '@redux/store';
-import { fetchLocationData } from './location';
 
 import {
   GroupRolePermission,
@@ -9,7 +8,6 @@ import {
   DepartmentPreload,
   Avatar,
   State,
-  Group,
   GroupWithMembership,
   UPDATE_ACCOUNT_GROUPS,
   UPDATE_ACCOUNT_PERMISSIONS,
@@ -24,6 +22,8 @@ import {
   AccountRequestState,
 } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
+
+import { fetchLocationData } from './location';
 
 function fetchGroupsCreator() {
   return (dispatch: (action: any) => void, getState: () => State) => {

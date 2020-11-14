@@ -3,12 +3,11 @@ import {
   ArticleListItem,
   ArticlePrefs,
   ArticleQuickItem,
-  Department,
   EventListItem,
   EventPrefs,
   EventQuickItem,
+  LocationList,
   Preferences,
-  School,
 } from '@ts/types';
 import { LogLevel } from '@utils/logger';
 import { DeepPartial } from 'redux';
@@ -68,17 +67,8 @@ export type AppConfig = {
       quicks: EventQuickItem[];
       prefs: EventPrefs;
     };
-    // TODO: Improve location type here
-    location: {
-      selected: boolean;
-      global: boolean;
-      type: string;
-      schools: string[];
-      schoolData: School[];
-      departments: string[];
-      departmentData: Department[];
-    };
-    account: Account;
+    location: Omit<LocationList, 'state'>;
+    account: Omit<Account, 'state'>;
   };
 };
 

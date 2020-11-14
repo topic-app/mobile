@@ -213,15 +213,22 @@ export type WaitingGroup = Group & {
   waitingMembership: { role: string; permanent: boolean; expiry: Date };
 };
 
-export type Account = {
-  loggedIn: boolean;
-  creationData: AccountCreationData; // Maybe something better than `object` here
-  groups?: GroupWithMembership[];
-  permissions: AccountPermission[];
-  waitingGroups?: WaitingGroup[];
-  accountInfo?: AccountInfo | null;
-  state: AccountRequestState;
-};
+export type Account =
+  | {
+      loggedIn: true;
+      accountInfo: AccountInfo;
+      creationData: AccountCreationData;
+      state: AccountRequestState;
+      groups: GroupWithMembership[];
+      permissions: AccountPermission[];
+      waitingGroups: WaitingGroup[];
+    }
+  | {
+      loggedIn: false;
+      accountInfo: null;
+      creationData: AccountCreationData;
+      state: AccountRequestState;
+    };
 
 export type AuthorPreload = UserPreload;
 
