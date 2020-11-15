@@ -48,5 +48,4 @@ const CategoryTitle: React.FC<CategoryTitleProps> = ({
   );
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { CategoryTitle };

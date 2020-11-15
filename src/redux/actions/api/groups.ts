@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Group, Item } from '@ts/types';
+import { Group, ApiItem } from '@ts/types';
 import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_TEMPLATES,
@@ -12,7 +12,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) =>
+const nameAscSort = (data: ApiItem[]) =>
   (data as Group[]).sort((a, b) => a.name.localeCompare(b.name));
 
 /**
@@ -30,6 +30,7 @@ async function updateGroups(
       update: UPDATE_GROUPS_DATA,
       stateUpdate: UPDATE_GROUPS_STATE,
       url: 'groups/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'groups',
       type,
@@ -76,6 +77,7 @@ async function fetchGroup(groupId: string) {
     fetchCreator({
       update: UPDATE_GROUPS_ITEM,
       stateUpdate: UPDATE_GROUPS_STATE,
+      stateName: 'info',
       url: 'groups/info',
       dataType: 'groups',
       params: { groupId },
@@ -112,6 +114,7 @@ async function fetchGroupVerification(groupId: string) {
     fetchCreator({
       update: UPDATE_GROUPS_ITEM,
       stateUpdate: UPDATE_GROUPS_STATE,
+      stateName: 'info',
       url: 'groups/verification/info',
       dataType: 'groups',
       params: { groupId },
@@ -141,6 +144,7 @@ async function updateGroupTemplates() {
       url: 'groups/templates/list',
       sort: nameAscSort,
       stateName: 'templates',
+      listName: 'data',
       dataType: 'groups', // This is useless but typescript
       type: 'initial',
       params: {},

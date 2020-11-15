@@ -517,15 +517,3 @@ export type Error = {
     };
   };
 };
-
-export type Item =
-  | Article
-  | Comment
-  | Event
-  | Petition
-  | Group
-  | User
-  | Place
-  | Tag
-  | Department
-  | School;

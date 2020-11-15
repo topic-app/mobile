@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Place, Item } from '@ts/types';
+import { Place, ApiItem } from '@ts/types';
 import {
   UPDATE_PLACES_DATA,
   UPDATE_PLACES_SEARCH,
@@ -10,7 +10,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) =>
+const nameAscSort = (data: ApiItem[]) =>
   (data as Place[]).sort((a, b) => a.name.localeCompare(b.name));
 
 /**
@@ -24,6 +24,7 @@ async function updatePlaces(type: 'initial' | 'refresh' | 'next', params = {}) {
       update: UPDATE_PLACES_DATA,
       stateUpdate: UPDATE_PLACES_STATE,
       url: 'places/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'places',
       type,
@@ -58,6 +59,7 @@ async function fetchPlace(placeId: string) {
     fetchCreator({
       update: UPDATE_PLACES_ITEM,
       stateUpdate: UPDATE_PLACES_STATE,
+      stateName: 'info',
       url: 'places/list',
       dataType: 'places',
       params: { placeId },

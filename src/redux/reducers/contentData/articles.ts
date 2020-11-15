@@ -13,11 +13,28 @@ import { Config } from '@constants/index';
 
 const initialState: ArticlesDataState = {
   params: {},
-  lists: Config.defaults.articles.lists,
-  prefs: Config.defaults.articles.prefs,
-  quicks: Config.defaults.articles.quicks,
   read: [],
   creationData: {},
+  lists: [
+    {
+      id: '0',
+      name: 'Favoris',
+      icon: 'star-outline',
+      items: [],
+    },
+    {
+      id: '1',
+      name: 'A lire plus tard',
+      icon: 'history',
+      items: [],
+    },
+  ],
+  quicks: [],
+  prefs: {
+    categories: ['unread', 'all'],
+    hidden: [],
+  },
+  ...Config.seedDb.articles,
 };
 
 /**

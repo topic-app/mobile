@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Petition, Item } from '@ts/types';
+import { Petition, ApiItem } from '@ts/types';
 import {
   UPDATE_PETITIONS_DATA,
   UPDATE_PETITIONS_SEARCH,
@@ -10,7 +10,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: Item[]) =>
+const dateDescSort = (data: ApiItem[]) =>
   (data as Petition[]).sort((a, b) =>
     new Date(a.duration.end) > new Date(b.duration.end) ? -1 : 1,
   );
@@ -26,8 +26,9 @@ async function updatePetitions(type: 'initial' | 'refresh' | 'next', params = {}
       update: UPDATE_PETITIONS_DATA,
       stateUpdate: UPDATE_PETITIONS_STATE,
       url: 'petitions/list',
+      listName: 'data',
       sort: dateDescSort,
-      dataType: 'places',
+      dataType: 'petitions',
       type,
       params,
     }),
@@ -60,8 +61,9 @@ async function fetchPetition(petitionId: string) {
     fetchCreator({
       update: UPDATE_PETITIONS_ITEM,
       stateUpdate: UPDATE_PETITIONS_STATE,
+      stateName: 'info',
       url: 'petitions/list',
-      dataType: 'places',
+      dataType: 'petitions',
       params: { petitionId },
     }),
   );

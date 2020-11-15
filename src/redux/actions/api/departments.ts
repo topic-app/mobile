@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { UPDATE_DEPARTMENTS_ITEMS, Item } from '@ts/types';
+import { UPDATE_DEPARTMENTS_ITEMS, ApiItem, Department } from '@ts/types';
 import {
   UPDATE_DEPARTMENTS_DATA,
   UPDATE_DEPARTMENTS_STATE,
@@ -10,7 +10,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) => data; // .sort((a, b) => a.name.localCompare(b.name));
+const nameAscSort = (data: Department[]) => data; // .sort((a, b) => a.name.localCompare(b.name));
 
 /**
  * @docs actions
@@ -60,6 +60,7 @@ async function fetchDepartment(departmentId: string) {
     fetchCreator({
       update: UPDATE_DEPARTMENTS_ITEM,
       stateUpdate: UPDATE_DEPARTMENTS_STATE,
+      stateName: 'info',
       url: 'departments/info',
       dataType: 'departments',
       params: { departmentId },
@@ -68,18 +69,21 @@ async function fetchDepartment(departmentId: string) {
 }
 
 async function fetchMultiDepartment(departmentIds: string[]) {
-  departmentIds.forEach(async (departmentId) => {
-    await Store.dispatch(
-      fetchCreator({
-        update: UPDATE_DEPARTMENTS_ITEMS,
-        stateUpdate: UPDATE_DEPARTMENTS_STATE,
-        url: 'departments/info',
-        dataType: 'departments',
-        params: { departmentId },
-        useArray: true,
-      }),
-    );
-  });
+  await Promise.all(
+    departmentIds.map(async (departmentId) => {
+      await Store.dispatch(
+        fetchCreator({
+          update: UPDATE_DEPARTMENTS_ITEMS,
+          stateUpdate: UPDATE_DEPARTMENTS_STATE,
+          stateName: 'info',
+          url: 'departments/info',
+          dataType: 'departments',
+          params: { departmentId },
+          useArray: true,
+        }),
+      );
+    }),
+  );
 }
 
 /**

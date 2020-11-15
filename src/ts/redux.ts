@@ -1,3 +1,6 @@
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+
 import themes from '@styles/Theme';
 
 import {
@@ -45,6 +48,7 @@ import {
   LinkingRequestState,
   AccountRequestState,
 } from './requestState';
+import { State } from './types';
 
 // Articles
 export const UPDATE_ARTICLES_STATE = 'UPDATE_ARTICLES_STATE';
@@ -1008,30 +1012,7 @@ export type LocationList = {
   state: LocationRequestState;
 };
 
-export type ModalProps = {
-  visible: boolean;
-  setVisible: (state: boolean) => void;
-};
-
-export type ElementString =
-  | 'article'
-  | 'comment'
-  | 'department'
-  | 'group'
-  | 'event'
-  | 'petition'
-  | 'place'
-  | 'tag'
-  | 'school'
-  | 'user';
-export type ElementDataString =
-  | 'articleData'
-  | 'eventData'
-  // | 'petitionData'
-  // | 'placeData'
-  | 'groupData';
-
-export type ElementStringPluralMap = {
+export type ApiItemMap = {
   articles: Article;
   comments: Comment;
   departments: Department;
@@ -1043,6 +1024,85 @@ export type ElementStringPluralMap = {
   schools: School;
   users: User;
 };
-export type ElementStringPlural = keyof ElementStringPluralMap;
+export type ApiItemString = keyof ApiItemMap;
+export type ApiItem = ApiItemMap[ApiItemString];
+
+export type ApiStateMap = {
+  articles: ArticlesState;
+  comments: CommentsState;
+  departments: DepartmentsState;
+  groups: GroupsState;
+  events: EventsState;
+  petitions: PetitionsState;
+  places: PlacesState;
+  tags: TagsState;
+  schools: SchoolsState;
+  users: UsersState;
+};
+
+export namespace ApiAction {
+  // Not exported
+  type ActionMap = {
+    articles: ArticlesActionTypes;
+    comments: CommentsActionTypes;
+    departments: DepartmentsActionTypes;
+    groups: GroupsActionTypes;
+    events: EventsActionTypes;
+    petitions: PetitionsActionTypes;
+    places: PlacesActionTypes;
+    tags: TagsActionTypes;
+    schools: SchoolsActionTypes;
+    users: UsersActionTypes;
+  };
+
+  export type TypeMap = {
+    [K in keyof ActionMap]: ActionMap[K]['type'];
+  };
+
+  // Not exported
+  type StateActionMap = {
+    articles: UpdateArticlesStateAction;
+    comments: UpdateCommentsStateAction;
+    departments: UpdateDepartmentsStateAction;
+    groups: UpdateGroupsStateAction;
+    events: UpdateEventsStateAction;
+    petitions: UpdatePetitionsStateAction;
+    places: UpdatePlacesStateAction;
+    tags: UpdateTagsStateAction;
+    schools: UpdateSchoolsStateAction;
+    users: UpdateUsersStateAction;
+  };
+
+  export type UpdateStateTypeMap = {
+    [K in keyof StateActionMap]: StateActionMap[K]['type'];
+  };
+
+  export type UpdateStateNameMap = {
+    [K in keyof StateActionMap]: keyof StateActionMap[K]['data'];
+  };
+
+  export type ClearActionMap = {
+    articles: ClearArticlesAction;
+    comments: ClearCommentsAction;
+    departments: ClearDepartmentsAction;
+    groups: ClearGroupsAction;
+    events: ClearEventsAction;
+    petitions: ClearPetitionsAction;
+    places: ClearPlacesAction;
+    tags: ClearTagsAction;
+    schools: ClearSchoolsAction;
+    users: ClearUsersAction;
+  };
+
+  export type ClearTypeMap = {
+    [K in keyof ClearActionMap]: ClearActionMap[K]['type'];
+  };
+
+  export type ClearDataMap = {
+    [K in keyof ClearActionMap]: ClearActionMap[K]['data'];
+  };
+}
 
 export type ListItem = ArticleListItem | EventListItem;
+
+export type AppThunk<ReturnType = unknown> = ThunkAction<ReturnType, State, unknown, AnyAction>;

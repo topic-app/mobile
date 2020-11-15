@@ -13,11 +13,22 @@ import { Config } from '@constants/index';
 
 const initialState: EventsDataState = {
   params: {},
-  lists: Config.defaults.events.lists,
-  prefs: Config.defaults.events.prefs,
-  quicks: Config.defaults.events.quicks,
   read: [],
   creationData: {},
+  lists: [
+    {
+      id: '0',
+      name: 'Favoris',
+      icon: 'star-outline',
+      items: [],
+    },
+  ],
+  quicks: [],
+  prefs: {
+    categories: ['upcoming', 'passed'],
+    hidden: [],
+  },
+  ...Config.seedDb.events,
 };
 
 /**

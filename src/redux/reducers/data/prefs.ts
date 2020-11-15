@@ -1,7 +1,19 @@
 import { Config } from '@constants/index';
 import { Preferences, PrefActionTypes, SET_PREFS, CLEAR_PREF, CLEAR_ALL_PREFS } from '@ts/redux';
 
-const initialState: Preferences = Config.defaults.preferences;
+const initialState: Preferences = {
+  theme: 'light',
+  useSystemTheme: true,
+  history: true,
+  recommendations: false,
+  syncHistory: true,
+  syncLists: true,
+  fontSize: 14,
+  fontFamily: 'Roboto',
+  stripFormatting: false,
+  themeEasterEggDiscovered: false,
+  ...Config.seedDb.preferences,
+};
 
 /**
  * @docs reducers

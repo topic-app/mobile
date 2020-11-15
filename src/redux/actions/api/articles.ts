@@ -7,11 +7,11 @@ import {
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
 } from '@ts/redux';
-import { Item, UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
+import { ApiItem, UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: Item[]) =>
+const dateDescSort = (data: ApiItem[]) =>
   (data as Article[]).sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
@@ -30,6 +30,7 @@ async function updateArticles(
       update: UPDATE_ARTICLES_DATA,
       stateUpdate: UPDATE_ARTICLES_STATE,
       url: 'articles/list',
+      listName: 'data',
       sort: dateDescSort,
       dataType: 'articles',
       type,
@@ -145,6 +146,7 @@ async function fetchArticle(articleId: string) {
     fetchCreator({
       update: UPDATE_ARTICLES_ITEM,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'info',
       url: 'articles/info',
       dataType: 'articles',
       params: { articleId },
@@ -157,6 +159,7 @@ async function fetchArticleVerification(articleId: string) {
     fetchCreator({
       update: UPDATE_ARTICLES_ITEM,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'info',
       url: 'articles/verification/info',
       dataType: 'articles',
       params: { articleId },

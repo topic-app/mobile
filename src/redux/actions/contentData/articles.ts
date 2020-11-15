@@ -26,7 +26,6 @@ import {
   UPDATE_ARTICLES_PREFS,
   UPDATE_ARTICLES_PARAMS,
   CLEAR_ARTICLES,
-  Item,
   ArticlePrefs,
   ArticleCreationData,
   Article,

@@ -1,6 +1,6 @@
 import Store from '@redux/store';
 
-import { Tag, Item } from '@ts/types';
+import { Tag, ApiItem } from '@ts/types';
 import {
   UPDATE_TAGS_DATA,
   UPDATE_TAGS_SEARCH,
@@ -11,7 +11,8 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) => (data as Tag[]).sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: ApiItem[]) =>
+  (data as Tag[]).sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -24,6 +25,7 @@ async function updateTags(type: 'initial' | 'refresh' | 'next', params = {}) {
       update: UPDATE_TAGS_DATA,
       stateUpdate: UPDATE_TAGS_STATE,
       url: '/tags/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'tags',
       type,
@@ -58,6 +60,7 @@ async function fetchTag(tagId: string) {
     fetchCreator({
       update: UPDATE_TAGS_ITEM,
       stateUpdate: UPDATE_TAGS_STATE,
+      stateName: 'info',
       url: 'tags/list',
       dataType: 'tags',
       params: { tagId },

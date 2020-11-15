@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { User, Item } from '@ts/types';
+import { User, ApiItem } from '@ts/types';
 import {
   UPDATE_USERS_DATA,
   UPDATE_USERS_SEARCH,
@@ -10,7 +10,8 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) => (data as User[]).sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: ApiItem[]) =>
+  (data as User[]).sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -23,6 +24,7 @@ async function updateUsers(type: 'initial' | 'refresh' | 'next', params = {}) {
       update: UPDATE_USERS_DATA,
       stateUpdate: UPDATE_USERS_STATE,
       url: 'users/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'users',
       params,
@@ -57,6 +59,7 @@ async function fetchUser(userId: string) {
     fetchCreator({
       update: UPDATE_USERS_ITEM,
       stateUpdate: UPDATE_USERS_STATE,
+      stateName: 'info',
       url: 'users/info',
       dataType: 'users',
       params: { userId },

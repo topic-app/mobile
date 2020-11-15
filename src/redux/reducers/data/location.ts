@@ -8,7 +8,12 @@ import {
 } from '@ts/redux';
 
 const initialState: LocationList = {
-  ...Config.defaults.location,
+  selected: false,
+  schools: [],
+  schoolData: [],
+  departments: [],
+  departmentData: [],
+  global: false,
   state: {
     fetch: {
       loading: false,
@@ -21,6 +26,7 @@ const initialState: LocationList = {
       error: null,
     },
   },
+  ...Config.seedDb.location,
 };
 
 /**

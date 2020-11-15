@@ -26,7 +26,6 @@ import {
   UPDATE_EVENTS_PREFS,
   UPDATE_EVENTS_PARAMS,
   CLEAR_EVENTS,
-  Item,
   Event,
   EventParams,
   EventPrefs,

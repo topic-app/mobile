@@ -14,5 +14,4 @@ const hashPassword = async (password: string) => {
   return password;
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { hashPassword };

@@ -110,7 +110,7 @@ async function request(
     });
     throw { success: false, reason: 'success', status: res?.status, error: null, res };
   }
-  logger.error(`Request failed to ${endpoint} because of missing method ${method}`);
+  logger.warn(`Request failed to ${endpoint} because of missing method ${method}`);
   throw { success: false, reason: 'method', status: null, error: null };
 }
 

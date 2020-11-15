@@ -1,13 +1,11 @@
-import { request } from '@utils/index';
 import Store from '@redux/store';
 import shortid from 'shortid';
+
 import {
-  ElementStringPlural,
-  ElementDataString,
+  ApiItemString,
   State,
   ListItem,
-  Article,
-  Item,
+  ApiItem,
   ArticlePrefs,
   ArticleParams,
   EventParams,
@@ -18,6 +16,7 @@ import {
   EventReadItem,
   GroupCreationData,
 } from '@ts/types';
+import { request } from '@utils/index';
 
 /**
  * @docs actionCreators
@@ -35,7 +34,7 @@ type addToListProps = {
   update: string;
   stateUpdate: string;
   dataType: 'articleData' | 'eventData';
-  resType: ElementStringPlural;
+  resType: ApiItemString;
   url: string;
   params: object;
   id: string;
@@ -69,7 +68,7 @@ function addToListCreator({
         if (
           lists
             .find((l) => l.id === id)
-            ?.items.some((i: Item) => i._id === result.data?.[resType][0]?._id)
+            ?.items.some((i: ApiItem) => i._id === result.data?.[resType][0]?._id)
         ) {
           return;
         }
@@ -126,7 +125,7 @@ function removeFromListCreator({ update, dataType, id, itemId }: removeFromListP
       if (l.id === id) {
         return {
           ...l,
-          items: (l.items as Item[]).filter((i) => i._id !== itemId),
+          items: (l.items as ApiItem[]).filter((i) => i._id !== itemId),
         };
       } else {
         return l;
@@ -172,7 +171,7 @@ type modifyListProps = {
   name?: string;
   icon?: string;
   description?: string;
-  items?: Item[];
+  items?: ApiItem[];
 };
 function modifyListCreator({
   update,
