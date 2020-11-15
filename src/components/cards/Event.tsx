@@ -38,7 +38,7 @@ function buildDateString(start: string, end: string) {
 type EventCardProps = {
   event: EventPreload;
   navigate: StackNavigationProp<any, any>['navigate'];
-  verification: boolean;
+  verification?: boolean;
   preferences: Preferences;
 };
 
@@ -46,6 +46,15 @@ const EventCard: React.FC<EventCardProps> = ({ event, navigate, verification, pr
   const screenDimensions = Dimensions.get('window');
   const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
   const imageSize = minWidth / 3.5;
+
+  if (!event)
+    return (
+      <CardBase>
+        <Card.Content>
+          <Text>Évènement non existant</Text>
+        </Card.Content>
+      </CardBase>
+    );
 
   const start = event.duration?.start; // Destructure this once duration works on the server
   const end = event.duration?.end;
