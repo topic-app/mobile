@@ -6,51 +6,47 @@ import { connect } from 'react-redux';
 
 import {
   State,
-  ArticlePreload,
+  EventPreload,
   Account,
   GroupRolePermission,
-  ArticleRequestState,
-  Article,
+  EventRequestState,
+  Event,
+  EventVerificationPreload,
   AccountPermission,
-  ArticleVerificationPreload,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 import {
   CustomTabView,
   ChipAddList,
   ErrorMessage,
-  ArticleCard,
+  EventCard,
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
 import getStyles from '@styles/Styles';
-import { updateArticlesVerification } from '@redux/actions/api/articles';
+import { updateEventsVerification } from '@redux/actions/api/events';
 
 import type { ModerationStackParams } from '../index';
 import getModerationStyles from '../styles/Styles';
-import { useFocusEffect } from '@react-navigation/core';
 
 type Props = {
   navigation: StackNavigationProp<ModerationStackParams, 'List'>;
-  articlesVerification: ArticleVerificationPreload[];
+  eventsVerification: EventVerificationPreload[];
   account: Account;
-  state: ArticleRequestState;
+  state: EventRequestState;
 };
 
-const ModerationArticles: React.FC<Props> = ({
-  navigation,
-  articlesVerification,
-  account,
-  state,
-}) => {
+const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, account, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   if (!account.loggedIn) return null;
 
-  const allowedGroupsArticle = account.permissions.reduce(
+  console;
+
+  const allowedGroupsEvent = account.permissions.reduce(
     (groups: string[], p: AccountPermission) => {
-      if (p.permission === 'article.verification.view') {
+      if (p.permission === 'event.verification.view') {
         return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
       } else {
         return groups;
@@ -58,14 +54,14 @@ const ModerationArticles: React.FC<Props> = ({
     },
     [],
   );
-  const allowedEverywhereArticle = account.permissions.some(
-    (p) => p.permission === 'article.verification.view' && p.scope.everywhere,
+  const allowedEverywhereEvent = account.permissions.some(
+    (p) => p.permission === 'event.verification.view' && p.scope.everywhere,
   );
-  const [selectedGroupsArticle, setSelectedGroupsArticle] = React.useState(allowedGroupsArticle);
-  const [everywhereArticle, setEverywhereArticle] = React.useState(false);
+  const [selectedGroupsEvent, setSelectedGroupsEvent] = React.useState(allowedGroupsEvent);
+  const [everywhereEvent, setEverywhereEvent] = React.useState(false);
 
-  const fetch = (groups = selectedGroupsArticle, everywhere = everywhereArticle) =>
-    updateArticlesVerification('initial', everywhere ? {} : { groups });
+  const fetch = (groups = selectedGroupsEvent, everywhere = everywhereEvent) =>
+    updateEventsVerification('initial', everywhere ? {} : { groups });
 
   React.useEffect(() => {
     fetch();
@@ -78,9 +74,9 @@ const ModerationArticles: React.FC<Props> = ({
         <ErrorMessage
           type="axios"
           strings={{
-            what: 'la récupération des articles à vérifier',
-            contentSingular: "La liste d'articles à vérifier",
-            contentPlural: 'Les articles à vérifier',
+            what: 'la récupération des évènments à vérifier',
+            contentSingular: "La liste d'évènements à vérifier",
+            contentPlural: 'Les évènements à vérifier',
           }}
           error={state.verification_list.error}
           retry={fetch}
@@ -90,29 +86,29 @@ const ModerationArticles: React.FC<Props> = ({
         <ChipAddList
           setList={(data) => {
             if (data.key === 'everywhere') {
-              setEverywhereArticle(true);
-              setSelectedGroupsArticle([]);
+              setEverywhereEvent(true);
+              setSelectedGroupsEvent([]);
               fetch([], true);
             } else {
-              if (selectedGroupsArticle.includes(data.key)) {
-                setEverywhereArticle(false);
-                setSelectedGroupsArticle(selectedGroupsArticle.filter((g) => g !== data.key));
+              if (selectedGroupsEvent.includes(data.key)) {
+                setEverywhereEvent(false);
+                setSelectedGroupsEvent(selectedGroupsEvent.filter((g) => g !== data.key));
                 fetch(
-                  selectedGroupsArticle.filter((g) => g !== data.key),
+                  selectedGroupsEvent.filter((g) => g !== data.key),
                   false,
                 );
               } else {
-                setEverywhereArticle(false);
-                setSelectedGroupsArticle([...selectedGroupsArticle, data.key]);
-                fetch([...selectedGroupsArticle, data.key], false);
+                setEverywhereEvent(false);
+                setSelectedGroupsEvent([...selectedGroupsEvent, data.key]);
+                fetch([...selectedGroupsEvent, data.key], false);
               }
             }
           }}
           data={[
-            ...(allowedEverywhereArticle
+            ...(allowedEverywhereEvent
               ? [{ key: 'everywhere', title: 'Tous (France entière)' }]
               : []),
-            ...allowedGroupsArticle.map((g: string) => ({
+            ...allowedGroupsEvent.map((g: string) => ({
               key: g,
               title:
                 account.groups?.find((h) => h._id === g)?.shortName ||
@@ -120,29 +116,28 @@ const ModerationArticles: React.FC<Props> = ({
                 'Groupe inconnu',
             })),
           ]}
-          keyList={[...selectedGroupsArticle, ...(everywhereArticle ? ['everywhere'] : [])]}
+          keyList={[...selectedGroupsEvent, ...(everywhereEvent ? ['everywhere'] : [])]}
         />
         <FlatList
-          data={articlesVerification}
+          data={eventsVerification}
           keyExtractor={(i) => i._id}
           ListEmptyComponent={
             state.verification_list?.loading?.initial ? null : (
               <View style={styles.centerIllustrationContainer}>
-                <Text>Aucun article en attente de modération</Text>
+                <Text>Aucun évènement en attente de modération</Text>
               </View>
             )
           }
-          renderItem={({ item }: { item: ArticleVerificationPreload }) => (
+          renderItem={({ item }: { item: EventVerificationPreload }) => (
             <View>
-              <ArticleCard
-                article={item}
-                unread
+              <EventCard
+                event={item}
                 verification
                 navigate={() =>
                   navigation.navigate('Main', {
                     screen: 'Display',
                     params: {
-                      screen: 'Article',
+                      screen: 'Event',
                       params: {
                         screen: 'Display',
                         params: {
@@ -165,12 +160,12 @@ const ModerationArticles: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, account } = state;
+  const { events, account } = state;
   return {
-    articlesVerification: articles.verification,
+    eventsVerification: events.verification,
     account,
-    state: articles.state,
+    state: events.state,
   };
 };
 
-export default connect(mapStateToProps)(ModerationArticles);
+export default connect(mapStateToProps)(ModerationEvents);

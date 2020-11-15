@@ -28,6 +28,8 @@ import {
   WaitingGroup,
   GroupWithMembership,
   Account,
+  EventVerificationPreload,
+  ArticleVerificationPreload,
 } from './api';
 import {
   ArticleRequestState,
@@ -86,7 +88,7 @@ export type ArticlesState = {
   following: ArticlePreload[];
   item: Article | null;
   search: ArticlePreload[];
-  verification: ArticlePreload[];
+  verification: ArticleVerificationPreload[];
   state: ArticleRequestState;
   creationData: ArticleCreationData;
 };
@@ -165,7 +167,7 @@ type UpdateArticlesListsAction = {
 
 type UpdateArticlesVerificationAction = {
   type: typeof UPDATE_ARTICLES_VERIFICATION;
-  data: ArticlePreload[];
+  data: ArticleVerificationPreload[];
 };
 
 type UpdateArticlesReadAction = {
@@ -323,7 +325,7 @@ export type EventsState = {
   dataPassed: (Event | EventPreload)[];
   item: Event | null;
   search: EventPreload[];
-  verification: EventPreload[];
+  verification: EventVerificationPreload[];
   state: EventRequestState;
   creationData: EventCreationData;
 };
@@ -436,7 +438,7 @@ type UpdateEventsListsAction = {
 
 type UpdateEventsVerificationAction = {
   type: typeof UPDATE_EVENTS_VERIFICATION;
-  data: EventPreload[];
+  data: EventVerificationPreload[];
 };
 
 type UpdateEventsReadAction = {

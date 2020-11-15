@@ -7,6 +7,7 @@ import {
   UPDATE_EVENTS_ITEM,
   UPDATE_EVENTS_SEARCH,
   CLEAR_EVENTS,
+  UPDATE_EVENTS_VERIFICATION,
 } from '@ts/redux';
 
 const initialState: EventsState = {
@@ -72,6 +73,11 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
       return {
         ...state,
         item: action.data,
+      };
+    case UPDATE_EVENTS_VERIFICATION:
+      return {
+        ...state,
+        verification: action.data,
       };
     case UPDATE_EVENTS_SEARCH:
       return {

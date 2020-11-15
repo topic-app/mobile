@@ -20,10 +20,6 @@ type ArticleCardProps = {
   preferences: Preferences;
 };
 
-const screenDimensions = Dimensions.get('window');
-const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
-const imageSize = minWidth / 3.5;
-
 const ArticleCard: React.FC<ArticleCardProps> = ({
   article,
   navigate,
@@ -31,6 +27,10 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   preferences,
   verification = false,
 }) => {
+  const screenDimensions = Dimensions.get('window');
+  const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
+  const imageSize = minWidth / 3.5;
+
   const theme = useTheme();
   const { colors } = theme;
 
@@ -69,6 +69,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             </View>
           )}
         </View>
+      </Card.Content>
+      <TagList item={article} scrollable={false} />
+      <Card.Content>
         <View style={{ flexDirection: 'row', paddingTop: 6 }}>
           <CustomImage
             image={article?.image}
@@ -90,9 +93,6 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             </Paragraph>
           </View>
         </View>
-      </Card.Content>
-      <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-        <TagList item={article} scrollable={false} />
       </Card.Content>
       {verification && (
         <Card.Content>

@@ -12,6 +12,7 @@ import getStyles from '@styles/Styles';
 import type { ModerationStackParams } from '../index';
 import ModerationArticles from '../components/ModerationArticles';
 import ModerationGroups from '../components/ModerationGroups';
+import ModerationEvents from '../components/ModerationEvents';
 
 type Props = {
   navigation: StackNavigationProp<ModerationStackParams, 'List'>;
@@ -29,6 +30,7 @@ const ModerationList: React.FC<Props> = ({ navigation, account }) => {
   const allowedArticles = account.permissions.some(
     (p) => p.permission === 'article.verification.view',
   );
+  const allowedEvents = account.permissions.some((p) => p.permission === 'event.verification.view');
 
   const allowedGroups = account.permissions.some((p) => p.permission === 'group.verification.view');
 
@@ -53,6 +55,15 @@ const ModerationList: React.FC<Props> = ({ navigation, account }) => {
                     key: 'articles',
                     title: 'Articles',
                     component: <ModerationArticles navigation={navigation} />,
+                  },
+                ]
+              : []),
+            ...(allowedEvents
+              ? [
+                  {
+                    key: 'events',
+                    title: 'Évènements',
+                    component: <ModerationEvents navigation={navigation} />,
                   },
                 ]
               : []),

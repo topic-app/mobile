@@ -269,7 +269,10 @@ const EventList: React.FC<EventListProps> = ({
               contentSingular: "La liste d'évènements",
             }}
             error={[state.list.error, state.search?.error]}
-            retry={() => updateEvents('initial')}
+            retry={() => {
+              updatePassedEvents('initial');
+              updateUpcomingEvents('initial');
+            }}
           />
         ) : null}
       </AnimatingHeader>
