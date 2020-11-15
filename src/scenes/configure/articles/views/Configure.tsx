@@ -114,7 +114,6 @@ function ArticleLists({
             params: { screen: 'Article', params: { initialList: 'all' } },
           },
         }),
-      disable: !preferences.history,
     },
     {
       id: 'following',
@@ -189,15 +188,10 @@ function ArticleLists({
                         <List.Item
                           key={item.id}
                           title={item.name}
-                          description={
-                            item.disable
-                              ? null
-                              : "Activez l'historique pour voir les articles non lus"
-                          }
+                          description={item.disable ? 'Indisponible' : null}
                           left={() => <List.Icon />}
-                          onPress={enabled ? item.navigate : () => null}
+                          onPress={enabled && !item.disable ? item.navigate : () => null}
                           onLongPress={move}
-                          disabled={!preferences.history && item.historyDisable}
                           titleStyle={!item.disable ? {} : { color: colors.disabled }}
                           descriptionStyle={!item.disable ? {} : { color: colors.disabled }}
                           right={() => (
@@ -210,13 +204,13 @@ function ArticleLists({
                                   enabled
                                     ? () =>
                                         updateArticlePrefs({
-                                          categories: articlePrefs.categories.filter(
+                                          categories: articlePrefs.categories?.filter(
                                             (d) => d !== item.id,
                                           ),
                                         })
                                     : () =>
                                         updateArticlePrefs({
-                                          categories: [...articlePrefs.categories, item.id],
+                                          categories: [...(articlePrefs.categories || []), item.id],
                                         })
                                 }
                               />

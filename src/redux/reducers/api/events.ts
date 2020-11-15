@@ -5,6 +5,7 @@ import {
   UPDATE_EVENTS_UPCOMING_DATA,
   UPDATE_EVENTS_PASSED_DATA,
   UPDATE_EVENTS_ITEM,
+  UPDATE_EVENTS_FOLLOWING,
   UPDATE_EVENTS_SEARCH,
   CLEAR_EVENTS,
   UPDATE_EVENTS_VERIFICATION,
@@ -15,6 +16,7 @@ const initialState: EventsState = {
   dataPassed: [],
   creationData: {},
   verification: [],
+  following: [],
   search: [],
   item: null,
   state: {
@@ -64,6 +66,11 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
         ...state,
         dataUpcoming: action.data,
       };
+    case UPDATE_EVENTS_FOLLOWING:
+      return {
+        ...state,
+        following: action.data,
+      };
     case UPDATE_EVENTS_PASSED_DATA:
       return {
         ...state,
@@ -88,6 +95,7 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
       return {
         dataUpcoming: action.data.data ? [] : state.dataUpcoming,
         dataPassed: action.data.data ? [] : state.dataPassed,
+        following: action.data.following ? [] : state.following,
         search: action.data.search ? [] : state.search,
         verification: action.data.verification ? [] : state.verification,
         creationData: state.creationData,

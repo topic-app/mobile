@@ -313,6 +313,7 @@ export const UPDATE_EVENTS_ITEM = 'UPDATE_EVENTS_ITEM';
 export const UPDATE_EVENTS_VERIFICATION = 'UPDATE_EVENTS_VERIFICATION';
 export const UPDATE_EVENTS_SEARCH = 'UPDATE_EVENTS_SEARCH';
 export const UPDATE_EVENTS_PARAMS = 'UPDATE_EVENTS_PARAMS';
+export const UPDATE_EVENTS_FOLLOWING = 'UPDATE_EVENTS_FOLLOWING';
 export const UPDATE_EVENTS_LISTS = 'UPDATE_EVENTS_LISTS';
 export const UPDATE_EVENTS_READ = 'UPDATE_EVENTS_READ';
 export const UPDATE_EVENTS_PREFS = 'UPDATE_EVENTS_PREFS';
@@ -321,8 +322,9 @@ export const UPDATE_EVENTS_CREATION_DATA = 'UPDATE_EVENTS_CREATION_DATA';
 export const CLEAR_EVENTS = 'CLEAR_EVENTS';
 
 export type EventsState = {
-  dataUpcoming: (Event | EventPreload)[];
-  dataPassed: (Event | EventPreload)[];
+  dataUpcoming: EventPreload[];
+  dataPassed: EventPreload[];
+  following: EventPreload[];
   item: Event | null;
   search: EventPreload[];
   verification: EventVerificationPreload[];
@@ -408,12 +410,17 @@ type UpdateEventsStateAction = {
 
 type UpdateEventsUpcomingDataAction = {
   type: typeof UPDATE_EVENTS_UPCOMING_DATA;
-  data: (Event | EventPreload)[];
+  data: EventPreload[];
 };
 
 type UpdateEventsPassedDataAction = {
   type: typeof UPDATE_EVENTS_PASSED_DATA;
-  data: (Event | EventPreload)[];
+  data: EventPreload[];
+};
+
+type UpdateEventsFollowingAction = {
+  type: typeof UPDATE_EVENTS_FOLLOWING;
+  data: EventPreload[];
 };
 
 type UpdateEventsItemAction = {
@@ -463,7 +470,7 @@ type UpdateEventsCreationDataAction = {
 
 type ClearEventsAction = {
   type: typeof CLEAR_EVENTS;
-  data: { data?: boolean; search?: boolean; verification?: boolean };
+  data: { data?: boolean; search?: boolean; verification?: boolean; following?: boolean };
 };
 
 export type EventsActionTypes =
@@ -475,6 +482,7 @@ export type EventsActionTypes =
   | UpdateEventsVerificationAction
   | UpdateEventsParamsAction
   | UpdateEventsListsAction
+  | UpdateEventsFollowingAction
   | UpdateEventsReadAction
   | UpdateEventsPrefsAction
   | UpdateEventsQuicksAction
