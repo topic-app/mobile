@@ -31,6 +31,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
   const addProgram = (program: ProgramType) => {
     setProgram([...eventProgram, program]);
   };
+
   type ProgramType = {
     _id: string;
     title: string;
