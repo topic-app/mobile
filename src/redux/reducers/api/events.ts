@@ -29,6 +29,15 @@ const initialState: EventsState = {
         next: false,
       },
     },
+    following: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
     search: {
       success: null,
       error: null,

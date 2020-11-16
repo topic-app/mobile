@@ -27,6 +27,7 @@ export type StandardRequestState = {
   add?: RequestState;
   verification_list?: RequestStateComplex;
   verification_approve?: RequestState;
+  following?: RequestStateComplex;
 };
 
 export type ArticleRequestState = StandardRequestState;

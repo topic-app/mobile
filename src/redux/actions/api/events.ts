@@ -73,13 +73,17 @@ async function updateEventsFollowing(
   params = {},
   useDefaultParams = true,
 ) {
-  if (!Store.getState().account.loggedIn) {
+  if (
+    !Store.getState().account.loggedIn ||
+    !Store.getState().account?.accountInfo?.user?.data?.following?.groups
+  ) {
     return false;
   }
   await Store.dispatch(
     updateCreator({
       update: UPDATE_EVENTS_FOLLOWING,
       stateUpdate: UPDATE_EVENTS_STATE,
+      stateName: 'following',
       url: 'events/list',
       listName: 'following',
       sort: dateDescSort,
