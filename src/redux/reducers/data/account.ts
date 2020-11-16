@@ -57,6 +57,16 @@ const initialState: AccountState = {
       success: null,
       error: null,
     },
+    delete: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    export: {
+      loading: false,
+      success: null,
+      error: null,
+    },
   },
 };
 

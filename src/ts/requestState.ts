@@ -69,6 +69,8 @@ export type AccountRequestState = {
   fetchAccount: RequestState;
   fetchWaitingGroups: RequestState;
   updateProfile: RequestState;
+  export: RequestState;
+  delete: RequestState;
 };
 
 export type LocationRequestState = {

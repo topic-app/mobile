@@ -433,6 +433,53 @@ function logoutCreator() {
   };
 }
 
+function profileActionCreator(
+  api: 'export/request' | 'delete/request',
+  stateName: 'delete' | 'export',
+) {
+  return (dispatch: (action: any) => void) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          [stateName]: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(`profile/${api}`, 'post', {}, true)
+        .then((result) => {
+          dispatch({
+            type: UPDATE_ACCOUNT_STATE,
+            data: {
+              [stateName]: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve(result.data);
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_ACCOUNT_STATE,
+            data: {
+              [stateName]: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
 /* Actions */
 
 async function login(fields: LoginFields) {
@@ -491,6 +538,14 @@ async function fetchAccount() {
   await Store.dispatch(fetchAccountCreator());
 }
 
+async function deleteAccount() {
+  await Store.dispatch(profileActionCreator('delete/request', 'delete'));
+}
+
+async function exportAccount() {
+  await Store.dispatch(profileActionCreator('export/request', 'export'));
+}
+
 export {
   updateCreationData,
   clearCreationData,
@@ -501,4 +556,6 @@ export {
   login,
   updateState,
   logout,
+  deleteAccount,
+  exportAccount,
 };
