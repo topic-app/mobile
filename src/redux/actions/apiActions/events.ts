@@ -1,10 +1,9 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { UPDATE_EVENTS_STATE } from '@ts/redux';
-import { State } from '@ts/types';
+import { AppThunk, UPDATE_EVENTS_STATE } from '@ts/redux';
 import { reportCreator, approveCreator } from './ActionCreator';
 
-type EventAddProps = {
+type EventAddParams = {
   title: string;
   summary: string;
   data: string;
@@ -52,8 +51,8 @@ function eventAddCreator({
   preferences,
   tags,
   program,
-}: EventAddProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: EventAddParams): AppThunk {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_EVENTS_STATE,
@@ -128,12 +127,12 @@ function eventAddCreator({
   };
 }
 
-async function eventAdd(data: EventAddProps) {
-  return await Store.dispatch(eventAddCreator(data));
+function eventAdd(data: EventAddParams) {
+  return Store.dispatch(eventAddCreator(data));
 }
 
-async function eventVerificationApprove(id: string) {
-  return await Store.dispatch(
+function eventVerificationApprove(id: string) {
+  return Store.dispatch(
     approveCreator({
       url: 'events/verification/approve',
       stateUpdate: UPDATE_EVENTS_STATE,

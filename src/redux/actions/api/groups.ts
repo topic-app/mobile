@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Group, ApiItem } from '@ts/types';
+import { Group } from '@ts/types';
 import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_TEMPLATES,
@@ -12,8 +12,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: ApiItem[]) =>
-  (data as Group[]).sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: Group[]) => data.sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -127,8 +126,8 @@ async function fetchGroupVerification(groupId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearGroups(data = true, search = true, templates = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
+function clearGroups(data = true, search = true, templates = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
 }
 
 /**

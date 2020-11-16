@@ -1,8 +1,6 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator, approveCreator } from './ActionCreator';
-import { UPDATE_TAGS_STATE } from '@ts/redux';
-import { State } from '@ts/types';
+import { AppThunk, UPDATE_TAGS_STATE } from '@ts/redux';
 
 type TagAddProps = {
   name: string;
@@ -11,8 +9,8 @@ type TagAddProps = {
   data: string;
 };
 
-function tagAddCreator({ name, color, parser, data }: TagAddProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+function tagAddCreator({ name, color, parser, data }: TagAddProps): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_TAGS_STATE,
@@ -69,8 +67,8 @@ function tagAddCreator({ name, color, parser, data }: TagAddProps) {
   };
 }
 
-async function tagAdd(data: TagAddProps) {
-  return await Store.dispatch(tagAddCreator(data));
+function tagAdd(data: TagAddProps) {
+  return Store.dispatch(tagAddCreator(data));
 }
 
 export { tagAdd };

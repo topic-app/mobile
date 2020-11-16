@@ -16,7 +16,6 @@ const initialState: ArticlesState = {
   item: null,
   search: [],
   verification: [],
-  creationData: {},
   state: {
     list: {
       success: null,
@@ -117,7 +116,6 @@ function articleReducer(state = initialState, action: ArticlesActionTypes): Arti
         verification: action.data.verification ? [] : state.verification,
         item: null,
         state: state.state,
-        creationData: state.creationData,
       };
     default:
       return state;

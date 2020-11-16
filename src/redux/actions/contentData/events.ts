@@ -1,6 +1,21 @@
 import Store from '@redux/store';
 
 import {
+  UPDATE_EVENTS_QUICKS,
+  UPDATE_EVENTS_CREATION_DATA,
+  UPDATE_EVENTS_READ,
+  UPDATE_EVENTS_LISTS,
+  UPDATE_EVENTS_STATE,
+  UPDATE_EVENTS_PREFS,
+  UPDATE_EVENTS_PARAMS,
+  CLEAR_EVENTS,
+  Event,
+  EventParams,
+  EventPrefs,
+  EventCreationData,
+} from '@ts/types';
+
+import {
   addToListCreator,
   removeFromListCreator,
   addListCreator,
@@ -16,22 +31,6 @@ import {
   updateCreationDataCreator,
   clearCreationDataCreator,
 } from './ActionCreator';
-
-import {
-  UPDATE_EVENTS_QUICKS,
-  UPDATE_EVENTS_CREATION_DATA,
-  UPDATE_EVENTS_READ,
-  UPDATE_EVENTS_LISTS,
-  UPDATE_EVENTS_STATE,
-  UPDATE_EVENTS_PREFS,
-  UPDATE_EVENTS_PARAMS,
-  CLEAR_EVENTS,
-  Event,
-  EventParams,
-  EventPrefs,
-  EventCreationData,
-} from '@ts/types';
-
 import { clearCreator } from '../api/ActionCreator';
 
 /**
@@ -60,7 +59,7 @@ async function addEventToList(eventId: string, listId: string) {
  * @param listId La liste de laquelle il faut enlever l'évènement
  */
 async function removeEventFromList(eventId: string, listId: string) {
-  await Store.dispatch(
+  Store.dispatch(
     removeFromListCreator({
       update: UPDATE_EVENTS_LISTS,
       dataType: 'eventData',
@@ -78,7 +77,7 @@ async function removeEventFromList(eventId: string, listId: string) {
  * @param description
  */
 async function addEventList(name: string, icon: string, description: string) {
-  await Store.dispatch(
+  Store.dispatch(
     addListCreator({
       update: UPDATE_EVENTS_LISTS,
       dataType: 'eventData',
@@ -104,7 +103,7 @@ async function modifyEventList(
   description: string,
   items: Event[],
 ) {
-  await Store.dispatch(
+  Store.dispatch(
     modifyListCreator({
       update: UPDATE_EVENTS_LISTS,
       dataType: 'eventData',
@@ -123,7 +122,7 @@ async function modifyEventList(
  * @param listId L'id de la liste
  */
 async function deleteEventList(listId: string) {
-  await Store.dispatch(
+  Store.dispatch(
     deleteListCreator({
       update: UPDATE_EVENTS_LISTS,
       dataType: 'eventData',
@@ -133,7 +132,7 @@ async function deleteEventList(listId: string) {
 }
 
 async function addEventRead(eventId: string, title: string, marked = false) {
-  await Store.dispatch(
+  Store.dispatch(
     addReadCreator({
       update: UPDATE_EVENTS_READ,
       dataType: 'eventData',
@@ -143,7 +142,7 @@ async function addEventRead(eventId: string, title: string, marked = false) {
 }
 
 async function deleteEventRead(eventId: string) {
-  await Store.dispatch(
+  Store.dispatch(
     deleteReadCreator({
       update: UPDATE_EVENTS_READ,
       dataType: 'eventData',
@@ -153,7 +152,7 @@ async function deleteEventRead(eventId: string) {
 }
 
 async function clearEventsRead() {
-  await Store.dispatch(
+  Store.dispatch(
     clearReadCreator({
       update: UPDATE_EVENTS_READ,
       dataType: 'eventData',
@@ -167,13 +166,13 @@ async function clearEventsRead() {
  * @param eventId L'id de l'évènement à récuperer
  */
 async function updateEventParams(params: Partial<EventParams>) {
-  await Store.dispatch(
+  Store.dispatch(
     updateParamsCreator({
       updateParams: UPDATE_EVENTS_PARAMS,
       params,
     }),
   );
-  await Store.dispatch(
+  Store.dispatch(
     clearCreator({
       clear: CLEAR_EVENTS,
     }),
@@ -181,7 +180,7 @@ async function updateEventParams(params: Partial<EventParams>) {
 }
 
 async function updateEventPrefs(prefs: Partial<EventPrefs>) {
-  await Store.dispatch(
+  Store.dispatch(
     updatePrefsCreator({
       updatePrefs: UPDATE_EVENTS_PREFS,
       prefs,
@@ -190,7 +189,7 @@ async function updateEventPrefs(prefs: Partial<EventPrefs>) {
 }
 
 async function addEventQuick(type: string, id: string, title: string) {
-  await Store.dispatch(
+  Store.dispatch(
     addQuickCreator({
       updateQuicks: UPDATE_EVENTS_QUICKS,
       dataType: 'eventData',
@@ -202,7 +201,7 @@ async function addEventQuick(type: string, id: string, title: string) {
 }
 
 async function deleteEventQuick(id: string) {
-  await Store.dispatch(
+  Store.dispatch(
     deleteQuickCreator({
       updateQuicks: UPDATE_EVENTS_QUICKS,
       dataType: 'eventData',
@@ -212,7 +211,7 @@ async function deleteEventQuick(id: string) {
 }
 
 async function updateEventCreationData(fields: Partial<EventCreationData>) {
-  await Store.dispatch(
+  Store.dispatch(
     updateCreationDataCreator({
       updateCreationData: UPDATE_EVENTS_CREATION_DATA,
       dataType: 'eventData',
@@ -222,8 +221,9 @@ async function updateEventCreationData(fields: Partial<EventCreationData>) {
 }
 
 async function clearEventCreationData() {
-  await Store.dispatch(
+  Store.dispatch(
     clearCreationDataCreator({
+      dataType: 'eventData',
       updateCreationData: UPDATE_EVENTS_CREATION_DATA,
     }),
   );

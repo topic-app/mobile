@@ -1,10 +1,11 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator, approveCreator } from './ActionCreator';
-import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, State } from '@ts/types';
+import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, AppThunk } from '@ts/types';
 
-function groupFollowCreator({ id }: { id: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+import { reportCreator, approveCreator } from './ActionCreator';
+
+function groupFollowCreator({ id }: { id: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -55,8 +56,8 @@ function groupFollowCreator({ id }: { id: string }) {
   };
 }
 
-function groupUnfollowCreator({ id }: { id: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupUnfollowCreator({ id }: { id: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -107,20 +108,22 @@ function groupUnfollowCreator({ id }: { id: string }) {
   };
 }
 
+type GroupAddMemberCreatorParams = {
+  user: string;
+  group: string;
+  role: string;
+  secondaryRoles: string[];
+  expires: number;
+};
+
 function groupAddMemberCreator({
   group,
   user,
   role,
   secondaryRoles,
   expires,
-}: {
-  user: string;
-  group: string;
-  role: string;
-  secondaryRoles: string[];
-  expires: number;
-}) {
-  return (dispatch: (action: ActionType) => void) => {
+}: GroupAddMemberCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -175,8 +178,8 @@ function groupAddMemberCreator({
   };
 }
 
-function groupDeleteMemberCreator({ group, user }: { user: string; group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupDeleteMemberCreator({ group, user }: { user: string; group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -227,8 +230,8 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
   };
 }
 
-function groupMemberAcceptCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberAcceptCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -278,8 +281,8 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
   };
 }
 
-function groupMemberRejectCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberRejectCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -329,8 +332,8 @@ function groupMemberRejectCreator({ group }: { group: string }) {
   };
 }
 
-function groupMemberLeaveCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberLeaveCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -380,13 +383,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
   };
 }
 
-function groupModifyCreator({
-  group,
-  shortName,
-  aliases,
-  summary,
-  description,
-}: {
+type GroupModifyCreatorParams = {
   group: string;
   shortName?: string;
   aliases?: string[];
@@ -395,7 +392,15 @@ function groupModifyCreator({
     parser: 'markdown' | 'plaintext';
     data: string;
   };
-}) {
+};
+
+function groupModifyCreator({
+  group,
+  shortName,
+  aliases,
+  summary,
+  description,
+}: GroupModifyCreatorParams): AppThunk {
   return (dispatch: (action: ActionType) => void) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -452,7 +457,7 @@ function groupModifyCreator({
   };
 }
 
-type GroupAddProps = {
+type GroupAddCreatorParams = {
   name: string;
   shortName: string;
   type: string;
@@ -476,8 +481,8 @@ function groupAddCreator({
   parser,
   description,
   verification,
-}: GroupAddProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: GroupAddCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -538,8 +543,8 @@ function groupAddCreator({
   };
 }
 
-async function groupAdd(data: GroupAddProps) {
-  return await Store.dispatch(groupAddCreator(data));
+function groupAdd(data: GroupAddCreatorParams) {
+  return Store.dispatch(groupAddCreator(data));
 }
 
 async function groupFollow(id: string) {
@@ -621,8 +626,8 @@ async function groupReport(groupId: string, reason: string) {
   );
 }
 
-async function groupVerificationApprove(id: string) {
-  return await Store.dispatch(
+function groupVerificationApprove(id: string) {
+  return Store.dispatch(
     approveCreator({
       url: 'groups/verification/approve',
       stateUpdate: UPDATE_GROUPS_STATE,

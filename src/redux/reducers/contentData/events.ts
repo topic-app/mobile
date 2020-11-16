@@ -1,17 +1,15 @@
 import {
-  EventsDataState,
-  EventsActionTypes,
+  EventsContentState,
   UPDATE_EVENTS_PARAMS,
   UPDATE_EVENTS_LISTS,
   UPDATE_EVENTS_READ,
   UPDATE_EVENTS_PREFS,
   UPDATE_EVENTS_QUICKS,
   UPDATE_EVENTS_CREATION_DATA,
+  EventsContentActionTypes,
 } from '@ts/redux';
 
-import { Config } from '@constants/index';
-
-const initialState: EventsDataState = {
+const initialState: EventsContentState = {
   params: {},
   read: [],
   creationData: {},
@@ -28,7 +26,6 @@ const initialState: EventsDataState = {
     categories: ['upcoming', 'passed'],
     hidden: [],
   },
-  ...Config.seedDb.events,
 };
 
 /**
@@ -40,7 +37,10 @@ const initialState: EventsDataState = {
  * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
-function eventDataReducer(state = initialState, action: EventsActionTypes): EventsDataState {
+function eventDataReducer(
+  state = initialState,
+  action: EventsContentActionTypes,
+): EventsContentState {
   switch (action.type) {
     case UPDATE_EVENTS_PARAMS:
       return {

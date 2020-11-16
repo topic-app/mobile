@@ -1,7 +1,6 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
 import {
-  State,
   ReduxLocation,
   LocationRequestState,
   School,
@@ -9,7 +8,9 @@ import {
   UPDATE_LOCATION_STATE,
   UPDATE_LOCATION,
   CLEAR_LOCATION,
+  AppThunk,
 } from '@ts/types';
+import { AnyAction } from 'redux';
 
 /**
  * @docs actionCreators
@@ -17,149 +18,142 @@ import {
  * @param lastId L'id du dernier article, par ordre chronologique, de la liste d'articles/database redux
  * @returns Action
  */
-function updateLocationCreator(fields: ReduxLocation) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: UPDATE_LOCATION,
-        data: fields,
-      });
-      if (!getState().account.loggedIn) {
-        resolve();
-        return;
-      }
-      dispatch({
-        type: UPDATE_LOCATION_STATE,
-        data: {
-          update: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+function updateLocationCreator(fields: ReduxLocation): AppThunk {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_LOCATION,
+      data: fields,
+    });
+    if (!getState().account.loggedIn) {
+      return Promise.resolve();
+    }
+    dispatch({
+      type: UPDATE_LOCATION_STATE,
+      data: {
+        update: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
+      },
+    });
 
-      try {
-        await request('profile/modify/data', 'post', { data: { location: fields } }, true);
-      } catch (error) {
-        dispatch({
-          type: UPDATE_LOCATION_STATE,
-          data: {
-            update: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
+    try {
+      await request('profile/modify/data', 'post', { data: { location: fields } }, true);
+    } catch (error) {
       dispatch({
         type: UPDATE_LOCATION_STATE,
         data: {
           update: {
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error,
           },
         },
       });
-      resolve();
+      return Promise.reject();
+    }
+
+    dispatch({
+      type: UPDATE_LOCATION_STATE,
+      data: {
+        update: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return Promise.resolve();
   };
 }
 
-function clearLocationCreator() {
+function clearLocationCreator(): AnyAction {
   return {
     type: CLEAR_LOCATION,
     data: {},
   };
 }
 
-function updateStateCreator(state: Partial<LocationRequestState>) {
+function updateStateCreator(state: Partial<LocationRequestState>): AnyAction {
   return {
     type: UPDATE_LOCATION_STATE,
     data: state,
   };
 }
 
-function fetchLocationDataCreator() {
-  return (dispatch: (action: any) => void, getState: () => State) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: UPDATE_LOCATION_STATE,
-        data: {
-          fetch: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+function fetchLocationDataCreator(): AppThunk {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_LOCATION_STATE,
+      data: {
+        fetch: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
+      },
+    });
 
-      const { schools, departments } = getState().location;
-      const schoolData: School[] = [];
-      const departmentData: Department[] = [];
-      let error = false;
+    const { schools, departments } = getState().location;
+    const schoolData: School[] = [];
+    const departmentData: Department[] = [];
+    let error = false;
 
-      await Promise.all(
-        schools.map(async (school) => {
-          try {
-            const result = await request('schools/info', 'get', { schoolId: school });
-            schoolData.push(result?.data?.schools[0]);
-          } catch (e) {
-            error = e;
-          }
-        }),
-      );
+    await Promise.all(
+      schools.map(async (school) => {
+        try {
+          const result = await request('schools/info', 'get', { schoolId: school });
+          schoolData.push(result?.data?.schools[0]);
+        } catch (e) {
+          error = e;
+        }
+      }),
+    );
 
-      await Promise.all(
-        departments.map(async (department) => {
-          try {
-            const result = await request('departments/info', 'get', { departmentId: department });
-            departmentData.push(result?.data?.departments[0]);
-          } catch (e) {
-            error = e;
-          }
-        }),
-      );
+    await Promise.all(
+      departments.map(async (department) => {
+        try {
+          const result = await request('departments/info', 'get', { departmentId: department });
+          departmentData.push(result?.data?.departments[0]);
+        } catch (e) {
+          error = e;
+        }
+      }),
+    );
 
-      if (error) {
-        dispatch({
-          type: UPDATE_LOCATION_STATE,
-          data: {
-            fetch: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
+    if (error) {
       dispatch({
         type: UPDATE_LOCATION_STATE,
         data: {
           fetch: {
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error,
           },
         },
       });
-      dispatch({
-        type: UPDATE_LOCATION,
-        data: {
-          schoolData,
-          departmentData,
+      return Promise.reject();
+    }
+
+    dispatch({
+      type: UPDATE_LOCATION_STATE,
+      data: {
+        fetch: {
+          loading: false,
+          success: true,
+          error: null,
         },
-      });
-      resolve();
+      },
     });
+    dispatch({
+      type: UPDATE_LOCATION,
+      data: {
+        schoolData,
+        departmentData,
+      },
+    });
+    return Promise.resolve();
   };
 }
 
@@ -172,12 +166,12 @@ async function updateLocation(fields: ReduxLocation, fetch: boolean = true) {
   if (fetch) fetchLocationData();
 }
 
-async function updateState(fields: Partial<LocationRequestState>) {
-  await Store.dispatch(updateStateCreator(fields));
+function updateState(fields: Partial<LocationRequestState>) {
+  Store.dispatch(updateStateCreator(fields));
 }
 
-async function clearLocation() {
-  await Store.dispatch(clearLocationCreator());
+function clearLocation() {
+  Store.dispatch(clearLocationCreator());
 }
 
 export { updateLocation, fetchLocationData, updateState, clearLocation };

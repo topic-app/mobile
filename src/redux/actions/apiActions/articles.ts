@@ -1,7 +1,7 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { UPDATE_ARTICLES_STATE } from '@ts/redux';
-import { State } from '@ts/types';
+import { AppThunk, UPDATE_ARTICLES_STATE } from '@ts/redux';
+
 import { reportCreator, approveCreator } from './ActionCreator';
 
 type ArticleAddProps = {
@@ -41,8 +41,8 @@ function articleAddCreator({
   data,
   preferences,
   tags,
-}: ArticleAddProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: ArticleAddProps): AppThunk {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_ARTICLES_STATE,
@@ -106,12 +106,12 @@ function articleAddCreator({
   };
 }
 
-async function articleAdd(data: ArticleAddProps) {
-  return await Store.dispatch(articleAddCreator(data));
+function articleAdd(data: ArticleAddProps) {
+  return Store.dispatch(articleAddCreator(data));
 }
 
-async function articleVerificationApprove(id: string) {
-  return await Store.dispatch(
+function articleVerificationApprove(id: string) {
+  return Store.dispatch(
     approveCreator({
       url: 'articles/verification/approve',
       stateUpdate: UPDATE_ARTICLES_STATE,

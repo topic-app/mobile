@@ -1,16 +1,15 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { State } from '@ts/types';
-import { UPDATE_LINKING_STATE } from '@ts/redux';
+import { AppThunk, UPDATE_LINKING_STATE } from '@ts/redux';
 
 type LinkingProps = {
   url: string;
-  parameters: object;
+  parameters: { [key: string]: any };
   state: string;
 };
 
-function linkingCreator({ url, parameters, state }: LinkingProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+function linkingCreator({ url, parameters, state }: LinkingProps): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_LINKING_STATE,
@@ -53,7 +52,7 @@ function linkingCreator({ url, parameters, state }: LinkingProps) {
   };
 }
 
-async function linking(url: string, parameters: object, state: string) {
+async function linking(url: string, parameters: { [key: string]: any }, state: string) {
   await Store.dispatch(
     linkingCreator({
       url,

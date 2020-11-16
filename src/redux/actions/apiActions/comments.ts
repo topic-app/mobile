@@ -1,17 +1,22 @@
 import Store from '@redux/store';
+import { UPDATE_COMMENTS_STATE, Publisher, Content, AppThunk, Comment } from '@ts/types';
 import { request } from '@utils/index';
 import { reportCreator } from './ActionCreator';
-import { UPDATE_COMMENTS_STATE, Publisher, Content } from '@ts/types';
 
-type commentAddProps = {
+type CommentAddCreatorParams = {
   publisher: Publisher;
   content: Content;
   parent: string;
-  parentType: string;
+  parentType: Comment['parentType'];
 };
 
-function commentAddCreator({ publisher, content, parent, parentType }: commentAddProps) {
-  return (dispatch: (action: any) => void) => {
+function commentAddCreator({
+  publisher,
+  content,
+  parent,
+  parentType,
+}: CommentAddCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_COMMENTS_STATE,
@@ -111,7 +116,7 @@ async function commentAdd(
   publisher: Publisher,
   content: Content,
   parent: string,
-  parentType: string,
+  parentType: Comment['parentType'],
 ) {
   await Store.dispatch(
     commentAddCreator({

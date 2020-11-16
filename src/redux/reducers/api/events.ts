@@ -12,7 +12,6 @@ import {
 const initialState: EventsState = {
   dataUpcoming: [],
   dataPassed: [],
-  creationData: {},
   verification: [],
   search: [],
   item: null,
@@ -84,7 +83,6 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
         dataPassed: action.data.data ? [] : state.dataPassed,
         search: action.data.search ? [] : state.search,
         verification: action.data.verification ? [] : state.verification,
-        creationData: state.creationData,
         item: null,
         state: state.state,
       };

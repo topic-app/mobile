@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { UPDATE_DEPARTMENTS_ITEMS, ApiItem, Department } from '@ts/types';
+import { UPDATE_DEPARTMENTS_ITEMS, Department } from '@ts/types';
 import {
   UPDATE_DEPARTMENTS_DATA,
   UPDATE_DEPARTMENTS_STATE,
@@ -90,8 +90,8 @@ async function fetchMultiDepartment(departmentIds: string[]) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearDepartments(data = true, search = true, items = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_DEPARTMENTS, data, search, items }));
+function clearDepartments(data = true, search = true, items = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_DEPARTMENTS, data, search, items }));
 }
 
 export {

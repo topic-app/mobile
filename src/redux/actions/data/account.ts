@@ -1,3 +1,4 @@
+import { AnyAction } from 'redux';
 import { request, logger } from '@utils/index';
 import Store from '@redux/store';
 
@@ -7,7 +8,6 @@ import {
   SchoolPreload,
   DepartmentPreload,
   Avatar,
-  State,
   GroupWithMembership,
   UPDATE_ACCOUNT_GROUPS,
   UPDATE_ACCOUNT_PERMISSIONS,
@@ -20,13 +20,14 @@ import {
   CLEAR_ACCOUNT_CREATION_DATA,
   LOGIN,
   AccountRequestState,
+  AppThunk,
 } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
 
 import { fetchLocationData } from './location';
 
-function fetchGroupsCreator() {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+function fetchGroupsCreator(): AppThunk {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       if (!getState().account.loggedIn) {
         dispatch({
@@ -111,8 +112,8 @@ function fetchGroupsCreator() {
   };
 }
 
-function fetchWaitingGroupsCreator() {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+function fetchWaitingGroupsCreator(): AppThunk {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       if (!getState().account.loggedIn) {
         dispatch({
@@ -166,8 +167,8 @@ function fetchWaitingGroupsCreator() {
   };
 }
 
-function fetchAccountCreator() {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+function fetchAccountCreator(): AppThunk {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       if (!getState().account.loggedIn) {
         dispatch({
@@ -232,21 +233,21 @@ function fetchAccountCreator() {
   };
 }
 
-function updateCreationDataCreator(fields: object) {
+function updateCreationDataCreator(fields: { [key: string]: any }): AnyAction {
   return {
     type: UPDATE_ACCOUNT_CREATION_DATA,
     data: fields,
   };
 }
 
-function clearCreationDataCreator() {
+function clearCreationDataCreator(): AnyAction {
   return {
     type: CLEAR_ACCOUNT_CREATION_DATA,
     data: {},
   };
 }
 
-function updateStateCreator(state: Partial<AccountRequestState>) {
+function updateStateCreator(state: Partial<AccountRequestState>): AnyAction {
   return {
     type: UPDATE_ACCOUNT_STATE,
     data: state,
@@ -258,25 +259,75 @@ type LoginFields = {
   device: { type: string; deviceId: null; canNotify: boolean };
 };
 
-function loginCreator(fields: LoginFields) {
-  return (dispatch: (action: any) => void) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
+function loginCreator(fields: LoginFields): AppThunk {
+  return async (dispatch) => {
+    const newFields = fields;
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        login: {
+          loading: true,
+          success: null,
+          error: null,
+          incorrect: null,
+        },
+      },
+    });
+    try {
+      // We also hash passwords on the server, this is just a small extra security
+      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password);
+    } catch (err) {
+      return dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           login: {
-            loading: true,
-            success: null,
-            error: null,
+            success: false,
+            loading: false,
+            error: err,
             incorrect: null,
           },
         },
       });
-      try {
-        // We also hash passwords on the server, this is just a small extra security
-        fields.accountInfo.password = await hashPassword(fields.accountInfo.password);
-      } catch (err) {
-        return dispatch({
+    }
+    request('auth/login/local', 'post', newFields)
+      .then((result) => {
+        if (!result.data?.correct) {
+          dispatch({
+            type: UPDATE_ACCOUNT_STATE,
+            data: {
+              login: {
+                loading: false,
+                success: null,
+                error: null,
+                incorrect: true,
+              },
+            },
+          });
+          return Promise.reject();
+        }
+        dispatch({
+          type: UPDATE_ACCOUNT_STATE,
+          data: {
+            login: {
+              loading: false,
+              success: true,
+              error: null,
+              incorrect: false,
+            },
+          },
+        });
+        dispatch({
+          type: LOGIN,
+          data: result.data,
+        });
+        dispatch(fetchAccountCreator());
+        dispatch(fetchGroupsCreator());
+        dispatch(fetchWaitingGroupsCreator());
+        logger.debug('Logged in');
+        return Promise.resolve();
+      })
+      .catch((err) => {
+        dispatch({
           type: UPDATE_ACCOUNT_STATE,
           data: {
             login: {
@@ -287,59 +338,8 @@ function loginCreator(fields: LoginFields) {
             },
           },
         });
-      }
-      request('auth/login/local', 'post', fields)
-        .then((result) => {
-          if (!result.data?.correct) {
-            dispatch({
-              type: UPDATE_ACCOUNT_STATE,
-              data: {
-                login: {
-                  loading: false,
-                  success: null,
-                  error: null,
-                  incorrect: true,
-                },
-              },
-            });
-            return reject();
-          }
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              login: {
-                loading: false,
-                success: true,
-                error: null,
-                incorrect: false,
-              },
-            },
-          });
-          dispatch({
-            type: LOGIN,
-            data: result.data,
-          });
-          dispatch(fetchAccountCreator());
-          dispatch(fetchGroupsCreator());
-          dispatch(fetchWaitingGroupsCreator());
-          logger.debug('Logged in');
-          resolve();
-        })
-        .catch((err) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              login: {
-                success: false,
-                loading: false,
-                error: err,
-                incorrect: null,
-              },
-            },
-          });
-          reject();
-        });
-    });
+        return Promise.reject();
+      });
   };
 }
 
@@ -360,73 +360,72 @@ type RegisterFields = {
   device: { type: string; deviceId: null; canNotify: boolean };
 };
 
-function registerCreator(fields: RegisterFields) {
-  return (dispatch: (action: any) => void) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
+function registerCreator(fields: RegisterFields): AppThunk {
+  return async (dispatch) => {
+    const newFields = fields;
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        register: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password);
+    } catch (err) {
+      return dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
-          register: {
-            loading: true,
-            success: null,
-            error: null,
+          login: {
+            success: false,
+            loading: false,
+            error: err,
+            incorrect: null,
           },
         },
       });
-      try {
-        fields.accountInfo.password = await hashPassword(fields.accountInfo.password);
-      } catch (err) {
-        return dispatch({
+    }
+    request('auth/register/local', 'post', newFields)
+      .then((result) => {
+        dispatch({
           type: UPDATE_ACCOUNT_STATE,
           data: {
-            login: {
-              success: false,
+            register: {
               loading: false,
-              error: err,
-              incorrect: null,
+              success: true,
+              error: null,
             },
           },
         });
-      }
-      request('auth/register/local', 'post', fields)
-        .then((result) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              register: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          dispatch({
-            type: LOGIN,
-            data: result.data,
-          });
-          dispatch(fetchAccountCreator());
-          dispatch(fetchGroupsCreator());
-          dispatch(fetchWaitingGroupsCreator());
-          resolve();
-        })
-        .catch((err) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              register: {
-                success: false,
-                loading: false,
-                error: err,
-              },
-            },
-          });
-          reject(err);
+        dispatch({
+          type: LOGIN,
+          data: result.data,
         });
-    });
+        dispatch(fetchAccountCreator());
+        dispatch(fetchGroupsCreator());
+        dispatch(fetchWaitingGroupsCreator());
+        return Promise.resolve();
+      })
+      .catch((err) => {
+        dispatch({
+          type: UPDATE_ACCOUNT_STATE,
+          data: {
+            register: {
+              success: false,
+              loading: false,
+              error: err,
+            },
+          },
+        });
+        return Promise.reject(err);
+      });
   };
 }
 
-function logoutCreator() {
+function logoutCreator(): AnyAction {
   return {
     type: LOGOUT,
     data: {},
@@ -439,7 +438,7 @@ async function login(fields: LoginFields) {
   await Store.dispatch(loginCreator(fields));
 }
 
-async function updateState(fields: {
+function updateState(fields: {
   loading?: boolean | null;
   success?: boolean | null;
   error?: any;
@@ -448,18 +447,18 @@ async function updateState(fields: {
     | { success: boolean; error: any; loading: boolean }
     | { loading: boolean; success: null; error: null };
 }) {
-  await Store.dispatch(updateStateCreator(fields));
+  Store.dispatch(updateStateCreator(fields));
 }
 
 async function register(fields: RegisterFields) {
   await Store.dispatch(registerCreator(fields));
 }
 
-async function logout() {
+function logout() {
   Store.dispatch(logoutCreator());
 }
 
-async function updateCreationData(params: {
+function updateCreationData(params: {
   title?: string;
   email?: string;
   password?: string;
@@ -472,11 +471,11 @@ async function updateCreationData(params: {
   lastName?: string;
   avatar?: Avatar;
 }) {
-  await Store.dispatch(updateCreationDataCreator(params));
+  Store.dispatch(updateCreationDataCreator(params));
 }
 
-async function clearCreationData() {
-  await Store.dispatch(clearCreationDataCreator());
+function clearCreationData() {
+  Store.dispatch(clearCreationDataCreator());
 }
 
 async function fetchGroups() {

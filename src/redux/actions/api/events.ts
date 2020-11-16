@@ -17,10 +17,8 @@ const dateAscSort = (data: ApiItem[]) =>
     new Date(a.duration?.start) > new Date(b.duration?.start) ? 1 : -1,
   );
 
-const dateDescSort = (data: ApiItem[]) =>
-  (data as Event[]).sort((a, b) =>
-    new Date(a.duration?.start) > new Date(b.duration?.start) ? -1 : 1,
-  );
+const dateDescSort = (data: Event[]) =>
+  data.sort((a, b) => (new Date(a.duration?.start) > new Date(b.duration?.start) ? -1 : 1));
 
 /**
  * @docs actions
@@ -146,8 +144,8 @@ async function updateEventsVerification(type: 'initial' | 'refresh' | 'next', pa
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearEvents(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_EVENTS, data, search }));
+function clearEvents(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_EVENTS, data, search }));
 }
 
 export {

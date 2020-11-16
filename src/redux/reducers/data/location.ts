@@ -1,13 +1,13 @@
 import { Config } from '@constants/index';
 import {
-  LocationList,
   LocationActionTypes,
   UPDATE_LOCATION,
   CLEAR_LOCATION,
   UPDATE_LOCATION_STATE,
+  LocationState,
 } from '@ts/redux';
 
-const initialState: LocationList = {
+const initialState: LocationState = {
   selected: false,
   schools: [],
   schoolData: [],
@@ -39,7 +39,7 @@ const initialState: LocationList = {
  * @param action.data.pref La clé du paramètre à supprimer
  * @returns Nouveau state
  */
-function locationReducer(state = initialState, action: LocationActionTypes) {
+function locationReducer(state = initialState, action: LocationActionTypes): LocationState {
   switch (action.type) {
     case UPDATE_LOCATION:
       return { ...state, ...action.data };

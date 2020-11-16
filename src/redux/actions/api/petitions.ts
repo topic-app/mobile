@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Petition, ApiItem } from '@ts/types';
+import { Petition } from '@ts/types';
 import {
   UPDATE_PETITIONS_DATA,
   UPDATE_PETITIONS_SEARCH,
@@ -10,10 +10,8 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: ApiItem[]) =>
-  (data as Petition[]).sort((a, b) =>
-    new Date(a.duration.end) > new Date(b.duration.end) ? -1 : 1,
-  );
+const dateDescSort = (data: Petition[]) =>
+  data.sort((a, b) => (new Date(a.duration.end) > new Date(b.duration.end) ? -1 : 1));
 
 /**
  * @docs actions
@@ -73,8 +71,8 @@ async function fetchPetition(petitionId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearPetitions(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_PETITIONS, data, search }));
+function clearPetitions(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_PETITIONS, data, search }));
 }
 
 export { updatePetitions, clearPetitions, fetchPetition, searchPetitions };

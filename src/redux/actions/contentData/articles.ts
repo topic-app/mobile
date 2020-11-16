@@ -1,6 +1,20 @@
 import Store from '@redux/store';
 
 import {
+  UPDATE_ARTICLES_QUICKS,
+  UPDATE_ARTICLES_CREATION_DATA,
+  UPDATE_ARTICLES_READ,
+  UPDATE_ARTICLES_LISTS,
+  UPDATE_ARTICLES_STATE,
+  UPDATE_ARTICLES_PREFS,
+  UPDATE_ARTICLES_PARAMS,
+  CLEAR_ARTICLES,
+  ArticlePrefs,
+  ArticleCreationData,
+  Article,
+} from '@ts/types';
+
+import {
   addToListCreator,
   removeFromListCreator,
   addListCreator,
@@ -16,21 +30,6 @@ import {
   updateCreationDataCreator,
   clearCreationDataCreator,
 } from './ActionCreator';
-
-import {
-  UPDATE_ARTICLES_QUICKS,
-  UPDATE_ARTICLES_CREATION_DATA,
-  UPDATE_ARTICLES_READ,
-  UPDATE_ARTICLES_LISTS,
-  UPDATE_ARTICLES_STATE,
-  UPDATE_ARTICLES_PREFS,
-  UPDATE_ARTICLES_PARAMS,
-  CLEAR_ARTICLES,
-  ArticlePrefs,
-  ArticleCreationData,
-  Article,
-} from '@ts/types';
-
 import { clearCreator } from '../api/ActionCreator';
 
 /**
@@ -59,7 +58,7 @@ async function addArticleToList(articleId: string, listId: string) {
  * @param listId La liste de laquelle il faut enlever l'article
  */
 async function removeArticleFromList(articleId: string, listId: string) {
-  await Store.dispatch(
+  Store.dispatch(
     removeFromListCreator({
       update: UPDATE_ARTICLES_LISTS,
       dataType: 'articleData',
@@ -77,7 +76,7 @@ async function removeArticleFromList(articleId: string, listId: string) {
  * @param description
  */
 async function addArticleList(name: string, icon: string, description: string) {
-  await Store.dispatch(
+  Store.dispatch(
     addListCreator({
       update: UPDATE_ARTICLES_LISTS,
       dataType: 'articleData',
@@ -103,7 +102,7 @@ async function modifyArticleList(
   description: string,
   items: Article[],
 ) {
-  await Store.dispatch(
+  Store.dispatch(
     modifyListCreator({
       update: UPDATE_ARTICLES_LISTS,
       dataType: 'articleData',
@@ -122,7 +121,7 @@ async function modifyArticleList(
  * @param listId L'id de la liste
  */
 async function deleteArticleList(listId: string) {
-  await Store.dispatch(
+  Store.dispatch(
     deleteListCreator({
       update: UPDATE_ARTICLES_LISTS,
       dataType: 'articleData',
@@ -132,7 +131,7 @@ async function deleteArticleList(listId: string) {
 }
 
 async function addArticleRead(articleId: string, title: string, marked: boolean = false) {
-  await Store.dispatch(
+  Store.dispatch(
     addReadCreator({
       update: UPDATE_ARTICLES_READ,
       dataType: 'articleData',
@@ -142,7 +141,7 @@ async function addArticleRead(articleId: string, title: string, marked: boolean 
 }
 
 async function deleteArticleRead(articleId: string) {
-  await Store.dispatch(
+  Store.dispatch(
     deleteReadCreator({
       update: UPDATE_ARTICLES_READ,
       dataType: 'articleData',
@@ -152,7 +151,7 @@ async function deleteArticleRead(articleId: string) {
 }
 
 async function clearArticlesRead() {
-  await Store.dispatch(
+  Store.dispatch(
     clearReadCreator({
       update: UPDATE_ARTICLES_READ,
       dataType: 'articleData',
@@ -166,13 +165,13 @@ async function clearArticlesRead() {
  * @param articleId L'id de l'article à récuperer
  */
 async function updateArticleParams(params: object) {
-  await Store.dispatch(
+  Store.dispatch(
     updateParamsCreator({
       updateParams: UPDATE_ARTICLES_PARAMS,
       params,
     }),
   );
-  await Store.dispatch(
+  Store.dispatch(
     clearCreator({
       clear: CLEAR_ARTICLES,
     }),
@@ -180,7 +179,7 @@ async function updateArticleParams(params: object) {
 }
 
 async function updateArticlePrefs(prefs: Partial<ArticlePrefs>) {
-  await Store.dispatch(
+  Store.dispatch(
     updatePrefsCreator({
       updatePrefs: UPDATE_ARTICLES_PREFS,
       prefs,
@@ -189,7 +188,7 @@ async function updateArticlePrefs(prefs: Partial<ArticlePrefs>) {
 }
 
 async function addArticleQuick(type: string, id: string, title: string) {
-  await Store.dispatch(
+  Store.dispatch(
     addQuickCreator({
       updateQuicks: UPDATE_ARTICLES_QUICKS,
       dataType: 'articleData',
@@ -201,7 +200,7 @@ async function addArticleQuick(type: string, id: string, title: string) {
 }
 
 async function deleteArticleQuick(id: string) {
-  await Store.dispatch(
+  Store.dispatch(
     deleteQuickCreator({
       updateQuicks: UPDATE_ARTICLES_QUICKS,
       dataType: 'articleData',
@@ -211,7 +210,7 @@ async function deleteArticleQuick(id: string) {
 }
 
 async function updateArticleCreationData(fields: Partial<ArticleCreationData>) {
-  await Store.dispatch(
+  Store.dispatch(
     updateCreationDataCreator({
       updateCreationData: UPDATE_ARTICLES_CREATION_DATA,
       dataType: 'articleData',
@@ -221,8 +220,9 @@ async function updateArticleCreationData(fields: Partial<ArticleCreationData>) {
 }
 
 async function clearArticleCreationData() {
-  await Store.dispatch(
+  Store.dispatch(
     clearCreationDataCreator({
+      dataType: 'articleData',
       updateCreationData: UPDATE_ARTICLES_CREATION_DATA,
     }),
   );

@@ -19,7 +19,9 @@ type Props = {
 };
 
 const GroupsBanner: React.FC<Props> = ({ account, state, accountState }) => {
-  if (!account.loggedIn || account.waitingGroups?.length > 0) return null;
+  if (!account.loggedIn || !account.waitingGroups || account.waitingGroups.length === 0) {
+    return null;
+  }
 
   const refresh = () => {
     fetchWaitingGroups();

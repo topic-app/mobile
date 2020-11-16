@@ -7,12 +7,12 @@ import {
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
 } from '@ts/redux';
-import { ApiItem, UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
+import { UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: ApiItem[]) =>
-  (data as Article[]).sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+const dateDescSort = (data: Article[]) =>
+  data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
  * @docs actions
@@ -75,10 +75,8 @@ async function updateArticlesFollowing(
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearArticles(data = true, search = true, verification = true, following = true) {
-  await Store.dispatch(
-    clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }),
-  );
+function clearArticles(data = true, search = true, verification = true, following = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }));
 }
 
 /**

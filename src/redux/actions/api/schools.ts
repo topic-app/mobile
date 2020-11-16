@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { ApiItem } from '@ts/types';
+import { School } from '@ts/types';
 import {
   UPDATE_SCHOOLS_DATA,
   UPDATE_SCHOOLS_ITEM,
@@ -12,7 +12,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: ApiItem[]) => data; // .sort((a, b) => a?.name?.localCompare(b?.name));
+const nameAscSort = (data: School[]) => data; // .sort((a, b) => a?.name?.localCompare(b?.name));
 
 /**
  * @docs actions
@@ -117,8 +117,8 @@ async function fetchMultiSchool(schoolIds: string[]) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearSchools(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_SCHOOLS, data, search }));
+function clearSchools(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_SCHOOLS, data, search }));
 }
 
 export {
