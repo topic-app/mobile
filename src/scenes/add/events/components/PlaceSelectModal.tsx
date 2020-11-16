@@ -125,7 +125,7 @@ function EventPlaceSelectModal({
                   add({
                     id: item._id,
                     type,
-                    address: null,
+                    address: undefined,
                     tempName: item.name,
                     associatedSchool: item._id,
                     associatedPlace: undefined,
@@ -134,7 +134,7 @@ function EventPlaceSelectModal({
                   add({
                     id: item._id,
                     type,
-                    address: null,
+                    address: undefined,
                     tempName: item.name,
                     associatedSchool: undefined,
                     associatedPlace: item._id,
