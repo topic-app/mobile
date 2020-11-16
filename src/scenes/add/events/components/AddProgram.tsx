@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { Button, Text, Title } from 'react-native-paper';
+import { TextInput, Button, List, Text } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { Account, Content, State } from '@ts/types';
-import { StepperViewPageProps } from '@components/index';
+import { Account, Content, State, Duration, Address } from '@ts/types';
+import { StepperViewPageProps, InlineCard } from '@components/index';
 import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
@@ -23,12 +23,14 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const [isProgramAddModalVisible, setProgramAddModalVisible] = React.useState(false);
-  const [program, setProgram] = React.useState<ProgramType[]>([]);
+  const [eventProgram, setProgram] = React.useState<ProgramType[]>([]);
   const submit = () => {
-    updateEventCreationData({ parser: 'markdown', program: null });
+    updateEventCreationData({ parser: 'markdown', program: eventProgram });
     add('markdown');
   };
-
+  const addProgram = (program: ProgramType) => {
+    setProgram([...eventProgram, program]);
+  };
   type ProgramType = {
     _id: string;
     title: string;
@@ -60,7 +62,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
         <List.Subheader> Progamme </List.Subheader>
         <FlatList
           keyExtractor={(program) => program._id}
-          data={program}
+          data={eventProgram}
           renderItem={({ item: program }) => {
             return (
               <InlineCard
@@ -86,6 +88,13 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
           Ajouter
         </Button>
       </View>
+      <ProgramAddModal
+        visible={isProgramAddModalVisible}
+        setVisible={setProgramAddModalVisible}
+        add={(program) => {
+          addProgram(program);
+        }}
+      />
       <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
