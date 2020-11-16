@@ -275,10 +275,12 @@ const EventList: React.FC<EventListProps> = ({
             : []),
         ]}
       >
-        {(state.list.loading.initial || state.search?.loading.initial) && (
-          <ProgressBar indeterminate style={{ marginTop: -4 }} />
-        )}
-        {state.list.error || state.search?.error ? (
+        {(state.list.loading.initial ||
+          state.search?.loading.initial ||
+          state.following?.loading) && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
+        {(state.list.error && section.key === 'categories') ||
+        (state.search?.error && section.key === 'quicks') ||
+        (state.following?.error && section.key === 'categories' && category.key === 'following') ? (
           <ErrorMessage
             type="axios"
             strings={{

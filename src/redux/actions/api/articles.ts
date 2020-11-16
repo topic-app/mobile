@@ -43,13 +43,17 @@ async function updateArticlesFollowing(
   params = {},
   useDefaultParams = true,
 ) {
-  if (!Store.getState().account.loggedIn) {
+  if (
+    !Store.getState().account.loggedIn ||
+    !Store.getState().account?.accountInfo?.user?.data?.following?.groups?.every((g) => !g)
+  ) {
     return false;
   }
   await Store.dispatch(
     updateCreator({
       update: UPDATE_ARTICLES_FOLLOWING,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'following',
       url: 'articles/list',
       listName: 'following',
       sort: dateDescSort,
@@ -57,12 +61,12 @@ async function updateArticlesFollowing(
       type,
       params: useDefaultParams
         ? {
-            groups: Store.getState().account?.accountInfo?.user?.data?.following?.groups?.map(
-              (g) => g._id,
-            ),
-            users: Store.getState().account?.accountInfo?.user?.data?.following?.users?.map(
-              (u) => u._id,
-            ),
+            groups: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.groups?.map((g) => g._id)
+              .filter((g) => !!g),
+            users: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.users?.map((u) => u._id)
+              .filter((g) => !!g),
             ...params,
           }
         : params,
