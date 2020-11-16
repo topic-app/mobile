@@ -102,6 +102,7 @@ const AuthLogin: React.FC<Props> = ({
                 onSubmitEditing={() => passwordInput.current?.focus()}
                 autoCorrect={false}
                 autoFocus
+                autoCapitalize="none"
                 error={!!reqState.login.incorrect} // `!!` transforms it into a boolean
                 mode="outlined"
                 textContentType="username"
