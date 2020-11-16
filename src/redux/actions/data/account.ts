@@ -204,9 +204,9 @@ function fetchAccountCreator() {
           });
           const location = result.data?.profile[0]?.data?.location;
           const data = {
-            schools: location.schools.map((l: SchoolPreload) => l._id),
-            departments: location.departments.map((l: DepartmentPreload) => l._id),
-            global: location.global,
+            schools: location?.schools?.map((l: SchoolPreload) => l._id),
+            departments: location?.departments?.map((l: DepartmentPreload) => l._id),
+            global: location?.global,
           };
           dispatch({
             type: UPDATE_LOCATION,
