@@ -14,7 +14,7 @@ import {
   SafeAreaView,
 } from '@components/index';
 import { RichToolbar, RichEditor } from '@components/richEditor/index';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { articleAdd } from '@redux/actions/apiActions/articles';
 import {
@@ -151,14 +151,17 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     placeholderColor: colors.disabled,
                   }}
                   placeholder="Écrivez votre article"
-                  editorInitializedCallback={() => setToolbarInitialized(true)}
+                  editorInitializedCallback={() => {
+                    logger.debug('Editor toolbar initialized');
+                    setToolbarInitialized(true);
+                  }}
                 />
               </View>
             </View>
           </View>
         </ScrollView>
         <View style={{ backgroundColor: colors.surface }}>
-          {toolbarInitialized && textEditorRef.current ? (
+          {toolbarInitialized ? (
             <RichToolbar
               getEditor={() => textEditorRef.current!}
               actions={[

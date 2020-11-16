@@ -89,7 +89,7 @@ const defaultConfig: AppConfig = {
       ],
       quicks: [],
       prefs: {
-        categories: ['unread', 'all'],
+        categories: ['unread', 'all', 'following'],
         hidden: [],
       },
     },
@@ -104,7 +104,7 @@ const defaultConfig: AppConfig = {
       ],
       quicks: [],
       prefs: {
-        categories: ['upcoming', 'passed'],
+        categories: ['upcoming', 'passed', 'following'],
         hidden: [],
       },
     },

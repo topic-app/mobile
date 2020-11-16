@@ -19,7 +19,12 @@ import {
 } from '@ts/types';
 import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
 import { useTheme } from '@utils/index';
-import { updateUpcomingEvents, updatePassedEvents, searchEvents } from '@redux/actions/api/events';
+import {
+  updateUpcomingEvents,
+  updatePassedEvents,
+  searchEvents,
+  updateEventsFollowing,
+} from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
 
 import EventListCard from '../components/Card';
@@ -37,8 +42,9 @@ type Category = {
 };
 
 type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
-  upcomingEvents: (EventPreload | Event)[];
-  passedEvents: (EventPreload | Event)[];
+  upcomingEvents: EventPreload[];
+  passedEvents: EventPreload[];
+  followingEvents: EventPreload[];
   search: EventPreload[];
   lists: EventListItem[];
   read: EventReadItem[];
@@ -54,6 +60,7 @@ const EventList: React.FC<EventListProps> = ({
   route,
   upcomingEvents,
   passedEvents,
+  followingEvents,
   search,
   lists,
   read,
@@ -74,18 +81,28 @@ const EventList: React.FC<EventListProps> = ({
       key: 'upcoming',
       title: 'Tous',
       data: upcomingEvents,
-      type: 'upcomingEvents',
+      type: 'category',
     },
-  ];
-
-  if (preferences.history) {
-    potentialCategories.unshift({
+    {
       key: 'passed',
       title: 'Finis',
       data: passedEvents,
       type: 'category',
-    });
-  }
+    },
+    ...(account.loggedIn &&
+    account.accountInfo?.user?.data?.following?.users?.length +
+      account.accountInfo?.user?.data?.following?.groups?.length >
+      0
+      ? [
+          {
+            key: 'following',
+            title: 'Suivis',
+            data: followingEvents,
+            type: 'category',
+          },
+        ]
+      : []),
+  ];
 
   const categories: Category[] = [];
 
@@ -163,6 +180,7 @@ const EventList: React.FC<EventListProps> = ({
     React.useCallback(() => {
       updateUpcomingEvents('initial');
       updatePassedEvents('initial');
+      updateEventsFollowing('initial');
     }, [null]),
   );
 
@@ -269,7 +287,11 @@ const EventList: React.FC<EventListProps> = ({
               contentSingular: "La liste d'évènements",
             }}
             error={[state.list.error, state.search?.error]}
-            retry={() => updateEvents('initial')}
+            retry={() => {
+              updatePassedEvents('initial');
+              updateUpcomingEvents('initial');
+              updateEventsFollowing('initial');
+            }}
           />
         ) : null}
       </AnimatingHeader>
@@ -287,6 +309,8 @@ const EventList: React.FC<EventListProps> = ({
             updateUpcomingEvents('refresh');
           } else if (section.key === 'categories' && category.key === 'passed') {
             updatePassedEvents('refresh');
+          } else if (section.key === 'categories' && category.key === 'following') {
+            updateEventsFollowing('refresh');
           } else if (section.key === 'quicks') {
             searchEvents('refresh', '', category.params, false, false);
           }
@@ -296,6 +320,8 @@ const EventList: React.FC<EventListProps> = ({
             updateUpcomingEvents('next');
           } else if (section.key === 'categories' && category.key === 'passed') {
             updatePassedEvents('next');
+          } else if (section.key === 'categories' && category.key === 'following') {
+            updateEventsFollowing('next');
           } else if (section.key === 'quicks') {
             searchEvents('next', '', category.params, false, false);
           }
@@ -339,7 +365,7 @@ const EventList: React.FC<EventListProps> = ({
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
             {((section.key === 'categories' && state.list.loading.next) ||
-              (section.key === 'quicks' && state.search.loading.next)) && (
+              (section.key === 'quicks' && state.search?.loading.next)) && (
               <ActivityIndicator size="large" color={colors.primary} />
             )}
           </View>
@@ -399,6 +425,7 @@ const mapStateToProps = (state: State) => {
   return {
     upcomingEvents: events.dataUpcoming,
     passedEvents: events.dataPassed,
+    followingEvents: events.following,
     search: events.search,
     eventPrefs: eventData.prefs,
     lists: eventData.lists,

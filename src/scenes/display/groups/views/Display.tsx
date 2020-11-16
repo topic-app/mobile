@@ -35,6 +35,10 @@ import {
   State,
   ArticleRequestState,
   Article,
+  EventRequestState,
+  EventPreload,
+  ArticlePreload,
+  AccountRequestState,
 } from '@ts/types';
 import {
   Avatar,
@@ -50,11 +54,13 @@ import {
   CollapsibleView,
   ErrorMessage,
   SafeAreaView,
+  EventCard,
 } from '@components/index';
 import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
+import { searchEvents } from '@redux/actions/api/events';
 import {
   groupFollow,
   groupUnfollow,
@@ -70,6 +76,7 @@ import AddUserSelectModal from '../components/AddUserSelectModal';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import EditGroupModal from '../components/EditGroupModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
+import ContentTabView from '../../components/ContentTabView';
 
 function getAddressString(address: Address) {
   const { number, street, city, code } = address?.address || {};
@@ -85,8 +92,11 @@ type GroupDisplayProps = StackScreenProps<GroupDisplayStackParams, 'Display'> & 
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
-  articles: Article[];
+  articles: ArticlePreload[];
+  accountState: AccountRequestState;
   articlesState: ArticleRequestState;
+  events: EventPreload[];
+  eventsState: EventRequestState;
 };
 
 const GroupDisplay: React.FC<GroupDisplayProps> = ({
@@ -97,7 +107,9 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   state,
   accountState,
   articles,
+  events,
   articlesState,
+  eventsState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -111,6 +123,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   React.useEffect(() => {
     fetch();
     searchArticles('initial', '', { groups: [id] }, false);
+    searchEvents('initial', '', { groups: [id] }, false);
   }, [null]);
 
   const group =
@@ -184,7 +197,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 contentSingular: 'Le groupe',
               }}
               error={state.info.error}
-              retry={() => groupMemberDelete(id, mem.user?._id).then(() => fetch())}
+              retry={() => fetch()}
             />
           )}
           {!state.info.error && (
@@ -284,13 +297,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     setMenuVisible(false);
                     if (Platform.OS === 'ios') {
                       Share.share({
-                        message: `Groupe ${group?.shortName || group?.name}`,
-                        url: `https://go.topicapp.fr/groupes/${group?._id}`,
+                        message: `Groupe ${group.shortName || group.name}`,
+                        url: `https://go.topicapp.fr/groupes/${group._id}`,
                       });
                     } else {
                       Share.share({
-                        message: `https://go.topicapp.fr/groupes/${group?._id}`,
-                        title: `Groupe ${group?.shortName || group?.name}`,
+                        message: `https://go.topicapp.fr/groupes/${group._id}`,
+                        title: `Groupe ${group.shortName || group.name}`,
                       });
                     }
                   }}
@@ -309,25 +322,25 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
           <View style={[styles.contentContainer, { marginTop: 20 }]}>
             <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-              <Avatar size={120} avatar={group?.avatar} />
+              <Avatar size={120} avatar={group.avatar} />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               <View style={{ alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Title>{group?.name}</Title>
+                  <Title>{group.name}</Title>
                   <View style={{ marginLeft: 5 }}>
-                    {group?.official && (
+                    {group.official && (
                       <Icon name="check-decagram" color={colors.primary} size={20} />
                     )}
                   </View>
                 </View>
-                {!!group?.shortName && (
+                {!!group.shortName && (
                   <Subheading style={{ marginTop: -10, color: colors.disabled }}>
                     {group.shortName}
                   </Subheading>
                 )}
                 <Subheading style={{ marginTop: -10, color: colors.disabled }}>
-                  Groupe {group?.type}
+                  Groupe {group.type}
                 </Subheading>
               </View>
             </View>
@@ -390,8 +403,8 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <View style={styles.container}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flexGrow: 1 }}>
-                      <Paragraph style={{ color: colors.disabled }}>Groupe {group?.type}</Paragraph>
-                      <Paragraph numberOfLines={5}>{group?.summary}</Paragraph>
+                      <Paragraph style={{ color: colors.disabled }}>Groupe {group.type}</Paragraph>
+                      <Paragraph numberOfLines={5}>{group.summary}</Paragraph>
                     </View>
                     {account.loggedIn &&
                       account.permissions?.some(
@@ -414,7 +427,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         </View>
                       )}
                   </View>
-                  {group?.description?.data ? (
+                  {group.description?.data ? (
                     <View>
                       <View style={{ alignItems: 'flex-end' }}>
                         <View style={{ flexDirection: 'row' }}>
@@ -434,18 +447,18 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               </PlatformTouchable>
               <CollapsibleView collapsed={!descriptionVisible}>
                 <View style={styles.contentContainer}>
-                  <Content parser={group?.description?.parser} data={group?.description?.data} />
+                  <Content parser={group.description?.parser} data={group.description?.data} />
                 </View>
               </CollapsibleView>
               <Divider />
-              {group?.location.global && (
+              {group.location.global && (
                 <InlineCard
                   icon="map-marker"
                   title="France Entière"
                   onPress={() => logger.warn('global pressed')}
                 />
               )}
-              {group?.location.schools?.map((school) => (
+              {group.location.schools?.map((school) => (
                 <InlineCard
                   key={school._id}
                   icon="school"
@@ -454,7 +467,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   onPress={() => logger.warn(`school ${school._id} pressed!`)}
                 />
               ))}
-              {group?.location.departments?.map((dep) => (
+              {group.location.departments?.map((dep) => (
                 <InlineCard
                   key={dep._id}
                   icon="domain"
@@ -595,87 +608,14 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </View>
                 )}
               <View style={{ height: 40 }} />
-              {articles.length !== 0 && !verification && (
-                <View>
-                  <View style={styles.container}>
-                    <CategoryTitle>Derniers contenus</CategoryTitle>
-                  </View>
-                  <Divider />
-                  <CustomTabView
-                    scrollEnabled={false}
-                    pages={[
-                      ...(articles.length
-                        ? [
-                            {
-                              key: 'articles',
-                              title: 'Articles',
-                              component: (
-                                <View>
-                                  {articlesState.search?.error && (
-                                    <ErrorMessage
-                                      type="axios"
-                                      strings={{
-                                        what: 'le chargement des articles',
-                                        contentPlural: 'les articles',
-                                      }}
-                                      error={articlesState.search?.error}
-                                      retry={() =>
-                                        searchArticles('initial', '', { authors: [id] }, false)
-                                      }
-                                    />
-                                  )}
-                                  {articlesState.search?.loading.initial && (
-                                    <View style={styles.container}>
-                                      <ActivityIndicator size="large" color={colors.primary} />
-                                    </View>
-                                  )}
-                                  {articlesState.search?.success && (
-                                    <FlatList
-                                      data={articles}
-                                      keyExtractor={(i) => i._id}
-                                      ListFooterComponent={
-                                        articlesState.search.loading.initial ? (
-                                          <View style={[styles.container, { height: 50 }]}>
-                                            <ActivityIndicator
-                                              size="large"
-                                              color={colors.primary}
-                                            />
-                                          </View>
-                                        ) : null
-                                      }
-                                      renderItem={({ item }: { item: Article }) => (
-                                        <ArticleCard
-                                          article={item}
-                                          unread
-                                          navigate={() =>
-                                            navigation.navigate('Main', {
-                                              screen: 'Display',
-                                              params: {
-                                                screen: 'Article',
-                                                params: {
-                                                  screen: 'Display',
-                                                  params: {
-                                                    id: item._id,
-                                                    title: item.title,
-                                                    useLists: false,
-                                                  },
-                                                },
-                                              },
-                                            })
-                                          }
-                                        />
-                                      )}
-                                    />
-                                  )}
-                                </View>
-                              ),
-                            },
-                          ]
-                        : []),
-                    ]}
-                  />
-                  <View style={{ height: 20 }} />
-                </View>
+              {!verification && (
+                <ContentTabView
+                  articles={articles}
+                  events={events}
+                  eventsState={eventsState}
+                  articlesState={articlesState}
+                  params={{ groups: [id] }}
+                />
               )}
               {verification && (
                 <View>
@@ -703,7 +643,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       }}
                       error={state.verification_approve?.error}
                       retry={() =>
-                        groupVerificationApprove(group?._id).then(() => navigation.goBack())
+                        groupVerificationApprove(group._id).then(() => navigation.goBack())
                       }
                     />
                   )}
@@ -718,7 +658,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           justifyContent: 'center',
                         }}
                         onPress={() =>
-                          groupVerificationApprove(group?._id).then(() => navigation.goBack())
+                          groupVerificationApprove(group._id).then(() => navigation.goBack())
                         }
                       >
                         Approuver
@@ -781,12 +721,14 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups, account, articles } = state;
+  const { groups, account, articles, events } = state;
   return {
     groups,
     account,
     articles: articles.search,
+    events: events.search,
     articlesState: articles.state,
+    eventsState: events.state,
     state: groups.state,
     accountState: account.state,
   };
