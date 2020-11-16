@@ -45,7 +45,7 @@ async function updateArticlesFollowing(
 ) {
   if (
     !Store.getState().account.loggedIn ||
-    !Store.getState().account?.accountInfo?.user?.data?.following?.groups
+    !Store.getState().account?.accountInfo?.user?.data?.following?.groups?.every((g) => !g)
   ) {
     return false;
   }
@@ -61,12 +61,12 @@ async function updateArticlesFollowing(
       type,
       params: useDefaultParams
         ? {
-            groups: Store.getState().account?.accountInfo?.user?.data?.following?.groups?.map(
-              (g) => g._id,
-            ),
-            users: Store.getState().account?.accountInfo?.user?.data?.following?.users?.map(
-              (u) => u._id,
-            ),
+            groups: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.groups?.map((g) => g._id)
+              .filter((g) => !!g),
+            users: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.users?.map((u) => u._id)
+              .filter((g) => !!g),
             ...params,
           }
         : params,
