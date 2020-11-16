@@ -50,7 +50,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       date: Date.now(),
       location: creationData.location,
       group: creationData.group,
-      image: null,
+      image: creationData.image,
       parser: parser || creationData.parser,
       data: data || creationData.data,
       tags: creationData.tags,

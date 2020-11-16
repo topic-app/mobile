@@ -1,16 +1,27 @@
 import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { TextInput, HelperText, Button } from 'react-native-paper';
+import { TextInput, HelperText, Button, ProgressBar } from 'react-native-paper';
 
-import { StepperViewPageProps, CollapsibleView } from '@components/index';
-import { useTheme } from '@utils/index';
+import { StepperViewPageProps, CollapsibleView, ErrorMessage } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { upload } from '@redux/actions/apiActions/upload';
+import { connect } from 'react-redux';
 
 import getArticleStyles from '../styles/Styles';
+import { State, ArticleCreationData, UploadRequestState } from '@ts/types';
 
-type ArticleAddPageMetaProps = StepperViewPageProps;
+type ArticleAddPageMetaProps = StepperViewPageProps & {
+  creationData: ArticleCreationData;
+  state: UploadRequestState;
+};
 
-const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) => {
+const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
+  next,
+  prev,
+  creationData,
+  state,
+}) => {
   const titleInput = createRef<RNTestInput>();
   const descriptionInput = createRef<RNTestInput>();
 
@@ -110,6 +121,8 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
     descriptionInput.current?.blur();
   }
 
+  const [currentFile, setCurrentFile] = React.useState(null);
+
   async function submit() {
     const titleVal = currentTitle.value;
     const descriptionVal = currentDescription.value;
@@ -117,7 +130,11 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
     const title = await validateTitleInput(titleVal);
     const description = await validateDescriptionInput(descriptionVal);
     if (title.valid && description.valid) {
-      updateArticleCreationData({ title: titleVal, summary: descriptionVal });
+      updateArticleCreationData({
+        title: titleVal,
+        summary: descriptionVal,
+        image: { image: currentFile, thumbnails: { medium: true, large: true } },
+      });
       next();
     } else {
       if (!title.valid && !title.error) {
@@ -129,6 +146,12 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
       }
     }
   }
+
+  const uploadImage = () =>
+    upload(creationData.group).then((id) => {
+      logger.debug(`Upload successful ${id}`);
+      setCurrentFile(id);
+    });
 
   const theme = useTheme();
   const { colors } = theme;
@@ -219,6 +242,31 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
         </CollapsibleView>
         <View style={{ height: 20 }} />
       </View>
+      <View style={[articleStyles.buttonContainer, { marginBottom: 30 }]}>
+        {state.upload?.error && (
+          <ErrorMessage
+            error={state.upload?.error}
+            strings={{
+              what: "l'upload de l'image",
+              contentSingular: "L'image",
+            }}
+            type="axios"
+            retry={uploadImage}
+          />
+        )}
+        {state.upload?.loading ? (
+          <ProgressBar indeterminate />
+        ) : (
+          <Button
+            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+            uppercase={false}
+            onPress={uploadImage}
+            style={{ flex: 1, marginRight: 5 }}
+          >
+            {currentFile ? "Remplacer l'image" : 'Séléctionner une image'}
+          </Button>
+        )}
+      </View>
       <View style={articleStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
@@ -244,4 +292,9 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
   );
 };
 
-export default ArticleAddPageMeta;
+const mapStateToProps = (state: State) => {
+  const { upload, articleData } = state;
+  return { state: upload.state, creationData: articleData.creationData };
+};
+
+export default connect(mapStateToProps)(ArticleAddPageMeta);

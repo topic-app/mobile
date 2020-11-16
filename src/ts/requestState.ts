@@ -83,3 +83,6 @@ export type LinkingRequestState = {
   emailChange: RequestState;
   emailVerify: RequestState;
 };
+export type UploadRequestState = {
+  upload: RequestState;
+};

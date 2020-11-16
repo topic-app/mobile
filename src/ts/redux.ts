@@ -46,6 +46,7 @@ import {
   LocationRequestState,
   LinkingRequestState,
   AccountRequestState,
+  UploadRequestState,
 } from './requestState';
 
 // Articles
@@ -116,6 +117,14 @@ export type ArticleCreationData = {
   title?: string;
   summary?: string;
   tags?: string[];
+  image: {
+    image: string | null;
+    thumbnails: {
+      small?: boolean;
+      medium?: boolean;
+      large?: boolean;
+    };
+  };
   parser?: 'plaintext' | 'markdown';
   data?: string;
 };
@@ -843,6 +852,7 @@ type UpdateLegalAction = {
 
 export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction;
 
+// Linking
 export const UPDATE_LINKING_STATE = 'UPDATE_LINKING_STATE';
 export type LinkingState = {
   state: LinkingRequestState;
@@ -853,6 +863,19 @@ type UpdateLinkingStateAction = {
   data: Partial<LinkingRequestState>;
 };
 export type LinkingActionTypes = UpdateLinkingStateAction;
+
+// Upload
+export const UPDATE_UPLOAD_STATE = 'UPDATE_UPLOAD_STATE';
+export type UploadState = {
+  state: UploadRequestState;
+};
+
+type UpdateUploadStateAction = {
+  type: typeof UPDATE_UPLOAD_STATE;
+  data: Partial<UploadRequestState>;
+};
+
+export type UploadActionTypes = UpdateUploadStateAction;
 
 // Account
 export const UPDATE_ACCOUNT_GROUPS = 'UPDATE_ACCOUNT_GROUPS';
