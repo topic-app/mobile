@@ -87,6 +87,7 @@
     "@babel/core": "~7.9.0",
     "@expo/webpack-config": "^0.12.22",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@trivago/prettier-plugin-sort-imports": "^1.2.0",
     "@types/color": "^3.0.1",
     "@types/jest": "^26.0.15",
     "@types/koa": "^2.11.6",

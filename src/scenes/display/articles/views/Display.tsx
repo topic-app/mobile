@@ -1,13 +1,29 @@
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
 import { View, Image, ActivityIndicator, Animated, Platform, Share } from 'react-native';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
-import moment from 'moment';
 import shortid from 'shortid';
 
+import {
+  ErrorMessage,
+  Content,
+  TagList,
+  InlineCard,
+  CategoryTitle,
+  AnimatingHeader,
+  Illustration,
+  ReportModal,
+} from '@components/index';
+import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
+import { updateComments } from '@redux/actions/api/comments';
+import { articleReport, articleVerificationApprove } from '@redux/actions/apiActions/articles';
+import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
+import { addArticleRead } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
 import {
   Article,
   ArticlePreload,
@@ -19,28 +35,12 @@ import {
   ArticleListItem,
   Preferences,
 } from '@ts/types';
-import {
-  ErrorMessage,
-  Content,
-  TagList,
-  InlineCard,
-  CategoryTitle,
-  AnimatingHeader,
-  Illustration,
-  ReportModal,
-} from '@components/index';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { articleReport, articleVerificationApprove } from '@redux/actions/apiActions/articles';
-import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
-import { addArticleRead } from '@redux/actions/contentData/articles';
-import { updateComments } from '@redux/actions/api/comments';
-import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 
-import type { ArticleDisplayStackParams } from '../index';
-import CommentInlineCard from '../../components/Comment';
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
+import CommentInlineCard from '../../components/Comment';
+import type { ArticleDisplayStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 // Common types
