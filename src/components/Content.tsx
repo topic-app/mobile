@@ -52,14 +52,20 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
           image: (node, _children, _parent, imageStyles: { [key: string]: ImageStyle }) => {
             const { src } = node.attributes;
 
-            return (
-              <FitImage
-                indicator
-                key={node.key}
-                style={imageStyles._VIEW_SAFE_image}
-                source={{ uri: getImageUrl({ image: src, size: 'medium' }) }}
-              />
-            );
+            if (src.startsWith('cdn://')) {
+              return (
+                <FitImage
+                  indicator
+                  key={node.key}
+                  style={imageStyles._VIEW_SAFE_image}
+                  source={{ uri: getImageUrl({ image: src.substring(6), size: 'medium' }) }}
+                />
+              );
+            } else if (src.startsWith('youtube://')) {
+              return null;
+            } else {
+              return <Text>[IMAGE NON VALIDE]</Text>;
+            }
           },
         }}
         onLinkPress={(url: string) => {

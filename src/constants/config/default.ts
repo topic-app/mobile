@@ -28,6 +28,7 @@ const defaultConfig: AppConfig = {
   },
   cdn: {
     baseUrl: 'https://cdn.topicapp.fr/file/get/',
+    uploadUrl: 'https://cdn.topicapp.fr/file/upload',
     timeout: 10000,
     image: {
       defaultSize: 'small',

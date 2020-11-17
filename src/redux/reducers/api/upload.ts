@@ -7,6 +7,11 @@ const initialState: UploadState = {
       success: null,
       error: null,
     },
+    permission: {
+      loading: false,
+      success: null,
+      error: null,
+    },
   },
 };
 

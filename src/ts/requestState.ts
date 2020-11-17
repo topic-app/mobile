@@ -85,4 +85,5 @@ export type LinkingRequestState = {
 };
 export type UploadRequestState = {
   upload: RequestState;
+  permission: RequestState;
 };

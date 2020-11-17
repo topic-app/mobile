@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { View, ScrollView, Platform, Alert } from 'react-native';
-import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
+import { ProgressBar, Button, HelperText, Title, Divider, Card, Text } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
+import { State, ArticleRequestState, ArticleCreationData, UploadRequestState } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -25,17 +25,21 @@ import {
 import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
 import getArticleStyles from '../styles/Styles';
+import { upload } from '@redux/actions/apiActions/upload';
+import config from '@constants/config';
 
 type ArticleAddContentProps = {
   navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
+  uploadState: UploadRequestState;
 };
 
 const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   navigation,
   reqState,
   creationData = {},
+  uploadState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -44,6 +48,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const { colors } = theme;
 
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
+    const replacedData = (data || creationData.data)?.replace(config.cdn.baseUrl, 'cdn://');
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -52,7 +57,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       group: creationData.group,
       image: creationData.image,
       parser: parser || creationData.parser,
-      data: data || creationData.data,
+      data: replacedData,
       tags: creationData.tags,
       preferences: null,
     }).then(({ _id }) => {
@@ -161,6 +166,21 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
           </View>
         </ScrollView>
         <View style={{ backgroundColor: colors.surface }}>
+          {(uploadState.upload?.error || uploadState.permission?.error) && (
+            <ErrorMessage
+              error={[uploadState.upload?.error, uploadState.permission?.error]}
+              strings={{
+                what: "l'upload de l'image",
+                contentSingular: "L'image",
+              }}
+              type="axios"
+            />
+          )}
+          {(uploadState.upload?.loading || uploadState.permission?.loading) && (
+            <ProgressBar indeterminate />
+          )}
+        </View>
+        <View style={{ backgroundColor: colors.surface }}>
           {toolbarInitialized ? (
             <RichToolbar
               getEditor={() => textEditorRef.current!}
@@ -194,6 +214,12 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               insertLink={() => {
                 setLinkAddModalVisible(true);
               }}
+              insertImage={() =>
+                upload(creationData.group).then((fileId) => {
+                  console.log(textEditorRef);
+                  textEditorRef.current?.insertImage(`${config.cdn.baseUrl}${fileId}`);
+                })
+              }
             />
           ) : null}
           {!valid && (
@@ -230,8 +256,12 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData } = state;
-  return { creationData: articleData.creationData, reqState: articles.state };
+  const { articles, articleData, upload } = state;
+  return {
+    creationData: articleData.creationData,
+    reqState: articles.state,
+    uploadState: upload.state,
+  };
 };
 
 export default connect(mapStateToProps)(ArticleAddContent);

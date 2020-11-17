@@ -27,6 +27,7 @@ export type AppConfig = {
   };
   cdn: {
     baseUrl: string;
+    uploadUrl: string;
     timeout: number;
     image: {
       defaultSize: string;
