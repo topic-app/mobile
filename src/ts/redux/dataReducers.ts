@@ -155,6 +155,7 @@ export type Preferences = {
   stripFormatting: boolean;
   fontFamily: string;
   themeEasterEggDiscovered: boolean;
+  youtubeConsent: boolean;
 };
 
 export type PreferencesState = Preferences;
