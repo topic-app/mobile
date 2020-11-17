@@ -11,6 +11,9 @@ type ImageSize = 'small' | 'medium' | 'large' | 'full';
 function getImageSize(thumbnails: Image['thumbnails'], size: ImageSize): string {
   let imgSize = null;
   switch (size) {
+    case 'full':
+      imgSize = 'full';
+      break;
     case 'large':
       if (thumbnails?.large) {
         imgSize = 'large';

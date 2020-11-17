@@ -6,7 +6,7 @@ function getArticleStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     image: {
-      height: 250,
+      minHeight: 250,
     },
     placeholder: {
       color: colors.disabled,

@@ -51,6 +51,7 @@
     "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-native": "^0.63.3",
+    "react-native-auto-height-image": "^3.2.3",
     "react-native-device-info": "^5.6.3",
     "react-native-draggable-dynamic-flatlist": "^1.0.4",
     "react-native-exception-handler": "^2.10.8",
