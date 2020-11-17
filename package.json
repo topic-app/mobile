@@ -79,6 +79,7 @@
     "react-native-web": "^0.14.4",
     "react-native-web-linear-gradient": "^1.1.1",
     "react-native-webview": "^10.9.3",
+    "react-native-youtube": "^2.0.1",
     "react-redux": "^7.2.1",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",

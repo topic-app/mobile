@@ -94,7 +94,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   return (
     <View style={styles.page}>
       {article.image?.image && (
-        <View style={[styles.image, { minHeight: 250 }]}>
+        <View style={[styles.image, { minHeight: 150 }]}>
           <PlatformTouchable
             onPress={() =>
               navigation.push('Main', {

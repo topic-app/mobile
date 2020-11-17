@@ -46,6 +46,9 @@ const defaultConfig: AppConfig = {
   maps: {
     baseUrl: 'https://maps.topicapp.fr/',
   },
+  google: {
+    youtubeKey: 'AIzaSyBBO3lF1vPmpCc61mU9liYQ3zGPup9MRFA',
+  },
   defaults: {
     account: {
       loggedIn: false,
@@ -72,6 +75,7 @@ const defaultConfig: AppConfig = {
       fontFamily: 'Roboto',
       stripFormatting: false,
       themeEasterEggDiscovered: false,
+      youtubeConsent: false,
     },
     articles: {
       lists: [

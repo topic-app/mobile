@@ -1,13 +1,17 @@
 import React from 'react';
-import { ImageStyle } from 'react-native';
-import { Text } from 'react-native-paper';
+import { ImageStyle, View } from 'react-native';
+import { Text, Card, Title, Button } from 'react-native-paper';
 import FitImage from 'react-native-fit-image';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import { connect } from 'react-redux';
+import YouTube from 'react-native-youtube';
 
 import { Content as ContentType, State, Preferences } from '@ts/types';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 import getStyles from '@styles/Styles';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import updatePrefs from '@redux/actions/data/prefs';
+import config from '@constants/config';
 
 type Props = ContentType & { preferences: Preferences };
 
@@ -62,9 +66,41 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                 />
               );
             } else if (src.startsWith('youtube://')) {
-              return null;
+              if (preferences.youtubeConsent) {
+                return (
+                  <View style={{ flex: 1 }}>
+                    <YouTube
+                      apiKey={config.google.youtubeKey}
+                      play
+                      videoId={src.substring(10)}
+                      style={{ alignSelf: 'stretch', height: 300 }}
+                    />
+                  </View>
+                );
+              } else {
+                return (
+                  <Card style={{ flex: 1, minHeight: 200 }}>
+                    <View style={[styles.container, { alignItems: 'center' }]}>
+                      <Icon name="youtube" size={40} color={colors.disabled} />
+                      <Title>GDPR - Youtube</Title>
+                      <Text>
+                        Si vous choississez d'activer les vidéos Youtube, Google pourra avoir accès
+                        à certaines informations sur votre téléphone conformément à leur politique
+                        de vie privée.
+                      </Text>
+                      <Button
+                        mode="outlined"
+                        onPress={() => updatePrefs({ youtubeConsent: true })}
+                        style={{ marginTop: 20 }}
+                      >
+                        Autoriser
+                      </Button>
+                    </View>
+                  </Card>
+                );
+              }
             } else {
-              return <Text>[IMAGE NON VALIDE]</Text>;
+              return <Text>[CONTENU NON VALIDE]</Text>;
             }
           },
         }}

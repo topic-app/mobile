@@ -25,6 +25,9 @@ export type AppConfig = {
     baseUrl: string;
     timeout: number;
   };
+  google: {
+    youtubeKey: string;
+  };
   cdn: {
     baseUrl: string;
     uploadUrl: string;
