@@ -1,7 +1,6 @@
 import React from 'react';
-import { ImageStyle, View } from 'react-native';
+import { ImageStyle, View, Dimensions } from 'react-native';
 import { Text, Card, Title, Button } from 'react-native-paper';
-import FitImage from 'react-native-fit-image';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import { connect } from 'react-redux';
 import YouTube from 'react-native-youtube';
@@ -12,6 +11,9 @@ import getStyles from '@styles/Styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import updatePrefs from '@redux/actions/data/prefs';
 import config from '@constants/config';
+import AutoHeightImage from 'react-native-auto-height-image';
+import { PlatformTouchable } from './PlatformComponents';
+import { useNavigation } from '@react-navigation/core';
 
 type Props = ContentType & { preferences: Preferences };
 
@@ -19,6 +21,8 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
+
+  const navigation = useNavigation();
 
   if (parser === 'markdown') {
     return (
@@ -58,12 +62,29 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
 
             if (src.startsWith('cdn://')) {
               return (
-                <FitImage
-                  indicator
-                  key={node.key}
-                  style={imageStyles._VIEW_SAFE_image}
-                  source={{ uri: getImageUrl({ image: src.substring(6), size: 'medium' }) }}
-                />
+                <View style={[styles.image, { minHeight: 150 }]} key={node.key}>
+                  <PlatformTouchable
+                    onPress={() =>
+                      navigation.push('Main', {
+                        screen: 'Display',
+                        params: {
+                          screen: 'Image',
+                          params: {
+                            screen: 'Display',
+                            params: { image: src.substring(6) },
+                          },
+                        },
+                      })
+                    }
+                  >
+                    <AutoHeightImage
+                      style={imageStyles._VIEW_SAFE_image}
+                      source={{ uri: getImageUrl({ image: src.substring(6), size: 'full' }) || '' }}
+                      width={Dimensions.get('window').width - 50}
+                      maxHeight={400}
+                    />
+                  </PlatformTouchable>
+                </View>
               );
             } else if (src.startsWith('youtube://')) {
               if (preferences.youtubeConsent) {
@@ -71,7 +92,6 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                   <View style={{ flex: 1 }}>
                     <YouTube
                       apiKey={config.google.youtubeKey}
-                      play
                       videoId={src.substring(10)}
                       style={{ alignSelf: 'stretch', height: 300 }}
                     />

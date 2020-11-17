@@ -32,14 +32,12 @@ type ArticleAddContentProps = {
   navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
-  uploadState: UploadRequestState;
 };
 
 const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   navigation,
   reqState,
   creationData = {},
-  uploadState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -166,21 +164,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
           </View>
         </ScrollView>
         <View style={{ backgroundColor: colors.surface }}>
-          {(uploadState.upload?.error || uploadState.permission?.error) && (
-            <ErrorMessage
-              error={[uploadState.upload?.error, uploadState.permission?.error]}
-              strings={{
-                what: "l'upload de l'image",
-                contentSingular: "L'image",
-              }}
-              type="axios"
-            />
-          )}
-          {(uploadState.upload?.loading || uploadState.permission?.loading) && (
-            <ProgressBar indeterminate />
-          )}
-        </View>
-        <View style={{ backgroundColor: colors.surface }}>
           {toolbarInitialized ? (
             <RichToolbar
               getEditor={() => textEditorRef.current!}
@@ -256,11 +239,10 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData, upload } = state;
+  const { articles, articleData } = state;
   return {
     creationData: articleData.creationData,
     reqState: articles.state,
-    uploadState: upload.state,
   };
 };
 
