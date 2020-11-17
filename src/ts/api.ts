@@ -342,7 +342,7 @@ export type EventPlace = {
   _id: string;
   type: 'place' | 'school' | 'standalone';
   associatedSchool?: SchoolPreload;
-  associatedPlace?: DepartmentPreload;
+  associatedPlace?: PlacePreload;
   address?: Address;
 };
 
