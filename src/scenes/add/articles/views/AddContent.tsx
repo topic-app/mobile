@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { View, ScrollView, Platform, Alert } from 'react-native';
-import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
+import { ProgressBar, Button, HelperText, Title, Divider, Card, Text } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
+import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -24,18 +24,23 @@ import {
 
 import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
+import YoutubeAddModal from '../components/YoutubeAddModal';
 import getArticleStyles from '../styles/Styles';
+import { upload } from '@redux/actions/apiActions/upload';
+import config from '@constants/config';
 
 type ArticleAddContentProps = {
   navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
+  account: Account;
 };
 
 const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   navigation,
   reqState,
   creationData = {},
+  account,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -43,7 +48,12 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const { colors } = theme;
 
+  if (!account.loggedIn) return null;
+
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
+    const replacedData = (data || creationData.data)
+      ?.replace(config.google.youtubePlaceholder, 'youtube://')
+      .replace(config.cdn.baseUrl, 'cdn://');
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -52,7 +62,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       group: creationData.group,
       image: creationData.image,
       parser: parser || creationData.parser,
-      data: data || creationData.data,
+      data: replacedData,
       tags: creationData.tags,
       preferences: null,
     }).then(({ _id }) => {
@@ -65,6 +75,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const [valid, setValid] = React.useState(true);
 
   const [markdown, setMarkdown] = React.useState('');
+  const [youtubeAddModalVisible, setYoutubeAddModalVisible] = React.useState(false);
 
   const textEditorRef = React.createRef<RichEditor>();
 
@@ -119,15 +130,15 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <PlatformBackButton
               onPress={() => {
                 Alert.alert(
-                  'Quitter cet article?',
-                  'Il sera sauvegardé comme un brouillon',
+                  'Supprimer cet article?',
+                  'Vous ne pourrez plus y revenir.',
                   [
+                    {
+                      text: 'Annuler',
+                    },
                     {
                       text: 'Quitter',
                       onPress: navigation.goBack,
-                    },
-                    {
-                      text: 'Annuler',
                     },
                   ],
                   { cancelable: true },
@@ -165,8 +176,13 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <RichToolbar
               getEditor={() => textEditorRef.current!}
               actions={[
-                'insertImage',
+                ...(account.permissions?.some(
+                  (p) => p.permission === 'content.upload' && p.group === creationData.group,
+                )
+                  ? ['insertImage']
+                  : []),
                 'insertLink',
+                'insertYoutube',
                 'bold',
                 'italic',
                 'strikeThrough',
@@ -188,12 +204,19 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 unorderedList: icon('format-list-bulleted'),
                 orderedList: icon('format-list-numbered'),
                 insertImage: icon('image-outline'),
+                insertYoutube: icon('youtube'),
                 insertLink: icon('link'),
                 SET_PARAGRAPH: icon('format-clear'),
               }}
               insertLink={() => {
                 setLinkAddModalVisible(true);
               }}
+              insertImage={() =>
+                upload(creationData.group).then((fileId) => {
+                  textEditorRef.current?.insertImage(`${config.cdn.baseUrl}${fileId}`);
+                })
+              }
+              insertYoutube={() => setYoutubeAddModalVisible(true)}
             />
           ) : null}
           {!valid && (
@@ -225,13 +248,25 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
           textEditorRef.current?.insertLink(name, link);
         }}
       />
+      <YoutubeAddModal
+        visible={youtubeAddModalVisible}
+        setVisible={setYoutubeAddModalVisible}
+        add={(url) => {
+          setLinkAddModalVisible(false);
+          textEditorRef.current?.insertImage(url);
+        }}
+      />
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData } = state;
-  return { creationData: articleData.creationData, reqState: articles.state };
+  const { articles, articleData, account } = state;
+  return {
+    creationData: articleData.creationData,
+    reqState: articles.state,
+    account,
+  };
 };
 
 export default connect(mapStateToProps)(ArticleAddContent);

@@ -84,7 +84,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
         <View style={{ flexDirection: 'row', paddingTop: 6 }}>
           <CustomImage
             image={article.image}
-            imageSize="small"
+            imageSize="medium"
             width={imageSize}
             height={imageSize}
           />

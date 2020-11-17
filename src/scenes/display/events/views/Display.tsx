@@ -7,6 +7,7 @@ import {
   Platform,
   Share,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { Text, Title, Card, Button } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -49,6 +50,7 @@ import type { EventDisplayStackParams } from '../index';
 import EventDisplayDescription from './Description';
 import EventDisplayProgram from './Program';
 import EventDisplayContact from './Contact';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 // Common types
 type Navigation = StackNavigationProp<EventDisplayStackParams, 'Display'>;
@@ -258,10 +260,13 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       >
         <View>
           {event.image && (
-            <Image
-              source={{ uri: getImageUrl({ image: event.image, size: 'large' }) }}
-              style={[styles.image, eventStyles.image]}
-            />
+            <View style={[styles.image, { minHeight: 150 }]}>
+              <AutoHeightImage
+                source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
+                width={Dimensions.get('window').width}
+                maxHeight={400}
+              />
+            </View>
           )}
           <View style={styles.contentContainer}>
             <Title style={styles.title}>{event.title}</Title>

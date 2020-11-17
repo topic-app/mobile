@@ -53,7 +53,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
         </SafeAreaView>
       )}
       <ScrollView>
-        <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
+        <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 40 }]}>
           <Illustration name="auth-register-success" height={200} width={200} />
           <Text style={authStyles.title}>
             Article {approved ? 'publié' : 'en attente de modération'}

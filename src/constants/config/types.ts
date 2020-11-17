@@ -25,8 +25,13 @@ export type AppConfig = {
     baseUrl: string;
     timeout: number;
   };
+  google: {
+    youtubeKey: string;
+    youtubePlaceholder: string;
+  };
   cdn: {
     baseUrl: string;
+    uploadUrl: string;
     timeout: number;
     image: {
       defaultSize: string;

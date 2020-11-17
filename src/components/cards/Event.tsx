@@ -102,7 +102,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, navigate, verification, pr
         <View style={{ flexDirection: 'row' }}>
           <CustomImage
             image={event?.image}
-            imageSize="small"
+            imageSize="medium"
             width={imageSize}
             height={imageSize}
           />

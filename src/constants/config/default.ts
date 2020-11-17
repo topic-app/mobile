@@ -28,6 +28,7 @@ const defaultConfig: AppConfig = {
   },
   cdn: {
     baseUrl: 'https://cdn.topicapp.fr/file/get/',
+    uploadUrl: 'https://cdn.topicapp.fr/file/upload',
     timeout: 10000,
     image: {
       defaultSize: 'small',
@@ -44,6 +45,10 @@ const defaultConfig: AppConfig = {
   },
   maps: {
     baseUrl: 'https://maps.topicapp.fr/',
+  },
+  google: {
+    youtubeKey: 'AIzaSyBBO3lF1vPmpCc61mU9liYQ3zGPup9MRFA',
+    youtubePlaceholder: 'https://cdn.topicapp.fr/file/get/5fb3acd117cbef001862f725?key=',
   },
   defaults: {
     account: {
@@ -71,6 +76,7 @@ const defaultConfig: AppConfig = {
       fontFamily: 'Roboto',
       stripFormatting: false,
       themeEasterEggDiscovered: false,
+      youtubeConsent: false,
     },
     articles: {
       lists: [

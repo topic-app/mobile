@@ -117,7 +117,7 @@ export type ArticleCreationData = {
   title?: string;
   summary?: string;
   tags?: string[];
-  image: {
+  image?: {
     image: string | null;
     thumbnails: {
       small?: boolean;
@@ -1029,6 +1029,7 @@ export type Preferences = {
   stripFormatting: boolean;
   fontFamily: string;
   themeEasterEggDiscovered: boolean;
+  youtubeConsent: boolean;
 };
 
 export type LocationList = {

@@ -4,13 +4,18 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { State } from '@ts/types';
 import { UPDATE_UPLOAD_STATE } from '@ts/redux';
 
-import { request } from '@utils/index';
+import { request, logger } from '@utils/index';
 import { Platform } from 'react-native';
+import config from '@constants/config';
 
-function uploadCreator(groupId: string, resizeMode: 'content-primary' = 'content-primary') {
+function uploadCreator(
+  groupId: string,
+  resizeMode: 'content-primary' = 'content-primary',
+  avatar: boolean = false,
+  camera: false | 'back' | 'front' = false,
+) {
   return (dispatch: (action: any) => void, getState: () => State) => {
     return new Promise((resolve, reject) => {
-      console.log('Upload creator');
       dispatch({
         type: UPDATE_UPLOAD_STATE,
         data: {
@@ -40,15 +45,52 @@ function uploadCreator(groupId: string, resizeMode: 'content-primary' = 'content
               },
             },
           });
-          let file = await ImagePicker.openPicker({
-            mediaType: 'photo',
-            cropping: true,
-            cropperToolbarTitle: "Rogner l'image",
-            freeStyleCropEnabled: true,
-            cropperActiveWidgetColor: '#592989',
-            cropperChooseText: 'Choisir',
-            cropperCancelText: 'Annuler',
-          });
+          let file;
+          if (camera) {
+            file = await ImagePicker.openCamera({
+              mediaType: 'photo',
+              useFrontCamera: camera === 'front',
+              cropperCircleOverlay: avatar,
+              cropping: true,
+              compressImageMaxWidth: 2048,
+              compressImageMaxHeight: 2048,
+              cropperToolbarTitle: "Rogner l'image",
+              freeStyleCropEnabled: true,
+              cropperActiveWidgetColor: '#592989',
+              cropperChooseText: 'Choisir',
+              cropperCancelText: 'Annuler',
+            });
+          } else if (avatar) {
+            file = await ImagePicker.openPicker({
+              mediaType: 'photo',
+              cropping: true,
+              width: 2048,
+              height: 2048,
+              enableRotationGesture: true,
+              hideBottomControls: true,
+              compressImageMaxWidth: 2048,
+              compressImageMaxHeight: 2048,
+              showCropGuidelines: false,
+              showCropFrame: false,
+              cropperCircleOverlay: true,
+              cropperToolbarTitle: "Rogner l'image",
+              cropperActiveWidgetColor: '#592989',
+              cropperChooseText: 'Choisir',
+              cropperCancelText: 'Annuler',
+            });
+          } else {
+            file = await ImagePicker.openPicker({
+              mediaType: 'photo',
+              cropping: true,
+              compressImageMaxWidth: 2048,
+              compressImageMaxHeight: 2048,
+              cropperToolbarTitle: "Rogner l'image",
+              freeStyleCropEnabled: true,
+              cropperActiveWidgetColor: '#592989',
+              cropperChooseText: 'Choisir',
+              cropperCancelText: 'Annuler',
+            });
+          }
           if (!file.path) {
             return reject();
           }
@@ -68,13 +110,11 @@ function uploadCreator(groupId: string, resizeMode: 'content-primary' = 'content
             },
           });
           try {
-            console.log('TRYING UPLOAD');
-            console.log(file);
-            console.log(permission.data?.token);
+            logger.debug('Trying image upload');
             const data = new FormData();
             data.append('resizeMode', resizeMode);
             data.append('file', uploadFile);
-            let res = await fetch('https://cdn.topicapp.fr/file/upload', {
+            let res = await fetch(config.cdn.uploadUrl, {
               method: 'POST',
               body: data,
               headers: {
@@ -93,6 +133,7 @@ function uploadCreator(groupId: string, resizeMode: 'content-primary' = 'content
                   },
                 },
               });
+              logger.debug(`File ${responseJson.fileId} uploaded`);
               return resolve(responseJson.fileId);
             } else {
               dispatch({
