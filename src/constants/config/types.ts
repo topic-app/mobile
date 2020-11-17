@@ -27,6 +27,7 @@ export type AppConfig = {
   };
   google: {
     youtubeKey: string;
+    youtubePlaceholder: string;
   };
   cdn: {
     baseUrl: string;

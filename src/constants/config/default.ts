@@ -48,6 +48,7 @@ const defaultConfig: AppConfig = {
   },
   google: {
     youtubeKey: 'AIzaSyBBO3lF1vPmpCc61mU9liYQ3zGPup9MRFA',
+    youtubePlaceholder: 'https://cdn.topicapp.fr/file/get/5fb3acd117cbef001862f725?key=',
   },
   defaults: {
     account: {

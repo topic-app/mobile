@@ -24,6 +24,7 @@ import {
 
 import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
+import YoutubeAddModal from '../components/YoutubeAddModal';
 import getArticleStyles from '../styles/Styles';
 import { upload } from '@redux/actions/apiActions/upload';
 import config from '@constants/config';
@@ -46,7 +47,9 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const { colors } = theme;
 
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
-    const replacedData = (data || creationData.data)?.replace(config.cdn.baseUrl, 'cdn://');
+    const replacedData = (data || creationData.data)
+      ?.replace(config.google.youtubePlaceholder, 'youtube://')
+      .replace(config.cdn.baseUrl, 'cdn://');
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -68,6 +71,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const [valid, setValid] = React.useState(true);
 
   const [markdown, setMarkdown] = React.useState('');
+  const [youtubeAddModalVisible, setYoutubeAddModalVisible] = React.useState(false);
 
   const textEditorRef = React.createRef<RichEditor>();
 
@@ -170,6 +174,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               actions={[
                 'insertImage',
                 'insertLink',
+                'insertYoutube',
                 'bold',
                 'italic',
                 'strikeThrough',
@@ -191,6 +196,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 unorderedList: icon('format-list-bulleted'),
                 orderedList: icon('format-list-numbered'),
                 insertImage: icon('image-outline'),
+                insertYoutube: icon('youtube'),
                 insertLink: icon('link'),
                 SET_PARAGRAPH: icon('format-clear'),
               }}
@@ -203,6 +209,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                   textEditorRef.current?.insertImage(`${config.cdn.baseUrl}${fileId}`);
                 })
               }
+              insertYoutube={() => setYoutubeAddModalVisible(true)}
             />
           ) : null}
           {!valid && (
@@ -232,6 +239,14 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
         add={(link, name) => {
           setLinkAddModalVisible(false);
           textEditorRef.current?.insertLink(name, link);
+        }}
+      />
+      <YoutubeAddModal
+        visible={youtubeAddModalVisible}
+        setVisible={setYoutubeAddModalVisible}
+        add={(url) => {
+          setLinkAddModalVisible(false);
+          textEditorRef.current?.insertImage(url);
         }}
       />
     </View>
