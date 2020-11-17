@@ -6,7 +6,7 @@ import { ProgressBar, Button, HelperText, Title, Divider, Card, Text } from 'rea
 import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { State, ArticleRequestState, ArticleCreationData, UploadRequestState } from '@ts/types';
+import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -33,18 +33,22 @@ type ArticleAddContentProps = {
   navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
+  account: Account;
 };
 
 const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   navigation,
   reqState,
   creationData = {},
+  account,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
   const { colors } = theme;
+
+  if (!account.loggedIn) return null;
 
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
     const replacedData = (data || creationData.data)
@@ -126,15 +130,15 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <PlatformBackButton
               onPress={() => {
                 Alert.alert(
-                  'Quitter cet article?',
-                  'Il sera sauvegardé comme un brouillon',
+                  'Supprimer cet article?',
+                  'Vous ne pourrez plus y revenir.',
                   [
+                    {
+                      text: 'Annuler',
+                    },
                     {
                       text: 'Quitter',
                       onPress: navigation.goBack,
-                    },
-                    {
-                      text: 'Annuler',
                     },
                   ],
                   { cancelable: true },
@@ -172,7 +176,11 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <RichToolbar
               getEditor={() => textEditorRef.current!}
               actions={[
-                'insertImage',
+                ...(account.permissions?.some(
+                  (p) => p.permission === 'content.upload' && p.group === creationData.group,
+                )
+                  ? ['insertImage']
+                  : []),
                 'insertLink',
                 'insertYoutube',
                 'bold',
@@ -205,7 +213,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               }}
               insertImage={() =>
                 upload(creationData.group).then((fileId) => {
-                  console.log(textEditorRef);
                   textEditorRef.current?.insertImage(`${config.cdn.baseUrl}${fileId}`);
                 })
               }
@@ -254,10 +261,11 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData } = state;
+  const { articles, articleData, account } = state;
   return {
     creationData: articleData.creationData,
     reqState: articles.state,
+    account,
   };
 };
 

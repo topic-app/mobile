@@ -26,7 +26,11 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
   const [errorVisible, setErrorVisible] = React.useState(false);
 
   const submit = () => {
-    if (true) {
+    if (
+      linkText.match(
+        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi,
+      )
+    ) {
       let id = linkText
         .replace('https://', '')
         .replace('http://', '')
@@ -34,8 +38,8 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
           /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi,
           '$1',
         );
-      console.log(id);
       add(`${config.google.youtubePlaceholder}${id}`);
+      setVisible(false);
       setNameText('');
       setLinkText('');
     } else {
