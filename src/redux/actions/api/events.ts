@@ -8,6 +8,7 @@ import {
   UPDATE_EVENTS_ITEM,
   UPDATE_EVENTS_STATE,
   CLEAR_EVENTS,
+  UPDATE_EVENTS_FOLLOWING,
 } from '@ts/redux';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
@@ -62,6 +63,42 @@ async function updatePassedEvents(
       type,
       params: useDefaultParams
         ? { ...Store.getState().eventData.params, durationStartRangeEnd: Date.now(), ...params }
+        : params,
+    }),
+  );
+}
+
+async function updateEventsFollowing(
+  type: 'initial' | 'refresh' | 'next',
+  params = {},
+  useDefaultParams = true,
+) {
+  if (
+    !Store.getState().account.loggedIn ||
+    !Store.getState().account?.accountInfo?.user?.data?.following?.groups?.every((g) => !g)
+  ) {
+    return false;
+  }
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_EVENTS_FOLLOWING,
+      stateUpdate: UPDATE_EVENTS_STATE,
+      stateName: 'following',
+      url: 'events/list',
+      listName: 'following',
+      sort: dateDescSort,
+      dataType: 'events',
+      type,
+      params: useDefaultParams
+        ? {
+            groups: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.groups?.map((g) => g._id)
+              .filter((g) => !!g),
+            users: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.users?.map((u) => u._id)
+              .filter((g) => !!g),
+            ...params,
+          }
         : params,
     }),
   );
@@ -154,6 +191,7 @@ export {
   clearEvents,
   fetchEvent,
   searchEvents,
+  updateEventsFollowing,
   fetchEventVerification,
   updateEventsVerification,
 };

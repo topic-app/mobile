@@ -7,6 +7,7 @@ import {
   Platform,
   Share,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { Text, Title, Card, Button } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -49,6 +50,7 @@ import type { EventDisplayStackParams } from '../index';
 import EventDisplayDescription from './Description';
 import EventDisplayProgram from './Program';
 import EventDisplayContact from './Contact';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 // Common types
 type Navigation = StackNavigationProp<EventDisplayStackParams, 'Display'>;
@@ -90,7 +92,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
 
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getEventStyles(theme);
+  const eventStyles = getEventStyles(theme);
   const { colors } = theme;
 
   let event: Event | undefined | null;
@@ -115,8 +117,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         fetchEventVerification(id);
       } else {
         fetchEvent(id).then(() => {
-          if (preferences.history) {
-            addEventRead(id, event?.title);
+          if (preferences.history && event) {
+            addEventRead(id, event.title);
           }
         });
       }
@@ -140,7 +142,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const scrollY = new Animated.Value(0);
 
   if (!event) {
-    // This is when article has not been loaded in list, so we have absolutely no info
+    // This is when event has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
         <AnimatingHeader
@@ -242,8 +244,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           <ErrorMessage
             type="axios"
             strings={{
-              what: 'la récupération de cet article',
-              contentSingular: "L'article",
+              what: 'la récupération de cet évènement',
+              contentSingular: "L'évènement",
             }}
             error={reqState.events.info.error}
             retry={() => fetchEvent(id)}
@@ -258,10 +260,13 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       >
         <View>
           {event.image && (
-            <Image
-              source={{ uri: getImageUrl({ image: event.image, size: 'large' }) }}
-              style={[styles.image, articleStyles.image]}
-            />
+            <View style={[styles.image, { minHeight: 150 }]}>
+              <AutoHeightImage
+                source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
+                width={Dimensions.get('window').width}
+                maxHeight={400}
+              />
+            </View>
           )}
           <View style={styles.contentContainer}>
             <Title style={styles.title}>{event.title}</Title>
@@ -290,10 +295,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
               <Title style={{ color: colors.disabled }}>Hors ligne</Title>
             </View>
           )}
-          {reqState.articles.info.loading && (
+          {reqState.events.info.loading && (
             <ActivityIndicator size="large" color={colors.primary} />
           )}
-          {!event.preload && reqState.articles.info.success && (
+          {!event.preload && reqState.events.info.success && (
             <View>
               <CustomTabView
                 scrollEnabled={false}
@@ -339,7 +344,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                           color={colors.primary}
                         />
                         <Text style={{ color: colors.text }}>
-                          Pour vérifier cet article:{'\n'}- Vérifiez que le contenu est bien
+                          Pour vérifier cet évènement:{'\n'}- Vérifiez que le contenu est bien
                           conforme aux conditions générales d'utilisation{'\n'}- Vérifiez que tous
                           les médias sont conformes, et que vous avez bien le droit d'utiliser
                           ceux-ci{'\n'}- Visitez chacun des liens afin de vous assurer que tous les
@@ -377,7 +382,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                             color={colors.disabled}
                           />
                           <Text style={{ color: colors.text }}>
-                            Liens contenus dans l'article:{'\n'}
+                            Liens contenus dans l'évènement:{'\n'}
                             {event?.description?.data
                               ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
                               ?.map((u) => (
@@ -459,7 +464,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         setVisible={setArticleReportModalVisible}
         contentId={id}
         report={eventReport}
-        state={reqState.articles.report}
+        state={reqState.events.report}
       />
       <ReportModal
         visible={isCommentReportModalVisible}
@@ -487,7 +492,7 @@ const mapStateToProps = (state: State) => {
     search: events.search,
     item: events.item,
     comments: comments.data,
-    reqState: { articles: events.state, comments: comments.state },
+    reqState: { events: events.state, comments: comments.state },
     preferences,
     lists: eventData.lists,
     account,

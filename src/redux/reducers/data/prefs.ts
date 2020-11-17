@@ -18,6 +18,7 @@ const initialState: PreferencesState = {
   fontFamily: 'Roboto',
   stripFormatting: false,
   themeEasterEggDiscovered: false,
+  youtubeConsent: false,
   ...Config.seedDb.preferences,
 };
 

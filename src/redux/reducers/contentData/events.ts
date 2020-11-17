@@ -23,7 +23,7 @@ const initialState: EventsContentState = {
   ],
   quicks: [],
   prefs: {
-    categories: ['upcoming', 'passed'],
+    categories: ['upcoming', 'passed', 'following'],
     hidden: [],
   },
 };

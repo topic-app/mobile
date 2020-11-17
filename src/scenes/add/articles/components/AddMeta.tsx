@@ -1,18 +1,35 @@
 import React, { useState, createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { TextInput, HelperText, Button } from 'react-native-paper';
+import { View, Platform, TextInput as RNTestInput, Image } from 'react-native';
+import { TextInput, HelperText, Button, ProgressBar, Card, Text } from 'react-native-paper';
 
-import { StepperViewPageProps, CollapsibleView } from '@components/index';
-import { useTheme } from '@utils/index';
+import { StepperViewPageProps, CollapsibleView, ErrorMessage } from '@components/index';
+import { useTheme, logger, getImageUrl } from '@utils/index';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { upload } from '@redux/actions/apiActions/upload';
+import { connect } from 'react-redux';
 
 import getArticleStyles from '../styles/Styles';
+import { State, ArticleCreationData, UploadRequestState, Account } from '@ts/types';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import getStyles from '@styles/Styles';
 
-type ArticleAddPageMetaProps = StepperViewPageProps;
+type ArticleAddPageMetaProps = StepperViewPageProps & {
+  creationData: ArticleCreationData;
+  state: UploadRequestState;
+  account: Account;
+};
 
-const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) => {
+const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
+  next,
+  prev,
+  creationData,
+  state,
+  account,
+}) => {
   const titleInput = createRef<RNTestInput>();
   const descriptionInput = createRef<RNTestInput>();
+
+  if (!account.loggedIn) return null;
 
   type InputStateType = {
     value: string;
@@ -110,6 +127,8 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
     descriptionInput.current?.blur();
   }
 
+  const [currentFile, setCurrentFile] = React.useState(null);
+
   async function submit() {
     const titleVal = currentTitle.value;
     const descriptionVal = currentDescription.value;
@@ -117,7 +136,11 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
     const title = await validateTitleInput(titleVal);
     const description = await validateDescriptionInput(descriptionVal);
     if (title.valid && description.valid) {
-      updateArticleCreationData({ title: titleVal, summary: descriptionVal });
+      updateArticleCreationData({
+        title: titleVal,
+        summary: descriptionVal,
+        image: { image: currentFile, thumbnails: { medium: true, large: true } },
+      });
       next();
     } else {
       if (!title.valid && !title.error) {
@@ -130,9 +153,16 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
     }
   }
 
+  const uploadImage = () =>
+    upload(creationData.group).then((id) => {
+      logger.debug(`Upload successful ${id}`);
+      setCurrentFile(id);
+    });
+
   const theme = useTheme();
   const { colors } = theme;
   const articleStyles = getArticleStyles(theme);
+  const styles = getStyles(theme);
 
   return (
     <View style={articleStyles.formContainer}>
@@ -219,6 +249,86 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
         </CollapsibleView>
         <View style={{ height: 20 }} />
       </View>
+      {account.permissions?.some(
+        (p) => p.permission === 'content.upload' && p.group === creationData.group,
+      ) ? (
+        <View>
+          {currentFile && !state.upload?.loading && (
+            <View style={styles.container}>
+              <Card style={{ minHeight: 100 }}>
+                <Image
+                  source={{
+                    uri:
+                      getImageUrl({
+                        image: { image: currentFile, thumbnails: {} },
+                        size: 'full',
+                      }) || '',
+                  }}
+                  style={{ height: 250 }}
+                  resizeMode="contain"
+                />
+              </Card>
+            </View>
+          )}
+          <View style={[styles.container, { marginBottom: 30 }]}>
+            {state.upload?.error && (
+              <ErrorMessage
+                error={state.upload?.error}
+                strings={{
+                  what: "l'upload de l'image",
+                  contentSingular: "L'image",
+                }}
+                type="axios"
+                retry={uploadImage}
+              />
+            )}
+            {state.upload?.loading ? (
+              <Card style={{ height: 50, flex: 1 }}>
+                <View style={{ flexDirection: 'row', margin: 10, alignItems: 'center' }}>
+                  <View>
+                    <Icon name="image" size={24} color={colors.disabled} />
+                  </View>
+                  <View style={{ marginHorizontal: 10, flexGrow: 1 }}>
+                    <ProgressBar indeterminate />
+                  </View>
+                </View>
+              </Card>
+            ) : (
+              <View style={{ flexDirection: 'row' }}>
+                <Button
+                  mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+                  uppercase={false}
+                  onPress={uploadImage}
+                  style={{ flex: 1, marginRight: 5 }}
+                >
+                  {currentFile ? "Remplacer l'image" : 'Séléctionner une image'}
+                </Button>
+                {currentFile ? (
+                  <Button
+                    mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+                    uppercase={false}
+                    onPress={() => setCurrentFile(null)}
+                    style={{ flex: 1, marginLeft: 5 }}
+                  >
+                    Supprimer l'image
+                  </Button>
+                ) : null}
+              </View>
+            )}
+          </View>
+        </View>
+      ) : (
+        <Card style={{ height: 50, flex: 1, marginBottom: 40 }}>
+          <View style={{ flexDirection: 'row', margin: 10, alignItems: 'center' }}>
+            <View>
+              <Icon name="image" size={24} color={colors.disabled} />
+            </View>
+            <View style={{ marginHorizontal: 10, flexGrow: 1 }}>
+              <Text>Vous n'avez pas l'autorisation d'ajouter des images pour ce groupe</Text>
+            </View>
+          </View>
+        </Card>
+      )}
       <View style={articleStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
@@ -244,4 +354,9 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
   );
 };
 
-export default ArticleAddPageMeta;
+const mapStateToProps = (state: State) => {
+  const { upload, articleData, account } = state;
+  return { state: upload.state, creationData: articleData.creationData, account };
+};
+
+export default connect(mapStateToProps)(ArticleAddPageMeta);

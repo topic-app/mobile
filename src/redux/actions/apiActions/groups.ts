@@ -1,6 +1,6 @@
 import Store from '@redux/store';
-import { request } from '@utils/index';
 import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, AppThunk } from '@ts/types';
+import { request } from '@utils/index';
 
 import { reportCreator, approveCreator } from './ActionCreator';
 
@@ -401,7 +401,7 @@ function groupModifyCreator({
   summary,
   description,
 }: GroupModifyCreatorParams): AppThunk {
-  return (dispatch: (action: ActionType) => void) => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,

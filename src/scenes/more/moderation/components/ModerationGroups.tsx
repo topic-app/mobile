@@ -29,7 +29,7 @@ import getModerationStyles from '../styles/Styles';
 
 type Props = {
   navigation: StackNavigationProp<ModerationStackParams, 'List'>;
-  articlesVerification: GroupPreload[];
+  groupsVerification: GroupPreload[];
   account: Account;
   state: GroupRequestState;
 };

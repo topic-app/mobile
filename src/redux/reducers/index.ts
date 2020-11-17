@@ -15,6 +15,7 @@ import schoolReducer from './api/schools';
 import tagReducer from './api/tags';
 import userReducer from './api/users';
 import legalReducer from './api/legal';
+import uploadReducer from './api/upload';
 
 import linkingReducer from './api/linking';
 
@@ -61,6 +62,8 @@ const rootReducer = combineReducers({
   location: persistReducer(locationPersistConfig, locationReducer),
   // linking
   linking: linkingReducer,
+  // upload
+  upload: uploadReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

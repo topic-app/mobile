@@ -13,16 +13,12 @@ import TagList from '../TagList';
 import CustomImage from '../CustomImage';
 
 type ArticleCardProps = {
-  verification: boolean;
+  verification?: boolean;
   article: ArticleVerificationPreload | ArticlePreload;
   navigate: StackNavigationProp<any, any>['navigate'];
-  unread: boolean;
+  unread?: boolean;
   preferences: Preferences;
 };
-
-const screenDimensions = Dimensions.get('window');
-const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
-const imageSize = minWidth / 3.5;
 
 const ArticleCard: React.FC<ArticleCardProps> = ({
   article,
@@ -31,8 +27,21 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   preferences,
   verification = false,
 }) => {
+  const screenDimensions = Dimensions.get('window');
+  const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
+  const imageSize = minWidth / 3.5;
+
   const theme = useTheme();
   const { colors } = theme;
+
+  if (!article)
+    return (
+      <CardBase>
+        <Card.Content>
+          <Text>Article non existant</Text>
+        </Card.Content>
+      </CardBase>
+    );
 
   // TODO: Find a better way than this
   const articleVerification = article as ArticleVerificationPreload;
@@ -47,16 +56,16 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <Title numberOfLines={2} style={readStyle}>
-              {article?.title}
+              {article.title}
             </Title>
-            <Caption>{`Publié ${moment(article?.date).fromNow()}`}</Caption>
+            <Caption>{`Publié ${moment(article.date).fromNow()}`}</Caption>
           </View>
-          {verification && articleVerification?.verification && (
+          {verification && articleVerification.verification && (
             <View
               style={{
                 borderRadius: 20,
                 backgroundColor:
-                  verificationColors[articleVerification?.verification?.bot?.score] || 'red',
+                  verificationColors[articleVerification.verification?.bot?.score] || 'red',
                 height: 40,
                 width: 40,
                 alignItems: 'center',
@@ -64,15 +73,18 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
               }}
             >
               <Text style={{ fontSize: 20, color: 'black' }}>
-                {articleVerification?.verification?.bot?.score}
+                {articleVerification.verification?.bot?.score}
               </Text>
             </View>
           )}
         </View>
+      </Card.Content>
+      <TagList item={article} scrollable={false} />
+      <Card.Content>
         <View style={{ flexDirection: 'row', paddingTop: 6 }}>
           <CustomImage
-            image={article?.image}
-            imageSize="small"
+            image={article.image}
+            imageSize="medium"
             width={imageSize}
             height={imageSize}
           />
@@ -86,24 +98,21 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
               numberOfLines={6}
               style={[readStyle, { fontFamily: preferences.fontFamily }]}
             >
-              {article?.summary}
+              {article.summary}
             </Paragraph>
           </View>
         </View>
       </Card.Content>
-      <Card.Content style={{ marginTop: 5, paddingHorizontal: 0 }}>
-        <TagList item={article} scrollable={false} />
-      </Card.Content>
       {verification && (
         <Card.Content>
-          {articleVerification?.verification?.bot?.flags?.length !== 0 && (
-            <Text>Classifié comme {articleVerification?.verification?.bot?.flags?.join(', ')}</Text>
+          {articleVerification.verification?.bot?.flags?.length !== 0 && (
+            <Text>Classifié comme {articleVerification.verification?.bot?.flags?.join(', ')}</Text>
           )}
-          {articleVerification?.verification?.reports?.length !== 0 && (
-            <Text>Reporté {articleVerification?.verification?.reports?.length} fois </Text>
+          {articleVerification.verification?.reports?.length !== 0 && (
+            <Text>Reporté {articleVerification.verification?.reports?.length} fois </Text>
           )}
-          {articleVerification?.verification?.users?.length !== 0 && (
-            <Text>Approuvé par {articleVerification?.verification?.users?.join(', ')}</Text>
+          {articleVerification.verification?.users?.length !== 0 && (
+            <Text>Approuvé par {articleVerification.verification?.users?.join(', ')}</Text>
           )}
         </Card.Content>
       )}

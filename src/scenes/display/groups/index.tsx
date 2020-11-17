@@ -1,11 +1,12 @@
 import React from 'react';
+
 import { createNativeStackNavigator } from '@utils/stack';
 
-import GroupDisplay from './views/Display';
 import GroupDescription from './views/Description';
+import GroupDisplay from './views/Display';
 
 export type GroupDisplayStackParams = {
-  Display: { id: string };
+  Display: { id: string; verification: boolean };
   Description: { id: string };
 };
 

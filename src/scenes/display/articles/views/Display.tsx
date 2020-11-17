@@ -2,7 +2,8 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
-import { View, Image, ActivityIndicator, Animated, Platform, Share } from 'react-native';
+import { View, ActivityIndicator, Animated, Platform, Share, Dimensions } from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -17,6 +18,7 @@ import {
   AnimatingHeader,
   Illustration,
   ReportModal,
+  PlatformTouchable,
 } from '@components/index';
 import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
 import { updateComments } from '@redux/actions/api/comments';
@@ -84,10 +86,28 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   return (
     <View style={styles.page}>
       {article.image?.image && (
-        <Image
-          source={{ uri: getImageUrl({ image: article.image, size: 'large' }) }}
-          style={[styles.image, articleStyles.image]}
-        />
+        <View style={[styles.image, { minHeight: 150 }]}>
+          <PlatformTouchable
+            onPress={() =>
+              navigation.push('Main', {
+                screen: 'Display',
+                params: {
+                  screen: 'Image',
+                  params: {
+                    screen: 'Display',
+                    params: { image: article.image },
+                  },
+                },
+              })
+            }
+          >
+            <AutoHeightImage
+              source={{ uri: getImageUrl({ image: article.image, size: 'full' }) || '' }}
+              width={Dimensions.get('window').width}
+              maxHeight={400}
+            />
+          </PlatformTouchable>
+        </View>
       )}
       <View style={styles.contentContainer}>
         <Title style={styles.title}>{article.title}</Title>

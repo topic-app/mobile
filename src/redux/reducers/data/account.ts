@@ -22,6 +22,7 @@ const initialState: AccountState = {
         loggedIn: false,
         accountInfo: null,
         creationData: {},
+        permissions: [],
       }),
   state: {
     login: {
@@ -56,6 +57,16 @@ const initialState: AccountState = {
       error: null,
     },
     updateProfile: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    delete: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    export: {
       loading: false,
       success: null,
       error: null,

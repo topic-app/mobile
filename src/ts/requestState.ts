@@ -27,6 +27,7 @@ export type StandardRequestState = {
   add?: RequestState;
   verification_list?: RequestStateComplex;
   verification_approve?: RequestState;
+  following?: RequestStateComplex;
 };
 
 export type ArticleRequestState = StandardRequestState;
@@ -69,6 +70,8 @@ export type AccountRequestState = {
   fetchAccount: RequestState;
   fetchWaitingGroups: RequestState;
   updateProfile: RequestState;
+  export: RequestState;
+  delete: RequestState;
 };
 
 export type LocationRequestState = {
@@ -79,4 +82,8 @@ export type LocationRequestState = {
 export type LinkingRequestState = {
   emailChange: RequestState;
   emailVerify: RequestState;
+};
+export type UploadRequestState = {
+  upload: RequestState;
+  permission: RequestState;
 };

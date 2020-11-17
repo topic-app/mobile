@@ -19,6 +19,8 @@ import {
   User,
   UserPreload,
   GroupTemplate,
+  EventVerificationPreload,
+  ArticleVerificationPreload,
 } from '../api';
 import {
   ArticleRequestState,
@@ -33,6 +35,7 @@ import {
   UserRequestState,
   LegalRequestState,
   LinkingRequestState,
+  UploadRequestState,
 } from '../requestState';
 
 // Articles
@@ -49,7 +52,7 @@ export type ArticlesState = {
   following: ArticlePreload[];
   item: Article | null;
   search: ArticlePreload[];
-  verification: ArticlePreload[];
+  verification: ArticleVerificationPreload[];
   state: ArticleRequestState;
 };
 
@@ -81,7 +84,7 @@ type UpdateArticlesSearchAction = {
 
 type UpdateArticlesVerificationAction = {
   type: typeof UPDATE_ARTICLES_VERIFICATION;
-  data: ArticlePreload[];
+  data: ArticleVerificationPreload[];
 };
 
 type ClearArticlesAction = {
@@ -196,15 +199,17 @@ export const UPDATE_EVENTS_UPCOMING_DATA = 'UPDATE_EVENTS_UPCOMING_DATA';
 export const UPDATE_EVENTS_PASSED_DATA = 'UPDATE_EVENTS_PASSED_DATA';
 export const UPDATE_EVENTS_ITEM = 'UPDATE_EVENTS_ITEM';
 export const UPDATE_EVENTS_VERIFICATION = 'UPDATE_EVENTS_VERIFICATION';
+export const UPDATE_EVENTS_FOLLOWING = 'UPDATE_EVENTS_FOLLOWING';
 export const UPDATE_EVENTS_SEARCH = 'UPDATE_EVENTS_SEARCH';
 export const CLEAR_EVENTS = 'CLEAR_EVENTS';
 
 export type EventsState = {
-  dataUpcoming: (Event | EventPreload)[];
-  dataPassed: (Event | EventPreload)[];
+  dataUpcoming: EventPreload[];
+  dataPassed: EventPreload[];
+  following: EventPreload[];
   item: Event | null;
   search: EventPreload[];
-  verification: EventPreload[];
+  verification: EventVerificationPreload[];
   state: EventRequestState;
 };
 
@@ -215,12 +220,17 @@ type UpdateEventsStateAction = {
 
 type UpdateEventsUpcomingDataAction = {
   type: typeof UPDATE_EVENTS_UPCOMING_DATA;
-  data: (Event | EventPreload)[];
+  data: EventPreload[];
 };
 
 type UpdateEventsPassedDataAction = {
   type: typeof UPDATE_EVENTS_PASSED_DATA;
-  data: (Event | EventPreload)[];
+  data: EventPreload[];
+};
+
+type UpdateEventsFollowingAction = {
+  type: typeof UPDATE_EVENTS_FOLLOWING;
+  data: EventPreload[];
 };
 
 type UpdateEventsItemAction = {
@@ -235,12 +245,12 @@ type UpdateEventsSearchAction = {
 
 type UpdateEventsVerificationAction = {
   type: typeof UPDATE_EVENTS_VERIFICATION;
-  data: EventPreload[];
+  data: EventVerificationPreload[];
 };
 
 type ClearEventsAction = {
   type: typeof CLEAR_EVENTS;
-  data: { data?: boolean; search?: boolean; verification?: boolean };
+  data: { data?: boolean; search?: boolean; verification?: boolean; following?: boolean };
 };
 
 export type EventsActionTypes =
@@ -250,6 +260,7 @@ export type EventsActionTypes =
   | UpdateEventsItemAction
   | UpdateEventsSearchAction
   | UpdateEventsVerificationAction
+  | UpdateEventsFollowingAction
   | ClearEventsAction;
 
 // Groups
@@ -582,6 +593,7 @@ type UpdateLegalAction = {
 
 export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction;
 
+// Linking
 export const UPDATE_LINKING_STATE = 'UPDATE_LINKING_STATE';
 export type LinkingState = {
   state: LinkingRequestState;
@@ -592,6 +604,19 @@ type UpdateLinkingStateAction = {
   data: Partial<LinkingRequestState>;
 };
 export type LinkingActionTypes = UpdateLinkingStateAction;
+
+// Upload
+export const UPDATE_UPLOAD_STATE = 'UPDATE_UPLOAD_STATE';
+export type UploadState = {
+  state: UploadRequestState;
+};
+
+type UpdateUploadStateAction = {
+  type: typeof UPDATE_UPLOAD_STATE;
+  data: Partial<UploadRequestState>;
+};
+
+export type UploadActionTypes = UpdateUploadStateAction;
 
 export namespace ApiAction {
   // Not exported

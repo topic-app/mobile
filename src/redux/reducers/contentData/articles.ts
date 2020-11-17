@@ -29,7 +29,7 @@ const initialState: ArticlesContentState = {
   ],
   quicks: [],
   prefs: {
-    categories: ['unread', 'all'],
+    categories: ['unread', 'all', 'following'],
     hidden: [],
   },
 };

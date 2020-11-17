@@ -80,7 +80,7 @@ function eventAddCreator({
               phone,
               email,
               organizers,
-              contact,
+              other: contact,
             },
             duration: {
               start,
