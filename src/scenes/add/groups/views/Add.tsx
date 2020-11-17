@@ -56,25 +56,27 @@ const GroupAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
                 key: 'group',
                 icon: 'account-group',
                 title: 'Type',
-                component: <GroupAddPageTemplate templates={templates} state={groupState} />,
+                component: (props) => (
+                  <GroupAddPageTemplate templates={templates} state={groupState} {...props} />
+                ),
               },
               {
                 key: 'location',
                 icon: 'map-marker',
                 title: 'Localisation',
-                component: <GroupAddPageLocation navigation={navigation} />,
+                component: (props) => <GroupAddPageLocation navigation={navigation} {...props} />,
               },
               {
                 key: 'meta',
                 icon: 'information',
                 title: 'Info',
-                component: <GroupAddPageMeta />,
+                component: (props) => <GroupAddPageMeta {...props} />,
               },
               {
                 key: 'proof',
                 icon: 'script-text',
                 title: 'Légal',
-                component: <GroupAddPageProof navigation={navigation} />,
+                component: (props) => <GroupAddPageProof navigation={navigation} {...props} />,
               },
             ]}
           />

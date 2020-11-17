@@ -109,13 +109,13 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'general',
                 icon: 'account',
                 title: 'General',
-                component: <AuthCreatePageGeneral />,
+                component: (props) => <AuthCreatePageGeneral {...props} />,
               },
               {
                 key: 'location',
                 icon: 'school',
                 title: 'École',
-                component: (
+                component: (props) => (
                   <AuthCreatePageSchool
                     landing={() =>
                       navigation.push('Landing', {
@@ -123,6 +123,7 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                         params: { goBack: true },
                       })
                     }
+                    {...props}
                   />
                 ),
               },
@@ -130,16 +131,17 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'privacy',
                 icon: 'shield',
                 title: 'Vie privée',
-                component: <AuthCreatePagePrivacy />,
+                component: (props) => <AuthCreatePagePrivacy {...props} />,
               },
               {
                 key: 'profile',
                 icon: 'comment-account',
                 title: 'Profil',
-                component: (
+                component: (props) => (
                   <AuthCreatePageProfile
-                    username={creationData.username}
-                    accountType={creationData.accountType}
+                    username={creationData.username || ''}
+                    accountType={creationData.accountType || 'private'}
+                    {...props}
                   />
                 ),
               },
@@ -147,11 +149,12 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 key: 'legal',
                 icon: 'script-text',
                 title: 'Conditions',
-                component: (
+                component: (props) => (
                   <AuthCreatePageLegal
                     userEmail={creationData.email}
                     create={create}
                     navigation={navigation}
+                    {...props}
                   />
                 ),
               },

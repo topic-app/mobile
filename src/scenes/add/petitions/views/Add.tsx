@@ -35,30 +35,28 @@ const PetitionAdd: React.FC<PetitionAddProps> = ({ navigation, reqState, creatio
       title="Créer une pétition"
       pages={[
         {
+          key: 'title',
           icon: 'comment-outline',
-          label: 'Titre',
-          component: <PetitionAddPageGeneral />,
-          scrollToBottom: true,
-          height: 450,
+          title: 'Titre',
+          component: (props) => <PetitionAddPageGeneral {...props} />,
         },
         {
+          key: 'schools',
           icon: 'map-marker',
-          label: 'Écoles',
-          component: <PetitionAddPageLocation />,
-          scrollToBottom: true,
-          height: 260,
+          title: 'Écoles',
+          component: (props) => <PetitionAddPageLocation {...props} />,
         },
         {
+          key: 'description',
           icon: 'script-text',
-          label: 'Description',
-          component: <PetitionAddPageDescription />,
-          height: 950,
+          title: 'Description',
+          component: (props) => <PetitionAddPageDescription {...props} />,
         },
         {
+          key: 'goals',
           icon: 'check-decagram',
-          label: 'Objectifs',
-          component: <PetitionAddPageGoals />,
-          height: 950,
+          title: 'Objectifs',
+          component: (props) => <PetitionAddPageGoals {...props} />,
         },
       ]}
       success={{

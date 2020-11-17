@@ -24,8 +24,6 @@ import getAuthStyles from '../styles/Styles';
 
 type ArticleAddPageTagsProps = StepperViewPageProps & {
   account: Account;
-  creationData: ArticleCreationData;
-  navigation: any;
   tagsData: TagPreload[];
   tagsSearch: TagPreload[];
   state: TagRequestState;

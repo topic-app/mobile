@@ -22,8 +22,6 @@ import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
   account: Account;
-  creationData: EventCreationData;
-  navigation: any;
   tagsData: TagPreload[];
   tagsSearch: TagPreload[];
   state: TagRequestState;
@@ -33,8 +31,6 @@ const EventAddPageTags: React.FC<Props> = ({
   prev,
   next,
   account,
-  creationData,
-  navigation,
   tagsData,
   tagsSearch,
   state,
