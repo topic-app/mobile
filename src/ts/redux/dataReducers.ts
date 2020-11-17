@@ -38,6 +38,9 @@ export type Account =
       accountInfo: null;
       creationData: AccountCreationData;
       state: AccountRequestState;
+      groups: never[];
+      permissions: never[];
+      waitingGroups: never[];
     };
 
 export type AccountState = Account;

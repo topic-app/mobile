@@ -71,6 +71,7 @@ export type SchoolPreload = {
 export type School = {
   _id: string;
   shortName?: string;
+  displayName?: string;
   name: string;
   types: SchoolType[];
   address: Address;
