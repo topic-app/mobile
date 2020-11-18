@@ -1,9 +1,10 @@
 /* eslint-disable no-throw-literal */
 import { AxiosResponse } from 'axios';
+
 import Store from '@redux/store';
 
-import logger from './logger';
 import axios from './axiosInstance';
+import logger from './logger';
 
 type ApiDataType = {
   success: boolean;
@@ -22,6 +23,7 @@ async function request(
     method,
     endpoint,
     params,
+    sent: true,
   });
   const headers = auth
     ? { Authorization: `Bearer ${Store.getState().account.accountInfo?.accountToken}` }
