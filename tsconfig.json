@@ -20,5 +20,6 @@
       "@constants/*": ["./src/constants/*"],
       "@ts/*": ["./src/ts/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "android", "ios", "web", "web-build", "android-build", "scripts"]
 }
