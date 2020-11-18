@@ -12,7 +12,7 @@
   </style>
   <style name="ThemeAlert" parent="Theme.AppCompat.Light.Dialog.Alert">
       <!-- Change Alert.alert colors -->
-      <item name="colorAccent">#592989</item>
+      <item name="colorAccent">#6a31a3</item>
       <item name="android:textColorPrimary">#FFFFFF</item>
       <item name="android:background">#202125</item>
   </style>
