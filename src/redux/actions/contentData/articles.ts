@@ -1,5 +1,4 @@
 import Store from '@redux/store';
-
 import {
   UPDATE_ARTICLES_QUICKS,
   UPDATE_ARTICLES_CREATION_DATA,
@@ -14,6 +13,7 @@ import {
   Article,
 } from '@ts/types';
 
+import { clearCreator } from '../api/ActionCreator';
 import {
   addToListCreator,
   removeFromListCreator,
@@ -30,7 +30,6 @@ import {
   updateCreationDataCreator,
   clearCreationDataCreator,
 } from './ActionCreator';
-import { clearCreator } from '../api/ActionCreator';
 
 /**
  * @docs actions
@@ -75,7 +74,7 @@ async function removeArticleFromList(articleId: string, listId: string) {
  * @param icon
  * @param description
  */
-async function addArticleList(name: string, icon: string, description: string) {
+async function addArticleList(name: string, icon: string = '', description: string = '') {
   Store.dispatch(
     addListCreator({
       update: UPDATE_ARTICLES_LISTS,

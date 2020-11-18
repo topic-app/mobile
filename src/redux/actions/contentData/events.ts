@@ -1,5 +1,4 @@
 import Store from '@redux/store';
-
 import {
   UPDATE_EVENTS_QUICKS,
   UPDATE_EVENTS_CREATION_DATA,
@@ -15,6 +14,7 @@ import {
   EventCreationData,
 } from '@ts/types';
 
+import { clearCreator } from '../api/ActionCreator';
 import {
   addToListCreator,
   removeFromListCreator,
@@ -31,7 +31,6 @@ import {
   updateCreationDataCreator,
   clearCreationDataCreator,
 } from './ActionCreator';
-import { clearCreator } from '../api/ActionCreator';
 
 /**
  * @docs actions
@@ -76,7 +75,7 @@ async function removeEventFromList(eventId: string, listId: string) {
  * @param icon
  * @param description
  */
-async function addEventList(name: string, icon: string, description: string) {
+async function addEventList(name: string, icon: string = '', description: string = '') {
   Store.dispatch(
     addListCreator({
       update: UPDATE_EVENTS_LISTS,

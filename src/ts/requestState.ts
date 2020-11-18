@@ -23,7 +23,7 @@ export type StandardRequestState = {
   list: RequestStateComplex;
   search?: RequestStateComplex;
   info: RequestState;
-  report?: RequestState;
+  report: RequestState;
   add?: RequestState;
   verification_list?: RequestStateComplex;
   verification_approve?: RequestState;

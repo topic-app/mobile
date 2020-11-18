@@ -14,7 +14,7 @@
  * Note: Don't import this file through `common/`, use `import { ... } from '@ts/types'` instead.
  */
 
-import { AccountRequestState } from './requestState'; // Account stuff should probably go in redux.ts but too much risk of breakage
+// Account stuff should probably go in redux.ts but too much risk of breakage
 
 // Common types
 export type Content = {
@@ -304,28 +304,34 @@ export type GroupTemplate = {
 };
 
 // Article Types
-export type ArticlePreload = {
+type ArticleBase = {
   _id: string;
   title: string;
   date: string;
   summary: string;
   image?: Image;
-  preload?: boolean;
   authors: AuthorPreload[];
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];
 };
+export type ArticlePreload = ArticleBase & {
+  preload: true; // So we can check if article.preload to change type
+};
 export type ArticleVerificationPreload = ArticlePreload & {
   verification: Verification;
 };
 
-export type Article = ArticlePreload & {
+export type Article = ArticleBase & {
+  preload?: false;
   content: Content;
   preferences: {
     comments: boolean;
   };
 };
+
+export type Article2 = Article;
+
 export type ArticleVerification = Article & {
   verification: Verification;
 };

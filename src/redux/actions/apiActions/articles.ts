@@ -110,8 +110,8 @@ function articleAdd(data: ArticleAddProps) {
   return Store.dispatch(articleAddCreator(data));
 }
 
-function articleVerificationApprove(id: string) {
-  return Store.dispatch(
+async function articleVerificationApprove(id: string) {
+  await Store.dispatch(
     approveCreator({
       url: 'articles/verification/approve',
       stateUpdate: UPDATE_ARTICLES_STATE,

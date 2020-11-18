@@ -21,7 +21,6 @@ import {
   EventsActionTypes,
   SchoolsActionTypes,
   UsersActionTypes,
-  AccountActionTypes,
   ArticlesState,
   CommentsState,
   DepartmentsState,
@@ -29,18 +28,17 @@ import {
   GroupsActionTypes,
   GroupsState,
   LegalActionTypes,
-  LocationActionTypes,
   PetitionsActionTypes,
   PetitionsState,
   PlacesActionTypes,
   PlacesState,
-  PrefActionTypes,
   SchoolsState,
   TagsActionTypes,
   TagsState,
   UsersState,
 } from './apiReducers';
 import { ArticleListItem, EventListItem } from './contentReducers';
+import { AccountActionTypes, LocationActionTypes, PrefActionTypes } from './dataReducers';
 
 // Actions
 export type ActionType =

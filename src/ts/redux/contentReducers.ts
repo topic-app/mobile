@@ -1,4 +1,4 @@
-import { Article } from '../api';
+import { Article, Event } from '../api';
 import { ApiAction } from './apiReducers';
 
 // Articles
