@@ -2,7 +2,15 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
-import { View, ActivityIndicator, Animated, Platform, Share, Dimensions } from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  Animated,
+  Platform,
+  Share,
+  Dimensions,
+  Alert,
+} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,9 +28,14 @@ import {
   ReportModal,
   PlatformTouchable,
 } from '@components/index';
+import { Permissions } from '@constants/index';
 import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
 import { updateComments } from '@redux/actions/api/comments';
-import { articleReport, articleVerificationApprove } from '@redux/actions/apiActions/articles';
+import {
+  articleReport,
+  articleVerificationApprove,
+  articleDelete,
+} from '@redux/actions/apiActions/articles';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 import { addArticleRead } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
@@ -132,7 +145,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <Title style={{ color: colors.disabled }}>Hors ligne</Title>
         </View>
       )}
-      {reqState.articles.info.loading && <ActivityIndicator size="large" color={colors.primary} />}
+      {(reqState.articles.info.loading || reqState.articles.delete?.loading) && (
+        <ActivityIndicator size="large" color={colors.primary} />
+      )}
       {!article.preload && reqState.articles.info.success && article.content && (
         <View>
           <View style={styles.contentContainer}>
@@ -554,6 +569,41 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                   title: 'Signaler',
                   onPress: () => setArticleReportModalVisible(true),
                 },
+                ...(account.permissions?.some(
+                  (p) =>
+                    p.permission === Permissions.ARTICLE_DELETE &&
+                    (p.scope.groups.includes(id) || p.scope.everywhere),
+                )
+                  ? [
+                      {
+                        title: 'Supprimer',
+                        onPress: () =>
+                          Alert.alert(
+                            'Supprimer cette article ?',
+                            'Les autres administrateurs du groupe seront notifiés.',
+                            [
+                              { text: 'Annuler' },
+                              {
+                                text: 'Supprimer',
+                                onPress: () =>
+                                  articleDelete(id).then(() => {
+                                    navigation.goBack();
+                                    Alert.alert(
+                                      'Article supprimé',
+                                      "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
+                                      [{ text: 'Fermer' }],
+                                      {
+                                        cancelable: true,
+                                      },
+                                    );
+                                  }),
+                              },
+                            ],
+                            { cancelable: true },
+                          ),
+                      },
+                    ]
+                  : []),
               ]
         }
       >
@@ -565,6 +615,17 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               contentSingular: "L'article",
             }}
             error={reqState.articles.info.error}
+            retry={() => fetch()}
+          />
+        )}
+        {reqState.articles.delete?.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la suppression de cet article',
+              contentSingular: "La suppression de l'article",
+            }}
+            error={reqState.articles.delete.error}
             retry={() => fetch()}
           />
         )}

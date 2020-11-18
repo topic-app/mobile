@@ -1,8 +1,8 @@
 import Store from '@redux/store';
-import { request } from '@utils/index';
 import { AppThunk, UPDATE_ARTICLES_STATE } from '@ts/redux';
+import { request } from '@utils/index';
 
-import { reportCreator, approveCreator } from './ActionCreator';
+import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
 
 type ArticleAddProps = {
   title: string;
@@ -133,4 +133,15 @@ async function articleReport(articleId: string, reason: string) {
   );
 }
 
-export { articleAdd, articleReport, articleVerificationApprove };
+async function articleDelete(id: string) {
+  await Store.dispatch(
+    deleteCreator({
+      id,
+      paramName: 'articleId',
+      url: 'articles/delete',
+      stateUpdate: UPDATE_ARTICLES_STATE,
+    }),
+  );
+}
+
+export { articleAdd, articleReport, articleVerificationApprove, articleDelete };

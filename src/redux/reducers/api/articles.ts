@@ -73,6 +73,11 @@ const initialState: ArticlesState = {
       error: null,
       loading: false,
     },
+    delete: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 
