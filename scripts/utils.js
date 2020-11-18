@@ -1,6 +1,5 @@
 const { createReadStream } = require('fs');
 const fs = require('fs').promises;
-const { spawn } = require('child_process');
 const readline = require('readline');
 const prompts = require('prompts');
 

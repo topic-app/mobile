@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Group, Item } from '@ts/types';
+import { Group } from '@ts/types';
 import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_TEMPLATES,
@@ -12,8 +12,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) =>
-  (data as Group[]).sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: Group[]) => data.sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -30,6 +29,7 @@ async function updateGroups(
       update: UPDATE_GROUPS_DATA,
       stateUpdate: UPDATE_GROUPS_STATE,
       url: 'groups/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'groups',
       type,
@@ -76,6 +76,7 @@ async function fetchGroup(groupId: string) {
     fetchCreator({
       update: UPDATE_GROUPS_ITEM,
       stateUpdate: UPDATE_GROUPS_STATE,
+      stateName: 'info',
       url: 'groups/info',
       dataType: 'groups',
       params: { groupId },
@@ -112,6 +113,7 @@ async function fetchGroupVerification(groupId: string) {
     fetchCreator({
       update: UPDATE_GROUPS_ITEM,
       stateUpdate: UPDATE_GROUPS_STATE,
+      stateName: 'info',
       url: 'groups/verification/info',
       dataType: 'groups',
       params: { groupId },
@@ -124,8 +126,8 @@ async function fetchGroupVerification(groupId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearGroups(data = true, search = true, templates = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
+function clearGroups(data = true, search = true, templates = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
 }
 
 /**
@@ -141,6 +143,7 @@ async function updateGroupTemplates() {
       url: 'groups/templates/list',
       sort: nameAscSort,
       stateName: 'templates',
+      listName: 'data',
       dataType: 'groups', // This is useless but typescript
       type: 'initial',
       params: {},

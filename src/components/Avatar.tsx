@@ -5,10 +5,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import color from 'color';
 
 import { Avatar as AvatarType } from '@ts/types';
-import { Illustration } from '@components/index';
 import { useTheme } from '@utils/index';
 
 import Image from './CustomImage';
+import Illustration from './Illustration';
 import { PlatformTouchable } from './PlatformComponents';
 
 const getInitials = (title: string) => {

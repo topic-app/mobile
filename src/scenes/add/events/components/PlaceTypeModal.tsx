@@ -2,12 +2,12 @@ import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
 import { Divider, Button, RadioButton, List } from 'react-native-paper';
 
-import { ModalProps } from '@ts/types';
 import { Modal } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { ModalProps } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-type PlaceTypeModalProps = ModalProps & { next: (type: 'school'|'place'|'standalone') => void };
+type PlaceTypeModalProps = ModalProps & { next: (type: 'school' | 'place' | 'standalone') => void };
 
 function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
   const theme = useTheme();
@@ -50,6 +50,7 @@ function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
                 left={() =>
                   Platform.OS !== 'ios' && (
                     <RadioButton
+                      value=""
                       color={colors.primary}
                       status={item.type === currentType ? 'checked' : 'unchecked'}
                       onPress={() => {
@@ -61,6 +62,7 @@ function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
                 right={() =>
                   Platform.OS === 'ios' && (
                     <RadioButton
+                      value=""
                       color={colors.primary}
                       status={item.type === currentType ? 'checked' : 'unchecked'}
                       onPress={() => {

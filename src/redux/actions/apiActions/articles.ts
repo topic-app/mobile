@@ -1,8 +1,8 @@
 import Store from '@redux/store';
+import { AppThunk, UPDATE_ARTICLES_STATE } from '@ts/redux';
 import { request } from '@utils/index';
-import { UPDATE_ARTICLES_STATE } from '@ts/redux';
-import { State } from '@ts/types';
-import { reportCreator, approveCreator } from './ActionCreator';
+
+import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
 
 type ArticleAddProps = {
   title: string;
@@ -41,8 +41,8 @@ function articleAddCreator({
   data,
   preferences,
   tags,
-}: ArticleAddProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: ArticleAddProps): AppThunk {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_ARTICLES_STATE,
@@ -106,12 +106,12 @@ function articleAddCreator({
   };
 }
 
-async function articleAdd(data: ArticleAddProps) {
-  return await Store.dispatch(articleAddCreator(data));
+function articleAdd(data: ArticleAddProps) {
+  return Store.dispatch(articleAddCreator(data));
 }
 
 async function articleVerificationApprove(id: string) {
-  return await Store.dispatch(
+  await Store.dispatch(
     approveCreator({
       url: 'articles/verification/approve',
       stateUpdate: UPDATE_ARTICLES_STATE,
@@ -133,4 +133,15 @@ async function articleReport(articleId: string, reason: string) {
   );
 }
 
-export { articleAdd, articleReport, articleVerificationApprove };
+async function articleDelete(id: string) {
+  await Store.dispatch(
+    deleteCreator({
+      id,
+      paramName: 'articleId',
+      url: 'articles/delete',
+      stateUpdate: UPDATE_ARTICLES_STATE,
+    }),
+  );
+}
+
+export { articleAdd, articleReport, articleVerificationApprove, articleDelete };

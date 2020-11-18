@@ -7,12 +7,12 @@ import {
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
 } from '@ts/redux';
-import { Item, UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
+import { UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: Item[]) =>
-  (data as Article[]).sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+const dateDescSort = (data: Article[]) =>
+  data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
  * @docs actions
@@ -30,6 +30,7 @@ async function updateArticles(
       update: UPDATE_ARTICLES_DATA,
       stateUpdate: UPDATE_ARTICLES_STATE,
       url: 'articles/list',
+      listName: 'data',
       sort: dateDescSort,
       dataType: 'articles',
       type,
@@ -78,10 +79,8 @@ async function updateArticlesFollowing(
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearArticles(data = true, search = true, verification = true, following = true) {
-  await Store.dispatch(
-    clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }),
-  );
+function clearArticles(data = true, search = true, verification = true, following = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }));
 }
 
 /**
@@ -149,6 +148,7 @@ async function fetchArticle(articleId: string) {
     fetchCreator({
       update: UPDATE_ARTICLES_ITEM,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'info',
       url: 'articles/info',
       dataType: 'articles',
       params: { articleId },
@@ -161,6 +161,7 @@ async function fetchArticleVerification(articleId: string) {
     fetchCreator({
       update: UPDATE_ARTICLES_ITEM,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'info',
       url: 'articles/verification/info',
       dataType: 'articles',
       params: { articleId },

@@ -1,7 +1,26 @@
 import { Config } from '@constants/index';
-import { Preferences, PrefActionTypes, SET_PREFS, CLEAR_PREF, CLEAR_ALL_PREFS } from '@ts/redux';
+import {
+  PrefActionTypes,
+  SET_PREFS,
+  CLEAR_PREF,
+  CLEAR_ALL_PREFS,
+  PreferencesState,
+} from '@ts/redux';
 
-const initialState: Preferences = Config.defaults.preferences;
+const initialState: PreferencesState = {
+  theme: 'light',
+  useSystemTheme: true,
+  history: true,
+  recommendations: false,
+  syncHistory: true,
+  syncLists: true,
+  fontSize: 14,
+  fontFamily: 'Roboto',
+  stripFormatting: false,
+  themeEasterEggDiscovered: false,
+  youtubeConsent: false,
+  ...Config.seedDb.preferences,
+};
 
 /**
  * @docs reducers
@@ -13,7 +32,7 @@ const initialState: Preferences = Config.defaults.preferences;
  * @param action.data.pref La clé du paramètre à supprimer
  * @returns Nouveau state
  */
-function prefReducer(state = initialState, action: PrefActionTypes) {
+function prefReducer(state = initialState, action: PrefActionTypes): PreferencesState {
   const prefs = state;
   switch (action.type) {
     case SET_PREFS:

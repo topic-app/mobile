@@ -14,7 +14,7 @@
  * Note: Don't import this file through `common/`, use `import { ... } from '@ts/types'` instead.
  */
 
-import { AccountRequestState } from './requestState'; // Account stuff should probably go in redux.ts but too much risk of breakage
+// Account stuff should probably go in redux.ts but too much risk of breakage
 
 // Common types
 export type Content = {
@@ -71,6 +71,7 @@ export type SchoolPreload = {
 export type School = {
   _id: string;
   shortName?: string;
+  displayName?: string;
   name: string;
   types: SchoolType[];
   address: Address;
@@ -135,17 +136,25 @@ export type Address = {
   departments: DepartmentPreload[];
 };
 
-export type Avatar = {
-  type: 'color' | 'gradient' | 'image';
-  color: string;
-  gradient: {
-    start: string;
-    end: string;
-    angle: number;
-  };
-  text: string;
-  image: Image;
-};
+export type Avatar =
+  | {
+      type: 'color';
+      color: string;
+      text: string;
+    }
+  | {
+      type: 'gradient';
+      gradient: {
+        start: string;
+        end: string;
+        angle: number;
+      };
+      text: string;
+    }
+  | {
+      type: 'image';
+      image: Image;
+    };
 
 export type UserPreload = {
   _id: string;
@@ -212,23 +221,6 @@ export type AccountInfo = {
 export type WaitingGroup = Group & {
   waitingMembership: { role: string; permanent: boolean; expiry: Date };
 };
-
-export type Account =
-  | {
-      loggedIn: true;
-      accountInfo: AccountInfo;
-      creationData: AccountCreationData;
-      state: AccountRequestState;
-      groups: GroupWithMembership[];
-      permissions: AccountPermission[];
-      waitingGroups: WaitingGroup[];
-    }
-  | {
-      loggedIn: false;
-      accountInfo: null;
-      creationData: AccountCreationData;
-      state: AccountRequestState;
-    };
 
 export type AuthorPreload = UserPreload;
 
@@ -312,28 +304,34 @@ export type GroupTemplate = {
 };
 
 // Article Types
-export type ArticlePreload = {
+type ArticleBase = {
   _id: string;
   title: string;
   date: string;
   summary: string;
   image?: Image;
-  preload?: boolean;
   authors: AuthorPreload[];
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];
 };
+export type ArticlePreload = ArticleBase & {
+  preload: true; // So we can check if article.preload to change type
+};
 export type ArticleVerificationPreload = ArticlePreload & {
   verification: Verification;
 };
 
-export type Article = ArticlePreload & {
+export type Article = ArticleBase & {
+  preload?: false;
   content: Content;
   preferences: {
     comments: boolean;
   };
 };
+
+export type Article2 = Article;
+
 export type ArticleVerification = Article & {
   verification: Verification;
 };
@@ -351,7 +349,7 @@ export type EventPlace = {
   _id: string;
   type: 'place' | 'school' | 'standalone';
   associatedSchool?: SchoolPreload;
-  associatedPlace?: DepartmentPreload;
+  associatedPlace?: PlacePreload;
   address?: Address;
 };
 
@@ -509,15 +507,3 @@ export type Error = {
     };
   };
 };
-
-export type Item =
-  | Article
-  | Comment
-  | Event
-  | Petition
-  | Group
-  | User
-  | Place
-  | Tag
-  | Department
-  | School;

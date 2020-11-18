@@ -1,32 +1,22 @@
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
 import {
   View,
-  Image,
   ActivityIndicator,
   Animated,
   Platform,
   Share,
   Dimensions,
+  Alert,
 } from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
-import moment from 'moment';
 import shortid from 'shortid';
 
-import {
-  Article,
-  ArticlePreload,
-  State,
-  CommentRequestState,
-  Account,
-  ArticleRequestState,
-  Comment,
-  ArticleListItem,
-  Preferences,
-} from '@ts/types';
 import {
   ErrorMessage,
   Content,
@@ -38,24 +28,42 @@ import {
   ReportModal,
   PlatformTouchable,
 } from '@components/index';
-import { useTheme, getImageUrl, handleUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { articleReport, articleVerificationApprove } from '@redux/actions/apiActions/articles';
+import { Permissions } from '@constants/index';
 import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
-import { addArticleRead } from '@redux/actions/contentData/articles';
 import { updateComments } from '@redux/actions/api/comments';
+import {
+  articleReport,
+  articleVerificationApprove,
+  articleDelete,
+} from '@redux/actions/apiActions/articles';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
-import AutoHeightImage from 'react-native-auto-height-image';
+import { addArticleRead } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import {
+  Article,
+  ArticlePreload,
+  State,
+  CommentRequestState,
+  Account,
+  ArticleRequestState,
+  Comment,
+  ArticleListItem,
+  Preferences,
+  Publisher,
+  Content as ContentType,
+} from '@ts/types';
+import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 
-import type { ArticleDisplayStackParams } from '../index';
-import CommentInlineCard from '../../components/Comment';
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
+import CommentInlineCard from '../../components/Comment';
+import type { ArticleDisplayStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 // Common types
 type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
 type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
+
 type CombinedReqState = {
   articles: ArticleRequestState;
   comments: CommentRequestState;
@@ -140,7 +148,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <Title style={{ color: colors.disabled }}>Hors ligne</Title>
         </View>
       )}
-      {reqState.articles.info.loading && <ActivityIndicator size="large" color={colors.primary} />}
+      {(reqState.articles.info.loading || reqState.articles.delete?.loading) && (
+        <ActivityIndicator size="large" color={colors.primary} />
+      )}
       {!article.preload && reqState.articles.info.success && article.content && (
         <View>
           <View style={styles.contentContainer}>
@@ -170,7 +180,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               badge={
                 account.loggedIn &&
                 account.accountInfo?.user &&
-                following?.users.some((u) => u._id == author._id)
+                following?.users.some((u) => u._id === author._id)
                   ? 'account-heart'
                   : undefined
               }
@@ -201,7 +211,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
             badge={
               account.loggedIn &&
               account.accountInfo?.user &&
-              following?.groups.some((g) => g._id == article.group?._id)
+              following?.groups.some((g) => g._id === article.group?._id)
                 ? 'account-heart'
                 : undefined
             }
@@ -284,9 +294,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     />
                     <Text style={{ color: colors.text }}>
                       Pour vérifier cet article:{'\n'}- Vérifiez que le contenu est bien conforme
-                      aux conditions générales d'utilisation{'\n'}- Vérifiez que tous les médias
-                      sont conformes, et que vous avez bien le droit d'utiliser ceux-ci{'\n'}-
-                      Visitez chacun des liens afin de vous assurer que tous les sites sont
+                      aux conditions générales d&apos;utilisation{'\n'}- Vérifiez que tous les
+                      médias sont conformes, et que vous avez bien le droit d&apos;utiliser ceux-ci
+                      {'\n'}- Visitez chacun des liens afin de vous assurer que tous les sites sont
                       conformes{'\n'}
                       {'\n'}
                       Nous vous rappelons que les contenus suivants ne sont pas autorisés: {'\n'}-
@@ -298,7 +308,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                       {'\n'}- Tout contenu qui pointe vers un site web, logiciel, ou autre média qui
                       ne respecte pas les présentes règles{'\n'}
                       {'\n'}
-                      En tant qu'administrateur, vous êtes en partie responsable des contenus
+                      En tant qu&apos;administrateur, vous êtes en partie responsable des contenus
                       publiés, comme détaillé dans la Charte des administrateurs.
                     </Text>
                   </View>
@@ -319,7 +329,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                         color={colors.disabled}
                       />
                       <Text style={{ color: colors.text }}>
-                        Liens contenus dans l'article:{'\n'}
+                        Liens contenus dans l&apos;article:{'\n'}
                         {article?.content?.data
                           ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
                           ?.map((u: string) => (
@@ -394,8 +404,8 @@ type ArticleDisplayProps = {
   route: Route;
   navigation: Navigation;
   item: Article | null;
-  data: Article[];
-  search: Article[];
+  data: ArticlePreload[];
+  search: ArticlePreload[];
   comments: Comment[];
   reqState: CombinedReqState;
   account: Account;
@@ -422,10 +432,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  let article: Article | undefined | null;
+  let article: Article | ArticlePreload | undefined | null;
   if (useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))) {
     article = lists
       .find((l: ArticleListItem) => l.items.some((i) => i._id === id))
@@ -562,6 +571,41 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                   title: 'Signaler',
                   onPress: () => setArticleReportModalVisible(true),
                 },
+                ...(account.permissions?.some(
+                  (p) =>
+                    p.permission === Permissions.ARTICLE_DELETE &&
+                    (p.scope.groups.includes(id) || p.scope.everywhere),
+                )
+                  ? [
+                      {
+                        title: 'Supprimer',
+                        onPress: () =>
+                          Alert.alert(
+                            'Supprimer cette article ?',
+                            'Les autres administrateurs du groupe seront notifiés.',
+                            [
+                              { text: 'Annuler' },
+                              {
+                                text: 'Supprimer',
+                                onPress: () =>
+                                  articleDelete(id).then(() => {
+                                    navigation.goBack();
+                                    Alert.alert(
+                                      'Article supprimé',
+                                      "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
+                                      [{ text: 'Fermer' }],
+                                      {
+                                        cancelable: true,
+                                      },
+                                    );
+                                  }),
+                              },
+                            ],
+                            { cancelable: true },
+                          ),
+                      },
+                    ]
+                  : []),
               ]
         }
       >
@@ -576,24 +620,37 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             retry={() => fetch()}
           />
         )}
+        {reqState.articles.delete?.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la suppression de cet article',
+              contentSingular: "La suppression de l'article",
+            }}
+            error={reqState.articles.delete.error}
+            retry={() => fetch()}
+          />
+        )}
       </AnimatingHeader>
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
-        ListHeaderComponent={() => (
-          <ArticleDisplayHeader
-            article={article}
-            commentsDisplayed={commentsDisplayed}
-            verification={verification}
-            offline={useLists && lists?.some((l) => l.items?.some((i) => i._id === id))}
-            reqState={reqState}
-            account={account}
-            navigation={navigation}
-            setCommentModalVisible={setCommentModalVisible}
-            setArticleReportModalVisible={setArticleReportModalVisible}
-          />
-        )}
+        ListHeaderComponent={() =>
+          article ? (
+            <ArticleDisplayHeader
+              article={article}
+              commentsDisplayed={commentsDisplayed}
+              verification={verification}
+              offline={useLists && lists?.some((l) => l.items?.some((i) => i._id === id))}
+              reqState={reqState}
+              account={account}
+              navigation={navigation}
+              setCommentModalVisible={setCommentModalVisible}
+              setArticleReportModalVisible={setArticleReportModalVisible}
+            />
+          ) : null
+        }
         data={reqState.articles.info.success && !verification ? articleComments : []}
         // onEndReached={() => {
         //   console.log('comment end reached');
@@ -618,20 +675,20 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           reqState.comments.list.success &&
           reqState.articles.info.success &&
           !verification &&
-          commentsDisplayed && (
+          commentsDisplayed ? (
             <View style={styles.contentContainer}>
               <View style={styles.centerIllustrationContainer}>
                 <Illustration name="comment-empty" height={200} width={200} />
                 <Text>Aucun commentaire</Text>
               </View>
             </View>
-          )
+          ) : null
         }
-        renderItem={({ item }: { item: Comment }) => (
+        renderItem={({ item: comment }: { item: Comment }) => (
           <CommentInlineCard
-            comment={item}
-            report={(id) => {
-              setFocusedComment(id);
+            comment={comment}
+            report={(commentId) => {
+              setFocusedComment(commentId);
               setCommentReportModalVisible(true);
             }}
             loggedIn={account.loggedIn}
@@ -644,8 +701,10 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         setVisible={setCommentModalVisible}
         id={id}
         reqState={reqState}
-        add={(...data: any) =>
-          commentAdd(...data).then(() => updateComments('initial', { parentId: id }))
+        add={(publisher: Publisher, content: ContentType, parent: string) =>
+          commentAdd(publisher, content, parent, 'article').then(() =>
+            updateComments('initial', { parentId: id }),
+          )
         }
       />
       <ReportModal
@@ -654,6 +713,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         contentId={id}
         report={articleReport}
         state={reqState.articles.report}
+        navigation={navigation}
       />
       <ReportModal
         visible={isCommentReportModalVisible}

@@ -17,11 +17,9 @@ import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
   account: Account;
-  creationData: EventCreationData;
-  navigation: StackNavigationProp<any, any>;
 };
 
-const EventAddPagePlace: React.FC<Props> = ({ next, prev, account, creationData }) => {
+const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
   const [isPlaceTypeModalVisible, setPlaceTypeModalVisible] = React.useState(false);
   const [isPlaceSelectModalVisible, setPlaceSelectModalVisible] = React.useState(false);
   const [isPlaceAddressModalVisible, setPlaceAddressModalVisible] = React.useState(false);

@@ -2,12 +2,11 @@ import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import UnauthorizedBeta from '@components/UnauthorizedBeta';
 import { useTheme, useSafeAreaInsets } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
 
 import ArticleList from './articles/views/List';
-import PetitionList from './petitions/views/List';
+// import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
 

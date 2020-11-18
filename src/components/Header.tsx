@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import shortid from 'shortid';
 
-import { useTheme, useSafeAreaInsets, getLayout } from '@utils/index';
+import { useTheme, useSafeAreaInsets, useLayout } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
@@ -61,14 +61,14 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
     overflow,
   } = scene.descriptor.options;
 
+  const layout = useLayout();
+
   let primaryAction;
   if (primary) {
     primaryAction = <Appbar.BackAction onPress={primary} />;
   } else if (home) {
     primaryAction =
-      getLayout() === 'desktop' ? null : (
-        <Appbar.Action icon="menu" onPress={navigation.openDrawer} />
-      );
+      layout === 'desktop' ? null : <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
   } else {
     primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
   }

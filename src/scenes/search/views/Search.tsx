@@ -40,7 +40,7 @@ import { searchUsers, clearUsers } from '@redux/actions/api/users';
 import { searchTags } from '@redux/actions/api/tags';
 
 import getSearchStyles from '../styles/Styles';
-import { getSuggestions, SuggestionType } from '../utils/suggestions';
+import { SuggestionType } from '../utils/suggestions';
 import type { SearchStackParams } from '../index';
 
 type SearchProps = {

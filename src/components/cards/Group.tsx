@@ -5,9 +5,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { GroupPreload } from '@ts/types';
-import { Avatar, PlatformTouchable } from '@components/index';
 import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+
+import Avatar from '../Avatar';
+import { PlatformTouchable } from '../PlatformComponents';
 
 type MyGroupsListCardProps = {
   group: GroupPreload;

@@ -17,6 +17,7 @@ type ArticleAddPageGroupProps = StepperViewPageProps & { account: Account };
 const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account }) => {
   const [group, setGroup] = React.useState<string | null>(null);
   const [showError, setError] = React.useState(false);
+  const theme = useTheme();
 
   const submit = () => {
     if (group !== null) {
@@ -27,7 +28,6 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
     }
   };
 
-  const theme = useTheme();
   const { colors } = theme;
   const articleStyles = getAuthStyles(theme);
   const styles = getStyles(theme);

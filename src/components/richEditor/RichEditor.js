@@ -1,3 +1,6 @@
+/* eslint-disable eslint-comments/no-unlimited-disable */
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import { WebView } from 'react-native-webview';
 import { actions, messages } from './const';

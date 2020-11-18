@@ -1,3 +1,5 @@
+import { StackScreenProps } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
 import { View, ScrollView, Platform } from 'react-native';
 import {
@@ -10,11 +12,11 @@ import {
   Paragraph,
   Chip,
 } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import moment from 'moment';
+import { connect } from 'react-redux';
 
+import { TagList } from '@components/index';
+import getStyles from '@styles/Styles';
 import {
   Petition,
   PetitionPreload,
@@ -23,12 +25,10 @@ import {
   State,
   Theme,
 } from '@ts/types';
-import getStyles from '@styles/Styles';
-import { TagList } from '@components/index';
 import { useTheme } from '@utils/index';
 
-import type { PetitionDisplayStackParams } from '../index';
 import PetitionChart from '../components/Charts';
+import type { PetitionDisplayStackParams } from '../index';
 
 type StatusChipProps = {
   mode: 'contained' | 'text' | 'outlined';
@@ -198,7 +198,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             title="Espace lecture"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="green" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="green" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -207,7 +207,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             title="Aide au devoirs"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="yellow" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="yellow" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -216,7 +216,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             title="FabLab"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="checked" color="#962626" onPress={() => {}} />
+                <RadioButton value="" status="checked" color="#962626" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -225,7 +225,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             title="Matériel informatique"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="blue" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="blue" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}

@@ -1,12 +1,12 @@
 import React from 'react';
 
-import getLayout from '@utils/getLayout';
+import { useLayout } from '@utils/index';
 
 import AndroidNavigator from './HomeTwo.android';
 import IosNavigator from './HomeTwo.ios';
 
 const HomeTwoNavigator = () => {
-  if (getLayout() === 'desktop') {
+  if (useLayout() === 'desktop') {
     return <IosNavigator />;
   } else {
     return <AndroidNavigator />;

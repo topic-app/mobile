@@ -1,23 +1,21 @@
-import { request } from '@utils/index';
 import Store from '@redux/store';
 import shortid from 'shortid';
+import { AnyAction } from 'redux';
+
 import {
-  ElementStringPlural,
-  ElementDataString,
-  State,
+  ApiItemString,
   ListItem,
-  Article,
-  Item,
-  ArticlePrefs,
-  ArticleParams,
-  EventParams,
-  EventPrefs,
-  ArticleCreationData,
-  EventCreationData,
+  ApiItem,
   ArticleReadItem,
   EventReadItem,
-  GroupCreationData,
+  ContentAction,
+  AppThunk,
+  ContentItemMap,
+  ContentItemString,
 } from '@ts/types';
+import { request } from '@utils/index';
+
+type ContentItemWithListsString = 'articleData' | 'eventData';
 
 /**
  * @docs actionCreators
@@ -31,18 +29,18 @@ import {
  * @param listId L'id de la liste à laquelle ajouter l'article
  * @returns Action
  */
-type addToListProps = {
-  update: string;
-  stateUpdate: string;
-  dataType: 'articleData' | 'eventData';
-  resType: ElementStringPlural;
+type AddToListCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
+  stateUpdate: ContentAction.UpdateStateTypeMap[T];
+  resType: ApiItemString;
   url: string;
-  params: object;
+  params: { [key: string]: any };
   id: string;
-  stateName?: string;
+  stateName?: ContentAction.UpdateStateNameMap[T];
 };
 
-function addToListCreator({
+function addToListCreator<T extends ContentItemWithListsString>({
   update,
   stateUpdate,
   dataType,
@@ -51,8 +49,8 @@ function addToListCreator({
   params,
   id,
   stateName = 'info',
-}: addToListProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: AddToListCreatorParams<T>): AppThunk {
+  return (dispatch, getState) => {
     dispatch({
       type: stateUpdate,
       data: {
@@ -65,11 +63,12 @@ function addToListCreator({
     });
     request(url, 'get', params)
       .then((result) => {
-        const { lists }: { lists: ListItem[] } = getState()[dataType];
+        const { lists } = getState()[dataType];
+
         if (
           lists
             .find((l) => l.id === id)
-            ?.items.some((i: Item) => i._id === result.data?.[resType][0]?._id)
+            ?.items.some((i: ApiItem) => i._id === result.data?.[resType][0]?._id)
         ) {
           return;
         }
@@ -112,21 +111,26 @@ function addToListCreator({
   };
 }
 
-type removeFromListProps = {
-  update: string;
-  dataType: 'articleData' | 'eventData';
+type RemoveFromListCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
   id: string;
   itemId: string;
 };
 
-function removeFromListCreator({ update, dataType, id, itemId }: removeFromListProps) {
+function removeFromListCreator<T extends ContentItemWithListsString>({
+  update,
+  dataType,
+  id,
+  itemId,
+}: RemoveFromListCreatorParams<T>): AnyAction {
   return {
     type: update,
     data: (Store.getState()[dataType].lists as ListItem[]).map((l) => {
       if (l.id === id) {
         return {
           ...l,
-          items: (l.items as Item[]).filter((i) => i._id !== itemId),
+          items: (l.items as ApiItem[]).filter((i) => i._id !== itemId),
         };
       } else {
         return l;
@@ -135,21 +139,21 @@ function removeFromListCreator({ update, dataType, id, itemId }: removeFromListP
   };
 }
 
-type addListProps = {
-  update: string;
-  dataType: 'articleData' | 'eventData';
+type AddListCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
   name: string;
   icon?: string;
   description?: string;
 };
 
-function addListCreator({
+function addListCreator<T extends ContentItemWithListsString>({
   update,
   dataType,
   name,
   icon = 'checkbox-blank-circle',
   description = '',
-}: addListProps) {
+}: AddListCreatorParams<T>): AnyAction {
   return {
     type: update,
     data: [
@@ -165,16 +169,17 @@ function addListCreator({
   };
 }
 
-type modifyListProps = {
-  update: string;
-  dataType: 'articleData' | 'eventData';
+type ModifyListCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
   id: string;
   name?: string;
   icon?: string;
   description?: string;
-  items?: Item[];
+  items?: ContentItemMap[T][];
 };
-function modifyListCreator({
+
+function modifyListCreator<T extends ContentItemWithListsString>({
   update,
   dataType,
   id,
@@ -182,7 +187,7 @@ function modifyListCreator({
   icon,
   description,
   items,
-}: modifyListProps) {
+}: ModifyListCreatorParams<T>): AnyAction {
   return {
     type: update,
     data: (Store.getState()[dataType].lists as ListItem[]).map((l) => {
@@ -201,24 +206,34 @@ function modifyListCreator({
   };
 }
 
-type deleteListProps = {
-  update: string;
-  dataType: 'articleData' | 'eventData';
+type DeleteListCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
   id: string;
 };
-function deleteListCreator({ update, dataType, id }: deleteListProps) {
+
+function deleteListCreator<T extends ContentItemWithListsString>({
+  update,
+  dataType,
+  id,
+}: DeleteListCreatorParams<T>): AnyAction {
   return {
     type: update,
     data: (Store.getState()[dataType].lists as ListItem[]).filter((l) => l.id !== id),
   };
 }
 
-type addReadProps = {
-  update: string;
-  dataType: 'eventData' | 'articleData';
+type AddReadCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
   data: ArticleReadItem | EventReadItem;
 };
-function addReadCreator({ update, dataType, data }: addReadProps) {
+
+function addReadCreator<T extends ContentItemWithListsString>({
+  update,
+  dataType,
+  data,
+}: AddReadCreatorParams<T>): AnyAction {
   const { read } = Store.getState()[dataType];
   return {
     type: update,
@@ -226,23 +241,30 @@ function addReadCreator({ update, dataType, data }: addReadProps) {
   };
 }
 
-type deleteReadProps = {
-  update: string;
-  dataType: 'articleData' | 'eventData';
+type DeleteReadCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
   id: string;
 };
-function deleteReadCreator({ update, dataType, id }: deleteReadProps) {
+function deleteReadCreator<T extends ContentItemWithListsString>({
+  update,
+  dataType,
+  id,
+}: DeleteReadCreatorParams<T>): AnyAction {
   return {
     type: update,
     data: Store.getState()[dataType].read.filter((i) => i.id !== id),
   };
 }
 
-type clearReadProps = {
-  update: string;
-  dataType: 'articleData' | 'eventData';
+type ClearReadCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
 };
-function clearReadCreator({ update, dataType }: clearReadProps) {
+function clearReadCreator<T extends ContentItemWithListsString>({
+  dataType,
+  update,
+}: ClearReadCreatorParams<T>): AnyAction {
   return {
     type: update,
     data: [],
@@ -256,39 +278,55 @@ function clearReadCreator({ update, dataType }: clearReadProps) {
  * @param params Les paramètres à mettre à jour
  * @returns Action
  */
-type updateParamsProps = {
-  updateParams: string;
-  params: Partial<ArticleParams | EventParams>;
+type UpdateParamsCreatorParams<T extends ContentItemWithListsString> = {
+  updateParams: ContentAction.UpdateParamsTypeMap[T];
+  params: ContentAction.UpdateParamsDataMap[T];
 };
-function updateParamsCreator({ updateParams, params }: updateParamsProps) {
+function updateParamsCreator<T extends ContentItemWithListsString>({
+  updateParams,
+  params,
+}: UpdateParamsCreatorParams<T>): AnyAction {
   return {
     type: updateParams,
     data: params,
   };
 }
 
-type updatePrefsProps = {
-  updatePrefs: string;
-  prefs: Partial<ArticlePrefs | EventPrefs>;
+type UpdatePrefsCreatorParams<T extends ContentItemWithListsString> = {
+  updatePrefs: ContentAction.UpdatePrefsTypeMap[T];
+  prefs: ContentAction.UpdatePrefsDataMap[T];
 };
-function updatePrefsCreator({ updatePrefs, prefs }: updatePrefsProps) {
+function updatePrefsCreator<T extends ContentItemWithListsString>({
+  updatePrefs,
+  prefs,
+}: UpdatePrefsCreatorParams<T>): AnyAction {
   return {
     type: updatePrefs,
     data: prefs,
   };
 }
 
-type addQuickProps = {
-  updateQuicks: string;
-  dataType: 'articleData' | 'eventData';
+type AddQuickCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  updateQuicks: ContentAction.UpdateQuicksTypeMap[T];
   type: string;
   id: string;
   title: string;
 };
-function addQuickCreator({ updateQuicks, dataType, type, id, title }: addQuickProps) {
+function addQuickCreator<T extends ContentItemWithListsString>({
+  updateQuicks,
+  dataType,
+  type,
+  id,
+  title,
+}: AddQuickCreatorParams<T>): AnyAction {
   const { quicks } = Store.getState()[dataType];
   if (quicks.some((q) => q.id === id)) {
-    return;
+    // Do nothing
+    return {
+      type: updateQuicks,
+      data: quicks,
+    };
   }
   return {
     type: updateQuicks,
@@ -296,38 +334,47 @@ function addQuickCreator({ updateQuicks, dataType, type, id, title }: addQuickPr
   };
 }
 
-type deleteQuickProps = {
-  updateQuicks: string;
-  dataType: 'articleData' | 'eventData';
+type DeleteQuickCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  updateQuicks: ContentAction.UpdateQuicksTypeMap[T];
   id: string;
 };
-function deleteQuickCreator({ updateQuicks, dataType, id }: deleteQuickProps) {
+function deleteQuickCreator<T extends ContentItemWithListsString>({
+  updateQuicks,
+  dataType,
+  id,
+}: DeleteQuickCreatorParams<T>): AnyAction {
   return {
     type: updateQuicks,
     data: Store.getState()[dataType].quicks.filter((q) => q.id !== id),
   };
 }
 
-type updateCreationDataProps = {
-  updateCreationData: string;
-  fields: Partial<ArticleCreationData | EventCreationData | GroupCreationData>;
-  dataType: 'articleData' | 'eventData' | 'groupData';
+type UpdateCreationDataCreatorParams<T extends ContentItemString> = {
+  dataType: T;
+  updateCreationData: ContentAction.UpdateCreationDataTypeMap[T];
+  fields: ContentAction.UpdateCreationDataDataMap[T];
 };
-function updateCreationDataCreator({
+
+function updateCreationDataCreator<T extends ContentItemString>({
   updateCreationData,
   fields,
   dataType,
-}: updateCreationDataProps) {
+}: UpdateCreationDataCreatorParams<T>): AnyAction {
   return {
     type: updateCreationData,
     data: { ...Store.getState()[dataType].creationData, ...fields },
   };
 }
 
-type clearCreationDataProps = {
-  updateCreationData: string;
+type ClearCreationDataCreatorParams<T extends ContentItemString> = {
+  dataType: T;
+  updateCreationData: ContentAction.UpdateCreationDataTypeMap[T];
 };
-function clearCreationDataCreator({ updateCreationData }: clearCreationDataProps) {
+function clearCreationDataCreator<T extends ContentItemString>({
+  dataType,
+  updateCreationData,
+}: ClearCreationDataCreatorParams<T>): AnyAction {
   return {
     type: updateCreationData,
     data: {},

@@ -1,20 +1,19 @@
-/* eslint-disable no-throw-literal */
-import Store from '@redux/store';
-import ImagePicker from 'react-native-image-crop-picker';
-import { State } from '@ts/types';
-import { UPDATE_UPLOAD_STATE } from '@ts/redux';
-
-import { request, logger } from '@utils/index';
 import { Platform } from 'react-native';
-import config from '@constants/config';
+import ImagePicker from 'react-native-image-crop-picker';
+
+import { Config } from '@constants/index';
+import Store from '@redux/store';
+import { UPDATE_UPLOAD_STATE } from '@ts/redux';
+import { AppThunk } from '@ts/types';
+import { request, logger } from '@utils/index';
 
 function uploadCreator(
   groupId: string,
   resizeMode: 'content-primary' = 'content-primary',
   avatar: boolean = false,
   camera: false | 'back' | 'front' = false,
-) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_UPLOAD_STATE,
@@ -114,7 +113,7 @@ function uploadCreator(
             const data = new FormData();
             data.append('resizeMode', resizeMode);
             data.append('file', uploadFile);
-            let res = await fetch(config.cdn.uploadUrl, {
+            let res = await fetch(Config.cdn.uploadUrl, {
               method: 'POST',
               body: data,
               headers: {
@@ -178,8 +177,8 @@ function uploadCreator(
   };
 }
 
-async function upload(groupId: string) {
-  return await Store.dispatch(uploadCreator(groupId));
+function upload(groupId: string) {
+  return Store.dispatch(uploadCreator(groupId));
 }
 
 export default upload;

@@ -1,6 +1,6 @@
 import {
-  ArticlesDataState,
-  ArticlesActionTypes,
+  ArticlesContentState,
+  ArticlesContentActionTypes,
   UPDATE_ARTICLES_PARAMS,
   UPDATE_ARTICLES_LISTS,
   UPDATE_ARTICLES_READ,
@@ -9,15 +9,29 @@ import {
   UPDATE_ARTICLES_CREATION_DATA,
 } from '@ts/redux';
 
-import { Config } from '@constants/index';
-
-const initialState: ArticlesDataState = {
+const initialState: ArticlesContentState = {
   params: {},
-  lists: Config.defaults.articles.lists,
-  prefs: Config.defaults.articles.prefs,
-  quicks: Config.defaults.articles.quicks,
   read: [],
   creationData: {},
+  lists: [
+    {
+      id: '0',
+      name: 'Favoris',
+      icon: 'star-outline',
+      items: [],
+    },
+    {
+      id: '1',
+      name: 'A lire plus tard',
+      icon: 'history',
+      items: [],
+    },
+  ],
+  quicks: [],
+  prefs: {
+    categories: ['unread', 'all', 'following'],
+    hidden: [],
+  },
 };
 
 /**
@@ -29,7 +43,10 @@ const initialState: ArticlesDataState = {
  * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
-function articleDataReducer(state = initialState, action: ArticlesActionTypes): ArticlesDataState {
+function articleDataReducer(
+  state = initialState,
+  action: ArticlesContentActionTypes,
+): ArticlesContentState {
   switch (action.type) {
     case UPDATE_ARTICLES_PARAMS:
       return {

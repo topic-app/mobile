@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { User, Item } from '@ts/types';
+import { User } from '@ts/types';
 import {
   UPDATE_USERS_DATA,
   UPDATE_USERS_SEARCH,
@@ -10,7 +10,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) => (data as User[]).sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: User[]) => data.sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -23,6 +23,7 @@ async function updateUsers(type: 'initial' | 'refresh' | 'next', params = {}) {
       update: UPDATE_USERS_DATA,
       stateUpdate: UPDATE_USERS_STATE,
       url: 'users/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'users',
       params,
@@ -57,6 +58,7 @@ async function fetchUser(userId: string) {
     fetchCreator({
       update: UPDATE_USERS_ITEM,
       stateUpdate: UPDATE_USERS_STATE,
+      stateName: 'info',
       url: 'users/info',
       dataType: 'users',
       params: { userId },
@@ -68,8 +70,8 @@ async function fetchUser(userId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearUsers(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_USERS, data, search }));
+function clearUsers(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_USERS, data, search }));
 }
 
 export { updateUsers, clearUsers, fetchUser, searchUsers };

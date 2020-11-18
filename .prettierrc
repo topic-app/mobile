@@ -1,5 +1,7 @@
 {
   "singleQuote": true,
   "printWidth": 100,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "importOrder": ["^@(root|src|ts|constants|components|utils|redux|styles)/(.*)$", "^[./]"],
+  "importOrderSeparation": true
 }

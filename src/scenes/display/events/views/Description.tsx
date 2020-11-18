@@ -5,14 +5,14 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import shortid from 'shortid';
 
-import { State, Account } from '@ts/types';
+import { State, Account, Event, EventPlace } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
 import { CategoryTitle, Content, InlineCard } from '@components/index';
 import getStyles from '@styles/Styles';
 
 import getEventStyles from '../styles/Styles';
 
-function getPlaceLabels(place) {
+function getPlaceLabels(place: EventPlace) {
   const { type, address, associatedSchool, associatedPlace } = place;
   switch (type) {
     case 'standalone': {

@@ -43,33 +43,36 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
                 key: 'group',
                 icon: 'account-group',
                 title: 'Groupe',
-                component: <ArticleAddPageGroup />,
+                component: (props) => <ArticleAddPageGroup {...props} />,
               },
               {
                 key: 'location',
                 icon: 'map-marker',
                 title: 'Localisation',
-                component: <ArticleAddPageLocation navigation={navigation} />,
+                component: (props) => <ArticleAddPageLocation navigation={navigation} {...props} />,
               },
               {
                 key: 'meta',
                 icon: 'information',
                 title: 'Meta',
-                component: <ArticleAddPageMeta />,
+                component: (props) => <ArticleAddPageMeta {...props} />,
               },
               {
                 key: 'tags',
                 icon: 'tag-multiple',
                 title: 'Tags',
-                component: (
-                  <ArticleAddPageTags navigate={() => navigation.navigate('AddContent')} />
+                component: (props) => (
+                  <ArticleAddPageTags
+                    navigate={() => navigation.navigate('AddContent')}
+                    {...props}
+                  />
                 ),
               },
               {
                 key: 'content',
                 icon: 'pencil',
                 title: 'Contenu',
-                component: <View />,
+                component: () => <View />,
               },
             ]}
           />

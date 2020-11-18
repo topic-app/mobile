@@ -46,74 +46,16 @@ const defaultConfig: AppConfig = {
   maps: {
     baseUrl: 'https://maps.topicapp.fr/',
   },
+  seedDb: {
+    account: {},
+    location: {},
+    preferences: {},
+    articles: {},
+    events: {},
+  },
   google: {
     youtubeKey: 'AIzaSyBBO3lF1vPmpCc61mU9liYQ3zGPup9MRFA',
     youtubePlaceholder: 'https://cdn.topicapp.fr/file/get/5fb3acd117cbef001862f725?key=',
-  },
-  defaults: {
-    account: {
-      loggedIn: false,
-      permissions: [],
-      accountInfo: null,
-      creationData: {},
-    },
-    location: {
-      selected: false,
-      schools: [],
-      schoolData: [],
-      departments: [],
-      departmentData: [],
-      global: false,
-    },
-    preferences: {
-      theme: 'light',
-      useSystemTheme: true,
-      history: true,
-      recommendations: false,
-      syncHistory: true,
-      syncLists: true,
-      fontSize: 14,
-      fontFamily: 'Roboto',
-      stripFormatting: false,
-      themeEasterEggDiscovered: false,
-      youtubeConsent: false,
-    },
-    articles: {
-      lists: [
-        {
-          id: '0',
-          name: 'Favoris',
-          icon: 'star-outline',
-          items: [],
-        },
-        {
-          id: '1',
-          name: 'A lire plus tard',
-          icon: 'history',
-          items: [],
-        },
-      ],
-      quicks: [],
-      prefs: {
-        categories: ['unread', 'all', 'following'],
-        hidden: [],
-      },
-    },
-    events: {
-      lists: [
-        {
-          id: '0',
-          name: 'Favoris',
-          icon: 'star-outline',
-          items: [],
-        },
-      ],
-      quicks: [],
-      prefs: {
-        categories: ['upcoming', 'passed', 'following'],
-        hidden: [],
-      },
-    },
   },
   auth: {
     salt:

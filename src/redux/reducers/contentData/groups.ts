@@ -1,6 +1,10 @@
-import { GroupsDataState, GroupsActionTypes, UPDATE_GROUPS_CREATION_DATA } from '@ts/redux';
+import {
+  UPDATE_GROUPS_CREATION_DATA,
+  GroupsContentState,
+  GroupsContentActionTypes,
+} from '@ts/redux';
 
-const initialState: GroupsDataState = {
+const initialState: GroupsContentState = {
   creationData: {},
 };
 
@@ -13,7 +17,10 @@ const initialState: GroupsDataState = {
  * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
-function groupDataReducer(state = initialState, action: GroupsActionTypes): GroupsDataState {
+function groupDataReducer(
+  state = initialState,
+  action: GroupsContentActionTypes,
+): GroupsContentState {
   switch (action.type) {
     case UPDATE_GROUPS_CREATION_DATA:
       return {

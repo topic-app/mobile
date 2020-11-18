@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, Platform, FlatList } from 'react-native';
 import {
   Divider,
   Button,
@@ -8,20 +9,19 @@ import {
   List,
   ProgressBar,
 } from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
-import { ModalProps, Account, State } from '@ts/types';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { ModalProps, Account, State, RequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import Modal from './Modal';
 import ErrorMessage from './ErrorMessage';
+import Modal from './Modal';
 
 type ReportModalProps = ModalProps & {
   report: (articleId: string, reason: string) => any;
   contentId: string;
-  state: { loading: boolean; success: boolean; error: any };
+  state: RequestState;
   account: Account;
   navigation: { navigate: Function };
 };
@@ -174,7 +174,8 @@ const ReportModal: React.FC<ReportModalProps> = ({
                         contentId,
                         `${reportOption}${reportText ? `- ${reportText}` : ''}`,
                       ).then(() => {
-                        setReportText(''), setVisible(false);
+                        setReportText('');
+                        setVisible(false);
                       })
                     }
                     style={{ flex: 1 }}

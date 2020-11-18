@@ -55,5 +55,4 @@ function getImageUrl({ image, size }: { image?: Image; size: ImageSize }) {
 
 // Could add getAudioUrl in the future here
 
-// eslint-disable-next-line import/prefer-default-export
 export { getImageUrl };
