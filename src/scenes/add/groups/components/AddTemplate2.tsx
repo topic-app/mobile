@@ -2,12 +2,12 @@ import React from 'react';
 import { View, Platform } from 'react-native';
 import { HelperText, Button, ProgressBar, RadioButton, List } from 'react-native-paper';
 
-import { GroupTemplate, GroupRequestState } from '@ts/types';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateGroupTemplates } from '@redux/actions/api/groups';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
+import getStyles from '@styles/Styles';
+import { GroupTemplate, GroupRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getGroupStyles from '../styles/Styles';
 
@@ -64,6 +64,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
               Platform.OS !== 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={template === t.type ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {
@@ -78,6 +79,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
               Platform.OS === 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={template === t.type ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {

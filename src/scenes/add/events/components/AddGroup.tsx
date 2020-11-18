@@ -4,11 +4,11 @@ import { Button, RadioButton, HelperText, List, Text, Card } from 'react-native-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Account, State } from '@ts/types';
 import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { Account, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -59,6 +59,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
               Platform.OS !== 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={group === g._id ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {
@@ -73,6 +74,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
               Platform.OS === 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={group === g._id ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {

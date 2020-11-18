@@ -15,12 +15,12 @@ import {
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State, GroupRole, UserPreload, GroupRequestState } from '@ts/types';
 import { CollapsibleView, CategoryTitle, ErrorMessage, Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { groupMemberAdd } from '@redux/actions/apiActions/groups';
 import { fetchGroup } from '@redux/actions/api/groups';
+import { groupMemberAdd } from '@redux/actions/apiActions/groups';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, GroupRole, UserPreload, GroupRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 type AddUserRoleModalProps = ModalProps & {
   roles: GroupRole[];
@@ -139,6 +139,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                   Platform.OS !== 'ios' &&
                   (key === 'primary' ? (
                     <RadioButton
+                      value=""
                       color={colors.primary}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
@@ -155,6 +156,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                   Platform.OS === 'ios' &&
                   (key === 'primary' ? (
                     <RadioButton
+                      value=""
                       color={colors.primary}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
