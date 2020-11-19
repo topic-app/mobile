@@ -1,13 +1,17 @@
-import React from 'react';
-import { View, Platform } from 'react-native';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerNavigationProp,
 } from '@react-navigation/drawer';
+import React from 'react';
+import { View, Platform, Linking } from 'react-native';
 import { Drawer, Title, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { ErrorMessage, Illustration } from '@components/index';
+import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
+import { fetchLocationData } from '@redux/actions/data/location';
+import getNavigatorStyles from '@styles/NavStyles';
 import {
   Account,
   AccountRequestState,
@@ -16,11 +20,7 @@ import {
   SchoolPreload,
   State,
 } from '@ts/types';
-import { ErrorMessage, Illustration } from '@components/index';
 import { useTheme, logger } from '@utils/index';
-import getNavigatorStyles from '@styles/NavStyles';
-import { fetchLocationData } from '@redux/actions/data/location';
-import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 
 import HomeTwoNavigator from './HomeTwo';
 
@@ -227,6 +227,14 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               screen: 'More',
               params: { screen: 'Settings', params: { screen: 'List' } },
             });
+          }}
+        />
+        <Drawer.Item
+          label="Feedback"
+          icon="message-outline"
+          onPress={() => {
+            navigation.closeDrawer();
+            Linking.openURL('https://play.google.com/store/apps/details?id=fr.topicapp.topic');
           }}
         />
         <Drawer.Item

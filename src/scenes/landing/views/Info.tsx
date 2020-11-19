@@ -1,7 +1,7 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform, Image, ScrollView } from 'react-native';
 import { Text, Button, Divider } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
 
 import {
   PlatformBackButton,
@@ -10,11 +10,11 @@ import {
   Illustration,
   SafeAreaView,
 } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { useTheme } from '@utils/index';
 
-import getLandingStyles from '../styles/Styles';
 import type { LandingStackParams } from '../index';
+import getLandingStyles from '../styles/Styles';
 
 type LandingArticlesProps = StackScreenProps<LandingStackParams, 'Info'>;
 
@@ -225,7 +225,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
               mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
               color={colors.primary}
               uppercase={Platform.OS !== 'ios'}
-              onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })} // TODO: This should point to the second view of the viewpager
+              onPress={() => navigation.navigate('Landing', { screen: 'Beta' })} // TODO: This should point to the second view of the viewpager
               style={{ flex: 1 }}
             >
               Suivant

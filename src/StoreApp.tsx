@@ -1,19 +1,20 @@
+import analytics from '@react-native-firebase/analytics';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+import { AppLoading } from 'expo';
 import React from 'react';
 import { useColorScheme, Platform } from 'react-native';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
-import { connect } from 'react-redux';
-import { AppLoading } from 'expo';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { connect } from 'react-redux';
 
+import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
+import { fetchLocationData } from '@redux/actions/data/location';
+import themes from '@styles/Theme';
 import { Preferences, State } from '@ts/types';
 import { logger } from '@utils/index';
-import themes from '@styles/Theme';
-import { fetchLocationData } from '@redux/actions/data/location';
-import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 
-import screens from './screens';
 import AppNavigator from './index';
+import screens from './screens';
 
 type Props = {
   preferences: Preferences;
@@ -62,10 +63,31 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
     },
   };
 
+  const routeNameRef = React.useRef<string | undefined>();
+  const navigationRef = React.useRef<NavigationContainerRef | null>();
+
   return (
     <PaperProvider theme={theme}>
       <>
-        <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
+        <NavigationContainer
+          ref={navigationRef}
+          linking={linking}
+          fallback={<AppLoading />}
+          theme={navTheme}
+          onStateChange={async () => {
+            const previousRouteName = routeNameRef.current;
+            const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
+
+            if (previousRouteName !== currentRouteName) {
+              await analytics().logScreenView({
+                screen_name: currentRouteName,
+                screen_class: currentRouteName,
+              });
+            }
+
+            routeNameRef.current = currentRouteName;
+          }}
+        >
           <AppNavigator />
         </NavigationContainer>
       </>
