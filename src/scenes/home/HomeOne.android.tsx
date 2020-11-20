@@ -231,7 +231,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
         />
         <Drawer.Item
           label="Feedback"
-          icon="message-outline"
+          icon="comment-outline"
           onPress={() => {
             navigation.closeDrawer();
             Linking.openURL('https://play.google.com/store/apps/details?id=fr.topicapp.topic');

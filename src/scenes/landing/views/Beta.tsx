@@ -2,7 +2,7 @@ import { firebase } from '@react-native-firebase/analytics';
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform, Image, ScrollView, Linking } from 'react-native';
-import { Text, Button, Divider, List, Checkbox } from 'react-native-paper';
+import { Text, Button, Divider, List, Checkbox, Subheading } from 'react-native-paper';
 
 import {
   PlatformBackButton,
@@ -199,7 +199,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         ou un autre problème, nous vous demandons de bien vouloir nous donner les
                         détails.{'\n'}Vous pouvez faire cela en recherchant l&apos;application Topic
                         sur le Play Store et en cliquant sur &quot;envoyer des commentaires aux
-                        développeurs&quot;. Sur les téléphones compatibles, vous pouvez aussi
+                        développeurs&quot;.{'\n'}Sur les téléphones compatibles, vous pouvez aussi
                         secouer votre appareil lorsque vous utilisez l&apos;application pour accéder
                         directement à l&apos;envoi de commentaires, ou cliquer sur
                         &quot;Feedback&quot; dans le menu.
@@ -235,14 +235,16 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                     </View>
                     <View style={landingStyles.contentContainer}>
                       <Text>
-                        Si vous souhaitez discuter avec les développeurs et les autres bêta-testeurs
-                        des différentes fonctionnalités de l&apos;application, donner des
-                        suggestions etc, nous vous conseillons de rejoindre la plateforme
-                        chat.topicapp.fr ou le groupe Telegram.
+                        Si vous avez une idée de fonctionnalité, vous pouvez séléctionner
+                        &quot;Idées&quot; dans le menu. Cet onglet vous permettra d&apos;ajouter vos
+                        demandes, et voir / voter sur les idées des autres bêta-testeurs.
                       </Text>
                       <Text>
-                        Ces plateformes sont entièrement facultatives, toutefois ils vous
-                        permettront de donner votre avis plus facilement.
+                        Si vous souhaitez discuter avec les développeurs et les autres
+                        bêta-testeurs, nous vous conseillons de rejoindre la plateforme
+                        chat.topicapp.fr ou le groupe Telegram. Ces plateformes sont entièrement
+                        facultatives, toutefois ils vous permettront de donner votre avis plus
+                        facilement.
                       </Text>
                       <Button
                         mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
