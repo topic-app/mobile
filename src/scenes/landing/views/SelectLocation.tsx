@@ -1,3 +1,6 @@
+import { StackNavigationProp } from '@react-navigation/stack';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 import React from 'react';
 import {
   View,
@@ -8,11 +11,23 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
 
+import {
+  TranslucentStatusBar,
+  Illustration,
+  CategoriesList,
+  ErrorMessage,
+  CollapsibleView,
+  ChipAddList,
+  Searchbar,
+} from '@components/index';
+import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
+import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
+import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
+import { updateEventParams } from '@redux/actions/contentData/events';
+import { updateLocation } from '@redux/actions/data/location';
+import getStyles from '@styles/Styles';
 import {
   School,
   SchoolPreload,
@@ -25,23 +40,7 @@ import {
   ReduxLocation as OldReduxLocation,
   Account,
 } from '@ts/types';
-import {
-  TranslucentStatusBar,
-  Illustration,
-  CategoriesList,
-  ErrorMessage,
-  CollapsibleView,
-  ChipAddList,
-  Searchbar,
-} from '@components/index';
 import { useTheme, logger } from '@utils/index';
-import { updateLocation } from '@redux/actions/data/location';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { updateEventParams } from '@redux/actions/contentData/events';
-import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
-import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
-
-import getStyles from '@styles/Styles';
 
 import type { LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
@@ -56,7 +55,7 @@ type ReduxLocation = OldReduxLocation & {
 type PersistantData = {
   key: string;
   title: string;
-  description: string;
+  description?: string;
   type: 'school' | 'department' | 'region' | 'other';
   departments?: DepartmentPreload[];
 };
@@ -69,31 +68,32 @@ function done(
   persistentData: PersistantData[],
   goBack: boolean,
 ) {
-  selectedSchools = selectedSchools.filter((s) => !!s);
-  selectedDepartments = selectedDepartments.filter((s) => !!s);
+  const schools = selectedSchools.filter((s) => !!s);
+  const departments = selectedDepartments.filter((s) => !!s);
   const params = {
-    schools: selectedSchools.filter((s) => !!s),
+    schools: schools.filter((s) => !!s),
     departments: [
-      ...selectedDepartments,
+      ...departments,
       // Todo: logic to select extra departments
-      ...selectedSchools
+      ...schools
         .map((s) => persistentData.find((p) => p.key === s)?.departments)
         .flat()
-        .map((d: Department) => d?._id),
+        .map((d?: DepartmentPreload) => d?._id || ''),
     ].filter((d) => !!d),
     global: true,
   };
   Promise.all([
     updateLocation({
       selected: true,
-      schools: selectedSchools,
-      departments: selectedDepartments,
-      global:
-        selectedOthers.includes('global') ||
-        (!selectedSchools.length && !selectedDepartments.length),
+      schools,
+      departments,
+      global: selectedOthers.includes('global') || (!schools.length && !departments.length),
     }),
     updateArticleParams(params),
     updateEventParams(params),
+    ...schools.map((s) =>
+      addArticleQuick('school', s, persistentData.find((p) => p.key === s)?.title || 'École'),
+    ),
   ]).then(() => {
     if (goBack) {
       navigation.goBack();
@@ -425,6 +425,11 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
               : [state.schools.search?.error, state.departments.search?.error]
           }
           retry={retry}
+          strings={{
+            what: 'La récupération des localisations',
+            contentSingular: 'La liste de localisations',
+            contentPlural: 'Les localisations',
+          }}
         />
       )}
       {searchText === '' && category === 'schools' && schoolsNear.length > 0 ? (
