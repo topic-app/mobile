@@ -62,7 +62,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
       ) : (
         <View style={{ height: 4 }} />
       )}
-      {state.templates?.success === false && (
+      {state.templates?.error && (
         <ErrorMessage
           error={state.templates?.error}
           strings={{
