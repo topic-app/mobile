@@ -1,5 +1,4 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
 import {
@@ -10,6 +9,7 @@ import {
   TextInput as RNTextInput,
   ActivityIndicator,
 } from 'react-native';
+import Location from 'react-native-geolocation-service';
 import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -228,33 +228,38 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
 
   const [buttonVisible, setButtonVisible] = React.useState(false);
   const [userLocation, setUserLocation] = React.useState(false);
+  const [locationError, setLocationError] = React.useState(false);
 
   if (Platform.OS === 'web' && !account.loggedIn) {
     window.location.replace('https://beta.topicapp.fr');
   }
 
   React.useEffect(() => {
+    updateDepartments('initial');
     // Check if Location is requestable
     // If it is, then show the FAB to go to location
     Permissions.getAsync(Permissions.LOCATION)
       .then(async ({ status, canAskAgain }) => {
+        console.log(`Status ${status} & canAskAgain ${canAskAgain}`);
         // User previously granted permission
-        if (status === Location.PermissionStatus.GRANTED) {
+        if (status === Permissions.PermissionStatus.GRANTED) {
           logger.verbose('Location previously granted, showing location FAB');
-          setButtonVisible(true);
           setUserLocation(true);
-          const { coords } = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Highest,
-          });
-          updateNearSchools('initial', coords.latitude, coords.longitude);
-        } else if (status === Location.PermissionStatus.DENIED && canAskAgain) {
+          Location.getCurrentPosition(
+            (info) => updateNearSchools('initial', info?.coords?.latitude, info?.coords?.longitude),
+            (err) => {
+              logger.warn(`Location err ${err}`);
+              setLocationError(true);
+            },
+          );
+        } else if (canAskAgain) {
           logger.info('Location previously denied but can ask again, showing location FAB');
           setButtonVisible(true);
         } else {
           logger.info('Location denied, hiding location FAB');
         }
       })
-      .catch((e) => logger.warn('Error while requesting user location permission', e));
+      .catch((e) => logger.error('Error while requesting user location permission', e));
   }, []);
 
   const requestUserLocation = async () => {
@@ -264,18 +269,24 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       status = permission.status;
       canAskAgain = permission.canAskAgain;
     } catch (e) {
-      logger.warn('Error while requesting user location', e);
+      logger.error('Error while requesting user location', e);
     }
     if (status === 'granted') {
-      const { coords } = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Highest,
-      });
-      updateNearSchools('initial', coords.latitude, coords.longitude);
+      setButtonVisible(false);
+      setUserLocation(true);
+      Location.getCurrentPosition(
+        (info) => updateNearSchools('initial', info?.coords?.latitude, info?.coords?.longitude),
+        (err) => {
+          logger.warn(`Location err ${err}`);
+          setLocationError(true);
+        },
+      );
+      // updateNearSchools('initial', coords.latitude, coords.longitude);
     } else {
       if (!canAskAgain) {
         setButtonVisible(false);
+        logger.info('Location permission request prompt denied, hiding location FAB.');
       }
-      logger.info('Location permission request prompt denied, hiding location FAB.');
     }
   };
 
@@ -296,8 +307,13 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       searchDepartments('initial', searchText);
     } else {
       if (userLocation) {
-        const { coords } = await Location.getCurrentPositionAsync({});
-        updateNearSchools('initial', coords.latitude, coords.longitude);
+        Location.getCurrentPosition(
+          (info) => updateNearSchools('initial', info?.coords?.latitude, info?.coords?.longitude),
+          (err) => {
+            logger.warn(`Location err ${err}`);
+            setLocationError(true);
+          },
+        );
       }
       updateDepartments('initial');
     }
@@ -472,23 +488,41 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const ListEmptyComponent =
     searchText === '' && category === 'schools' ? (
       <View>
-        {state.schools.near.loading.initial || userLocation || !buttonVisible ? null : (
-          <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 100 }]}>
-            <Text style={{ maxWidth: 300, alignContent: 'center' }}>
-              Recherchez votre école
-              {buttonVisible ? 'ou appuyez ci-dessous pour trouver les écoles autour de vous' : ''}
-            </Text>
-            {buttonVisible && (
-              <View style={styles.container}>
-                <Button
-                  onPress={requestUserLocation}
-                  uppercase={Platform.OS !== 'ios'}
-                  mode="outlined"
-                  style={{ borderRadius: 20 }}
-                >
-                  Me géolocaliser
-                </Button>
+        {state.schools.near.loading.initial ? null : (
+          <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 50 }]}>
+            {!userLocation && (
+              <Text style={{ maxWidth: 300, alignSelf: 'center' }}>Recherchez votre école</Text>
+            )}
+            {locationError ? (
+              <View style={{ marginTop: 30 }}>
+                <Text>Erreur lors de la récupération des écoles autour de vous</Text>
+                <View style={styles.container}>
+                  <Button
+                    onPress={requestUserLocation}
+                    uppercase={Platform.OS !== 'ios'}
+                    mode="outlined"
+                    style={{ borderRadius: 20 }}
+                  >
+                    Réessayer
+                  </Button>
+                </View>
               </View>
+            ) : (
+              buttonVisible && (
+                <View>
+                  <Text>ou appuyez ci-dessous pour trouver les écoles autour de vous</Text>
+                  <View style={styles.container}>
+                    <Button
+                      onPress={requestUserLocation}
+                      uppercase={Platform.OS !== 'ios'}
+                      mode="outlined"
+                      style={{ borderRadius: 20 }}
+                    >
+                      Me géolocaliser
+                    </Button>
+                  </View>
+                </View>
+              )
             )}
           </View>
         )}
