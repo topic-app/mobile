@@ -99,14 +99,14 @@ function done(
     ),
     ...departments.map((d) =>
       addArticleQuick(
-        'department',
+        'departement',
         d,
         persistentData.find((p) => p.key === d)?.title || 'Département',
       ),
     ),
     ...departments.map((d) =>
       addEventQuick(
-        'department',
+        'departement',
         d,
         persistentData.find((p) => p.key === d)?.title || 'Département',
       ),

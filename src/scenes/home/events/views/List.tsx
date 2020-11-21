@@ -1,10 +1,18 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
+import {
+  updateUpcomingEvents,
+  updatePassedEvents,
+  searchEvents,
+  updateEventsFollowing,
+} from '@redux/actions/api/events';
+import getStyles from '@styles/Styles';
 import {
   State,
   EventListItem,
@@ -17,19 +25,11 @@ import {
   EventRequestState,
   Account,
 } from '@ts/types';
-import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
 import { useTheme } from '@utils/index';
-import {
-  updateUpcomingEvents,
-  updatePassedEvents,
-  searchEvents,
-  updateEventsFollowing,
-} from '@redux/actions/api/events';
-import getStyles from '@styles/Styles';
 
+import { HomeTwoNavParams } from '../../HomeTwo.ios';
 import EventListCard from '../components/Card';
 import EventEmptyList from '../components/EmptyList';
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
 
 type Category = {
   key: string;
@@ -145,6 +145,28 @@ const EventList: React.FC<EventListProps> = ({
           case 'group':
             params = { groups: [q.id] };
             icon = 'account-multiple';
+            break;
+          case 'school':
+            params = { schools: [q.id] };
+            icon = 'school';
+            break;
+          case 'departement':
+            params = {
+              departments: [q.id],
+            };
+            icon = 'map-marker-radius';
+            break;
+          case 'region':
+            params = {
+              departments: [q.id],
+            };
+            icon = 'map-marker-radius';
+            break;
+          case 'global':
+            params = {
+              global: true,
+            };
+            icon = 'flag';
             break;
         }
         return {
