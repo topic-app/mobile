@@ -1,12 +1,12 @@
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp } from 'react-native';
 import { Appbar, Menu } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/core';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
 import shortid from 'shortid';
 
-import { useTheme, useSafeAreaInsets, useLayout } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
+import { useTheme, useSafeAreaInsets, useLayout } from '@utils/index';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
