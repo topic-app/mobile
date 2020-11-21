@@ -25,7 +25,7 @@ import {
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
 import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
-import { updateEventParams } from '@redux/actions/contentData/events';
+import { updateEventParams, addEventQuick } from '@redux/actions/contentData/events';
 import { updateLocation } from '@redux/actions/data/location';
 import getStyles from '@styles/Styles';
 import {
@@ -94,6 +94,23 @@ function done(
     ...schools.map((s) =>
       addArticleQuick('school', s, persistentData.find((p) => p.key === s)?.title || 'École'),
     ),
+    ...schools.map((s) =>
+      addEventQuick('school', s, persistentData.find((p) => p.key === s)?.title || 'École'),
+    ),
+    ...departments.map((d) =>
+      addArticleQuick(
+        'department',
+        d,
+        persistentData.find((p) => p.key === d)?.title || 'Département',
+      ),
+    ),
+    ...departments.map((d) =>
+      addEventQuick(
+        'department',
+        d,
+        persistentData.find((p) => p.key === d)?.title || 'Département',
+      ),
+    ),
   ]).then(() => {
     if (goBack) {
       navigation.goBack();
@@ -138,7 +155,7 @@ function getData(
         title: s.name,
         description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
           s?.departments?.length !== 0
-            ? `, ${s?.departments?.[0]?.displayName || s?.departments?.[0]?.name || 'Inconnu'}`
+            ? `, ${s.departments[0]?.displayName || s.departments[0]?.name || 'Inconnu'}`
             : ''
         }`,
         type: 'school',
@@ -386,13 +403,13 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         <View style={landingStyles.centerIllustrationContainer}>
           <CollapsibleView collapsed={!!searchText}>
             <Illustration name="location-select" height={200} width={200} />
+            <View style={!!searchText && { marginTop: 30 }}>
+              <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
+            </View>
           </CollapsibleView>
-          <View style={!!searchText && { marginTop: 30 }}>
-            <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
-          </View>
         </View>
       </View>
-      <View style={landingStyles.searchContainer}>
+      <View style={[landingStyles.searchContainer, { marginTop: searchText ? 20 : 0 }]}>
         <Searchbar
           ref={inputRef}
           placeholder="Rechercher"
