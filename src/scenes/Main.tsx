@@ -1,22 +1,26 @@
-import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { LocationList, State } from '@ts/types';
+import { createNativeStackNavigator } from '@utils/stack';
 
-import DisplayStackNavigator from './display/index';
-import AddStackNavigator from './add/index';
-import MoreStackNavigator from './more/index';
-import SearchStackNavigator from './search/index';
-import HomeOneNavigator from './home/HomeOne';
-import ConfigureStackNavigator from './configure/index';
-import ParamsStackNavigator from './params/index';
-import HistoryStackNavigator from './history/index';
 import NotFound from './NotFound';
+import { RootNavParams } from './Root';
+import AddStackNavigator from './add/index';
+import ConfigureStackNavigator from './configure/index';
+import DisplayStackNavigator, { DisplayStackParams } from './display/index';
+import HistoryStackNavigator from './history/index';
+import HomeOneNavigator from './home/HomeOne';
+import MoreStackNavigator from './more/index';
+import ParamsStackNavigator from './params/index';
+import SearchStackNavigator from './search/index';
 
 export type MainStackParams = {
-  Display: undefined;
+  Display: {
+    screen: keyof DisplayStackParams;
+    params: DisplayStackParams[keyof DisplayStackParams];
+  };
   Configure: undefined;
   Lists: undefined;
   Add: undefined;
@@ -26,7 +30,7 @@ export type MainStackParams = {
   History: undefined;
   Params: undefined;
   NotFound: undefined;
-};
+} & RootNavParams;
 
 const Stack = createNativeStackNavigator<MainStackParams>();
 

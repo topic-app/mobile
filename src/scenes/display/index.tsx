@@ -1,15 +1,30 @@
 import React from 'react';
+
 import { createNativeStackNavigator } from '@utils/stack';
 
+import { MainStackParams } from '../Main';
 import ArticleDisplayStackNavigator from './articles/index';
-import PetitionDisplayStackNavigator from './petitions/index';
 import EventDisplayStackNavigator from './events/index';
-import LocationDisplayStackNavigator from './locations/index';
-import ImageDisplayStackNavigator from './images/index';
-import UserDisplayStackNavigator from './users/index';
 import GroupDisplayStackNavigator from './groups/index';
+import ImageDisplayStackNavigator from './images/index';
+import LocationDisplayStackNavigator from './locations/index';
+import PetitionDisplayStackNavigator from './petitions/index';
+import UserDisplayStackNavigator, { UserDisplayStackParams } from './users/index';
 
 const Stack = createNativeStackNavigator();
+
+export type DisplayStackParams = {
+  Article: undefined;
+  Petition: undefined;
+  Event: undefined;
+  Location: undefined;
+  Image: undefined;
+  User: {
+    screen: keyof UserDisplayStackParams;
+    params: UserDisplayStackParams[keyof UserDisplayStackParams];
+  };
+  Group: undefined;
+} & MainStackParams;
 
 function DisplayStackNavigator() {
   return (

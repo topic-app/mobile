@@ -2,11 +2,12 @@ import React from 'react';
 
 import { createNativeStackNavigator } from '@utils/stack';
 
-import MainStackNavigator from './Main';
+import { AppStackParams } from '../index';
+import MainStackNavigator, { MainStackParams } from './Main';
 
 export type RootNavParams = {
-  Main: undefined;
-};
+  Main: { screen: keyof MainStackParams; params: MainStackParams[keyof MainStackParams] };
+} & AppStackParams;
 
 const Stack = createNativeStackNavigator<RootNavParams>();
 

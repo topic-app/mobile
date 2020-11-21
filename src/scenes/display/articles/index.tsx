@@ -1,11 +1,13 @@
 import React from 'react';
+
 import { createNativeStackNavigator } from '@utils/stack';
 
+import { DisplayStackParams } from '../index';
 import ArticleDisplay from './views/Display';
 
 export type ArticleDisplayStackParams = {
   Display: { id: string; title: string; useLists: boolean; verification: boolean };
-};
+} & DisplayStackParams;
 
 const Stack = createNativeStackNavigator<ArticleDisplayStackParams>();
 

@@ -172,7 +172,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     screen: 'User',
                     params: {
                       screen: 'Display',
-                      params: { id: author?._id, title: author?.displayName },
+                      params: { id: author?._id || '' /* title: author?.displayName */ },
                     },
                   },
                 })
