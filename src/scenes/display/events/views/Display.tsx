@@ -1,3 +1,6 @@
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
 import {
   View,
@@ -8,14 +11,31 @@ import {
   Share,
   ScrollView,
   Dimensions,
+  Alert,
 } from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
 import { Text, Title, Card, Button } from 'react-native-paper';
-import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import moment from 'moment';
+import { connect } from 'react-redux';
 
+import {
+  ErrorMessage,
+  TagList,
+  AnimatingHeader,
+  ReportModal,
+  CustomTabView,
+} from '@components/index';
+import { Permissions } from '@constants/index';
+import { updateComments } from '@redux/actions/api/comments';
+import { fetchEvent, fetchEventVerification } from '@redux/actions/api/events';
+import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
+import {
+  eventReport,
+  eventVerificationApprove,
+  eventDelete,
+} from '@redux/actions/apiActions/events';
+import { addEventRead } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
 import {
   State,
   CommentRequestState,
@@ -26,31 +46,18 @@ import {
   Preferences,
   EventPreload,
   EventListItem,
+  Publisher,
+  Content,
 } from '@ts/types';
-import {
-  ErrorMessage,
-  TagList,
-  AnimatingHeader,
-  ReportModal,
-  CustomTabView,
-} from '@components/index';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { eventReport, eventVerificationApprove } from '@redux/actions/apiActions/events';
-import { fetchEvent, fetchEventVerification } from '@redux/actions/api/events';
-import { addEventRead } from '@redux/actions/contentData/events';
-import { updateComments } from '@redux/actions/api/comments';
-import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
-import getEventStyles from '../styles/Styles';
-
 import type { EventDisplayStackParams } from '../index';
+import getEventStyles from '../styles/Styles';
+import EventDisplayContact from './Contact';
 import EventDisplayDescription from './Description';
 import EventDisplayProgram from './Program';
-import EventDisplayContact from './Contact';
-import AutoHeightImage from 'react-native-auto-height-image';
 
 // Common types
 type Navigation = StackNavigationProp<EventDisplayStackParams, 'Display'>;
@@ -67,7 +74,6 @@ type EventDisplayProps = {
   dataUpcoming: EventPreload[];
   dataPassed: EventPreload[];
   search: EventPreload[];
-  comments: Comment[];
   reqState: CombinedReqState;
   account: Account;
   lists: EventListItem[];
@@ -81,7 +87,6 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   dataPassed,
   search,
   item,
-  comments,
   reqState,
   account,
   preferences,
@@ -95,7 +100,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const eventStyles = getEventStyles(theme);
   const { colors } = theme;
 
-  let event: Event | undefined | null;
+  let event: Event | EventPreload | undefined | null;
   if (useLists && lists?.some((l: EventListItem) => l.items?.some((i) => i._id === id))) {
     event = lists
       .find((l: EventListItem) => l.items.some((i) => i._id === id))
@@ -109,7 +114,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           search.find((a) => a._id === id) ||
           null;
   }
-  const eventComments = comments.filter((c) => c.parent === event?._id);
+
+  const [commentsDisplayed, setCommentsDisplayed] = React.useState(false);
 
   const fetch = () => {
     if (!(useLists && lists?.some((l: EventListItem) => l.items?.some((i) => i._id === id)))) {
@@ -120,6 +126,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           if (preferences.history && event) {
             addEventRead(id, event.title);
           }
+          setCommentsDisplayed(true);
         });
       }
     }
@@ -137,7 +144,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const [isListModalVisible, setListModalVisible] = React.useState(false);
 
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
-  const [focusedComment, setFocusedComment] = React.useState(null);
+  const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
 
   const scrollY = new Animated.Value(0);
 
@@ -237,6 +244,41 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                   title: 'Signaler',
                   onPress: () => setArticleReportModalVisible(true),
                 },
+                ...(account.permissions?.some(
+                  (p) =>
+                    p.permission === Permissions.EVENT_DELETE &&
+                    (p.scope.groups.includes(id) || p.scope.everywhere),
+                )
+                  ? [
+                      {
+                        title: 'Supprimer',
+                        onPress: () =>
+                          Alert.alert(
+                            'Supprimer cette évènement ?',
+                            'Les autres administrateurs du groupe seront notifiés.',
+                            [
+                              { text: 'Annuler' },
+                              {
+                                text: 'Supprimer',
+                                onPress: () =>
+                                  eventDelete(id).then(() => {
+                                    navigation.goBack();
+                                    Alert.alert(
+                                      'Évènement supprimé',
+                                      "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
+                                      [{ text: 'Fermer' }],
+                                      {
+                                        cancelable: true,
+                                      },
+                                    );
+                                  }),
+                              },
+                            ],
+                            { cancelable: true },
+                          ),
+                      },
+                    ]
+                  : []),
               ]
         }
       >
@@ -251,6 +293,16 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
             retry={() => fetchEvent(id)}
           />
         )}
+        {reqState.events.delete?.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la suppression de cet évènement',
+              contentSingular: "La suppression de l'évènement",
+            }}
+            error={reqState.events.delete.error}
+          />
+        )}
       </AnimatingHeader>
       <Animated.ScrollView
         ref={scrollViewRef}
@@ -259,7 +311,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         })}
       >
         <View>
-          {event.image && (
+          {event.image?.image && (
             <View style={[styles.image, { minHeight: 150 }]}>
               <AutoHeightImage
                 source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
@@ -295,7 +347,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
               <Title style={{ color: colors.disabled }}>Hors ligne</Title>
             </View>
           )}
-          {reqState.events.info.loading && (
+          {(reqState.events.info.loading || reqState.events.delete?.loading) && (
             <ActivityIndicator size="large" color={colors.primary} />
           )}
           {!event.preload && reqState.events.info.success && (
@@ -308,10 +360,13 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                     title: 'Description',
                     component: (
                       <EventDisplayDescription
+                        id={id}
                         event={event}
                         navigation={navigation}
                         setCommentModalVisible={setCommentModalVisible}
                         setFocusedComment={setFocusedComment}
+                        verification={verification}
+                        commentsDisplayed={commentsDisplayed}
                         setCommentReportModalVisible={setCommentReportModalVisible}
                       />
                     ),
@@ -345,10 +400,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                         />
                         <Text style={{ color: colors.text }}>
                           Pour vérifier cet évènement:{'\n'}- Vérifiez que le contenu est bien
-                          conforme aux conditions générales d'utilisation{'\n'}- Vérifiez que tous
-                          les médias sont conformes, et que vous avez bien le droit d'utiliser
-                          ceux-ci{'\n'}- Visitez chacun des liens afin de vous assurer que tous les
-                          sites sont conformes{'\n'}
+                          conforme aux conditions générales d&apos;utilisation{'\n'}- Vérifiez que
+                          tous les médias sont conformes, et que vous avez bien le droit
+                          d&apos;utiliser ceux-ci{'\n'}- Visitez chacun des liens afin de vous
+                          assurer que tous les sites sont conformes{'\n'}
                           {'\n'}
                           Nous vous rappelons que les contenus suivants ne sont pas autorisés:{' '}
                           {'\n'}- Tout contenu illégal{'\n'}- Tout contenu haineux ou
@@ -360,8 +415,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                           {'\n'}- Tout contenu qui pointe vers un site web, logiciel, ou autre média
                           qui ne respecte pas les présentes règles{'\n'}
                           {'\n'}
-                          En tant qu'administrateur, vous êtes en partie responsable des contenus
-                          publiés, comme détaillé dans la Charte des administrateurs.
+                          En tant qu&apos;administrateur, vous êtes en partie responsable des
+                          contenus publiés, comme détaillé dans la Charte des administrateurs.
                         </Text>
                       </View>
                     </Card>
@@ -382,7 +437,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                             color={colors.disabled}
                           />
                           <Text style={{ color: colors.text }}>
-                            Liens contenus dans l'évènement:{'\n'}
+                            Liens contenus dans l&apos;évènement:{'\n'}
                             {event?.description?.data
                               ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
                               ?.map((u) => (
@@ -408,7 +463,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                       }}
                       error={reqState.events.verification_approve?.error}
                       retry={() =>
-                        eventVerificationApprove(event?._id).then(() => navigation.goBack())
+                        eventVerificationApprove(event?._id || '').then(() => navigation.goBack())
                       }
                     />
                   )}
@@ -437,7 +492,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                           justifyContent: 'center',
                         }}
                         onPress={() =>
-                          eventVerificationApprove(event?._id).then(() => navigation.goBack())
+                          eventVerificationApprove(event?._id || '').then(() => navigation.goBack())
                         }
                       >
                         Approuver
@@ -455,8 +510,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         setVisible={setCommentModalVisible}
         id={id}
         reqState={reqState}
-        add={(...data: any) =>
-          commentAdd(...data).then(() => updateComments('initial', { parentId: id }))
+        add={(publisher: Publisher, content: Content, parent: string) =>
+          commentAdd(publisher, content, parent, 'event').then(() =>
+            updateComments('initial', { parentId: id }),
+          )
         }
       />
       <ReportModal
@@ -465,11 +522,12 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         contentId={id}
         report={eventReport}
         state={reqState.events.report}
+        navigation={navigation}
       />
       <ReportModal
         visible={isCommentReportModalVisible}
         setVisible={setCommentReportModalVisible}
-        contentId={focusedComment}
+        contentId={focusedComment || ''}
         report={commentReport}
         state={reqState.comments.report}
         navigation={navigation}
@@ -491,7 +549,6 @@ const mapStateToProps = (state: State) => {
     dataPassed: events.dataPassed,
     search: events.search,
     item: events.item,
-    comments: comments.data,
     reqState: { events: events.state, comments: comments.state },
     preferences,
     lists: eventData.lists,

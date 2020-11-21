@@ -1,3 +1,4 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform } from 'react-native';
 import {
@@ -11,9 +12,13 @@ import {
   ProgressBar,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
+import getStyles from '@styles/Styles';
 import {
   Account,
   State,
@@ -24,18 +29,13 @@ import {
   ReduxLocation,
   LocationList,
 } from '@ts/types';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updateGroupCreationData } from '@redux/actions/contentData/groups';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
 
 import type { GroupAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
 type GroupAddLocationProps = StepperViewPageProps & {
-  navigation: StackNavigationProp<GroupAddStackParams, 'Location'>;
+  navigation: StackNavigationProp<GroupAddStackParams, 'Add'>;
   account: Account;
   creationData: ArticleCreationData;
   location: LocationList;
