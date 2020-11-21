@@ -240,7 +240,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
     // If it is, then show the FAB to go to location
     Permissions.getAsync(Permissions.LOCATION)
       .then(async ({ status, canAskAgain }) => {
-        console.log(`Status ${status} & canAskAgain ${canAskAgain}`);
+        logger.debug(`Status ${status} & canAskAgain ${canAskAgain}`);
         // User previously granted permission
         if (status === Permissions.PermissionStatus.GRANTED) {
           logger.verbose('Location previously granted, showing location FAB');
