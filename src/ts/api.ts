@@ -353,27 +353,23 @@ export type EventPlace = {
   address?: Address;
 };
 
-type EventBase = {
+export type EventPreload = {
   _id: string;
   title: string;
   summary: string;
   image: Image;
   group: GroupPreload;
-  authors: AuthorPreload[];
+  author: AuthorPreload;
   tags: TagPreload[];
   duration: Duration;
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
 };
-export type EventPreload = EventBase & {
-  preload: true;
-};
 export type EventVerificationPreload = EventPreload & {
   verification: Verification;
 };
 
-export type Event = EventBase & {
-  preload?: false;
+export type Event = EventPreload & {
   description: Content;
   members: MemberPreload[];
   program: ProgramEntry[];
@@ -399,18 +395,22 @@ type PlaceType = 'cultural' | 'education' | 'history' | 'tourism' | 'club' | 'ot
 export type PlacePreload = {
   _id: string;
   name: string;
-  displayName: string;
   types: PlaceType[];
   summary: string;
   address: Address;
 };
 
-export type Place = PlacePreload & {
+export type Place = {
+  _id: string;
+  name: string;
   shortName?: string;
+  types: PlaceType[];
+  summary: string;
   description: Content;
   group: GroupPreload;
   tags: TagPreload[];
   image: Image;
+  address: Address;
   location: Location;
 };
 

@@ -628,6 +628,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               contentSingular: "La suppression de l'article",
             }}
             error={reqState.articles.delete.error}
+            retry={() => fetch()}
           />
         )}
       </AnimatingHeader>

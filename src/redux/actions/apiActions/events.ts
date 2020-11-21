@@ -1,8 +1,7 @@
 import Store from '@redux/store';
-import { AppThunk, UPDATE_EVENTS_STATE } from '@ts/redux';
 import { request } from '@utils/index';
-
-import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
+import { AppThunk, UPDATE_EVENTS_STATE } from '@ts/redux';
+import { reportCreator, approveCreator } from './ActionCreator';
 
 type EventAddParams = {
   title: string;
@@ -132,8 +131,8 @@ function eventAdd(data: EventAddParams) {
   return Store.dispatch(eventAddCreator(data));
 }
 
-async function eventVerificationApprove(id: string) {
-  await Store.dispatch(
+function eventVerificationApprove(id: string) {
+  return Store.dispatch(
     approveCreator({
       url: 'events/verification/approve',
       stateUpdate: UPDATE_EVENTS_STATE,
@@ -155,15 +154,4 @@ async function eventReport(eventId: string, reason: string) {
   );
 }
 
-async function eventDelete(id: string) {
-  await Store.dispatch(
-    deleteCreator({
-      id,
-      paramName: 'eventId',
-      url: 'events/delete',
-      stateUpdate: UPDATE_EVENTS_STATE,
-    }),
-  );
-}
-
-export { eventAdd, eventReport, eventVerificationApprove, eventDelete };
+export { eventAdd, eventReport, eventVerificationApprove };
