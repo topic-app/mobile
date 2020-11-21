@@ -1,4 +1,6 @@
 apply plugin: "com.android.application"
+apply plugin: "com.google.gms.google-services"
+apply plugin: 'com.google.firebase.crashlytics'
 
 import com.android.build.OutputFile
 
@@ -135,8 +137,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         /* DO NOT REMOVE - SCRIPT MARKER: androidVersion */
-        versionCode 14
-        versionName "0.6.1"
+        versionCode 16
+        versionName "0.7.0"
         setProperty("archivesBaseName", "Topic-$versionName")
     }
     splits {

@@ -1,12 +1,12 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform, ScrollView, Alert, Linking, BackHandler } from 'react-native';
 import { Text, Button, List, Divider, DarkTheme } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import shortid from 'shortid';
 
 import { Illustration, TranslucentStatusBar, PlatformTouchable } from '@components/index';
-import { useTheme } from '@utils/index';
 import { updateDepartments } from '@redux/actions/api/departments';
+import { useTheme } from '@utils/index';
 
 import type { LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
@@ -64,22 +64,6 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   React.useEffect(() => {
     // Preload écoles & departments pour utiliser après dans SelectLocation
     updateDepartments('initial');
-    // Beta information
-    Alert.alert(
-      'Topic · Bêta ouverte',
-      "Merci de vous être inscrits à la bêta ouverte !\n\nÉtant donné que l'application est toujours en bêta, nous pouvons collecter plus de données sur le fonctionnement de l'application et de l'appareil, comme détaillé dans la politique de vie privée et les conditions d'utilisation de la bêta. En cliquant sur 'Accepter', vous acceptez les conditions d'utilisation et la politique de vie privée.\n\nSi vous trouvez des bugs, ou plus généralement si vous avez des retours sur l'application, retrouvez Topic dans le Play Store et cliquez sur \"Envoyer un commentaire aux développeurs\".\n\nBon bêta-testing !",
-      [
-        {
-          text: 'Vie privée et conditions',
-          onPress: () => {
-            Linking.openURL('https://beta.topicapp.fr/legal/terms');
-            BackHandler.exitApp();
-          },
-        },
-        { text: 'Retour', onPress: () => BackHandler.exitApp() },
-        { text: 'Accepter' },
-      ],
-    );
   }, []);
 
   return (
@@ -137,7 +121,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             color="white"
             uppercase={Platform.OS !== 'ios'}
             onPress={() => {
-              navigation.navigate('SelectLocation');
+              navigation.navigate('Beta');
             }}
             style={{ flex: 1 }}
           >
