@@ -34,7 +34,6 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
         <ScrollView>
-          <PlatformBackButton onPress={navigation.goBack} />
           <StepperView
             pages={[
               {
@@ -229,7 +228,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                   <View>
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
-                        <Illustration name="beta-bugs" height={300} width={300} />
+                        <Illustration name="beta-messages" height={300} width={300} />
                         <Text style={landingStyles.sectionTitle}>Communication</Text>
                       </View>
                     </View>

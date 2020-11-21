@@ -13,6 +13,7 @@ import AuthRegisterLight from '@assets/images/illustrations/auth/register_light.
 import AuthRegisterSuccessDark from '@assets/images/illustrations/auth/register_success_dark.svg';
 import AuthRegisterSuccessLight from '@assets/images/illustrations/auth/register_success_light.svg';
 import BetaBugsAll from '@assets/images/illustrations/beta/beta-bugs.svg';
+import BetaMessagesAll from '@assets/images/illustrations/beta/beta-messaging.svg';
 import BetaPrivacyAll from '@assets/images/illustrations/beta/beta-privacy.svg';
 import BetaUpdatesAll from '@assets/images/illustrations/beta/beta-updates.svg';
 import BetaWelcomeAll from '@assets/images/illustrations/beta/beta-welcome.svg';
@@ -212,6 +213,10 @@ const illustrationList = {
   'beta-bugs': {
     light: BetaBugsAll,
     dark: BetaBugsAll,
+  },
+  'beta-messages': {
+    light: BetaMessagesAll,
+    dark: BetaMessagesAll,
   },
   'beta-updates': {
     light: BetaUpdatesAll,
