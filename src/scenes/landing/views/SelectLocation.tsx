@@ -516,6 +516,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                       onPress={requestUserLocation}
                       uppercase={Platform.OS !== 'ios'}
                       mode="outlined"
+                      icon="map-marker"
                       style={{ borderRadius: 20 }}
                     >
                       Me géolocaliser
