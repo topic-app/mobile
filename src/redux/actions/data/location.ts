@@ -1,7 +1,7 @@
-import { request } from '@utils/index';
+import { AnyAction } from 'redux';
+
 import Store from '@redux/store';
 import {
-  ReduxLocation,
   LocationRequestState,
   School,
   Department,
@@ -9,8 +9,9 @@ import {
   UPDATE_LOCATION,
   CLEAR_LOCATION,
   AppThunk,
+  LocationState,
 } from '@ts/types';
-import { AnyAction } from 'redux';
+import { request } from '@utils/index';
 
 /**
  * @docs actionCreators
@@ -18,7 +19,7 @@ import { AnyAction } from 'redux';
  * @param lastId L'id du dernier article, par ordre chronologique, de la liste d'articles/database redux
  * @returns Action
  */
-function updateLocationCreator(fields: ReduxLocation): AppThunk {
+function updateLocationCreator(fields: Partial<LocationState>): AppThunk {
   return async (dispatch, getState) => {
     dispatch({
       type: UPDATE_LOCATION,
@@ -161,7 +162,7 @@ async function fetchLocationData() {
   await Store.dispatch(fetchLocationDataCreator());
 }
 
-async function updateLocation(fields: ReduxLocation, fetch: boolean = true) {
+async function updateLocation(fields: Partial<LocationState>, fetch: boolean = true) {
   await Store.dispatch(updateLocationCreator(fields));
   if (fetch) fetchLocationData();
 }

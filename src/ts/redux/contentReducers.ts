@@ -126,7 +126,7 @@ export type EventParams = {
 };
 
 export type EventQuickItem = {
-  type: 'tag' | 'user' | 'group';
+  type: 'tag' | 'user' | 'group' | 'school' | 'departement' | 'region' | 'global';
   id: string;
   title: string;
 };
