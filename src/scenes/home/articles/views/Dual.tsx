@@ -19,7 +19,6 @@ const ArticleListDual: React.FC<ArticleListDualProps> = ({ navigation, route }) 
     title: string;
     useLists: boolean;
   } | null>(null);
-  const [visible, setVisible] = React.useState(true);
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -34,15 +33,14 @@ const ArticleListDual: React.FC<ArticleListDualProps> = ({ navigation, route }) 
           dual
           setArticle={(a) => {
             setArticle(a);
-            setVisible(false);
-            setTimeout(() => setVisible(true), 1);
           }}
         />
       </View>
       <View style={{ backgroundColor: colors.disabled, width: 1 }} />
       <View style={{ flexGrow: 2, flex: 1 }}>
-        {article && visible ? (
+        {article ? (
           <ArticleDisplay
+            key={article.id}
             navigation={navigation}
             route={{
               params: {
@@ -54,7 +52,7 @@ const ArticleListDual: React.FC<ArticleListDualProps> = ({ navigation, route }) 
             }}
             dual
           />
-        ) : !visible ? null : (
+        ) : (
           <View style={styles.centerIllustrationContainer}>
             <Illustration name="article" width={500} height={500} />
             <Subheading>Séléctionnez un article</Subheading>

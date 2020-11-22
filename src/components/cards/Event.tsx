@@ -52,7 +52,7 @@ const EventCard: React.FC<EventCardProps> = ({
   preferences,
   overrideImageWidth,
 }) => {
-  const [cardWidth, setCardWidth] = React.useState(100);
+  const [cardWidth, setCardWidth] = React.useState(600);
   const imageSize = cardWidth / 3.5;
 
   const start = event.duration?.start; // Destructure this once duration works on the server

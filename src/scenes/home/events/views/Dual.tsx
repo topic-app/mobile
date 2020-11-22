@@ -19,7 +19,6 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
     title: string;
     useLists: boolean;
   } | null>(null);
-  const [visible, setVisible] = React.useState(true);
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -34,8 +33,6 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
           dual
           setEvent={(e) => {
             setEvent(e);
-            setVisible(false);
-            setTimeout(() => setVisible(true), 1);
           }}
         />
       </View>
@@ -43,6 +40,7 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
       <View style={{ flexGrow: 2, flex: 1 }}>
         {event ? (
           <EventDisplay
+            key={event.id}
             navigation={navigation}
             route={{
               params: {
@@ -54,7 +52,7 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
             }}
             dual
           />
-        ) : !visible ? null : (
+        ) : (
           <View style={styles.centerIllustrationContainer}>
             <Illustration name="event" width={500} height={500} />
             <Subheading>Séléctionnez un évènement</Subheading>
