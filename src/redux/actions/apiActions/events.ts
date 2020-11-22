@@ -1,38 +1,8 @@
 import Store from '@redux/store';
-import { AppThunk, UPDATE_EVENTS_STATE } from '@ts/redux';
+import { AppThunk, EventCreationData, UPDATE_EVENTS_STATE } from '@ts/redux';
 import { request } from '@utils/index';
 
 import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
-
-type EventAddParams = {
-  title: string;
-  summary: string;
-  data: string;
-  phone: string;
-  email: string;
-  contact?: {
-    key: string;
-    value: string;
-    link: string;
-  }[];
-  organizers: string[];
-  start: Date;
-  end: Date;
-  date: Date;
-  location: {
-    schools: string[];
-    departments: string[];
-    global: boolean;
-  };
-  group: string;
-  places: string[];
-  parser: 'markdown' | 'plaintext';
-  preferences?: {
-    comments?: boolean;
-  };
-  tags: string[];
-  program: string[];
-};
 
 function eventAddCreator({
   title,
@@ -41,18 +11,18 @@ function eventAddCreator({
   phone,
   email,
   contact,
-  organizers,
+  members,
   start,
   end,
   date,
   location,
   group,
-  places,
+  place,
   parser,
   preferences,
   tags,
   program,
-}: EventAddParams): AppThunk {
+}: EventCreationData): AppThunk {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -71,7 +41,7 @@ function eventAddCreator({
         {
           event: {
             title,
-            places,
+            place,
             summary,
             description: {
               parser,
@@ -80,9 +50,9 @@ function eventAddCreator({
             contact: {
               phone,
               email,
-              organizers,
               other: contact,
             },
+            members,
             duration: {
               start,
               end,
@@ -128,7 +98,7 @@ function eventAddCreator({
   };
 }
 
-function eventAdd(data: EventAddParams) {
+async function eventAdd(data: EventCreationData) {
   return Store.dispatch(eventAddCreator(data));
 }
 

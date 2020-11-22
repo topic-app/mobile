@@ -1,7 +1,8 @@
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
-import { TextInput, Button, List, Text, useTheme } from 'react-native-paper';
+import { TextInput, Button, List, Text} from 'react-native-paper';
 import { connect } from 'react-redux';
+import { useTheme } from '@utils/index';
 
 import { Account, State, EventCreationData, EventPlace, User } from '@ts/types';
 import { StepperViewPageProps, InlineCard } from '@components/index';
@@ -123,7 +124,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
         phone: phoneVal,
         email: emailVal,
         contact: customContact,
-        organizers: eventOrganizers,
+        members: eventOrganizers.map(u=>u._id),
       });
       next();
     } else {
