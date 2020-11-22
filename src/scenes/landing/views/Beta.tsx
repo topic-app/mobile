@@ -12,7 +12,7 @@ import {
   StepperView,
 } from '@components/index';
 import getStyles from '@styles/Styles';
-import { analytics as firebaseAnalytics } from '@utils/firebase';
+import { firebase } from '@utils/firebase';
 import { useTheme } from '@utils/index';
 
 import type { LandingStackParams } from '../index';
@@ -163,9 +163,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           onPress={async () => {
                             if (Platform.OS !== 'web') {
                               if (analytics) {
-                                await firebaseAnalytics.analytics
-                                  .analytics()
-                                  .setAnalyticsCollectionEnabled(true);
+                                await firebase.analytics().setAnalyticsCollectionEnabled(true);
                               }
                             }
                             next(1);
