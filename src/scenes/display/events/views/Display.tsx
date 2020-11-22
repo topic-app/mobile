@@ -189,6 +189,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   return (
     <View style={styles.page}>
       <AnimatingHeader
+        hideBack={dual}
         value={scrollY}
         title={
           route.params.title ||
