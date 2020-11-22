@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Dimensions, ScrollView } from 'react-native';
-import { useTheme, getImageUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { TranslucentStatusBar, PlatformBackButton, SafeAreaView } from '@components/index';
 import AutoHeightImage from 'react-native-auto-height-image';
+
+import { TranslucentStatusBar, PlatformBackButton, SafeAreaView } from '@components/index';
+import getStyles from '@styles/Styles';
+import { useTheme, getImageUrl } from '@utils/index';
 
 function ImageDisplay({ navigation, route }) {
   const { image } = route.params;
@@ -21,11 +22,13 @@ function ImageDisplay({ navigation, route }) {
     >
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <PlatformBackButton onPress={navigation.goBack} />
-        <AutoHeightImage
-          source={{ uri: getImageUrl({ image, size: 'full' }) || '' }}
-          width={Dimensions.get('window').width}
-        />
+        <ScrollView>
+          <PlatformBackButton onPress={navigation.goBack} />
+          <AutoHeightImage
+            source={{ uri: getImageUrl({ image, size: 'full' }) || '' }}
+            width={Dimensions.get('window').width}
+          />
+        </ScrollView>
       </SafeAreaView>
     </View>
   );

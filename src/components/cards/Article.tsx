@@ -1,16 +1,16 @@
+import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
 import { View, Dimensions } from 'react-native';
 import { Card, Paragraph, Text, Title, Caption } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
 import { ArticlePreload, ArticleVerificationPreload, State, Preferences } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import { CardBase } from '../Cards';
-import TagList from '../TagList';
 import CustomImage from '../CustomImage';
+import TagList from '../TagList';
 
 type ArticleCardProps = {
   verification?: boolean;
@@ -27,12 +27,11 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   preferences,
   verification = false,
 }) => {
-  const screenDimensions = Dimensions.get('window');
-  const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
-  const imageSize = minWidth / 3.5;
-
   const theme = useTheme();
   const { colors } = theme;
+
+  const [cardWidth, setCardWidth] = React.useState(0);
+  const imageSize = cardWidth / 3.5;
 
   if (!article)
     return (
@@ -51,72 +50,82 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   const verificationColors = ['green', 'yellow', 'yellow', 'orange', 'orange', 'orange'];
 
   return (
-    <CardBase onPress={navigate}>
-      <Card.Content>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View>
-            <Title numberOfLines={2} style={readStyle}>
-              {article.title}
-            </Title>
-            <Caption>{`Publié ${moment(article.date).fromNow()}`}</Caption>
+    <View
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => setCardWidth(width)}
+    >
+      <CardBase onPress={navigate}>
+        <Card.Content>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View>
+              <Title numberOfLines={2} style={readStyle}>
+                {article.title}
+              </Title>
+              <Caption>{`Publié ${moment(article.date).fromNow()}`}</Caption>
+            </View>
+            {verification && articleVerification.verification && (
+              <View
+                style={{
+                  borderRadius: 20,
+                  backgroundColor:
+                    verificationColors[articleVerification.verification?.bot?.score] || 'red',
+                  height: 40,
+                  width: 40,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{ fontSize: 20, color: 'black' }}>
+                  {articleVerification.verification?.bot?.score}
+                </Text>
+              </View>
+            )}
           </View>
-          {verification && articleVerification.verification && (
+        </Card.Content>
+        <TagList item={article} scrollable={false} />
+        <Card.Content>
+          <View style={{ flexDirection: 'row', paddingTop: 6 }}>
+            <CustomImage
+              image={article.image}
+              imageSize="medium"
+              width={imageSize}
+              height={imageSize}
+            />
             <View
               style={{
-                borderRadius: 20,
-                backgroundColor:
-                  verificationColors[articleVerification.verification?.bot?.score] || 'red',
-                height: 40,
-                width: 40,
-                alignItems: 'center',
-                justifyContent: 'center',
+                marginLeft: 15,
+                flex: 1,
               }}
             >
-              <Text style={{ fontSize: 20, color: 'black' }}>
-                {articleVerification.verification?.bot?.score}
-              </Text>
+              <Paragraph
+                numberOfLines={6}
+                style={[readStyle, { fontFamily: preferences.fontFamily }]}
+              >
+                {article.summary}
+              </Paragraph>
             </View>
-          )}
-        </View>
-      </Card.Content>
-      <TagList item={article} scrollable={false} />
-      <Card.Content>
-        <View style={{ flexDirection: 'row', paddingTop: 6 }}>
-          <CustomImage
-            image={article.image}
-            imageSize="medium"
-            width={imageSize}
-            height={imageSize}
-          />
-          <View
-            style={{
-              marginLeft: 15,
-              flex: 1,
-            }}
-          >
-            <Paragraph
-              numberOfLines={6}
-              style={[readStyle, { fontFamily: preferences.fontFamily }]}
-            >
-              {article.summary}
-            </Paragraph>
           </View>
-        </View>
-      </Card.Content>
-      {verification && (
-        <Card.Content>
-          {articleVerification.verification?.bot?.flags?.length !== 0 && (
-            <Text>Classifié comme {articleVerification.verification?.bot?.flags?.join(', ')}</Text>
-          )}
-          {articleVerification.verification?.reports?.length !== 0 && (
-            <Text>Reporté {articleVerification.verification?.reports?.length} fois </Text>
-          )}
-          {articleVerification.verification?.users?.length !== 0 && (
-            <Text>Approuvé par {articleVerification.verification?.users?.join(', ')}</Text>
-          )}
         </Card.Content>
-      )}
-    </CardBase>
+        {verification && (
+          <Card.Content>
+            {articleVerification.verification?.bot?.flags?.length !== 0 && (
+              <Text>
+                Classifié comme {articleVerification.verification?.bot?.flags?.join(', ')}
+              </Text>
+            )}
+            {articleVerification.verification?.reports?.length !== 0 && (
+              <Text>Reporté {articleVerification.verification?.reports?.length} fois </Text>
+            )}
+            {articleVerification.verification?.users?.length !== 0 && (
+              <Text>Approuvé par {articleVerification.verification?.users?.join(', ')}</Text>
+            )}
+          </Card.Content>
+        )}
+      </CardBase>
+    </View>
   );
 };
 

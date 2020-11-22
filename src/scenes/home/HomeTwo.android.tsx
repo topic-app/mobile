@@ -1,14 +1,17 @@
-import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import React from 'react';
+import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useTheme, useSafeAreaInsets } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 
+import ArticleDualList from './articles/views/Dual';
 import ArticleList from './articles/views/List';
-// import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
+
+// import PetitionList from './petitions/views/List';
 
 export type HomeTwoNavParams = {
   Article: { initialList: string } | undefined;
@@ -25,6 +28,12 @@ function HomeTwoNavigator() {
   const navigatorStyles = getNavigatorStyles(theme);
 
   const insets = useSafeAreaInsets();
+
+  const [deviceWidth, setDeviceWidth] = React.useState(Dimensions.get('window').width);
+
+  React.useEffect(() => {
+    Dimensions.addEventListener('change', () => setDeviceWidth(Dimensions.get('window').width));
+  }, [null]);
 
   return (
     <Tab.Navigator
@@ -60,7 +69,11 @@ function HomeTwoNavigator() {
         },
       })}
     >
-      <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
+      <Tab.Screen
+        name="Article"
+        component={deviceWidth > 1000 ? ArticleDualList : ArticleList}
+        options={{ title: 'Actus' }}
+      />
       <Tab.Screen name="Event" component={EventList} options={{ title: 'Evènements' }} />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
       <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
