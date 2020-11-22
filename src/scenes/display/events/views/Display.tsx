@@ -262,7 +262,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         })}
       >
         <View>
-          {event.image && (
+          {event.image?.image && (
             <View style={[styles.image, { minHeight: 150 }]}>
               <AutoHeightImage
                 source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
