@@ -21,6 +21,8 @@ type ArticleCardProps = {
   overrideImageWidth?: number;
 };
 
+const ARTICLE_CARD_HEADER_HEIGHT = 145; // IMPORTANT: This should be updated every time something is changed (used for getItemLayout optimization)
+
 const ArticleCard: React.FC<ArticleCardProps> = ({
   article,
   navigate,
@@ -55,9 +57,11 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
     <View
       onLayout={({
         nativeEvent: {
-          layout: { width },
+          layout: { width, height },
         },
-      }) => setCardWidth(width)}
+      }) => {
+        setCardWidth(width);
+      }}
     >
       <CardBase onPress={navigate}>
         <Card.Content>
@@ -137,5 +141,7 @@ const mapStateToProps = (state: State) => {
     preferences,
   };
 };
+
+export { ARTICLE_CARD_HEADER_HEIGHT };
 
 export default connect(mapStateToProps)(ArticleCard);

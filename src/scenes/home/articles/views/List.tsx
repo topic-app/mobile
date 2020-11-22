@@ -5,7 +5,13 @@ import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from '
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { AnimatingHeader, ErrorMessage, TabChipList, GroupsBanner } from '@components/index';
+import {
+  AnimatingHeader,
+  ErrorMessage,
+  TabChipList,
+  GroupsBanner,
+  ARTICLE_CARD_HEADER_HEIGHT,
+} from '@components/index';
 import {
   updateArticles,
   searchArticles,
@@ -249,6 +255,12 @@ const ArticleList: React.FC<ArticleListProps> = ({
   const [cardWidth, setCardWidth] = React.useState(100);
   const imageSize = cardWidth / 3.5;
 
+  const itemHeight = ARTICLE_CARD_HEADER_HEIGHT + imageSize;
+
+  const getItemLayout = (data: unknown, index: number) => {
+    return { length: itemHeight, offset: itemHeight * index, index };
+  };
+
   return (
     <View
       style={styles.page}
@@ -355,6 +367,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
             searchArticles('next', '', category.params, false, false);
           }
         }}
+        getItemLayout={getItemLayout}
         ListHeaderComponent={() => (
           <View>
             <GroupsBanner />
