@@ -246,8 +246,18 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   const listData = category.data;
 
+  const [cardWidth, setCardWidth] = React.useState(100);
+  const imageSize = cardWidth / 3.5;
+
   return (
-    <View style={styles.page}>
+    <View
+      style={styles.page}
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => setCardWidth(width)}
+    >
       <AnimatingHeader
         home
         value={scrollY}
@@ -399,6 +409,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
               isRead={read.some((r) => r.id === article._id)}
               historyActive={preferences.history}
               lists={lists}
+              overrideImageWidth={imageSize}
               navigate={
                 dual
                   ? () => {

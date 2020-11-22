@@ -18,6 +18,7 @@ type ArticleCardProps = {
   navigate: StackNavigationProp<any, any>['navigate'];
   unread?: boolean;
   preferences: Preferences;
+  overrideImageWidth?: number;
 };
 
 const ArticleCard: React.FC<ArticleCardProps> = ({
@@ -26,6 +27,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   unread = true,
   preferences,
   verification = false,
+  overrideImageWidth,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -91,8 +93,8 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             <CustomImage
               image={article.image}
               imageSize="medium"
-              width={imageSize}
-              height={imageSize}
+              width={overrideImageWidth || imageSize}
+              height={overrideImageWidth || imageSize}
             />
             <View
               style={{
