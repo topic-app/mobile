@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
 import { Button, Text, Divider, Card } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { Account, State, ArticleCreationData, TagRequestState, TagPreload } from '@ts/types';
 import {
   StepperViewPageProps,
   ErrorMessage,
@@ -13,14 +13,14 @@ import {
   CategoryTitle,
   Searchbar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import getStyles from '@styles/Styles';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { Account, State, ArticleCreationData, TagRequestState, TagPreload } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import TagAddModal from './TagAddModal';
 import getAuthStyles from '../styles/Styles';
+import TagAddModal from './TagAddModal';
 
 type ArticleAddPageTagsProps = StepperViewPageProps & {
   account: Account;

@@ -1,12 +1,13 @@
+import randomColor from 'randomcolor';
 import React from 'react';
 import { View, Platform, FlatList, TextInput as RNTextInput } from 'react-native';
 import { TextInput, HelperText, Button, Divider } from 'react-native-paper';
-import randomColor from 'randomcolor';
 import shortid from 'shortid';
 
 import { Avatar, CollapsibleView, StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
 import { updateCreationData } from '@redux/actions/data/account';
+import { Avatar as AvatarType } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -76,7 +77,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
 
   const addAvatars = () => setAvatars([...avatars, ...generateAvatars()]);
 
-  const [activeAvatar, setActiveAvatar] = React.useState({
+  const [activeAvatar, setActiveAvatar] = React.useState<AvatarType & { key?: string }>({
     type: 'gradient',
     gradient: avatars[0].gradient,
     text: username?.substring(0, 1) || '',
@@ -139,21 +140,23 @@ const AuthCreatePageProfile: React.FC<Props> = ({
 
   return (
     <View>
-      <View style={authStyles.mainAvatarContainer}>
+      <View>
         <View style={authStyles.centerAvatarContainer}>
-          <Avatar
-            size={100}
-            onPress={() => setAvatarsVisible(!avatarsVisible)}
-            avatar={{
-              type: 'gradient',
-              gradient: {
-                start: activeAvatar.gradient.start,
-                end: activeAvatar.gradient.end,
-                angle: activeAvatar.gradient.angle,
-              },
-              text: username?.substring(0, 1) || '',
-            }}
-          />
+          {activeAvatar.type === 'gradient' && (
+            <Avatar
+              size={100}
+              onPress={() => setAvatarsVisible(!avatarsVisible)}
+              avatar={{
+                type: 'gradient',
+                gradient: {
+                  start: activeAvatar.gradient.start,
+                  end: activeAvatar.gradient.end,
+                  angle: activeAvatar.gradient.angle,
+                },
+                text: username?.substring(0, 1) || '',
+              }}
+            />
+          )}
         </View>
         <CollapsibleView collapsed={!avatarsVisible}>
           <Divider />

@@ -1,3 +1,4 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView, Platform, Alert } from 'react-native';
 import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
@@ -41,14 +42,16 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
-      date: Date.now(),
+      date: new Date(),
       location: creationData.location,
       group: creationData.group,
       image: null,
       parser: parser || creationData.parser,
       data: data || creationData.data,
       tags: creationData.tags,
-      preferences: null,
+      preferences: {
+        comments: true,
+      },
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearArticleCreationData();
@@ -56,8 +59,6 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
   };
 
   const [valid, setValid] = React.useState(true);
-
-  const textEditorRef = React.createRef<RichEditor>(null);
 
   const icon = (icon: string) => {
     return ({

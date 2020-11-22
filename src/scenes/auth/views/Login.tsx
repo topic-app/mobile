@@ -1,3 +1,4 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText } from 'react-native-paper';
@@ -108,7 +109,9 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                 style={authStyles.textInput}
                 onChangeText={setUsername}
               />
-              <HelperText type="error" visible={false} />
+              <HelperText type="error" visible={false}>
+                Hello, I am an easter egg (because eslint)
+              </HelperText>
               {/* Because spacing */}
             </View>
             <View style={authStyles.textInputContainer}>
@@ -127,7 +130,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                 style={authStyles.textInput}
                 onChangeText={setPassword}
               />
-              <HelperText type="error" visible={reqState.login.incorrect}>
+              <HelperText type="error" visible={reqState.login.incorrect || false}>
                 Le nom d&apos;utilisateur ou le mot de passe est incorrect
               </HelperText>
             </View>

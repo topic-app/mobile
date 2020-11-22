@@ -4,7 +4,13 @@ import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from '
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { AnimatingHeader, ErrorMessage, TabChipList, GroupsBanner } from '@components/index';
+import {
+  AnimatingHeader,
+  ErrorMessage,
+  TabChipList,
+  GroupsBanner,
+  ARTICLE_CARD_HEADER_HEIGHT,
+} from '@components/index';
 import {
   updateArticles,
   searchArticles,
@@ -52,6 +58,8 @@ type ArticleListProps = {
   preferences: Preferences;
   state: ArticleRequestState;
   account: Account;
+  dual?: boolean;
+  setArticle?: (article: { id: string; title: string; useLists: boolean }) => any;
 };
 
 const ArticleList: React.FC<ArticleListProps> = ({
@@ -67,6 +75,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
   articlePrefs,
   preferences,
   account,
+  dual = false,
+  setArticle = () => {},
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -243,8 +253,24 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   const listData = category.data;
 
+  const [cardWidth, setCardWidth] = React.useState(100);
+  const imageSize = cardWidth / 3.5;
+
+  const itemHeight = ARTICLE_CARD_HEADER_HEIGHT + imageSize;
+
+  const getItemLayout = (data: unknown, index: number) => {
+    return { length: itemHeight, offset: itemHeight * index, index };
+  };
+
   return (
-    <View style={styles.page}>
+    <View
+      style={styles.page}
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => setCardWidth(width)}
+    >
       <AnimatingHeader
         home
         value={scrollY}
@@ -342,6 +368,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
             searchArticles('next', '', category.params, false, false);
           }
         }}
+        getItemLayout={getItemLayout}
         ListHeaderComponent={() => (
           <View>
             <GroupsBanner />
@@ -396,21 +423,31 @@ const ArticleList: React.FC<ArticleListProps> = ({
               isRead={read.some((r) => r.id === article._id)}
               historyActive={preferences.history}
               lists={lists}
-              navigate={() =>
-                navigation.navigate('Main', {
-                  screen: 'Display',
-                  params: {
-                    screen: 'Article',
-                    params: {
-                      screen: 'Display',
-                      params: {
+              overrideImageWidth={imageSize}
+              navigate={
+                dual
+                  ? () => {
+                      setArticle({
                         id: article._id,
                         title: article.title,
                         useLists: section.key === 'lists',
-                      },
-                    },
-                  },
-                })
+                      });
+                    }
+                  : () =>
+                      navigation.navigate('Main', {
+                        screen: 'Display',
+                        params: {
+                          screen: 'Article',
+                          params: {
+                            screen: 'Display',
+                            params: {
+                              id: article._id,
+                              title: article.title,
+                              useLists: section.key === 'lists',
+                            },
+                          },
+                        },
+                      })
               }
             />
           </Animated.View>

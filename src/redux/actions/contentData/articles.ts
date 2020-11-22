@@ -98,7 +98,7 @@ async function modifyArticleList(
   listId: string,
   name: string,
   icon: string,
-  description: string,
+  description: string | undefined,
   items: Article[],
 ) {
   Store.dispatch(

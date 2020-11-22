@@ -1,12 +1,10 @@
 import React from 'react';
 import { View, Dimensions, Alert } from 'react-native';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 
-import { Event, EventListItem } from '@ts/types';
 import { EventCard, PlatformTouchable } from '@components/index';
-import { useTheme } from '@utils/index';
 import {
   addEventRead,
   deleteEventRead,
@@ -14,6 +12,8 @@ import {
   removeEventFromList,
 } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
+import { Event, EventListItem } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -25,6 +25,7 @@ type EventListCardProps = {
   historyActive: boolean;
   lists: EventListItem[];
   navigate: () => void;
+  overrideImageWidth: number;
 };
 
 const EventListCard: React.FC<EventListCardProps> = ({
@@ -35,6 +36,7 @@ const EventListCard: React.FC<EventListCardProps> = ({
   historyActive,
   lists,
   navigate,
+  overrideImageWidth,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -164,7 +166,7 @@ const EventListCard: React.FC<EventListCardProps> = ({
           : undefined
       }
     >
-      <EventCard unread={!isRead || itemKey !== 'all'} event={event} navigate={navigate} />
+      <EventCard event={event} navigate={navigate} overrideImageWidth={overrideImageWidth} />
     </Swipeable>
   );
 };

@@ -1,10 +1,10 @@
-import { firebase } from '@react-native-firebase/analytics';
 import React from 'react';
 import { View, Platform, ScrollView, Linking } from 'react-native';
 import { Text, Button, List, Checkbox } from 'react-native-paper';
 
 import { TranslucentStatusBar, Illustration, SafeAreaView, StepperView } from '@components/index';
 import getStyles from '@styles/Styles';
+import { firebase } from '@utils/firebase';
 import { useTheme } from '@utils/index';
 
 import type { LandingScreenNavigationProp } from '../index';
@@ -155,8 +155,10 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
                           onPress={async () => {
-                            if (analytics) {
-                              await firebase.analytics().setAnalyticsCollectionEnabled(true);
+                            if (Platform.OS !== 'web') {
+                              if (analytics) {
+                                await firebase.analytics().setAnalyticsCollectionEnabled(true);
+                              }
                             }
                             next(1);
                           }}

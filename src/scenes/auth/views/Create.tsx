@@ -48,8 +48,8 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
         avatar: creationData.avatar,
         description: null,
         public: creationData.accountType === 'public',
-        firstName: creationData.accountType === 'public' ? creationData.firstName : null,
-        lastName: creationData.accountType === 'public' ? creationData.lastName : null,
+        firstName: creationData.accountType === 'public' ? creationData.firstName : undefined,
+        lastName: creationData.accountType === 'public' ? creationData.lastName : undefined,
       },
       device: {
         type: 'app',

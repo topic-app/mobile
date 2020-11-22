@@ -67,7 +67,7 @@ function ArticleLists({
 
   const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
-  const [editingList, setEditingList] = React.useState(null);
+  const [editingList, setEditingList] = React.useState<ArticleListItem | null>(null);
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
   const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);
@@ -166,7 +166,7 @@ function ArticleLists({
                   <DraggableFlatList
                     data={categories}
                     scrollPercent={5}
-                    keyExtractor={(c) => c.id}
+                    keyExtractor={(c: Category) => c.id}
                     ItemSeparatorComponent={() => <Divider />}
                     ListHeaderComponent={() => (
                       <View>
@@ -181,14 +181,22 @@ function ArticleLists({
                         <Divider />
                       </View>
                     )}
-                    renderItem={({ item, move, moveEnd }) => {
+                    renderItem={({
+                      item,
+                      move,
+                      moveEnd,
+                    }: {
+                      item: Category;
+                      move: () => any;
+                      moveEnd: () => any;
+                    }) => {
                       const enabled = articlePrefs.categories?.some((d) => d === item.id);
                       return (
                         <List.Item
                           key={item.id}
                           title={item.name}
                           description={item.disable ? 'Indisponible' : null}
-                          left={() => <List.Icon />}
+                          left={() => <List.Icon icon="" />}
                           onPress={enabled && !item.disable ? item.navigate : () => null}
                           onLongPress={move}
                           titleStyle={!item.disable ? {} : { color: colors.disabled }}
@@ -219,11 +227,13 @@ function ArticleLists({
                       );
                     }}
                     ListFooterComponent={() => <Divider />}
-                    onMoveEnd={({ to, from }) => {
+                    onMoveEnd={({ to, from }: { to: number; from: number }) => {
                       const tempCategories = articlePrefs.categories;
-                      const buffer = articlePrefs.categories[to];
-                      tempCategories[to] = articlePrefs.categories[from];
-                      tempCategories[from] = buffer;
+                      if (articlePrefs.categories && tempCategories) {
+                        const buffer = articlePrefs.categories[to];
+                        tempCategories[to] = articlePrefs.categories[from];
+                        tempCategories[from] = buffer;
+                      }
                       updateArticlePrefs({ categories: tempCategories });
                     }}
                   />
@@ -254,8 +264,8 @@ function ArticleLists({
                     </View>
                   )}
                   ItemSeparatorComponent={() => <Divider />}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item, move }) => {
+                  keyExtractor={(item: ArticleListItem) => item.id}
+                  renderItem={({ item, move }: { item: ArticleListItem; move: () => any }) => {
                     return (
                       <List.Item
                         title={item.name}
@@ -331,7 +341,7 @@ function ArticleLists({
                       />
                     );
                   }}
-                  onMoveEnd={({ from, to }) => {
+                  onMoveEnd={({ from, to }: { from: number; to: number }) => {
                     const fromList = lists[from];
                     const toList = lists[to];
 

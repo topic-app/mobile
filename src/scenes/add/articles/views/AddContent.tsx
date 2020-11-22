@@ -1,7 +1,6 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView, Platform, Alert } from 'react-native';
-import { ProgressBar, Button, HelperText, Title, Divider, Card, Text } from 'react-native-paper';
+import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
@@ -54,14 +53,16 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
-      date: Date.now(),
+      date: new Date(),
       location: creationData.location,
       group: creationData.group,
       image: creationData.image,
       parser: parser || creationData.parser,
       data: replacedData,
       tags: creationData.tags,
-      preferences: null,
+      preferences: {
+        comments: true,
+      },
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearArticleCreationData();
@@ -74,7 +75,11 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const [markdown, setMarkdown] = React.useState('');
   const [youtubeAddModalVisible, setYoutubeAddModalVisible] = React.useState(false);
 
+  const [linkAddModalVisible, setLinkAddModalVisible] = React.useState(false);
+
   const textEditorRef = React.createRef<RichEditor>();
+
+  if (!account.loggedIn) return null;
 
   const icon = (name: string) => {
     return ({
@@ -103,10 +108,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       setValid(false);
     }
   };
-
-  const [linkAddModalVisible, setLinkAddModalVisible] = React.useState(false);
-
-  if (!account.loggedIn) return null;
 
   return (
     <View style={styles.page}>
@@ -153,6 +154,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <View style={articleStyles.textInputContainer}>
               <View style={{ marginTop: 20 }}>
                 <RichEditor
+                  onHeightChange={() => {}}
                   ref={textEditorRef}
                   onChangeMarkdown={(data: string) => setMarkdown(data)}
                   editorStyle={{
@@ -211,8 +213,8 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 setLinkAddModalVisible(true);
               }}
               insertImage={() =>
-                upload(creationData.group).then((fileId) => {
-                  textEditorRef.current?.insertImage(`${Config.cdn.baseUrl}${fileId}`);
+                upload(creationData.group || '').then((fileId: string) => {
+                  textEditorRef.current?.insertImage(`${config.cdn.baseUrl}${fileId}`);
                 })
               }
               insertYoutube={() => setYoutubeAddModalVisible(true)}

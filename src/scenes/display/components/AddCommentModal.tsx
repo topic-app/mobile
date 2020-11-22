@@ -25,7 +25,11 @@ type AddCommentModalProps = ModalProps & {
   id: string;
   account: Account;
   reqState: { comments: CommentRequestState };
-  add: (publisher: Publisher, content: Content, parent: string) => void;
+  add: (
+    publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
+    content: Content,
+    parent: string,
+  ) => Promise<void | {}>;
 };
 
 const AddCommentModal: React.FC<AddCommentModalProps> = ({
@@ -82,7 +86,6 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
         publishers.find((p) => p.key === publisher)!.publisher,
         { parser: 'plaintext', data: commentText },
         id,
-        'article',
       )
         .then(() => {
           setCommentText('');

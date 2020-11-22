@@ -73,6 +73,9 @@ const defaultConfig: AppConfig = {
     hideSvg: false,
     disablePersist: false,
   },
+  layout: {
+    dualMinWidth: 1000,
+  },
 };
 
 export default defaultConfig;

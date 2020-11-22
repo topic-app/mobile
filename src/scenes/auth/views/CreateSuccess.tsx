@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Illustration } from '@components/index';
 import { updateGroups } from '@redux/actions/api/groups';
 import getStyles from '@styles/Styles';
-import { Location, Group, State, GroupRequestState } from '@ts/types';
+import { State, GroupRequestState, LocationList, GroupPreload } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
@@ -14,8 +14,8 @@ import getAuthStyles from '../styles/Styles';
 
 type AuthCreateSuccessProps = {
   navigation: AuthScreenNavigationProp<'CreateSuccess'>;
-  location: Location;
-  groups: Group[];
+  location: LocationList;
+  groups: GroupPreload[];
   reqState: GroupRequestState;
 };
 
