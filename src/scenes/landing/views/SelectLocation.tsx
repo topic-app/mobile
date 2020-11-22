@@ -1,3 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
+import * as Permissions from 'expo-permissions';
 import React from 'react';
 import {
   View,
@@ -7,28 +9,10 @@ import {
   TextInput as RNTextInput,
   ActivityIndicator,
 } from 'react-native';
-import { Text, useTheme, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import Location from 'react-native-geolocation-service';
+import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
 
-import {
-  School,
-  SchoolPreload,
-  Department,
-  DepartmentPreload,
-  SchoolRequestState,
-  DepartmentRequestState,
-  State,
-  LocationRequestState,
-} from '@ts/types';
-import { logger } from '@utils/index';
-import { updateLocation } from '@redux/actions/data/location';
-import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
-import { updateEventParams } from '@redux/actions/contentData/events';
-import { updateSchools, updateNearSchools, searchSchools } from '@redux/actions/api/schools';
-import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import {
   TranslucentStatusBar,
   Illustration,
@@ -38,19 +22,32 @@ import {
   ChipAddList,
   Searchbar,
 } from '@components/index';
-
+import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
+import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
+import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
+import { updateEventParams, addEventQuick } from '@redux/actions/contentData/events';
+import { updateLocation } from '@redux/actions/data/location';
 import getStyles from '@styles/Styles';
+import {
+  School,
+  SchoolPreload,
+  Department,
+  DepartmentPreload,
+  SchoolRequestState,
+  DepartmentRequestState,
+  State,
+  LocationRequestState,
+  ReduxLocation as OldReduxLocation,
+  Account,
+} from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
 import type { LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
 
 type Navigation = StackNavigationProp<LandingStackParams, 'SelectLocation'>;
 
-// TODO: Externalize into @ts/redux
-type ReduxLocation = {
-  global: boolean;
-  schools: string[];
-  departments: string[];
+type ReduxLocation = OldReduxLocation & {
   schoolData: SchoolPreload[];
   departmentData: DepartmentPreload[];
 };
@@ -58,7 +55,7 @@ type ReduxLocation = {
 type PersistantData = {
   key: string;
   title: string;
-  description: string;
+  description?: string;
   type: 'school' | 'department' | 'region' | 'other';
   departments?: DepartmentPreload[];
 };
@@ -71,31 +68,49 @@ function done(
   persistentData: PersistantData[],
   goBack: boolean,
 ) {
-  selectedSchools = selectedSchools.filter((s) => !!s);
-  selectedDepartments = selectedDepartments.filter((s) => !!s);
+  const schools = selectedSchools.filter((s) => !!s);
+  const departments = selectedDepartments.filter((s) => !!s);
   const params = {
-    schools: selectedSchools,
+    schools: schools.filter((s) => !!s),
     departments: [
-      ...selectedDepartments,
+      ...departments,
       // Todo: logic to select extra departments
-      ...selectedSchools
+      ...schools
         .map((s) => persistentData.find((p) => p.key === s)?.departments)
         .flat()
-        .map((d: Department) => d?._id),
-    ],
+        .map((d?: DepartmentPreload) => d?._id || ''),
+    ].filter((d) => !!d),
     global: true,
   };
   Promise.all([
     updateLocation({
       selected: true,
-      schools: selectedSchools,
-      departments: selectedDepartments,
-      global:
-        selectedOthers.includes('global') ||
-        (!selectedSchools.length && !selectedDepartments.length),
+      schools,
+      departments,
+      global: selectedOthers.includes('global') || (!schools.length && !departments.length),
     }),
     updateArticleParams(params),
     updateEventParams(params),
+    ...schools.map((s) =>
+      addArticleQuick('school', s, persistentData.find((p) => p.key === s)?.title || 'École'),
+    ),
+    ...schools.map((s) =>
+      addEventQuick('school', s, persistentData.find((p) => p.key === s)?.title || 'École'),
+    ),
+    ...departments.map((d) =>
+      addArticleQuick(
+        'departement',
+        d,
+        persistentData.find((p) => p.key === d)?.title || 'Département',
+      ),
+    ),
+    ...departments.map((d) =>
+      addEventQuick(
+        'departement',
+        d,
+        persistentData.find((p) => p.key === d)?.title || 'Département',
+      ),
+    ),
   ]).then(() => {
     if (goBack) {
       navigation.goBack();
@@ -140,7 +155,7 @@ function getData(
         title: s.name,
         description: `${s?.address?.shortName || s?.address?.address?.city || 'Ville inconnue'}${
           s?.departments?.length !== 0
-            ? `, ${s?.departments?.[0]?.displayName || s?.departments?.[0]?.name || 'Inconnu'}`
+            ? `, ${s.departments[0]?.displayName || s.departments[0]?.name || 'Inconnu'}`
             : ''
         }`,
         type: 'school',
@@ -163,7 +178,7 @@ function getData(
   return data;
 }
 
-type Props = {
+type WelcomeLocationProps = {
   schoolsNear: (School | SchoolPreload)[];
   departments: (Department | DepartmentPreload)[];
   schoolsSearch: SchoolPreload[];
@@ -176,14 +191,16 @@ type Props = {
   location?: ReduxLocation;
   navigation: Navigation;
   route: { params?: { goBack?: boolean } };
+  account: Account;
 };
 
-const WelcomeLocation: React.FC<Props> = ({
+const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   schoolsNear,
   departments,
   schoolsSearch,
   departmentsSearch,
   state,
+  account,
   location = {
     global: false,
     schools: [],
@@ -211,22 +228,31 @@ const WelcomeLocation: React.FC<Props> = ({
 
   const [buttonVisible, setButtonVisible] = React.useState(false);
   const [userLocation, setUserLocation] = React.useState(false);
+  const [locationError, setLocationError] = React.useState(false);
+
+  if (Platform.OS === 'web' && !account.loggedIn) {
+    window.location.replace('https://beta.topicapp.fr');
+  }
 
   React.useEffect(() => {
+    updateDepartments('initial');
     // Check if Location is requestable
     // If it is, then show the FAB to go to location
     Permissions.getAsync(Permissions.LOCATION)
       .then(async ({ status, canAskAgain }) => {
+        logger.debug(`Status ${status} & canAskAgain ${canAskAgain}`);
         // User previously granted permission
-        if (status === Location.PermissionStatus.GRANTED) {
+        if (status === Permissions.PermissionStatus.GRANTED) {
           logger.verbose('Location previously granted, showing location FAB');
-          setButtonVisible(true);
           setUserLocation(true);
-          const { coords } = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Highest,
-          });
-          updateNearSchools('initial', coords.latitude, coords.longitude);
-        } else if (status === Location.PermissionStatus.DENIED && canAskAgain) {
+          Location.getCurrentPosition(
+            (info) => updateNearSchools('initial', info?.coords?.latitude, info?.coords?.longitude),
+            (err) => {
+              logger.warn(`Location err ${err}`);
+              setLocationError(true);
+            },
+          );
+        } else if (canAskAgain) {
           logger.info('Location previously denied but can ask again, showing location FAB');
           setButtonVisible(true);
         } else {
@@ -246,15 +272,21 @@ const WelcomeLocation: React.FC<Props> = ({
       logger.error('Error while requesting user location', e);
     }
     if (status === 'granted') {
-      const { coords } = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Highest,
-      });
-      updateNearSchools('initial', coords.latitude, coords.longitude);
+      setButtonVisible(false);
+      setUserLocation(true);
+      Location.getCurrentPosition(
+        (info) => updateNearSchools('initial', info?.coords?.latitude, info?.coords?.longitude),
+        (err) => {
+          logger.warn(`Location err ${err}`);
+          setLocationError(true);
+        },
+      );
+      // updateNearSchools('initial', coords.latitude, coords.longitude);
     } else {
       if (!canAskAgain) {
         setButtonVisible(false);
+        logger.info('Location permission request prompt denied, hiding location FAB.');
       }
-      logger.info('Location permission request prompt denied, hiding location FAB.');
     }
   };
 
@@ -275,8 +307,13 @@ const WelcomeLocation: React.FC<Props> = ({
       searchDepartments('initial', searchText);
     } else {
       if (userLocation) {
-        const { coords } = await Location.getCurrentPositionAsync({});
-        updateNearSchools('initial', coords.latitude, coords.longitude);
+        Location.getCurrentPosition(
+          (info) => updateNearSchools('initial', info?.coords?.latitude, info?.coords?.longitude),
+          (err) => {
+            logger.warn(`Location err ${err}`);
+            setLocationError(true);
+          },
+        );
       }
       updateDepartments('initial');
     }
@@ -382,13 +419,13 @@ const WelcomeLocation: React.FC<Props> = ({
         <View style={landingStyles.centerIllustrationContainer}>
           <CollapsibleView collapsed={!!searchText}>
             <Illustration name="location-select" height={200} width={200} />
+            <View style={!!searchText && { marginTop: 30 }}>
+              <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
+            </View>
           </CollapsibleView>
-          <View style={!!searchText && { marginTop: 30 }}>
-            <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
-          </View>
         </View>
       </View>
-      <View style={landingStyles.searchContainer}>
+      <View style={[landingStyles.searchContainer, { marginTop: searchText ? 20 : 0 }]}>
         <Searchbar
           ref={inputRef}
           placeholder="Rechercher"
@@ -421,6 +458,11 @@ const WelcomeLocation: React.FC<Props> = ({
               : [state.schools.search?.error, state.departments.search?.error]
           }
           retry={retry}
+          strings={{
+            what: 'La récupération des localisations',
+            contentSingular: 'La liste de localisations',
+            contentPlural: 'Les localisations',
+          }}
         />
       )}
       {searchText === '' && category === 'schools' && schoolsNear.length > 0 ? (
@@ -446,23 +488,42 @@ const WelcomeLocation: React.FC<Props> = ({
   const ListEmptyComponent =
     searchText === '' && category === 'schools' ? (
       <View>
-        {state.schools.near.loading.initial || userLocation || !buttonVisible ? null : (
-          <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 100 }]}>
-            <Text style={{ maxWidth: 300, alignContent: 'center' }}>
-              Recherchez votre école
-              {buttonVisible ? 'ou appuyez ci-dessous pour trouver les écoles autour de vous' : ''}
-            </Text>
-            {buttonVisible && (
-              <View style={styles.container}>
-                <Button
-                  onPress={requestUserLocation}
-                  uppercase={Platform.OS !== 'ios'}
-                  mode="outlined"
-                  style={{ borderRadius: 20 }}
-                >
-                  Me géolocaliser
-                </Button>
+        {state.schools.near.loading.initial ? null : (
+          <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 50 }]}>
+            {!userLocation && (
+              <Text style={{ maxWidth: 300, alignSelf: 'center' }}>Recherchez votre école</Text>
+            )}
+            {locationError ? (
+              <View style={{ marginTop: 30 }}>
+                <Text>Erreur lors de la récupération des écoles autour de vous</Text>
+                <View style={styles.container}>
+                  <Button
+                    onPress={requestUserLocation}
+                    uppercase={Platform.OS !== 'ios'}
+                    mode="outlined"
+                    style={{ borderRadius: 20 }}
+                  >
+                    Réessayer
+                  </Button>
+                </View>
               </View>
+            ) : (
+              buttonVisible && (
+                <View>
+                  <Text>ou appuyez ci-dessous pour trouver les écoles autour de vous</Text>
+                  <View style={styles.container}>
+                    <Button
+                      onPress={requestUserLocation}
+                      uppercase={Platform.OS !== 'ios'}
+                      mode="outlined"
+                      icon="map-marker"
+                      style={{ borderRadius: 20 }}
+                    >
+                      Me géolocaliser
+                    </Button>
+                  </View>
+                </View>
+              )
             )}
           </View>
         )}
@@ -629,7 +690,7 @@ const WelcomeLocation: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { schools, departments, location } = state;
+  const { schools, departments, location, account } = state;
   return {
     schoolsNear: schools.near,
     departments: departments.data,
@@ -641,6 +702,7 @@ const mapStateToProps = (state: State) => {
       departments: departments.state,
       location: location.state,
     },
+    account,
   };
 };
 

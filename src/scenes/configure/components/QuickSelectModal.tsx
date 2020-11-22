@@ -1,4 +1,8 @@
 import React from 'react';
+import { View, FlatList } from 'react-native';
+import { Divider, ProgressBar, Text, List } from 'react-native-paper';
+import { connect } from 'react-redux';
+
 import {
   ModalProps,
   State,
@@ -15,22 +19,8 @@ import {
   ArticleListItem,
   EventQuickItem,
 } from '@ts/types';
-import {
-  Divider,
-  ProgressBar,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
-  Card,
-  Text,
-  List,
-  ThemeProvider,
-  useTheme,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import { connect } from 'react-redux';
-
 import { Searchbar, Illustration, Avatar, ErrorMessage, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { addEventQuick } from '@redux/actions/contentData/events';

@@ -1,12 +1,30 @@
 import React from 'react';
+
+import { ArticleCreationData, ReduxLocation } from '@ts/redux';
+import { HeaderConfig } from '@components/Header';
 import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
 import ArticleAdd from './views/Add';
 import ArticleAddSuccess from './views/AddSuccess';
 import ArticleAddLocation from './views/AddLocation';
+import ArticleAddContent from './views/AddContent';
 
-const Stack = createNativeStackNavigator();
+export type ArticleAddStackParams = {
+  Add: undefined;
+  AddContent: undefined;
+  Success: {
+    id?: string;
+    creationData?: ArticleCreationData;
+  };
+  Location: {
+    hideSearch: boolean;
+    type: 'schools' | 'departements' | 'regions' | 'other';
+    initialData?: ReduxLocation;
+    callback: (location: ReduxLocation) => any;
+  };
+};
+
+const Stack = createNativeStackNavigator<ArticleAddStackParams>();
 
 function ArticleAddStackNavigator() {
   return (
@@ -14,6 +32,14 @@ function ArticleAddStackNavigator() {
       <Stack.Screen
         name="Add"
         component={ArticleAdd}
+        options={{
+          title: 'Écrire un article',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddContent"
+        component={ArticleAddContent}
         options={{
           title: 'Écrire un article',
           headerShown: false,

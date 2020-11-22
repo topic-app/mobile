@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { NavigationProp } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { NavigationProp, useNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useSafeAreaInsets } from '@utils/index';
+import { useTheme } from '@utils/index';
 
 import MainStackNavigator from './Main';
 
@@ -41,7 +42,6 @@ type BottomTabProps = {
 enum RouteName {
   ARTICLE = 'Article',
   EVENT = 'Event',
-  PETITION = 'Petition',
   EXPLORER = 'Explorer',
   MORE = 'More',
 }
@@ -55,31 +55,60 @@ type NavRoute = [
 ];
 
 const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
-  const [active, setActive] = React.useState(RouteName.ARTICLE);
+  // console.log(`Navigation ${JSON.stringify(navigation.dangerouslyGetState()?.routes, null, 2)}`);
+
+  let active = RouteName.MORE;
+  let translucent = false;
+
+  const traverseState = (state) => {
+    if (state?.name === 'Article' || state?.screen === 'Article') {
+      active = RouteName.ARTICLE;
+    } else if (state?.name === 'Event' || state?.screen === 'Event') {
+      active = RouteName.EVENT;
+    } else if (state?.name === 'Explorer' || state?.screen === 'Explorer') {
+      active = RouteName.EXPLORER;
+    }
+
+    if (
+      state?.name === 'Display' ||
+      state?.name === 'Home1' ||
+      state?.name === 'Home2' ||
+      state?.screen === 'Display' ||
+      state?.screen === 'Home1'
+    ) {
+      translucent = true;
+    }
+
+    if (state?.routes && state?.routes?.length > 0) {
+      traverseState(state?.routes[state?.routes?.length - 1]);
+    }
+    if (state?.state?.routes && state?.state?.routes?.length > 0) {
+      traverseState(state?.state?.routes[state?.state?.routes?.length - 1]);
+    }
+    if (state?.params) {
+      traverseState(state?.params);
+    }
+  };
+
+  const navigationState = useNavigationState((state) => state);
+
+  traverseState(navigationState);
+
+  // HACK: I was hoping to be able to fetch screenOptions from here, but havent found any way yet. Currently, any screen that has Article in the name gives a focused article tab, same for events etc. Display and Home pages both have a translucent tab bar, others not
 
   const isActive = (name: RouteName) => active === name;
 
   const setActiveAndNavigate = (name: RouteName, route: NavRoute) => {
-    if (!isActive(name)) {
-      setActive(name);
-      navigation.navigate(...route);
-    }
+    navigation.navigate(...route);
   };
 
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
 
   const { bottom } = useSafeAreaInsets(); // get bottom inset
 
   return (
-    <View
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: colors.tabBackground,
-      }}
-    >
+    <View style={{ color: colors.surface }}>
       <View
         style={{
           flexDirection: 'row',
@@ -119,23 +148,6 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
                 params: {
                   screen: 'Home2',
                   params: { screen: 'Event', params: { noTransition: true } },
-                },
-              },
-            ])
-          }
-        />
-        <TabItem
-          icon="comment-check-outline"
-          label="Pétitions"
-          active={isActive(RouteName.PETITION)}
-          onPress={() =>
-            setActiveAndNavigate(RouteName.PETITION, [
-              'Main',
-              {
-                screen: 'Home1',
-                params: {
-                  screen: 'Home2',
-                  params: { screen: 'Petition', params: { noTransition: true } },
                 },
               },
             ])

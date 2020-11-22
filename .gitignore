@@ -3,6 +3,7 @@
 .ENV
 *.apk
 android-build/
+config/dev.ts
 
 # OSX
 #

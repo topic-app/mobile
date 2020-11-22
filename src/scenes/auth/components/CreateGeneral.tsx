@@ -1,9 +1,9 @@
 import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { TextInput, HelperText, Button, useTheme } from 'react-native-paper';
+import { TextInput, HelperText, Button } from 'react-native-paper';
 
-import { request } from '@utils/index';
 import { StepperViewPageProps } from '@components/index';
+import { useTheme, request } from '@utils/index';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
@@ -246,6 +246,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
             emailInput.current?.focus();
           }}
           autoCorrect={false}
+          autoCapitalize="none"
           autoFocus
           theme={
             currentUsername.valid
@@ -322,6 +323,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
             validatePasswordInput(nativeEvent.text);
           }}
           textContentType="password"
+          autoCapitalize="none"
           autoCompleteType="password"
           style={authStyles.textInput}
           onChangeText={(text) => {

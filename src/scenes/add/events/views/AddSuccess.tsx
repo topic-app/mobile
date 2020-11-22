@@ -1,40 +1,31 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
-import { Text, Button, Divider, Snackbar, useTheme, Card } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { Text, Button, Divider, Card } from 'react-native-paper';
+import { StackScreenProps } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { State, EventRequestState, Account } from '@ts/types';
-import { Illustration, EventCard, ErrorMessage, TranslucentStatusBar } from '@components/index';
-import { eventVerificationApprove } from '@redux/actions/apiActions/events';
-import getStyles from '@styles/Styles';
-
-import type { AuthStackParams } from '../index';
-import getAuthStyles from '../styles/Styles';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-type Props = {
-  navigation: StackNavigationProp<AuthStackParams, 'CreateSuccess'>;
+import { State, EventRequestState, Account } from '@ts/types';
+import { Illustration, EventCard, ErrorMessage } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
+import { eventVerificationApprove } from '@redux/actions/apiActions/events';
+
+import type { EventAddStackParams } from '../index';
+import getAuthStyles from '../styles/Styles';
+
+type EventAddSuccessProps = StackScreenProps<EventAddStackParams, 'Success'> & {
   reqState: EventRequestState;
   account: Account;
-  route: {
-    params: {
-      id: string;
-      creationData: {
-        title: string;
-        summary: string;
-        image: {
-          image: string;
-        };
-        group: string;
-        data: string;
-      };
-    };
-  };
 };
 
-const EventAddSuccess: React.FC<Props> = ({ navigation, reqState, account, route }) => {
+const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
+  navigation,
+  reqState,
+  account,
+  route,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);

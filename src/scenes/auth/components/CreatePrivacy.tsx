@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton, List, useTheme } from 'react-native-paper';
+import { Button, RadioButton, List } from 'react-native-paper';
 
-import { updateCreationData } from '@redux/actions/data/account';
 import { StepperViewPageProps } from '@components/index';
+import { updateCreationData } from '@redux/actions/data/account';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 import { ListHeading, ListItem } from './ListComponents';
@@ -40,6 +41,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           left={() =>
             Platform.OS !== 'ios' ? (
               <RadioButton
+                value=""
                 status={accountType === 'public' ? 'checked' : 'unchecked'}
                 color={colors.primary}
                 onPress={() => setAccountType('public')}
@@ -49,6 +51,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           right={() =>
             Platform.OS === 'ios' ? (
               <RadioButton
+                value=""
                 status={accountType === 'public' ? 'checked' : 'unchecked'}
                 color={colors.primary}
                 onPress={() => setAccountType('public')}
@@ -62,6 +65,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           left={() =>
             Platform.OS !== 'ios' ? (
               <RadioButton
+                value=""
                 status={accountType === 'private' ? 'checked' : 'unchecked'}
                 color={colors.primary}
                 onPress={() => setAccountType('private')}
@@ -71,6 +75,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           right={() =>
             Platform.OS === 'ios' ? (
               <RadioButton
+                value=""
                 status={accountType === 'private' ? 'checked' : 'unchecked'}
                 color={colors.primary}
                 onPress={() => setAccountType('private')}

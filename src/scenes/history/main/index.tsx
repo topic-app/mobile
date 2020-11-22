@@ -1,22 +1,19 @@
 import React from 'react';
+
 import { createNativeStackNavigator } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
 import MainHistory from './views/History';
 
-const Stack = createNativeStackNavigator();
+export type MainHistoryStackParams = {
+  Params: undefined;
+};
+
+const Stack = createNativeStackNavigator<MainHistoryStackParams>();
 
 function MainHistoryStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Params">
-      <Stack.Screen
-        name="Params"
-        component={MainHistory}
-        options={({ route }) => ({
-          ...HeaderConfig,
-          title: 'Historique',
-        })}
-      />
+    <Stack.Navigator initialRouteName="Params" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Params" component={MainHistory} />
     </Stack.Navigator>
   );
 }

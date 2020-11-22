@@ -18,6 +18,7 @@ async function updateComments(type: 'initial' | 'refresh' | 'next', params = {})
       update: UPDATE_COMMENTS_DATA,
       stateUpdate: UPDATE_COMMENTS_STATE,
       url: 'comments/list',
+      listName: 'data',
       sort: dateDescSort,
       dataType: 'comments',
       type,
@@ -30,8 +31,8 @@ async function updateComments(type: 'initial' | 'refresh' | 'next', params = {})
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearComments(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_COMMENTS, data, search }));
+function clearComments(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_COMMENTS, data, search }));
 }
 
 export { updateComments, clearComments };

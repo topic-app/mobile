@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import { useTheme, List, Checkbox, Text, ProgressBar } from 'react-native-paper';
+import { List, Checkbox, Text, ProgressBar } from 'react-native-paper';
 
 import { SchoolRequestState, DepartmentRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 import { ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
 
-type Props = {
+type ItemListProps = {
   data: {
     key: string;
     title: string;
@@ -22,7 +23,7 @@ type Props = {
   next: () => void;
 };
 
-const ItemList: React.FC<Props> = ({
+const ItemList: React.FC<ItemListProps> = ({
   data,
   initialSelected,
   setGlobalSelected,
@@ -76,9 +77,13 @@ const ItemList: React.FC<Props> = ({
             : null
         }
         ListFooterComponent={() =>
-          states.some((s) => s.loading.next) ? (<View style={{ height: 50}}>
-            <ActivityIndicator size="large" color={colors.primary} /></View>
-          ) : <View style={{ height: 50 }} />
+          states.some((s) => s.loading.next) ? (
+            <View style={{ height: 50 }}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          ) : (
+            <View style={{ height: 50 }} />
+          )
         }
         onEndReached={next}
         renderItem={({ item }) => (

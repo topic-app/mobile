@@ -1,24 +1,22 @@
 import React from 'react';
-import { createNativeStackNavigator, TransitionPresets } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
-import GroupDisplay from './views/Display';
+import { createNativeStackNavigator } from '@utils/stack';
+
 import GroupDescription from './views/Description';
+import GroupDisplay from './views/Display';
 
-const Stack = createNativeStackNavigator();
+export type GroupDisplayStackParams = {
+  Display: { id: string; verification: boolean };
+  Description: { id: string };
+};
+
+const Stack = createNativeStackNavigator<GroupDisplayStackParams>();
 
 function GroupDisplayStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Display">
-      <Stack.Screen
-        name="Display"
-        component={GroupDisplay}
-        options={({ route }) => ({
-          headerShown: false,
-          title: route.params.title || 'Groupe',
-          subtitle: route.params.title && 'Groupe - Aperçu',
-        })}
-      />
+    <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Display" component={GroupDisplay} />
+      <Stack.Screen name="Description" component={GroupDescription} />
     </Stack.Navigator>
   );
 }

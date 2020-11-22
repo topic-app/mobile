@@ -1,37 +1,46 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, SectionList } from 'react-native';
-import { Text, ProgressBar, Divider, useTheme } from 'react-native-paper';
+import { Text, ProgressBar, Divider, FAB } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { Account, GroupsState, GroupRequestState, AccountRequestState } from '@ts/types';
+import { Account, GroupsState, GroupRequestState, AccountRequestState, State } from '@ts/types';
 import {
   Illustration,
   CategoryTitle,
   ErrorMessage,
   GroupsBanner,
+  GroupCard,
   CustomHeaderBar,
   TranslucentStatusBar,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { updateGroups } from '@redux/actions/api/groups';
 import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 
-import GroupListCard from '../components/Card';
+import { MyGroupsStackParams } from '../index';
 
-type Props = {
+type MyGroupsListProps = {
   account: Account;
   groups: GroupsState;
   state: GroupRequestState;
   accountState: AccountRequestState;
+  navigation: StackNavigationProp<MyGroupsStackParams, 'List'>;
 };
 
-function MyGroupsList({ navigation, account, groups, state, accountState }: Props) {
+const MyGroupsList: React.FC<MyGroupsListProps> = ({
+  navigation,
+  account,
+  groups,
+  state,
+  accountState,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  let fetch = (refresh = 'false') => {
+  let fetch = (refresh = false) => {
     updateGroups(refresh ? 'refresh' : 'initial');
     fetchWaitingGroups();
     fetchGroups();
@@ -132,10 +141,9 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
             <View />
           )
         }
-        ListFooterComponent={<View style={[styles.container, { height: 50 }]} />}
         renderItem={({ item }) => (
           <>
-            <GroupListCard
+            <GroupCard
               group={item}
               following={account.accountInfo?.user.data.following.groups.some(
                 (g) => g._id === item._id,
@@ -157,11 +165,26 @@ function MyGroupsList({ navigation, account, groups, state, accountState }: Prop
           </>
         )}
       />
+      <FAB
+        icon="plus"
+        onPress={() =>
+          navigation.navigate('Main', {
+            screen: 'Add',
+            params: {
+              screen: 'Group',
+              params: {
+                screen: 'Add',
+              },
+            },
+          })
+        }
+        style={styles.bottomRightFab}
+      />
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { account, groups } = state;
   return {
     account,
@@ -172,9 +195,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(MyGroupsList);
-
-MyGroupsList.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-};

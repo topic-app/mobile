@@ -1,34 +1,46 @@
 import {
-  EventsDataState,
-  EventsActionTypes,
+  EventsContentState,
   UPDATE_EVENTS_PARAMS,
   UPDATE_EVENTS_LISTS,
   UPDATE_EVENTS_READ,
   UPDATE_EVENTS_PREFS,
   UPDATE_EVENTS_QUICKS,
   UPDATE_EVENTS_CREATION_DATA,
+  EventsContentActionTypes,
 } from '@ts/redux';
-import { config } from '@root/app.json';
 
-const initialState: EventsDataState = {
+const initialState: EventsContentState = {
   params: {},
-  lists: config.events.lists,
-  prefs: config.events.defaults,
-  quicks: config.events.quicks,
   read: [],
   creationData: {},
+  lists: [
+    {
+      id: '0',
+      name: 'Favoris',
+      icon: 'star-outline',
+      items: [],
+    },
+  ],
+  quicks: [],
+  prefs: {
+    categories: ['upcoming', 'passed', 'following'],
+    hidden: [],
+  },
 };
 
 /**
  * @docs reducers
  * Reducer pour les évènements
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['UPDATE_EVENTS', 'CLEAR_EVENTS'] Le type d'action à effectuer: mettre à jour les évènements avec action.data ou vider la database
- * @param {object} action.data Les données à remplacer dans la database redux
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Le type d'action à effectuer: mettre à jour les évènements avec action.data ou vider la database
+ * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
-function eventDataReducer(state = initialState, action: EventsActionTypes): EventsDataState {
+function eventDataReducer(
+  state = initialState,
+  action: EventsContentActionTypes,
+): EventsContentState {
   switch (action.type) {
     case UPDATE_EVENTS_PARAMS:
       return {

@@ -1,4 +1,4 @@
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
 
 const logTypes = ['critical', 'error', 'warning', 'info', 'http', 'verbose', 'debug'] as const;
 
@@ -11,10 +11,10 @@ const logObj = (data: any) => {
   return truncatedStr;
 };
 
-type LevelType = typeof logTypes[number];
+export type LogLevel = typeof logTypes[number];
 
 type ConfigureType = {
-  level: LevelType;
+  level: LogLevel;
 };
 
 type HTTPLog = {
@@ -23,10 +23,11 @@ type HTTPLog = {
   data?: any;
   method: 'get' | 'post' | 'put' | 'patch' | 'delete';
   endpoint: string;
+  sent?: boolean;
 };
 
 class Logger {
-  level: LevelType;
+  level: LogLevel;
 
   constructor({ level }: ConfigureType) {
     if (!logTypes.includes(level)) {
@@ -35,10 +36,10 @@ class Logger {
     this.level = level;
   }
 
-  private shouldLog(level: LevelType) {
+  private shouldLog(level: LogLevel) {
     return (
       logTypes.indexOf(level) <= logTypes.indexOf(this.level) &&
-      !config.logger?.exclude?.includes(level)
+      !Config.logger.exclude.includes(level)
     );
   }
 
@@ -58,10 +59,10 @@ class Logger {
     if (this.shouldLog('info')) console.info(...msgs);
   }
 
-  http({ status, method, endpoint, params, data }: HTTPLog) {
+  http({ status, method, endpoint, params, data, sent = false }: HTTPLog) {
     if (this.shouldLog('http')) {
       let logEntry = `[request] ${method.toUpperCase()} `;
-      if (status) logEntry += `${status} `;
+      if (sent) logEntry += `${status || 'ERROR'} `;
       else logEntry += 'sent ';
       logEntry += `to ${endpoint} `;
       if (params) logEntry += `with params ${logObj(params)} `;
@@ -80,6 +81,6 @@ class Logger {
   }
 }
 
-const logger = new Logger({ level: config.logger?.level as LevelType });
+const logger = new Logger({ level: Config.logger.level as LogLevel });
 
 export default logger;

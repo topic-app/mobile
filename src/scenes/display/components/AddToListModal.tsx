@@ -1,45 +1,24 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem, Account, EventListItem } from '@ts/types';
+import { View, Platform, TextInput, FlatList } from 'react-native';
 import {
   Divider,
   Button,
   Text,
-  Card,
-  useTheme,
   RadioButton,
   List,
   IconButton,
   HelperText,
-  ThemeProvider,
 } from 'react-native-paper';
-import { View, Platform, TextInput, ActivityIndicator, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { config } from '@root/app.json';
 
-import {
-  CollapsibleView,
-  CategoriesList,
-  PlatformIconButton,
-  Illustration,
-  Modal,
-} from '@components/index';
-import getStyles from '@styles/Styles';
-import getArticleStyles from './styles/Styles';
-import { logger } from '@root/src/utils';
-
+import { CollapsibleView, Illustration, Modal } from '@components/index';
 import { addArticleToList, addArticleList } from '@redux/actions/contentData/articles';
 import { addEventToList, addEventList } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, ArticleListItem, EventListItem, Article, Event } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-type CommentPublisher = {
-  key: string;
-  title: string;
-  icon: string;
-  publisher: {
-    type: 'user' | 'group';
-    group?: string;
-  };
-  type: 'category';
-};
+import getArticleStyles from './styles/Styles';
 
 type AddToListModalProps = ModalProps & {
   id: string;
@@ -48,14 +27,14 @@ type AddToListModalProps = ModalProps & {
   type: 'article' | 'event';
 };
 
-function AddToListModal({
+const AddToListModal: React.FC<AddToListModalProps> = ({
   visible,
   setVisible,
   articleLists,
   eventLists,
   id,
   type,
-}: AddToListModalProps) {
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -63,7 +42,7 @@ function AddToListModal({
 
   const lists = type === 'article' ? articleLists : eventLists;
 
-  const [list, setList] = React.useState(lists[0]?.id);
+  const [list, setList] = React.useState<string | null>(lists[0]?.id);
   const [createList, setCreateList] = React.useState(false);
   const [errorVisible, setErrorVisible] = React.useState(false);
 
@@ -82,8 +61,8 @@ function AddToListModal({
             <Divider />
           </View>
         )}
-        renderItem={({ item }) => {
-          const disabled = item?.items?.some((i) => i._id === id);
+        renderItem={({ item }: { item: ArticleListItem | EventListItem }) => {
+          const disabled = item?.items?.some((i: Article | Event) => i._id === id);
           return (
             <View>
               <List.Item
@@ -97,6 +76,7 @@ function AddToListModal({
                 left={() =>
                   Platform.OS !== 'ios' && (
                     <RadioButton
+                      value=""
                       disabled={disabled}
                       color={colors.primary}
                       status={item.id === list ? 'checked' : 'unchecked'}
@@ -112,6 +92,7 @@ function AddToListModal({
                 right={() =>
                   Platform.OS === 'ios' && (
                     <RadioButton
+                      value=""
                       disabled={disabled}
                       color={colors.primary}
                       status={item.id === list ? 'checked' : 'unchecked'}
@@ -174,8 +155,17 @@ function AddToListModal({
                     </HelperText>
                   </CollapsibleView>
                 </View>
-                <CollapsibleView collapsed={!lists.some((l) => l.name === createListText)}>
-                  <HelperText type="error" visible={lists.some((l) => l.name === createListText)}>
+                <CollapsibleView
+                  collapsed={
+                    !lists.some((l: EventListItem | ArticleListItem) => l.name === createListText)
+                  }
+                >
+                  <HelperText
+                    type="error"
+                    visible={lists.some(
+                      (l: EventListItem | ArticleListItem) => l.name === createListText,
+                    )}
+                  >
                     Une liste avec ce nom existe déjà
                   </HelperText>
                 </CollapsibleView>
@@ -190,13 +180,15 @@ function AddToListModal({
                     if (!createList) {
                       setVisible(false);
                       if (type === 'article') {
-                        addArticleToList(id, list);
+                        addArticleToList(id, list || '');
                       } else {
-                        addEventToList(id, list);
+                        addEventToList(id, list || '');
                       }
                     } else if (createListText === '') {
                       setErrorVisible(true);
-                    } else if (!lists.some((l) => l.name === createListText)) {
+                    } else if (
+                      !lists.some((l: EventListItem | ArticleListItem) => l.name === createListText)
+                    ) {
                       // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                       if (type === 'article') {
                         addArticleList(createListText);
@@ -219,7 +211,7 @@ function AddToListModal({
       />
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { articleData, eventData } = state;

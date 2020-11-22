@@ -1,18 +1,19 @@
 import React from 'react';
-import { List, Divider, useTheme } from 'react-native-paper';
 import { View, ScrollView } from 'react-native';
+import { List, Divider } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { ArticleReadItem, Preferences, State } from '@ts/types';
 
+import { ArticleReadItem, Preferences, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 
 type MainHistoryProps = {
-  navigation: any;
+  navigation: StackNavigationProp<any, any>;
   read: ArticleReadItem[];
   preferences: Preferences;
 };
 
-function MainHistory({ navigation, preferences }: MainHistoryProps) {
+const MainHistory: React.FC<MainHistoryProps> = ({ navigation, preferences }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -35,7 +36,7 @@ function MainHistory({ navigation, preferences }: MainHistoryProps) {
           title="Événements"
         />
         <View style={{ height: 20 }} />
-        <List.Subheader>Centres d'interêt</List.Subheader>
+        <List.Subheader>Centres d&amp;interêt</List.Subheader>
         <Divider />
         {!preferences.recommendations ? (
           <List.Item
@@ -48,7 +49,7 @@ function MainHistory({ navigation, preferences }: MainHistoryProps) {
       </ScrollView>
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { preferences } = state;

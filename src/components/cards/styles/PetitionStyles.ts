@@ -24,7 +24,7 @@ function getPetitionStyles(theme: Theme) {
       paddingHorizontal: 4,
       paddingVertical: 1,
       color: 'white',
-      // Note: left property is manipulated in Card.jsx
+      // Note: left property is manipulated in cards/Petition.jsx
       position: 'absolute',
       top: -4.5, // Make sure label properly centered when changing padding or fontSize
     },

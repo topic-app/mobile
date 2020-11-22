@@ -1,5 +1,30 @@
-import { request } from '@utils/index';
-import { State, Item } from '@ts/types';
+import {
+  ApiItemString,
+  ApiItemMap,
+  DepartmentsState,
+  SchoolsState,
+  ApiAction,
+  ApiStateMap,
+  AppThunk,
+} from '@ts/types';
+import { request, logger } from '@utils/index';
+import { AnyAction } from 'redux';
+
+type UpdateCreatorParams<T extends ApiItemString> = {
+  dataType: T;
+  update: ApiAction.TypeMap[T];
+  stateUpdate: ApiAction.UpdateStateTypeMap[T];
+  listName: keyof ApiStateMap[T];
+  url: string;
+  stateName?: ApiAction.UpdateStateNameMap[T];
+  sort?: (data: ApiItemMap[T][]) => ApiItemMap[T][];
+  type?: 'initial' | 'next' | 'refresh';
+  params?: { [key: string]: any };
+  clear?: boolean;
+  initialNum?: number;
+  nextNum?: number;
+  auth?: boolean;
+};
 
 /**
  * @docs actionCreators
@@ -14,23 +39,7 @@ import { State, Item } from '@ts/types';
  *
  * @returns Action
  */
-type updateCreatorProps = {
-  update: string;
-  stateUpdate: string;
-  url: string;
-  sort?: (data: Item[]) => Item[];
-  dataType: string;
-  stateName?: string;
-  type?: string;
-  params?: object;
-  listName?: string;
-  clear?: boolean;
-  initialNum?: number;
-  nextNum?: number;
-  auth?: boolean;
-};
-
-function updateCreator({
+function updateCreator<T extends ApiItemString>({
   update,
   stateUpdate,
   url,
@@ -39,88 +48,154 @@ function updateCreator({
   stateName = 'list',
   type = 'initial',
   params = {},
-  listName = 'data',
+  listName,
   clear = false,
   nextNum = 10,
   initialNum = 20,
   auth = false,
-}: updateCreatorProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: UpdateCreatorParams<T>): AppThunk {
+  type Element = ApiItemMap[T];
+  return (dispatch, getState) => {
     let lastId;
     let number = initialNum;
-    const state = {
+    dispatch({
       type: stateUpdate,
-      data: {},
-    };
-    state.data[stateName] = {
-      loading: {
-        initial: type === 'initial',
-        refresh: type === 'refresh',
-        next: type === 'next',
+      data: {
+        [stateName]: {
+          loading: {
+            initial: type === 'initial',
+            refresh: type === 'refresh',
+            next: type === 'next',
+          },
+          success: null,
+          error: null,
+        },
       },
-      success: null,
-      error: null,
-    };
-    dispatch(state);
+    });
     if (type === 'next') {
       const elements = getState()[dataType][listName];
-      if (elements.length !== 0) {
+      if (Array.isArray(elements) && elements.length !== 0) {
         lastId = elements[elements.length - 1]._id;
         number = nextNum;
       } else {
-        console.log(
-          `Warning: Requested state update type 'next' in updateCreator but no elements were found in redux db '${dataType}'`,
+        logger.warn(
+          `updateCreator: Failed to get next elements of db: getState()[${dataType}][${listName}] is not an array or is an empty array`,
         );
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error: {
+                success: false,
+                reason: 'redux',
+                status: null,
+                error: `updateCreator: Failed to update db: getState()[${dataType}][${listName}] is not an array`,
+              },
+            },
+          },
+        });
       }
     }
     request(url, 'get', { lastId, number, ...params }, auth)
       .then((result) => {
-        let data: Array<{ _id: string }>;
+        let data: Element[];
         if (!clear) {
-          const dbData = getState()[dataType][listName] || []; // The old elements, in redux db
+          const dbData = getState()[dataType][listName];
+          if (!Array.isArray(dbData)) {
+            logger.warn(
+              `updateCreator: Failed to update db: getState()[${dataType}][${listName}] is not an array`,
+            );
+            return dispatch({
+              type: stateUpdate,
+              data: {
+                [stateName]: {
+                  loading: {
+                    initial: false,
+                    refresh: false,
+                    next: false,
+                  },
+                  success: false,
+                  error: {
+                    success: false,
+                    reason: 'redux',
+                    status: null,
+                    error: `updateCreator: Failed to update db: getState()[${dataType}][${listName}] is not an array`,
+                  },
+                },
+              },
+            });
+          }
           data = [...dbData]; // Shallow copy of dbData to get rid of reference
-          result.data[dataType].forEach((a: Item) => {
-            const element = { ...a, preload: true };
-            const index = data.findIndex((p) => p._id === a._id);
-            if (index !== -1) {
-              data[index] = element;
-            } else {
-              data.push(element);
-            }
-          });
+          if (result.data) {
+            result.data[dataType].forEach((a: Element) => {
+              const element = { ...a, preload: true };
+              const index = data.findIndex((p) => p._id === a._id);
+              if (index !== -1) {
+                data[index] = element;
+              } else {
+                data.push(element);
+              }
+            });
+          }
           data = sort(data);
         } else {
-          data = result.data[dataType];
+          data = result.data ? result.data[dataType] : [];
         }
         dispatch({
           type: update,
           data,
         });
-        state.data[stateName] = {
-          loading: {
-            initial: false,
-            refresh: false,
-            next: false,
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: true,
+              error: null,
+            },
           },
-          success: true,
-          error: null,
-        };
-        return dispatch(state);
+        });
       })
       .catch((error) => {
-        state.data[stateName] = {
-          loading: {
-            initial: false,
-            refresh: false,
-            next: false,
+        logger.error(error);
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
+            },
           },
-          success: false,
-          error,
-        };
-        return dispatch(state);
+        });
       });
   };
 }
+
+type FetchCreatorParams<T extends ApiItemString> = {
+  dataType: T;
+  url: string;
+  update: ApiAction.TypeMap[T];
+  stateUpdate: ApiAction.UpdateStateTypeMap[T];
+  stateName: ApiAction.UpdateStateNameMap[T];
+  params: { [key: string]: any };
+  useArray?: boolean;
+  auth?: boolean;
+};
 
 /**
  * @docs actionCreators
@@ -133,71 +208,77 @@ function updateCreator({
  * @param params.*Id L'id du contenu que l'on veut récupérer
  * @returns Action
  */
-type fetchCreatorProps = {
-  update: string;
-  stateUpdate: string;
-  dataType: string;
-  url: string;
-  params: object;
-  stateName?: string;
-  useArray?: boolean;
-  auth?: boolean;
-};
-function fetchCreator({
+function fetchCreator<T extends ApiItemString>({
   update,
   stateUpdate,
   dataType,
   url,
   params,
-  stateName = 'info',
+  stateName,
   useArray = false,
   auth = false,
-}: fetchCreatorProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: FetchCreatorParams<T>): AppThunk {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
-      const state = {
+      dispatch({
         type: stateUpdate,
-        data: {},
-      };
-      state.data[stateName] = {
-        loading: true,
-        success: null,
-        error: null,
-      };
-
-      dispatch(state);
+        data: {
+          [stateName]: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
       request(url, 'get', params, auth)
         .then((result) => {
-          const data = result.data[dataType][0];
+          let data = result.data?.[dataType][0];
+          const state = getState()[dataType];
+
+          if (useArray && Array.isArray((state as SchoolsState | DepartmentsState).items)) {
+            data = (state as SchoolsState | DepartmentsState).items;
+            // Push data to state if it's not already in it
+            if (!data.includes(data?._id)) {
+              data.push(data);
+            }
+          }
+
           dispatch({
             type: update,
-            data: useArray
-              ? [
-                  ...(getState()[dataType]?.items || []),
-                  ...(getState()[dataType]?.items?.includes(data?._id) ? [] : [data]),
-                ] // HACK: Whatever
-              : data,
+            data,
           });
-          state.data[stateName] = {
-            loading: false,
-            success: true,
-            error: null,
-          };
-          dispatch(state);
+          dispatch({
+            type: stateUpdate,
+            data: {
+              [stateName]: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
           resolve();
         })
         .catch((err) => {
-          state.data[stateName] = {
-            loading: false,
-            success: false,
-            error: err,
-          };
-          dispatch(state);
+          dispatch({
+            type: stateUpdate,
+            data: {
+              [stateName]: {
+                loading: false,
+                success: false,
+                error: err,
+              },
+            },
+          });
           reject();
         });
     });
   };
 }
+
+type ClearCreatorParams<T extends ApiItemString> = ApiAction.ClearDataMap[T] & {
+  clear: ApiAction.ClearTypeMap[T];
+};
 
 /**
  * @docs actionCreators
@@ -207,24 +288,13 @@ function fetchCreator({
  * @param search Si il faut effacer la recherche d'articles
  * @returns Action
  */
-function clearCreator({
+function clearCreator<T extends ApiItemString>({
   clear,
-  data = true,
-  search = true,
-  verification = true,
-}: {
-  clear: string;
-  data: boolean;
-  search: boolean;
-  verification?: boolean;
-}) {
+  ...elementsToClear
+}: ClearCreatorParams<T>): AnyAction {
   return {
     type: clear,
-    data: {
-      search,
-      data,
-      verification,
-    },
+    data: elementsToClear,
   };
 }
 

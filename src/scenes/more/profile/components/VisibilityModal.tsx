@@ -1,29 +1,26 @@
 import React from 'react';
-import { ModalProps, ArticleListItem } from '@ts/types';
-import {
-  Divider,
-  Button,
-  Card,
-  RadioButton,
-  List,
-  ThemeProvider,
-  useTheme,
-  ProgressBar,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import { ErrorMessage, Modal } from '@components/index';
-
-import getStyles from '@styles/Styles';
-import { updateData } from '@redux/actions/data/profile';
-import { fetchAccount } from '@redux/actions/data/account';
+import { View, Platform } from 'react-native';
+import { Divider, Button, RadioButton, List, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
+
+import { ErrorMessage, Modal } from '@components/index';
+import { fetchAccount } from '@redux/actions/data/account';
+import { updateData } from '@redux/actions/data/profile';
+import getStyles from '@styles/Styles';
+import { ModalProps, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 type VisibilityModalProps = ModalProps & {
   isInitialPublic: boolean;
   state: { updateProfile: { loading: boolean; error: any } };
 };
 
-function VisibilityModal({ visible, setVisible, isInitialPublic, state }: VisibilityModalProps) {
+const VisibilityModal: React.FC<VisibilityModalProps> = ({
+  visible,
+  setVisible,
+  isInitialPublic,
+  state,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -64,6 +61,7 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
           left={() =>
             Platform.OS !== 'ios' && (
               <RadioButton
+                value=""
                 color={colors.primary}
                 status={isPublic ? 'checked' : 'unchecked'}
                 onPress={() => {
@@ -75,6 +73,7 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
           right={() =>
             Platform.OS === 'ios' && (
               <RadioButton
+                value=""
                 color={colors.primary}
                 status={isPublic ? 'checked' : 'unchecked'}
                 onPress={() => {
@@ -93,6 +92,7 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
           left={() =>
             Platform.OS !== 'ios' && (
               <RadioButton
+                value=""
                 color={colors.primary}
                 status={!isPublic ? 'checked' : 'unchecked'}
                 onPress={() => {
@@ -104,6 +104,7 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
           right={() =>
             Platform.OS === 'ios' && (
               <RadioButton
+                value=""
                 color={colors.primary}
                 status={!isPublic ? 'checked' : 'unchecked'}
                 onPress={() => {
@@ -129,9 +130,9 @@ function VisibilityModal({ visible, setVisible, isInitialPublic, state }: Visibi
       </View>
     </Modal>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { account } = state;
   return {
     isInitialPublic: account.accountInfo?.user?.data?.public,

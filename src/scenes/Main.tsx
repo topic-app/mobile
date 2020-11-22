@@ -15,14 +15,6 @@ import ParamsStackNavigator from './params/index';
 import HistoryStackNavigator from './history/index';
 import NotFound from './NotFound';
 
-function getNestedParams(route?: { params: object }) {
-  let { params } = route;
-  while (params.params) {
-    params = params.params;
-  }
-  return params;
-}
-
 export type MainStackParams = {
   Display: undefined;
   Configure: undefined;

@@ -1,6 +1,7 @@
 import { request } from '@utils/index';
 import Store from '@redux/store';
 import { hashPassword } from '@utils/crypto';
+import { AppThunk, UPDATE_ACCOUNT_STATE, User } from '@ts/types';
 
 /**
  * @docs actionCreators
@@ -8,217 +9,134 @@ import { hashPassword } from '@utils/crypto';
  * @param fields Les données à modifier
  * @returns Action
  */
-function updateDataCreator(fields) {
-  return (dispatch, getState) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
-        data: {
-          updateProfile: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+function updateDataCreator(fields: Partial<User>): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateProfile: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
+      },
+    });
 
-      try {
-        await request('profile/modify/data', 'post', { data: fields }, true);
-      } catch (error) {
-        dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
-          data: {
-            updateProfile: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
+    try {
+      await request('profile/modify/data', 'post', { data: fields }, true);
+    } catch (error) {
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error,
           },
         },
       });
-      resolve();
+      return Promise.reject();
+    }
+
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateProfile: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return Promise.resolve();
   };
 }
+
+type UpdateStringCreatorParams = {
+  url: string;
+  params: { [key: string]: any };
+};
 
 /**
  * @docs actionCreators
- * Modifie le username du compte
- * @param username Le nom d'utilisateur
+ * Modifie un string quelquonque du compte
+ * @param url L'url à appeler, sans la base (eg. 'articles/list')
+ * @param params Les paramètres de la requête
  * @returns Action
  */
-function updateUsernameCreator(username: string) {
-  return (dispatch, getState) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
-        data: {
-          updateProfile: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+function updateProfileStringCreator({ url, params }: UpdateStringCreatorParams): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateProfile: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
+      },
+    });
 
-      try {
-        await request('profile/modify/username', 'post', { username }, true);
-      } catch (error) {
-        dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
-          data: {
-            updateProfile: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
+    try {
+      await request(url, 'post', params, true);
+    } catch (error) {
       dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
+        type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error,
           },
         },
       });
-      resolve();
+      return Promise.reject();
+    }
+
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateProfile: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return Promise.resolve();
   };
 }
 
-/**
- * @docs actionCreators
- * Modifie le username du compte
- * @param username Le nom d'utilisateur
- * @returns Action
- */
-function updateEmailCreator(email: string) {
-  return (dispatch, getState) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
-        data: {
-          updateProfile: {
-            loading: true,
-            success: null,
-            error: null,
-          },
-        },
-      });
-
-      try {
-        await request('profile/modify/email', 'post', { email }, true);
-      } catch (error) {
-        dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
-          data: {
-            updateProfile: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
-      dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
-        data: {
-          updateProfile: {
-            loading: false,
-            success: true,
-            error: null,
-          },
-        },
-      });
-      resolve();
-    });
-  };
-}
-
-function updatePasswordCreator(password: string) {
-  return (dispatch, getState) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
-        data: {
-          updateProfile: {
-            loading: true,
-            success: null,
-            error: null,
-          },
-        },
-      });
-
-      try {
-        let newPassword = await hashPassword(password);
-        await request('profile/modify/password', 'post', { password: newPassword }, true);
-      } catch (error) {
-        dispatch({
-          type: 'UPDATE_ACCOUNT_STATE',
-          data: {
-            updateProfile: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
-      dispatch({
-        type: 'UPDATE_ACCOUNT_STATE',
-        data: {
-          updateProfile: {
-            loading: false,
-            success: true,
-            error: null,
-          },
-        },
-      });
-      resolve();
-    });
-  };
-}
-
-async function updateData(fields) {
+async function updateData(fields: Partial<User>) {
   await Store.dispatch(updateDataCreator(fields));
 }
 
 async function updateUsername(username: string) {
-  await Store.dispatch(updateUsernameCreator(username));
+  await Store.dispatch(
+    updateProfileStringCreator({
+      url: 'profile/modify/username',
+      params: { username },
+    }),
+  );
 }
 
 async function updateEmail(email: string) {
-  await Store.dispatch(updateEmailCreator(email));
+  await Store.dispatch(
+    updateProfileStringCreator({
+      url: 'profile/modify/email',
+      params: { email },
+    }),
+  );
 }
 
 async function updatePassword(password: string) {
-  await Store.dispatch(updatePasswordCreator(password));
+  const hashedPassword = await hashPassword(password);
+  await Store.dispatch(
+    updateProfileStringCreator({
+      url: 'profile/modify/password',
+      params: { password: hashedPassword },
+    }),
+  );
 }
 
 export { updateData, updateUsername, updateEmail, updatePassword };

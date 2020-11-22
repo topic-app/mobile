@@ -1,3 +1,6 @@
+// @ts-nocheck
+// TODO: Not implemented
+
 import Store from '@redux/store';
 
 /**
@@ -18,8 +21,8 @@ function updateMessagesCreator(messages) {
  * Mettre à jour un ou plusieurs paramètres
  * @param prefs les paramètres à mettre à jour
  */
-async function updateMessages(messages) {
-  await Store.dispatch(updateMessagesCreator(messages));
+function updateMessages(messages) {
+  Store.dispatch(updateMessagesCreator(messages));
 }
 
 export { updateMessages };

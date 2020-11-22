@@ -14,10 +14,13 @@
     "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
     "react/prefer-stateless-function": "off",
     "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "off",
     "react-native/no-inline-styles": "off",
     "import/no-extraneous-dependencies": ["error", { "packageDir": "." }],
+    "import/prefer-default-export": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -33,5 +36,20 @@
     "import/resolver": {
       "babel-module": {}
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": ["tests/**/*.ts", "tests/**/*.tsx", "tests/**/*.js", "tests/**/*.jsx"],
+      "extends": "plugin:jest/style",
+      "plugins": ["jest"],
+      "env": { "jest": true },
+      "rules": {
+        "jest/no-disabled-tests": "warn",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
+        "jest/prefer-to-have-length": "warn",
+        "jest/valid-expect": "error"
+      }
+    }
+  ]
 }

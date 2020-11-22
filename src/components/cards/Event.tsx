@@ -1,18 +1,20 @@
-import React from 'react';
-import { View, Image } from 'react-native';
-import { Text, Card, useTheme } from 'react-native-paper';
-import moment from 'moment';
-import shortid from 'shortid';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';
+import React from 'react';
+import { View, Image, Dimensions } from 'react-native';
+import { Text, Card, Paragraph, Title, Caption } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
+import shortid from 'shortid';
 
-import { EventPreload } from '@ts/types';
-import { getImageUrl } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { EventPreload, EventVerificationPreload, State, Preferences } from '@ts/types';
+import { useTheme, getImageUrl } from '@utils/index';
 
-import getCardStyles from './styles/CardStyles';
 import { CardBase } from '../Cards';
+import CustomImage from '../CustomImage';
 import TagList from '../TagList';
+import getCardStyles from './styles/CardStyles';
 
 function buildDateString(start: string, end: string) {
   if (start === undefined || end === undefined) return null;
@@ -33,67 +35,154 @@ function buildDateString(start: string, end: string) {
   return `Prévu - ${startDate.calendar()} (${startDate.fromNow()})`;
 }
 
-type Props = {
+const EVENT_CARD_HEADER_HEIGHT = 157; // IMPORTANT: This should be updated every time something is changed (used for getItemLayout optimization)
+
+type EventCardProps = {
   event: EventPreload;
   navigate: StackNavigationProp<any, any>['navigate'];
+  verification?: boolean;
+  preferences: Preferences;
+  overrideImageWidth?: number;
 };
 
-const EventCard: React.FC<Props> = ({ event, navigate }) => {
+const EventCard: React.FC<EventCardProps> = ({
+  event,
+  navigate,
+  verification,
+  preferences,
+  overrideImageWidth,
+}) => {
+  const [cardWidth, setCardWidth] = React.useState(100);
+  const imageSize = cardWidth / 3.5;
+
   const start = event.duration?.start; // Destructure this once duration works on the server
   const end = event.duration?.end;
+
+  const eventVerification = event as EventVerificationPreload;
 
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
   const cardStyles = getCardStyles(theme);
 
+  if (!event)
+    return (
+      <CardBase>
+        <Card.Content>
+          <Text>Évènement non existant</Text>
+        </Card.Content>
+      </CardBase>
+    );
+
+  const verificationColors = ['green', 'yellow', 'yellow', 'orange', 'orange', 'orange'];
+
   return (
-    <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
-      <Card.Title title={event?.title} subtitle={buildDateString(start, end)} />
-      <View style={{ paddingVertical: 5 }}>
-        <TagList item={event} />
-      </View>
-      <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
-        <View style={{ flexDirection: 'row' }}>
-          {event.image && (
-            <Image
-              source={{ uri: getImageUrl({ image: event.image, size: 'small' }) }}
-              style={[
-                styles.thumbnail,
-                {
-                  width: 130,
-                  height: 130,
-                  marginRight: 15,
-                },
-              ]}
-            />
-          )}
-          <View>
-            <Text style={cardStyles.cardDescription}>{event?.summary}</Text>
-            {Array.isArray(event?.places) &&
-              event.places.map((p) => (
-                <View
-                  key={shortid()}
-                  style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
-                >
-                  <Icon color={colors.icon} name="map-marker" style={cardStyles.cardDescription} />
-                  <Text
-                    style={[cardStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
-                    numberOfLines={1}
-                  >
-                    {p?.type === 'standalone' &&
-                      (p?.address?.shortName ||
-                        `${p?.address?.address?.street}, ${p?.address?.address?.city}`)}
-                    {p.type === 'school' && p?.associatedSchool?.displayName}
-                    {p.type === 'standalone' && p?.associatedPlace?.displayName}
-                  </Text>
-                </View>
-              ))}
+    <View
+      onLayout={({
+        nativeEvent: {
+          layout: { width, height },
+        },
+      }) => {
+        setCardWidth(width);
+      }}
+    >
+      <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
+        <Card.Content>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+            <View>
+              <Title numberOfLines={2}>{event?.title}</Title>
+              <Caption>{buildDateString(start, end)}</Caption>
+            </View>
+            {verification && eventVerification?.verification && (
+              <View
+                style={{
+                  borderRadius: 20,
+                  backgroundColor:
+                    verificationColors[eventVerification?.verification?.bot?.score] || 'red',
+                  height: 40,
+                  width: 40,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{ fontSize: 20, color: 'black' }}>
+                  {eventVerification?.verification?.bot?.score}
+                </Text>
+              </View>
+            )}
           </View>
+        </Card.Content>
+        <View style={{ paddingVertical: 5 }}>
+          <TagList item={event} scrollable={false} />
         </View>
-      </Card.Content>
-    </CardBase>
+        <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
+          <View style={{ flexDirection: 'row' }}>
+            <CustomImage
+              image={event?.image}
+              imageSize="medium"
+              width={overrideImageWidth || imageSize}
+              height={overrideImageWidth || imageSize}
+            />
+            <View
+              style={{
+                marginLeft: 15,
+                flex: 1,
+              }}
+            >
+              <Paragraph numberOfLines={4} style={[{ fontFamily: preferences.fontFamily }]}>
+                {event?.summary}
+              </Paragraph>
+              {Array.isArray(event?.places) &&
+                event.places.map((p) => (
+                  <View
+                    key={shortid()}
+                    style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
+                  >
+                    <Icon
+                      color={colors.icon}
+                      name="map-marker"
+                      style={cardStyles.cardDescription}
+                    />
+                    <Text
+                      style={[cardStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
+                      numberOfLines={1}
+                    >
+                      {p?.type === 'standalone' &&
+                        (p?.address?.shortName ||
+                          `${p?.address?.address?.street}, ${p?.address?.address?.city}`)}
+                      {p.type === 'school' && p?.associatedSchool?.displayName}
+                      {p.type === 'standalone' && p?.associatedPlace?.displayName}
+                    </Text>
+                  </View>
+                ))}
+            </View>
+          </View>
+        </Card.Content>
+        {verification && (
+          <Card.Content>
+            {eventVerification?.verification?.bot?.flags?.length !== 0 && (
+              <Text>Classifié comme {eventVerification?.verification?.bot?.flags?.join(', ')}</Text>
+            )}
+            {eventVerification?.verification?.reports?.length !== 0 && (
+              <Text>Reporté {eventVerification?.verification?.reports?.length} fois </Text>
+            )}
+            {eventVerification?.verification?.users?.length !== 0 && (
+              <Text>Approuvé par {eventVerification?.verification?.users?.join(', ')}</Text>
+            )}
+          </Card.Content>
+        )}
+      </CardBase>
+    </View>
   );
 };
 
-export default EventCard;
+const mapStateToProps = (state: State) => {
+  const { preferences } = state;
+  return {
+    preferences,
+  };
+};
+
+export { EVENT_CARD_HEADER_HEIGHT };
+
+export default connect(mapStateToProps)(EventCard);

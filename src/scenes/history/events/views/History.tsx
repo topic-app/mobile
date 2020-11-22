@@ -1,20 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { List, Text, Divider, useTheme } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { View, TouchableWithoutFeedback, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
+import { List, Text, Divider } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import { ArticleReadItem, Preferences } from '@ts/types';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { ErrorMessage, InlineCard, PlatformTouchable } from '@components/index';
+import { EventReadItem, Preferences, State } from '@ts/types';
+import { PlatformTouchable } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { deleteArticleRead } from '@redux/actions/contentData/articles';
 
+import { EventHistoryStackParams } from '../index';
+
 type EventHistoryProps = {
-  navigation: any;
-  read: ArticleReadItem[];
+  navigation: StackNavigationProp<EventHistoryStackParams, 'Params'>;
+  read: EventReadItem[];
   preferences: Preferences;
 };
 
@@ -26,7 +27,7 @@ function EventHistory({ navigation, read, preferences }: EventHistoryProps) {
     return (
       <View style={styles.page}>
         <View style={styles.centerIllustrationContainer}>
-          <Text>L'historique est désactivé</Text>
+          <Text>L&amp;historique est désactivé</Text>
         </View>
       </View>
     );
@@ -81,7 +82,7 @@ function EventHistory({ navigation, read, preferences }: EventHistoryProps) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { eventData, preferences } = state;
   return {
     read: eventData.read,

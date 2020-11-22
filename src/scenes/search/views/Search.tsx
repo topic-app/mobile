@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import { Text, Button, useTheme, ProgressBar } from 'react-native-paper';
+import { Text, Button, ProgressBar } from 'react-native-paper';
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
@@ -16,6 +16,7 @@ import {
   EventRequestState,
   ArticleRequestState,
   TagPreload,
+  Account,
 } from '@ts/types';
 import {
   Searchbar,
@@ -28,8 +29,9 @@ import {
   ArticleCard,
   EventCard,
   ErrorMessage,
+  GroupCard,
 } from '@components/index';
-import { useSafeAreaInsets } from '@utils/index';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { searchArticles, clearArticles } from '@redux/actions/api/articles';
 import { searchEvents, clearEvents } from '@redux/actions/api/events';
@@ -38,7 +40,7 @@ import { searchUsers, clearUsers } from '@redux/actions/api/users';
 import { searchTags } from '@redux/actions/api/tags';
 
 import getSearchStyles from '../styles/Styles';
-import { getSuggestions, SuggestionType } from '../utils/suggestions';
+import { SuggestionType } from '../utils/suggestions';
 import type { SearchStackParams } from '../index';
 
 type SearchProps = {
@@ -55,6 +57,7 @@ type SearchProps = {
     groups: GroupRequestState;
     users: UserRequestState;
   };
+  account: Account;
 };
 
 const Search: React.FC<SearchProps> = ({
@@ -66,6 +69,7 @@ const Search: React.FC<SearchProps> = ({
   users,
   tags,
   state,
+  account,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -150,7 +154,29 @@ const Search: React.FC<SearchProps> = ({
       data: groups,
       func: searchGroups,
       clear: clearGroups,
-      component: (group: GroupPreload) => <View />,
+      component: (group: GroupPreload) => (
+        <GroupCard
+          group={group}
+          member={account.groups?.some((g) => g._id == group._id)}
+          following={account.accountInfo?.user?.data?.following?.groups?.some(
+            (g) => g._id === group._id,
+          )}
+          navigate={() =>
+            navigation.navigate('Main', {
+              screen: 'Display',
+              params: {
+                screen: 'Group',
+                params: {
+                  screen: 'Display',
+                  params: {
+                    id: group._id,
+                  },
+                },
+              },
+            })
+          }
+        />
+      ),
       state: state.groups.search,
     },
     {
@@ -161,7 +187,7 @@ const Search: React.FC<SearchProps> = ({
       data: users,
       func: searchUsers,
       clear: clearUsers,
-      component: (user: UserPreload) => <View />,
+      component: (_user: UserPreload) => <View />,
       state: state.users.search,
     },
   ];
@@ -287,16 +313,17 @@ const Search: React.FC<SearchProps> = ({
   const getParams = () => {
     let params = {};
     if (filters.tags) {
-      console.log(filters.tags);
       params['tags'] = filters.tags;
     }
     return params;
   };
 
-  const submitSearch = () => {
+  const submitSearch = (text) => {
     collapseFilter();
     if (searchText !== '') {
-      categories.find((c) => c.key === filters.category)?.func('initial', searchText, getParams());
+      categories
+        .find((c) => c.key === filters.category)
+        ?.func('initial', text || searchText, getParams());
     }
   };
 
@@ -462,7 +489,7 @@ const Search: React.FC<SearchProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, events, groups, users, tags, schools, departments } = state;
+  const { articles, events, groups, users, tags, schools, departments, account } = state;
   return {
     articles: articles.search,
     events: events.search,
@@ -477,6 +504,7 @@ const mapStateToProps = (state: State) => {
       groups: groups.state,
       users: users.state,
     },
+    account,
   };
 };
 

@@ -1,5 +1,6 @@
+import { StackScreenProps } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, ScrollView, Platform } from 'react-native';
 import {
   Text,
@@ -10,17 +11,33 @@ import {
   Card,
   Paragraph,
   Chip,
-  useTheme,
 } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import moment from 'moment';
 
+import { TagList } from '@components/index';
 import getStyles from '@styles/Styles';
-import TagList from '@components/TagList';
-import PetitionChart from '../components/Charts';
+import {
+  Petition,
+  PetitionPreload,
+  PetitionRequestState,
+  PetitionStatus,
+  State,
+  Theme,
+} from '@ts/types';
+import { useTheme } from '@utils/index';
 
-function StatusChip({ mode, color, icon, label }) {
+import PetitionChart from '../components/Charts';
+import type { PetitionDisplayStackParams } from '../index';
+
+type StatusChipProps = {
+  mode: 'contained' | 'text' | 'outlined';
+  color: string;
+  icon: string;
+  label: string;
+};
+
+const StatusChip: React.FC<StatusChipProps> = ({ mode, color, icon, label }) => {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -66,19 +83,19 @@ function StatusChip({ mode, color, icon, label }) {
         ...viewStyles,
       }}
     >
-      <MaterialCommunityIcons name={icon} color={textColor} size={17} />
+      <Icon name={icon} color={textColor} size={17} />
       <Text style={{ color: textColor, fontSize: 13 }}> {label}</Text>
     </View>
   );
-}
+};
 
-function renderPetitionStatus(status, theme) {
+function renderPetitionStatus(status: PetitionStatus, theme: Theme) {
   const { colors } = theme;
 
   switch (status) {
     case 'answered':
-      return <StatusChip color={colors.valid} icon="check" label="Réussite" />;
-    case 'rejected':
+      return <StatusChip mode="contained" color={colors.valid} icon="check" label="Réussite" />;
+    case 'closed':
       return <StatusChip mode="text" color={colors.disabled} icon="lock" label="Fermée" />;
     case 'open':
       return <StatusChip mode="outlined" color={colors.valid} icon="menu-open" label="Ouvert" />;
@@ -89,7 +106,17 @@ function renderPetitionStatus(status, theme) {
   }
 }
 
-function PetitionTime({ status: petitionStatus, startTime, endTime }) {
+type PetitionTimeProps = {
+  status: PetitionStatus;
+  startTime: string;
+  endTime: string;
+};
+
+const PetitionTime: React.FC<PetitionTimeProps> = ({
+  status: petitionStatus,
+  startTime,
+  endTime,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -118,13 +145,23 @@ function PetitionTime({ status: petitionStatus, startTime, endTime }) {
       <View style={{ position: 'absolute', right: 0 }}>{renderPetitionStatus(status, theme)}</View>
     </View>
   );
-}
+};
 
-function PetitionDisplay({ route, petitions }) {
+type PetitionDisplayProps = StackScreenProps<PetitionDisplayStackParams, 'Display'> & {
+  petitions: (PetitionPreload | Petition)[];
+  reqState: PetitionRequestState;
+};
+
+const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) => {
   const theme = useTheme();
   const { colors } = theme;
   const { id } = route.params;
   const petition = petitions.find((t) => t._id === id);
+
+  // TODO: Fetch petition from api
+  if (!petition) {
+    return null;
+  }
 
   const styles = getStyles(theme);
 
@@ -161,7 +198,7 @@ function PetitionDisplay({ route, petitions }) {
             title="Espace lecture"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="green" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="green" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -170,7 +207,7 @@ function PetitionDisplay({ route, petitions }) {
             title="Aide au devoirs"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="yellow" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="yellow" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -179,7 +216,7 @@ function PetitionDisplay({ route, petitions }) {
             title="FabLab"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="checked" color="#962626" onPress={() => {}} />
+                <RadioButton value="" status="checked" color="#962626" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -188,7 +225,7 @@ function PetitionDisplay({ route, petitions }) {
             title="Matériel informatique"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="blue" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="blue" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -202,7 +239,7 @@ function PetitionDisplay({ route, petitions }) {
           <View style={{ paddingTop: 10, paddingBottom: 5 }}>
             <Card.Content>
               <Text style={styles.cardTitle}>
-                <MaterialCommunityIcons name="comment" />
+                <Icon name="comment" />
                 &nbsp;Administration CIV
               </Text>
             </Card.Content>
@@ -252,7 +289,7 @@ function PetitionDisplay({ route, petitions }) {
                 CNVL
               </Chip>
             </View>
-            <MaterialCommunityIcons name="dots-vertical" size={25} />
+            <Icon name="dots-vertical" size={25} />
           </View>
           <View style={styles.contentContainer}>
             <Paragraph>
@@ -264,71 +301,11 @@ function PetitionDisplay({ route, petitions }) {
       </ScrollView>
     </View>
   );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { petitions } = state;
-  return { petitions: petitions.data, state: petitions.state };
+  return { petitions: petitions.data, reqState: petitions.state };
 };
 
 export default connect(mapStateToProps)(PetitionDisplay);
-
-PetitionDisplay.propTypes = {
-  state: PropTypes.shape({
-    success: PropTypes.bool,
-    loading: PropTypes.shape({
-      next: PropTypes.bool,
-      initial: PropTypes.bool,
-      refresh: PropTypes.bool,
-    }),
-    error: PropTypes.shape(),
-  }).isRequired,
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  petitions: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      voteData: PropTypes.shape({
-        type: PropTypes.string.isRequired,
-        goal: PropTypes.number,
-        votes: PropTypes.number,
-        against: PropTypes.number,
-        for: PropTypes.number,
-        multiple: PropTypes.arrayOf(
-          PropTypes.shape({
-            title: PropTypes.string,
-            votes: PropTypes.number,
-          }),
-        ),
-      }).isRequired,
-      status: PropTypes.oneOf(['open', 'waiting', 'rejected', 'answered']),
-      duration: PropTypes.shape({
-        start: PropTypes.string.isRequired, // Note: need to change to instanceOf(Date) once we get axios working
-        end: PropTypes.string.isRequired,
-      }).isRequired,
-      description: PropTypes.string,
-    }).isRequired,
-  ).isRequired,
-};
-
-PetitionTime.propTypes = {
-  status: PropTypes.string.isRequired,
-  startTime: PropTypes.string.isRequired,
-  endTime: PropTypes.string.isRequired,
-};
-
-StatusChip.propTypes = {
-  mode: PropTypes.oneOf(['contained', 'text', 'outlined']),
-  label: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
-  icon: PropTypes.string,
-};
-
-StatusChip.defaultProps = {
-  mode: 'contained',
-  icon: null,
-};

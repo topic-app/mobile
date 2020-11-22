@@ -1,31 +1,27 @@
 import React from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
+import { connect } from 'react-redux';
+import { Button, Text, Title } from 'react-native-paper';
 
-import { updateEventCreationData } from '@redux/actions/contentData/events';
+import { Account, Content, State } from '@ts/types';
 import { StepperViewPageProps } from '@components/index';
-import { Account, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
 
 import getAuthStyles from '../styles/Styles';
-import { connect } from 'react-redux';
 
-type Props = StepperViewPageProps & { account: Account };
+type Props = StepperViewPageProps & { account: Account; add: (parser: Content['parser']) => void };
 
-const EventAddPageProgram: React.FC<Props> = ({ next, prev, account }) => {
-  const [showError, setError] = React.useState(false);
-
+const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
   const contentInput = React.createRef<RNTestInput>();
   const theme = useTheme();
   const { colors } = theme;
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const submit = () => {
-    {
-      /* updateEventCreationData({ tags: selectedTags }); */
-    }
-    next();
+    updateEventCreationData({ parser: 'markdown', program: null });
+    add('markdown');
   };
 
   function blurInputs() {
@@ -44,12 +40,14 @@ const EventAddPageProgram: React.FC<Props> = ({ next, prev, account }) => {
 
   return (
     <View style={eventStyles.formContainer}>
-      <Text>Programme</Text>
+      <View style={styles.container}>
+        <Title>Aucun programme (non implémenté)</Title>
+      </View>
       <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => prev()}
+          onPress={prev}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour

@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Event } from '@ts/types';
+import { Event, ApiItem } from '@ts/types';
 import {
   UPDATE_EVENTS_UPCOMING_DATA,
   UPDATE_EVENTS_VERIFICATION,
@@ -8,12 +8,15 @@ import {
   UPDATE_EVENTS_ITEM,
   UPDATE_EVENTS_STATE,
   CLEAR_EVENTS,
+  UPDATE_EVENTS_FOLLOWING,
 } from '@ts/redux';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateAscSort = (data: Event[]) =>
-  data.sort((a, b) => (new Date(a.duration?.start) > new Date(b.duration?.start) ? 1 : -1));
+const dateAscSort = (data: ApiItem[]) =>
+  (data as Event[]).sort((a, b) =>
+    new Date(a.duration?.start) > new Date(b.duration?.start) ? 1 : -1,
+  );
 
 const dateDescSort = (data: Event[]) =>
   data.sort((a, b) => (new Date(a.duration?.start) > new Date(b.duration?.start) ? -1 : 1));
@@ -33,6 +36,7 @@ async function updateUpcomingEvents(
       update: UPDATE_EVENTS_UPCOMING_DATA,
       stateUpdate: UPDATE_EVENTS_STATE,
       url: 'events/list',
+      listName: 'dataUpcoming',
       sort: dateAscSort,
       dataType: 'events',
       type,
@@ -53,11 +57,48 @@ async function updatePassedEvents(
       update: UPDATE_EVENTS_PASSED_DATA,
       stateUpdate: UPDATE_EVENTS_STATE,
       url: 'events/list',
+      listName: 'dataPassed',
       sort: dateDescSort,
       dataType: 'events',
       type,
       params: useDefaultParams
         ? { ...Store.getState().eventData.params, durationStartRangeEnd: Date.now(), ...params }
+        : params,
+    }),
+  );
+}
+
+async function updateEventsFollowing(
+  type: 'initial' | 'refresh' | 'next',
+  params = {},
+  useDefaultParams = true,
+) {
+  if (
+    !Store.getState().account.loggedIn ||
+    !Store.getState().account?.accountInfo?.user?.data?.following?.groups?.every((g) => !g)
+  ) {
+    return false;
+  }
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_EVENTS_FOLLOWING,
+      stateUpdate: UPDATE_EVENTS_STATE,
+      stateName: 'following',
+      url: 'events/list',
+      listName: 'following',
+      sort: dateDescSort,
+      dataType: 'events',
+      type,
+      params: useDefaultParams
+        ? {
+            groups: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.groups?.map((g) => g._id)
+              .filter((g) => !!g),
+            users: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.users?.map((u) => u._id)
+              .filter((g) => !!g),
+            ...params,
+          }
         : params,
     }),
   );
@@ -70,7 +111,6 @@ async function searchEvents(
   search = true,
   useDefaultParams = false,
 ) {
-  console.log(`Search articles ${JSON.stringify(params)}`);
   await Store.dispatch(
     updateCreator({
       update: UPDATE_EVENTS_SEARCH,
@@ -97,6 +137,7 @@ async function fetchEvent(eventId: string) {
     fetchCreator({
       update: UPDATE_EVENTS_ITEM,
       stateUpdate: UPDATE_EVENTS_STATE,
+      stateName: 'info',
       url: 'events/info',
       dataType: 'events',
       params: { eventId },
@@ -104,13 +145,13 @@ async function fetchEvent(eventId: string) {
   );
 }
 
-/** Event verification **/
-
+/** Event verification */
 async function fetchEventVerification(eventId: string) {
   await Store.dispatch(
     fetchCreator({
       update: UPDATE_EVENTS_ITEM,
       stateUpdate: UPDATE_EVENTS_STATE,
+      stateName: 'info',
       url: 'events/verification/info',
       dataType: 'events',
       params: { eventId },
@@ -140,8 +181,8 @@ async function updateEventsVerification(type: 'initial' | 'refresh' | 'next', pa
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearEvents(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_EVENTS, data, search }));
+function clearEvents(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_EVENTS, data, search }));
 }
 
 export {
@@ -150,6 +191,7 @@ export {
   clearEvents,
   fetchEvent,
   searchEvents,
+  updateEventsFollowing,
   fetchEventVerification,
   updateEventsVerification,
 };

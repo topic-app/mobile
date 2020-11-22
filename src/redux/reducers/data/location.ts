@@ -1,62 +1,51 @@
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
+import {
+  LocationActionTypes,
+  UPDATE_LOCATION,
+  CLEAR_LOCATION,
+  UPDATE_LOCATION_STATE,
+  LocationState,
+} from '@ts/redux';
+
+const initialState: LocationState = {
+  selected: false,
+  schools: [],
+  schoolData: [],
+  departments: [],
+  departmentData: [],
+  global: false,
+  state: {
+    fetch: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    update: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+  },
+  ...Config.seedDb.location,
+};
+
 /**
  * @docs reducers
  * Reducer pour les preferences
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['SET_PREF', 'CLEAR_PREF', 'CLEAR_ALL_PREFS'] Stocker des parametres, en supprimer un, supprimer tout
- * @param {object} action.data.prefs Les parametres à stocker
- * @param {string} action.data.pref La clé du paramètre à supprimer
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Stocker des parametres, en supprimer un, supprimer tout
+ * @param action.data.prefs Les parametres à stocker
+ * @param action.data.pref La clé du paramètre à supprimer
  * @returns Nouveau state
  */
-
-let initialState;
-if (config.dev.defaultLocation) {
-  initialState = {
-    ...config.dev.defaultLocation,
-    state: {
-      fetch: {
-        loading: null,
-        success: null,
-        error: null,
-      },
-      update: {
-        loading: null,
-        success: null,
-        error: null,
-      },
-    },
-  };
-} else {
-  initialState = {
-    selected: false,
-    schools: [],
-    schoolData: [],
-    departments: [],
-    departmentData: [],
-    global: null,
-    state: {
-      fetch: {
-        loading: null,
-        success: null,
-        error: null,
-      },
-      update: {
-        loading: null,
-        success: null,
-        error: null,
-      },
-    },
-  };
-}
-
-function locationReducer(state = initialState, action) {
+function locationReducer(state = initialState, action: LocationActionTypes): LocationState {
   switch (action.type) {
-    case 'UPDATE_LOCATION':
+    case UPDATE_LOCATION:
       return { ...state, ...action.data };
-    case 'CLEAR_LOCATION':
+    case CLEAR_LOCATION:
       return initialState;
-    case 'UPDATE_LOCATION_STATE':
+    case UPDATE_LOCATION_STATE:
       return { ...state, state: { ...state.state, ...action.data } };
     default:
       return state;

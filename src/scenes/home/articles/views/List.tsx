@@ -1,10 +1,23 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, FAB, useTheme } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@utils/stack';
+import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import {
+  AnimatingHeader,
+  ErrorMessage,
+  TabChipList,
+  GroupsBanner,
+  ARTICLE_CARD_HEADER_HEIGHT,
+} from '@components/index';
+import {
+  updateArticles,
+  searchArticles,
+  updateArticlesFollowing,
+} from '@redux/actions/api/articles';
+import getStyles from '@styles/Styles';
 import {
   State,
   ArticleListItem,
@@ -17,13 +30,11 @@ import {
   ArticleRequestState,
   Account,
 } from '@ts/types';
-import { AnimatingHeader, ErrorMessage, TabChipList, GroupsBanner } from '@components/index';
-import { updateArticles, searchArticles } from '@redux/actions/api/articles';
-import getStyles from '@styles/Styles';
+import { useTheme } from '@utils/index';
 
+import { HomeTwoNavParams } from '../../HomeTwo.ios';
 import ArticleListCard from '../components/Card';
 import ArticleEmptyList from '../components/EmptyList';
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
 
 type Category = {
   key: string;
@@ -37,6 +48,7 @@ type Category = {
 
 type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   articles: (ArticlePreload | Article)[];
+  followingArticles: (ArticlePreload | Article)[];
   search: ArticlePreload[];
   lists: ArticleListItem[];
   read: ArticleReadItem[];
@@ -45,12 +57,15 @@ type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   preferences: Preferences;
   state: ArticleRequestState;
   account: Account;
+  dual?: boolean;
+  setArticle?: (article: { id: string; title: string; useLists: boolean }) => any;
 };
 
 const ArticleList: React.FC<ArticleListProps> = ({
   navigation,
   route,
   articles,
+  followingArticles,
   search,
   lists,
   read,
@@ -59,6 +74,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
   articlePrefs,
   preferences,
   account,
+  dual = false,
+  setArticle = () => {},
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -67,22 +84,36 @@ const ArticleList: React.FC<ArticleListProps> = ({
   const scrollY = new Animated.Value(0);
 
   const potentialCategories = [
+    ...(preferences.history
+      ? [
+          {
+            key: 'unread',
+            title: 'Non lus',
+            data: articles.filter((a) => !read.some((r) => r.id === a._id)),
+            type: 'category',
+          },
+        ]
+      : []),
     {
       key: 'all',
       title: 'Tous',
       data: articles,
       type: 'category',
     },
+    ...(account.loggedIn &&
+    account.accountInfo?.user?.data?.following?.users?.length +
+      account.accountInfo?.user?.data?.following?.groups?.length >
+      0
+      ? [
+          {
+            key: 'following',
+            title: 'Suivis',
+            data: followingArticles,
+            type: 'category',
+          },
+        ]
+      : []),
   ];
-
-  if (preferences.history) {
-    potentialCategories.unshift({
-      key: 'unread',
-      title: 'Non lus',
-      data: articles.filter((a) => !read.some((r) => r.id === a._id)),
-      type: 'category',
-    });
-  }
 
   const categories: Category[] = [];
 
@@ -181,6 +212,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
   useFocusEffect(
     React.useCallback(() => {
       updateArticles('initial');
+      updateArticlesFollowing('initial');
     }, [null]),
   );
 
@@ -220,8 +252,24 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   const listData = category.data;
 
+  const [cardWidth, setCardWidth] = React.useState(100);
+  const imageSize = cardWidth / 3.5;
+
+  const itemHeight = ARTICLE_CARD_HEADER_HEIGHT + imageSize;
+
+  const getItemLayout = (data: unknown, index: number) => {
+    return { length: itemHeight, offset: itemHeight * index, index };
+  };
+
   return (
-    <View style={styles.page}>
+    <View
+      style={styles.page}
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => setCardWidth(width)}
+    >
       <AnimatingHeader
         home
         value={scrollY}
@@ -276,10 +324,14 @@ const ArticleList: React.FC<ArticleListProps> = ({
             : []),
         ]}
       >
-        {(state.list.loading.initial || state.search?.loading.initial) && (
+        {(state.list.loading.initial ||
+          state.search?.loading.initial ||
+          state.following?.loading.initial) && (
           <ProgressBar indeterminate style={{ marginTop: -4 }} />
         )}
-        {state.list.error || state.search?.error ? (
+        {(state.list.error && section.key === 'categories') ||
+        (state.search?.error && section.key === 'quicks') ||
+        (state.following?.error && section.key === 'categories' && category.key === 'following') ? (
           <ErrorMessage
             type="axios"
             strings={{
@@ -287,7 +339,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
               contentPlural: 'des articles',
               contentSingular: "La liste d'articles",
             }}
-            error={[state.list.error, state.search?.error]}
+            error={[state.list.error, state.search?.error, state.following?.error]}
             retry={() => updateArticles('initial')}
           />
         ) : null}
@@ -312,10 +364,10 @@ const ArticleList: React.FC<ArticleListProps> = ({
           if (section.key === 'categories') {
             updateArticles('next');
           } else if (section.key === 'quicks') {
-            console.log(category.params);
             searchArticles('next', '', category.params, false, false);
           }
         }}
+        getItemLayout={getItemLayout}
         ListHeaderComponent={() => (
           <View>
             <GroupsBanner />
@@ -334,7 +386,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
             />
             {category.description ? (
               <Banner actions={[]} visible>
-                <Subheading>Description</Subheading>
+                <Subheading>Description{'\n'}</Subheading>
                 <Text>{category.description}</Text>
               </Banner>
             ) : null}
@@ -370,21 +422,31 @@ const ArticleList: React.FC<ArticleListProps> = ({
               isRead={read.some((r) => r.id === article._id)}
               historyActive={preferences.history}
               lists={lists}
-              navigate={() =>
-                navigation.navigate('Main', {
-                  screen: 'Display',
-                  params: {
-                    screen: 'Article',
-                    params: {
-                      screen: 'Display',
-                      params: {
+              overrideImageWidth={imageSize}
+              navigate={
+                dual
+                  ? () => {
+                      setArticle({
                         id: article._id,
                         title: article.title,
                         useLists: section.key === 'lists',
-                      },
-                    },
-                  },
-                })
+                      });
+                    }
+                  : () =>
+                      navigation.navigate('Main', {
+                        screen: 'Display',
+                        params: {
+                          screen: 'Article',
+                          params: {
+                            screen: 'Display',
+                            params: {
+                              id: article._id,
+                              title: article.title,
+                              useLists: section.key === 'lists',
+                            },
+                          },
+                        },
+                      })
               }
             />
           </Animated.View>
@@ -415,6 +477,7 @@ const mapStateToProps = (state: State) => {
   const { articles, articleData, preferences, account } = state;
   return {
     articles: articles.data,
+    followingArticles: articles.following,
     search: articles.search,
     articlePrefs: articleData.prefs,
     lists: articleData.lists,

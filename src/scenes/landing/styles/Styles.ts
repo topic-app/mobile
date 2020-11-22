@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getLandingStyles(theme) {
+import { Theme } from '@ts/types';
+
+function getLandingStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     centerContainer: {

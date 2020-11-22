@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { Department, UPDATE_DEPARTMENTS_ITEMS } from '@ts/types';
+import { UPDATE_DEPARTMENTS_ITEMS, Department } from '@ts/types';
 import {
   UPDATE_DEPARTMENTS_DATA,
   UPDATE_DEPARTMENTS_STATE,
@@ -60,6 +60,7 @@ async function fetchDepartment(departmentId: string) {
     fetchCreator({
       update: UPDATE_DEPARTMENTS_ITEM,
       stateUpdate: UPDATE_DEPARTMENTS_STATE,
+      stateName: 'info',
       url: 'departments/info',
       dataType: 'departments',
       params: { departmentId },
@@ -68,26 +69,29 @@ async function fetchDepartment(departmentId: string) {
 }
 
 async function fetchMultiDepartment(departmentIds: string[]) {
-  departmentIds.forEach(async (departmentId) => {
-    await Store.dispatch(
-      fetchCreator({
-        update: UPDATE_DEPARTMENTS_ITEMS,
-        stateUpdate: UPDATE_DEPARTMENTS_STATE,
-        url: 'departments/info',
-        dataType: 'departments',
-        params: { departmentId },
-        useArray: true,
-      }),
-    );
-  });
+  await Promise.all(
+    departmentIds.map(async (departmentId) => {
+      await Store.dispatch(
+        fetchCreator({
+          update: UPDATE_DEPARTMENTS_ITEMS,
+          stateUpdate: UPDATE_DEPARTMENTS_STATE,
+          stateName: 'info',
+          url: 'departments/info',
+          dataType: 'departments',
+          params: { departmentId },
+          useArray: true,
+        }),
+      );
+    }),
+  );
 }
 
 /**
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearDepartments(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_DEPARTMENTS, data, search }));
+function clearDepartments(data = true, search = true, items = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_DEPARTMENTS, data, search, items }));
 }
 
 export {

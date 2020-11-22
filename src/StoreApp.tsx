@@ -1,18 +1,20 @@
-import React from 'react';
-import { useColorScheme } from 'react-native';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
-import { connect } from 'react-redux';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { AppLoading } from 'expo';
+import React from 'react';
+import { useColorScheme, Platform } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-import { Preferences, State } from '@ts/types';
-import themes from '@styles/Theme';
-import { fetchLocationData } from '@redux/actions/data/location';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
+import { fetchLocationData } from '@redux/actions/data/location';
+import themes from '@styles/Theme';
+import { Preferences, State } from '@ts/types';
+import { analytics } from '@utils/firebase';
+import { logger } from '@utils/index';
 
-import screens from './screens';
 import AppNavigator from './index';
+import screens from './screens';
 
 type Props = {
   preferences: Preferences;
@@ -27,14 +29,16 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
     theme = themes[colorScheme === 'dark' ? 'dark' : 'light'];
   }
 
-  changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);
-
+  if (Platform.OS === 'android' && Platform.Version >= 28) {
+    // This only works on android 9 and above
+    changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);
+  }
   React.useEffect(
     React.useCallback(() => {
-      fetchLocationData().catch((e) => console.log(`fetchLocationData err ${e}`));
-      fetchGroups().catch((e) => console.log(`fetchGroups err ${e}`));
-      fetchWaitingGroups().catch((e) => console.log(`fetchWaitingGroups err ${e}`));
-      fetchAccount().catch((e) => console.log(`fetchAccount err ${e}`));
+      fetchLocationData().catch((e) => logger.warn(`fetchLocationData err ${e}`));
+      fetchGroups().catch((e) => logger.warn(`fetchGroups err ${e}`));
+      fetchWaitingGroups().catch((e) => logger.warn(`fetchWaitingGroups err ${e}`));
+      fetchAccount().catch((e) => logger.warn(`fetchAccount err ${e}`));
     }, [null]),
   );
 
@@ -59,10 +63,35 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
     },
   };
 
+  const routeNameRef = React.useRef<string | undefined>();
+  const navigationRef = React.useRef<NavigationContainerRef | null>();
+
   return (
     <PaperProvider theme={theme}>
       <>
-        <NavigationContainer linking={linking} fallback={<AppLoading />} theme={navTheme}>
+        <NavigationContainer
+          ref={navigationRef}
+          linking={linking}
+          fallback={<AppLoading />}
+          theme={navTheme}
+          onStateChange={
+            Platform.OS !== 'web'
+              ? async () => {
+                  const previousRouteName = routeNameRef.current;
+                  const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
+
+                  if (previousRouteName !== currentRouteName) {
+                    await analytics().logScreenView({
+                      screen_name: currentRouteName,
+                      screen_class: currentRouteName,
+                    });
+                  }
+
+                  routeNameRef.current = currentRouteName;
+                }
+              : undefined
+          }
+        >
           <AppNavigator />
         </NavigationContainer>
       </>

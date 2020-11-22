@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
-import { useTheme, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { TabView, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 import StepIndicator from 'react-native-step-indicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Theme } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 const stepperStyles = StyleSheet.create({
   centerContainer: {
@@ -82,11 +83,18 @@ type TabBarProps = SceneRendererProps & {
   navigationState: NavigationState<Route>;
 };
 
+export type StepperViewPageProps = {
+  next: (num?: number) => void;
+  prev: (num?: number) => void;
+  index: number;
+  setIndex: (newIndex: number) => void;
+};
+
 type PageType = {
   key: string;
   title: string;
   icon: string;
-  component: React.ReactElement;
+  component: (props: StepperViewPageProps) => React.ReactElement;
   onVisible?: () => void;
 };
 
@@ -97,13 +105,6 @@ type Props = {
   swipeEnabled?: boolean;
   hideTabBar?: boolean;
   preloadDistance?: number;
-};
-
-export type StepperViewPageProps = {
-  next: (num?: number) => void;
-  prev: (num?: number) => void;
-  index: number;
-  setIndex: (newIndex: number) => void;
 };
 
 const StepperView: React.FC<Props> = ({
@@ -125,12 +126,14 @@ const StepperView: React.FC<Props> = ({
   const initialLayout = { width: Dimensions.get('window').width };
 
   const renderScene = ({ route }: { route: PageType }) => {
-    return React.cloneElement(pages.find((p) => p.key === route.key)!.component, {
-      next,
-      prev,
-      index,
-      setIndex,
-    });
+    return pages
+      .find((p) => p.key === route.key)!
+      .component({
+        next,
+        prev,
+        index,
+        setIndex,
+      });
   };
 
   pages[index]?.onVisible?.();

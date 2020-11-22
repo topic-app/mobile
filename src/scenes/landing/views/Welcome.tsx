@@ -1,14 +1,12 @@
-import React from 'react';
-import { View, Platform, ScrollView } from 'react-native';
-import { Text, useTheme, Button, List, Divider, DarkTheme } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React from 'react';
+import { View, Platform, ScrollView, Alert, Linking, BackHandler } from 'react-native';
+import { Text, Button, List, Divider, DarkTheme } from 'react-native-paper';
 import shortid from 'shortid';
 
-import TopicIcon from '@assets/images/topic-icon.svg';
-import { TranslucentStatusBar } from '@components/Header';
-import { PlatformTouchable } from '@components/index';
-import { updateSchools } from '@redux/actions/api/schools';
+import { Illustration, TranslucentStatusBar, PlatformTouchable } from '@components/index';
 import { updateDepartments } from '@redux/actions/api/departments';
+import { useTheme } from '@utils/index';
 
 import type { LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
@@ -55,11 +53,11 @@ const items = [
   },
 ];
 
-type Props = {
+type LandingWelcomeProps = {
   navigation: StackNavigationProp<LandingStackParams, 'Welcome'>;
 };
 
-const LandingWelcome: React.FC<Props> = ({ navigation }) => {
+const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   const theme = useTheme();
   const landingStyles = getLandingStyles(theme);
 
@@ -74,7 +72,7 @@ const LandingWelcome: React.FC<Props> = ({ navigation }) => {
       <ScrollView>
         <View style={landingStyles.headerContainer}>
           <View style={landingStyles.centerContainer}>
-            <TopicIcon height={256} width={256} />
+            <Illustration name="topic-icon" height={256} width={256} />
             <Text theme={DarkTheme} style={landingStyles.title}>
               Topic
             </Text>
@@ -123,7 +121,7 @@ const LandingWelcome: React.FC<Props> = ({ navigation }) => {
             color="white"
             uppercase={Platform.OS !== 'ios'}
             onPress={() => {
-              navigation.navigate('SelectLocation');
+              navigation.navigate('Beta');
             }}
             style={{ flex: 1 }}
           >

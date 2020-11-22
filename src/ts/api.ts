@@ -14,14 +14,32 @@
  * Note: Don't import this file through `common/`, use `import { ... } from '@ts/types'` instead.
  */
 
+// Account stuff should probably go in redux.ts but too much risk of breakage
+
 // Common types
 export type Content = {
   parser: 'plaintext' | 'markdown';
   data: string;
 };
 
+export type Verification = {
+  verified: boolean;
+  users?: string[];
+  bot: {
+    score: number;
+    flags: string[];
+  };
+  reports?: { user: UserPreload; date: Date; reason: string }[];
+  data?: {
+    name?: string;
+    id?: string;
+    extra?: string;
+  };
+};
+
 export type TagPreload = {
   _id: string;
+  name?: string;
   displayName: string;
   color: string;
 };
@@ -29,6 +47,7 @@ export type TagPreload = {
 export type Tag = {
   _id: string;
   name: string;
+  displayName: string;
   color: string;
   summary: string;
 };
@@ -42,8 +61,10 @@ type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
 
 export type SchoolPreload = {
   _id: string;
+  name: string;
   shortName?: string;
   displayName: string;
+  address?: Address;
   types: SchoolType[];
   cache: {
     events?: number;
@@ -53,6 +74,7 @@ export type SchoolPreload = {
 export type School = {
   _id: string;
   shortName?: string;
+  displayName?: string;
   name: string;
   types: SchoolType[];
   address: Address;
@@ -67,6 +89,8 @@ export type School = {
 
 export type DepartmentPreload = {
   _id: string;
+  name: string;
+  code: string;
   displayName: string;
   shortName?: string;
   type: 'region' | 'departement' | 'academie';
@@ -77,6 +101,7 @@ export type Department = {
   name: string;
   shortName?: string;
   aliases: string[];
+  displayName?: string;
   code: string; // zipcode
   type: 'region' | 'departement' | 'academie';
   adminGroups: GroupPreload[];
@@ -121,36 +146,39 @@ export type Address = {
   departments: DepartmentPreload[];
 };
 
-// User types
-type AvatarColor = {
-  type: 'color';
-  color: string;
-};
-
-type AvatarGradient = {
-  type: 'gradient';
-  gradient: {
-    start: string;
-    end: string;
-    angle: number;
-  };
-  text?: string;
-};
-
-export type Avatar = AvatarColor | AvatarGradient;
+export type Avatar =
+  | {
+      type: 'color';
+      color: string;
+      text: string;
+    }
+  | {
+      type: 'gradient';
+      gradient: {
+        start: string;
+        end: string;
+        angle: number;
+      };
+      text: string;
+    }
+  | {
+      type: 'image';
+      image: Image;
+    };
 
 export type UserPreload = {
   _id: string;
   displayName: string;
   info: {
     username: string;
-    avatar: Avatar;
+    avatar?: Avatar;
   };
 };
 
 export type User = {
   _id: string;
   name: string;
+  displayName: string;
   info: {
     username: string;
     avatar: Avatar;
@@ -161,9 +189,8 @@ export type User = {
     firstName: string;
     lastName: string;
     following: {
-      groups: string[];
-      users: string[];
-      events: string[];
+      groups: GroupPreload[];
+      users: UserPreload[];
     };
     location: Location;
     description: string;
@@ -173,36 +200,36 @@ export type User = {
   };
 };
 
-export type CreationData = {
-  avatar: Avatar;
-  username: string;
-  email: string;
-  password: string;
-  global: boolean;
-  schools: string[];
-  departments: string[];
-  accountType: 'public' | 'private';
+export type AccountCreationData = {
+  avatar?: Avatar;
+  username?: string;
+  email?: string;
+  password?: string;
+  global?: boolean;
+  schools?: string[];
+  departments?: string[];
+  accountType?: 'public' | 'private';
   firstName?: string;
   lastName?: string;
 };
 
-export type Account = {
-  loggedIn: boolean;
-  creationData: object | CreationData; // Maybe something better than `object` here
-  groups: Group[];
-  waitingGroups: (Group & {
-    waitingMembership: { role: string; permanent: boolean; expiry: Date };
-  })[];
-  accountInfo: {
-    accountId: string;
-    accountToken: string;
-    accountTokenExpiry: string;
-    user: User & {
-      sensitiveData: {
-        email: string;
-      };
-    };
+export type AccountPermission = GroupRolePermission & { group: string };
+
+export type AccountUser = User & {
+  sensitiveData: {
+    email: string;
   };
+};
+
+export type AccountInfo = {
+  accountId: string;
+  accountToken: string;
+  accountTokenExpiry: string;
+  user: AccountUser;
+};
+
+export type WaitingGroup = Group & {
+  waitingMembership: { role: string; permanent: boolean; expiry: Date };
 };
 
 export type AuthorPreload = UserPreload;
@@ -218,8 +245,8 @@ export type GroupRolePermission = {
     everywhere: boolean;
     global: boolean;
     groups: string[];
-    schools: string[];
-    departments: string[];
+    schools: SchoolPreload[];
+    departments: DepartmentPreload[];
   };
 };
 
@@ -236,8 +263,8 @@ export type GroupRole = {
 export type GroupMember = {
   _id: string; // Note: Not really useful
   user: UserPreload;
-  role: GroupRole;
-  secondaryRoles: GroupRole[];
+  role: string;
+  secondaryRoles: string[];
   expiry: {
     permanent: boolean;
     expires?: string;
@@ -247,20 +274,21 @@ export type GroupMember = {
 export type GroupPreload = {
   _id: string;
   displayName: string;
+  name: string;
+  official?: boolean;
   type: string;
-  avatar: Avatar;
+  avatar?: Avatar;
+  summary?: string;
+  cache: {
+    followers?: number | null;
+    members?: number | null;
+  };
 };
 
-export type Group = {
-  _id: string;
-  name: string;
-  type: string; // could be an enum in the future
-  avatar: Avatar;
-  official: boolean;
+export type Group = GroupPreload & {
   shortName?: string;
   handle: string;
   aliases: string;
-  summary: string;
   description: {
     data: string;
     parser: 'markdown' | 'plaintext';
@@ -269,31 +297,53 @@ export type Group = {
   permissions: GroupRolePermission[]; // Not sure how this works
   roles: GroupRole[];
   members: GroupMember[];
-  cache: {
-    followers: number;
-    members: number;
-  };
   tags: TagPreload[];
 };
 
+export type GroupWithMembership = Group & {
+  membership: GroupMember;
+};
+
+export type GroupTemplate = {
+  name: string;
+  type: string;
+  summary: string;
+  description: string;
+  permissions: GroupRolePermission[];
+  roles: GroupRole[];
+};
+
 // Article Types
-export type ArticlePreload = {
+type ArticleBase = {
   _id: string;
   title: string;
   date: string;
   summary: string;
-  image: Image;
-  authors: [AuthorPreload];
+  image?: Image;
+  authors: AuthorPreload[];
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];
 };
+export type ArticlePreload = ArticleBase & {
+  preload: true; // So we can check if article.preload to change type
+};
+export type ArticleVerificationPreload = ArticlePreload & {
+  verification: Verification;
+};
 
-export type Article = ArticlePreload & {
+export type Article = ArticleBase & {
+  preload?: false;
   content: Content;
   preferences: {
     comments: boolean;
   };
+};
+
+export type Article2 = Article;
+
+export type ArticleVerification = Article & {
+  verification: Verification;
 };
 
 // Event Types
@@ -322,6 +372,9 @@ export type EventPreload = {
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
 };
+export type EventVerificationPreload = EventPreload & {
+  verification: Verification;
+};
 
 export type Event = EventPreload & {
   description: Content;
@@ -339,13 +392,16 @@ export type Event = EventPreload & {
     followers: number;
   };
 };
+export type EventVerification = Event & {
+  verification: Verification;
+};
 
 // Place Types (used for Explorer)
 type PlaceType = 'cultural' | 'history' | 'tourism' | 'club' | 'other';
 
 export type PlacePreload = {
   _id: string;
-  displayName: string;
+  name: string;
   types: PlaceType[];
   summary: string;
   address: Address;
@@ -480,14 +536,3 @@ export type Error = {
     };
   };
 };
-
-export type Item =
-  | Article
-  | Comment
-  | Event
-  | Petition
-  | Group
-  | User
-  | Place
-  | Department
-  | School;

@@ -24,7 +24,6 @@ const edgeBitmaskMap: Record<Edge, number> = {
 type Edge = 'top' | 'right' | 'bottom' | 'left';
 type SafeAreaViewProps = ViewProps & { mode?: 'padding' | 'margin'; edges?: ReadonlyArray<Edge> };
 
-// eslint-disable-next-line import/prefer-default-export
 const SafeAreaView: React.FC<SafeAreaViewProps> = ({ style = {}, mode, edges, ...rest }) => {
   const insets = useSafeAreaInsets();
 

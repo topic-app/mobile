@@ -1,10 +1,11 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 
+import { Config } from '@constants/index';
 import places from '@src/data/explorerListData.json';
-import { config } from '@root/app.json';
+import { useTheme } from '@utils/index';
+
 import ExplorerMap from './Map';
 
 const map = {
@@ -24,7 +25,7 @@ const ExplorerList: React.FC<ExplorerListProps> = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <ExplorerMap
-        tileServerUrl={`${config.maps.url}styles/${dark ? 'dark' : 'light'}/style.json`}
+        tileServerUrl={`${Config.maps.baseUrl}styles/${dark ? 'dark' : 'light'}/style.json`}
         places={places}
         map={map}
         navigation={navigation}

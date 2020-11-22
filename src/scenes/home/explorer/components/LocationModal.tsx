@@ -1,16 +1,17 @@
+import moment from 'moment';
 import React from 'react';
 import { View, Image, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
+import { Button, Divider, Text, Card, Title } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button, Divider, Text, Card, Title, useTheme } from 'react-native-paper';
-import moment from 'moment';
 
-import { ExplorerLocation } from '@ts/types';
-import getStyles from '@styles/Styles';
 import places from '@src/data/explorerListData.json';
+import getStyles from '@styles/Styles';
+import { ExplorerLocation } from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import type { MapMarkerDataType } from '../views/Map';
 import getExplorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAsset';
+import type { MapMarkerDataType } from '../views/Map';
 
 function genTagDecoration(type) {
   if (type === 'school') {
@@ -50,7 +51,7 @@ function LocationEvent({ title, summary, imageUrl, date }) {
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
   return (
     <Card style={styles.card}>
-      <Touchable onPress={() => console.log('Navigate to event')}>
+      <Touchable onPress={() => logger.warn('Navigate to event')}>
         <View style={{ padding: 10 }}>
           <Title
             style={[styles.cardTitle, { marginBottom: 0 }]}

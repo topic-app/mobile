@@ -1,6 +1,7 @@
+import { Theme } from '@ts/types';
 import { StyleSheet } from 'react-native';
 
-function getArticleStyles(theme) {
+function getArticleStyles(_theme: Theme) {
   return StyleSheet.create({
     listItem: { padding: 6 },
     searchContainer: {

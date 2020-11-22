@@ -2,15 +2,16 @@ import Store from '@redux/store';
 import {
   UPDATE_ARTICLES_DATA,
   UPDATE_ARTICLES_SEARCH,
+  UPDATE_ARTICLES_FOLLOWING,
   UPDATE_ARTICLES_ITEM,
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
 } from '@ts/redux';
-import { Item, UPDATE_ARTICLES_VERIFICATION } from '@ts/types';
+import { UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: Item[]) =>
+const dateDescSort = (data: Article[]) =>
   data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
@@ -29,6 +30,7 @@ async function updateArticles(
       update: UPDATE_ARTICLES_DATA,
       stateUpdate: UPDATE_ARTICLES_STATE,
       url: 'articles/list',
+      listName: 'data',
       sort: dateDescSort,
       dataType: 'articles',
       type,
@@ -37,12 +39,48 @@ async function updateArticles(
   );
 }
 
+async function updateArticlesFollowing(
+  type: 'initial' | 'refresh' | 'next',
+  params = {},
+  useDefaultParams = true,
+) {
+  if (
+    !Store.getState().account.loggedIn ||
+    !Store.getState().account?.accountInfo?.user?.data?.following?.groups?.every((g) => !g)
+  ) {
+    return false;
+  }
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_ARTICLES_FOLLOWING,
+      stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'following',
+      url: 'articles/list',
+      listName: 'following',
+      sort: dateDescSort,
+      dataType: 'articles',
+      type,
+      params: useDefaultParams
+        ? {
+            groups: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.groups?.map((g) => g._id)
+              .filter((g) => !!g),
+            users: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.users?.map((u) => u._id)
+              .filter((g) => !!g),
+            ...params,
+          }
+        : params,
+    }),
+  );
+}
+
 /**
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearArticles(data = true, search = true, verification = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_ARTICLES, data, search, verification }));
+function clearArticles(data = true, search = true, verification = true, following = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }));
 }
 
 /**
@@ -59,7 +97,6 @@ async function searchArticles(
   search = true,
   useDefaultParams = false,
 ) {
-  console.log(`Search articles ${JSON.stringify(params)}`);
   await Store.dispatch(
     updateCreator({
       update: UPDATE_ARTICLES_SEARCH,
@@ -111,6 +148,7 @@ async function fetchArticle(articleId: string) {
     fetchCreator({
       update: UPDATE_ARTICLES_ITEM,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'info',
       url: 'articles/info',
       dataType: 'articles',
       params: { articleId },
@@ -123,6 +161,7 @@ async function fetchArticleVerification(articleId: string) {
     fetchCreator({
       update: UPDATE_ARTICLES_ITEM,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'info',
       url: 'articles/verification/info',
       dataType: 'articles',
       params: { articleId },
@@ -133,6 +172,7 @@ async function fetchArticleVerification(articleId: string) {
 
 export {
   updateArticles,
+  updateArticlesFollowing,
   clearArticles,
   fetchArticle,
   searchArticles,

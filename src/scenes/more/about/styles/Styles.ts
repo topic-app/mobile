@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getLandingStyles(theme) {
-  const { colors } = theme;
+import { Theme } from '@ts/types';
+
+function getLandingStyles(_theme: Theme) {
   return StyleSheet.create({
     title: {
       fontSize: 60,

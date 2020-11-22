@@ -1,7 +1,7 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View, Platform, Image, ScrollView } from 'react-native';
-import { Text, useTheme, Button, Divider } from 'react-native-paper';
+import { Text, Button, Divider } from 'react-native-paper';
 
 import {
   PlatformBackButton,
@@ -11,10 +11,14 @@ import {
   SafeAreaView,
 } from '@components/index';
 import getStyles from '@styles/Styles';
+import { useTheme } from '@utils/index';
 
+import type { LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
 
-function LandingArticles({ navigation, route }) {
+type LandingArticlesProps = StackScreenProps<LandingStackParams, 'Info'>;
+
+const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
@@ -221,7 +225,7 @@ function LandingArticles({ navigation, route }) {
               mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
               color={colors.primary}
               uppercase={Platform.OS !== 'ios'}
-              onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })} // TODO: This should point to the second view of the viewpager
+              onPress={() => navigation.navigate('Landing', { screen: 'Beta' })} // TODO: This should point to the second view of the viewpager
               style={{ flex: 1 }}
             >
               Suivant
@@ -231,18 +235,6 @@ function LandingArticles({ navigation, route }) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 export default LandingArticles;
-
-LandingArticles.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      index: PropTypes.number.isRequired,
-    }),
-  }).isRequired,
-};

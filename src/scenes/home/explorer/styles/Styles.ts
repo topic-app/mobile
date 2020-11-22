@@ -1,5 +1,6 @@
-import { Theme } from '@ts/types';
 import { StyleSheet } from 'react-native';
+
+import { Theme } from '@ts/types';
 
 function getExplorerStyles(theme: Theme) {
   const { colors, dark } = theme;

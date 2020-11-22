@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Platform, FlatList, TextInput as RNTextInput } from 'react-native';
-import { TextInput, HelperText, Button, Divider, useTheme } from 'react-native-paper';
+import { TextInput, HelperText, Button, Divider } from 'react-native-paper';
 import randomColor from 'randomcolor';
 import shortid from 'shortid';
 
 import { Avatar, CollapsibleView, StepperViewPageProps } from '@components/index';
+import { useTheme } from '@utils/index';
 import { updateCreationData } from '@redux/actions/data/account';
 
 import getAuthStyles from '../styles/Styles';
@@ -123,17 +124,13 @@ const AuthCreatePageProfile: React.FC<Props> = ({
   function submit() {
     const firstnameVal = currentFirstname.value;
     const lastnameVal = currentLastname.value;
-    const firstname = validateFirstnameInput(firstnameVal);
-    const lastname = validateLastnameInput(lastnameVal);
-    if ((firstname.valid && lastname.valid) || accountType === 'private') {
-      delete activeAvatar.key;
-      updateCreationData({
-        firstName: firstnameVal,
-        lastName: lastnameVal,
-        avatar: activeAvatar,
-      });
-      next();
-    }
+    delete activeAvatar.key;
+    updateCreationData({
+      firstName: firstnameVal,
+      lastName: lastnameVal,
+      avatar: activeAvatar,
+    });
+    next();
   }
 
   const theme = useTheme();

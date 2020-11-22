@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, Dimensions, Alert } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { Text } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { ArticleListItem, Article } from '@ts/types';
 import { ArticleCard, PlatformTouchable } from '@components/index';
 import {
   addArticleRead,
@@ -13,17 +12,20 @@ import {
   removeArticleFromList,
 } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
+import { ArticleListItem, Article, ArticlePreload } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
 type ArticleListCardProps = {
-  article: Article;
+  article: ArticlePreload;
   sectionKey: string;
   itemKey: string;
   isRead: boolean;
   historyActive: boolean;
   lists: ArticleListItem[];
   navigate: () => void;
+  overrideImageWidth: number;
 };
 
 const ArticleListCard: React.FC<ArticleListCardProps> = ({
@@ -34,6 +36,7 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
   historyActive,
   lists,
   navigate,
+  overrideImageWidth,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -44,7 +47,7 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
 
   const maxLeftActions = (Dimensions.get('window').width - 100) / 120;
 
-  const renderRightActions = (id: string) => {
+  const renderRightActions = (_id: string) => {
     return (
       <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
         {sectionKey !== 'lists' ? (
@@ -163,7 +166,12 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
           : undefined
       }
     >
-      <ArticleCard unread={!isRead || itemKey !== 'all'} article={article} navigate={navigate} />
+      <ArticleCard
+        unread={!isRead || itemKey !== 'all'}
+        article={article}
+        navigate={navigate}
+        overrideImageWidth={overrideImageWidth}
+      />
     </Swipeable>
   );
 };

@@ -5,13 +5,17 @@ import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_ITEM,
   UPDATE_GROUPS_SEARCH,
+  UPDATE_GROUPS_TEMPLATES,
+  UPDATE_GROUPS_VERIFICATION,
   CLEAR_GROUPS,
 } from '@ts/redux';
 
 const initialState: GroupsState = {
   data: [],
   search: [],
+  verification: [],
   item: null,
+  templates: [],
   state: {
     list: {
       success: null,
@@ -20,6 +24,13 @@ const initialState: GroupsState = {
         initial: false,
         refresh: false,
         next: false,
+      },
+    },
+    templates: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
       },
     },
     search: {
@@ -81,10 +92,10 @@ const initialState: GroupsState = {
 /**
  * @docs reducers
  * Reducer pour les groups
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['UPDATE_ARTICLES', 'CLEAR_ARTICLES'] Le type d'action à effectuer: mettre à jour les groups avec action.data ou vider la database
- * @param {object} action.data Les données à remplacer dans la database redux
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Le type d'action à effectuer: mettre à jour les groups avec action.data ou vider la database
+ * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
 function groupReducer(state = initialState, action: GroupsActionTypes): GroupsState {
@@ -104,15 +115,27 @@ function groupReducer(state = initialState, action: GroupsActionTypes): GroupsSt
         ...state,
         item: action.data,
       };
+    case UPDATE_GROUPS_VERIFICATION:
+      return {
+        ...state,
+        verification: action.data,
+      };
     case UPDATE_GROUPS_SEARCH:
       return {
         ...state,
         search: action.data,
       };
+    case UPDATE_GROUPS_TEMPLATES:
+      return {
+        ...state,
+        templates: action.data,
+      };
     case CLEAR_GROUPS:
       return {
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
+        templates: action.data.templates ? [] : state.templates,
+        verification: action.data.verification ? [] : state.verification,
         item: null,
         state: state.state,
       };

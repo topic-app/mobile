@@ -23,6 +23,7 @@ async function updatePlaces(type: 'initial' | 'refresh' | 'next', params = {}) {
       update: UPDATE_PLACES_DATA,
       stateUpdate: UPDATE_PLACES_STATE,
       url: 'places/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'places',
       type,
@@ -57,6 +58,7 @@ async function fetchPlace(placeId: string) {
     fetchCreator({
       update: UPDATE_PLACES_ITEM,
       stateUpdate: UPDATE_PLACES_STATE,
+      stateName: 'info',
       url: 'places/list',
       dataType: 'places',
       params: { placeId },
@@ -68,8 +70,8 @@ async function fetchPlace(placeId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearPlaces(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_PLACES, data, search }));
+function clearPlaces(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_PLACES, data, search }));
 }
 
 export { updatePlaces, clearPlaces, fetchPlace, searchPlaces };

@@ -17,7 +17,9 @@
       "@redux/*": ["./src/redux/*"],
       "@styles/*": ["./src/styles/*"],
       "@utils/*": ["./src/utils/*"],
+      "@constants/*": ["./src/constants/*"],
       "@ts/*": ["./src/ts/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "android", "ios", "web", "web-build", "android-build", "scripts"]
 }

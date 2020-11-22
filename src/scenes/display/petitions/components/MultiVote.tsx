@@ -1,14 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import { useTheme, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { PieChart } from 'react-native-svg-charts';
 import { G, Path } from 'react-native-svg';
 import shortid from 'shortid';
 
+import { useTheme } from '@utils/index';
+
 const showNumbers = false;
 
-function getPath(startAngle, endAngle, startCoords, index, amtSections) {
+function getPath(
+  startAngle: number,
+  endAngle: number,
+  startCoords: [number, number],
+  index: number,
+  amtSections: number,
+) {
   // Array destructuring
   const [x1, y1] = startCoords;
   // Get angle of the middle of the slice
@@ -55,7 +62,13 @@ function PieLabels({ slices }) {
   });
 }
 
-function MultiVote({ items, barColors, showAllLabels }) {
+type MultiVoteProps = {
+  items: { title: string; votes: number }[];
+  barColors: string[];
+  showAllLabels?: boolean;
+};
+
+const MultiVote: React.FC<MultiVoteProps> = ({ items, barColors, showAllLabels = false }) => {
   const theme = useTheme();
 
   const pieData = items
@@ -88,7 +101,7 @@ function MultiVote({ items, barColors, showAllLabels }) {
       <View
         style={{
           width: '50%',
-          merginVertical: 7,
+          marginVertical: 7,
           paddingRight: 35,
           borderRadius: theme.roundness,
         }}
@@ -134,21 +147,6 @@ function MultiVote({ items, barColors, showAllLabels }) {
       </View>
     </View>
   );
-}
+};
 
 export default MultiVote;
-
-MultiVote.defaultProps = {
-  showAllLabels: false,
-};
-
-MultiVote.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      votes: PropTypes.number.isRequired,
-    }),
-  ).isRequired,
-  barColors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  showAllLabels: PropTypes.bool,
-};

@@ -1,6 +1,6 @@
 import { LegalActionTypes, LegalState, UPDATE_LEGAL_STATE, UPDATE_LEGAL } from '@ts/redux';
 
-const initialState = {
+const initialState: LegalState = {
   conditions: 'Chargement...',
   confidentialite: 'Chargement...',
   mentions: 'Chargement...',

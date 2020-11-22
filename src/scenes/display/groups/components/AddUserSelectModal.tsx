@@ -1,42 +1,22 @@
 import React from 'react';
+import { View, FlatList } from 'react-native';
+import { Divider, ProgressBar, Text, List } from 'react-native-paper';
+import { connect } from 'react-redux';
+
 import {
   ModalProps,
   State,
-  ArticleQuickItem,
-  TagsState,
-  GroupsState,
   UsersState,
-  Tag,
-  Group,
   User,
-  RequestState,
   UserRequestState,
   GroupMember,
   Account,
 } from '@ts/types';
-import {
-  Divider,
-  ProgressBar,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
-  Card,
-  Text,
-  List,
-  ThemeProvider,
-  useTheme,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import Illustration from '@components/Illustration';
-import Avatar from '@components/Avatar';
-import { connect } from 'react-redux';
-import { searchTags, updateTags } from '@redux/actions/api/tags';
-import { searchGroups, updateGroups } from '@redux/actions/api/groups';
-import { searchUsers, updateUsers } from '@redux/actions/api/users';
-
-import { CollapsibleView, ErrorMessage, Searchbar, Modal } from '@components/index';
+import { Avatar, Illustration, ErrorMessage, Searchbar, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
+import { searchUsers } from '@redux/actions/api/users';
+
 import getGroupStyles from '../styles/Styles';
 
 type AddUserSelectModalProps = ModalProps & {
@@ -47,7 +27,7 @@ type AddUserSelectModalProps = ModalProps & {
   next: (user: User) => any;
 };
 
-function AddUserSelectModal({
+const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
   visible,
   setVisible,
   users,
@@ -55,7 +35,7 @@ function AddUserSelectModal({
   members,
   account,
   next,
-}: AddUserSelectModalProps) {
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const groupStyles = getGroupStyles(theme);
@@ -80,7 +60,7 @@ function AddUserSelectModal({
       <View>
         <View style={{ height: 200 }}>
           <View style={styles.centerIllustrationContainer}>
-            <Illustration name="tag" height={200} width={200} />
+            <Illustration name="user" height={200} width={200} />
           </View>
         </View>
         <Divider />
@@ -93,7 +73,7 @@ function AddUserSelectModal({
               contentPlural: 'des utilisateurs',
               contentSingular: "La liste d'utilisateurs",
             }}
-            error={state.add?.error}
+            error={state.search?.error}
             retry={() => update()}
           />
         ) : null}
@@ -150,7 +130,7 @@ function AddUserSelectModal({
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { users, account } = state;

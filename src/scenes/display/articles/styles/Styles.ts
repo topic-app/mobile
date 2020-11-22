@@ -1,10 +1,12 @@
 import { StyleSheet } from 'react-native';
 
-function getArticleStyles(theme) {
+import { Theme } from '@ts/types';
+
+function getArticleStyles(theme: Theme) {
   const { colors } = theme;
   return StyleSheet.create({
     image: {
-      height: 250,
+      minHeight: 250,
     },
     placeholder: {
       color: colors.disabled,

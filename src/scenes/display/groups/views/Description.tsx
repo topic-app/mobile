@@ -1,19 +1,32 @@
 import React from 'react';
 import { View } from 'react-native';
-import PropTypes from 'prop-types';
-import testGroupData from '@src/data/groupListData.json';
-import { Text, useTheme } from 'react-native-paper';
-import getStyles from '@styles/Styles';
-import Content from '@components/Content';
+import { Text } from 'react-native-paper';
+import { connect } from 'react-redux';
+import { StackScreenProps } from '@react-navigation/stack';
 
-function GroupDescription({ route }) {
+import { GroupsState, State } from '@ts/types';
+import { Content } from '@components/index';
+import { useTheme } from '@utils/index';
+import getStyles from '@styles/Styles';
+
+import type { GroupDisplayStackParams } from '../index';
+
+type GroupDescriptionProps = StackScreenProps<GroupDisplayStackParams, 'Description'> & {
+  groups: GroupsState;
+};
+
+const GroupDescription: React.FC<GroupDescriptionProps> = ({ route, groups }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   const { id } = route.params;
-  const group = testGroupData.find((g) => g._id === id);
 
-  const { data, parser } = group.description || {};
+  const group =
+    groups.item?._id === id
+      ? groups.item
+      : groups.data.find((g) => g._id === id) || groups.search.find((g) => g._id === id) || null;
+
+  const { data, parser } = group?.description || {};
 
   if (data && parser) {
     return (
@@ -31,14 +44,13 @@ function GroupDescription({ route }) {
       </View>
     </View>
   );
-}
-
-export default GroupDescription;
-
-GroupDescription.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
 };
+
+const mapStateToProps = (state: State) => {
+  const { groups } = state;
+  return {
+    groups,
+  };
+};
+
+export default connect(mapStateToProps)(GroupDescription);

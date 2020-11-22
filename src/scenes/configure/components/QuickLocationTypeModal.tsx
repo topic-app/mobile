@@ -1,26 +1,24 @@
 import React from 'react';
-import { ModalProps, ArticleListItem, ArticleQuickItem, State } from '@ts/types';
-import {
-  Divider,
-  Button,
-  Card,
-  RadioButton,
-  ThemeProvider,
-  List,
-  useTheme,
-} from 'react-native-paper';
 import { View, Platform, FlatList } from 'react-native';
+import { Divider, Button, RadioButton, List } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import { Modal } from '@components/index';
 import getStyles from '@styles/Styles';
-import { connect } from 'react-redux';
+import { ModalProps, ArticleQuickItem, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 type QuickTypeModalProps = ModalProps & {
   next: (type: string) => void;
   articleQuicks: ArticleQuickItem[];
 };
 
-function QuickTypeModal({ visible, setVisible, next, articleQuicks }: QuickTypeModalProps) {
+const QuickTypeModal: React.FC<QuickTypeModalProps> = ({
+  visible,
+  setVisible,
+  next,
+  articleQuicks,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -72,6 +70,7 @@ function QuickTypeModal({ visible, setVisible, next, articleQuicks }: QuickTypeM
                 left={() =>
                   Platform.OS !== 'ios' && (
                     <RadioButton
+                      value=""
                       disabled={item.disabled}
                       color={colors.primary}
                       status={item.type === currentType ? 'checked' : 'unchecked'}
@@ -88,6 +87,7 @@ function QuickTypeModal({ visible, setVisible, next, articleQuicks }: QuickTypeM
                 right={() =>
                   Platform.OS === 'ios' && (
                     <RadioButton
+                      value=""
                       disabled={item.disabled}
                       color={colors.primary}
                       status={item.type === currentType ? 'checked' : 'unchecked'}
@@ -127,7 +127,7 @@ function QuickTypeModal({ visible, setVisible, next, articleQuicks }: QuickTypeM
       />
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { articleData } = state;

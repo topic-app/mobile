@@ -1,18 +1,26 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 
-import { HeaderConfig } from '@components/Header';
-import ArticleParams from './views/Params';
-import ArticleEditParams from './views/EditParams';
+import { createNativeStackNavigator } from '@utils/stack';
 
-const Stack = createStackNavigator();
+import EventParams from './views/Params';
+import EventEditParams from './views/EditParams';
 
-function ArticleConfigureStackNavigator() {
+export type EventConfigureStackParams = {
+  Params: undefined;
+  EditParams: {
+    type: 'schools' | 'departements' | 'regions' | 'other';
+    hideSearch: boolean;
+  };
+};
+
+const Stack = createNativeStackNavigator<EventConfigureStackParams>();
+
+function EventConfigureStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Params">
       <Stack.Screen
         name="Params"
-        component={ArticleParams}
+        component={EventParams}
         options={({ route }) => ({
           ...HeaderConfig,
           title: 'Localisation',
@@ -21,7 +29,7 @@ function ArticleConfigureStackNavigator() {
       />
       <Stack.Screen
         name="EditParams"
-        component={ArticleEditParams}
+        component={EventEditParams}
         options={({ route }) => ({
           ...HeaderConfig,
           title: 'Localisation',
@@ -32,4 +40,4 @@ function ArticleConfigureStackNavigator() {
   );
 }
 
-export default ArticleConfigureStackNavigator;
+export default EventConfigureStackNavigator;

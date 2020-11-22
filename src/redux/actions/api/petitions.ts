@@ -24,8 +24,9 @@ async function updatePetitions(type: 'initial' | 'refresh' | 'next', params = {}
       update: UPDATE_PETITIONS_DATA,
       stateUpdate: UPDATE_PETITIONS_STATE,
       url: 'petitions/list',
+      listName: 'data',
       sort: dateDescSort,
-      dataType: 'places',
+      dataType: 'petitions',
       type,
       params,
     }),
@@ -58,8 +59,9 @@ async function fetchPetition(petitionId: string) {
     fetchCreator({
       update: UPDATE_PETITIONS_ITEM,
       stateUpdate: UPDATE_PETITIONS_STATE,
+      stateName: 'info',
       url: 'petitions/list',
-      dataType: 'places',
+      dataType: 'petitions',
       params: { petitionId },
     }),
   );
@@ -69,8 +71,8 @@ async function fetchPetition(petitionId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearPetitions(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_PETITIONS, data, search }));
+function clearPetitions(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_PETITIONS, data, search }));
 }
 
 export { updatePetitions, clearPetitions, fetchPetition, searchPetitions };

@@ -1,9 +1,10 @@
 import { Publisher, AuthorPreload, GroupPreload, TagPreload, Location, Avatar } from '@ts/types';
+
 import { getImageUrl } from './getAssetUrl';
 
 export type ItemData = {
   publisher?: Publisher;
-  authors?: [AuthorPreload];
+  authors?: AuthorPreload[];
   group?: GroupPreload;
   tags?: TagPreload[];
   location?: Location;
@@ -28,8 +29,10 @@ function genTagListData({ publisher, authors, group, tags, location }: ItemData)
         key: publisher.group._id,
         type: 'group',
         label: publisher.group.displayName,
-        // avatar: publisher.group.avatar,
-        image: getImageUrl({ image: group?.image, size: 'small' }),
+        image:
+          group?.avatar?.type === 'image'
+            ? getImageUrl({ image: group.avatar?.image, size: 'small' })
+            : undefined,
         icon: 'newspaper',
       });
     } else if (publisher.type === 'group' && publisher.user) {
@@ -47,8 +50,10 @@ function genTagListData({ publisher, authors, group, tags, location }: ItemData)
       key: group._id,
       type: 'group',
       label: group.displayName,
-      image: getImageUrl({ image: group?.image, size: 'small' }),
-      // avatar: group.avatar,
+      image:
+        group.avatar?.type === 'image'
+          ? getImageUrl({ image: group.avatar?.image, size: 'small' })
+          : undefined,
       icon: 'newspaper',
     });
   }

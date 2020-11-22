@@ -1,25 +1,24 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem, Group, GroupRequestState } from '@ts/types';
+import { View, Platform } from 'react-native';
 import {
   Divider,
   Button,
   HelperText,
   TextInput as PaperTextInput,
-  Card,
-  ThemeProvider,
-  useTheme,
   ProgressBar,
 } from 'react-native-paper';
-import { View, Platform } from 'react-native';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
+import { ModalProps, State, Group, GroupRequestState } from '@ts/types';
+import { ErrorMessage, Modal } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { groupModify } from '@redux/actions/apiActions/groups';
 import { fetchGroup } from '@redux/actions/api/groups';
+
 import getArticleStyles from '../styles/Styles';
 
-type EditModalProps = ModalProps & {
+type EditGroupDescriptionModalProps = ModalProps & {
   group: Group | null;
   editingGroup: {
     shortName: string;
@@ -38,14 +37,14 @@ type EditModalProps = ModalProps & {
   state: GroupRequestState;
 };
 
-function EditModal({
+const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
   visible,
   setVisible,
   group,
   editingGroup,
   setEditingGroup,
   state,
-}: EditModalProps) {
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -64,7 +63,7 @@ function EditModal({
             contentSingular: 'Le groupe',
           }}
           error={state.modify?.error}
-          retry={() => add()}
+          retry={add}
         />
       ) : null}
       <View>
@@ -119,7 +118,7 @@ function EditModal({
       </View>
     </Modal>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { groups } = state;
@@ -128,4 +127,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(EditModal);
+export default connect(mapStateToProps)(EditGroupDescriptionModal);

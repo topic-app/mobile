@@ -1,13 +1,14 @@
 import Store from '@redux/store';
+import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, AppThunk } from '@ts/types';
 import { request } from '@utils/index';
-import { reportCreator } from './ActionCreator';
-import { UPDATE_GROUPS_STATE, ActionType } from '@ts/types';
 
-function groupFollowCreator({ id }: { id: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+import { reportCreator, approveCreator } from './ActionCreator';
+
+function groupFollowCreator({ id }: { id: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           follow: {
             loading: true,
@@ -27,7 +28,7 @@ function groupFollowCreator({ id }: { id: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               follow: {
                 loading: false,
@@ -40,7 +41,7 @@ function groupFollowCreator({ id }: { id: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               follow: {
                 loading: false,
@@ -55,11 +56,11 @@ function groupFollowCreator({ id }: { id: string }) {
   };
 }
 
-function groupUnfollowCreator({ id }: { id: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupUnfollowCreator({ id }: { id: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           follow: {
             loading: true,
@@ -79,7 +80,7 @@ function groupUnfollowCreator({ id }: { id: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               follow: {
                 loading: false,
@@ -92,7 +93,7 @@ function groupUnfollowCreator({ id }: { id: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               follow: {
                 loading: false,
@@ -107,23 +108,25 @@ function groupUnfollowCreator({ id }: { id: string }) {
   };
 }
 
+type GroupAddMemberCreatorParams = {
+  user: string;
+  group: string;
+  role: string;
+  secondaryRoles: string[];
+  expires: number;
+};
+
 function groupAddMemberCreator({
   group,
   user,
   role,
   secondaryRoles,
   expires,
-}: {
-  user: string;
-  group: string;
-  role: string;
-  secondaryRoles: string[];
-  expires: number;
-}) {
-  return (dispatch: (action: ActionType) => void) => {
+}: GroupAddMemberCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_add: {
             loading: true,
@@ -147,7 +150,7 @@ function groupAddMemberCreator({
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_add: {
                 loading: false,
@@ -160,7 +163,7 @@ function groupAddMemberCreator({
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_add: {
                 loading: false,
@@ -175,11 +178,11 @@ function groupAddMemberCreator({
   };
 }
 
-function groupDeleteMemberCreator({ group, user }: { user: string; group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupDeleteMemberCreator({ group, user }: { user: string; group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_delete: {
             loading: true,
@@ -199,7 +202,7 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_delete: {
                 loading: false,
@@ -212,7 +215,7 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_delete: {
                 loading: false,
@@ -227,11 +230,11 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
   };
 }
 
-function groupMemberAcceptCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberAcceptCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_accept: {
             loading: true,
@@ -250,7 +253,7 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_accept: {
                 loading: false,
@@ -263,7 +266,7 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_accept: {
                 loading: false,
@@ -278,11 +281,11 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
   };
 }
 
-function groupMemberRejectCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberRejectCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_reject: {
             loading: true,
@@ -301,7 +304,7 @@ function groupMemberRejectCreator({ group }: { group: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_reject: {
                 loading: false,
@@ -314,7 +317,7 @@ function groupMemberRejectCreator({ group }: { group: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_reject: {
                 loading: false,
@@ -329,11 +332,11 @@ function groupMemberRejectCreator({ group }: { group: string }) {
   };
 }
 
-function groupMemberLeaveCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberLeaveCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           member_leave: {
             loading: true,
@@ -352,7 +355,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_leave: {
                 loading: false,
@@ -365,7 +368,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               member_leave: {
                 loading: false,
@@ -380,13 +383,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
   };
 }
 
-function groupModifyCreator({
-  group,
-  shortName,
-  aliases,
-  summary,
-  description,
-}: {
+type GroupModifyCreatorParams = {
   group: string;
   shortName?: string;
   aliases?: string[];
@@ -395,11 +392,19 @@ function groupModifyCreator({
     parser: 'markdown' | 'plaintext';
     data: string;
   };
-}) {
-  return (dispatch: (action: ActionType) => void) => {
+};
+
+function groupModifyCreator({
+  group,
+  shortName,
+  aliases,
+  summary,
+  description,
+}: GroupModifyCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'UPDATE_GROUPS_STATE',
+        type: UPDATE_GROUPS_STATE,
         data: {
           modify: {
             loading: true,
@@ -424,7 +429,7 @@ function groupModifyCreator({
       )
         .then(() => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               modify: {
                 loading: false,
@@ -437,7 +442,7 @@ function groupModifyCreator({
         })
         .catch((error) => {
           dispatch({
-            type: 'UPDATE_GROUPS_STATE',
+            type: UPDATE_GROUPS_STATE,
             data: {
               modify: {
                 loading: false,
@@ -450,6 +455,96 @@ function groupModifyCreator({
         });
     });
   };
+}
+
+type GroupAddCreatorParams = {
+  name: string;
+  shortName: string;
+  type: string;
+  location: ReduxLocation;
+  summary: string;
+  description: string;
+  parser: string;
+  verification: {
+    name: string;
+    id: string;
+    extra: string;
+  };
+};
+
+function groupAddCreator({
+  name,
+  shortName,
+  type,
+  location,
+  summary,
+  parser,
+  description,
+  verification,
+}: GroupAddCreatorParams): AppThunk {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          add: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        'groups/templates/add',
+        'post',
+        {
+          group: {
+            name,
+            shortName,
+            summary,
+            description: {
+              parser,
+              data: description,
+            },
+            location,
+            type,
+          },
+          verification,
+        },
+        true,
+      )
+        .then((result) => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              add: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve(result.data);
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              add: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
+function groupAdd(data: GroupAddCreatorParams) {
+  return Store.dispatch(groupAddCreator(data));
 }
 
 async function groupFollow(id: string) {
@@ -531,6 +626,17 @@ async function groupReport(groupId: string, reason: string) {
   );
 }
 
+function groupVerificationApprove(id: string) {
+  return Store.dispatch(
+    approveCreator({
+      url: 'groups/verification/approve',
+      stateUpdate: UPDATE_GROUPS_STATE,
+      paramName: 'groupId',
+      id,
+    }),
+  );
+}
+
 export {
   groupFollow,
   groupUnfollow,
@@ -540,5 +646,7 @@ export {
   groupMemberAccept,
   groupMemberReject,
   groupMemberLeave,
+  groupVerificationApprove,
   groupModify,
+  groupAdd,
 };

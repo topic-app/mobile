@@ -1,38 +1,52 @@
 import {
-  ArticlesDataState,
-  ArticlesActionTypes,
+  ArticlesContentState,
+  ArticlesContentActionTypes,
   UPDATE_ARTICLES_PARAMS,
   UPDATE_ARTICLES_LISTS,
   UPDATE_ARTICLES_READ,
   UPDATE_ARTICLES_PREFS,
   UPDATE_ARTICLES_QUICKS,
   UPDATE_ARTICLES_CREATION_DATA,
-} from "@ts/redux";
+} from '@ts/redux';
 
-import { config } from "@root/app.json";
-
-const initialState: ArticlesDataState = {
+const initialState: ArticlesContentState = {
   params: {},
-  lists: config.articles.lists,
-  prefs: config.articles.defaults,
-  quicks: config.articles.quicks,
   read: [],
   creationData: {},
+  lists: [
+    {
+      id: '0',
+      name: 'Favoris',
+      icon: 'star-outline',
+      items: [],
+    },
+    {
+      id: '1',
+      name: 'A lire plus tard',
+      icon: 'history',
+      items: [],
+    },
+  ],
+  quicks: [],
+  prefs: {
+    categories: ['unread', 'all', 'following'],
+    hidden: [],
+  },
 };
 
 /**
  * @docs reducers
  * Reducer pour les articles
- * @param {object} state Contient le contenu de la database redux
- * @param {object} action
- * @param {string} action.type ['UPDATE_ARTICLES', 'CLEAR_ARTICLES'] Le type d'action à effectuer: mettre à jour les articles avec action.data ou vider la database
- * @param {object} action.data Les données à remplacer dans la database redux
+ * @param state Contient le contenu de la database redux
+ * @param action
+ * @param action.type Le type d'action à effectuer: mettre à jour les articles avec action.data ou vider la database
+ * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
 function articleDataReducer(
   state = initialState,
-  action: ArticlesActionTypes
-): ArticlesDataState {
+  action: ArticlesContentActionTypes,
+): ArticlesContentState {
   switch (action.type) {
     case UPDATE_ARTICLES_PARAMS:
       return {

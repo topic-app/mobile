@@ -1,7 +1,18 @@
 stages:
   - build
+  - test
+
+typescript tests:
+  stage: test
+  image: node:12
+  script:
+    - npm install
+    - npm install --global typescript
+    - tsc
 
 build app android:
+  when:
+    - manual
   only:
     - tags
   image: reactnativecommunity/react-native-android
@@ -16,3 +27,16 @@ build app android:
   artifacts:
     paths:
       - ./android/scripts/apks
+
+build web:
+  only:
+    - tags
+  image: docker:stable
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - export IMG_FULLNAME=$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - docker build -t $IMG_FULLNAME .
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push $IMG_FULLNAME

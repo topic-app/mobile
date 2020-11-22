@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Divider, Text, List, Button, Switch, useTheme } from 'react-native-paper';
+import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { View, Platform, FlatList, Alert } from 'react-native';
 import { connect } from 'react-redux';
+import { StackNavigationProp } from '@react-navigation/stack';
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 
 import {
@@ -19,6 +19,7 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
+import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
 import {
   deleteArticleList,
@@ -29,6 +30,7 @@ import {
 } from '@redux/actions/contentData/articles';
 import getArticleStyles from '../styles/Styles';
 
+import type { ArticleListsStackParams } from '../index';
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
@@ -41,14 +43,14 @@ type ArticleListsProps = {
   preferences: Preferences;
   articlePrefs: ArticlePrefs;
   account: Account;
-  navigation: any;
+  navigation: StackNavigationProp<ArticleListsStackParams, 'Configure'>;
 };
 
 type Category = {
   id: string;
   name: string;
   navigate: () => any;
-  historyDisable?: boolean;
+  disable?: boolean;
 };
 
 function ArticleLists({
@@ -99,7 +101,7 @@ function ArticleLists({
             params: { screen: 'Article', params: { initialList: 'unread' } },
           },
         }),
-      historyDisable: true,
+      disable: !preferences.history,
     },
     {
       id: 'all',
@@ -112,7 +114,19 @@ function ArticleLists({
             params: { screen: 'Article', params: { initialList: 'all' } },
           },
         }),
-      historyDisable: false,
+    },
+    {
+      id: 'following',
+      name: 'Suivis',
+      navigate: () =>
+        navigation.push('Main', {
+          screen: 'Home1',
+          params: {
+            screen: 'Home2',
+            params: { screen: 'Article', params: { initialList: 'following' } },
+          },
+        }),
+      disable: !account.loggedIn,
     },
   ];
 
@@ -128,8 +142,6 @@ function ArticleLists({
     ...categories,
     ...categoryTypes.filter((c) => !articlePrefs.categories?.includes(c.id)),
   ];
-
-  console.log(`Categories ${JSON.stringify(categories)}`);
 
   return (
     <View style={styles.page}>
@@ -171,47 +183,34 @@ function ArticleLists({
                       </View>
                     )}
                     renderItem={({ item, move, moveEnd }) => {
-                      const enabled = articlePrefs.categories.some((d) => d === item.id);
+                      const enabled = articlePrefs.categories?.some((d) => d === item.id);
                       return (
                         <List.Item
                           key={item.id}
                           title={item.name}
-                          description={
-                            preferences.history || !item.historyDisable
-                              ? null
-                              : "Activez l'historique pour voir les articles non lus"
-                          }
+                          description={item.disable ? 'Indisponible' : null}
                           left={() => <List.Icon />}
-                          onPress={enabled ? item.navigate : () => null}
+                          onPress={enabled && !item.disable ? item.navigate : () => null}
                           onLongPress={move}
-                          disabled={!preferences.history && item.historyDisable}
-                          titleStyle={
-                            preferences.history || !item.historyDisable
-                              ? {}
-                              : { color: colors.disabled }
-                          }
-                          descriptionStyle={
-                            preferences.history || !item.historyDisable
-                              ? {}
-                              : { color: colors.disabled }
-                          }
+                          titleStyle={!item.disable ? {} : { color: colors.disabled }}
+                          descriptionStyle={!item.disable ? {} : { color: colors.disabled }}
                           right={() => (
                             <View style={{ flexDirection: 'row' }}>
                               <Switch
-                                disabled={!preferences.history && item.historyDisable}
-                                value={enabled && (preferences.history || !item.historyDisable)}
+                                disabled={item.disable}
+                                value={enabled && !item.disable}
                                 color={colors.primary}
                                 onTouchEnd={
                                   enabled
                                     ? () =>
                                         updateArticlePrefs({
-                                          categories: articlePrefs.categories.filter(
+                                          categories: articlePrefs.categories?.filter(
                                             (d) => d !== item.id,
                                           ),
                                         })
                                     : () =>
                                         updateArticlePrefs({
-                                          categories: [...articlePrefs.categories, item.id],
+                                          categories: [...(articlePrefs.categories || []), item.id],
                                         })
                                 }
                               />
@@ -390,7 +389,6 @@ function ArticleLists({
                   )}
                   renderItem={({ item }) => {
                     let content = { description: 'Erreur', icon: 'alert-decagram' };
-                    console.log(JSON.stringify(item));
                     if (item.type === 'tag') {
                       content = {
                         description: 'Tag',
@@ -513,17 +511,3 @@ const mapStateToProps = (state: State) => {
 };
 
 export default connect(mapStateToProps)(ArticleLists);
-
-ArticleLists.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-  state: PropTypes.shape({
-    info: PropTypes.shape({}).isRequired,
-  }).isRequired,
-};

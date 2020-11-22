@@ -1,10 +1,11 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator } from './ActionCreator';
-import { UPDATE_USERS_STATE } from '@ts/types';
+import { AppThunk, UPDATE_USERS_STATE } from '@ts/types';
 
-function userFollowCreator({ id }: { id: string }) {
-  return (dispatch: (action: { type: string; data: any }) => void) => {
+import { reportCreator } from './ActionCreator';
+
+function userFollowCreator({ id }: { id: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: 'UPDATE_USERS_STATE',
@@ -55,8 +56,8 @@ function userFollowCreator({ id }: { id: string }) {
   };
 }
 
-function userUnfollowCreator({ id }: { id: string }) {
-  return (dispatch: (action: { type: string; data: any }) => void) => {
+function userUnfollowCreator({ id }: { id: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: 'UPDATE_USERS_STATE',

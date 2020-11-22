@@ -1,0 +1,9 @@
+web/
+web-build/
+android/
+ios/
+scripts/
+node_modules/
+gitlab/
+.expo/
+*.json

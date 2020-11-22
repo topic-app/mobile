@@ -1,21 +1,22 @@
-import React from 'react';
-import { View, Linking, Platform, Dimensions } from 'react-native';
-import { Text, FAB, IconButton, useTheme } from 'react-native-paper';
 import MapboxGL, { OnPressEvent } from '@react-native-mapbox-gl/maps';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
+import React from 'react';
+import { View, Linking, Platform, Dimensions } from 'react-native';
+import { Text, FAB, IconButton } from 'react-native-paper';
 
-import { ExplorerLocation } from '@ts/types';
 import { BottomSheet, BottomSheetRef } from '@components/index';
-import { logger, useSafeAreaInsets } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { ExplorerLocation } from '@ts/types';
+import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
 import LocationModal from '../components/LocationModal';
-import { buildFeatureCollections, FeatureCollection } from '../utils/featureCollection';
-import { markerImages } from '../utils/getAsset';
 import getExplorerStyles from '../styles/Styles';
+import { buildFeatureCollections } from '../utils/featureCollection';
+import { markerImages } from '../utils/getAsset';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
+// MapboxGL.setTelemetryEnabled(false);
 
 export type MapMarkerDataType = {
   id: string;
@@ -74,7 +75,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
           logger.info('Location denied, hiding location FAB');
         }
       })
-      .catch((e) => logger.error('Error while requesting user location permission', e));
+      .catch((e) => logger.warn('Error while requesting user location permission', e));
   }, []);
 
   const onMarkerPress = ({ features }: OnPressEvent) => {
@@ -94,7 +95,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
     try {
       status = (await Location.requestPermissionsAsync()).status;
     } catch (e) {
-      logger.error('Error while requesting user location', e);
+      logger.warn('Error while requesting user location', e);
     }
     if (status === Location.PermissionStatus.GRANTED) {
       const { coords } = await Location.getCurrentPositionAsync({});

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
-import { Text, Button, ProgressBar, TextInput, HelperText, useTheme } from 'react-native-paper';
+import { Text, Button, ProgressBar, TextInput, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -12,11 +12,12 @@ import {
   Illustration,
   SafeAreaView,
 } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { login } from '@redux/actions/data/account';
 
-import getAuthStyles from '../styles/Styles';
 import type { AuthStackParams } from '../index';
+import getAuthStyles from '../styles/Styles';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParams, 'Login'>;
@@ -58,7 +59,7 @@ const AuthLogin: React.FC<Props> = ({
           params: { screen: 'Home2', params: { screen: 'Article' } },
         });
       })
-      .catch((e) => console.log(e));
+      .catch((e) => logger.warn(e));
   };
 
   const theme = useTheme();
@@ -101,6 +102,7 @@ const AuthLogin: React.FC<Props> = ({
                 onSubmitEditing={() => passwordInput.current?.focus()}
                 autoCorrect={false}
                 autoFocus
+                autoCapitalize="none"
                 error={!!reqState.login.incorrect} // `!!` transforms it into a boolean
                 mode="outlined"
                 textContentType="username"
@@ -113,12 +115,13 @@ const AuthLogin: React.FC<Props> = ({
             <View style={authStyles.textInputContainer}>
               <TextInput
                 ref={passwordInput}
-                label="Mot de Passe"
+                label="Mot de passe"
                 value={password}
                 mode="outlined"
                 error={!!reqState.login.incorrect}
                 autoCorrect={false}
                 secureTextEntry
+                autoCapitalize="none"
                 onSubmitEditing={() => submit()}
                 textContentType="password"
                 autoCompleteType="password"

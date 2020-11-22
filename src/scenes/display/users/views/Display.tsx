@@ -8,17 +8,8 @@ import {
   Platform,
   Share,
 } from 'react-native';
-import {
-  Text,
-  useTheme,
-  Title,
-  Subheading,
-  Divider,
-  Button,
-  List,
-  Appbar,
-  Menu,
-} from 'react-native-paper';
+import { Text, Title, Subheading, Divider, Button, List, Appbar, Menu } from 'react-native-paper';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -31,6 +22,14 @@ import {
   RequestState,
   RequestStateComplex,
   Article,
+  UserPreload,
+  User,
+  ArticlePreload,
+  GroupRequestState,
+  EventPreload,
+  ArticleRequestState,
+  EventRequestState,
+  GroupPreload,
 } from '@ts/types';
 import {
   Avatar,
@@ -43,14 +42,18 @@ import {
   CustomTabView,
   SafeAreaView,
 } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
 import { fetchUser } from '@redux/actions/api/users';
 import { fetchAccount } from '@redux/actions/data/account';
 import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
 import { searchGroups } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
+import { searchEvents } from '@redux/actions/api/events';
 
+import type { UserDisplayStackParams } from '../index';
 import getUserStyles from '../styles/Styles';
+import ContentTabView from '../../components/ContentTabView';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
@@ -61,14 +64,27 @@ function getAddressString(address: Address['address']) {
   return null;
 }
 
-function genName({ data, info }) {
-  if (data.firstName && data.lastName) {
-    return `${data.firstName} ${data.lastName}`;
+function genName(user: User | UserPreload) {
+  const { firstName, lastName } = user.data || {};
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`;
   }
-  return data.firstName || data.lastName || null;
+  return user.name || user.displayName || user.firstName || user.lastName || null;
 }
 
-function UserDisplay({
+type UserDisplayProps = StackScreenProps<UserDisplayStackParams, 'Display'> & {
+  account: Account;
+  state: { info: RequestState };
+  users: UsersState;
+  groups: GroupPreload[];
+  groupsState: GroupRequestState;
+  articles: ArticlePreload[];
+  events: EventPreload[];
+  articlesState: ArticleRequestState;
+  eventsState: EventRequestState;
+};
+
+const UserDisplay: React.FC<UserDisplayProps> = ({
   account,
   users,
   navigation,
@@ -77,18 +93,10 @@ function UserDisplay({
   groups,
   groupsState,
   articles,
+  events,
   articlesState,
-}: {
-  account: Account;
-  navigation: any;
-  route: { params: { id: string } };
-  state: { info: RequestState };
-  users: UsersState;
-  groups: Group[];
-  groupsState: { search: RequestStateComplex };
-  articles: Article[];
-  articlesState: { search: RequestStateComplex };
-}): React.ReactNode {
+  eventsState,
+}) => {
   const { id } = route.params || {};
 
   let user =
@@ -110,6 +118,7 @@ function UserDisplay({
     fetchUser(id);
     searchGroups('initial', '', { members: [id], number: 0 }, false);
     searchArticles('initial', '', { authors: [id] }, false);
+    searchEvents('initial', '', { authors: [id] }, false);
   }, [null]);
 
   const theme = useTheme();
@@ -244,12 +253,12 @@ function UserDisplay({
               <Divider style={{ marginVertical: 10 }} />
               <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                 <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{user.data.cache.followers || ''}</Text>
+                  <Text style={{ fontSize: 40 }}>{user.data?.cache?.followers || ''}</Text>
                   <Text>Abonnés </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 40 }}>
-                    {user.data.public ? (
+                    {user.data?.public ? (
                       user.data.following.groups.length +
                       user.data.following.users.length +
                       user.data.following.events.length
@@ -333,27 +342,27 @@ function UserDisplay({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {/*{(groups.length !== 0) && (
+              {groups.length !== 0 && (
                 <View>
                   <List.Subheader>Groupes</List.Subheader>
                   <Divider />
-                  {groupsState.search.error && (
+                  {groupsState.search?.error && (
                     <ErrorMessage
                       type="axios"
                       strings={{
                         what: 'le chargement des groups',
                         contentPlural: 'les groupes',
                       }}
-                      error={groupsState.search.error}
+                      error={groupsState.search?.error}
                       retry={() => searchGroups('initial', '', { members: [id], number: 0 }, false)}
                     />
                   )}
-                  {groupsState.search.loading.initial && (
+                  {groupsState.search?.loading.initial && (
                     <View style={styles.container}>
                       <ActivityIndicator size="large" color={colors.primary} />
                     </View>
                   )}
-                  {groupsState.search.success &&
+                  {groupsState.search?.success &&
                     groups?.map((group) => (
                       <InlineCard
                         key={group._id}
@@ -367,7 +376,10 @@ function UserDisplay({
                               screen: 'Group',
                               params: {
                                 screen: 'Display',
-                                params: { id: group._id, title: group.shortName || group.name },
+                                params: {
+                                  id: group._id,
+                                  title: group.displayName || group.shortName || group.name,
+                                },
                               },
                             },
                           })
@@ -376,7 +388,7 @@ function UserDisplay({
                     ))}
                   <View style={{ height: 20 }} />
                 </View>
-              )}*/}
+              )}
               {user.data.public && (
                 <View>
                   <List.Subheader>Localisation</List.Subheader>
@@ -386,7 +398,7 @@ function UserDisplay({
                       <InlineCard
                         icon="map-marker"
                         title="France Entière"
-                        onPress={() => console.log('global pressed')}
+                        onPress={() => logger.warn('global pressed')}
                       />
                     )}
                     {user.data.location.schools?.map((school) => (
@@ -404,7 +416,7 @@ function UserDisplay({
                               }`
                             : ' '
                         }`}
-                        onPress={() => console.log(`school ${school._id} pressed!`)}
+                        onPress={() => logger.warn(`school ${school._id} pressed!`)}
                       />
                     ))}
                     {user.data.location.departments?.map((dep) => (
@@ -415,7 +427,7 @@ function UserDisplay({
                         subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
                           dep.code
                         }`}
-                        onPress={() => console.log(`department ${dep._id} pressed!`)}
+                        onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                       />
                     ))}
                   </View>
@@ -499,86 +511,13 @@ function UserDisplay({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {articles.length !== 0 && (
-                <View>
-                  <List.Subheader>Derniers contenus</List.Subheader>
-                  <Divider />
-                  <CustomTabView
-                    scrollEnabled={false}
-                    pages={[
-                      ...(articles.length
-                        ? [
-                            {
-                              key: 'articles',
-                              title: 'Articles',
-                              component: (
-                                <View>
-                                  {articlesState.search.error && (
-                                    <ErrorMessage
-                                      type="axios"
-                                      strings={{
-                                        what: 'le chargement des articles',
-                                        contentPlural: 'les articles',
-                                      }}
-                                      error={articlesState.search.error}
-                                      retry={() =>
-                                        searchArticles('initial', '', { authors: [id] }, false)
-                                      }
-                                    />
-                                  )}
-                                  {articlesState.search.loading.initial && (
-                                    <View style={styles.container}>
-                                      <ActivityIndicator size="large" color={colors.primary} />
-                                    </View>
-                                  )}
-                                  {articlesState.search.success && (
-                                    <FlatList
-                                      data={articles}
-                                      keyExtractor={(i) => i._id}
-                                      ListFooterComponent={
-                                        articlesState.search.loading.initial ? (
-                                          <View style={[styles.container, { height: 50 }]}>
-                                            <ActivityIndicator
-                                              size="large"
-                                              color={colors.primary}
-                                            />
-                                          </View>
-                                        ) : null
-                                      }
-                                      renderItem={({ item }: { item: Article }) => (
-                                        <ArticleCard
-                                          article={item}
-                                          unread
-                                          navigate={() =>
-                                            navigation.navigate('Main', {
-                                              screen: 'Display',
-                                              params: {
-                                                screen: 'Article',
-                                                params: {
-                                                  screen: 'Display',
-                                                  params: {
-                                                    id: item._id,
-                                                    title: item.title,
-                                                    useLists: false,
-                                                  },
-                                                },
-                                              },
-                                            })
-                                          }
-                                        />
-                                      )}
-                                    />
-                                  )}
-                                </View>
-                              ),
-                            },
-                          ]
-                        : []),
-                    ]}
-                  />
-                  <View style={{ height: 20 }} />
-                </View>
-              )}
+              <ContentTabView
+                articles={articles}
+                events={events}
+                eventsState={eventsState}
+                articlesState={articlesState}
+                params={{ authors: [id] }}
+              />
             </View>
           )}
         </ScrollView>
@@ -592,10 +531,10 @@ function UserDisplay({
       />
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
-  const { users, account, groups, articles } = state;
+  const { users, account, groups, articles, events } = state;
   return {
     account,
     users,
@@ -603,7 +542,9 @@ const mapStateToProps = (state: State) => {
     groups: groups.search,
     groupsState: groups.state,
     articles: articles.search,
+    events: events.search,
     articlesState: articles.state,
+    eventsState: events.state,
   };
 };
 

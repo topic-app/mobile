@@ -1,16 +1,19 @@
-import { config } from '@root/app.json';
+import { Config } from '@constants/index';
 import { Image } from '@ts/types';
 
 import logger from './logger';
 
-const imageUrl = config.cdn?.image.url;
-const defaultSize = config.cdn?.image.defaultSize;
+const imageUrl = Config.cdn.baseUrl;
+const { defaultSize } = Config.cdn.image;
 
 type ImageSize = 'small' | 'medium' | 'large' | 'full';
 
 function getImageSize(thumbnails: Image['thumbnails'], size: ImageSize): string {
   let imgSize = null;
   switch (size) {
+    case 'full':
+      imgSize = 'full';
+      break;
     case 'large':
       if (thumbnails?.large) {
         imgSize = 'large';
@@ -38,7 +41,7 @@ function getImageSize(thumbnails: Image['thumbnails'], size: ImageSize): string 
 }
 
 function getImageUrl({ image, size }: { image?: Image; size: ImageSize }) {
-  if (!imageUrl) logger.warn('Warning: Please specify config.cdn.image.url in app.json');
+  if (!imageUrl) logger.warn('Warning: Please specify cdn.image.url in constants/config.ts');
   if (image) {
     const imageSize = getImageSize(image.thumbnails, size);
     if (image.image) {
@@ -52,5 +55,4 @@ function getImageUrl({ image, size }: { image?: Image; size: ImageSize }) {
 
 // Could add getAudioUrl in the future here
 
-// eslint-disable-next-line import/prefer-default-export
 export { getImageUrl };

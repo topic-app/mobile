@@ -1,10 +1,23 @@
-import React from 'react';
-import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, FAB, useTheme } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
+import React from 'react';
+import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
+import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import {
+  AnimatingHeader,
+  ErrorMessage,
+  TabChipList,
+  EVENT_CARD_HEADER_HEIGHT,
+} from '@components/index';
+import {
+  updateUpcomingEvents,
+  updatePassedEvents,
+  searchEvents,
+  updateEventsFollowing,
+} from '@redux/actions/api/events';
+import getStyles from '@styles/Styles';
 import {
   State,
   EventListItem,
@@ -17,13 +30,11 @@ import {
   EventRequestState,
   Account,
 } from '@ts/types';
-import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
-import { updateUpcomingEvents, updatePassedEvents, searchEvents } from '@redux/actions/api/events';
-import getStyles from '@styles/Styles';
+import { useTheme } from '@utils/index';
 
+import { HomeTwoNavParams } from '../../HomeTwo.ios';
 import EventListCard from '../components/Card';
 import EventEmptyList from '../components/EmptyList';
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
 
 type Category = {
   key: string;
@@ -36,8 +47,9 @@ type Category = {
 };
 
 type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
-  upcomingEvents: (EventPreload | Event)[];
-  passedEvents: (EventPreload | Event)[];
+  upcomingEvents: EventPreload[];
+  passedEvents: EventPreload[];
+  followingEvents: EventPreload[];
   search: EventPreload[];
   lists: EventListItem[];
   read: EventReadItem[];
@@ -46,6 +58,8 @@ type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   preferences: Preferences;
   state: EventRequestState;
   account: Account;
+  dual?: boolean;
+  setEvent?: (event: { id: string; title: string; useLists: boolean }) => void;
 };
 
 const EventList: React.FC<EventListProps> = ({
@@ -53,6 +67,7 @@ const EventList: React.FC<EventListProps> = ({
   route,
   upcomingEvents,
   passedEvents,
+  followingEvents,
   search,
   lists,
   read,
@@ -61,6 +76,8 @@ const EventList: React.FC<EventListProps> = ({
   eventPrefs,
   preferences,
   account,
+  dual = false,
+  setEvent = () => {},
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -73,18 +90,28 @@ const EventList: React.FC<EventListProps> = ({
       key: 'upcoming',
       title: 'Tous',
       data: upcomingEvents,
-      type: 'upcomingEvents',
+      type: 'category',
     },
-  ];
-
-  if (preferences.history) {
-    potentialCategories.unshift({
+    {
       key: 'passed',
       title: 'Finis',
       data: passedEvents,
       type: 'category',
-    });
-  }
+    },
+    ...(account.loggedIn &&
+    account.accountInfo?.user?.data?.following?.users?.length +
+      account.accountInfo?.user?.data?.following?.groups?.length >
+      0
+      ? [
+          {
+            key: 'following',
+            title: 'Suivis',
+            data: followingEvents,
+            type: 'category',
+          },
+        ]
+      : []),
+  ];
 
   const categories: Category[] = [];
 
@@ -128,6 +155,28 @@ const EventList: React.FC<EventListProps> = ({
             params = { groups: [q.id] };
             icon = 'account-multiple';
             break;
+          case 'school':
+            params = { schools: [q.id] };
+            icon = 'school';
+            break;
+          case 'departement':
+            params = {
+              departments: [q.id],
+            };
+            icon = 'map-marker-radius';
+            break;
+          case 'region':
+            params = {
+              departments: [q.id],
+            };
+            icon = 'map-marker-radius';
+            break;
+          case 'global':
+            params = {
+              global: true,
+            };
+            icon = 'flag';
+            break;
         }
         return {
           key: q.id,
@@ -162,6 +211,7 @@ const EventList: React.FC<EventListProps> = ({
     React.useCallback(() => {
       updateUpcomingEvents('initial');
       updatePassedEvents('initial');
+      updateEventsFollowing('initial');
     }, [null]),
   );
 
@@ -200,8 +250,23 @@ const EventList: React.FC<EventListProps> = ({
 
   const listData = category.data;
 
+  const [cardWidth, setCardWidth] = React.useState(100);
+  const imageSize = cardWidth / 3.5;
+
+  const itemHeight = EVENT_CARD_HEADER_HEIGHT - imageSize;
+  const getItemLayout = (data: unknown, index: number) => {
+    return { length: itemHeight, offset: itemHeight * index, index };
+  };
+
   return (
-    <View style={styles.page}>
+    <View
+      style={styles.page}
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => setCardWidth(width)}
+    >
       <AnimatingHeader
         home
         value={scrollY}
@@ -256,10 +321,12 @@ const EventList: React.FC<EventListProps> = ({
             : []),
         ]}
       >
-        {(state.list.loading.initial || state.search?.loading.initial) && (
-          <ProgressBar indeterminate style={{ marginTop: -4 }} />
-        )}
-        {state.list.error || state.search?.error ? (
+        {(state.list.loading.initial ||
+          state.search?.loading.initial ||
+          state.following?.loading) && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
+        {(state.list.error && section.key === 'categories') ||
+        (state.search?.error && section.key === 'quicks') ||
+        (state.following?.error && section.key === 'categories' && category.key === 'following') ? (
           <ErrorMessage
             type="axios"
             strings={{
@@ -268,7 +335,11 @@ const EventList: React.FC<EventListProps> = ({
               contentSingular: "La liste d'évènements",
             }}
             error={[state.list.error, state.search?.error]}
-            retry={() => updateEvents('initial')}
+            retry={() => {
+              updatePassedEvents('initial');
+              updateUpcomingEvents('initial');
+              updateEventsFollowing('initial');
+            }}
           />
         ) : null}
       </AnimatingHeader>
@@ -277,6 +348,7 @@ const EventList: React.FC<EventListProps> = ({
           useNativeDriver: true,
         })}
         data={listData || []}
+        getItemLayout={getItemLayout}
         refreshing={
           (section.key === 'categories' && state.list.loading.refresh) ||
           (section.key === 'quicks' && state.search?.loading.refresh)
@@ -286,6 +358,8 @@ const EventList: React.FC<EventListProps> = ({
             updateUpcomingEvents('refresh');
           } else if (section.key === 'categories' && category.key === 'passed') {
             updatePassedEvents('refresh');
+          } else if (section.key === 'categories' && category.key === 'following') {
+            updateEventsFollowing('refresh');
           } else if (section.key === 'quicks') {
             searchEvents('refresh', '', category.params, false, false);
           }
@@ -295,8 +369,9 @@ const EventList: React.FC<EventListProps> = ({
             updateUpcomingEvents('next');
           } else if (section.key === 'categories' && category.key === 'passed') {
             updatePassedEvents('next');
+          } else if (section.key === 'categories' && category.key === 'following') {
+            updateEventsFollowing('next');
           } else if (section.key === 'quicks') {
-            console.log(category.params);
             searchEvents('next', '', category.params, false, false);
           }
         }}
@@ -339,7 +414,7 @@ const EventList: React.FC<EventListProps> = ({
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
             {((section.key === 'categories' && state.list.loading.next) ||
-              (section.key === 'quicks' && state.search.loading.next)) && (
+              (section.key === 'quicks' && state.search?.loading.next)) && (
               <ActivityIndicator size="large" color={colors.primary} />
             )}
           </View>
@@ -352,22 +427,32 @@ const EventList: React.FC<EventListProps> = ({
               itemKey={category.key}
               isRead={read.some((r) => r.id === event._id)}
               historyActive={preferences.history}
+              overrideImageWidth={imageSize}
               lists={lists}
-              navigate={() =>
-                navigation.navigate('Main', {
-                  screen: 'Display',
-                  params: {
-                    screen: 'Event',
-                    params: {
-                      screen: 'Display',
-                      params: {
+              navigate={
+                dual
+                  ? () => {
+                      setEvent({
                         id: event._id,
                         title: event.title,
                         useLists: section.key === 'lists',
-                      },
-                    },
-                  },
-                })
+                      });
+                    }
+                  : () =>
+                      navigation.navigate('Main', {
+                        screen: 'Display',
+                        params: {
+                          screen: 'Event',
+                          params: {
+                            screen: 'Display',
+                            params: {
+                              id: event._id,
+                              title: event.title,
+                              useLists: section.key === 'lists',
+                            },
+                          },
+                        },
+                      })
               }
             />
           </Animated.View>
@@ -399,6 +484,7 @@ const mapStateToProps = (state: State) => {
   return {
     upcomingEvents: events.dataUpcoming,
     passedEvents: events.dataPassed,
+    followingEvents: events.following,
     search: events.search,
     eventPrefs: eventData.prefs,
     lists: eventData.lists,

@@ -1,15 +1,16 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, useTheme, Card } from 'react-native-paper';
-
-import { updateEventCreationData } from '@redux/actions/contentData/events';
-import { StepperViewPageProps } from '@components/index';
-import { Account, State } from '@ts/types';
-import getStyles from '@styles/Styles';
+import { Button, RadioButton, HelperText, List, Text, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
+
+import { StepperViewPageProps } from '@components/index';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { Account, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
-import { connect } from 'react-redux';
 
 type Props = StepperViewPageProps & { account: Account };
 
@@ -58,6 +59,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
               Platform.OS !== 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={group === g._id ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {
@@ -72,6 +74,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
               Platform.OS === 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={group === g._id ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {

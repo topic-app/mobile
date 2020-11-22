@@ -1,40 +1,13 @@
 import React from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import { State } from '@ts/types';
-import { updateEventParams } from '@redux/actions/contentData/events';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
 import LocationSelectPage from '@components/LocationSelectPage';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { ErrorMessage } from '@components/index';
 
-import getStyles from '@styles/Styles';
+import type { EventAddStackParams } from '../index';
 
-import type { EventStackParams } from '../index';
+type EventAddLocationProps = StackScreenProps<EventAddStackParams, 'Location'>;
 
-type Navigation = StackNavigationProp<EventStackParams, 'EditParams'>;
-
-// TODO: Externalize into @ts/redux
-type ReduxLocation = {
-  global: boolean;
-  schools: string[];
-  departments: string[];
-};
-
-type EventEditParamsProps = {
-  navigation: Navigation;
-  route: {
-    params: {
-      type: 'schools' | 'departements' | 'regions' | 'other';
-      hideSearch: boolean;
-      callback: (location: ReduxLocation) => any;
-      initialData: ReduxLocation;
-    };
-  };
-};
-
-function EventAddLocation({ navigation, route }: EventEditParamsProps) {
+const EventAddLocation: React.FC<EventAddLocationProps> = ({ navigation, route }) => {
   const { hideSearch = false, type, initialData, callback } = route.params;
 
   return (
@@ -42,12 +15,12 @@ function EventAddLocation({ navigation, route }: EventEditParamsProps) {
       initialData={initialData}
       type={type}
       hideSearch={hideSearch}
-      callback={(location: ReduxLocation) => {
+      callback={(location) => {
         callback(location);
         navigation.goBack();
       }}
     />
   );
-}
+};
 
 export default EventAddLocation;

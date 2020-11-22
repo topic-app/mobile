@@ -13,7 +13,6 @@ import {
   Button,
   Text,
   Paragraph,
-  useTheme,
   Divider,
   Menu,
   Appbar,
@@ -22,8 +21,9 @@ import {
   IconButton,
   Banner,
 } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
   GroupPreload,
@@ -35,6 +35,10 @@ import {
   State,
   ArticleRequestState,
   Article,
+  EventRequestState,
+  EventPreload,
+  ArticlePreload,
+  AccountRequestState,
 } from '@ts/types';
 import {
   Avatar,
@@ -50,23 +54,29 @@ import {
   CollapsibleView,
   ErrorMessage,
   SafeAreaView,
+  EventCard,
 } from '@components/index';
+import { useTheme, logger } from '@utils/index';
 import getStyles from '@styles/Styles';
-import { fetchGroup } from '@redux/actions/api/groups';
+import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
+import { searchEvents } from '@redux/actions/api/events';
 import {
   groupFollow,
   groupUnfollow,
   groupReport,
   groupMemberDelete,
   groupMemberLeave,
+  groupVerificationApprove,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
 
+import type { GroupDisplayStackParams } from '../index';
 import AddUserSelectModal from '../components/AddUserSelectModal';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import EditGroupModal from '../components/EditGroupModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
+import ContentTabView from '../../components/ContentTabView';
 
 function getAddressString(address: Address) {
   const { number, street, city, code } = address?.address || {};
@@ -78,15 +88,18 @@ function getAddressString(address: Address) {
 }
 
 type GroupElement = Group | GroupPreload;
-type GroupDisplayProps = {
+type GroupDisplayProps = StackScreenProps<GroupDisplayStackParams, 'Display'> & {
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
-  articles: Article[];
+  articles: ArticlePreload[];
+  accountState: AccountRequestState;
   articlesState: ArticleRequestState;
+  events: EventPreload[];
+  eventsState: EventRequestState;
 };
 
-function GroupDisplay({
+const GroupDisplay: React.FC<GroupDisplayProps> = ({
   route,
   navigation,
   groups,
@@ -94,17 +107,23 @@ function GroupDisplay({
   state,
   accountState,
   articles,
+  events,
   articlesState,
-}: GroupDisplayProps) {
+  eventsState,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
   // Pour changer le type de route.params, voir ../index.tsx
-  const { id } = route.params;
+  const { id, verification } = route.params;
+
+  const fetch = verification ? () => fetchGroupVerification(id) : () => fetchGroup(id);
+
   React.useEffect(() => {
-    fetchGroup(id);
+    fetch();
     searchArticles('initial', '', { groups: [id] }, false);
+    searchEvents('initial', '', { groups: [id] }, false);
   }, [null]);
 
   const group =
@@ -135,7 +154,7 @@ function GroupDisplay({
           text: 'Quitter',
           onPress: () =>
             groupMemberLeave(id).then(() => {
-              fetchGroup(id);
+              fetch();
               fetchGroups();
             }),
         },
@@ -161,7 +180,7 @@ function GroupDisplay({
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
     false,
   );
-  const [descriptionVisible, setDescriptionVisible] = React.useState(false);
+  const [descriptionVisible, setDescriptionVisible] = React.useState(verification || false);
 
   if (!group) {
     // This is when article has not been loaded in list, so we have absolutely no info
@@ -178,7 +197,7 @@ function GroupDisplay({
                 contentSingular: 'Le groupe',
               }}
               error={state.info.error}
-              retry={() => groupMemberDelete(id, mem.user?._id).then(() => fetchGroup(id))}
+              retry={() => fetch()}
             />
           )}
           {!state.info.error && (
@@ -203,7 +222,7 @@ function GroupDisplay({
               contentSingular: 'Le groupe',
             }}
             error={state.info.error}
-            retry={() => fetchGroup(id)}
+            retry={fetch}
           />
         )}
         {state.follow.error && (
@@ -224,7 +243,6 @@ function GroupDisplay({
               contentSingular: "L'utilisateur",
             }}
             error={state.member_delete?.error}
-            retry={() => fetchGroup(id)}
           />
         )}
         {state.member_leave?.error && (
@@ -279,13 +297,13 @@ function GroupDisplay({
                     setMenuVisible(false);
                     if (Platform.OS === 'ios') {
                       Share.share({
-                        message: `Groupe ${group?.shortName || group?.name}`,
-                        url: `https://go.topicapp.fr/groupes/${group?._id}`,
+                        message: `Groupe ${group.shortName || group.name}`,
+                        url: `https://go.topicapp.fr/groupes/${group._id}`,
                       });
                     } else {
                       Share.share({
-                        message: `https://go.topicapp.fr/groupes/${group?._id}`,
-                        title: `Groupe ${group?.shortName || group?.name}`,
+                        message: `https://go.topicapp.fr/groupes/${group._id}`,
+                        title: `Groupe ${group.shortName || group.name}`,
                       });
                     }
                   }}
@@ -304,25 +322,25 @@ function GroupDisplay({
 
           <View style={[styles.contentContainer, { marginTop: 20 }]}>
             <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-              <Avatar size={120} avatar={group?.avatar} />
+              <Avatar size={120} avatar={group.avatar} />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               <View style={{ alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Title>{group?.name}</Title>
+                  <Title>{group.name}</Title>
                   <View style={{ marginLeft: 5 }}>
-                    {group?.official && (
+                    {group.official && (
                       <Icon name="check-decagram" color={colors.primary} size={20} />
                     )}
                   </View>
                 </View>
-                {!!group?.shortName && (
+                {!!group.shortName && (
                   <Subheading style={{ marginTop: -10, color: colors.disabled }}>
                     {group.shortName}
                   </Subheading>
                 )}
                 <Subheading style={{ marginTop: -10, color: colors.disabled }}>
-                  Groupe {group?.type}
+                  Groupe {group.type}
                 </Subheading>
               </View>
             </View>
@@ -334,55 +352,59 @@ function GroupDisplay({
           )}
           {state.info.success && (
             <View>
-              <Divider style={{ marginVertical: 10 }} />
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{group.cache.followers || ''}</Text>
-                  <Text>Abonnés </Text>
-                </View>
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{group.members?.length}</Text>
-                  <Text>Membres </Text>
-                </View>
-              </View>
-              <Divider style={{ marginVertical: 10 }} />
-              {account.loggedIn && (
-                <View style={{ flexDirection: 'row' }}>
-                  {account.groups?.some((g) => g._id === group._id) && (
-                    <View style={[styles.container, { flexGrow: 1 }]}>
-                      <Button
-                        mode="outlined"
-                        uppercase={Platform.OS !== 'ios'}
-                        style={{ borderRadius: 20 }}
-                        loading={state.member_leave?.loading}
-                        onPress={leave}
-                      >
-                        Quitter
-                      </Button>
+              {!verification && (
+                <View>
+                  <Divider style={{ marginVertical: 10 }} />
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={{ fontSize: 40 }}>{group.cache.followers || ''}</Text>
+                      <Text>Abonnés </Text>
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={{ fontSize: 40 }}>{group.members?.length}</Text>
+                      <Text>Membres </Text>
+                    </View>
+                  </View>
+                  <Divider style={{ marginVertical: 10 }} />
+                  {account.loggedIn && (
+                    <View style={{ flexDirection: 'row' }}>
+                      {account.groups?.some((g) => g._id === group._id) && (
+                        <View style={[styles.container, { flexGrow: 1 }]}>
+                          <Button
+                            mode="outlined"
+                            uppercase={Platform.OS !== 'ios'}
+                            style={{ borderRadius: 20 }}
+                            loading={state.member_leave?.loading}
+                            onPress={leave}
+                          >
+                            Quitter
+                          </Button>
+                        </View>
+                      )}
+                      <View style={[styles.container, { flexGrow: 1 }]}>
+                        <Button
+                          loading={state.follow?.loading}
+                          mode={following ? 'outlined' : 'contained'}
+                          uppercase={Platform.OS !== 'ios'}
+                          style={{
+                            backgroundColor: following ? colors.surface : colors.primary,
+                            borderRadius: 20,
+                          }}
+                          onPress={toggleFollow}
+                        >
+                          {following ? 'Abonné' : "S'abonner"}
+                        </Button>
+                      </View>
                     </View>
                   )}
-                  <View style={[styles.container, { flexGrow: 1 }]}>
-                    <Button
-                      loading={state.follow?.loading}
-                      mode={following ? 'outlined' : 'contained'}
-                      uppercase={Platform.OS !== 'ios'}
-                      style={{
-                        backgroundColor: following ? colors.surface : colors.primary,
-                        borderRadius: 20,
-                      }}
-                      onPress={toggleFollow}
-                    >
-                      {following ? 'Abonné' : "S'abonner"}
-                    </Button>
-                  </View>
                 </View>
               )}
               <PlatformTouchable onPress={() => setDescriptionVisible(!descriptionVisible)}>
                 <View style={styles.container}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flexGrow: 1 }}>
-                      <Paragraph style={{ color: colors.disabled }}>Groupe {group?.type}</Paragraph>
-                      <Paragraph numberOfLines={5}>{group?.summary}</Paragraph>
+                      <Paragraph style={{ color: colors.disabled }}>Groupe {group.type}</Paragraph>
+                      <Paragraph numberOfLines={5}>{group.summary}</Paragraph>
                     </View>
                     {account.loggedIn &&
                       account.permissions?.some(
@@ -405,7 +427,7 @@ function GroupDisplay({
                         </View>
                       )}
                   </View>
-                  {group?.description?.data ? (
+                  {group.description?.data ? (
                     <View>
                       <View style={{ alignItems: 'flex-end' }}>
                         <View style={{ flexDirection: 'row' }}>
@@ -425,33 +447,33 @@ function GroupDisplay({
               </PlatformTouchable>
               <CollapsibleView collapsed={!descriptionVisible}>
                 <View style={styles.contentContainer}>
-                  <Content parser={group?.description?.parser} data={group?.description?.data} />
+                  <Content parser={group.description?.parser} data={group.description?.data} />
                 </View>
               </CollapsibleView>
               <Divider />
-              {group?.location.global && (
+              {group.location.global && (
                 <InlineCard
                   icon="map-marker"
                   title="France Entière"
-                  onPress={() => console.log('global pressed')}
+                  onPress={() => logger.warn('global pressed')}
                 />
               )}
-              {group?.location.schools?.map((school) => (
+              {group.location.schools?.map((school) => (
                 <InlineCard
                   key={school._id}
                   icon="school"
                   title={school.displayName}
                   subtitle={getAddressString(school?.address) || school?.shortName}
-                  onPress={() => console.log(`school ${school._id} pressed!`)}
+                  onPress={() => logger.warn(`school ${school._id} pressed!`)}
                 />
               ))}
-              {group?.location.departments?.map((dep) => (
+              {group.location.departments?.map((dep) => (
                 <InlineCard
                   key={dep._id}
                   icon="domain"
                   title={dep.displayName}
                   subtitle="Département"
-                  onPress={() => console.log(`department ${dep._id} pressed!`)}
+                  onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                 />
               ))}
               <Divider />
@@ -552,7 +574,7 @@ function GroupDisplay({
                                 {
                                   text: 'Retirer',
                                   onPress: () => {
-                                    groupMemberDelete(id, mem.user?._id).then(() => fetchGroup(id));
+                                    groupMemberDelete(id, mem.user?._id).then(fetch);
                                   },
                                 },
                               ],
@@ -586,86 +608,63 @@ function GroupDisplay({
                   </View>
                 )}
               <View style={{ height: 40 }} />
-              {articles.length !== 0 && (
+              {!verification && (
+                <ContentTabView
+                  articles={articles}
+                  events={events}
+                  eventsState={eventsState}
+                  articlesState={articlesState}
+                  params={{ groups: [id] }}
+                />
+              )}
+              {verification && (
                 <View>
-                  <View style={styles.container}>
-                    <CategoryTitle>Derniers contenus</CategoryTitle>
+                  <Divider style={{ marginTop: 30 }} />
+                  <View style={styles.contentContainer}>
+                    <Title>Informations de vérification</Title>
                   </View>
-                  <Divider />
-                  <CustomTabView
-                    scrollEnabled={false}
-                    pages={[
-                      ...(articles.length
-                        ? [
-                            {
-                              key: 'articles',
-                              title: 'Articles',
-                              component: (
-                                <View>
-                                  {articlesState.search?.error && (
-                                    <ErrorMessage
-                                      type="axios"
-                                      strings={{
-                                        what: 'le chargement des articles',
-                                        contentPlural: 'les articles',
-                                      }}
-                                      error={articlesState.search?.error}
-                                      retry={() =>
-                                        searchArticles('initial', '', { authors: [id] }, false)
-                                      }
-                                    />
-                                  )}
-                                  {articlesState.search?.loading.initial && (
-                                    <View style={styles.container}>
-                                      <ActivityIndicator size="large" color={colors.primary} />
-                                    </View>
-                                  )}
-                                  {articlesState.search?.success && (
-                                    <FlatList
-                                      data={articles}
-                                      keyExtractor={(i) => i._id}
-                                      ListFooterComponent={
-                                        articlesState.search.loading.initial ? (
-                                          <View style={[styles.container, { height: 50 }]}>
-                                            <ActivityIndicator
-                                              size="large"
-                                              color={colors.primary}
-                                            />
-                                          </View>
-                                        ) : null
-                                      }
-                                      renderItem={({ item }: { item: Article }) => (
-                                        <ArticleCard
-                                          article={item}
-                                          unread
-                                          navigate={() =>
-                                            navigation.navigate('Main', {
-                                              screen: 'Display',
-                                              params: {
-                                                screen: 'Article',
-                                                params: {
-                                                  screen: 'Display',
-                                                  params: {
-                                                    id: item._id,
-                                                    title: item.title,
-                                                    useLists: false,
-                                                  },
-                                                },
-                                              },
-                                            })
-                                          }
-                                        />
-                                      )}
-                                    />
-                                  )}
-                                </View>
-                              ),
-                            },
-                          ]
-                        : []),
-                    ]}
-                  />
-                  <View style={{ height: 20 }} />
+                  <View style={styles.contentContainer}>
+                    <Divider style={{ marginBottom: 20 }} />
+                    <Subheading>Nom du créateur</Subheading>
+                    <Text>{group.verification?.data?.name}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Identifiant (RNA, SIRET etc)</Subheading>
+                    <Text>{group.verification?.data?.id || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Données de vérification supplémentaires</Subheading>
+                    <Text>{group.verification?.data?.extra || 'Non spécifié'}</Text>
+                  </View>
+                  {state.verification_approve?.error && (
+                    <ErrorMessage
+                      type="axios"
+                      strings={{
+                        what: "l'approbation du groupe",
+                        contentSingular: 'le groupe',
+                      }}
+                      error={state.verification_approve?.error}
+                      retry={() =>
+                        groupVerificationApprove(group._id).then(() => navigation.goBack())
+                      }
+                    />
+                  )}
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                    <View style={styles.container}>
+                      <Button
+                        mode="contained"
+                        loading={state.verification_approve?.loading}
+                        color={colors.valid}
+                        contentStyle={{
+                          height: 50,
+                          justifyContent: 'center',
+                        }}
+                        onPress={() =>
+                          groupVerificationApprove(group._id).then(() => navigation.goBack())
+                        }
+                      >
+                        Approuver
+                      </Button>
+                    </View>
+                  </View>
                 </View>
               )}
             </View>
@@ -719,15 +718,17 @@ function GroupDisplay({
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
-  const { groups, account, articles } = state;
+  const { groups, account, articles, events } = state;
   return {
     groups,
     account,
     articles: articles.search,
+    events: events.search,
     articlesState: articles.state,
+    eventsState: events.state,
     state: groups.state,
     accountState: account.state,
   };
