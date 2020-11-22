@@ -5,7 +5,12 @@ import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-nati
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
+import {
+  AnimatingHeader,
+  ErrorMessage,
+  TabChipList,
+  EVENT_CARD_HEADER_HEIGHT,
+} from '@components/index';
 import {
   updateUpcomingEvents,
   updatePassedEvents,
@@ -53,6 +58,8 @@ type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   preferences: Preferences;
   state: EventRequestState;
   account: Account;
+  dual?: boolean;
+  setEvent?: (event: { id: string; title: string; useLists: boolean }) => void;
 };
 
 const EventList: React.FC<EventListProps> = ({
@@ -69,6 +76,8 @@ const EventList: React.FC<EventListProps> = ({
   eventPrefs,
   preferences,
   account,
+  dual = false,
+  setEvent = () => {},
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -241,8 +250,23 @@ const EventList: React.FC<EventListProps> = ({
 
   const listData = category.data;
 
+  const [cardWidth, setCardWidth] = React.useState(100);
+  const imageSize = cardWidth / 3.5;
+
+  const itemHeight = EVENT_CARD_HEADER_HEIGHT - imageSize;
+  const getItemLayout = (data: unknown, index: number) => {
+    return { length: itemHeight, offset: itemHeight * index, index };
+  };
+
   return (
-    <View style={styles.page}>
+    <View
+      style={styles.page}
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => setCardWidth(width)}
+    >
       <AnimatingHeader
         home
         value={scrollY}
@@ -324,6 +348,7 @@ const EventList: React.FC<EventListProps> = ({
           useNativeDriver: true,
         })}
         data={listData || []}
+        getItemLayout={getItemLayout}
         refreshing={
           (section.key === 'categories' && state.list.loading.refresh) ||
           (section.key === 'quicks' && state.search?.loading.refresh)
@@ -402,22 +427,32 @@ const EventList: React.FC<EventListProps> = ({
               itemKey={category.key}
               isRead={read.some((r) => r.id === event._id)}
               historyActive={preferences.history}
+              overrideImageWidth={imageSize}
               lists={lists}
-              navigate={() =>
-                navigation.navigate('Main', {
-                  screen: 'Display',
-                  params: {
-                    screen: 'Event',
-                    params: {
-                      screen: 'Display',
-                      params: {
+              navigate={
+                dual
+                  ? () => {
+                      setEvent({
                         id: event._id,
                         title: event.title,
                         useLists: section.key === 'lists',
-                      },
-                    },
-                  },
-                })
+                      });
+                    }
+                  : () =>
+                      navigation.navigate('Main', {
+                        screen: 'Display',
+                        params: {
+                          screen: 'Event',
+                          params: {
+                            screen: 'Display',
+                            params: {
+                              id: event._id,
+                              title: event.title,
+                              useLists: section.key === 'lists',
+                            },
+                          },
+                        },
+                      })
               }
             />
           </Animated.View>

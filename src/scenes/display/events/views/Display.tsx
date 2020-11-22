@@ -1,3 +1,6 @@
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
 import {
   View,
@@ -10,12 +13,22 @@ import {
   Dimensions,
 } from 'react-native';
 import { Text, Title, Card, Button } from 'react-native-paper';
-import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import moment from 'moment';
+import { connect } from 'react-redux';
 
+import {
+  ErrorMessage,
+  TagList,
+  AnimatingHeader,
+  ReportModal,
+  CustomTabView,
+} from '@components/index';
+import { updateComments } from '@redux/actions/api/comments';
+import { fetchEvent, fetchEventVerification } from '@redux/actions/api/events';
+import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
+import { eventReport, eventVerificationApprove } from '@redux/actions/apiActions/events';
+import { addEventRead } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
 import {
   State,
   CommentRequestState,
@@ -27,30 +40,16 @@ import {
   EventPreload,
   EventListItem,
 } from '@ts/types';
-import {
-  ErrorMessage,
-  TagList,
-  AnimatingHeader,
-  ReportModal,
-  CustomTabView,
-} from '@components/index';
+import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { eventReport, eventVerificationApprove } from '@redux/actions/apiActions/events';
-import { fetchEvent, fetchEventVerification } from '@redux/actions/api/events';
-import { addEventRead } from '@redux/actions/contentData/events';
-import { updateComments } from '@redux/actions/api/comments';
-import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
-import getEventStyles from '../styles/Styles';
-
 import type { EventDisplayStackParams } from '../index';
+import getEventStyles from '../styles/Styles';
+import EventDisplayContact from './Contact';
 import EventDisplayDescription from './Description';
 import EventDisplayProgram from './Program';
-import EventDisplayContact from './Contact';
-import AutoHeightImage from 'react-native-auto-height-image';
 
 // Common types
 type Navigation = StackNavigationProp<EventDisplayStackParams, 'Display'>;
@@ -72,6 +71,7 @@ type EventDisplayProps = {
   account: Account;
   lists: EventListItem[];
   preferences: Preferences;
+  dual?: boolean;
 };
 
 const EventDisplay: React.FC<EventDisplayProps> = ({
@@ -86,6 +86,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   account,
   preferences,
   lists,
+  dual = false,
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
   const { id, useLists = false, verification = false } = route.params;
@@ -146,6 +147,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
     return (
       <View style={styles.page}>
         <AnimatingHeader
+          hideBack={dual}
           value={scrollY}
           title={
             route.params.title ||
@@ -187,6 +189,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   return (
     <View style={styles.page}>
       <AnimatingHeader
+        hideBack={dual}
         value={scrollY}
         title={
           route.params.title ||
@@ -259,7 +262,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         })}
       >
         <View>
-          {event.image && (
+          {event.image?.image && (
             <View style={[styles.image, { minHeight: 150 }]}>
               <AutoHeightImage
                 source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}

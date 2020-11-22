@@ -1,6 +1,7 @@
+import { DeepPartial } from 'redux';
+
 import { AccountState, ArticlesState, EventsState, LocationList, Preferences } from '@ts/types';
 import { LogLevel } from '@utils/logger';
-import { DeepPartial } from 'redux';
 
 export type AppConfig = {
   logger: {
@@ -26,6 +27,9 @@ export type AppConfig = {
     image: {
       defaultSize: string;
     };
+  };
+  layout: {
+    dualMinWidth: number;
   };
   maps: {
     baseUrl: string;
