@@ -1,10 +1,16 @@
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from 'react-native';
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { AnimatingHeader, ErrorMessage, TabChipList, GroupsBanner } from '@components/index';
+import {
+  updateArticles,
+  searchArticles,
+  updateArticlesFollowing,
+} from '@redux/actions/api/articles';
+import getStyles from '@styles/Styles';
 import {
   State,
   ArticleListItem,
@@ -17,18 +23,11 @@ import {
   ArticleRequestState,
   Account,
 } from '@ts/types';
-import { AnimatingHeader, ErrorMessage, TabChipList, GroupsBanner } from '@components/index';
 import { useTheme } from '@utils/index';
-import {
-  updateArticles,
-  searchArticles,
-  updateArticlesFollowing,
-} from '@redux/actions/api/articles';
-import getStyles from '@styles/Styles';
 
+import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo.ios';
 import ArticleListCard from '../components/Card';
 import ArticleEmptyList from '../components/EmptyList';
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
 
 type Category = {
   key: string;
@@ -40,7 +39,9 @@ type Category = {
   params?: object;
 };
 
-type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
+type ArticleListProps = {
+  navigation: HomeTwoScreenNavigationProp<'Article'>;
+  route: RouteProp<HomeTwoNavParams, 'Article'>;
   articles: (ArticlePreload | Article)[];
   followingArticles: (ArticlePreload | Article)[];
   search: ArticlePreload[];

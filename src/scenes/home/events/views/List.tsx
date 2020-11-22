@@ -1,5 +1,4 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
@@ -27,7 +26,7 @@ import {
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
+import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo.ios';
 import EventListCard from '../components/Card';
 import EventEmptyList from '../components/EmptyList';
 
@@ -41,7 +40,9 @@ type Category = {
   params?: object;
 };
 
-type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
+type EventListProps = {
+  navigation: HomeTwoScreenNavigationProp<'Event'>;
+  route: RouteProp<HomeTwoNavParams, 'Event'>;
   upcomingEvents: EventPreload[];
   passedEvents: EventPreload[];
   followingEvents: EventPreload[];

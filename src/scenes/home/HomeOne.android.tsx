@@ -1,3 +1,4 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -22,9 +23,19 @@ import {
 } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
 
-import HomeTwoNavigator from './HomeTwo';
+import { MainScreenNavigationProp } from '../Main';
+import HomeTwoNavigator, { HomeTwoNavParams } from './HomeTwo';
 
-const DrawerNav = createDrawerNavigator();
+export type HomeOneNavParams = {
+  Home2: NavigatorScreenParams<HomeTwoNavParams>;
+};
+
+export type HomeOneScreenNavigationProp<K extends keyof HomeOneNavParams> = CompositeNavigationProp<
+  DrawerNavigationProp<HomeOneNavParams, K>,
+  MainScreenNavigationProp<'Home1'>
+>;
+
+const DrawerNav = createDrawerNavigator<HomeOneNavParams>();
 
 function genName({ data, info }) {
   if (data?.firstName && data?.lastName) {
@@ -266,7 +277,7 @@ const mapStateToProps = (state: State) => {
 
 const CustomDrawerContentRedux = connect(mapStateToProps)(CustomDrawerContent);
 
-const HomeOneNavigator: React.FC<{}> = () => {
+function HomeOneNavigator() {
   const navigatorStyles = getNavigatorStyles(useTheme());
   return (
     <DrawerNav.Navigator
@@ -278,6 +289,6 @@ const HomeOneNavigator: React.FC<{}> = () => {
       <DrawerNav.Screen name="Home2" component={HomeTwoNavigator} />
     </DrawerNav.Navigator>
   );
-};
+}
 
 export default HomeOneNavigator;

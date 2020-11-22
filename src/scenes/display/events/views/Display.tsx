@@ -1,10 +1,8 @@
 import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
 import {
   View,
-  Image,
   ActivityIndicator,
   Animated,
   Platform,
@@ -41,7 +39,6 @@ import {
   CommentRequestState,
   Account,
   EventRequestState,
-  Comment,
   Event,
   Preferences,
   EventPreload,
@@ -53,14 +50,14 @@ import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
-import type { EventDisplayStackParams } from '../index';
+import type { EventDisplayScreenNavigationProp, EventDisplayStackParams } from '../index';
 import getEventStyles from '../styles/Styles';
 import EventDisplayContact from './Contact';
 import EventDisplayDescription from './Description';
 import EventDisplayProgram from './Program';
 
 // Common types
-type Navigation = StackNavigationProp<EventDisplayStackParams, 'Display'>;
+type Navigation = EventDisplayScreenNavigationProp<'Display'>;
 type Route = RouteProp<EventDisplayStackParams, 'Display'>;
 type CombinedReqState = {
   events: EventRequestState;

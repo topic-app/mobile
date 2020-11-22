@@ -1,4 +1,3 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -24,11 +23,11 @@ import GroupAddPageLocation from '../components/AddLocation';
 import GroupAddPageMeta from '../components/AddMeta';
 import GroupAddPageProof from '../components/AddProof';
 import GroupAddPageTemplate from '../components/AddTemplate';
-import type { GroupAddStackParams } from '../index';
+import type { GroupAddScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 type Props = {
-  navigation: StackNavigationProp<GroupAddStackParams, 'Add'>;
+  navigation: GroupAddScreenNavigationProp<'Add'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
   templates: GroupTemplate[];

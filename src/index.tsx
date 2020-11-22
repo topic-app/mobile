@@ -1,17 +1,23 @@
+import { NavigatorScreenParams } from '@react-navigation/native';
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
 import Store from '@redux/store';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import RootNavigator from './scenes/Root';
-import AuthStackNavigator from './scenes/auth/index';
-import LandingStackNavigator from './scenes/landing/index';
+import RootNavigator, { RootNavParams } from './scenes/Root';
+import AuthStackNavigator, { AuthStackParams } from './scenes/auth/index';
+import LandingStackNavigator, { LandingStackParams } from './scenes/landing/index';
 
 export type AppStackParams = {
-  Auth: undefined;
-  Root: undefined;
-  Landing: undefined;
+  Auth: NavigatorScreenParams<AuthStackParams>;
+  Root: NavigatorScreenParams<RootNavParams>;
+  Landing: NavigatorScreenParams<LandingStackParams>;
 };
+
+export type AppScreenNavigationProp<K extends keyof AppStackParams> = NativeStackNavigationProp<
+  AppStackParams,
+  K
+>;
 
 const Stack = createNativeStackNavigator<AppStackParams>();
 

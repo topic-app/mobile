@@ -1,23 +1,22 @@
+import Slider from '@react-native-community/slider';
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { List, Divider, Switch, Button, Card } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { Preferences, Account, State } from '@ts/types';
 import { CustomHeaderBar, Content } from '@components/index';
-import { useTheme } from '@utils/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
-import Slider from '@react-native-community/slider';
+import { Preferences, Account, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { SettingsStackParams } from '../index';
+import type { SettingsScreenNavigationProp } from '../index';
 import getSettingsStyles from '../styles/Styles';
 
 type SettingsContentProps = {
   preferences: Preferences;
   account: Account;
-  navigation: StackNavigationProp<SettingsStackParams, 'Content'>;
+  navigation: SettingsScreenNavigationProp<'Content'>;
 };
 
 const SettingsContent: React.FC<SettingsContentProps> = ({ preferences, account, navigation }) => {

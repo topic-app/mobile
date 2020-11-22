@@ -1,30 +1,35 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { MainStackParams } from '../Main';
-import ArticleDisplayStackNavigator from './articles/index';
-import EventDisplayStackNavigator from './events/index';
-import GroupDisplayStackNavigator from './groups/index';
-import ImageDisplayStackNavigator from './images/index';
-import LocationDisplayStackNavigator from './locations/index';
-import PetitionDisplayStackNavigator from './petitions/index';
+import { MainScreenNavigationProp } from '../Main';
+import ArticleDisplayStackNavigator, { ArticleDisplayStackParams } from './articles/index';
+import EventDisplayStackNavigator, { EventDisplayStackParams } from './events/index';
+import GroupDisplayStackNavigator, { GroupDisplayStackParams } from './groups/index';
+import ImageDisplayStackNavigator, { ImageDisplayStackParams } from './images/index';
+import LocationDisplayStackNavigator, { LocationDisplayStackParams } from './locations/index';
+import PetitionDisplayStackNavigator, { PetitionDisplayStackParams } from './petitions/index';
 import UserDisplayStackNavigator, { UserDisplayStackParams } from './users/index';
 
-const Stack = createNativeStackNavigator();
-
 export type DisplayStackParams = {
-  Article: undefined;
-  Petition: undefined;
-  Event: undefined;
-  Location: undefined;
-  Image: undefined;
-  User: {
-    screen: keyof UserDisplayStackParams;
-    params: UserDisplayStackParams[keyof UserDisplayStackParams];
-  };
-  Group: undefined;
-} & MainStackParams;
+  Article: NavigatorScreenParams<ArticleDisplayStackParams>;
+  Petition: NavigatorScreenParams<PetitionDisplayStackParams>;
+  Event: NavigatorScreenParams<EventDisplayStackParams>;
+  Location: NavigatorScreenParams<LocationDisplayStackParams>;
+  Image: NavigatorScreenParams<ImageDisplayStackParams>;
+  User: NavigatorScreenParams<UserDisplayStackParams>;
+  Group: NavigatorScreenParams<GroupDisplayStackParams>;
+};
+
+export type DisplayScreenNavigationProp<
+  K extends keyof DisplayStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<DisplayStackParams, K>,
+  MainScreenNavigationProp<'Display'>
+>;
+
+const Stack = createNativeStackNavigator<DisplayStackParams>();
 
 function DisplayStackNavigator() {
   return (

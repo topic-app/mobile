@@ -1,11 +1,13 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import SettingsList from './views/List';
-import SettingsTheme from './views/Theme';
-import SettingsPrivacy from './views/Privacy';
+import { MoreScreenNavigationProp } from '../index';
 import SettingsContent from './views/Content';
+import SettingsList from './views/List';
+import SettingsPrivacy from './views/Privacy';
+import SettingsTheme from './views/Theme';
 
 export type SettingsStackParams = {
   List: undefined;
@@ -13,6 +15,13 @@ export type SettingsStackParams = {
   Privacy: undefined;
   Content: undefined;
 };
+
+export type SettingsScreenNavigationProp<
+  K extends keyof SettingsStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<SettingsStackParams, K>,
+  MoreScreenNavigationProp<'Settings'>
+>;
 
 const Stack = createNativeStackNavigator<SettingsStackParams>();
 

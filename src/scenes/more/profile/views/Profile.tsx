@@ -1,10 +1,19 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import { Text, Title, Subheading, Divider, Button, List, ProgressBar } from 'react-native-paper';
-import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
+import {
+  Avatar,
+  ErrorMessage,
+  InlineCard,
+  TranslucentStatusBar,
+  CustomHeaderBar,
+} from '@components/index';
+import { fetchAccount, logout, deleteAccount } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
 import {
   Account,
   Address,
@@ -14,24 +23,15 @@ import {
   DepartmentPreload,
   AccountRequestState,
 } from '@ts/types';
-import {
-  Avatar,
-  ErrorMessage,
-  InlineCard,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components/index';
 import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { fetchAccount, logout, deleteAccount } from '@redux/actions/data/account';
 
-import { ProfileStackParams } from '../index';
-import ProfileItem from '../components/ProfileItem';
-import VisibilityModal from '../components/VisibilityModal';
-import NameModal from '../components/NameModal';
-import UsernameModal from '../components/UsernameModal';
 import EmailModal from '../components/EmailModal';
+import NameModal from '../components/NameModal';
 import PasswordModal from '../components/PasswordModal';
+import ProfileItem from '../components/ProfileItem';
+import UsernameModal from '../components/UsernameModal';
+import VisibilityModal from '../components/VisibilityModal';
+import { ProfileScreenNavigationProp, ProfileStackParams } from '../index';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
@@ -58,7 +58,7 @@ type ProfileProps = {
   account: Account;
   location: ReduxLocation;
   state: AccountRequestState;
-  navigation: StackNavigationProp<ProfileStackParams, 'Profile'>;
+  navigation: ProfileScreenNavigationProp<'Profile'>;
 };
 
 const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state }) => {

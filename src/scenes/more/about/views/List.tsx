@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Text, Divider, List } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 import {
   CustomHeaderBar,
@@ -9,14 +8,14 @@ import {
   TranslucentStatusBar,
   CustomTabView,
 } from '@components/index';
-import { useTheme, handleUrl } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { useTheme, handleUrl } from '@utils/index';
+
+import { AboutScreenNavigationProp } from '../index';
 import getAboutStyles from '../styles/Styles';
 
-import { AboutStackParams } from '../index';
-
 type AboutProps = {
-  navigation: StackNavigationProp<AboutStackParams, 'List'>;
+  navigation: AboutScreenNavigationProp<'Legal'>;
 };
 
 const About: React.FC<AboutProps> = ({ navigation }) => {

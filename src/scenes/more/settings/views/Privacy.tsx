@@ -1,23 +1,22 @@
 import React from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import { List, Avatar, Divider, Banner, Switch } from 'react-native-paper';
-import { clearArticlesRead } from '@redux/actions/contentData/articles';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { Preferences, State } from '@ts/types';
 import { Illustration, CustomHeaderBar } from '@components/index';
-import { useTheme } from '@utils/index';
+import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
+import { Preferences, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { SettingsStackParams } from '../index';
+import type { SettingsScreenNavigationProp } from '../index';
 import getSettingsStyles from '../styles/Styles';
 
 type SettingsThemeProps = {
   preferences: Preferences;
   account: Account;
-  navigation: StackNavigationProp<SettingsStackParams, 'Content'>;
+  navigation: SettingsScreenNavigationProp<'Privacy'>;
 };
 
 const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, navigation }) => {

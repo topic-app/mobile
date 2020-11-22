@@ -1,7 +1,13 @@
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+  NavigationProp,
+  useLinkProps,
+  Link,
+  NavigatorScreenParams,
+  CompositeNavigationProp,
+} from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { NavigationProp, useLinkProps, Link } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -9,8 +15,10 @@ import { connect } from 'react-redux';
 import { State, Account } from '@ts/types';
 import { useTheme, useLayout } from '@utils/index';
 
+import { AppScreenNavigationProp } from '..';
+import { NativeStackNavigationProp } from '../utils/stack';
+import MainStackNavigator, { MainStackParams } from './Main';
 import AndroidNavigator from './Root.android';
-import MainStackNavigator from './Main';
 
 type TabItemProps = {
   label: string;
@@ -230,8 +238,13 @@ const mapStateToProps = (state: State) => {
 const ReduxDrawerContent = connect(mapStateToProps)(DrawerContent);
 
 export type RootNavParams = {
-  Main: undefined;
+  Main: NavigatorScreenParams<MainStackParams>;
 };
+
+export type RootScreenNavigationProp<K extends keyof RootNavParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<RootNavParams, K>,
+  AppScreenNavigationProp<'Root'>
+>;
 
 const Drawer = createDrawerNavigator<RootNavParams>();
 

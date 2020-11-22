@@ -1,5 +1,4 @@
 import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
 import {
@@ -57,11 +56,11 @@ import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
 import CommentInlineCard from '../../components/Comment';
-import type { ArticleDisplayStackParams } from '../index';
+import type { ArticleDisplayScreenNavigationProp, ArticleDisplayStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 // Common types
-type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
+type Navigation = ArticleDisplayScreenNavigationProp<'Display'>;
 type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
 
 type CombinedReqState = {

@@ -1,21 +1,32 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
+import {
+  createMaterialBottomTabNavigator,
+  MaterialBottomTabNavigationProp,
+} from '@react-navigation/material-bottom-tabs';
 import React from 'react';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useTheme, useSafeAreaInsets } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 
+import { HomeOneScreenNavigationProp } from './HomeOne';
 import ArticleList from './articles/views/List';
-// import PetitionList from './petitions/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
 
+// import PetitionList from './petitions/views/List';
+
 export type HomeTwoNavParams = {
-  Article: { initialList: string } | undefined;
+  Article: { initialList?: string };
   Event: undefined;
   Petition: undefined;
   Explorer: undefined;
 };
+
+export type HomeTwoScreenNavigationProp<K extends keyof HomeTwoNavParams> = CompositeNavigationProp<
+  MaterialBottomTabNavigationProp<HomeTwoNavParams, K>,
+  HomeOneScreenNavigationProp<'Home2'>
+>;
 
 const Tab = createMaterialBottomTabNavigator<HomeTwoNavParams>();
 

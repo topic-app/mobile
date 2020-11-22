@@ -1,27 +1,33 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import {
-  View,
-  ScrollView,
-  ActivityIndicator,
-  FlatList,
-  StatusBar,
-  Platform,
-  Share,
-} from 'react-native';
+import { View, ScrollView, ActivityIndicator, StatusBar, Platform, Share } from 'react-native';
 import { Text, Title, Subheading, Divider, Button, List, Appbar, Menu } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
+import {
+  Avatar,
+  ErrorMessage,
+  InlineCard,
+  TranslucentStatusBar,
+  PlatformBackButton,
+  ReportModal,
+  CustomTabView,
+  SafeAreaView,
+} from '@components/index';
+import { searchArticles } from '@redux/actions/api/articles';
+import { searchEvents } from '@redux/actions/api/events';
+import { searchGroups } from '@redux/actions/api/groups';
+import { fetchUser } from '@redux/actions/api/users';
+import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
+import { fetchAccount } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
 import {
   Account,
   Address,
   State,
   UsersState,
-  Group,
   RequestState,
-  RequestStateComplex,
-  Article,
   UserPreload,
   User,
   ArticlePreload,
@@ -31,29 +37,10 @@ import {
   EventRequestState,
   GroupPreload,
 } from '@ts/types';
-import {
-  Avatar,
-  ErrorMessage,
-  InlineCard,
-  ArticleCard,
-  TranslucentStatusBar,
-  PlatformBackButton,
-  ReportModal,
-  CustomTabView,
-  SafeAreaView,
-} from '@components/index';
 import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { fetchUser } from '@redux/actions/api/users';
-import { fetchAccount } from '@redux/actions/data/account';
-import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
-import { searchGroups } from '@redux/actions/api/groups';
-import { searchArticles } from '@redux/actions/api/articles';
-import { searchEvents } from '@redux/actions/api/events';
 
-import type { UserDisplayStackParams } from '../index';
-import getUserStyles from '../styles/Styles';
 import ContentTabView from '../../components/ContentTabView';
+import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '../index';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
@@ -72,7 +59,9 @@ function genName(user: User | UserPreload) {
   return user.name || user.displayName || user.firstName || user.lastName || null;
 }
 
-type UserDisplayProps = StackScreenProps<UserDisplayStackParams, 'Display'> & {
+type UserDisplayProps = {
+  route: RouteProp<UserDisplayStackParams, 'Display'>;
+  navigation: UserDisplayScreenNavigationProp<'Display'>;
   account: Account;
   state: { info: RequestState };
   users: UsersState;
@@ -123,7 +112,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 
   const theme = useTheme();
   const styles = getStyles(theme);
-  const userStyles = getUserStyles(theme);
   const { colors } = theme;
 
   const [menuVisible, setMenuVisible] = React.useState(false);

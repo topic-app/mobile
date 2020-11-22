@@ -1,12 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { connect } from 'react-redux';
-
 import { View, ScrollView, Platform, Alert } from 'react-native';
 import { ProgressBar, Button, HelperText, Title, Divider, Card, Text } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -14,23 +12,24 @@ import {
   SafeAreaView,
 } from '@components/index';
 import { RichToolbar, RichEditor } from '@components/richEditor/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
+import { Config } from '@constants/index';
 import { articleAdd } from '@redux/actions/apiActions/articles';
+import { upload } from '@redux/actions/apiActions/upload';
 import {
   clearArticleCreationData,
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
 import YoutubeAddModal from '../components/YoutubeAddModal';
+import type { ArticleAddScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
-import { upload } from '@redux/actions/apiActions/upload';
-import config from '@constants/config';
 
 type ArticleAddContentProps = {
-  navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
+  navigation: ArticleAddScreenNavigationProp<'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
   account: Account;
@@ -48,12 +47,10 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const { colors } = theme;
 
-  if (!account.loggedIn) return null;
-
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
     const replacedData = (data || creationData.data)
-      ?.replace(config.google.youtubePlaceholder, 'youtube://')
-      .replace(config.cdn.baseUrl, 'cdn://');
+      ?.replace(Config.google.youtubePlaceholder, 'youtube://')
+      .replace(Config.cdn.baseUrl, 'cdn://');
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -108,6 +105,8 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   };
 
   const [linkAddModalVisible, setLinkAddModalVisible] = React.useState(false);
+
+  if (!account.loggedIn) return null;
 
   return (
     <View style={styles.page}>
@@ -213,7 +212,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               }}
               insertImage={() =>
                 upload(creationData.group).then((fileId) => {
-                  textEditorRef.current?.insertImage(`${config.cdn.baseUrl}${fileId}`);
+                  textEditorRef.current?.insertImage(`${Config.cdn.baseUrl}${fileId}`);
                 })
               }
               insertYoutube={() => setYoutubeAddModalVisible(true)}

@@ -1,36 +1,38 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { connect } from 'react-redux';
 
 import { LocationList, State } from '@ts/types';
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import NotFound from './NotFound';
-import { RootNavParams } from './Root';
-import AddStackNavigator from './add/index';
-import ConfigureStackNavigator from './configure/index';
+import { RootScreenNavigationProp } from './Root';
+import AddStackNavigator, { AddStackParams } from './add/index';
+import ConfigureStackNavigator, { ConfigureStackParams } from './configure/index';
 import DisplayStackNavigator, { DisplayStackParams } from './display/index';
-import HistoryStackNavigator from './history/index';
-import HomeOneNavigator from './home/HomeOne';
-import MoreStackNavigator from './more/index';
-import ParamsStackNavigator from './params/index';
-import SearchStackNavigator from './search/index';
+import HistoryStackNavigator, { HistoryStackParams } from './history/index';
+import HomeOneNavigator, { HomeOneNavParams } from './home/HomeOne';
+import MoreStackNavigator, { MoreStackParams } from './more/index';
+import ParamsStackNavigator, { ParamsStackParams } from './params/index';
+import SearchStackNavigator, { SearchStackParams } from './search/index';
 
 export type MainStackParams = {
-  Display: {
-    screen: keyof DisplayStackParams;
-    params: DisplayStackParams[keyof DisplayStackParams];
-  };
-  Configure: undefined;
-  Lists: undefined;
-  Add: undefined;
-  More: undefined;
-  Search: undefined;
-  Home1: undefined;
-  History: undefined;
-  Params: undefined;
+  Display: NavigatorScreenParams<DisplayStackParams>;
+  Configure: NavigatorScreenParams<ConfigureStackParams>;
+  Add: NavigatorScreenParams<AddStackParams>;
+  More: NavigatorScreenParams<MoreStackParams>;
+  Search: NavigatorScreenParams<SearchStackParams>;
+  Home1: NavigatorScreenParams<HomeOneNavParams>;
+  History: NavigatorScreenParams<HistoryStackParams>;
+  Params: NavigatorScreenParams<ParamsStackParams>;
   NotFound: undefined;
-} & RootNavParams;
+};
+
+export type MainScreenNavigationProp<K extends keyof MainStackParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<MainStackParams, K>,
+  RootScreenNavigationProp<'Main'>
+>;
 
 const Stack = createNativeStackNavigator<MainStackParams>();
 

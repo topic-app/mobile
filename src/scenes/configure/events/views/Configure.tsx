@@ -1,19 +1,16 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform, FlatList, Alert } from 'react-native';
-import { Divider, Text, List, Button, Switch } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
+import { Divider, Text, List, Button, Switch } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-import { State, EventListItem, EventQuickItem, EventPrefs, Account, Preferences } from '@ts/types';
 import {
   PlatformTouchable,
   Illustration,
   CustomHeaderBar,
   TranslucentStatusBar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import {
   deleteEventList,
   updateEventPrefs,
@@ -21,14 +18,17 @@ import {
   modifyEventList,
   addEventQuick,
 } from '@redux/actions/contentData/events';
-import getArticleStyles from '../styles/Styles';
+import getStyles from '@styles/Styles';
+import { State, EventListItem, EventQuickItem, EventPrefs, Account, Preferences } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import { EventListsStackParams } from '../index';
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';
-import QuickTypeModal from '../../components/QuickTypeModal';
-import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickLocationTypeModal from '../../components/QuickLocationTypeModal';
+import QuickSelectModal from '../../components/QuickSelectModal';
+import QuickTypeModal from '../../components/QuickTypeModal';
+import { EventConfigureScreenNavigationProp } from '../index';
+import getArticleStyles from '../styles/Styles';
 
 type EventListsProps = {
   lists: EventListItem[];
@@ -36,7 +36,7 @@ type EventListsProps = {
   preferences: Preferences;
   eventPrefs: EventPrefs;
   account: Account;
-  navigation: StackNavigationProp<EventListsStackParams, 'Configure'>;
+  navigation: EventConfigureScreenNavigationProp<'Configure'>;
 };
 
 type Category = {

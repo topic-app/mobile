@@ -1,5 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationProp, useNavigationState } from '@react-navigation/native';
+import {
+  CompositeNavigationProp,
+  NavigationProp,
+  NavigatorScreenParams,
+  useNavigationState,
+} from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -8,7 +13,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useTheme } from '@utils/index';
 
-import { AppStackParams } from '../index';
+import { AppScreenNavigationProp } from '..';
+import { NativeStackNavigationProp } from '../utils/stack';
 import MainStackNavigator, { MainStackParams } from './Main';
 
 // Can't use BlurView with expo :(
@@ -194,8 +200,13 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
 };
 
 export type RootNavParams = {
-  Main: { screen: keyof MainStackParams; params: MainStackParams[keyof MainStackParams] };
-} & AppStackParams;
+  Main: NavigatorScreenParams<MainStackParams>;
+};
+
+export type RootScreenNavigationProp<K extends keyof RootNavParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<RootNavParams, K>,
+  AppScreenNavigationProp<'Root'>
+>;
 
 const Tab = createBottomTabNavigator<RootNavParams>();
 

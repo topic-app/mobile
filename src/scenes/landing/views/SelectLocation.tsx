@@ -1,4 +1,3 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
 import {
@@ -42,10 +41,10 @@ import {
 } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
 
-import type { LandingStackParams } from '../index';
+import type { LandingScreenNavigationProp } from '../index';
 import getLandingStyles from '../styles/Styles';
 
-type Navigation = StackNavigationProp<LandingStackParams, 'SelectLocation'>;
+type Navigation = LandingScreenNavigationProp<'SelectLocation'>;
 
 type ReduxLocation = OldReduxLocation & {
   schoolData: SchoolPreload[];

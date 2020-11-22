@@ -1,7 +1,9 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
-import UnauthorizedBeta from '@components/UnauthorizedBeta';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+
+import { HomeOneScreenNavigationProp } from './HomeOne';
 import ArticleList from './articles/views/List';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
@@ -21,6 +23,11 @@ export type HomeTwoNavParams = {
   Explorer: undefined;
 };
 
+export type HomeTwoScreenNavigationProp<K extends keyof HomeTwoNavParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<HomeTwoNavParams, K>,
+  HomeOneScreenNavigationProp<'Home2'>
+>;
+
 const Stack = createNativeStackNavigator<HomeTwoNavParams>();
 
 function HomeTwoNavigator() {
@@ -32,7 +39,7 @@ function HomeTwoNavigator() {
       <Stack.Screen name="Article" component={ArticleList} />
       <Stack.Screen name="Event" component={EventList} />
       {/* <Stack.Screen name="Petition" component={PetitionList} /> */}
-      <Stack.Screen name="Explorer" component={ExplorerList} options={{ headerShown: false }} />
+      <Stack.Screen name="Explorer" component={ExplorerList} />
     </Stack.Navigator>
   );
 }

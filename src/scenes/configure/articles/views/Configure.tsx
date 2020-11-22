@@ -1,10 +1,23 @@
 import React from 'react';
-import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { View, Platform, FlatList, Alert } from 'react-native';
-import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
+import { Divider, Text, List, Button, Switch } from 'react-native-paper';
+import { connect } from 'react-redux';
 
+import {
+  PlatformTouchable,
+  Illustration,
+  TranslucentStatusBar,
+  CustomHeaderBar,
+} from '@components/index';
+import {
+  deleteArticleList,
+  updateArticlePrefs,
+  addArticleQuick,
+  deleteArticleQuick,
+  modifyArticleList,
+} from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
 import {
   State,
   ArticleListItem,
@@ -13,29 +26,15 @@ import {
   Account,
   Preferences,
 } from '@ts/types';
-import {
-  PlatformTouchable,
-  Illustration,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components/index';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import {
-  deleteArticleList,
-  updateArticlePrefs,
-  addArticleQuick,
-  deleteArticleQuick,
-  modifyArticleList,
-} from '@redux/actions/contentData/articles';
-import getArticleStyles from '../styles/Styles';
 
-import type { ArticleListsStackParams } from '../index';
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';
-import QuickTypeModal from '../../components/QuickTypeModal';
-import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickLocationTypeModal from '../../components/QuickLocationTypeModal';
+import QuickSelectModal from '../../components/QuickSelectModal';
+import QuickTypeModal from '../../components/QuickTypeModal';
+import type { ArticleConfigureScreenNavigationProp } from '../index';
+import getArticleStyles from '../styles/Styles';
 
 type ArticleListsProps = {
   lists: ArticleListItem[];
@@ -43,7 +42,7 @@ type ArticleListsProps = {
   preferences: Preferences;
   articlePrefs: ArticlePrefs;
   account: Account;
-  navigation: StackNavigationProp<ArticleListsStackParams, 'Configure'>;
+  navigation: ArticleConfigureScreenNavigationProp<'Configure'>;
 };
 
 type Category = {

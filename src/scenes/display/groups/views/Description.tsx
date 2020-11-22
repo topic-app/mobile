@@ -1,17 +1,19 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { StackScreenProps } from '@react-navigation/stack';
 
-import { GroupsState, State } from '@ts/types';
 import { Content } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { GroupsState, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { GroupDisplayStackParams } from '../index';
+import type { GroupDisplayScreenNavigationProp, GroupDisplayStackParams } from '../index';
 
-type GroupDescriptionProps = StackScreenProps<GroupDisplayStackParams, 'Description'> & {
+type GroupDescriptionProps = {
+  navigation: GroupDisplayScreenNavigationProp<'Description'>;
+  route: RouteProp<GroupDisplayStackParams, 'Description'>;
   groups: GroupsState;
 };
 

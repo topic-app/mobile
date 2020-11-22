@@ -1,3 +1,4 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import {
   ScrollView,
@@ -7,7 +8,6 @@ import {
   Alert,
   StatusBar,
   Share,
-  FlatList,
 } from 'react-native';
 import {
   Button,
@@ -21,25 +21,9 @@ import {
   IconButton,
   Banner,
 } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import {
-  GroupPreload,
-  Group,
-  Account,
-  Address,
-  GroupRequestState,
-  GroupsState,
-  State,
-  ArticleRequestState,
-  Article,
-  EventRequestState,
-  EventPreload,
-  ArticlePreload,
-  AccountRequestState,
-} from '@ts/types';
 import {
   Avatar,
   InlineCard,
@@ -47,20 +31,15 @@ import {
   ReportModal,
   PlatformBackButton,
   TranslucentStatusBar,
-  CustomTabView,
-  ArticleCard,
   PlatformTouchable,
   Content,
   CollapsibleView,
   ErrorMessage,
   SafeAreaView,
-  EventCard,
 } from '@components/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
 import { searchEvents } from '@redux/actions/api/events';
+import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import {
   groupFollow,
   groupUnfollow,
@@ -70,13 +49,29 @@ import {
   groupVerificationApprove,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
+import {
+  GroupPreload,
+  Group,
+  Account,
+  Address,
+  GroupRequestState,
+  GroupsState,
+  State,
+  ArticleRequestState,
+  EventRequestState,
+  EventPreload,
+  ArticlePreload,
+  AccountRequestState,
+} from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import type { GroupDisplayStackParams } from '../index';
-import AddUserSelectModal from '../components/AddUserSelectModal';
-import AddUserRoleModal from '../components/AddUserRoleModal';
-import EditGroupModal from '../components/EditGroupModal';
-import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
 import ContentTabView from '../../components/ContentTabView';
+import AddUserRoleModal from '../components/AddUserRoleModal';
+import AddUserSelectModal from '../components/AddUserSelectModal';
+import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
+import EditGroupModal from '../components/EditGroupModal';
+import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
 
 function getAddressString(address: Address) {
   const { number, street, city, code } = address?.address || {};
@@ -88,7 +83,9 @@ function getAddressString(address: Address) {
 }
 
 type GroupElement = Group | GroupPreload;
-type GroupDisplayProps = StackScreenProps<GroupDisplayStackParams, 'Display'> & {
+type GroupDisplayProps = {
+  navigation: GroupDisplayScreenNavigationProp<'Display'>;
+  route: RouteProp<GroupDisplayStackParams, 'Display'>;
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;

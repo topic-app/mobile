@@ -1,32 +1,31 @@
 import React from 'react';
 import { View, ScrollView, Platform, Alert } from 'react-native';
 import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 import showdown from 'showdown';
 
-import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { articleAdd } from '@redux/actions/apiActions/articles';
 import {
   clearArticleCreationData,
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
+import type { ArticleAddScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 type Props = {
-  navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
+  navigation: ArticleAddScreenNavigationProp<'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
 };
@@ -139,7 +138,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
           </View>
           <Divider />
           <View style={articleStyles.formContainer}>
-            <View style={articleStyles.textInputContainer}></View>
+            <View style={articleStyles.textInputContainer} />
           </View>
         </ScrollView>
         <View style={{ backgroundColor: colors.surface }}>

@@ -1,11 +1,25 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import ArticleConfigureStackNavigator from './articles/index';
-import EventConfigureStackNavigator from './events/index';
+import { MainScreenNavigationProp } from '../Main';
+import ArticleConfigureStackNavigator, { ArticleConfigureStackParams } from './articles/index';
+import EventConfigureStackNavigator, { EventConfigureStackParams } from './events/index';
 
-const Stack = createNativeStackNavigator();
+export type ConfigureStackParams = {
+  Article: NavigatorScreenParams<ArticleConfigureStackParams>;
+  Event: NavigatorScreenParams<EventConfigureStackParams>;
+};
+
+export type ConfigureScreenNavigationProp<
+  K extends keyof ConfigureStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<ConfigureStackParams, K>,
+  MainScreenNavigationProp<'Configure'>
+>;
+
+const Stack = createNativeStackNavigator<ConfigureStackParams>();
 
 function ListsStackNavigator() {
   return (

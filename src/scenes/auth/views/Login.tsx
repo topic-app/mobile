@@ -2,9 +2,7 @@ import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
 
-import { AccountRequestState, State } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -12,19 +10,20 @@ import {
   Illustration,
   SafeAreaView,
 } from '@components/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { login } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
+import { AccountRequestState, State } from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import type { AuthStackParams } from '../index';
+import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-type Props = {
-  navigation: StackNavigationProp<AuthStackParams, 'Login'>;
+type AuthLoginProps = {
+  navigation: AuthScreenNavigationProp<'Login'>;
   reqState: AccountRequestState;
 };
 
-const AuthLogin: React.FC<Props> = ({
+const AuthLogin: React.FC<AuthLoginProps> = ({
   navigation,
   reqState = {
     login: {

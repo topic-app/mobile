@@ -1,10 +1,8 @@
 import React from 'react';
 import { View, SectionList } from 'react-native';
 import { Text, ProgressBar, Divider, FAB } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { Account, GroupsState, GroupRequestState, AccountRequestState, State } from '@ts/types';
 import {
   Illustration,
   CategoryTitle,
@@ -14,19 +12,20 @@ import {
   CustomHeaderBar,
   TranslucentStatusBar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateGroups } from '@redux/actions/api/groups';
 import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
+import { Account, GroupsState, GroupRequestState, AccountRequestState, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import { MyGroupsStackParams } from '../index';
+import { MyGroupsScreenNavigationProp } from '../index';
 
 type MyGroupsListProps = {
   account: Account;
   groups: GroupsState;
   state: GroupRequestState;
   accountState: AccountRequestState;
-  navigation: StackNavigationProp<MyGroupsStackParams, 'List'>;
+  navigation: MyGroupsScreenNavigationProp<'List'>;
 };
 
 const MyGroupsList: React.FC<MyGroupsListProps> = ({

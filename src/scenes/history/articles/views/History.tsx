@@ -1,20 +1,19 @@
+import moment from 'moment';
 import React from 'react';
 import { View, FlatList } from 'react-native';
 import { List, Text, Divider } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
-import { ArticleReadItem, Preferences, State } from '@ts/types';
 import { PlatformTouchable } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { deleteArticleRead } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { ArticleReadItem, Preferences, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import { ArticleHistoryStackParams } from '../index';
+import { HistoryScreenNavigationProp } from '../../index';
 
 type ArticleHistoryProps = {
-  navigation: StackNavigationProp<ArticleHistoryStackParams, 'Params'>;
+  navigation: HistoryScreenNavigationProp<'Article'>;
   read: ArticleReadItem[];
   preferences: Preferences;
 };

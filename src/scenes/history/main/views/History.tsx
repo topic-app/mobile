@@ -3,12 +3,14 @@ import { View, ScrollView } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import getStyles from '@styles/Styles';
 import { ArticleReadItem, Preferences, State } from '@ts/types';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
+
+import { HistoryScreenNavigationProp } from '../../index';
 
 type MainHistoryProps = {
-  navigation: StackNavigationProp<any, any>;
+  navigation: HistoryScreenNavigationProp<'Main'>;
   read: ArticleReadItem[];
   preferences: Preferences;
 };

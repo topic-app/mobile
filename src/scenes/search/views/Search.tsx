@@ -1,23 +1,10 @@
+import { useFocusEffect, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Text, Button, ProgressBar } from 'react-native-paper';
-import { useFocusEffect, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import {
-  ArticlePreload,
-  EventPreload,
-  GroupPreload,
-  UserPreload,
-  State,
-  UserRequestState,
-  GroupRequestState,
-  EventRequestState,
-  ArticleRequestState,
-  TagPreload,
-  Account,
-} from '@ts/types';
 import {
   Searchbar,
   Illustration,
@@ -31,20 +18,33 @@ import {
   ErrorMessage,
   GroupCard,
 } from '@components/index';
-import { useTheme, useSafeAreaInsets } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { searchArticles, clearArticles } from '@redux/actions/api/articles';
 import { searchEvents, clearEvents } from '@redux/actions/api/events';
 import { searchGroups, clearGroups } from '@redux/actions/api/groups';
-import { searchUsers, clearUsers } from '@redux/actions/api/users';
 import { searchTags } from '@redux/actions/api/tags';
+import { searchUsers, clearUsers } from '@redux/actions/api/users';
+import getStyles from '@styles/Styles';
+import {
+  ArticlePreload,
+  EventPreload,
+  GroupPreload,
+  UserPreload,
+  State,
+  UserRequestState,
+  GroupRequestState,
+  EventRequestState,
+  ArticleRequestState,
+  TagPreload,
+  Account,
+} from '@ts/types';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 
+import type { SearchScreenNavigationProp, SearchStackParams } from '../index';
 import getSearchStyles from '../styles/Styles';
 import { SuggestionType } from '../utils/suggestions';
-import type { SearchStackParams } from '../index';
 
 type SearchProps = {
-  navigation: StackNavigationProp<SearchStackParams, 'Search'>;
+  navigation: SearchScreenNavigationProp<'Search'>;
   route: RouteProp<SearchStackParams, 'Search'>;
   articles: ArticlePreload[];
   events: EventPreload[];

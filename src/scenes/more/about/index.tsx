@@ -1,20 +1,27 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import AboutList from './views/List';
+import { MoreScreenNavigationProp } from '../index';
 import AboutLegal from './views/Legal';
 import AboutLicenses from './views/Licenses';
+import AboutList from './views/List';
 
 export type AboutStackParams = {
   List: undefined;
   Legal: {
-    page?: ' mentions' | 'conditions' | 'confidentialite';
+    page?: 'mentions' | 'conditions' | 'confidentialite';
   };
   Licenses: {
     page?: 'list' | 'full' | 'logo' | 'illustrations';
   };
 };
+
+export type AboutScreenNavigationProp<K extends keyof AboutStackParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<AboutStackParams, K>,
+  MoreScreenNavigationProp<'About'>
+>;
 
 const Stack = createNativeStackNavigator<AboutStackParams>();
 

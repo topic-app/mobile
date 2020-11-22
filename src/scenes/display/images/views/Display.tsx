@@ -1,11 +1,20 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { View, Dimensions, ScrollView } from 'react-native';
-import { useTheme, getImageUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { TranslucentStatusBar, PlatformBackButton, SafeAreaView } from '@components/index';
+import { View, Dimensions } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-function ImageDisplay({ navigation, route }) {
+import { TranslucentStatusBar, PlatformBackButton, SafeAreaView } from '@components/index';
+import getStyles from '@styles/Styles';
+import { useTheme, getImageUrl } from '@utils/index';
+
+import { ImageDisplayScreenNavigationProp, ImageDisplayStackParams } from '../index';
+
+type ImageDisplayProps = {
+  navigation: ImageDisplayScreenNavigationProp<'Display'>;
+  route: RouteProp<ImageDisplayStackParams, 'Display'>;
+};
+
+const ImageDisplay: React.FC<ImageDisplayProps> = ({ navigation, route }) => {
   const { image } = route.params;
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -29,6 +38,6 @@ function ImageDisplay({ navigation, route }) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 export default ImageDisplay;
