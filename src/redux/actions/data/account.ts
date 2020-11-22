@@ -19,8 +19,8 @@ import {
   CLEAR_ACCOUNT_CREATION_DATA,
   LOGIN,
   AccountRequestState,
-  AppThunk
-  AccountCreationData,,
+  AppThunk,
+  AccountCreationData,
 } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
 import { request, logger } from '@utils/index';
@@ -345,7 +345,7 @@ function loginCreator(fields: LoginFields): AppThunk {
 }
 
 type RegisterFields = {
-  accountInfo: AccountCreationData
+  accountInfo: AccountCreationData;
   device: { type: string; deviceId: null; canNotify: boolean };
 };
 
@@ -363,7 +363,7 @@ function registerCreator(fields: RegisterFields): AppThunk {
       },
     });
     try {
-      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password || "");
+      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password || '');
     } catch (err) {
       return dispatch({
         type: UPDATE_ACCOUNT_STATE,
