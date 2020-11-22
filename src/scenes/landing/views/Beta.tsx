@@ -1,4 +1,3 @@
-import { firebase } from '@react-native-firebase/analytics';
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform, Image, ScrollView, Linking } from 'react-native';
@@ -13,6 +12,7 @@ import {
   StepperView,
 } from '@components/index';
 import getStyles from '@styles/Styles';
+import { analytics as firebaseAnalytics } from '@utils/firebase';
 import { useTheme } from '@utils/index';
 
 import type { LandingStackParams } from '../index';
@@ -161,8 +161,12 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
                           onPress={async () => {
-                            if (analytics) {
-                              await firebase.analytics().setAnalyticsCollectionEnabled(true);
+                            if (Platform.OS !== 'web') {
+                              if (analytics) {
+                                await firebaseAnalytics.analytics
+                                  .analytics()
+                                  .setAnalyticsCollectionEnabled(true);
+                              }
                             }
                             next(1);
                           }}

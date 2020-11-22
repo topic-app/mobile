@@ -11,7 +11,6 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -52,6 +51,7 @@ import {
   Publisher,
   Content as ContentType,
 } from '@ts/types';
+import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
@@ -99,10 +99,19 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
 
   const following = account.accountInfo?.user?.data.following;
 
+  const [imageWidth, setImageWidth] = React.useState(0);
+
   return (
     <View style={styles.page}>
       {article.image?.image && (
-        <View style={[styles.image, { minHeight: 150 }]}>
+        <View
+          style={[styles.image, { minHeight: 150 }]}
+          onLayout={({
+            nativeEvent: {
+              layout: { width },
+            },
+          }) => setImageWidth(width)}
+        >
           <PlatformTouchable
             onPress={() =>
               navigation.push('Main', {
@@ -119,7 +128,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           >
             <AutoHeightImage
               source={{ uri: getImageUrl({ image: article.image, size: 'full' }) || '' }}
-              width={Dimensions.get('window').width}
+              width={imageWidth}
               maxHeight={400}
             />
           </PlatformTouchable>
@@ -411,6 +420,7 @@ type ArticleDisplayProps = {
   account: Account;
   lists: ArticleListItem[];
   preferences: Preferences;
+  dual?: boolean;
 };
 
 const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
@@ -424,6 +434,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   account,
   preferences,
   lists,
+  dual = false,
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
   const { id, useLists = false, verification = false } = route.params;
@@ -521,6 +532,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   return (
     <View style={styles.page}>
       <AnimatingHeader
+        hideBack={dual}
         value={scrollY}
         title={
           route.params.title ||

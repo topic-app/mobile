@@ -39,6 +39,7 @@ export type CustomHeaderBarProps = {
         home?: boolean;
         actions?: ActionItem[];
         overflow?: OverflowItem[];
+        hideBack?: boolean;
       };
     };
   };
@@ -59,6 +60,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
     home = false,
     actions = [],
     overflow,
+    hideBack = false,
   } = scene.descriptor.options;
 
   const layout = useLayout();
@@ -70,7 +72,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
     primaryAction =
       layout === 'desktop' ? null : <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
   } else {
-    primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
+    primaryAction = hideBack ? null : <Appbar.BackAction onPress={navigation.goBack} />;
   }
 
   const secondaryActions = actions.map((item) => (

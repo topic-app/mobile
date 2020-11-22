@@ -1,4 +1,3 @@
-import analytics from '@react-native-firebase/analytics';
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { AppLoading } from 'expo';
 import React from 'react';
@@ -11,6 +10,7 @@ import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/da
 import { fetchLocationData } from '@redux/actions/data/location';
 import themes from '@styles/Theme';
 import { Preferences, State } from '@ts/types';
+import { analytics } from '@utils/firebase';
 import { logger } from '@utils/index';
 
 import AppNavigator from './index';
@@ -74,19 +74,23 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
           linking={linking}
           fallback={<AppLoading />}
           theme={navTheme}
-          onStateChange={async () => {
-            const previousRouteName = routeNameRef.current;
-            const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
+          onStateChange={
+            Platform.OS !== 'web'
+              ? async () => {
+                  const previousRouteName = routeNameRef.current;
+                  const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
 
-            if (previousRouteName !== currentRouteName) {
-              await analytics().logScreenView({
-                screen_name: currentRouteName,
-                screen_class: currentRouteName,
-              });
-            }
+                  if (previousRouteName !== currentRouteName) {
+                    await analytics().logScreenView({
+                      screen_name: currentRouteName,
+                      screen_class: currentRouteName,
+                    });
+                  }
 
-            routeNameRef.current = currentRouteName;
-          }}
+                  routeNameRef.current = currentRouteName;
+                }
+              : undefined
+          }
         >
           <AppNavigator />
         </NavigationContainer>
