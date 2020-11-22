@@ -32,8 +32,8 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
           navigation={navigation}
           route={route}
           dual
-          setEvent={(event) => {
-            setEvent(event);
+          setEvent={(e) => {
+            setEvent(e);
             setVisible(false);
             setTimeout(() => setVisible(true), 1);
           }}
@@ -45,7 +45,6 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
           <EventDisplay
             navigation={navigation}
             route={{
-              ...route,
               params: {
                 id: event.id,
                 title: event.title,

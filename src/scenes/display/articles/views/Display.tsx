@@ -54,6 +54,7 @@ import {
 import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 
+import { HomeTwoNavParams } from '../../../home/HomeTwo';
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
 import CommentInlineCard from '../../components/Comment';
@@ -61,7 +62,9 @@ import type { ArticleDisplayStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 // Common types
-type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
+type Navigation =
+  | StackNavigationProp<ArticleDisplayStackParams, 'Display'>
+  | StackNavigationProp<HomeTwoNavParams, 'Article'>;
 type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
 
 type CombinedReqState = {

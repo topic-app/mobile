@@ -51,6 +51,7 @@ import {
 import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 
+import { HomeTwoNavParams } from '../../../home/HomeTwo';
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
 import type { EventDisplayStackParams } from '../index';
@@ -60,7 +61,9 @@ import EventDisplayDescription from './Description';
 import EventDisplayProgram from './Program';
 
 // Common types
-type Navigation = StackNavigationProp<EventDisplayStackParams, 'Display'>;
+type Navigation =
+  | StackNavigationProp<EventDisplayStackParams, 'Display'>
+  | StackNavigationProp<HomeTwoNavParams, 'Event'>;
 type Route = RouteProp<EventDisplayStackParams, 'Display'>;
 type CombinedReqState = {
   events: EventRequestState;

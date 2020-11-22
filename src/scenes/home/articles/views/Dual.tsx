@@ -45,7 +45,6 @@ const ArticleListDual: React.FC<ArticleListDualProps> = ({ navigation, route }) 
           <ArticleDisplay
             navigation={navigation}
             route={{
-              ...route,
               params: {
                 id: article.id,
                 title: article.title,
