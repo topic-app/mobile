@@ -1,10 +1,9 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
 
-import { AccountRequestState, State } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -12,9 +11,10 @@ import {
   Illustration,
   SafeAreaView,
 } from '@components/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { login } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
+import { AccountRequestState, State } from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
 import type { AuthStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -109,7 +109,9 @@ const AuthLogin: React.FC<Props> = ({
                 style={authStyles.textInput}
                 onChangeText={setUsername}
               />
-              <HelperText type="error" visible={false} />
+              <HelperText type="error" visible={false}>
+                Hello, I am an easter egg (because eslint)
+              </HelperText>
               {/* Because spacing */}
             </View>
             <View style={authStyles.textInputContainer}>
@@ -128,7 +130,7 @@ const AuthLogin: React.FC<Props> = ({
                 style={authStyles.textInput}
                 onChangeText={setPassword}
               />
-              <HelperText type="error" visible={reqState.login.incorrect}>
+              <HelperText type="error" visible={reqState.login.incorrect || false}>
                 Le nom d&apos;utilisateur ou le mot de passe est incorrect
               </HelperText>
             </View>

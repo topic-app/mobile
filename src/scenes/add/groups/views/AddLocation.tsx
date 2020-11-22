@@ -1,8 +1,8 @@
-import React from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
+import React from 'react';
 
-import { ReduxLocation } from '@ts/types';
 import LocationSelectPage from '@components/LocationSelectPage';
+import { ReduxLocation } from '@ts/types';
 
 import type { GroupAddStackParams } from '../index';
 

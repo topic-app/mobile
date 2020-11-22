@@ -1,5 +1,11 @@
 import Store from '@redux/store';
-import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, AppThunk } from '@ts/types';
+import {
+  UPDATE_GROUPS_STATE,
+  ActionType,
+  ReduxLocation,
+  AppThunk,
+  GroupCreationData,
+} from '@ts/types';
 import { request } from '@utils/index';
 
 import { reportCreator, approveCreator } from './ActionCreator';
@@ -457,21 +463,6 @@ function groupModifyCreator({
   };
 }
 
-type GroupAddCreatorParams = {
-  name: string;
-  shortName: string;
-  type: string;
-  location: ReduxLocation;
-  summary: string;
-  description: string;
-  parser: string;
-  verification: {
-    name: string;
-    id: string;
-    extra: string;
-  };
-};
-
 function groupAddCreator({
   name,
   shortName,
@@ -481,7 +472,7 @@ function groupAddCreator({
   parser,
   description,
   verification,
-}: GroupAddCreatorParams): AppThunk {
+}: GroupCreationData): AppThunk {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -543,7 +534,7 @@ function groupAddCreator({
   };
 }
 
-function groupAdd(data: GroupAddCreatorParams) {
+async function groupAdd(data: GroupCreationData) {
   return Store.dispatch(groupAddCreator(data));
 }
 

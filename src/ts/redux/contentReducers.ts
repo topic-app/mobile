@@ -1,4 +1,4 @@
-import { Article, Event, EventPlace } from '../api';
+import { Article, Event, EventPlace, Image } from '../api';
 import { ApiAction } from './apiReducers';
 
 // Articles
@@ -47,6 +47,10 @@ export type ArticleCreationData = {
     schools?: string[];
     departments?: string[];
     global?: boolean;
+  };
+  image?: Image | null;
+  preferences?: {
+    comments: boolean;
   };
   date?: Date;
   title?: string;
@@ -232,7 +236,13 @@ export type GroupCreationData = {
     departments?: string[];
     global?: boolean;
   };
-  shortName?: Date;
+  shortName?: string;
+  parser?: 'markdown' | 'plaintext';
+  verification?: {
+    name?: string;
+    id?: string;
+    extra?: string;
+  };
   description?: string;
   summary?: string;
 };

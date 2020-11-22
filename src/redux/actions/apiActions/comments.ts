@@ -1,10 +1,11 @@
 import Store from '@redux/store';
 import { UPDATE_COMMENTS_STATE, Publisher, Content, AppThunk, Comment } from '@ts/types';
 import { request } from '@utils/index';
+
 import { reportCreator } from './ActionCreator';
 
 type CommentAddCreatorParams = {
-  publisher: Publisher;
+  publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null };
   content: Content;
   parent: string;
   parentType: Comment['parentType'];
@@ -113,7 +114,7 @@ function commentAddCreator({
 }
 
 async function commentAdd(
-  publisher: Publisher,
+  publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
   content: Content,
   parent: string,
   parentType: Comment['parentType'],

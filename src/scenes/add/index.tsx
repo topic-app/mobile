@@ -2,10 +2,10 @@ import React from 'react';
 
 import { createNativeStackNavigator } from '@utils/stack';
 
-import PetitionAddStackNavigator from './petitions/index';
-import EventAddStackNavigator from './events/index';
 import ArticleAddStackNavigator from './articles/index';
+import EventAddStackNavigator from './events/index';
 import GroupAddStackNavigator from './groups/index';
+import PetitionAddStackNavigator from './petitions/index';
 
 type AddStackParams = {
   Article: undefined;

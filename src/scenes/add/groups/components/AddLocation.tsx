@@ -76,8 +76,8 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   departmentItems,
   locationStates,
 }) => {
-  const [schools, setSchools] = React.useState([]);
-  const [departments, setDepartments] = React.useState([]);
+  const [schools, setSchools] = React.useState<string[]>([]);
+  const [departments, setDepartments] = React.useState<string[]>([]);
   const [global, setGlobal] = React.useState(false);
   const [showError, setError] = React.useState(false);
 
@@ -120,7 +120,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             />
             <Text style={{ color: colors.text, flex: 1 }}>
               Vous pourrez publier des contenus dans ces localisations. Séléctionnez uniquement
-              celles qui correspondent à votre champ d'action.
+              celles qui correspondent à votre champ d&apos;action.
             </Text>
           </View>
         </Card>
@@ -199,6 +199,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'schools',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ schools: newSchools }: ReduxLocation) => {
                   fetchMultiSchool(newSchools);
@@ -239,6 +240,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'departements',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ departments: newDepartments }: ReduxLocation) => {
                   fetchMultiDepartment(newDepartments);
@@ -271,6 +273,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'regions',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ departments: newDepartments }: ReduxLocation) => {
                   fetchMultiDepartment(newDepartments);

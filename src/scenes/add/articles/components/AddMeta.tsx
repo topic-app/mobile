@@ -1,17 +1,17 @@
 import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput, Image } from 'react-native';
 import { TextInput, HelperText, Button, ProgressBar, Card, Text } from 'react-native-paper';
-
-import { StepperViewPageProps, CollapsibleView, ErrorMessage } from '@components/index';
-import { useTheme, logger, getImageUrl } from '@utils/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { upload } from '@redux/actions/apiActions/upload';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import getArticleStyles from '../styles/Styles';
-import { State, ArticleCreationData, UploadRequestState, Account } from '@ts/types';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StepperViewPageProps, CollapsibleView, ErrorMessage } from '@components/index';
+import { upload } from '@redux/actions/apiActions/upload';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
+import { State, ArticleCreationData, UploadRequestState, Account } from '@ts/types';
+import { useTheme, logger, getImageUrl } from '@utils/index';
+
+import getArticleStyles from '../styles/Styles';
 
 type ArticleAddPageMetaProps = StepperViewPageProps & {
   creationData: ArticleCreationData;
@@ -28,8 +28,6 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
 }) => {
   const titleInput = createRef<RNTestInput>();
   const descriptionInput = createRef<RNTestInput>();
-
-  if (!account.loggedIn) return null;
 
   type InputStateType = {
     value: string;
@@ -53,6 +51,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
     valid: false,
     message: '',
   });
+  const [currentFile, setCurrentFile] = React.useState<string | null>(null);
 
   function setTitle(data: Partial<InputStateType>) {
     // Because async setState
@@ -127,8 +126,6 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
     descriptionInput.current?.blur();
   }
 
-  const [currentFile, setCurrentFile] = React.useState(null);
-
   async function submit() {
     const titleVal = currentTitle.value;
     const descriptionVal = currentDescription.value;
@@ -139,7 +136,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
       updateArticleCreationData({
         title: titleVal,
         summary: descriptionVal,
-        image: { image: currentFile, thumbnails: { medium: true, large: true } },
+        image: { image: currentFile, thumbnails: { small: false, medium: true, large: true } },
       });
       next();
     } else {
@@ -154,7 +151,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   }
 
   const uploadImage = () =>
-    upload(creationData.group).then((id) => {
+    upload(creationData.group || '').then((id: string) => {
       logger.debug(`Upload successful ${id}`);
       setCurrentFile(id);
     });
@@ -163,6 +160,8 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   const { colors } = theme;
   const articleStyles = getArticleStyles(theme);
   const styles = getStyles(theme);
+
+  if (!account.loggedIn) return null;
 
   return (
     <View style={articleStyles.formContainer}>

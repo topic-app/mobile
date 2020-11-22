@@ -1,12 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { connect } from 'react-redux';
-
 import { View, ScrollView, Platform, Alert } from 'react-native';
 import { ProgressBar, Button, HelperText, Title, Divider, Card, Text } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -14,20 +12,21 @@ import {
   SafeAreaView,
 } from '@components/index';
 import { RichToolbar, RichEditor } from '@components/richEditor/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
+import config from '@constants/config';
 import { articleAdd } from '@redux/actions/apiActions/articles';
+import { upload } from '@redux/actions/apiActions/upload';
 import {
   clearArticleCreationData,
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
 import YoutubeAddModal from '../components/YoutubeAddModal';
+import type { ArticleAddStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
-import { upload } from '@redux/actions/apiActions/upload';
-import config from '@constants/config';
 
 type ArticleAddContentProps = {
   navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
@@ -48,8 +47,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const { colors } = theme;
 
-  if (!account.loggedIn) return null;
-
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
     const replacedData = (data || creationData.data)
       ?.replace(config.google.youtubePlaceholder, 'youtube://')
@@ -57,14 +54,16 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
-      date: Date.now(),
+      date: new Date(),
       location: creationData.location,
       group: creationData.group,
       image: creationData.image,
       parser: parser || creationData.parser,
       data: replacedData,
       tags: creationData.tags,
-      preferences: null,
+      preferences: {
+        comments: true,
+      },
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearArticleCreationData();
@@ -77,7 +76,11 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const [markdown, setMarkdown] = React.useState('');
   const [youtubeAddModalVisible, setYoutubeAddModalVisible] = React.useState(false);
 
+  const [linkAddModalVisible, setLinkAddModalVisible] = React.useState(false);
+
   const textEditorRef = React.createRef<RichEditor>();
+
+  if (!account.loggedIn) return null;
 
   const icon = (name: string) => {
     return ({
@@ -106,8 +109,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       setValid(false);
     }
   };
-
-  const [linkAddModalVisible, setLinkAddModalVisible] = React.useState(false);
 
   return (
     <View style={styles.page}>
@@ -154,6 +155,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <View style={articleStyles.textInputContainer}>
               <View style={{ marginTop: 20 }}>
                 <RichEditor
+                  onHeightChange={() => {}}
                   ref={textEditorRef}
                   onChangeMarkdown={(data: string) => setMarkdown(data)}
                   editorStyle={{
@@ -212,7 +214,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 setLinkAddModalVisible(true);
               }}
               insertImage={() =>
-                upload(creationData.group).then((fileId) => {
+                upload(creationData.group || '').then((fileId: string) => {
                   textEditorRef.current?.insertImage(`${config.cdn.baseUrl}${fileId}`);
                 })
               }

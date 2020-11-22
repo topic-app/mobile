@@ -1,12 +1,13 @@
 import React from 'react';
 
-// TODO: Define GroupCreationData
 import { ReduxLocation, GroupCreationData } from '@ts/types';
 import { createNativeStackNavigator } from '@utils/stack';
 
 import GroupAdd from './views/Add';
-import GroupAddSuccess from './views/AddSuccess';
 import GroupAddLocation from './views/AddLocation';
+import GroupAddSuccess from './views/AddSuccess';
+
+// TODO: Define GroupCreationData
 
 export type GroupAddStackParams = {
   Add: undefined;

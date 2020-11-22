@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { ArticleCreationData, ReduxLocation } from '@ts/redux';
 import { HeaderConfig } from '@components/Header';
+import { ArticleCreationData, ReduxLocation } from '@ts/redux';
 import { createNativeStackNavigator } from '@utils/stack';
 
 import ArticleAdd from './views/Add';
-import ArticleAddSuccess from './views/AddSuccess';
-import ArticleAddLocation from './views/AddLocation';
 import ArticleAddContent from './views/AddContent';
+import ArticleAddLocation from './views/AddLocation';
+import ArticleAddSuccess from './views/AddSuccess';
 
 export type ArticleAddStackParams = {
   Add: undefined;

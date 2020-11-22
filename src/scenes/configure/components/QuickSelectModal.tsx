@@ -3,6 +3,15 @@ import { View, FlatList } from 'react-native';
 import { Divider, ProgressBar, Text, List } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { Searchbar, Illustration, Avatar, ErrorMessage, Modal } from '@components/index';
+import { searchDepartments, updateDepartments } from '@redux/actions/api/departments';
+import { searchGroups, updateGroups } from '@redux/actions/api/groups';
+import { searchSchools, updateSchools } from '@redux/actions/api/schools';
+import { searchTags, updateTags } from '@redux/actions/api/tags';
+import { searchUsers, updateUsers } from '@redux/actions/api/users';
+import { addArticleQuick } from '@redux/actions/contentData/articles';
+import { addEventQuick } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
 import {
   ModalProps,
   State,
@@ -18,17 +27,16 @@ import {
   SchoolsState,
   ArticleListItem,
   EventQuickItem,
+  TagPreload,
+  UserPreload,
+  GroupPreload,
+  RequestStateComplex,
+  SchoolPreload,
+  DepartmentPreload,
+  School,
+  Department,
 } from '@ts/types';
-import { Searchbar, Illustration, Avatar, ErrorMessage, Modal } from '@components/index';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
-import { addEventQuick } from '@redux/actions/contentData/events';
-import { searchTags, updateTags } from '@redux/actions/api/tags';
-import { searchGroups, updateGroups } from '@redux/actions/api/groups';
-import { searchUsers, updateUsers } from '@redux/actions/api/users';
-import { searchSchools, updateSchools } from '@redux/actions/api/schools';
-import { searchDepartments, updateDepartments } from '@redux/actions/api/departments';
 
 import getArticleStyles from './styles/Styles';
 
@@ -37,7 +45,7 @@ type QuickSelectModalProps = ModalProps & {
   eventQuicks: EventQuickItem[];
   editingList: ArticleListItem | null;
   setEditingList: (props: ArticleListItem | null) => void;
-  dataType: 'tag' | 'group' | 'user' | 'school' | 'region' | 'departement';
+  dataType: string;
   tags: TagsState;
   groups: GroupsState;
   users: UsersState;
@@ -68,12 +76,17 @@ function QuickSelectModal({
 
   const quicks = type === 'articles' ? articleQuicks : eventQuicks;
 
-  let data: Tag[] | User[] | Group[] = [];
+  let data:
+    | TagPreload[]
+    | UserPreload[]
+    | GroupPreload[]
+    | (SchoolPreload | School)[]
+    | (DepartmentPreload | Department)[] = [];
   let update: (text?: string) => void = () => {};
   let icon = 'alert-decagram';
-  let state: { list: RequestState; search: RequestState } = {
-    list: { loading: { initial: false }, error: true },
-    search: { loading: { initial: false }, error: true },
+  let state: { list: RequestStateComplex; search?: RequestStateComplex } = {
+    list: { loading: { initial: false }, error: true, success: false },
+    search: { loading: { initial: false }, error: true, success: false },
   };
   switch (dataType) {
     case 'tag':
@@ -138,8 +151,10 @@ function QuickSelectModal({
         </View>
         <Divider />
         {state.list.loading.initial ||
-          (state.search.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />)}
-        {(searchText === '' && state.list.error) || (searchText !== '' && state.search.error) ? (
+          (state.search?.loading.initial && (
+            <ProgressBar indeterminate style={{ marginTop: -4 }} />
+          ))}
+        {(searchText === '' && state.list.error) || (searchText !== '' && state.search?.error) ? (
           <ErrorMessage
             type="axios"
             strings={{
@@ -147,7 +162,7 @@ function QuickSelectModal({
               contentPlural: 'des données',
               contentSingular: 'La liste de données',
             }}
-            error={[state.list.error, state.search.error]}
+            error={[state.list.error, state.search?.error]}
             retry={update}
           />
         ) : null}

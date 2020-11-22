@@ -715,7 +715,11 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         setVisible={setCommentModalVisible}
         id={id}
         reqState={reqState}
-        add={(publisher: Publisher, content: ContentType, parent: string) =>
+        add={(
+          publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
+          content: ContentType,
+          parent: string,
+        ) =>
           commentAdd(publisher, content, parent, 'article').then(() =>
             updateComments('initial', { parentId: id }),
           )

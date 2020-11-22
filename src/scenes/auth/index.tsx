@@ -1,10 +1,11 @@
 import React from 'react';
+
 import { createNativeStackNavigator } from '@utils/stack';
 
-import AuthLoginScreen from './views/Login';
 import AuthCreateScreen from './views/Create';
-import AuthResetPasswordScreen from './views/ResetPassword';
 import AuthCreateSuccessScreen from './views/CreateSuccess';
+import AuthLoginScreen from './views/Login';
+import AuthResetPasswordScreen from './views/ResetPassword';
 
 export type AuthStackParams = {
   Login: undefined;

@@ -102,18 +102,18 @@ export type Department = {
 };
 
 export type Image = {
-  _id: string; // Note: Not really useful
-  image: string;
+  _id?: string; // Note: Not really useful
+  image: string | null;
   thumbnails: {
-    small: boolean;
-    medium: boolean;
-    large: boolean;
+    small?: boolean;
+    medium?: boolean;
+    large?: boolean;
   };
 };
 
 // Location types
 export type Location = {
-  _id: string; // Note: Not really useful
+  _id?: string; // Note: Not really useful
   global: boolean;
   schools: SchoolPreload[];
   departments: DepartmentPreload[];
@@ -416,7 +416,7 @@ export type Place = PlacePreload & {
 
 // Petition Types
 export type Publisher = {
-  _id: string; // Note: Not really useful
+  _id?: string; // Note: Not really useful
   type: 'user' | 'group';
   user?: UserPreload;
   group?: GroupPreload;
