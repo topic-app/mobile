@@ -3,11 +3,13 @@ import React from 'react';
 import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import config from '@constants/config';
 import getNavigatorStyles from '@styles/NavStyles';
 import { useTheme, useSafeAreaInsets } from '@utils/index';
 
 import ArticleDualList from './articles/views/Dual';
 import ArticleList from './articles/views/List';
+import EventDualList from './events/views/Dual';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
 
@@ -71,10 +73,14 @@ function HomeTwoNavigator() {
     >
       <Tab.Screen
         name="Article"
-        component={deviceWidth > 1000 ? ArticleDualList : ArticleList}
+        component={deviceWidth > config.layout.dualMinWidth ? ArticleDualList : ArticleList}
         options={{ title: 'Actus' }}
       />
-      <Tab.Screen name="Event" component={EventList} options={{ title: 'Evènements' }} />
+      <Tab.Screen
+        name="Event"
+        component={deviceWidth > config.layout.dualMinWidth ? EventDualList : EventList}
+        options={{ title: 'Evènements' }}
+      />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
       <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
     </Tab.Navigator>

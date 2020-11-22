@@ -29,3 +29,4 @@ export { default as PetitionCard } from './cards/Petition';
 export { default as SafeAreaView } from './SafeAreaView';
 
 export { ARTICLE_CARD_HEADER_HEIGHT } from './cards/Article';
+export { EVENT_CARD_HEADER_HEIGHT } from './cards/Event';

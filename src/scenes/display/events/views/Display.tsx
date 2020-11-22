@@ -71,6 +71,7 @@ type EventDisplayProps = {
   account: Account;
   lists: EventListItem[];
   preferences: Preferences;
+  dual?: boolean;
 };
 
 const EventDisplay: React.FC<EventDisplayProps> = ({
@@ -85,6 +86,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   account,
   preferences,
   lists,
+  dual = false,
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
   const { id, useLists = false, verification = false } = route.params;
@@ -145,6 +147,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
     return (
       <View style={styles.page}>
         <AnimatingHeader
+          hideBack={dual}
           value={scrollY}
           title={
             route.params.title ||
