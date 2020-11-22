@@ -3,10 +3,10 @@ import { View, Linking, Platform, Dimensions } from 'react-native';
 import { Text, FAB, IconButton, useTheme } from 'react-native-paper';
 import MapboxGL, { OnPressEvent } from '@react-native-mapbox-gl/maps';
 import { StackNavigationProp } from '@react-navigation/stack';
-import BottomSheet from 'reanimated-bottom-sheet';
 import * as Location from 'expo-location';
 
 import { ExplorerLocation } from '@ts/types';
+import { BottomSheet, BottomSheetRef } from '@components/index';
 import { logger, useSafeAreaInsets } from '@utils/index';
 import getStyles from '@styles/Styles';
 
@@ -16,25 +16,6 @@ import { markerImages } from '../utils/getAsset';
 import getExplorerStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
-
-const { height: initialHeight, width: initialWidth } = Dimensions.get('window');
-const initOrientation =
-  initialHeight > initialWidth ? ('portrait' as const) : ('landscape' as const);
-let SNAP_POINTS_FROM_TOP = {
-  portrait: [0, initialHeight * 0.5, initialHeight * 0.71, initialHeight],
-  landscape: [0, initialWidth * 0.65, initialWidth],
-};
-if (initOrientation === 'landscape') {
-  SNAP_POINTS_FROM_TOP = {
-    portrait: SNAP_POINTS_FROM_TOP.landscape,
-    landscape: SNAP_POINTS_FROM_TOP.portrait,
-  };
-}
-
-function getNewSnapPoints() {
-  const { height, width } = Dimensions.get('window');
-  return height > width ? SNAP_POINTS_FROM_TOP.portrait : SNAP_POINTS_FROM_TOP.landscape;
-}
 
 export type MapMarkerDataType = {
   id: string;
@@ -55,9 +36,12 @@ type ExplorerMapProps = {
   navigation: StackNavigationProp<any, any>;
 };
 
+const bottomSheetPortraitSnapPoints = [0, '70%', '100%'];
+const bottomSheetLandscapeSnapPoints = [0, '20%', '100%'];
+
 const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, navigation }) => {
   const cameraRef = React.createRef<MapboxGL.Camera>();
-  const bottomSheetRef = React.createRef<BottomSheet>();
+  const bottomSheetRef = React.createRef<BottomSheetRef>();
 
   const [data, setData] = React.useState<MapMarkerDataType>({
     id: '',
@@ -66,10 +50,8 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
   });
   const [userLocation, setUserLocation] = React.useState(false);
   const [fabVisible, setFabVisible] = React.useState(false);
-  const [bottomSheetSnapPoints, setBottomSheetSnapPoints] = React.useState(getNewSnapPoints());
 
   const { height, width } = Dimensions.get('window');
-  const lastOrientation = height > width ? ('portrait' as const) : ('landscape' as const);
 
   const theme = useTheme();
   const { colors } = theme;
@@ -128,7 +110,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
   };
 
   const openBottomSheet = () => {
-    bottomSheetRef.current?.snapTo(bottomSheetSnapPoints.length - 1);
+    bottomSheetRef.current?.snapTo(bottomSheetPortraitSnapPoints.length - 1);
   };
 
   const closeBottomSheet = () => {
@@ -147,15 +129,6 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
           Platform.OS === 'ios'
             ? insets.bottom + 50
             : 0 /* 50 is the height of the tabBar on iOS */,
-      }}
-      onLayout={({ nativeEvent }) => {
-        const newOrientation =
-          nativeEvent.layout.height > nativeEvent.layout.width
-            ? ('portrait' as const)
-            : ('landscape' as const);
-        if (newOrientation !== lastOrientation) {
-          setBottomSheetSnapPoints(getNewSnapPoints());
-        }
       }}
     >
       <MapboxGL.MapView
@@ -277,7 +250,8 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
 
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={bottomSheetSnapPoints}
+        portraitSnapPoints={bottomSheetPortraitSnapPoints}
+        landscapeSnapPoints={bottomSheetLandscapeSnapPoints}
         renderContent={() => <LocationModal mapMarkerData={data} />}
       />
     </View>
