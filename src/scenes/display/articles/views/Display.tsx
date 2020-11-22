@@ -11,7 +11,6 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -52,6 +51,7 @@ import {
   Publisher,
   Content as ContentType,
 } from '@ts/types';
+import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';

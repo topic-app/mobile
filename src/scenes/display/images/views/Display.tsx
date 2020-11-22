@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Dimensions, ScrollView } from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
 
 import { TranslucentStatusBar, PlatformBackButton, SafeAreaView } from '@components/index';
 import getStyles from '@styles/Styles';
+import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl } from '@utils/index';
 
 function ImageDisplay({ navigation, route }) {

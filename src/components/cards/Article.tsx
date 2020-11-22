@@ -30,7 +30,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   const theme = useTheme();
   const { colors } = theme;
 
-  const [cardWidth, setCardWidth] = React.useState(0);
+  const [cardWidth, setCardWidth] = React.useState(100);
   const imageSize = cardWidth / 3.5;
 
   if (!article)
