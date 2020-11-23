@@ -1,9 +1,6 @@
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { LocationList, State } from '@ts/types';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import NotFound from './NotFound';
@@ -36,18 +33,7 @@ export type MainScreenNavigationProp<K extends keyof MainStackParams> = Composit
 
 const Stack = createNativeStackNavigator<MainStackParams>();
 
-type MainNavigatorProps = {
-  navigation: StackNavigationProp<any, any>;
-  location: LocationList;
-};
-
-const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) => {
-  if (!location.selected) {
-    navigation.navigate('Landing', {
-      screen: 'Welcome',
-    });
-  }
-
+function MainNavigator() {
   return (
     <Stack.Navigator
       initialRouteName="Home1"
@@ -66,11 +52,6 @@ const MainNavigator: React.FC<MainNavigatorProps> = ({ navigation, location }) =
       <Stack.Screen name="NotFound" component={NotFound} />
     </Stack.Navigator>
   );
-};
+}
 
-const mapStateToProps = (state: State) => {
-  const { location } = state;
-  return { location };
-};
-
-export default connect(mapStateToProps)(MainNavigator);
+export default MainNavigator;

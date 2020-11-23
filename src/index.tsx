@@ -1,12 +1,13 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import React from 'react';
+import { connect } from 'react-redux';
 
-import Store from '@redux/store';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import RootNavigator, { RootNavParams } from './scenes/Root';
 import AuthStackNavigator, { AuthStackParams } from './scenes/auth/index';
 import LandingStackNavigator, { LandingStackParams } from './scenes/landing/index';
+import { State } from './ts/types';
 
 export type AppStackParams = {
   Auth: NavigatorScreenParams<AuthStackParams>;
@@ -21,10 +22,14 @@ export type AppScreenNavigationProp<K extends keyof AppStackParams> = NativeStac
 
 const Stack = createNativeStackNavigator<AppStackParams>();
 
-function AppStackNavigator() {
+type AppStackNavigatorProps = {
+  locationSelected: boolean;
+};
+
+const AppStackNavigator: React.FC<AppStackNavigatorProps> = ({ locationSelected }) => {
   return (
     <Stack.Navigator
-      initialRouteName={Store.getState().location.selected ? 'Root' : 'Landing'}
+      initialRouteName={locationSelected ? 'Root' : 'Landing'}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
@@ -32,6 +37,11 @@ function AppStackNavigator() {
       <Stack.Screen name="Landing" component={LandingStackNavigator} />
     </Stack.Navigator>
   );
-}
+};
 
-export default AppStackNavigator;
+const mapStateToProps = (state: State) => {
+  const { selected } = state.location;
+  return { locationSelected: selected };
+};
+
+export default connect(mapStateToProps)(AppStackNavigator);
