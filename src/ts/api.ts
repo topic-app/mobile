@@ -66,6 +66,7 @@ export type SchoolPreload = {
   displayName: string;
   address?: Address;
   types: SchoolType[];
+  departments?: DepartmentPreload[];
 };
 
 export type School = {
@@ -173,6 +174,7 @@ export type User = {
     username: string;
     avatar: Avatar;
     joinDate: string;
+    official?: boolean;
   };
   data: {
     public: boolean;

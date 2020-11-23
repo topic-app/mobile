@@ -1,14 +1,14 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { View, SectionList } from 'react-native';
 import { Text, List, Divider } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
 
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { useTheme } from '@utils/index';
 
-import type { AboutStackParams } from '../index';
-import packages from '../data/packages.json';
 import licenses from '../data/licenses.json';
+import packages from '../data/packages.json';
+import type { AboutStackParams } from '../index';
 
 type Package = {
   id: string;
@@ -32,7 +32,7 @@ const Licenses: React.FC<LicensesProps> = ({ route }) => {
   const licenseData = licenses.map((l: License) => ({
     id: l.id,
     content: l.content,
-    data: packages.filter((p: Package) => p.license === l.id),
+    data: (packages as Package[]).filter((p: Package) => p.license === l.id),
   }));
 
   return (
@@ -42,7 +42,7 @@ const Licenses: React.FC<LicensesProps> = ({ route }) => {
           <SectionList
             sections={licenseData}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
+            renderItem={({ item }: { item: Package }) => (
               <View>
                 <List.Item title={item.id} />
               </View>

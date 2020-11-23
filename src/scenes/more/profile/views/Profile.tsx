@@ -22,6 +22,7 @@ import {
   SchoolPreload,
   DepartmentPreload,
   AccountRequestState,
+  User,
 } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
 
@@ -42,7 +43,7 @@ function getAddressString(address: Address['address']) {
   return null;
 }
 
-function genName({ data, info }) {
+function genName({ data, info }: { data: User['data']; info: User['info'] }) {
   if (data.firstName && data.lastName) {
     return `${data.firstName} ${data.lastName}`;
   }
@@ -262,9 +263,11 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                 icon="school"
                 title={school.name}
                 subtitle={`${
-                  getAddressString(school.address?.address) || school.address.shortName
+                  school.address
+                    ? getAddressString(school.address?.address) || school.address?.shortName
+                    : 'Adresse inconnue'
                 }${
-                  school.departments[0]
+                  school.departments && school.departments[0]
                     ? `, ${school.departments[0].displayName || school.departments[0].name}`
                     : ''
                 }`}
