@@ -18,7 +18,7 @@ import { useTheme } from '@utils/index';
 import getArticleStyles from '../styles/Styles';
 
 type ArticleListCardProps = {
-  article: ArticlePreload;
+  article: ArticlePreload | Article;
   sectionKey: string;
   itemKey: string;
   isRead: boolean;

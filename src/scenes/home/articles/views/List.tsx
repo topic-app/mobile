@@ -48,8 +48,8 @@ type Category = {
 type ArticleListProps = {
   navigation: HomeTwoScreenNavigationProp<'Article'>;
   route: RouteProp<HomeTwoNavParams, 'Article'>;
-  articles: (ArticlePreload | Article)[];
-  followingArticles: (ArticlePreload | Article)[];
+  articles: ArticlePreload[];
+  followingArticles: ArticlePreload[];
   search: ArticlePreload[];
   lists: ArticleListItem[];
   read: ArticleReadItem[];
