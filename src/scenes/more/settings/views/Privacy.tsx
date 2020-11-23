@@ -7,7 +7,7 @@ import { Illustration, CustomHeaderBar } from '@components/index';
 import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
-import { Preferences, State } from '@ts/types';
+import { Preferences, State, AccountState } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import type { SettingsScreenNavigationProp } from '../index';
@@ -15,7 +15,7 @@ import getSettingsStyles from '../styles/Styles';
 
 type SettingsThemeProps = {
   preferences: Preferences;
-  account: Account;
+  account: AccountState;
   navigation: SettingsScreenNavigationProp<'Privacy'>;
 };
 
@@ -212,9 +212,9 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, nav
                 />
               )}
             >
-              Si vous choissisez de synchroniser l'historique, les centres d'interêt ou les listes
-              sur le serveur, ces informations seront chiffrées avec l'aide de votre mot de passe et
-              nous n'y aurons pas accès.
+              Si vous choissisez de synchroniser l&apos;historique, les centres d&apos;interêt ou
+              les listes sur le serveur, ces informations seront chiffrées avec l&apos;aide de votre
+              mot de passe et nous n&apos;y aurons pas accès.
             </Banner>
           </View>
         )}

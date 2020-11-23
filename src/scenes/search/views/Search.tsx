@@ -157,7 +157,7 @@ const Search: React.FC<SearchProps> = ({
       component: (group: GroupPreload) => (
         <GroupCard
           group={group}
-          member={account.groups?.some((g) => g._id == group._id)}
+          member={account.groups?.some((g) => g._id === group._id)}
           following={account.accountInfo?.user?.data?.following?.groups?.some(
             (g) => g._id === group._id,
           )}
@@ -226,15 +226,15 @@ const Search: React.FC<SearchProps> = ({
 
   // Fetch new suggestions relevant to the user's search query, every time the user changes the Searchbar input,
   // this componenent gets rerendered and new suggestions are requested
-  const newTags = tags.map((t) => ({
-    title: t.displayName || t.name,
+  const newTags: SuggestionType[] = tags.map((t) => ({
+    title: t.displayName || t.name || '',
     type: 'tags',
     icon: 'pound',
     color: t.color,
     key: t._id,
   }));
-  const newLocations = [];
-  const newGroups = [];
+  const newLocations: SuggestionType[] = [];
+  const newGroups: SuggestionType[] = [];
 
   // Transform array of [{_id: '32133423', displayName: 'informatique'}, ...] into an array readable by ChipAddList
   // => [{ key: '32133423', title: 'informatique', icon: TAG_ICON, type: 'tags'}, ...]
@@ -311,14 +311,14 @@ const Search: React.FC<SearchProps> = ({
   };
 
   const getParams = () => {
-    let params = {};
+    const params: { tags?: string[] } = {};
     if (filters.tags) {
-      params['tags'] = filters.tags;
+      params.tags = filters.tags;
     }
     return params;
   };
 
-  const submitSearch = (text) => {
+  const submitSearch = (text: string) => {
     collapseFilter();
     if (searchText !== '') {
       categories
@@ -327,7 +327,7 @@ const Search: React.FC<SearchProps> = ({
     }
   };
 
-  const searchRef = React.createRef<TextInput>();
+  const searchRef = React.createRef<Searchbar>();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -358,7 +358,7 @@ const Search: React.FC<SearchProps> = ({
           onIdle={submitSearch}
           value={searchText}
           style={searchStyles.searchbar}
-          onSubmitEditing={submitSearch}
+          onSubmitEditing={({ nativeEvent: { text } }) => submitSearch(text)}
         />
         <CollapsibleView collapsed={!filterCollapsed}>
           <View style={searchStyles.containerBottom}>
@@ -440,7 +440,9 @@ const Search: React.FC<SearchProps> = ({
       </View>
       <View>
         <FlatList
-          data={searchText === '' ? [] : categories.find((c) => c.key === filters.category)?.data}
+          data={
+            searchText === '' ? [] : categories.find((c) => c.key === filters.category)?.data || []
+          }
           keyExtractor={(i) => i._id}
           renderItem={({ item }) =>
             categories.find((c) => c.key === filters.category)?.component(item)

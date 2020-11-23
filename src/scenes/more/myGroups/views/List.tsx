@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, SectionList } from 'react-native';
+import { View, SectionList, ActivityIndicator } from 'react-native';
 import { Text, ProgressBar, Divider, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -39,7 +39,7 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  let fetch = (refresh = false) => {
+  const fetch = (refresh = false) => {
     updateGroups(refresh ? 'refresh' : 'initial');
     fetchWaitingGroups();
     fetchGroups();

@@ -1,3 +1,4 @@
+import color from 'color';
 import React from 'react';
 import {
   View,
@@ -10,7 +11,6 @@ import {
 } from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import color from 'color';
 
 import { useTheme } from '@utils/index';
 
@@ -222,7 +222,7 @@ const ChipAddList = <T extends ListItem>({
   );
 };
 
-type ChipSuggestionListItem = ListItem & { color: string };
+type ChipSuggestionListItem = ListItem & { color?: string };
 
 type ChipSuggestionListProps<T extends ChipSuggestionListItem> = {
   data?: T[];

@@ -48,7 +48,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
         }}
       />
       <ScrollView>
-        <ScrollView height={300}>
+        <ScrollView style={{ height: 300 }}>
           <View style={styles.container}>
             <Card>
               <View style={styles.contentContainer}>

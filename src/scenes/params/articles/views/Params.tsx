@@ -58,7 +58,16 @@ const ArticleParamsScreen: React.FC<ArticleParamsProps> = ({
     <View style={styles.page}>
       {states.some((s) => s.loading) && <ProgressBar indeterminate />}
       {states.some((s) => s.error) && (
-        <ErrorMessage type="axios" error={states.map((s) => s.error)} retry={fetch} />
+        <ErrorMessage
+          type="axios"
+          error={states.map((s) => s.error)}
+          retry={fetch}
+          strings={{
+            what: 'la récupération des localisations',
+            contentSingular: 'La liste de localisations',
+            contentPlural: 'Les localisations',
+          }}
+        />
       )}
       <ScrollView>
         <View style={styles.centerIllustrationContainer}>

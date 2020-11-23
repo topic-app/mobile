@@ -11,6 +11,7 @@ export type SuggestionType = {
   title: string;
   icon: string;
   type: 'locations' | 'tags' | 'groups';
+  color?: string;
 };
 
 export const mapSuggestions = (

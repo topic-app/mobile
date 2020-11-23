@@ -1,13 +1,14 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { Platform, View, ActivityIndicator } from 'react-native';
-import { Text, Button, Divider, useTheme } from 'react-native-paper';
+import { Text, Button, Divider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Illustration, ErrorMessage, TranslucentStatusBar } from '@components/index';
 import { linking } from '@redux/actions/apiActions/linking';
 import getStyles from '@styles/Styles';
 import { State, LinkingRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import types from '../data/types.json';
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';
