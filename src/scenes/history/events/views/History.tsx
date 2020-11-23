@@ -18,7 +18,7 @@ type EventHistoryProps = {
   preferences: Preferences;
 };
 
-function EventHistory({ navigation, read, preferences }: EventHistoryProps) {
+const EventHistory: React.FC<EventHistoryProps> = ({ navigation, read, preferences }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -36,6 +36,7 @@ function EventHistory({ navigation, read, preferences }: EventHistoryProps) {
     <View style={styles.page}>
       <FlatList
         data={read.reverse()}
+        // TODO: EventReadItem ids need to be individually distinct from eachother
         keyExtractor={(i) => i.id}
         renderItem={({ item }) => (
           <List.Item
@@ -79,7 +80,7 @@ function EventHistory({ navigation, read, preferences }: EventHistoryProps) {
       />
     </View>
   );
-}
+};
 
 const mapStateToProps = (state: State) => {
   const { eventData, preferences } = state;

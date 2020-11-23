@@ -36,6 +36,7 @@ const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, prefe
     <View style={styles.page}>
       <FlatList
         data={read.reverse()}
+        // TODO: ArticleReadItem ids need to be individually distinct from eachother
         keyExtractor={(i) => i.id}
         renderItem={({ item }) => (
           <List.Item
