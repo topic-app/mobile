@@ -1,5 +1,4 @@
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { Platform } from 'react-native';
 
