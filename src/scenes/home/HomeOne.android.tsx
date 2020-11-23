@@ -1,26 +1,22 @@
+/* eslint-disable import/no-unresolved */
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerNavigationProp,
 } from '@react-navigation/drawer';
+import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import React from 'react';
-import { View, Platform, Linking } from 'react-native';
-import { Drawer, Title, ProgressBar } from 'react-native-paper';
+import { View, Linking } from 'react-native';
+import { Drawer, Title, ProgressBar, Subheading } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, Illustration } from '@components/index';
+import { ErrorMessage, Avatar, Illustration, CollapsibleView } from '@components/index';
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import getNavigatorStyles from '@styles/NavStyles';
-import {
-  Account,
-  AccountRequestState,
-  DepartmentPreload,
-  LocationRequestState,
-  SchoolPreload,
-  State,
-} from '@ts/types';
+import { Account, AccountUser, LocationList, State } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
 
 import { MainScreenNavigationProp } from '../Main';
@@ -37,32 +33,55 @@ export type HomeOneScreenNavigationProp<K extends keyof HomeOneNavParams> = Comp
 
 const DrawerNav = createDrawerNavigator<HomeOneNavParams>();
 
-function genName({ data, info }) {
-  if (data?.firstName && data?.lastName) {
-    return `${data.firstName} ${data.lastName}`;
+function genFullUserName(user: AccountUser) {
+  const { firstName, lastName } = user.data;
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`;
   }
-  return data?.firstName || data?.lastName || null;
+  return user.displayName;
 }
 
+type DrawerItemAccordionProps = React.ComponentProps<typeof Drawer.Item>;
+
+const DrawerItemAccordion: React.FC<DrawerItemAccordionProps> = ({
+  children,
+  onPress,
+  ...rest
+}) => {
+  const [expanded, setExpanded] = React.useState(false);
+  return (
+    <View>
+      <Drawer.Item
+        {...rest}
+        onPress={() => {
+          setExpanded(!expanded);
+          onPress?.();
+        }}
+      />
+      <Icon
+        name={expanded ? 'chevron-up' : 'chevron-down'}
+        size={23}
+        style={{
+          position: 'absolute',
+          right: 16,
+          top: 14,
+        }}
+      />
+      <CollapsibleView collapsed={!expanded}>{children}</CollapsibleView>
+    </View>
+  );
+};
+
 type CustomDrawerContentProps = {
-  navigation: DrawerNavigationProp<any, any>;
-  loggedIn: boolean;
-  accountInfo: Account['accountInfo'];
-  accountState: AccountRequestState;
-  location: {
-    schoolData: SchoolPreload[];
-    departmentData: DepartmentPreload[];
-    global: boolean;
-    state: LocationRequestState;
-  };
+  navigation: DrawerNavigationHelpers;
+  account: Account;
+  location: LocationList;
   // TODO: Add permissions prop
 };
 
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
   navigation,
-  accountState,
-  loggedIn,
-  accountInfo = { user: {} },
+  account,
   location,
   permissions,
 }) => {
@@ -80,13 +99,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
       <Drawer.Section>
         <View style={navigatorStyles.profileBackground}>
           {(location.state.fetch?.loading ||
-            accountState.fetchAccount?.loading ||
-            accountState.fetchGroups?.loading ||
-            accountState.fetchWaitingGroups?.loading) && <ProgressBar indeterminate />}
+            account.state.fetchAccount?.loading ||
+            account.state.fetchGroups?.loading ||
+            account.state.fetchWaitingGroups?.loading) && <ProgressBar indeterminate />}
           {(location.state.fetch?.error ||
-            accountState.fetchAccount?.error ||
-            accountState.fetchGroups?.error ||
-            accountState.fetchWaitingGroups?.error) && (
+            account.state.fetchAccount?.error ||
+            account.state.fetchGroups?.error ||
+            account.state.fetchWaitingGroups?.error) && (
             <ErrorMessage
               type="axios"
               strings={{
@@ -96,70 +115,69 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               }}
               error={[
                 location.state.fetch.error,
-                accountState.fetchAccount.error,
-                accountState.fetchGroups.error,
-                accountState.fetchWaitingGroups.error,
+                account.state.fetchAccount.error,
+                account.state.fetchGroups.error,
+                account.state.fetchWaitingGroups.error,
               ]}
               retry={retryFetch}
             />
           )}
           <View style={navigatorStyles.profileIconContainer}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {Platform.OS !== 'web' && (
+            {account.loggedIn ? (
+              <View>
+                <View>
+                  <Avatar
+                    avatar={account.accountInfo?.user?.info.avatar}
+                    size={60}
+                    style={navigatorStyles.avatar}
+                  />
+                </View>
+                <Title style={navigatorStyles.title} numberOfLines={1}>
+                  {genFullUserName(account.accountInfo.user)}
+                </Title>
+                <Subheading
+                  style={[navigatorStyles.subtitle, { flex: 1 }]}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                >
+                  @{account.accountInfo.user.info.username}
+                </Subheading>
+              </View>
+            ) : (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Illustration
                   name="topic-icon"
-                  style={[navigatorStyles.avatar, { borderRadius: 27.5 }]}
-                  height={55}
-                  width={55}
+                  height={60}
+                  width={60}
+                  style={[navigatorStyles.avatar, { borderRadius: 30 }]}
                 />
-              )}
-              {loggedIn ? (
-                <View>
-                  <Title
-                    style={[navigatorStyles.title, { width: 200 }]}
-                    ellipsizeMode="tail"
-                    numberOfLines={1}
-                  >
-                    {genName(accountInfo?.user) || `@${accountInfo?.user?.info?.username || '...'}`}
-                  </Title>
-                  {genName(accountInfo?.user) ? (
-                    <Title
-                      style={[navigatorStyles.subtitle, { width: 200, marginTop: -8 }]}
-                      ellipsizeMode="tail"
-                      numberOfLines={1}
-                    >
-                      @{accountInfo?.user?.info?.username}
-                    </Title>
-                  ) : null}
-                </View>
-              ) : (
                 <Title style={navigatorStyles.topic}>Topic</Title>
-              )}
-            </View>
+              </View>
+            )}
           </View>
         </View>
       </Drawer.Section>
       <Drawer.Section>
-        {location.schoolData.map((school) => (
-          <Drawer.Item
-            key={school._id}
-            icon="school"
-            label={school?.shortName || school?.name}
-            onPress={() => {
-              logger.warn('School pressed');
-            }}
-          />
-        ))}
-        {location.departmentData.map((departement) => (
-          <Drawer.Item
-            key={departement._id}
-            icon="home-city"
-            label={departement?.shortName || departement?.name}
-          />
-        ))}
-        {location.global && <Drawer.Item icon="flag" label="France entière" />}
+        <DrawerItemAccordion label="Mes lieux" icon="map-marker">
+          {location.schoolData.map((school) => (
+            <Drawer.Item
+              key={school._id}
+              label={school?.shortName || school?.name}
+              icon="school"
+              onPress={() => logger.debug('School pressed in drawer')}
+            />
+          ))}
+          {location.departmentData.map((departement) => (
+            <Drawer.Item
+              key={departement._id}
+              icon="home-city"
+              label={departement?.shortName || departement?.name}
+            />
+          ))}
+          {location.global && <Drawer.Item icon="flag" label="France entière" />}
+        </DrawerItemAccordion>
       </Drawer.Section>
-      {loggedIn ? (
+      {account.loggedIn ? (
         <Drawer.Section>
           <Drawer.Item
             label="Mon profil"
@@ -267,8 +285,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
 const mapStateToProps = (state: State) => {
   const { account, location } = state;
   return {
-    accountInfo: account.accountInfo,
-    accountState: account.state,
+    account,
     permissions: account.permissions,
     loggedIn: account.loggedIn,
     location,
