@@ -1,7 +1,7 @@
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { AppLoading } from 'expo';
 import React from 'react';
-import { useColorScheme, Platform } from 'react-native';
+import { Platform, Appearance, ColorSchemeName } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -17,30 +17,40 @@ import AppNavigator from './index';
 import screens from './screens';
 
 type Props = {
-  preferences: Preferences;
+  useSystemTheme: Preferences['useSystemTheme'];
+  theme: Preferences['theme'];
 };
 
-const StoreApp: React.FC<Props> = ({ preferences }) => {
-  let theme = themes[preferences.theme] || 'light';
-
-  const colorScheme = useColorScheme();
-
-  if (preferences.useSystemTheme) {
-    theme = themes[colorScheme === 'dark' ? 'dark' : 'light'];
-  }
-
-  if (Platform.OS === 'android' && Platform.Version >= 28) {
-    // This only works on android 9 and above
-    changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);
-  }
-  React.useEffect(
-    React.useCallback(() => {
-      fetchLocationData().catch((e) => logger.warn(`fetchLocationData err ${e}`));
-      fetchGroups().catch((e) => logger.warn(`fetchGroups err ${e}`));
-      fetchWaitingGroups().catch((e) => logger.warn(`fetchWaitingGroups err ${e}`));
-      fetchAccount().catch((e) => logger.warn(`fetchAccount err ${e}`));
-    }, [null]),
+const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName }) => {
+  const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
+    (useSystemTheme && Appearance.getColorScheme()) || 'light',
   );
+
+  const handleAppearanceChange = (prefs: Appearance.AppearancePreferences) => {
+    setColorScheme(prefs.colorScheme);
+    if (Platform.OS === 'android' && Platform.Version >= 28) {
+      // This only works on android 9 and above
+      changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);
+    }
+  };
+
+  React.useEffect(() => {
+    Appearance.addChangeListener(handleAppearanceChange);
+    return () => {
+      Appearance.removeChangeListener(handleAppearanceChange);
+    };
+  }, [useSystemTheme]);
+
+  React.useEffect(() => {
+    fetchLocationData().catch((e) => logger.warn(`fetchLocationData err ${e}`));
+    fetchGroups().catch((e) => logger.warn(`fetchGroups err ${e}`));
+    fetchWaitingGroups().catch((e) => logger.warn(`fetchWaitingGroups err ${e}`));
+    fetchAccount().catch((e) => logger.warn(`fetchAccount err ${e}`));
+  }, [null]);
+
+  const theme = useSystemTheme
+    ? themes[colorScheme === 'dark' ? 'dark' : 'light']
+    : themes[themeName];
 
   const linking = {
     prefixes: ['https://topicapp.fr', 'https://go.topicapp.fr', 'topic://'],
@@ -64,7 +74,7 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
   };
 
   const routeNameRef = React.useRef<string | undefined>();
-  const navigationRef = React.useRef<NavigationContainerRef | null>();
+  const navigationRef = React.useRef<NavigationContainerRef>(null);
 
   return (
     <PaperProvider theme={theme}>
@@ -100,8 +110,8 @@ const StoreApp: React.FC<Props> = ({ preferences }) => {
 };
 
 const mapStateToProps = (state: State) => {
-  const { preferences } = state;
-  return { preferences };
+  const { useSystemTheme, theme } = state.preferences;
+  return { useSystemTheme, theme };
 };
 
 export default connect(mapStateToProps)(StoreApp);
