@@ -1,9 +1,19 @@
+import { useDimensions } from '@react-native-community/hooks';
+import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
-import { View, Image, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
-import { Button, Divider, Text, Card, Title } from 'react-native-paper';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+  Platform,
+  Dimensions,
+} from 'react-native';
+import { Button, Divider, Text, Card, Title, Subheading } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { TabChipList } from '@root/src/components';
 import places from '@src/data/explorerListData.json';
 import getStyles from '@styles/Styles';
 import { ExplorerLocation } from '@ts/types';
@@ -11,6 +21,7 @@ import { useTheme, logger } from '@utils/index';
 
 import getExplorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAsset';
+import { getStrings } from '../utils/getStrings';
 import type { MapMarkerDataType } from '../views/Map';
 
 function genTagDecoration(type) {
@@ -44,8 +55,6 @@ function genTagDecoration(type) {
   };
 }
 
-const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
 function LocationEvent({ title, summary, imageUrl, date }) {
   const styles = getStyles(useTheme());
   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
@@ -68,7 +77,7 @@ function LocationEvent({ title, summary, imageUrl, date }) {
             />
             <View style={{ margin: 10, width: '70%' }}>
               <Text style={{ color: 'gray', fontSize: 16 }}>
-                {capitalize(moment(date).fromNow())}
+                {_.capitalize(moment(date).fromNow())}
               </Text>
               <Text style={{ fontSize: 16 }} ellipsizeMode="tail" numberOfLines={3}>
                 {summary}
@@ -102,6 +111,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ mapMarkerData }) => {
   const theme = useTheme();
   const place = places.find((t) => t.data._id === mapMarkerData.id) as ExplorerLocation.Location;
 
+  const minHeight = useDimensions().window.height - 54;
   if (!place) {
     return (
       <View style={{ flex: 1 }}>
@@ -113,63 +123,44 @@ const LocationModal: React.FC<LocationModalProps> = ({ mapMarkerData }) => {
   const styles = getStyles(theme);
   const explorerStyles = getExplorerStyles(theme);
 
-  let title = '';
-  let description = '';
-  let stats = '';
-
-  switch (place.type) {
-    case 'event':
-      title = place.data.title;
-      description = place.data.summary;
-      stats = 'Dans X Heures';
-      break;
-    case 'place':
-      title = place.data.displayName;
-      description = place.data.summary;
-      break;
-    case 'school':
-      title = place.data.displayName;
-      break;
-    case 'secret':
-      title = place.data.displayName;
-      description = place.data.summary;
-  }
-
-  const { icon, color } = genTagDecoration(place.type);
+  const { icon, title, subtitle, description, detail } = getStrings(place);
 
   return (
-    <View style={explorerStyles.modalContainer}>
+    <View style={[explorerStyles.modalContainer, { minHeight }]}>
       <View style={explorerStyles.contentContainer}>
         <View style={explorerStyles.pullUpTabContainer}>
           <View style={explorerStyles.pullUpTab} />
         </View>
-
-        <View style={explorerStyles.modalTitleContainer}>
-          <Icon name={icon} style={[{ color }, explorerStyles.modalIcon]} />
-          <Text
-            style={[{ color }, explorerStyles.modalTitle]}
-            ellipsizeMode="tail"
-            adjustsFontSizeToFit
-            numberOfLines={1}
-          >
-            {title}
-          </Text>
-        </View>
-
-        <Divider style={styles.divider} />
-
-        <View style={{ height: 40, width: '100%', flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flex: 1 }}>
+            <Text style={explorerStyles.modalTitle} numberOfLines={2}>
+              {title}
+            </Text>
+            <Subheading style={explorerStyles.modalSubtitle}>
+              {subtitle ? (
+                <Subheading style={explorerStyles.modalSubtitle}>{subtitle} · </Subheading>
+              ) : null}
+              {detail}
+            </Subheading>
+          </View>
           <View style={{ justifyContent: 'center' }}>
-            <Title>{stats}</Title>
-          </View>
-          <View style={{ justifyContent: 'center', alignItems: 'flex-end', flex: 1 }}>
-            <Button mode="contained" style={{ flex: 1 }}>
-              Plus d&apos;Infos
-            </Button>
+            <Icon name={icon} style={[explorerStyles.modalIcon]} />
           </View>
         </View>
-
-        <Divider style={styles.divider} />
+        {/* <TabChipList
+          sections={{
+          }}
+          selected={chipTab}
+          setSelected={changeList}
+          configure={() =>
+            navigation.navigate('Main', {
+              screen: 'Configure',
+              params: {
+                screen: 'Article',
+              },
+            })
+          }
+        /> */}
 
         <Text style={explorerStyles.modalText} numberOfLines={4} ellipsizeMode="tail">
           {description}

@@ -37,8 +37,8 @@ type ExplorerMapProps = {
   navigation: StackNavigationProp<any, any>;
 };
 
-const bottomSheetPortraitSnapPoints = [0, '70%', '100%'];
-const bottomSheetLandscapeSnapPoints = [0, '20%', '100%'];
+const bottomSheetPortraitSnapPoints = [0, 0.25, 1];
+const bottomSheetLandscapeSnapPoints = [0, 0.45, 1];
 
 const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, navigation }) => {
   const cameraRef = React.createRef<MapboxGL.Camera>();
@@ -51,8 +51,6 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
   });
   const [userLocation, setUserLocation] = React.useState(false);
   const [fabVisible, setFabVisible] = React.useState(false);
-
-  const { height, width } = Dimensions.get('window');
 
   const theme = useTheme();
   const { colors } = theme;
@@ -111,7 +109,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
   };
 
   const openBottomSheet = () => {
-    bottomSheetRef.current?.snapTo(bottomSheetPortraitSnapPoints.length - 1);
+    bottomSheetRef.current?.snapTo(bottomSheetPortraitSnapPoints.length - 2);
   };
 
   const closeBottomSheet = () => {

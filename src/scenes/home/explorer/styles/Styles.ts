@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 import { Theme } from '@ts/types';
 
@@ -9,8 +9,6 @@ function getExplorerStyles(theme: Theme) {
       margin: 0,
     },
     modalContainer: {
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
@@ -18,7 +16,8 @@ function getExplorerStyles(theme: Theme) {
       },
       shadowOpacity: 0.29,
       shadowRadius: 4.65,
-      elevation: 5,
+      elevation: 7,
+      marginTop: 54,
       backgroundColor: colors.background,
     },
     contentContainer: {
@@ -26,15 +25,16 @@ function getExplorerStyles(theme: Theme) {
       paddingHorizontal: 15,
     },
     modalTitle: {
-      paddingHorizontal: 8,
-      fontWeight: 'bold',
+      // paddingHorizontal: 8,
       fontSize: 20,
-      textAlignVertical: 'center',
-      flex: 1,
+    },
+    modalSubtitle: {
+      fontSize: 16,
+      color: colors.subtext,
     },
     modalIcon: {
-      textAlignVertical: 'center',
-      fontSize: 22,
+      fontSize: 30,
+      marginHorizontal: 10,
     },
     modalTitleContainer: {
       flexDirection: 'row',
@@ -43,13 +43,13 @@ function getExplorerStyles(theme: Theme) {
     modalText: {
       color: colors.text,
       fontSize: 17,
-      paddingHorizontal: 2,
+      paddingTop: 6,
     },
     pullUpTab: {
-      width: 70,
+      width: 25,
       height: 5,
       backgroundColor: colors.outline,
-      borderRadius: 20,
+      borderRadius: 2.5,
     },
     pullUpTabContainer: {
       width: '100%',

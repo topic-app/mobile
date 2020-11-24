@@ -57,7 +57,7 @@ export type Duration = {
   end: string;
 };
 
-type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
+export type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
 
 export type SchoolPreload = {
   _id: string;
@@ -397,7 +397,7 @@ export type EventVerification = Event & {
 };
 
 // Place Types (used for Explorer)
-type PlaceType = 'cultural' | 'history' | 'tourism' | 'club' | 'other';
+export type PlaceType = 'cultural' | 'history' | 'tourism' | 'club' | 'other';
 
 export type PlacePreload = {
   _id: string;

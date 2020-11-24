@@ -1,6 +1,8 @@
-import React from 'react';
-import { Dimensions, View } from 'react-native';
+import { useDimensions } from '@react-native-community/hooks';
+import React, { useState } from 'react';
 import ReanimatedBottomSheet from 'reanimated-bottom-sheet';
+
+import { logger } from '@utils/index';
 
 export type BottomSheetRef = ReanimatedBottomSheet;
 
@@ -13,53 +15,47 @@ type ReanimatedBottomSheetProps = Partial<
 >;
 
 type BottomSheetProps = ReanimatedBottomSheetProps & {
-  portraitSnapPoints: (number | string)[];
-  landscapeSnapPoints: (number | string)[];
+  /**
+   * Array of numbers between 0 and 1 indicating where the
+   * bottom modal should snap to, should be of same length
+   * as landscapeSnapPoints.
+   */
+  portraitSnapPoints: number[];
+  /**
+   * Array of numbers between 0 and 1 indicating where the
+   * bottom modal should snap to, should be of same length
+   * as landscapeSnapPoints.
+   */
+  landscapeSnapPoints: number[];
 };
 
-function checkPortraitOrientation() {
-  const { height, width } = Dimensions.get('window');
-  return height > width;
-}
-
 const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
-  ({ portraitSnapPoints, landscapeSnapPoints, renderContent, ...rest }, ref) => {
-    const isPortrait = checkPortraitOrientation();
-    const [snapPoints, setSnapPoints] = React.useState(
-      isPortrait ? portraitSnapPoints : landscapeSnapPoints,
-    );
-
-    if (portraitSnapPoints.length !== landscapeSnapPoints.length) {
-      console.error(
-        'BottomSheet: portraitSnapPoints and landscapeSnapPoints arrays must be of same length',
+  (
+    { portraitSnapPoints: portraitSP, landscapeSnapPoints: landscapeSP, renderContent, ...rest },
+    ref,
+  ) => {
+    if (portraitSP.length === 0 || landscapeSP.length === 0) {
+      logger.warn('BottomSheet: snap point array should not be empty');
+    }
+    if (portraitSP.length !== landscapeSP.length) {
+      logger.warn(
+        'BottomSheet: portraitSnapPoints should be of same length as landscapeSnapPoints',
       );
     }
 
+    const { height, width } = useDimensions().window;
+    const snapPoints = (height > width ? portraitSP : landscapeSP).map(
+      (snapPoint) => snapPoint * height,
+    );
+
     return (
-      <>
-        <View
-          style={{
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-          }}
-          pointerEvents="none"
-          onLayout={({ nativeEvent }) => {
-            const { height, width } = nativeEvent.layout;
-            // If current orientation is different than previous, swap snap points
-            if (height > width !== isPortrait) {
-              setSnapPoints(isPortrait ? landscapeSnapPoints : portraitSnapPoints);
-            }
-          }}
-        />
-        <ReanimatedBottomSheet
-          ref={ref}
-          snapPoints={snapPoints}
-          renderContent={renderContent}
-          enabledManualSnapping
-          {...rest}
-        />
-      </>
+      <ReanimatedBottomSheet
+        ref={ref}
+        snapPoints={snapPoints}
+        renderContent={renderContent}
+        enabledManualSnapping
+        {...rest}
+      />
     );
   },
 );
