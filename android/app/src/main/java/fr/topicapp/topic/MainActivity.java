@@ -19,7 +19,8 @@ import expo.modules.splashscreen.SplashScreenImageResizeMode;
 public class MainActivity extends ReactActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
+        // ^ This is necessary to avoid crashes on restart
         // SplashScreen.show(...) has to be called after super.onCreate(...)
         // Below line is handled by '@expo/configure-splash-screen' command and it's
         // discouraged to modify it manually
