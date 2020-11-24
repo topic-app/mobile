@@ -41,11 +41,14 @@ function genFullUserName(user: AccountUser) {
   return user.displayName;
 }
 
-type DrawerItemAccordionProps = React.ComponentProps<typeof Drawer.Item>;
+type DrawerItemAccordionProps = React.ComponentProps<typeof Drawer.Item> & {
+  chevronColor: string;
+};
 
 const DrawerItemAccordion: React.FC<DrawerItemAccordionProps> = ({
   children,
   onPress,
+  chevronColor,
   ...rest
 }) => {
   const [expanded, setExpanded] = React.useState(false);
@@ -60,6 +63,7 @@ const DrawerItemAccordion: React.FC<DrawerItemAccordionProps> = ({
       />
       <Icon
         name={expanded ? 'chevron-up' : 'chevron-down'}
+        color={chevronColor}
         size={23}
         style={{
           position: 'absolute',
@@ -85,7 +89,9 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
   location,
   permissions,
 }) => {
-  const navigatorStyles = getNavigatorStyles(useTheme());
+  const theme = useTheme();
+  const { colors } = theme;
+  const navigatorStyles = getNavigatorStyles(theme);
 
   const retryFetch = () => {
     fetchLocationData();
@@ -93,6 +99,26 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
     fetchGroups();
     fetchWaitingGroups();
   };
+
+  const locationAccordionItems: React.ReactElement[] = [];
+  location.schoolData.forEach((school) => {
+    locationAccordionItems.push(
+      <Drawer.Item key={school._id} label={school?.shortName || school?.name} icon="school" />,
+    );
+  });
+  location.departmentData.forEach((departement) => {
+    locationAccordionItems.push(
+      <Drawer.Item
+        key={departement._id}
+        label={departement.shortName || departement.name}
+        icon="home-city"
+      />,
+    );
+  });
+  if (location.global) {
+    locationAccordionItems.push(<Drawer.Item key="global" icon="flag" label="France entière" />);
+  }
+
   // console.log(`Location ${JSON.stringify(location)}`);
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
@@ -157,26 +183,17 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
           </View>
         </View>
       </Drawer.Section>
-      <Drawer.Section>
-        <DrawerItemAccordion label="Mes lieux" icon="map-marker">
-          {location.schoolData.map((school) => (
-            <Drawer.Item
-              key={school._id}
-              label={school?.shortName || school?.name}
-              icon="school"
-              onPress={() => logger.debug('School pressed in drawer')}
-            />
-          ))}
-          {location.departmentData.map((departement) => (
-            <Drawer.Item
-              key={departement._id}
-              icon="home-city"
-              label={departement?.shortName || departement?.name}
-            />
-          ))}
-          {location.global && <Drawer.Item icon="flag" label="France entière" />}
-        </DrawerItemAccordion>
-      </Drawer.Section>
+      {locationAccordionItems.length !== 0 ? (
+        <Drawer.Section>
+          {locationAccordionItems.length === 1 ? (
+            locationAccordionItems[0]
+          ) : (
+            <DrawerItemAccordion label="Mes lieux" icon="map-marker" chevronColor={colors.icon}>
+              {locationAccordionItems}
+            </DrawerItemAccordion>
+          )}
+        </Drawer.Section>
+      ) : null}
       {account.loggedIn ? (
         <Drawer.Section>
           <Drawer.Item
