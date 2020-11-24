@@ -101,7 +101,10 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
 
   traverseState(navigationState);
 
-  // HACK: I was hoping to be able to fetch screenOptions from here, but havent found any way yet. Currently, any screen that has Article in the name gives a focused article tab, same for events etc. Display and Home pages both have a translucent tab bar, others not
+  // HACK: I was hoping to be able to fetch screenOptions from here,
+  // but havent found any way yet. Currently, any screen that has
+  // Article in the name gives a focused article tab, same for events etc.
+  // Display and Home pages both have a translucent tab bar, others not
 
   const isActive = (name: RouteName) => active === name;
 
@@ -115,7 +118,7 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
   const { bottom } = useSafeAreaInsets(); // get bottom inset
 
   return (
-    <View style={{ color: colors.surface }}>
+    <View style={{ backgroundColor: colors.surface }}>
       <View
         style={{
           flexDirection: 'row',

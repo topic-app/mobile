@@ -459,9 +459,9 @@ const EventList: React.FC<EventListProps> = ({
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions?.some((p) => p.permission === 'event.add') && (
+      {account.loggedIn && account.permissions.some((p) => p.permission === 'event.add') && (
         <FAB
-          icon="pencil"
+          icon="plus"
           onPress={() =>
             navigation.navigate('Main', {
               screen: 'Add',

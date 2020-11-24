@@ -453,7 +453,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions?.some((p) => p.permission === 'article.add') && (
+      {account.loggedIn && account.permissions.some((p) => p.permission === 'article.add') && (
         <FAB
           icon="pencil"
           onPress={() =>
