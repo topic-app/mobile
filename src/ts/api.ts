@@ -158,11 +158,13 @@ export type Avatar =
     };
 
 export type UserPreload = {
+  preload: true;
   _id: string;
   displayName: string;
   info: {
     username: string;
     avatar?: Avatar;
+    official?: boolean;
   };
   data?: {
     public?: boolean;
@@ -170,6 +172,7 @@ export type UserPreload = {
 };
 
 export type User = {
+  preload?: false;
   _id: string;
   name: string;
   displayName: string;

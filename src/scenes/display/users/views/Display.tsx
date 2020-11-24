@@ -36,6 +36,7 @@ import {
   ArticleRequestState,
   EventRequestState,
   GroupPreload,
+  UserRequestState,
 } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
 
@@ -56,14 +57,14 @@ function genName(user: User | UserPreload) {
   if (firstName && lastName) {
     return `${firstName} ${lastName}`;
   }
-  return user.name || user.displayName || user.firstName || user.lastName || null;
+  return user.name || user.displayName || user.data?.firstName || user.data?.lastName || null;
 }
 
 type UserDisplayProps = {
   route: RouteProp<UserDisplayStackParams, 'Display'>;
   navigation: UserDisplayScreenNavigationProp<'Display'>;
   account: Account;
-  state: { info: RequestState };
+  state: UserRequestState;
   users: UsersState;
   groups: GroupPreload[];
   groupsState: GroupRequestState;
@@ -88,7 +89,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 }) => {
   const { id } = route.params || {};
 
-  let user =
+  const user: User | UserPreload | null =
     users.item?._id === id
       ? users.item
       : users.data.find((u) => u._id === id) || users.search.find((u) => u._id === id) || null;
@@ -210,7 +211,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
               <Avatar size={120} avatar={user.info.avatar} />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
-              {user.data.public ? (
+              {user.data?.public ? (
                 <View style={{ alignItems: 'center' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Title>{genName(user) || `@${user.info.username}`}</Title>
@@ -236,7 +237,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
               <ActivityIndicator size="large" color={colors.primary} />
             </View>
           )}
-          {state.info.success && (
+          {state.info.success && !user.preload && (
             <View>
               <Divider style={{ marginVertical: 10 }} />
               <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
@@ -247,9 +248,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 40 }}>
                     {user.data?.public ? (
-                      user.data.following.groups.length +
-                      user.data.following.users.length +
-                      user.data.following.events.length
+                      user.data.following.groups.length + user.data.following.users.length
                     ) : (
                       <Icon name="lock-outline" size={52} color={colors.disabled} />
                     )}
@@ -395,7 +394,9 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                         icon="school"
                         title={school.displayName}
                         subtitle={`${
-                          getAddressString(school.address?.address) || school.address?.shortName
+                          school.address?.address
+                            ? getAddressString(school.address?.address)
+                            : school.address?.shortName
                         }${
                           school.address?.departments[0]
                             ? `, ${
@@ -439,12 +440,12 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 <Text>Aucun abonnement à un groupe</Text>
                               </View>
                             )}
-                            {user.data?.following.groups?.map((group) => (
+                            {user.data?.following.groups?.map((g) => (
                               <InlineCard
-                                key={group._id}
-                                avatar={group.avatar}
-                                title={group.displayName}
-                                subtitle={`Groupe ${group.type}`}
+                                key={g._id}
+                                avatar={g.avatar}
+                                title={g.displayName}
+                                subtitle={`Groupe ${g.type}`}
                                 onPress={() =>
                                   navigation.push('Main', {
                                     screen: 'Display',
@@ -452,7 +453,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                       screen: 'Group',
                                       params: {
                                         screen: 'Display',
-                                        params: { id: group._id, title: group.displayName },
+                                        params: { id: g._id, title: g.displayName },
                                       },
                                     },
                                   })
@@ -472,11 +473,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 <Text>Aucun abonnement à un utilisateur</Text>
                               </View>
                             )}
-                            {user.data.following.users?.map((user) => (
+                            {user.data.following.users?.map((u) => (
                               <InlineCard
-                                key={user._id}
-                                avatar={user.info?.avatar}
-                                title={user.displayName}
+                                key={u._id}
+                                avatar={u.info?.avatar}
+                                title={u.displayName}
                                 onPress={() =>
                                   navigation.push('Main', {
                                     screen: 'Display',
@@ -484,7 +485,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                       screen: 'User',
                                       params: {
                                         screen: 'Display',
-                                        params: { id: user._id },
+                                        params: { id: u._id },
                                       },
                                     },
                                   })
@@ -516,6 +517,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
         contentId={id}
         report={userReport}
         state={state.report}
+        navigation={navigation}
       />
     </View>
   );
