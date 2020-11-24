@@ -2,8 +2,8 @@ import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import shortid from 'shortid';
 
-import { UserPreload, Event } from '@ts/types';
 import { InlineCard } from '@components/Cards';
+import { UserPreload, Event } from '@ts/types';
 import { useTheme, handleUrl } from '@utils/index';
 
 type EventDisplayContactProps = {

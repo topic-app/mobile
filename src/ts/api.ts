@@ -164,6 +164,9 @@ export type UserPreload = {
     username: string;
     avatar?: Avatar;
   };
+  data?: {
+    public?: boolean;
+  };
 };
 
 export type User = {
@@ -263,7 +266,7 @@ export type GroupMember = {
   };
 };
 
-export type GroupPreload = {
+type GroupBase = {
   _id: string;
   displayName: string;
   name: string;
@@ -271,13 +274,19 @@ export type GroupPreload = {
   type: string;
   avatar?: Avatar;
   summary?: string;
+  shortName?: string;
   cache: {
     followers?: number | null;
     members?: number | null;
   };
 };
 
-export type Group = GroupPreload & {
+export type GroupPreload = GroupBase & {
+  preload: true;
+};
+
+export type Group = GroupBase & {
+  preload?: false;
   shortName?: string;
   handle: string;
   aliases: string;
@@ -290,6 +299,10 @@ export type Group = GroupPreload & {
   roles: GroupRole[];
   members: GroupMember[];
   tags: TagPreload[];
+};
+
+export type GroupVerification = Group & {
+  verification: Verification;
 };
 
 export type GroupWithMembership = Group & {

@@ -119,7 +119,7 @@ type GroupAddMemberCreatorParams = {
   group: string;
   role: string;
   secondaryRoles: string[];
-  expires: number;
+  expires?: Date | number;
 };
 
 function groupAddMemberCreator({
@@ -559,7 +559,7 @@ async function groupMemberAdd(
   user: string,
   role: string,
   secondaryRoles: string[],
-  expires: number,
+  expires?: Date | number, // not sure about how this works exactly
 ) {
   await Store.dispatch(
     groupAddMemberCreator({
@@ -617,7 +617,7 @@ async function groupReport(groupId: string, reason: string) {
   );
 }
 
-function groupVerificationApprove(id: string) {
+async function groupVerificationApprove(id: string) {
   return Store.dispatch(
     approveCreator({
       url: 'groups/verification/approve',

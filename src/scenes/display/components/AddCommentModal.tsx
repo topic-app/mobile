@@ -29,7 +29,7 @@ type AddCommentModalProps = ModalProps & {
     publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
     content: Content,
     parent: string,
-  ) => Promise<void | {}>;
+  ) => any;
 };
 
 const AddCommentModal: React.FC<AddCommentModalProps> = ({

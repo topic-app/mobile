@@ -24,7 +24,7 @@ import { useTheme } from '@utils/index';
 
 type AddUserRoleModalProps = ModalProps & {
   roles: GroupRole[];
-  user: UserPreload;
+  user: UserPreload | null;
   state: GroupRequestState;
   group: string;
   next: () => any;
@@ -43,12 +43,12 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [primaryRole, setPrimaryRole] = React.useState(null);
-  const [secondaryRoles, setSecondaryRoles] = React.useState([]);
-  const [expiryDate, setExpiryDate] = React.useState(0);
+  const [primaryRole, setPrimaryRole] = React.useState<string | null>(null);
+  const [secondaryRoles, setSecondaryRoles] = React.useState<string[]>([]);
+  const [expiryDate, setExpiryDate] = React.useState<number>(0);
   const [errorVisible, setErrorVisible] = React.useState(false);
 
-  let sections = [
+  const sections = [
     {
       key: 'primary',
       title: 'Role principal',
@@ -61,12 +61,12 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
     },
   ];
 
-  let add = () => {
+  const add = () => {
     if (!primaryRole) {
       setErrorVisible(true);
     } else {
-      let date = new Date();
-      let expiry = new Date(date.setMonth(date.getMonth() + expiryDate));
+      const date = new Date();
+      const expiry = new Date(date.setMonth(date.getMonth() + expiryDate));
       groupMemberAdd(
         group,
         user._id,
@@ -115,7 +115,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
           </View>
         )}
         renderItem={({ item, section: { key } }) => {
-          let set = () => {
+          const set = () => {
             if (key === 'primary') {
               setErrorVisible(false);
               setPrimaryRole(item._id);

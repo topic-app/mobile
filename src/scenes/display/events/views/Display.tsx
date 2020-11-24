@@ -511,7 +511,11 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         setVisible={setCommentModalVisible}
         id={id}
         reqState={reqState}
-        add={(publisher: Publisher, content: Content, parent: string) =>
+        add={(
+          publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
+          content: Content,
+          parent: string,
+        ) =>
           commentAdd(publisher, content, parent, 'event').then(() =>
             updateComments('initial', { parentId: id }),
           )
