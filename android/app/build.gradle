@@ -137,7 +137,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         /* DO NOT REMOVE - SCRIPT MARKER: androidVersion */
-        versionCode 24
+        versionCode 26
         versionName "0.7.2"
         setProperty("archivesBaseName", "Topic-$versionName")
     }
