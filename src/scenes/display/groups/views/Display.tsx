@@ -502,7 +502,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       }}
                     >
                       <InlineCard
-                        key="Me"
                         title={`Moi (@${account.accountInfo?.user?.info?.username})`}
                         subtitle={`Role ${
                           group.roles?.find(
