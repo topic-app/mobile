@@ -45,7 +45,6 @@ export type EventRequestState = StandardRequestState;
 export type GroupRequestState = StandardRequestState & {
   follow: RequestState;
   member_add: RequestState;
-  member_modify: RequestState;
   member_delete: RequestState;
   member_accept: RequestState;
   member_reject: RequestState;

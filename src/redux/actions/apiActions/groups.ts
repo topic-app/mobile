@@ -184,71 +184,6 @@ function groupAddMemberCreator({
   };
 }
 
-type GroupModifyMemberCreatorParams = {
-  user: string;
-  group: string;
-  role: string;
-  secondaryRoles: string[];
-};
-function groupModifyMemberCreator({
-  group,
-  user,
-  role,
-  secondaryRoles,
-}: GroupModifyMemberCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          member_modify: {
-            loading: true,
-            success: null,
-            error: null,
-          },
-        },
-      });
-      request(
-        'groups/members/modify',
-        'post',
-        {
-          group,
-          user,
-          role,
-          secondaryRoles,
-        },
-        true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_modify: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve();
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_modify: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
-    });
-  };
-}
-
 function groupDeleteMemberCreator({ group, user }: { user: string; group: string }): AppThunk {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
@@ -637,22 +572,6 @@ async function groupMemberAdd(
   );
 }
 
-async function groupMemberModify(
-  group: string,
-  user: string,
-  role: string,
-  secondaryRoles: string[],
-) {
-  await Store.dispatch(
-    groupModifyMemberCreator({
-      user,
-      role,
-      group,
-      secondaryRoles,
-    }),
-  );
-}
-
 async function groupMemberDelete(group: string, user: string) {
   await Store.dispatch(
     groupDeleteMemberCreator({
@@ -715,7 +634,6 @@ export {
   groupReport,
   groupMemberAdd,
   groupMemberDelete,
-  groupMemberModify,
   groupMemberAccept,
   groupMemberReject,
   groupMemberLeave,

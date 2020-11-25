@@ -174,7 +174,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [currentMembers, setCurrentMembers] = React.useState<GroupMember[]>([]);
   const [currentRoles, setCurrentRoles] = React.useState<GroupRole[]>([]);
   const [userToAdd, setUserToAdd] = React.useState<User | UserPreload | null>(null);
-  const [modifying, setModifying] = React.useState(false);
 
   const [isAddSnackbarVisible, setAddSnackbarVisible] = React.useState(false);
 
@@ -540,9 +539,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         title={mem.user?.displayName}
                         subtitle={`${
                           mem.user?.data?.public ? `@${mem.user?.info?.username} - ` : ''
-                        }${group.roles
-                          ?.filter((r) => mem.secondaryRoles?.includes(r._id))
-                          ?.map((r) => `, ${r?.name}`)}`}
+                        }${group.roles?.find((r) => r._id === mem.role)?.name}`}
                         badge={
                           group.roles?.find((r) => r._id === mem.role)?.admin ? 'star' : undefined
                         }
@@ -567,32 +564,10 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     {account.loggedIn &&
                       account.permissions?.some(
                         (p) =>
-                          p.permission === 'group.members.modify' &&
-                          (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
-                      ) &&
-                      (state.member_modify?.loading && userToAdd?._id === mem.user?._id ? (
-                        <ActivityIndicator size="large" color={colors.primary} />
-                      ) : (
-                        <IconButton
-                          icon="pencil"
-                          onPress={() => {
-                            setCurrentMembers(group.members || []);
-                            setCurrentRoles(group.roles || []);
-                            setUserToAdd(mem.user);
-                            setModifying(true);
-                            setAddUserRoleModalVisible(true);
-                          }}
-                          size={30}
-                          style={{ marginRight: 20 }}
-                        />
-                      ))}
-                    {account.loggedIn &&
-                      account.permissions?.some(
-                        (p) =>
                           p.permission === 'group.members.delete' &&
                           (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
                       ) &&
-                      (state.member_delete?.loading && userToAdd?._id === mem.user?._id ? (
+                      (state.member_delete?.loading ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                       ) : (
                         <IconButton
@@ -634,7 +609,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       onPress={() => {
                         setCurrentMembers(group.members || []);
                         setCurrentRoles(group.roles || []);
-                        setModifying(false);
                         setAddUserModalVisible(true);
                       }}
                     >
@@ -729,15 +703,10 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           visible={isAddUserRoleModalVisible}
           setVisible={setAddUserRoleModalVisible}
           roles={currentRoles}
-          members={currentMembers}
           user={userToAdd}
-          modifying={modifying}
-          key={userToAdd?._id || 'none'}
           group={id}
           next={() => {
-            if (!modifying) {
-              setAddSnackbarVisible(true);
-            }
+            setAddSnackbarVisible(true);
           }}
         />
 
