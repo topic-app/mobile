@@ -1,6 +1,6 @@
 import Store from '@redux/store';
-import { request } from '@utils/index';
 import { AppThunk, UPDATE_TAGS_STATE } from '@ts/redux';
+import { request } from '@utils/index';
 
 type TagAddProps = {
   name: string;
@@ -67,7 +67,7 @@ function tagAddCreator({ name, color, parser, data }: TagAddProps): AppThunk {
   };
 }
 
-function tagAdd(data: TagAddProps) {
+async function tagAdd(data: TagAddProps) {
   return Store.dispatch(tagAddCreator(data));
 }
 

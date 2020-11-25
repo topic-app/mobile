@@ -1,37 +1,8 @@
 import Store from '@redux/store';
+import { AppThunk, EventCreationData, UPDATE_EVENTS_STATE } from '@ts/redux';
 import { request } from '@utils/index';
-import { AppThunk, UPDATE_EVENTS_STATE } from '@ts/redux';
-import { reportCreator, approveCreator } from './ActionCreator';
 
-type EventAddParams = {
-  title: string;
-  summary: string;
-  data: string;
-  phone: string;
-  email: string;
-  contact?: {
-    key: string;
-    value: string;
-    link: string;
-  }[];
-  organizers: string[];
-  start: Date;
-  end: Date;
-  date: Date;
-  location: {
-    schools: string[];
-    departments: string[];
-    global: boolean;
-  };
-  group: string;
-  places: string[];
-  parser: 'markdown' | 'plaintext';
-  preferences?: {
-    comments?: boolean;
-  };
-  tags: string[];
-  program: string[];
-};
+import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
 
 function eventAddCreator({
   title,
@@ -40,18 +11,18 @@ function eventAddCreator({
   phone,
   email,
   contact,
-  organizers,
+  members,
   start,
   end,
   date,
   location,
   group,
-  places,
+  place,
   parser,
   preferences,
   tags,
   program,
-}: EventAddParams): AppThunk {
+}: EventCreationData): AppThunk {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -70,7 +41,7 @@ function eventAddCreator({
         {
           event: {
             title,
-            places,
+            place,
             summary,
             description: {
               parser,
@@ -79,9 +50,9 @@ function eventAddCreator({
             contact: {
               phone,
               email,
-              organizers,
               other: contact,
             },
+            members,
             duration: {
               start,
               end,
@@ -127,12 +98,12 @@ function eventAddCreator({
   };
 }
 
-function eventAdd(data: EventAddParams) {
+async function eventAdd(data: EventCreationData) {
   return Store.dispatch(eventAddCreator(data));
 }
 
-function eventVerificationApprove(id: string) {
-  return Store.dispatch(
+async function eventVerificationApprove(id: string) {
+  await Store.dispatch(
     approveCreator({
       url: 'events/verification/approve',
       stateUpdate: UPDATE_EVENTS_STATE,
@@ -154,4 +125,15 @@ async function eventReport(eventId: string, reason: string) {
   );
 }
 
-export { eventAdd, eventReport, eventVerificationApprove };
+async function eventDelete(id: string) {
+  await Store.dispatch(
+    deleteCreator({
+      id,
+      paramName: 'eventId',
+      url: 'events/delete',
+      stateUpdate: UPDATE_EVENTS_STATE,
+    }),
+  );
+}
+
+export { eventAdd, eventReport, eventVerificationApprove, eventDelete };

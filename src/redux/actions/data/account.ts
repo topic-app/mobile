@@ -1,7 +1,6 @@
 import { AnyAction } from 'redux';
-import { request, logger } from '@utils/index';
-import Store from '@redux/store';
 
+import Store from '@redux/store';
 import {
   GroupRolePermission,
   GroupRole,
@@ -21,8 +20,10 @@ import {
   LOGIN,
   AccountRequestState,
   AppThunk,
+  AccountCreationData,
 } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
+import { request, logger } from '@utils/index';
 
 import { fetchLocationData } from './location';
 
@@ -344,19 +345,7 @@ function loginCreator(fields: LoginFields): AppThunk {
 }
 
 type RegisterFields = {
-  accountInfo: {
-    username: string;
-    email: string;
-    password: string;
-    global: boolean;
-    schools: string[];
-    departments: string[];
-    avatar: Avatar;
-    description: string;
-    public: boolean;
-    firstName: string;
-    lastName: string;
-  };
+  accountInfo: AccountCreationData;
   device: { type: string; deviceId: null; canNotify: boolean };
 };
 
@@ -374,7 +363,7 @@ function registerCreator(fields: RegisterFields): AppThunk {
       },
     });
     try {
-      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password);
+      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password || '');
     } catch (err) {
       return dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -505,19 +494,7 @@ function logout() {
   Store.dispatch(logoutCreator());
 }
 
-function updateCreationData(params: {
-  title?: string;
-  email?: string;
-  password?: string;
-  username?: string;
-  schools?: string[];
-  departments?: string;
-  global?: boolean;
-  accountType?: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: Avatar;
-}) {
+function updateCreationData(params: Partial<AccountCreationData>) {
   Store.dispatch(updateCreationDataCreator(params));
 }
 

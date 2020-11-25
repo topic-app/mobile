@@ -1,23 +1,10 @@
+import { useFocusEffect, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Text, Button, ProgressBar } from 'react-native-paper';
-import { useFocusEffect, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import {
-  ArticlePreload,
-  EventPreload,
-  GroupPreload,
-  UserPreload,
-  State,
-  UserRequestState,
-  GroupRequestState,
-  EventRequestState,
-  ArticleRequestState,
-  TagPreload,
-  Account,
-} from '@ts/types';
 import {
   Searchbar,
   Illustration,
@@ -31,20 +18,33 @@ import {
   ErrorMessage,
   GroupCard,
 } from '@components/index';
-import { useTheme, useSafeAreaInsets } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { searchArticles, clearArticles } from '@redux/actions/api/articles';
 import { searchEvents, clearEvents } from '@redux/actions/api/events';
 import { searchGroups, clearGroups } from '@redux/actions/api/groups';
-import { searchUsers, clearUsers } from '@redux/actions/api/users';
 import { searchTags } from '@redux/actions/api/tags';
+import { searchUsers, clearUsers } from '@redux/actions/api/users';
+import getStyles from '@styles/Styles';
+import {
+  ArticlePreload,
+  EventPreload,
+  GroupPreload,
+  UserPreload,
+  State,
+  UserRequestState,
+  GroupRequestState,
+  EventRequestState,
+  ArticleRequestState,
+  TagPreload,
+  Account,
+} from '@ts/types';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 
+import type { SearchScreenNavigationProp, SearchStackParams } from '../index';
 import getSearchStyles from '../styles/Styles';
 import { SuggestionType } from '../utils/suggestions';
-import type { SearchStackParams } from '../index';
 
 type SearchProps = {
-  navigation: StackNavigationProp<SearchStackParams, 'Search'>;
+  navigation: SearchScreenNavigationProp<'Search'>;
   route: RouteProp<SearchStackParams, 'Search'>;
   articles: ArticlePreload[];
   events: EventPreload[];
@@ -157,7 +157,7 @@ const Search: React.FC<SearchProps> = ({
       component: (group: GroupPreload) => (
         <GroupCard
           group={group}
-          member={account.groups?.some((g) => g._id == group._id)}
+          member={account.groups?.some((g) => g._id === group._id)}
           following={account.accountInfo?.user?.data?.following?.groups?.some(
             (g) => g._id === group._id,
           )}
@@ -226,15 +226,15 @@ const Search: React.FC<SearchProps> = ({
 
   // Fetch new suggestions relevant to the user's search query, every time the user changes the Searchbar input,
   // this componenent gets rerendered and new suggestions are requested
-  const newTags = tags.map((t) => ({
-    title: t.displayName || t.name,
+  const newTags: SuggestionType[] = tags.map((t) => ({
+    title: t.displayName || t.name || '',
     type: 'tags',
     icon: 'pound',
     color: t.color,
     key: t._id,
   }));
-  const newLocations = [];
-  const newGroups = [];
+  const newLocations: SuggestionType[] = [];
+  const newGroups: SuggestionType[] = [];
 
   // Transform array of [{_id: '32133423', displayName: 'informatique'}, ...] into an array readable by ChipAddList
   // => [{ key: '32133423', title: 'informatique', icon: TAG_ICON, type: 'tags'}, ...]
@@ -311,14 +311,14 @@ const Search: React.FC<SearchProps> = ({
   };
 
   const getParams = () => {
-    let params = {};
+    const params: { tags?: string[] } = {};
     if (filters.tags) {
-      params['tags'] = filters.tags;
+      params.tags = filters.tags;
     }
     return params;
   };
 
-  const submitSearch = (text) => {
+  const submitSearch = (text: string) => {
     collapseFilter();
     if (searchText !== '') {
       categories
@@ -327,7 +327,7 @@ const Search: React.FC<SearchProps> = ({
     }
   };
 
-  const searchRef = React.createRef<TextInput>();
+  const searchRef = React.createRef<Searchbar>();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -358,7 +358,7 @@ const Search: React.FC<SearchProps> = ({
           onIdle={submitSearch}
           value={searchText}
           style={searchStyles.searchbar}
-          onSubmitEditing={submitSearch}
+          onSubmitEditing={({ nativeEvent: { text } }) => submitSearch(text)}
         />
         <CollapsibleView collapsed={!filterCollapsed}>
           <View style={searchStyles.containerBottom}>
@@ -440,7 +440,9 @@ const Search: React.FC<SearchProps> = ({
       </View>
       <View>
         <FlatList
-          data={searchText === '' ? [] : categories.find((c) => c.key === filters.category)?.data}
+          data={
+            searchText === '' ? [] : categories.find((c) => c.key === filters.category)?.data || []
+          }
           keyExtractor={(i) => i._id}
           renderItem={({ item }) =>
             categories.find((c) => c.key === filters.category)?.component(item)

@@ -1,24 +1,18 @@
-import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
-import { View, Platform, Image, ScrollView, Linking } from 'react-native';
-import { Text, Button, Divider, List, Checkbox, Subheading } from 'react-native-paper';
+import { View, Platform, ScrollView, Linking } from 'react-native';
+import { Text, Button, List, Checkbox } from 'react-native-paper';
 
-import {
-  PlatformBackButton,
-  CustomTabView,
-  TranslucentStatusBar,
-  Illustration,
-  SafeAreaView,
-  StepperView,
-} from '@components/index';
+import { TranslucentStatusBar, Illustration, SafeAreaView, StepperView } from '@components/index';
 import getStyles from '@styles/Styles';
-import { analytics as firebaseAnalytics } from '@utils/firebase';
+import { firebase } from '@utils/firebase';
 import { useTheme } from '@utils/index';
 
-import type { LandingStackParams } from '../index';
+import type { LandingScreenNavigationProp } from '../index';
 import getLandingStyles from '../styles/Styles';
 
-type LandingArticlesProps = StackScreenProps<LandingStackParams, 'Info'>;
+type LandingArticlesProps = {
+  navigation: LandingScreenNavigationProp<'Beta'>;
+};
 
 const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
   const theme = useTheme();
@@ -163,9 +157,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           onPress={async () => {
                             if (Platform.OS !== 'web') {
                               if (analytics) {
-                                await firebaseAnalytics.analytics
-                                  .analytics()
-                                  .setAnalyticsCollectionEnabled(true);
+                                await firebase.analytics().setAnalyticsCollectionEnabled(true);
                               }
                             }
                             next(1);

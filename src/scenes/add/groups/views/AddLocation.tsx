@@ -1,12 +1,15 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { StackScreenProps } from '@react-navigation/stack';
 
-import { ReduxLocation } from '@ts/types';
 import LocationSelectPage from '@components/LocationSelectPage';
+import { ReduxLocation } from '@ts/types';
 
-import type { GroupAddStackParams } from '../index';
+import type { GroupAddScreenNavigationProp, GroupAddStackParams } from '../index';
 
-type GroupAddLocationProps = StackScreenProps<GroupAddStackParams, 'Location'>;
+type GroupAddLocationProps = {
+  navigation: GroupAddScreenNavigationProp<'Location'>;
+  route: RouteProp<GroupAddStackParams, 'Location'>;
+};
 
 const GroupAddLocation: React.FC<GroupAddLocationProps> = ({ navigation, route }) => {
   const { hideSearch = false, type, initialData, callback } = route.params;

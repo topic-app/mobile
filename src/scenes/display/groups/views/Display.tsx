@@ -1,3 +1,4 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import {
   ScrollView,
@@ -7,7 +8,6 @@ import {
   Alert,
   StatusBar,
   Share,
-  FlatList,
 } from 'react-native';
 import {
   Button,
@@ -21,25 +21,9 @@ import {
   IconButton,
   Banner,
 } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import {
-  GroupPreload,
-  Group,
-  Account,
-  Address,
-  GroupRequestState,
-  GroupsState,
-  State,
-  ArticleRequestState,
-  Article,
-  EventRequestState,
-  EventPreload,
-  ArticlePreload,
-  AccountRequestState,
-} from '@ts/types';
 import {
   Avatar,
   InlineCard,
@@ -47,20 +31,15 @@ import {
   ReportModal,
   PlatformBackButton,
   TranslucentStatusBar,
-  CustomTabView,
-  ArticleCard,
   PlatformTouchable,
   Content,
   CollapsibleView,
   ErrorMessage,
   SafeAreaView,
-  EventCard,
 } from '@components/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import { searchArticles } from '@redux/actions/api/articles';
 import { searchEvents } from '@redux/actions/api/events';
+import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import {
   groupFollow,
   groupUnfollow,
@@ -70,13 +49,34 @@ import {
   groupVerificationApprove,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
+import {
+  GroupPreload,
+  Group,
+  Account,
+  Address,
+  GroupRequestState,
+  GroupsState,
+  State,
+  ArticleRequestState,
+  EventRequestState,
+  EventPreload,
+  ArticlePreload,
+  AccountRequestState,
+  User,
+  GroupMember,
+  GroupRole,
+  UserPreload,
+  GroupVerification,
+} from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import type { GroupDisplayStackParams } from '../index';
-import AddUserSelectModal from '../components/AddUserSelectModal';
-import AddUserRoleModal from '../components/AddUserRoleModal';
-import EditGroupModal from '../components/EditGroupModal';
-import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
 import ContentTabView from '../../components/ContentTabView';
+import AddUserRoleModal from '../components/AddUserRoleModal';
+import AddUserSelectModal from '../components/AddUserSelectModal';
+import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
+import EditGroupModal from '../components/EditGroupModal';
+import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
 
 function getAddressString(address: Address) {
   const { number, street, city, code } = address?.address || {};
@@ -87,8 +87,10 @@ function getAddressString(address: Address) {
   return null;
 }
 
-type GroupElement = Group | GroupPreload;
-type GroupDisplayProps = StackScreenProps<GroupDisplayStackParams, 'Display'> & {
+type GroupElement = Group | GroupPreload | GroupVerification;
+type GroupDisplayProps = {
+  navigation: GroupDisplayScreenNavigationProp<'Display'>;
+  route: RouteProp<GroupDisplayStackParams, 'Display'>;
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
@@ -126,7 +128,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
     searchEvents('initial', '', { groups: [id] }, false);
   }, [null]);
 
-  const group =
+  const group: Group | GroupPreload | GroupVerification | null =
     groups.item?._id === id
       ? groups.item
       : groups.data.find((g) => g._id === id) || groups.search.find((g) => g._id === id) || null;
@@ -169,13 +171,17 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   const [isAddUserModalVisible, setAddUserModalVisible] = React.useState(false);
   const [isAddUserRoleModalVisible, setAddUserRoleModalVisible] = React.useState(false);
-  const [currentMembers, setCurrentMembers] = React.useState([]);
-  const [currentRoles, setCurrentRoles] = React.useState([]);
-  const [userToAdd, setUserToAdd] = React.useState(null);
+  const [currentMembers, setCurrentMembers] = React.useState<GroupMember[]>([]);
+  const [currentRoles, setCurrentRoles] = React.useState<GroupRole[]>([]);
+  const [userToAdd, setUserToAdd] = React.useState<User | UserPreload | null>(null);
 
   const [isAddSnackbarVisible, setAddSnackbarVisible] = React.useState(false);
 
-  const [editingGroup, setEditingGroup] = React.useState(null);
+  const [editingGroup, setEditingGroup] = React.useState<{
+    shortName?: string;
+    summary?: string;
+    description?: string;
+  } | null>(null);
   const [isEditGroupModalVisible, setEditGroupModalVisible] = React.useState(false);
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
     false,
@@ -261,6 +267,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
             <PlatformBackButton onPress={navigation.goBack} />
             <View style={{ flexDirection: 'row' }}>
               {account.loggedIn &&
+                !group.preload &&
                 account.permissions?.some(
                   (p) =>
                     p.permission === 'group.modify' &&
@@ -350,7 +357,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               <ActivityIndicator size="large" color={colors.primary} />
             </View>
           )}
-          {state.info.success && (
+          {state.info.success && !group.preload && (
             <View>
               {!verification && (
                 <View>
@@ -463,7 +470,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   key={school._id}
                   icon="school"
                   title={school.displayName}
-                  subtitle={getAddressString(school?.address) || school?.shortName}
+                  subtitle={school?.address ? getAddressString(school?.address) : school?.shortName}
                   onPress={() => logger.warn(`school ${school._id} pressed!`)}
                 />
               ))}
@@ -481,7 +488,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <CategoryTitle>Membres</CategoryTitle>
               </View>
               <Banner visible={isAddSnackbarVisible} actions={[]}>
-                Une invitation a été envoyée à @{userToAdd?.info?.username}
+                {`Une invitation a été envoyée à @${userToAdd?.info?.username || ''}`}
               </Banner>
               {account.loggedIn &&
                 group.members?.some((m) => m.user?._id === account.accountInfo?.accountId) && (
@@ -507,7 +514,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                             )?.role,
                         )?.admin
                           ? 'star'
-                          : null
+                          : undefined
                       }
                       badgeColor={colors.solid.gold}
                       avatar={account.accountInfo?.user?.info?.avatar}
@@ -533,7 +540,9 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         subtitle={`${
                           mem.user?.data?.public ? `@${mem.user?.info?.username} - ` : ''
                         }${group.roles?.find((r) => r._id === mem.role)?.name}`}
-                        badge={group.roles?.find((r) => r._id === mem.role)?.admin ? 'star' : null}
+                        badge={
+                          group.roles?.find((r) => r._id === mem.role)?.admin ? 'star' : undefined
+                        }
                         badgeColor={colors.solid.gold}
                         avatar={mem.user?.info?.avatar}
                         onPress={() =>
@@ -677,6 +686,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           contentId={id}
           report={groupReport}
           state={state.report}
+          navigation={navigation}
         />
 
         <AddUserSelectModal

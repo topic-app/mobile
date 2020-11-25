@@ -1,10 +1,13 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { ProgressBar, Title, List, Divider } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
+import { ErrorMessage, Illustration } from '@components/index';
+import { fetchLocationData } from '@redux/actions/data/location';
+import getNavigatorStyles from '@styles/NavStyles';
+import getStyles from '@styles/Styles';
 import {
   Account,
   AccountRequestState,
@@ -13,11 +16,9 @@ import {
   SchoolPreload,
   State,
 } from '@ts/types';
-import { ErrorMessage, Illustration } from '@components/index';
 import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
-import getNavigatorStyles from '@styles/NavStyles';
-import { fetchLocationData } from '@redux/actions/data/location';
+
+import { MoreScreenNavigationProp } from '../../index';
 
 function genName({ data, info }) {
   if (data?.firstName && data?.lastName) {
@@ -27,7 +28,7 @@ function genName({ data, info }) {
 }
 
 type MoreListProps = {
-  navigation: StackNavigationProp<any, any>;
+  navigation: MoreScreenNavigationProp<'List'>;
   loggedIn: boolean;
   accountInfo: Account['accountInfo'];
   accountState: AccountRequestState;

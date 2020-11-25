@@ -1,3 +1,4 @@
+import { RouteProp } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
@@ -28,7 +29,7 @@ import {
 import { useTheme } from '@utils/index';
 
 import PetitionChart from '../components/Charts';
-import type { PetitionDisplayStackParams } from '../index';
+import type { PetitionDisplayScreenNavigationProp, PetitionDisplayStackParams } from '../index';
 
 type StatusChipProps = {
   mode: 'contained' | 'text' | 'outlined';
@@ -147,7 +148,9 @@ const PetitionTime: React.FC<PetitionTimeProps> = ({
   );
 };
 
-type PetitionDisplayProps = StackScreenProps<PetitionDisplayStackParams, 'Display'> & {
+type PetitionDisplayProps = {
+  navigation: PetitionDisplayScreenNavigationProp<'Display'>;
+  route: RouteProp<PetitionDisplayStackParams, 'Display'>;
   petitions: (PetitionPreload | Petition)[];
   reqState: PetitionRequestState;
 };

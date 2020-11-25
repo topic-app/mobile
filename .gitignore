@@ -39,6 +39,12 @@ build/
 local.properties
 *.iml
 
+# Java/Eclipse
+#
+android/**/.project
+android/**/.settings
+android/**/.classpath
+
 # node.js
 #
 node_modules/

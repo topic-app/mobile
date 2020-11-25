@@ -1,11 +1,21 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+
+import { DisplayScreenNavigationProp } from '../index';
 import UserDisplay from './views/Display';
 
 export type UserDisplayStackParams = {
   Display: { id: string };
 };
+
+export type UserDisplayScreenNavigationProp<
+  K extends keyof UserDisplayStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<UserDisplayStackParams, K>,
+  DisplayScreenNavigationProp<'User'>
+>;
 
 const Stack = createNativeStackNavigator<UserDisplayStackParams>();
 

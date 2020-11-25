@@ -1,34 +1,22 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { connect } from 'react-redux';
 import { Platform, View, ScrollView } from 'react-native';
 import { Text, Button, Divider } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
+import { connect } from 'react-redux';
 
-import { State, ArticleRequestState, Account } from '@ts/types';
 import { Illustration } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { State, ArticleRequestState, Account } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { GroupAddStackParams } from '../index';
+import type { GroupAddScreenNavigationProp, GroupAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-type GroupAddSuccessProps = StackScreenProps<GroupAddStackParams, 'Success'> & {
+type GroupAddSuccessProps = {
   reqState: ArticleRequestState;
   account: Account;
-  route: {
-    params: {
-      id: string;
-      creationData: {
-        title: string;
-        summary: string;
-        image: {
-          image: string;
-        };
-        group: string;
-        data: string;
-      };
-    };
-  };
+  navigation: GroupAddScreenNavigationProp<'Success'>;
+  route: RouteProp<GroupAddStackParams, 'Success'>;
 };
 
 const GroupAddSuccess: React.FC<GroupAddSuccessProps> = ({

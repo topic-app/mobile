@@ -1,18 +1,25 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
-import { createNativeStackNavigator, TransitionPresets } from '@utils/stack';
 
-import { HeaderConfig } from '@components/Header';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+
+import { MoreScreenNavigationProp } from '../index';
 import types from './data/types.json';
-
 import Linking from './views/Linking';
 
 export type LinkingStackParams = {
-  // Tried to get typescript to accept any key from types, but no idea how to do that
   Linking: {
     type: keyof typeof types;
     [key: string]: string;
   };
 };
+
+export type LinkingScreenNavigationProp<
+  K extends keyof LinkingStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<LinkingStackParams, K>,
+  MoreScreenNavigationProp<'Linking'>
+>;
 
 const Stack = createNativeStackNavigator<LinkingStackParams>();
 

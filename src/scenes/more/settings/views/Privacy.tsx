@@ -1,23 +1,22 @@
 import React from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import { List, Avatar, Divider, Banner, Switch } from 'react-native-paper';
-import { clearArticlesRead } from '@redux/actions/contentData/articles';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { Preferences, State } from '@ts/types';
 import { Illustration, CustomHeaderBar } from '@components/index';
-import { useTheme } from '@utils/index';
+import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
+import { Preferences, State, AccountState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { SettingsStackParams } from '../index';
+import type { SettingsScreenNavigationProp } from '../index';
 import getSettingsStyles from '../styles/Styles';
 
 type SettingsThemeProps = {
   preferences: Preferences;
-  account: Account;
-  navigation: StackNavigationProp<SettingsStackParams, 'Content'>;
+  account: AccountState;
+  navigation: SettingsScreenNavigationProp<'Privacy'>;
 };
 
 const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, navigation }) => {
@@ -213,9 +212,9 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, nav
                 />
               )}
             >
-              Si vous choissisez de synchroniser l'historique, les centres d'interêt ou les listes
-              sur le serveur, ces informations seront chiffrées avec l'aide de votre mot de passe et
-              nous n'y aurons pas accès.
+              Si vous choissisez de synchroniser l&apos;historique, les centres d&apos;interêt ou
+              les listes sur le serveur, ces informations seront chiffrées avec l&apos;aide de votre
+              mot de passe et nous n&apos;y aurons pas accès.
             </Banner>
           </View>
         )}

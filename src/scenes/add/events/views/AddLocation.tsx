@@ -1,11 +1,14 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { StackScreenProps } from '@react-navigation/stack';
 
 import LocationSelectPage from '@components/LocationSelectPage';
 
-import type { EventAddStackParams } from '../index';
+import type { EventAddScreenNavigationProp, EventAddStackParams } from '../index';
 
-type EventAddLocationProps = StackScreenProps<EventAddStackParams, 'Location'>;
+type EventAddLocationProps = {
+  navigation: EventAddScreenNavigationProp<'Location'>;
+  route: RouteProp<EventAddStackParams, 'Location'>;
+};
 
 const EventAddLocation: React.FC<EventAddLocationProps> = ({ navigation, route }) => {
   const { hideSearch = false, type, initialData, callback } = route.params;

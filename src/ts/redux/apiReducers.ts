@@ -21,6 +21,7 @@ import {
   GroupTemplate,
   EventVerificationPreload,
   ArticleVerificationPreload,
+  GroupVerification,
 } from '../api';
 import {
   ArticleRequestState,
@@ -273,9 +274,9 @@ export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
-  data: (Group | GroupPreload)[];
+  data: GroupPreload[];
   search: GroupPreload[];
-  item: Group | null;
+  item: Group | GroupVerification | null;
   verification: (Group | GroupPreload)[];
   state: GroupRequestState;
   templates: GroupTemplate[];

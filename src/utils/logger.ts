@@ -62,7 +62,7 @@ class Logger {
   http({ status, method, endpoint, params, data, sent = false }: HTTPLog) {
     if (this.shouldLog('http')) {
       let logEntry = `[request] ${method.toUpperCase()} `;
-      if (sent) logEntry += `${status || 'ERROR'} `;
+      if (sent) logEntry += `${status || '-'} `;
       else logEntry += 'sent ';
       logEntry += `to ${endpoint} `;
       if (params) logEntry += `with params ${logObj(params)} `;

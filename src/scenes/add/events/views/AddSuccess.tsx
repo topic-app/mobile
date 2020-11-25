@@ -1,21 +1,23 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, Card } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { State, EventRequestState, Account } from '@ts/types';
 import { Illustration, EventCard, ErrorMessage } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { eventVerificationApprove } from '@redux/actions/apiActions/events';
+import getStyles from '@styles/Styles';
+import { State, EventRequestState, Account } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { EventAddStackParams } from '../index';
+import type { EventAddScreenNavigationProp, EventAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-type EventAddSuccessProps = StackScreenProps<EventAddStackParams, 'Success'> & {
+type EventAddSuccessProps = {
+  navigation: EventAddScreenNavigationProp<'Success'>;
+  route: RouteProp<EventAddStackParams, 'Success'>;
   reqState: EventRequestState;
   account: Account;
 };

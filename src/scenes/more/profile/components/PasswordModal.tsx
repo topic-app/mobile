@@ -1,16 +1,17 @@
 import React from 'react';
-import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { View, Platform, TextInput, Alert } from 'react-native';
+import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State } from '@ts/types';
 import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updatePassword } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
+import { updatePassword } from '@redux/actions/data/profile';
+import getStyles from '@styles/Styles';
+import { ModalProps, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
+
 // import LocalAuthentication from 'rn-local-authentication';
 
 type PasswordModalProps = ModalProps & {
@@ -23,7 +24,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
   const profileStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  const passwordInput = React.useRef(null);
+  const passwordInput = React.useRef<TextInput>(null);
 
   const [passwordValidation, setValidation] = React.useState({
     valid: false,
@@ -32,9 +33,10 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
   });
 
   function validatePasswordInput(password: string) {
-    let validation: { valid: boolean; error: any; message?: string } = {
+    let validation: { valid: boolean; error: any; message: string } = {
       valid: false,
       error: false,
+      message: '',
     };
 
     if (password !== '') {
@@ -52,7 +54,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
             'Le mot de passe doit contenir au moins un chiffre, une minuscule et une majuscule',
         };
       } else {
-        validation = { valid: true, error: false };
+        validation = { valid: true, error: false, message: '' };
       }
     }
 
@@ -86,54 +88,56 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      {state.updateProfile.loading && <ProgressBar indeterminate />}
-      {state.updateProfile.error && (
-        <ErrorMessage
-          type="axios"
-          strings={{
-            what: 'la modification du compte',
-            contentSingular: 'Le compte',
-          }}
-          error={state.updateProfile.error}
-          retry={update}
-        />
-      )}
       <View>
-        <View style={profileStyles.inputContainer}>
-          <TextInput
-            ref={passwordInput}
-            autoFocus
-            disableFullscreenUI
-            autoCorrect={false}
-            secureTextEntry
-            textContentType="password"
-            autoCompleteType="password"
-            placeholder="Nouveau mot de passe"
-            placeholderTextColor={colors.disabled}
-            style={profileStyles.borderlessInput}
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              preValidatePasswordInput(text);
+        {state.updateProfile.loading && <ProgressBar indeterminate />}
+        {state.updateProfile.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la modification du compte',
+              contentSingular: 'Le compte',
             }}
-            onSubmitEditing={update}
+            error={state.updateProfile.error}
+            retry={update}
           />
-          <CollapsibleView collapsed={!passwordValidation.error}>
-            <HelperText type="error" visible>
-              {passwordValidation.message}
-            </HelperText>
-          </CollapsibleView>
-        </View>
-        <Divider />
-        <View style={styles.contentContainer}>
-          <Button
-            mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-            color={colors.primary}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={update}
-          >
-            Confirmer
-          </Button>
+        )}
+        <View>
+          <View style={profileStyles.inputContainer}>
+            <TextInput
+              ref={passwordInput}
+              autoFocus
+              disableFullscreenUI
+              autoCorrect={false}
+              secureTextEntry
+              textContentType="password"
+              autoCompleteType="password"
+              placeholder="Nouveau mot de passe"
+              placeholderTextColor={colors.disabled}
+              style={profileStyles.borderlessInput}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                preValidatePasswordInput(text);
+              }}
+              onSubmitEditing={update}
+            />
+            <CollapsibleView collapsed={!passwordValidation.error}>
+              <HelperText type="error" visible>
+                {passwordValidation.message}
+              </HelperText>
+            </CollapsibleView>
+          </View>
+          <Divider />
+          <View style={styles.contentContainer}>
+            <Button
+              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+              color={colors.primary}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={update}
+            >
+              Confirmer
+            </Button>
+          </View>
         </View>
       </View>
     </Modal>

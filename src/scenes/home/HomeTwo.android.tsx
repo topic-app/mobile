@@ -1,12 +1,17 @@
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { CompositeNavigationProp } from '@react-navigation/core';
+import {
+  createMaterialBottomTabNavigator,
+  MaterialBottomTabNavigationProp,
+} from '@react-navigation/material-bottom-tabs';
 import React from 'react';
 import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import config from '@constants/config';
+import { Config } from '@constants/index';
 import getNavigatorStyles from '@styles/NavStyles';
 import { useTheme, useSafeAreaInsets } from '@utils/index';
 
+import { HomeOneScreenNavigationProp } from './HomeOne';
 import ArticleDualList from './articles/views/Dual';
 import ArticleList from './articles/views/List';
 import EventDualList from './events/views/Dual';
@@ -16,11 +21,16 @@ import ExplorerList from './explorer/views/List';
 // import PetitionList from './petitions/views/List';
 
 export type HomeTwoNavParams = {
-  Article: { initialList: string } | undefined;
+  Article: { initialList?: string };
   Event: undefined;
   Petition: undefined;
   Explorer: undefined;
 };
+
+export type HomeTwoScreenNavigationProp<K extends keyof HomeTwoNavParams> = CompositeNavigationProp<
+  MaterialBottomTabNavigationProp<HomeTwoNavParams, K>,
+  HomeOneScreenNavigationProp<'Home2'>
+>;
 
 const Tab = createMaterialBottomTabNavigator<HomeTwoNavParams>();
 
@@ -73,12 +83,12 @@ function HomeTwoNavigator() {
     >
       <Tab.Screen
         name="Article"
-        component={deviceWidth > config.layout.dualMinWidth ? ArticleDualList : ArticleList}
+        component={deviceWidth > Config.layout.dualMinWidth ? ArticleDualList : ArticleList}
         options={{ title: 'Actus' }}
       />
       <Tab.Screen
         name="Event"
-        component={deviceWidth > config.layout.dualMinWidth ? EventDualList : EventList}
+        component={deviceWidth > Config.layout.dualMinWidth ? EventDualList : EventList}
         options={{ title: 'Evènements' }}
       />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}

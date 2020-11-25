@@ -1,6 +1,5 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { View, Platform, ScrollView, Alert, Linking, BackHandler } from 'react-native';
+import { View, Platform, ScrollView } from 'react-native';
 import { Text, Button, List, Divider, DarkTheme } from 'react-native-paper';
 import shortid from 'shortid';
 
@@ -8,7 +7,7 @@ import { Illustration, TranslucentStatusBar, PlatformTouchable } from '@componen
 import { updateDepartments } from '@redux/actions/api/departments';
 import { useTheme } from '@utils/index';
 
-import type { LandingStackParams } from '../index';
+import type { LandingScreenNavigationProp } from '../index';
 import getLandingStyles from '../styles/Styles';
 
 const items = [
@@ -54,7 +53,7 @@ const items = [
 ];
 
 type LandingWelcomeProps = {
-  navigation: StackNavigationProp<LandingStackParams, 'Welcome'>;
+  navigation: LandingScreenNavigationProp<'Welcome'>;
 };
 
 const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {

@@ -1,14 +1,14 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, ReduxLocation } from '@ts/types';
 import LocationSelectPage from '@components/LocationSelectPage';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateArticleParams } from '@redux/actions/contentData/articles';
+import { State, ReduxLocation } from '@ts/types';
 
-import type { ArticleConfigureStackParams } from '../index';
+import type { ArticleParamsScreenNavigationProp, ArticleParamsStackParams } from '../index';
 
 function done(
   { schools, departments, global }: ReduxLocation,
@@ -29,7 +29,9 @@ function done(
   });
 }
 
-type ArticleEditParamsProps = StackScreenProps<ArticleConfigureStackParams, 'EditParams'> & {
+type ArticleEditParamsProps = {
+  navigation: ArticleParamsScreenNavigationProp<'EditParams'>;
+  route: RouteProp<ArticleParamsStackParams, 'EditParams'>;
   articleParams: ReduxLocation;
 };
 

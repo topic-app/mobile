@@ -1,13 +1,15 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { ArticleCreationData, ReduxLocation } from '@ts/redux';
 import { HeaderConfig } from '@components/Header';
-import { createNativeStackNavigator } from '@utils/stack';
+import { ArticleCreationData, ReduxLocation } from '@ts/redux';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
+import { AddScreenNavigationProp } from '..';
 import ArticleAdd from './views/Add';
-import ArticleAddSuccess from './views/AddSuccess';
-import ArticleAddLocation from './views/AddLocation';
 import ArticleAddContent from './views/AddContent';
+import ArticleAddLocation from './views/AddLocation';
+import ArticleAddSuccess from './views/AddSuccess';
 
 export type ArticleAddStackParams = {
   Add: undefined;
@@ -23,6 +25,13 @@ export type ArticleAddStackParams = {
     callback: (location: ReduxLocation) => any;
   };
 };
+
+export type ArticleAddScreenNavigationProp<
+  K extends keyof ArticleAddStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<ArticleAddStackParams, K>,
+  AddScreenNavigationProp<'Article'>
+>;
 
 const Stack = createNativeStackNavigator<ArticleAddStackParams>();
 

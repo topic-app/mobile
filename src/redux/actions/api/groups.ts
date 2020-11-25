@@ -1,5 +1,4 @@
 import Store from '@redux/store';
-import { Group } from '@ts/types';
 import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_TEMPLATES,
@@ -8,7 +7,10 @@ import {
   UPDATE_GROUPS_VERIFICATION,
   UPDATE_GROUPS_STATE,
   CLEAR_GROUPS,
+  AppThunk,
 } from '@ts/redux';
+import { Group, GroupTemplate } from '@ts/types';
+import { request, logger } from '@utils/index';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -135,21 +137,62 @@ function clearGroups(data = true, search = true, templates = true) {
  * Récupère les templates de création de groupe
  * @param next Si il faut récupérer les groups après le dernier
  */
+function updateGroupTemplatesCreator(): AppThunk {
+  return (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        templates: {
+          loading: { initial: true },
+          success: null,
+          error: null,
+        },
+      },
+    });
+    request('groups/templates/list', 'get', {}, true)
+      .then((result) => {
+        const data: GroupTemplate[] = result.data?.templates;
+        dispatch({
+          type: UPDATE_GROUPS_TEMPLATES,
+          data,
+        });
+        return dispatch({
+          type: UPDATE_GROUPS_STATE,
+          data: {
+            templates: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: true,
+              error: null,
+            },
+          },
+        });
+      })
+      .catch((error) => {
+        logger.error(error);
+        return dispatch({
+          type: UPDATE_GROUPS_STATE,
+          data: {
+            templates: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
+            },
+          },
+        });
+      });
+  };
+}
+
 async function updateGroupTemplates() {
-  await Store.dispatch(
-    updateCreator({
-      update: UPDATE_GROUPS_TEMPLATES,
-      stateUpdate: UPDATE_GROUPS_STATE,
-      url: 'groups/templates/list',
-      sort: nameAscSort,
-      stateName: 'templates',
-      listName: 'data',
-      dataType: 'groups', // This is useless but typescript
-      type: 'initial',
-      params: {},
-      clear: true,
-    }),
-  );
+  await Store.dispatch(updateGroupTemplatesCreator());
 }
 
 export {

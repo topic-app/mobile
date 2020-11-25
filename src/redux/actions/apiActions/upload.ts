@@ -177,7 +177,7 @@ function uploadCreator(
   };
 }
 
-function upload(groupId: string) {
+async function upload(groupId: string) {
   return Store.dispatch(uploadCreator(groupId));
 }
 

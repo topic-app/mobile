@@ -5,7 +5,7 @@ import { View, Dimensions } from 'react-native';
 import { Card, Paragraph, Text, Title, Caption } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ArticlePreload, ArticleVerificationPreload, State, Preferences } from '@ts/types';
+import { ArticlePreload, ArticleVerificationPreload, State, Preferences, Article } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import { CardBase } from '../Cards';
@@ -14,7 +14,7 @@ import TagList from '../TagList';
 
 type ArticleCardProps = {
   verification?: boolean;
-  article: ArticleVerificationPreload | ArticlePreload;
+  article: ArticleVerificationPreload | ArticlePreload | Article;
   navigate: StackNavigationProp<any, any>['navigate'];
   unread?: boolean;
   preferences: Preferences;
@@ -34,7 +34,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   const theme = useTheme();
   const { colors } = theme;
 
-  const [cardWidth, setCardWidth] = React.useState(100);
+  const [cardWidth, setCardWidth] = React.useState(600);
   const imageSize = cardWidth / 3.5;
 
   if (!article)

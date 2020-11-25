@@ -1,8 +1,8 @@
+import color from 'color';
 import React from 'react';
 import { View, ViewStyle, TextStyle, ImageStyle, StyleProp } from 'react-native';
-import { Avatar as PaperAvatar, Text } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
-import color from 'color';
+import { Avatar as PaperAvatar, Text } from 'react-native-paper';
 
 import { Avatar as AvatarType } from '@ts/types';
 import { useTheme } from '@utils/index';

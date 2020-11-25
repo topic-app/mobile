@@ -1,10 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
 import { View, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { connect } from 'react-redux';
 
+import {
+  TranslucentStatusBar,
+  StepperView,
+  PlatformBackButton,
+  SafeAreaView,
+} from '@components/index';
+import getStyles from '@styles/Styles';
 import {
   State,
   ArticleRequestState,
@@ -12,24 +17,17 @@ import {
   GroupTemplate,
   GroupRequestState,
 } from '@ts/types';
-import {
-  TranslucentStatusBar,
-  StepperView,
-  PlatformBackButton,
-  SafeAreaView,
-} from '@components/index';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 
-import type { GroupAddStackParams } from '../index';
-import getArticleStyles from '../styles/Styles';
-import GroupAddPageTemplate from '../components/AddTemplate';
 import GroupAddPageLocation from '../components/AddLocation';
 import GroupAddPageMeta from '../components/AddMeta';
 import GroupAddPageProof from '../components/AddProof';
+import GroupAddPageTemplate from '../components/AddTemplate';
+import type { GroupAddScreenNavigationProp } from '../index';
+import getArticleStyles from '../styles/Styles';
 
 type Props = {
-  navigation: StackNavigationProp<GroupAddStackParams, 'Add'>;
+  navigation: GroupAddScreenNavigationProp<'Add'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
   templates: GroupTemplate[];

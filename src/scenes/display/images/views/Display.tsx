@@ -1,3 +1,4 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Dimensions, ScrollView } from 'react-native';
 
@@ -6,7 +7,14 @@ import getStyles from '@styles/Styles';
 import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl } from '@utils/index';
 
-function ImageDisplay({ navigation, route }) {
+import { ImageDisplayScreenNavigationProp, ImageDisplayStackParams } from '../index';
+
+type ImageDisplayProps = {
+  navigation: ImageDisplayScreenNavigationProp<'Display'>;
+  route: RouteProp<ImageDisplayStackParams, 'Display'>;
+};
+
+const ImageDisplay: React.FC<ImageDisplayProps> = ({ navigation, route }) => {
   const { image } = route.params;
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -32,6 +40,6 @@ function ImageDisplay({ navigation, route }) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 export default ImageDisplay;

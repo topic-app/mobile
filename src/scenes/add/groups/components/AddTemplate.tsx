@@ -51,8 +51,8 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
               color={colors.primary}
             />
             <Text style={{ color: colors.text, flex: 1 }}>
-              Assurez vous que vous avez bien l'autorisation de créer ce groupe. Nous pourrons vous
-              demander des preuves d'autorité ci nécéssaire.
+              Assurez vous que vous avez bien l&apos;autorisation de créer ce groupe. Nous pourrons
+              vous demander des preuves d&apos;autorité ci nécéssaire.
             </Text>
           </View>
         </Card>
@@ -62,7 +62,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
       ) : (
         <View style={{ height: 4 }} />
       )}
-      {state.templates?.success === false && (
+      {state.templates?.error && (
         <ErrorMessage
           error={state.templates?.error}
           strings={{
@@ -120,14 +120,6 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
         </HelperText>
       </View>
       <View style={groupStyles.buttonContainer}>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={prev}
-          style={{ flex: 1, marginRight: 5 }}
-        >
-          Retour
-        </Button>
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}

@@ -1,10 +1,13 @@
 type RequestStateBase = {
   success: boolean | null;
-  error: null | {
-    value: string;
-    message: string;
-    extraMessage: string;
-  };
+  error:
+    | null
+    | boolean
+    | {
+        value: string;
+        message: string;
+        extraMessage: string;
+      };
 };
 
 export type RequestState = RequestStateBase & {

@@ -1,10 +1,13 @@
+import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { ProgressBar, Text, Divider } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { ErrorMessage, InlineCard, Illustration } from '@components/index';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import getStyles from '@styles/Styles';
 import {
   ArticleParams,
   Department,
@@ -13,15 +16,12 @@ import {
   SchoolRequestState,
   State,
 } from '@ts/types';
-import { ErrorMessage, InlineCard, Illustration } from '@components/index';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { ArticleConfigureStackParams } from '..';
+
+import { ArticleParamsScreenNavigationProp } from '../index';
 
 type ArticleParamsProps = {
-  navigation: StackNavigationProp<ArticleConfigureStackParams, 'Params'>;
+  navigation: ArticleParamsScreenNavigationProp<'Params'>;
   params: ArticleParams;
   schools: School[];
   departments: Department[];
@@ -58,7 +58,16 @@ const ArticleParamsScreen: React.FC<ArticleParamsProps> = ({
     <View style={styles.page}>
       {states.some((s) => s.loading) && <ProgressBar indeterminate />}
       {states.some((s) => s.error) && (
-        <ErrorMessage type="axios" error={states.map((s) => s.error)} retry={fetch} />
+        <ErrorMessage
+          type="axios"
+          error={states.map((s) => s.error)}
+          retry={fetch}
+          strings={{
+            what: 'la récupération des localisations',
+            contentSingular: 'La liste de localisations',
+            contentPlural: 'Les localisations',
+          }}
+        />
       )}
       <ScrollView>
         <View style={styles.centerIllustrationContainer}>

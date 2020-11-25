@@ -1,20 +1,19 @@
+import ViewPager from '@react-native-community/viewpager';
 import React from 'react';
 import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
-import ViewPager from '@react-native-community/viewpager';
 
-import { PetitionRequestState, State } from '@ts/types';
-import { updateState } from '@redux/actions/data/account';
 import StepperView from '@components/StepperView';
+import { updateState } from '@redux/actions/data/account';
+import { PetitionRequestState, State } from '@ts/types';
 
-import type { PetitionAddStackParams } from '../index';
-import PetitionAddPageGeneral from '../components/AddGeneral';
-import PetitionAddPageLocation from '../components/AddLocation';
-import PetitionAddPageGoals from '../components/AddGoals';
 import PetitionAddPageDescription from '../components/AddDescription';
+import PetitionAddPageGeneral from '../components/AddGeneral';
+import PetitionAddPageGoals from '../components/AddGoals';
+import PetitionAddPageLocation from '../components/AddLocation';
+import type { PetitionAddScreenNavigationProp } from '../index';
 
 type PetitionAddProps = {
-  navigation: StackNavigationProp<PetitionAddStackParams, 'Add'>;
+  navigation: PetitionAddScreenNavigationProp<'Add'>;
   reqState: PetitionRequestState;
   // TODO: Define PetitionCreationData
   creationData: PetitionCreationData;

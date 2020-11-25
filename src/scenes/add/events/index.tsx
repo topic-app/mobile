@@ -1,11 +1,13 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
 import { EventCreationData, ReduxLocation } from '@ts/types';
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
+import { AddScreenNavigationProp } from '../index';
 import EventAdd from './views/Add';
-import EventAddSuccess from './views/AddSuccess';
 import EventAddLocation from './views/AddLocation';
+import EventAddSuccess from './views/AddSuccess';
 
 export type EventAddStackParams = {
   Add: undefined;
@@ -17,6 +19,13 @@ export type EventAddStackParams = {
     callback: (location: ReduxLocation) => any;
   };
 };
+
+export type EventAddScreenNavigationProp<
+  K extends keyof EventAddStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<EventAddStackParams, K>,
+  AddScreenNavigationProp<'Event'>
+>;
 
 const Stack = createNativeStackNavigator<EventAddStackParams>();
 
