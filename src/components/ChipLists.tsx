@@ -1,18 +1,12 @@
+import color from 'color';
 import React from 'react';
-import {
-  View,
-  Platform,
-  Animated,
-  FlatList,
-  ViewStyle,
-  StyleProp,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Platform, Animated, FlatList, ViewStyle, StyleProp } from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import color from 'color';
 
 import { useTheme } from '@utils/index';
+
+import { PlatformTouchable } from './PlatformComponents';
 
 type ChipBaseProps = {
   icon?: string;
@@ -36,7 +30,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
 
   const handlePressIn = () => {
     Animated.timing(elevation, {
-      toValue: 4,
+      toValue: 3,
       duration: 200,
       useNativeDriver: false,
     }).start();
@@ -71,11 +65,12 @@ const ChipBase: React.FC<ChipBaseProps> = ({
         containerStyle,
       ]}
     >
-      <TouchableOpacity
+      <PlatformTouchable
         disabled={!onPress || rightAction}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        activeOpacity={0.7}
       >
         <View
           style={{
@@ -99,7 +94,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             />
           )}
         </View>
-      </TouchableOpacity>
+      </PlatformTouchable>
     </Animated.View>
   );
 };

@@ -6,8 +6,6 @@ import { logger } from '@utils/index';
 
 export type BottomSheetRef = ReanimatedBottomSheet;
 
-type SnapPointsArray = (number | string)[];
-
 // Get prop types of ReanimatedBottomSheet, remove the snapPoints prop
 // and make all other props optional
 type ReanimatedBottomSheetProps = Partial<
@@ -16,17 +14,17 @@ type ReanimatedBottomSheetProps = Partial<
 
 type BottomSheetProps = ReanimatedBottomSheetProps & {
   /**
-   * Array of numbers between 0 and 1 indicating where the
-   * bottom modal should snap to, should be of same length
-   * as landscapeSnapPoints.
+   * Array of snap points to display in portrait mode,
+   * which can either be a number or a percentage.
+   * e.g. [40, '55%']
    */
-  portraitSnapPoints: number[];
+  portraitSnapPoints: (string | number)[];
   /**
-   * Array of numbers between 0 and 1 indicating where the
-   * bottom modal should snap to, should be of same length
-   * as landscapeSnapPoints.
+   * Array of snap points to display in landscape mode,
+   * which can either be a number or a percentage.
+   * e.g. [40, '55%']
    */
-  landscapeSnapPoints: number[];
+  landscapeSnapPoints: (string | number)[];
 };
 
 const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
@@ -44,9 +42,12 @@ const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
     }
 
     const { height, width } = useDimensions().window;
-    const snapPoints = (height > width ? portraitSP : landscapeSP).map(
-      (snapPoint) => snapPoint * height,
-    );
+    const snapPoints = (height > width ? portraitSP : landscapeSP).map((snapPoint) => {
+      if (typeof snapPoint === 'string') {
+        return parseFloat(snapPoint) * 0.01 * height;
+      }
+      return snapPoint;
+    });
 
     return (
       <ReanimatedBottomSheet

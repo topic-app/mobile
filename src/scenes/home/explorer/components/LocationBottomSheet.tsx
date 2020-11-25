@@ -2,18 +2,12 @@ import { useDimensions } from '@react-native-community/hooks';
 import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-  Platform,
-  Dimensions,
-} from 'react-native';
-import { Button, Divider, Text, Card, Title, Subheading } from 'react-native-paper';
+import { View, Image, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
+import { Divider, Text, Card, Title, Subheading } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import shortid from 'shortid';
 
-import { TabChipList } from '@root/src/components';
+import { CollapsibleView, InlineCard, TabChipList } from '@components/index';
 import places from '@src/data/explorerListData.json';
 import getStyles from '@styles/Styles';
 import { ExplorerLocation } from '@ts/types';
@@ -23,37 +17,6 @@ import getExplorerStyles from '../styles/Styles';
 import { markerColors } from '../utils/getAsset';
 import { getStrings } from '../utils/getStrings';
 import type { MapMarkerDataType } from '../views/Map';
-
-function genTagDecoration(type) {
-  if (type === 'school') {
-    return {
-      icon: 'school',
-      color: markerColors.purple,
-    };
-  }
-  if (type === 'museum') {
-    return {
-      icon: 'bank',
-      color: markerColors.red,
-    };
-  }
-  if (type === 'event') {
-    return {
-      icon: 'calendar',
-      color: markerColors.green,
-    };
-  }
-  if (type === 'secret') {
-    return {
-      icon: 'egg-easter',
-      color: markerColors.secret,
-    };
-  }
-  return {
-    icon: 'map-marker',
-    color: markerColors.red,
-  };
-}
 
 function LocationEvent({ title, summary, imageUrl, date }) {
   const styles = getStyles(useTheme());
@@ -103,15 +66,31 @@ function renderExtraLocationData(place: ExplorerLocation.Location) {
   return null;
 }
 
-type LocationModalProps = {
+type LocationBottomSheetProps = {
   mapMarkerData: MapMarkerDataType;
+  openBottomSheet: () => void;
+  closeBottomSheet: () => void;
 };
 
-const LocationModal: React.FC<LocationModalProps> = ({ mapMarkerData }) => {
+const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
+  mapMarkerData,
+  openBottomSheet,
+  closeBottomSheet,
+}) => {
   const theme = useTheme();
   const place = places.find((t) => t.data._id === mapMarkerData.id) as ExplorerLocation.Location;
 
   const minHeight = useDimensions().window.height - 54;
+  const tabs = [
+    { key: 'info', title: 'Information', icon: 'information' },
+    { key: 'articles', title: 'Articles', icon: 'newspaper' },
+    { key: 'events', title: 'Évènements', icon: 'calendar' },
+  ];
+  const [selectedTab, setSelectedTab] = React.useState('info');
+
+  const styles = getStyles(theme);
+  const explorerStyles = getExplorerStyles(theme);
+
   if (!place) {
     return (
       <View style={{ flex: 1 }}>
@@ -120,10 +99,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ mapMarkerData }) => {
     );
   }
 
-  const styles = getStyles(theme);
-  const explorerStyles = getExplorerStyles(theme);
-
-  const { icon, title, subtitle, description, detail } = getStrings(place);
+  const { icon, title, subtitle, description, detail, addresses } = getStrings(place);
 
   return (
     <View style={[explorerStyles.modalContainer, { minHeight }]}>
@@ -144,33 +120,41 @@ const LocationModal: React.FC<LocationModalProps> = ({ mapMarkerData }) => {
             </Subheading>
           </View>
           <View style={{ justifyContent: 'center' }}>
-            <Icon name={icon} style={[explorerStyles.modalIcon]} />
+            <Icon name={icon} style={explorerStyles.modalIcon} />
           </View>
         </View>
-        {/* <TabChipList
-          sections={{
+        <TabChipList
+          sections={[{ key: 'tabs', data: tabs }]}
+          selected={selectedTab}
+          setSelected={(tab) => {
+            openBottomSheet();
+            setSelectedTab(tab);
           }}
-          selected={chipTab}
-          setSelected={changeList}
-          configure={() =>
-            navigation.navigate('Main', {
-              screen: 'Configure',
-              params: {
-                screen: 'Article',
-              },
-            })
-          }
-        /> */}
-
-        <Text style={explorerStyles.modalText} numberOfLines={4} ellipsizeMode="tail">
-          {description}
-        </Text>
-
-        <Divider style={styles.divider} />
+        />
       </View>
-      {renderExtraLocationData(place)}
+      <CollapsibleView collapsed={selectedTab !== 'info'}>
+        <View>
+          <Divider />
+          {addresses.map((address) => (
+            <View key={shortid()}>
+              <InlineCard
+                icon="map-marker-outline"
+                title={address}
+                onPress={() => logger.verbose('Pressed location address')}
+                compact
+              />
+              <Divider />
+            </View>
+          ))}
+          <InlineCard
+            title={description}
+            onPress={() => logger.verbose('Pressed location description')}
+          />
+        </View>
+      </CollapsibleView>
+      {/* {renderExtraLocationData(place)} */}
     </View>
   );
 };
 
-export default LocationModal;
+export default LocationBottomSheet;

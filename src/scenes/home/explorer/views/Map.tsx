@@ -2,7 +2,7 @@ import MapboxGL, { OnPressEvent } from '@react-native-mapbox-gl/maps';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React from 'react';
-import { View, Linking, Platform, Dimensions } from 'react-native';
+import { View, Linking, Platform } from 'react-native';
 import { Text, FAB, IconButton } from 'react-native-paper';
 
 import { BottomSheet, BottomSheetRef } from '@components/index';
@@ -10,7 +10,7 @@ import getStyles from '@styles/Styles';
 import { ExplorerLocation } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
-import LocationModal from '../components/LocationModal';
+import LocationBottomSheet from '../components/LocationBottomSheet';
 import getExplorerStyles from '../styles/Styles';
 import { buildFeatureCollections } from '../utils/featureCollection';
 import { markerImages } from '../utils/getAsset';
@@ -37,8 +37,8 @@ type ExplorerMapProps = {
   navigation: StackNavigationProp<any, any>;
 };
 
-const bottomSheetPortraitSnapPoints = [0, 0.25, 1];
-const bottomSheetLandscapeSnapPoints = [0, 0.45, 1];
+const bottomSheetPortraitSnapPoints = [0, 210, '100%'];
+const bottomSheetLandscapeSnapPoints = [0, 210, '100%'];
 
 const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, navigation }) => {
   const cameraRef = React.createRef<MapboxGL.Camera>();
@@ -77,6 +77,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
   }, []);
 
   const onMarkerPress = ({ features }: OnPressEvent) => {
+    logger.verbose('explorer/Map: Pressed on marker');
     const feature = features[0];
     const { coordinates } = feature.geometry;
     cameraRef.current?.moveTo(coordinates, 100);
@@ -85,7 +86,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
       type: feature.properties.type,
       name: feature.properties.name,
     });
-    openBottomSheet();
+    partialOpenBottomSheet();
   };
 
   const requestUserLocation = async () => {
@@ -109,6 +110,10 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
   };
 
   const openBottomSheet = () => {
+    bottomSheetRef.current?.snapTo(bottomSheetPortraitSnapPoints.length - 1);
+  };
+
+  const partialOpenBottomSheet = () => {
     bottomSheetRef.current?.snapTo(bottomSheetPortraitSnapPoints.length - 2);
   };
 
@@ -140,6 +145,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
         compassViewMargins={{
           // Note: Mapbox API and TypeScript both say this should be a
           // GeoJSON point but changing this to a point will crash the app
+          // @ts-expect-error
           x: 10,
           y: insets.top * 1.5 + 10,
         }}
@@ -251,7 +257,13 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
         ref={bottomSheetRef}
         portraitSnapPoints={bottomSheetPortraitSnapPoints}
         landscapeSnapPoints={bottomSheetLandscapeSnapPoints}
-        renderContent={() => <LocationModal mapMarkerData={data} />}
+        renderContent={() => (
+          <LocationBottomSheet
+            openBottomSheet={openBottomSheet}
+            closeBottomSheet={closeBottomSheet}
+            mapMarkerData={data}
+          />
+        )}
       />
     </View>
   );

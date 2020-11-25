@@ -3,9 +3,9 @@ import { View, ViewStyle, StyleProp } from 'react-native';
 import { Text, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import getStyles from '@styles/Styles';
 import { Avatar as AvatarType } from '@ts/types';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 
 import Avatar from './Avatar';
 import { PlatformTouchable } from './PlatformComponents';
@@ -19,6 +19,8 @@ type InlineCardProps = {
   icon?: string;
   imageUrl?: string;
   avatar?: AvatarType;
+  style?: StyleProp<ViewStyle>;
+  compact?: boolean;
 };
 
 const InlineCard: React.FC<InlineCardProps> = ({
@@ -30,26 +32,36 @@ const InlineCard: React.FC<InlineCardProps> = ({
   icon,
   imageUrl,
   avatar,
+  style,
+  compact,
 }) => {
   const { colors } = useTheme();
 
+  let IconElement: React.FC | null = null;
+  if (compact && icon) {
+    IconElement = () => <Icon name={icon} size={25} color={colors.icon} />;
+  } else if (icon || imageUrl || avatar) {
+    IconElement = () => <Avatar size={50} imageUrl={imageUrl} icon={icon} avatar={avatar} />;
+  }
+
   const cardContents = (
     <View
-      style={{
-        paddingHorizontal: 12,
-        paddingVertical: 10,
-        flexDirection: 'row',
-        minHeight: 40,
-      }}
+      style={[
+        {
+          paddingHorizontal: 12,
+          paddingVertical: compact ? 12 : 10,
+          flexDirection: 'row',
+          minHeight: compact ? 20 : 40,
+        },
+        style,
+      ]}
     >
-      {icon || imageUrl || avatar ? (
-        <Avatar size={50} imageUrl={imageUrl} icon={icon} avatar={avatar} />
-      ) : null}
-      <View style={{ paddingLeft: 15, alignSelf: 'center' }}>
+      {IconElement ? <IconElement /> : null}
+      <View style={{ paddingLeft: IconElement ? 15 : 0, alignSelf: 'center', flex: 1 }}>
         <Text style={{ fontSize: 16 }}>
           {title}
           {'  '}
-          {badge && <Icon color={badgeColor || colors.icon} name={badge} size={16} />}
+          {badge && <Icon color={badgeColor ?? colors.icon} name={badge} size={16} />}
         </Text>
         {subtitle ? <Text style={{ color: colors.subtext }}>{subtitle}</Text> : null}
       </View>

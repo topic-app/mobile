@@ -47,7 +47,7 @@ function getAssetName(placeType: ExplorerLocation.LocationTypes, markerType: 'ci
     default:
       color = 'Red';
   }
-  return markerType === 'circle' ? `circle${color}` : `pin${color}`;
+  return `${markerType}${color}`;
 }
 
 export { markerImages, markerColors, getAssetName };

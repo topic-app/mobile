@@ -1,12 +1,14 @@
 import _ from 'lodash';
 
 import { ExplorerLocation } from '@ts/types';
+import { Format } from '@utils/index';
 
 type LocationStrings = {
   icon: string;
   title: string;
   subtitle?: string;
   description: string;
+  addresses: string[];
   detail?: string;
 };
 
@@ -39,45 +41,41 @@ export function getStrings(place: ExplorerLocation.Location): LocationStrings {
     icon: '',
     title: '',
     description: '',
+    addresses: [],
   };
 
   switch (place.type) {
     case 'event':
-      strings.icon = 'calendar';
+      strings.icon = 'calendar-outline';
       strings.title = place.data.title;
       strings.description = place.data.summary;
-      strings.detail = 'Dans X Heures';
+      strings.detail = Format.shortEventDate(place.data.duration);
+      strings.addresses = place.data.places.map((p) => {
+        if (p.type === 'standalone') {
+          return Format.shortAddress(p.address);
+        }
+        // Si le serveur envoie les bonnes données, on devrait jamais
+        // atteindre ce cas
+        return 'Évènement attaché à un lieu ou une école';
+      });
       break;
     case 'place':
-      strings.icon = 'map-marker';
+      strings.icon = 'map-marker-outline';
       strings.title = place.data.name || place.data.displayName;
       strings.description = place.data.summary;
-      strings.detail = formatTypes(
-        place.data.types,
-        ['club', 'cultural', 'history', 'tourism', 'other'],
-        {
-          club: 'club',
-          cultural: 'culturel',
-          history: 'historique',
-          tourism: 'touristique',
-          other: 'autre',
-        },
-      );
+      strings.detail = Format.placeTypes(place.data.types);
+      strings.addresses = [Format.shortAddress(place.data.address)];
       break;
     case 'school':
       strings.icon = 'school';
       strings.title = place.data.name || place.data.displayName;
       strings.subtitle = place.data.shortName;
-      strings.detail = formatTypes(place.data.types, ['college', 'lycee', 'prepa', 'other'], {
-        college: 'collège',
-        lycee: 'lycée',
-        prepa: 'prépa',
-        other: 'autre',
-      });
+      strings.detail = Format.schoolTypes(place.data.types);
+      strings.addresses = [Format.shortAddress(place.data.address)];
       break;
     case 'secret':
       strings.icon = 'egg-easter';
-      strings.title = place.data.name;
+      strings.title = place.data.name || place.data.displayName;
       strings.description = place.data.summary;
       strings.detail = formatTypes(
         place.data.types,
@@ -90,6 +88,7 @@ export function getStrings(place: ExplorerLocation.Location): LocationStrings {
           other: 'autre',
         },
       );
+      strings.addresses = [Format.shortAddress(place.data.address)];
   }
 
   return strings;
