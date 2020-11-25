@@ -59,7 +59,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   const { colors } = theme;
 
   const [primaryRole, setPrimaryRole] = React.useState<string | null>(
-    modifying ? members?.find((m) => m.user?._id === user?._id)?.role || null : null,
+    modifying ? members.find((m) => m.user._id === user?._id)?.role || null : null,
   );
   const [secondaryRoles, setSecondaryRoles] = React.useState<string[]>(
     modifying ? members?.find((m) => m.user?._id === user?._id)?.secondaryRoles || [] : [],
