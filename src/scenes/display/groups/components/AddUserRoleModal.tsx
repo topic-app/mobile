@@ -27,6 +27,7 @@ import {
   GroupRequestState,
   User,
   GroupMember,
+  AccountState,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
@@ -38,6 +39,7 @@ type AddUserRoleModalProps = ModalProps & {
   group: string;
   next: () => any;
   modifying?: boolean;
+  account: AccountState;
 };
 
 const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
@@ -50,6 +52,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   state,
   next,
   modifying = false,
+  account,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -145,7 +148,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
         )}
         renderItem={({ item, section: { key } }) => {
           const set = () => {
-            if (key === 'primary') {
+            if (key === 'primary' && account.accountInfo?.accountId !== user?._id) {
               setErrorVisible(false);
               setPrimaryRole(item._id);
             } else if (secondaryRoles.includes(item._id)) {
@@ -164,11 +167,13 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                     : null
                 }
                 onPress={set}
+                disabled={key === 'primary' && account.accountInfo?.accountId === user?._id}
                 left={() =>
                   Platform.OS !== 'ios' &&
                   (key === 'primary' ? (
                     <RadioButton
                       value=""
+                      disabled={account.accountInfo?.accountId === user?._id}
                       color={colors.primary}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
@@ -187,6 +192,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                     <RadioButton
                       value=""
                       color={colors.primary}
+                      disabled={account.accountInfo?.accountId === user?._id}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
                     />
@@ -325,8 +331,8 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups } = state;
-  return { state: groups.state };
+  const { groups, account } = state;
+  return { state: groups.state, account };
 };
 
 export default connect(mapStateToProps)(AddUserRoleModal);
