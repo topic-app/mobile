@@ -174,6 +174,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [currentMembers, setCurrentMembers] = React.useState<GroupMember[]>([]);
   const [currentRoles, setCurrentRoles] = React.useState<GroupRole[]>([]);
   const [userToAdd, setUserToAdd] = React.useState<User | UserPreload | null>(null);
+  const [modifying, setModifying] = React.useState(false);
 
   const [isAddSnackbarVisible, setAddSnackbarVisible] = React.useState(false);
 
@@ -409,7 +410,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               <PlatformTouchable onPress={() => setDescriptionVisible(!descriptionVisible)}>
                 <View style={styles.container}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <View style={{ flexGrow: 1 }}>
+                    <View style={{ flex: 1 }}>
                       <Paragraph style={{ color: colors.disabled }}>Groupe {group.type}</Paragraph>
                       <Paragraph numberOfLines={5}>{group.summary}</Paragraph>
                     </View>
@@ -493,32 +494,69 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               {account.loggedIn &&
                 group.members?.some((m) => m.user?._id === account.accountInfo?.accountId) && (
                   <View>
-                    <InlineCard
-                      key="Me"
-                      title={`Moi (@${account.accountInfo?.user?.info?.username})`}
-                      subtitle={`Role ${
-                        group.roles?.find(
-                          (r) =>
-                            r._id ===
-                            group.members?.find(
-                              (m) => m.user?._id === account.accountInfo?.accountId,
-                            )?.role,
-                        )?.name
-                      }`}
-                      badge={
-                        group.roles?.find(
-                          (r) =>
-                            r._id ===
-                            group.members?.find(
-                              (m) => m.user?._id === account.accountInfo?.accountId,
-                            )?.role,
-                        )?.admin
-                          ? 'star'
-                          : undefined
-                      }
-                      badgeColor={colors.solid.gold}
-                      avatar={account.accountInfo?.user?.info?.avatar}
-                    />
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <InlineCard
+                        title={`Moi (@${account.accountInfo?.user?.info?.username})`}
+                        subtitle={`Role ${
+                          group.roles?.find(
+                            (r) =>
+                              r._id ===
+                              group.members?.find(
+                                (m) => m.user?._id === account.accountInfo?.accountId,
+                              )?.role,
+                          )?.name
+                        }${group.roles
+                          ?.filter((r) =>
+                            group.members
+                              ?.find((m) => m.user?._id === account.accountInfo?.accountId)
+                              ?.secondaryRoles?.includes(r._id),
+                          )
+                          ?.map((r) => `, ${r?.name}`)
+                          .join('')}`}
+                        badge={
+                          group.roles?.find(
+                            (r) =>
+                              r._id ===
+                              group.members?.find(
+                                (m) => m.user?._id === account.accountInfo?.accountId,
+                              )?.role,
+                          )?.admin
+                            ? 'star'
+                            : undefined
+                        }
+                        badgeColor={colors.solid.gold}
+                        avatar={account.accountInfo?.user?.info?.avatar}
+                      />
+                      {account.loggedIn &&
+                        account.permissions?.some(
+                          (p) =>
+                            p.permission === 'group.members.modify' &&
+                            (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
+                        ) &&
+                        (state.member_modify?.loading &&
+                        userToAdd?._id === account.accountInfo.accountId ? (
+                          <ActivityIndicator size="large" color={colors.primary} />
+                        ) : (
+                          <IconButton
+                            icon="pencil"
+                            onPress={() => {
+                              setCurrentMembers(group.members || []);
+                              setCurrentRoles(group.roles || []);
+                              setUserToAdd(account.accountInfo.user);
+                              setModifying(true);
+                              setAddUserRoleModalVisible(true);
+                            }}
+                            size={30}
+                            style={{ marginRight: 20 }}
+                          />
+                        ))}
+                    </View>
                     <Divider />
                   </View>
                 )}
@@ -533,13 +571,17 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       alignItems: 'center',
                     }}
                   >
-                    <View style={{ flexGrow: 1 }}>
+                    <View style={{ flex: 1 }}>
                       <InlineCard
                         key={mem._id}
                         title={mem.user?.displayName}
                         subtitle={`${
                           mem.user?.data?.public ? `@${mem.user?.info?.username} - ` : ''
-                        }${group.roles?.find((r) => r._id === mem.role)?.name}`}
+                        }${group.roles?.find((r) => mem.role === r._id)?.name}${group.roles
+                          ?.filter((r) => mem.secondaryRoles?.includes(r._id))
+                          ?.map((r) => `, ${r?.name}`)
+                          .join('')}`}
+                        subtitleNumberOfLines={2}
                         badge={
                           group.roles?.find((r) => r._id === mem.role)?.admin ? 'star' : undefined
                         }
@@ -564,10 +606,32 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     {account.loggedIn &&
                       account.permissions?.some(
                         (p) =>
+                          p.permission === 'group.members.modify' &&
+                          (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
+                      ) &&
+                      (state.member_modify?.loading && userToAdd?._id === mem.user?._id ? (
+                        <ActivityIndicator size="large" color={colors.primary} />
+                      ) : (
+                        <IconButton
+                          icon="pencil"
+                          onPress={() => {
+                            setCurrentMembers(group.members || []);
+                            setCurrentRoles(group.roles || []);
+                            setUserToAdd(mem.user);
+                            setModifying(true);
+                            setAddUserRoleModalVisible(true);
+                          }}
+                          size={30}
+                          style={{ marginRight: 20 }}
+                        />
+                      ))}
+                    {account.loggedIn &&
+                      account.permissions?.some(
+                        (p) =>
                           p.permission === 'group.members.delete' &&
                           (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
                       ) &&
-                      (state.member_delete?.loading ? (
+                      (state.member_delete?.loading && userToAdd?._id === mem.user?._id ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                       ) : (
                         <IconButton
@@ -609,6 +673,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       onPress={() => {
                         setCurrentMembers(group.members || []);
                         setCurrentRoles(group.roles || []);
+                        setModifying(false);
                         setAddUserModalVisible(true);
                       }}
                     >
@@ -703,10 +768,15 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           visible={isAddUserRoleModalVisible}
           setVisible={setAddUserRoleModalVisible}
           roles={currentRoles}
+          members={currentMembers}
           user={userToAdd}
+          modifying={modifying}
+          key={userToAdd?._id || 'none'}
           group={id}
           next={() => {
-            setAddSnackbarVisible(true);
+            if (!modifying) {
+              setAddSnackbarVisible(true);
+            }
           }}
         />
 

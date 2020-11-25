@@ -19,6 +19,8 @@ type InlineCardProps = {
   icon?: string;
   imageUrl?: string;
   avatar?: AvatarType;
+  subtitleNumberOfLines?: number;
+  titleNumberOfLines?: number;
 };
 
 const InlineCard: React.FC<InlineCardProps> = ({
@@ -30,6 +32,8 @@ const InlineCard: React.FC<InlineCardProps> = ({
   icon,
   imageUrl,
   avatar,
+  subtitleNumberOfLines,
+  titleNumberOfLines,
 }) => {
   const { colors } = useTheme();
 
@@ -46,12 +50,16 @@ const InlineCard: React.FC<InlineCardProps> = ({
         <Avatar size={50} imageUrl={imageUrl} icon={icon} avatar={avatar} />
       ) : null}
       <View style={{ paddingLeft: 15, alignSelf: 'center' }}>
-        <Text style={{ fontSize: 16 }}>
+        <Text style={{ fontSize: 16 }} numberOfLines={titleNumberOfLines}>
           {title}
           {'  '}
           {badge && <Icon color={badgeColor || colors.icon} name={badge} size={16} />}
         </Text>
-        {subtitle ? <Text style={{ color: colors.subtext }}>{subtitle}</Text> : null}
+        {subtitle ? (
+          <Text style={{ color: colors.subtext }} numberOfLines={subtitleNumberOfLines}>
+            {subtitle}
+          </Text>
+        ) : null}
       </View>
     </View>
   );
