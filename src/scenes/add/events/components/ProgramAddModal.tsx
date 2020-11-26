@@ -1,10 +1,12 @@
 import React from 'react';
-import { Button, HelperText, TextInput, Card, ThemeProvider, useTheme } from 'react-native-paper';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { Button, HelperText, TextInput, Card, ThemeProvider } from 'react-native-paper';
+import { View, Platform, ScrollView, TextInput as RNTestInput } from 'react-native';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import shortid from 'shortid';
 import { Modal, TabChipList } from '@components/index';
 
+import { useTheme } from '@utils/index';
 import { ModalProps, State, EventPlace, Duration, Address } from '@ts/types';
 import getStyles from '@styles/Styles';
 
@@ -12,6 +14,8 @@ import getEventStyles from '../styles/Styles';
 
 
 type ProgramAddModalProps = ModalProps & {
+  date: Date,
+  setDate: () => void,
   add: (program: ProgramType) => void;
 };
 
@@ -26,7 +30,7 @@ type ProgramType = {
   address?: Address;
 };
 
-const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, add }) => {
+const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, date, setDate, add }) => {
   const titleInput = React.createRef<RNTestInput>();
   const descriptionInput = React.createRef<RNTestInput>();
   const addressInput = React.createRef<RNTestInput>();
@@ -62,6 +66,8 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     valid: true,
     message: '',
   });
+
+  const jan1970 = new Date(0);
 
   function setTitle(data: Partial<InputStateType>) {
     tempTitle = { ...currentTitle, ...(tempTitle ?? {}), ...data };
@@ -153,6 +159,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View style={eventStyles.formContainer}>
+        <ScrollView>
           <View style={eventStyles.textInputContainer}>
             <TextInput
               ref={titleInput}
@@ -196,25 +203,40 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
             }}
           />
         </View>
-          <View style={eventStyles.textInputContainer}>
-            <TextInput
-              ref={addressInput}
-              label="Lieu (facultatif)"
-              value={currentAddress.value}
-              error={currentAddress.error}
-              disableFullscreenUI
-              onSubmitEditing={() => {
-                blurInputs();
+        <View style={eventStyles.textInputContainer}>
+          <TextInput
+            ref={addressInput}
+            label="Lieu (facultatif)"
+            value={currentAddress.value}
+            error={currentAddress.error}
+            disableFullscreenUI
+            onSubmitEditing={() => {
+              blurInputs();
+            }}
+            autoCorrect={false}
+            theme={{colors: { primary: colors.primary, placeholder: colors.valid }}}
+            mode="outlined"
+            style={eventStyles.textInput}
+            onChangeText={(text) => {
+              setAddress({ value: text });
+            }}
+          />
+        </View>
+        <View style={{ height: 10 }} />
+        <View style={eventStyles.textInputContainer}>
+          <Button
+              mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+              uppercase={Platform.OS !== 'ios'}
+              style={{ flex: 1, marginRight: 5 }}
+              onPress={() => {
+                setVisible(false);
+                setDate();
               }}
-              autoCorrect={false}
-              theme={{colors: { primary: colors.primary, placeholder: colors.valid }}}
-              mode="outlined"
-              style={eventStyles.textInput}
-              onChangeText={(text) => {
-                setAddress({ value: text });
-              }}
-            />
-          </View>
+           >
+              {date.valueOf() === jan1970.valueOf() ? 'Horaire de début' : moment(date).format('LLL')}
+          </Button>
+        </View>
+        </ScrollView>
         <View style={{ height: 20 }} />
         <View style={eventStyles.buttonContainer}>
           <Button

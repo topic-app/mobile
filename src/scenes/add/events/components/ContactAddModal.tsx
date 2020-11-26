@@ -126,39 +126,6 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
     setLink(validation);
   };
 
-  {
-    /*
-  const validateCodeInput = (code: string) => {
-    let validation: Partial<InputStateType> = { valid: false, error: false };
-
-    if (code !== '' && code.length !== 5) {
-      validation = {
-        valid: false,
-        error: true,
-        message: 'Code postal erroné',
-      };
-    } else {
-      validation = { valid: true, error: false };
-    }
-    setCode(validation);
-  };
-
-  const validateNumberInput = (number: string, street: string) => {
-    let validation: Partial<InputStateType> = { valid: false, error: false };
-
-    if (number !== '' && street === '') {
-      validation = {
-        valid: false,
-        error: true,
-        message: 'Précisez la rue',
-      };
-    } else {
-      validation = { valid: true, error: false };
-    }
-    setNumber(validation);
-  };
-*/
-  }
 
   const submit = () => {
     const keyVal = currentKey.value;

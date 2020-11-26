@@ -14,21 +14,21 @@ function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [currentType, setCurrentType] = React.useState('school');
+  const [currentType, setCurrentType] = React.useState<'school'|'place'|'standalone'>('school');
 
   const placeTypes = [
     {
-      type: 'school',
+      type: 'school' as 'school',
       title: 'Établissement',
       description: "L'évènement a lieu dans un établissement scolaire",
     },
     {
-      type: 'place',
+      type: 'place' as 'place',
       title: 'Lieu',
       description: "L'évènement a lieu dans un lieu culturel",
     },
     {
-      type: 'standalone',
+      type: 'standalone' as 'standalone',
       title: 'Adresse',
       description: "L'évènement a lieu à une adresse spécifique",
     },

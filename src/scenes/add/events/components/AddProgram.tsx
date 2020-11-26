@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { TextInput, Button, List, Text } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { Account, Content, State, Duration, Address } from '@ts/types';
+import { Account, Content, State, Duration, Address, EventCreationData } from '@ts/types';
 import { StepperViewPageProps, InlineCard } from '@components/index';
 import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
@@ -16,20 +16,42 @@ import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & { account: Account; add: (parser: Content['parser']) => void };
 
-const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
+const EventAddPageProgram: React.FC<Props> = ({ prev, add, account}) => {
   const contentInput = React.createRef<RNTestInput>();
   const theme = useTheme();
   const { colors } = theme;
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const [isProgramAddModalVisible, setProgramAddModalVisible] = React.useState(false);
+  const [isDateTimePickerVisible, setDateTimePickerVisible] = React.useState(false);
+  const [startMode, setStartMode] = React.useState<'time'|'date'>('time');
   const [eventProgram, setProgram] = React.useState<ProgramType[]>([]);
+  const [startDate, setStartDate] = React.useState<Date>(new Date(0));
   const submit = () => {
     updateEventCreationData({ parser: 'markdown', program: eventProgram });
     add('markdown');
   };
   const addProgram = (program: ProgramType) => {
     setProgram([...eventProgram, program]);
+    setStartDate(new Date(0));
+  };
+
+  const changeStartDate = (event: any, selectedDate: Date) => {
+    const currentDate = selectedDate || startDate;
+    setDateTimePickerVisible(false);
+    setStartDate(currentDate);
+    if (startMode === 'date') {
+      showStartMode();
+    } else {
+      setDateTimePickerVisible(false);
+      setProgramAddModalVisible(true);
+    }
+  };
+
+  const showStartMode = () => {
+    startDate === null && setStartDate(new Date());
+    startMode === 'time' ? setStartMode('date') : setStartMode('time');
+    setDateTimePickerVisible(true);
   };
 
   type ProgramType = {
@@ -68,8 +90,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
             return (
               <InlineCard
                 icon="at"
-                title={program.value}
-                subtitle={program.key}
+                title={program.title}
                 onPress={() => {
                   setProgram(program.filter((s) => s !== program));
                 }}
@@ -89,9 +110,21 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
           Ajouter
         </Button>
       </View>
+      {isDateTimePickerVisible && (
+      <DateTimePicker
+              testID="dateTimePicker"
+              value={startDate}
+              mode={startMode}
+              display={Platform.OS === 'ios' ? 'inline' : 'default'}
+              minimumDate={new Date()}
+              onChange={changeStartDate}
+      />
+      )}
       <ProgramAddModal
         visible={isProgramAddModalVisible}
         setVisible={setProgramAddModalVisible}
+        date={startDate}
+        setDate={()=> showStartMode()}
         add={(program) => {
           addProgram(program);
         }}
