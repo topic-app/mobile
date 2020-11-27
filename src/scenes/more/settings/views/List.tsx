@@ -91,6 +91,14 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, preferences, ac
             }
           />
         )}
+        <List.Item
+          title="Bêta"
+          description="Analytiques, serveur"
+          right={() => <List.Icon icon="chevron-right" />}
+          left={() => <List.Icon icon="wrench" />}
+          onPress={() => navigation.navigate('Dev')}
+          style={settingsStyles.listItem}
+        />
       </List.Section>
     </View>
   );

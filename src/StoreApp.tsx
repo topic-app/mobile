@@ -1,7 +1,7 @@
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { AppLoading } from 'expo';
 import React from 'react';
-import { Platform, Appearance, ColorSchemeName } from 'react-native';
+import { Platform, Appearance, ColorSchemeName, View, Text, Dimensions } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import { fetchLocationData } from '@redux/actions/data/location';
 import themes from '@styles/Theme';
 import { Preferences, State } from '@ts/types';
 import { analytics } from '@utils/firebase';
-import { logger } from '@utils/index';
+import { logger, useSafeAreaInsets } from '@utils/index';
 
 import AppNavigator from './index';
 import screens from './screens';
@@ -19,9 +19,10 @@ import screens from './screens';
 type Props = {
   useSystemTheme: Preferences['useSystemTheme'];
   theme: Preferences['theme'];
+  useDevServer: boolean;
 };
 
-const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName }) => {
+const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevServer }) => {
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
     (useSystemTheme && Appearance.getColorScheme()) || 'light',
   );
@@ -76,6 +77,9 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName }) => {
   const routeNameRef = React.useRef<string | undefined>();
   const navigationRef = React.useRef<NavigationContainerRef>(null);
 
+  const insets = useSafeAreaInsets();
+  const { width } = Dimensions.get('window');
+
   return (
     <PaperProvider theme={theme}>
       <>
@@ -102,7 +106,26 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName }) => {
               : undefined
           }
         >
-          <AppNavigator />
+          {useDevServer ? (
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  position: 'absolute',
+                  zIndex: 10000,
+                  height: insets.top,
+                  width,
+                  backgroundColor: 'red',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: 'white' }}>Serveur de développement</Text>
+              </View>
+              <AppNavigator />
+            </View>
+          ) : (
+            <AppNavigator />
+          )}
         </NavigationContainer>
       </>
     </PaperProvider>
@@ -110,8 +133,8 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName }) => {
 };
 
 const mapStateToProps = (state: State) => {
-  const { useSystemTheme, theme } = state.preferences;
-  return { useSystemTheme, theme };
+  const { useSystemTheme, theme, useDevServer } = state.preferences;
+  return { useSystemTheme, theme, useDevServer };
 };
 
 export default connect(mapStateToProps)(StoreApp);

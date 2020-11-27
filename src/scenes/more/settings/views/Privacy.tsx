@@ -13,13 +13,13 @@ import { useTheme } from '@utils/index';
 import type { SettingsScreenNavigationProp } from '../index';
 import getSettingsStyles from '../styles/Styles';
 
-type SettingsThemeProps = {
+type SettingsPrivacyProps = {
   preferences: Preferences;
   account: AccountState;
   navigation: SettingsScreenNavigationProp<'Privacy'>;
 };
 
-const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, navigation }) => {
+const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account, navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const settingsStyles = getSettingsStyles(theme);
@@ -238,7 +238,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, nav
                 color={colors.primary}
                 disabled={!account.loggedIn || !preferences.history}
                 value={account.loggedIn && preferences.syncHistory}
-                onPress={toggleSyncHistory}
+                onTouchEnd={toggleSyncHistory}
               />
             )}
             onPress={toggleSyncHistory}
@@ -259,7 +259,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences, account, nav
                 color={colors.primary}
                 disabled={!account.loggedIn}
                 value={account.loggedIn && preferences.syncLists}
-                onPress={toggleSyncLists}
+                onTouchEnd={toggleSyncLists}
               />
             )}
             onPress={toggleSyncLists}
@@ -351,4 +351,4 @@ const mapStateToProps = (state: State) => {
   return { preferences, account };
 };
 
-export default connect(mapStateToProps)(SettingsTheme);
+export default connect(mapStateToProps)(SettingsPrivacy);

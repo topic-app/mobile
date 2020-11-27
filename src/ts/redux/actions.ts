@@ -101,3 +101,10 @@ export type ContentItemMap = {
 export type ListItem = ArticleListItem | EventListItem;
 
 export type AppThunk<ReturnType = unknown> = ThunkAction<ReturnType, State, unknown, AnyAction>;
+
+export const FULL_CLEAR = 'FULL_CLEAR';
+
+export type FullClearAction = {
+  type: typeof FULL_CLEAR;
+  data: {};
+};
