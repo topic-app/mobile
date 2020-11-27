@@ -28,6 +28,8 @@ async function request(
   });
   if (Store.getState().preferences.useDevServer) {
     axios.defaults.baseURL = Config.api.devUrl;
+  } else {
+    axios.defaults.baseURL = Config.api.baseUrl;
   }
   const headers = auth
     ? { Authorization: `Bearer ${Store.getState().account.accountInfo?.accountToken}` }
