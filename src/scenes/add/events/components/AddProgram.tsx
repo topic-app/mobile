@@ -36,8 +36,8 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account}) => {
     setStartDate(new Date(0));
   };
 
-  const changeStartDate = (event: any, selectedDate: Date) => {
-    const currentDate = selectedDate || startDate;
+  const changeStartDate = (event: any, date?: Date) => {
+    const currentDate = date || startDate;
     setDateTimePickerVisible(false);
     setStartDate(currentDate);
     if (startMode === 'date') {
@@ -57,7 +57,10 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account}) => {
   type ProgramType = {
     _id: string;
     title: string;
-    duration: Duration,
+    duration: {
+      start: Date,
+      end: Date,
+    },
     description?: {
       parser?: string;
       data: string;
@@ -89,7 +92,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account}) => {
           renderItem={({ item: program }) => {
             return (
               <InlineCard
-                icon="at"
+                icon="timetable"
                 title={program.title}
                 onPress={() => {
                   setProgram(program.filter((s) => s !== program));

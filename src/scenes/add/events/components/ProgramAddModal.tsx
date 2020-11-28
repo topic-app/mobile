@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, HelperText, TextInput, Card, ThemeProvider } from 'react-native-paper';
+import { Button, Menu, HelperText, TextInput, Card, ThemeProvider } from 'react-native-paper';
 import { View, Platform, ScrollView, TextInput as RNTestInput } from 'react-native';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -22,7 +22,10 @@ type ProgramAddModalProps = ModalProps & {
 type ProgramType = {
   _id: string;
   title: string;
-  duration: Duration,
+  duration: {
+    start: Date,
+    end: Date,
+  },
   description?: {
     parser?: string;
     data: string;
@@ -34,6 +37,9 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
   const titleInput = React.createRef<RNTestInput>();
   const descriptionInput = React.createRef<RNTestInput>();
   const addressInput = React.createRef<RNTestInput>();
+  const durationInput = React.createRef<RNTestInput>();
+  const [isMenuVisible, setMenuVisible] = React.useState(false);
+  const [durationType, setDurationType] = React.useState<'minutes'|'hours'|'days'>('hours');
 
 
   type InputStateType = {
@@ -46,6 +52,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
   let tempTitle: InputStateType;
   let tempDescription: InputStateType;
   let tempAddress: InputStateType;
+  let tempDuration: InputStateType;
 
 
   const [currentTitle, setCurrentTitle] = React.useState({
@@ -61,6 +68,12 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     message: '',
   });
   const [currentAddress, setCurrentAddress] = React.useState({
+    value: '',
+    error: false,
+    valid: true,
+    message: '',
+  });
+  const [currentDuration, setCurrentDuration] = React.useState({
     value: '',
     error: false,
     valid: true,
@@ -82,13 +95,29 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     tempAddress = { ...currentAddress, ...(tempAddress ?? {}), ...data };
     setCurrentAddress(tempAddress);
   }
+  function setDuration(data: Partial<InputStateType>) {
+    tempDuration = { ...currentAddress, ...(tempDuration ?? {}), ...data };
+    setCurrentDuration(tempDuration);
+  }
 
   function blurInputs() {
     titleInput.current?.blur();
     descriptionInput.current?.blur();
     addressInput.current?.blur();
+    durationInput.current?.blur();
   }
 
+  function getEndDate(){
+    let endDate: number;
+    if (durationType === 'minutes'){
+      endDate = Number(currentDuration.value)*6e4 + date.valueOf();
+    }else if (durationType === 'hours'){
+      endDate = Number(currentDuration.value)*3.6e6 + date.valueOf();
+    }else{
+      endDate = Number(currentDuration.value)*8.64e7 + date.valueOf();
+    }
+    return new Date(endDate);
+  }
 
   const submit = () => {
     const titleVal = currentTitle.value;
@@ -97,6 +126,10 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     add({
       _id: shortid(),
       title: titleVal,
+      duration:{
+        start: date,
+        end: getEndDate(),
+      },
       description:
       { data: descriptionVal,
       },
@@ -127,6 +160,12 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
       valid: false,
       message: '',
     });
+    setCurrentDuration({
+      value: '',
+      error: false,
+      valid: false,
+      message: '',
+    });
   };
 
   const cancel = () => {
@@ -144,6 +183,12 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
       message: '',
     });
     setCurrentAddress({
+      value: '',
+      error: false,
+      valid: false,
+      message: '',
+    });
+    setCurrentDuration({
       value: '',
       error: false,
       valid: false,
@@ -235,6 +280,44 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
            >
               {date.valueOf() === jan1970.valueOf() ? 'Horaire de début' : moment(date).format('LLL')}
           </Button>
+        </View>
+        <View style={{ height: 20 }} />
+        <View style={eventStyles.textInputContainer}>
+          <View style={{flexDirection: 'row'}}>
+          <TextInput
+            ref={durationInput}
+            value={currentDuration.value}
+            error={currentDuration.error}
+            disableFullscreenUI
+            onSubmitEditing={() => {
+              blurInputs();
+            }}
+            autoCorrect={false}
+            theme={{colors: { primary: colors.primary, placeholder: colors.valid }}}
+            mode="flat"
+            keyboardType="number-pad"
+            style={{width: 160, height: 50}}
+            onChangeText={(text) => {
+              setDuration({ value: text });
+            }}
+          />
+          <Menu
+              visible={isMenuVisible}
+              onDismiss={() => setMenuVisible(false)}
+              anchor={
+                <Button
+                  onPress={() => setMenuVisible(true)}
+                  mode= "outlined"
+                  style={{width: 160, height: 50, padding: 10}}
+                >
+                  {durationType === 'minutes' ? 'minutes' : durationType === 'hours' ? 'heures' : 'jours'}
+                </Button>
+              }>
+          <Menu.Item onPress={() => {setDurationType('minutes')}} title="minutes" />
+          <Menu.Item onPress={() => {setDurationType('hours')}} title="heures" />
+          <Menu.Item onPress={() => {setDurationType('days')}} title="jours" />
+        </Menu>
+        </View>
         </View>
         </ScrollView>
         <View style={{ height: 20 }} />
