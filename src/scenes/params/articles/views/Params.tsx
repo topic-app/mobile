@@ -4,7 +4,13 @@ import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { ProgressBar, Text, Divider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, InlineCard, Illustration } from '@components/index';
+import {
+  ErrorMessage,
+  InlineCard,
+  Illustration,
+  CustomHeaderBar,
+  TranslucentStatusBar,
+} from '@components/index';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import getStyles from '@styles/Styles';
@@ -16,7 +22,7 @@ import {
   SchoolRequestState,
   State,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme, logger } from '@utils/index';
 
 import { ArticleParamsScreenNavigationProp } from '../index';
 
@@ -56,6 +62,17 @@ const ArticleParamsScreen: React.FC<ArticleParamsProps> = ({
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Localisation',
+              subtitle: 'Articles',
+            },
+          },
+        }}
+      />
       {states.some((s) => s.loading) && <ProgressBar indeterminate />}
       {states.some((s) => s.error) && (
         <ErrorMessage
