@@ -12,7 +12,7 @@ function uploadCreator(
   resizeMode: 'content-primary' = 'content-primary',
   avatar: boolean = false,
   camera: false | 'back' | 'front' = false,
-): AppThunk {
+): AppThunk<Promise<string>> {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({

@@ -52,34 +52,6 @@ import { SvgProps } from 'react-native-svg';
 import { Config } from '@constants/index';
 import { useTheme, logger } from '@utils/index';
 
-// Topic Icon
-
-// Article Illustrations
-
-// Auth Illustrations
-
-// Comment Illustrations
-
-// Configure Illustrations
-
-// Event Illustrations
-
-// Explore Illustrations
-
-// Group Illustrations
-
-// Group Illustrations
-
-// Petition Illustrations
-
-// Select Location Illustrations
-
-// Settings Illustrations
-
-// Search illustratinos
-
-// Beta illustrations
-
 const illustrationList = {
   // Topic Icon
   'topic-icon': {
@@ -224,7 +196,9 @@ const illustrationList = {
   },
 };
 
-type Props = SvgProps & { name: keyof typeof illustrationList };
+export type IllustrationName = keyof typeof illustrationList;
+
+type Props = SvgProps & { name: IllustrationName };
 
 const Illustration: React.FC<Props> = ({ name, ...rest }) => {
   const { dark } = useTheme();

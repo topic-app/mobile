@@ -1,4 +1,3 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView, Platform, Alert } from 'react-native';
 import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';

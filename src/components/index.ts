@@ -15,6 +15,7 @@ export { default as StepperView } from './StepperView';
 export type { StepperViewPageProps } from './StepperView';
 export { default as TagList } from './TagList';
 export { default as Illustration } from './Illustration';
+export { default as FullscreenIllustration } from './FullscreenIllustration';
 export { default as TabChipList } from './TabChipList';
 export { default as ReportModal } from './ReportModal';
 export { default as Searchbar } from './Searchbar';

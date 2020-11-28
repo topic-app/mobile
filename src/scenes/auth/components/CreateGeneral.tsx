@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 import { score } from 'react-native-zxcvbn';
 import * as Yup from 'yup';
@@ -15,9 +15,9 @@ import getAuthStyles from '../styles/Styles';
 type Props = StepperViewPageProps;
 
 const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
-  const usernameInput = createRef<RNTestInput>();
-  const emailInput = createRef<RNTestInput>();
-  const passwordInput = createRef<RNTestInput>();
+  const usernameInput = createRef<RNTextInput>();
+  const emailInput = createRef<RNTextInput>();
+  const passwordInput = createRef<RNTextInput>();
 
   const theme = useTheme();
   const authStyles = getAuthStyles(theme);

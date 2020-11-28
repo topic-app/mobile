@@ -4,3 +4,4 @@ export { default as logger } from './logger';
 export * from './getAssetUrl';
 export * from './tags';
 export * from './hooks';
+export * from './permissions';

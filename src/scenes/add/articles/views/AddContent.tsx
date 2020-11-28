@@ -214,7 +214,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               }}
               insertImage={() =>
                 upload(creationData.group || '').then((fileId: string) => {
-                  textEditorRef.current?.insertImage(`${config.cdn.baseUrl}${fileId}`);
+                  textEditorRef.current?.insertImage(`${Config.cdn.baseUrl}${fileId}`);
                 })
               }
               insertYoutube={() => setYoutubeAddModalVisible(true)}
