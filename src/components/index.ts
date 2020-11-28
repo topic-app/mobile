@@ -21,6 +21,7 @@ export { default as Searchbar } from './Searchbar';
 export { default as GroupsBanner } from './GroupsBanner';
 export { default as CustomImage } from './CustomImage';
 export { default as Modal } from './Modal';
+export { default as FormTextInput } from './FormTextInput';
 
 export { default as ArticleCard } from './cards/Article';
 export { default as EventCard } from './cards/Event';

@@ -27,7 +27,6 @@ const AuthCreatePageSchool: React.FC<Props> = ({ next, prev, location, landing }
 
   const theme = useTheme();
   const authStyles = getAuthStyles(theme);
-  const { colors } = theme;
 
   return (
     <View style={authStyles.formContainer}>

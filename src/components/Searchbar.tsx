@@ -14,6 +14,7 @@ class Searchbar extends React.Component<SearchbarProps> {
 
   private mounted = false;
 
+  // eslint-disable-next-line no-undef
   private lastTimeout?: NodeJS.Timeout;
 
   isWaiting = false;

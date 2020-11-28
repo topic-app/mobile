@@ -1,6 +1,8 @@
+import { Formik } from 'formik';
 import React, { useState } from 'react';
 import { View, Platform, TouchableOpacity } from 'react-native';
 import { HelperText, Button, Checkbox, List } from 'react-native-paper';
+import * as Yup from 'yup';
 
 import { StepperViewPageProps } from '@components/index';
 import { useTheme } from '@utils/index';
@@ -15,30 +17,14 @@ type Props = StepperViewPageProps & {
 };
 
 const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigation }) => {
-  const [terms, setTerms] = useState(false);
-  const [email, setEmail] = useState(false);
-  const [termsError, setTermsError] = useState({ error: false, message: '' });
-  const [emailError, setEmailError] = useState({ error: false, message: '' });
-
-  const submit = () => {
-    if (!terms) {
-      setTermsError({ error: true, message: 'Vous devez accepter pour pouvoir continuer' });
-    } else {
-      setTermsError({ ...termsError, error: false });
-    }
-    if (!email) {
-      setEmailError({ error: true, message: 'Vous devez confirmer pour pouvoir continuer' });
-    } else {
-      setEmailError({ ...termsError, error: false });
-    }
-    if (terms && email) {
-      create();
-    }
-  };
-
   const theme = useTheme();
   const { colors } = theme;
   const authStyles = getAuthStyles(theme);
+
+  const LegalSchema = Yup.object().shape({
+    terms: Yup.bool().oneOf([true], 'Vous devez accepter pour pouvoir continuer'),
+    email: Yup.bool().oneOf([true], 'Vous devez confirmer pour pouvoir continuer'),
+  });
 
   return (
     <View style={authStyles.formContainer}>
@@ -167,57 +153,84 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigat
           </View>
         </View>
         <View>
-          <List.Item
-            title="J'accepte les conditions d'utilisation et la politique de vie privée"
-            titleNumberOfLines={10}
-            left={() =>
-              Platform.OS !== 'ios' ? (
-                <Checkbox status={terms ? 'checked' : 'unchecked'} color={colors.primary} />
-              ) : null
-            }
-            right={() =>
-              Platform.OS === 'ios' ? (
-                <Checkbox status={terms ? 'checked' : 'unchecked'} color={colors.primary} />
-              ) : null
-            }
-            onPress={() => setTerms(!terms)}
-          />
-          <List.Item
-            title={`Je confirme que mon adresse mail est bien ${userEmail ?? ''}`}
-            titleNumberOfLines={10}
-            left={() =>
-              Platform.OS !== 'ios' ? (
-                <Checkbox status={email ? 'checked' : 'unchecked'} color={colors.primary} />
-              ) : null
-            }
-            right={() =>
-              Platform.OS === 'ios' ? (
-                <Checkbox status={email ? 'checked' : 'unchecked'} color={colors.primary} />
-              ) : null
-            }
-            onPress={() => setEmail(!email)}
-          />
-          <HelperText type="error" visible={emailError.error || termsError.error}>
-            {termsError.error ? termsError.message : emailError.message}
-          </HelperText>
-        </View>
-        <View style={authStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => prev()}
-            style={{ flex: 1, marginRight: 5 }}
+          <Formik
+            initialValues={{ terms: false, email: false }}
+            validationSchema={LegalSchema}
+            onSubmit={create}
           >
-            Retour
-          </Button>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={submit}
-            style={{ flex: 1, marginLeft: 5 }}
-          >
-            Créer mon compte
-          </Button>
+            {({ setFieldValue, handleSubmit, values, errors, touched }) => (
+              <View>
+                <List.Item
+                  title="J'accepte les conditions d'utilisation et la politique de vie privée"
+                  titleNumberOfLines={10}
+                  left={() =>
+                    Platform.OS !== 'ios' ? (
+                      <Checkbox
+                        status={values.terms ? 'checked' : 'unchecked'}
+                        color={colors.primary}
+                      />
+                    ) : null
+                  }
+                  right={() =>
+                    Platform.OS === 'ios' ? (
+                      <Checkbox
+                        status={values.terms ? 'checked' : 'unchecked'}
+                        color={colors.primary}
+                      />
+                    ) : null
+                  }
+                  onPress={() => setFieldValue('terms', !values.terms)}
+                />
+                <List.Item
+                  title={`Je confirme que mon adresse mail est bien ${userEmail ?? ''}`}
+                  titleNumberOfLines={10}
+                  left={() =>
+                    Platform.OS !== 'ios' ? (
+                      <Checkbox
+                        status={values.email ? 'checked' : 'unchecked'}
+                        color={colors.primary}
+                      />
+                    ) : null
+                  }
+                  right={() =>
+                    Platform.OS === 'ios' ? (
+                      <Checkbox
+                        status={values.email ? 'checked' : 'unchecked'}
+                        color={colors.primary}
+                      />
+                    ) : null
+                  }
+                  onPress={() => setFieldValue('email', !values.email)}
+                />
+                <HelperText
+                  type="error"
+                  // If email has an error and email was touched then show the HelperText,
+                  // do the same for terms
+                  visible={(!!errors.email && touched.email) || (!!errors.terms && touched.terms)}
+                >
+                  {errors.email || errors.terms}
+                </HelperText>
+                <View style={authStyles.buttonContainer}>
+                  <Button
+                    mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+                    uppercase={Platform.OS !== 'ios'}
+                    onPress={prev}
+                    style={{ flex: 1, marginRight: 5 }}
+                  >
+                    Retour
+                  </Button>
+                  <Button
+                    mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                    uppercase={Platform.OS !== 'ios'}
+                    onPress={handleSubmit}
+                    style={{ flex: 1, marginLeft: 5 }}
+                  >
+                    Créer mon compte
+                  </Button>
+                </View>
+              </View>
+            )}
+          </Formik>
         </View>
       </View>
     </View>
