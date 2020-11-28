@@ -4,7 +4,7 @@ import { View, FlatList } from 'react-native';
 import { List, Text, Divider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { PlatformTouchable } from '@components/index';
+import { PlatformTouchable, CustomHeaderBar, TranslucentStatusBar } from '@components/index';
 import { deleteArticleRead } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { EventReadItem, Preferences, State } from '@ts/types';
@@ -34,6 +34,17 @@ const EventHistory: React.FC<EventHistoryProps> = ({ navigation, read, preferenc
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Historique',
+              subtitle: 'Évènements',
+            },
+          },
+        }}
+      />
       <FlatList
         data={read.reverse()}
         // TODO: EventReadItem ids need to be individually distinct from eachother
