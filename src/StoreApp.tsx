@@ -1,7 +1,8 @@
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+import Color from 'color';
 import { AppLoading } from 'expo';
 import React from 'react';
-import { Platform, Appearance, ColorSchemeName, View, Text, Dimensions } from 'react-native';
+import { Platform, Appearance, ColorSchemeName, View, Text } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -13,6 +14,7 @@ import { Preferences, State } from '@ts/types';
 import { analytics } from '@utils/firebase';
 import { logger, useSafeAreaInsets } from '@utils/index';
 
+import { TranslucentStatusBar } from './components';
 import AppNavigator from './index';
 import screens from './screens';
 
@@ -78,7 +80,6 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevSer
   const navigationRef = React.useRef<NavigationContainerRef>(null);
 
   const insets = useSafeAreaInsets();
-  const { width } = Dimensions.get('window');
 
   return (
     <PaperProvider theme={theme}>
@@ -113,8 +114,9 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevSer
                   position: 'absolute',
                   zIndex: 10000,
                   height: insets.top,
-                  width,
-                  backgroundColor: 'red',
+                  width: '100%',
+                  // Mix red with current appBar color
+                  backgroundColor: Color('#d11111').mix(Color(colors.appBar), 0.2).rgb().string(),
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
