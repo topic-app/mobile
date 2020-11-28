@@ -181,7 +181,7 @@ function EventLists({
                           key={item.id}
                           title={item.name}
                           description={item.disable ? 'Indisponible' : null}
-                          left={() => <List.Icon />}
+                          left={() => <View style={{ width: 56, height: 56 }} />}
                           onPress={enabled && !item.disable ? item.navigate : () => null}
                           onLongPress={move}
                           titleStyle={!item.disable ? {} : { color: colors.disabled }}

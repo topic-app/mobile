@@ -4,7 +4,13 @@ import { View, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { ProgressBar, Text, Divider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, InlineCard, Illustration } from '@components/index';
+import {
+  ErrorMessage,
+  InlineCard,
+  Illustration,
+  TranslucentStatusBar,
+  CustomHeaderBar,
+} from '@components/index';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import getStyles from '@styles/Styles';
@@ -56,6 +62,17 @@ const EventParamsScreen: React.FC<EventParamsProps> = ({
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Localisation',
+              subtitle: 'Évènements',
+            },
+          },
+        }}
+      />
       {states.some((s) => s.loading) && <ProgressBar indeterminate />}
       {states.some((s) => s.error) && (
         <ErrorMessage
@@ -161,7 +178,7 @@ const mapStateToProps = (state: State) => {
     params: eventData.params,
     schools: schools.items,
     departments: departments.items,
-    state: {
+    reqState: {
       schools: schools.state,
       departments: departments.state,
     },
