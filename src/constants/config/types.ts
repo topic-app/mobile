@@ -14,6 +14,7 @@ export type AppConfig = {
   };
   api: {
     baseUrl: string;
+    devUrl: string;
     timeout: number;
   };
   google: {

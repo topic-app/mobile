@@ -1,5 +1,6 @@
 import {
   UPDATE_GROUPS_CREATION_DATA,
+  FULL_CLEAR,
   GroupsContentState,
   GroupsContentActionTypes,
 } from '@ts/redux';
@@ -27,6 +28,8 @@ function groupDataReducer(
         ...state,
         creationData: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     default:
       return state;
   }

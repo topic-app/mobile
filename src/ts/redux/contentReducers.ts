@@ -1,5 +1,6 @@
 import { Article, Event, EventPlace, Image } from '../api';
 import { ApiAction } from './apiReducers';
+import { FullClearAction } from './actions';
 
 // Articles
 export const UPDATE_ARTICLES_PARAMS = 'UPDATE_ARTICLES_PARAMS';
@@ -105,7 +106,8 @@ export type ArticlesContentActionTypes =
   | UpdateArticlesReadAction
   | UpdateArticlesPrefsAction
   | UpdateArticlesQuicksAction
-  | UpdateArticlesCreationDataAction;
+  | UpdateArticlesCreationDataAction
+  | FullClearAction;
 
 // Events
 export const UPDATE_EVENTS_PARAMS = 'UPDATE_EVENTS_PARAMS';
@@ -223,7 +225,8 @@ export type EventsContentActionTypes =
   | UpdateEventsReadAction
   | UpdateEventsPrefsAction
   | UpdateEventsQuicksAction
-  | UpdateEventsCreationDataAction;
+  | UpdateEventsCreationDataAction
+  | FullClearAction;
 
 // Groups
 export const UPDATE_GROUPS_CREATION_DATA = 'UPDATE_GROUPS_CREATION_DATA';
@@ -256,7 +259,7 @@ type UpdateGroupsCreationDataAction = {
   data: Partial<GroupCreationData>;
 };
 
-export type GroupsContentActionTypes = UpdateGroupsCreationDataAction;
+export type GroupsContentActionTypes = UpdateGroupsCreationDataAction | FullClearAction;
 
 export type ContentItemString = 'articleData' | 'eventData' | 'groupData';
 

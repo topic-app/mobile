@@ -193,11 +193,8 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         un bug d&apos;affichage, une fonctionnalité qui ne marche pas correctement,
                         ou un autre problème, nous vous demandons de bien vouloir nous donner les
                         détails.{'\n'}Vous pouvez faire cela en recherchant l&apos;application Topic
-                        sur le Play Store et en cliquant sur &quot;envoyer des commentaires aux
-                        développeurs&quot;.{'\n'}Sur les téléphones compatibles, vous pouvez aussi
-                        secouer votre appareil lorsque vous utilisez l&apos;application pour accéder
-                        directement à l&apos;envoi de commentaires, ou cliquer sur
-                        &quot;Feedback&quot; dans le menu.
+                        sur le Play Store ou en cliquant sur &quot;Feedback&quot; dans le menu, et
+                        en cliquant sur &quot;envoyer des commentaires aux développeurs&quot;.{'\n'}
                       </Text>
                     </View>
                     <View style={landingStyles.contentContainer}>
@@ -229,11 +226,6 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                       </View>
                     </View>
                     <View style={landingStyles.contentContainer}>
-                      <Text>
-                        Si vous avez une idée de fonctionnalité, vous pouvez séléctionner
-                        &quot;Idées&quot; dans le menu. Cet onglet vous permettra d&apos;ajouter vos
-                        demandes, et voir / voter sur les idées des autres bêta-testeurs.
-                      </Text>
                       <Text>
                         Si vous souhaitez discuter avec les développeurs et les autres
                         bêta-testeurs, nous vous conseillons de rejoindre la plateforme
@@ -289,7 +281,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
                         <Illustration name="beta-updates" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Mises à jour</Text>
+                        <Text style={landingStyles.sectionTitle}>Mises à jour et tests</Text>
                       </View>
                     </View>
                     <View style={landingStyles.contentContainer}>
@@ -297,6 +289,13 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         Nous publierons des mises à jour sur le Play Store toutes les semaines
                         environ. N&apos;hésitez pas à regarder les notes de mise à jour pour voir
                         quelles fonctionnalités vous pouvez tester.{'\n'}
+                      </Text>
+                      <Text>
+                        Nous vous demandons de ne pas publier de &apos;contenus de test&apos; sur le
+                        serveur principal. En renvanche, vous pouvez activer l&apos;option
+                        &quot;utiliser le serveur de développement&quot; dans les paramètres bêta si
+                        vous voulez le faire. Assurez vous bien que la bannière &quot;Serveur de
+                        développement&quot; est affiché avant de publier un contenu de test.{'\n'}
                       </Text>
                       <Text>Bon bêta-testing !</Text>
                     </View>
