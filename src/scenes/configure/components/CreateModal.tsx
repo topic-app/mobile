@@ -59,7 +59,7 @@ function CreateModal({ visible, setVisible, articleLists, eventLists, type }: Cr
             }}
             validationSchema={CreateListSchema}
           >
-            {({ handleSubmit, handleBlur, handleChange, errors, touched, values, handleReset }) => (
+            {({ handleSubmit, handleBlur, handleChange, errors, touched, values }) => (
               <View>
                 <TextInput
                   placeholder="Nom de la liste"
