@@ -1,7 +1,7 @@
-import Store from '@redux/store';
-import shortid from 'shortid';
 import { AnyAction } from 'redux';
+import shortid from 'shortid';
 
+import Store from '@redux/store';
 import {
   ApiItemString,
   ListItem,

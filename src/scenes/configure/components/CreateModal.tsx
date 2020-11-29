@@ -1,14 +1,14 @@
 import React from 'react';
-import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
-import { Divider, Button, HelperText } from 'react-native-paper';
 import { View, Platform, TextInput } from 'react-native';
+import { Divider, Button, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CollapsibleView, Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { addArticleList } from '@redux/actions/contentData/articles';
 import { addEventList } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
@@ -51,8 +51,17 @@ function CreateModal({ visible, setVisible, articleLists, eventLists, type }: Cr
               Vous devez entrer un nom
             </HelperText>
           </CollapsibleView>
-          <CollapsibleView collapsed={!lists.some((l) => l.name === createListText)}>
-            <HelperText type="error" visible={lists.some((l) => l.name === createListText)}>
+          <CollapsibleView
+            collapsed={
+              !lists.some((l: ArticleListItem | EventListItem) => l.name === createListText)
+            }
+          >
+            <HelperText
+              type="error"
+              visible={lists.some(
+                (l: ArticleListItem | EventListItem) => l.name === createListText,
+              )}
+            >
               Une liste avec ce nom existe déjà
             </HelperText>
           </CollapsibleView>
@@ -66,7 +75,9 @@ function CreateModal({ visible, setVisible, articleLists, eventLists, type }: Cr
             onPress={() => {
               if (createListText === '') {
                 setErrorVisible(true);
-              } else if (!lists.some((l) => l.name === createListText)) {
+              } else if (
+                !lists.some((l: ArticleListItem | EventListItem) => l.name === createListText)
+              ) {
                 // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                 if (type === 'articles') {
                   addArticleList(createListText);

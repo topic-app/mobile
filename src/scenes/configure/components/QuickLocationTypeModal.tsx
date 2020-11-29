@@ -58,7 +58,6 @@ const QuickTypeModal: React.FC<QuickTypeModalProps> = ({
             <View>
               <List.Item
                 title={item.title}
-                description={item.description}
                 onPress={
                   item.disabled
                     ? undefined
