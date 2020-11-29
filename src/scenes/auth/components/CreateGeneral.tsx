@@ -45,13 +45,11 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
         return !result?.data?.usernameExists;
       }),
     email: Yup.string()
-      .email('Email invalide')
+      .matches(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/, 'Email invalide')
       .required('Email requis')
       .test('checkEmailInUse', 'Cet adresse email est déjà utilisée', async (email) => {
-        try {
-          // Make sure the email is valid before sending a request
-          await Yup.object().shape({ email: Yup.string().email().required() }).validate({ email });
-        } catch (e) {
+        // Make sure the email is valid before sending a request
+        if (!email || email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) === null) {
           return false;
         }
         let result;
