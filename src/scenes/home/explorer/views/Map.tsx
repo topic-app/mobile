@@ -1,15 +1,16 @@
 import MapboxGL, { OnPressEvent } from '@react-native-mapbox-gl/maps';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 import * as Location from 'expo-location';
 import React from 'react';
 import { View, Linking, Platform } from 'react-native';
 import { Text, FAB, IconButton } from 'react-native-paper';
 
-import { BottomSheet, BottomSheetRef } from '@components/index';
+import { BottomSheetRef } from '@components/index';
 import getStyles from '@styles/Styles';
 import { ExplorerLocation } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
+import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import LocationBottomSheet from '../components/LocationBottomSheet';
 import getExplorerStyles from '../styles/Styles';
 import { buildFeatureCollections } from '../utils/featureCollection';
@@ -19,9 +20,10 @@ MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 // MapboxGL.setTelemetryEnabled(false);
 
 export type MapMarkerDataType = {
-  id: string;
+  id: string | number;
   type: ExplorerLocation.LocationTypes;
   name: string;
+  coordinates: [number, number];
 };
 
 type ExplorerMapProps = {
@@ -34,11 +36,8 @@ type ExplorerMapProps = {
     bounds: { ne: [number, number]; sw: [number, number] };
   };
   tileServerUrl: string;
-  navigation: StackNavigationProp<any, any>;
+  navigation: HomeTwoScreenNavigationProp<'Explorer'>;
 };
-
-const bottomSheetPortraitSnapPoints = [0, 210, '100%'];
-const bottomSheetLandscapeSnapPoints = [0, 210, '100%'];
 
 const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, navigation }) => {
   const cameraRef = React.createRef<MapboxGL.Camera>();
@@ -48,6 +47,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
     id: '',
     type: 'school',
     name: '',
+    coordinates: [0, 0],
   });
   const [userLocation, setUserLocation] = React.useState(false);
   const [fabVisible, setFabVisible] = React.useState(false);
@@ -76,17 +76,20 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
       .catch((e) => logger.warn('Error while requesting user location permission', e));
   }, []);
 
-  const onMarkerPress = ({ features }: OnPressEvent) => {
+  const onMarkerPress = (event: OnPressEvent) => {
     logger.verbose('explorer/Map: Pressed on marker');
-    const feature = features[0];
-    const { coordinates } = feature.geometry;
-    cameraRef.current?.moveTo(coordinates, 100);
-    setData({
-      id: feature.id,
-      type: feature.properties.type,
-      name: feature.properties.name,
-    });
-    partialOpenBottomSheet();
+    const { id, geometry, properties } = event.features[0];
+    if (geometry.type === 'Point') {
+      const coordinates = geometry.coordinates as [number, number];
+      cameraRef.current?.moveTo(coordinates, 100);
+      setData({
+        id: id!,
+        type: properties?.type,
+        name: properties?.name,
+        coordinates,
+      });
+      partialOpenBottomSheet();
+    }
   };
 
   const requestUserLocation = async () => {
@@ -109,17 +112,18 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
     }
   };
 
-  const openBottomSheet = () => {
-    bottomSheetRef.current?.snapTo(bottomSheetPortraitSnapPoints.length - 1);
+  const zoomToLocation = (coordinates: [number, number]) => {
+    cameraRef.current?.setCamera({
+      centerCoordinate: coordinates,
+      animationDuration: 2000,
+      zoomLevel: 16,
+      animationMode: 'flyTo',
+      heading: 0,
+    });
   };
 
-  const partialOpenBottomSheet = () => {
-    bottomSheetRef.current?.snapTo(bottomSheetPortraitSnapPoints.length - 2);
-  };
-
-  const closeBottomSheet = () => {
-    bottomSheetRef.current?.snapTo(0);
-  };
+  const partialOpenBottomSheet = () => bottomSheetRef.current?.snapTo(1);
+  const closeBottomSheet = () => bottomSheetRef.current?.snapTo(0);
 
   const featureCollections = buildFeatureCollections(places);
 
@@ -143,9 +147,6 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
         pitchEnabled={false}
         styleURL={tileServerUrl}
         compassViewMargins={{
-          // Note: Mapbox API and TypeScript both say this should be a
-          // GeoJSON point but changing this to a point will crash the app
-          // @ts-expect-error
           x: 10,
           y: insets.top * 1.5 + 10,
         }}
@@ -229,7 +230,12 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
             paddingLeft: 4,
           }}
         >
-          <IconButton onPress={navigation.openDrawer} icon="menu" color={colors.text} size={24} />
+          <IconButton
+            onPress={((navigation as unknown) as DrawerNavigationProp<any, any>).openDrawer}
+            icon="menu"
+            color={colors.text}
+            size={24}
+          />
         </View>
       ) : null}
 
@@ -253,17 +259,10 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
 
       <ExplorerAttribution />
 
-      <BottomSheet
-        ref={bottomSheetRef}
-        portraitSnapPoints={bottomSheetPortraitSnapPoints}
-        landscapeSnapPoints={bottomSheetLandscapeSnapPoints}
-        renderContent={() => (
-          <LocationBottomSheet
-            openBottomSheet={openBottomSheet}
-            closeBottomSheet={closeBottomSheet}
-            mapMarkerData={data}
-          />
-        )}
+      <LocationBottomSheet
+        bottomSheetRef={bottomSheetRef}
+        mapMarkerData={data}
+        zoomToLocation={zoomToLocation}
       />
     </View>
   );

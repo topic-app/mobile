@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { Theme } from '@ts/types';
 
@@ -27,6 +27,8 @@ function getExplorerStyles(theme: Theme) {
     modalTitle: {
       // paddingHorizontal: 8,
       fontSize: 20,
+      color: colors.text,
+      opacity: 1,
     },
     modalSubtitle: {
       fontSize: 16,

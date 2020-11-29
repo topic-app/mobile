@@ -1,5 +1,7 @@
 import shortid from 'shortid';
+
 import { ExplorerLocation } from '@ts/types';
+
 import { getAssetName } from './getAsset';
 
 const createFeature = ({

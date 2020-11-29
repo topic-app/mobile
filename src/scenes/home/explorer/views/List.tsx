@@ -1,11 +1,12 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View } from 'react-native';
 
 import { Config } from '@constants/index';
 import places from '@src/data/explorerListData.json';
+import { ExplorerLocation } from '@ts/types';
 import { useTheme } from '@utils/index';
 
+import { HomeTwoScreenNavigationProp } from '../../HomeTwo.ios';
 import ExplorerMap from './Map';
 
 const map = {
@@ -17,7 +18,7 @@ const map = {
 };
 
 type ExplorerListProps = {
-  navigation: StackNavigationProp<any, any>;
+  navigation: HomeTwoScreenNavigationProp<'Explorer'>;
 };
 
 const ExplorerList: React.FC<ExplorerListProps> = ({ navigation }) => {
@@ -26,7 +27,7 @@ const ExplorerList: React.FC<ExplorerListProps> = ({ navigation }) => {
     <View style={{ flex: 1 }}>
       <ExplorerMap
         tileServerUrl={`${Config.maps.baseUrl}styles/${dark ? 'dark' : 'light'}/style.json`}
-        places={places}
+        places={(places as unknown) as ExplorerLocation.Location[]}
         map={map}
         navigation={navigation}
       />

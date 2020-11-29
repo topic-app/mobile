@@ -30,14 +30,6 @@ function fetchGroupsCreator(): AppThunk {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       if (!getState().account.loggedIn) {
-        dispatch({
-          type: UPDATE_ACCOUNT_GROUPS,
-          data: [],
-        });
-        dispatch({
-          type: UPDATE_ACCOUNT_PERMISSIONS,
-          data: [],
-        });
         return resolve();
       }
       dispatch({
@@ -116,10 +108,6 @@ function fetchWaitingGroupsCreator(): AppThunk {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       if (!getState().account.loggedIn) {
-        dispatch({
-          type: UPDATE_ACCOUNT_WAITING_GROUPS,
-          data: [],
-        });
         return resolve();
       }
       dispatch({

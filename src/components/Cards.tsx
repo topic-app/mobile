@@ -17,6 +17,7 @@ type InlineCardProps = {
   badge?: string;
   badgeColor?: string;
   icon?: string;
+  iconColor?: string;
   imageUrl?: string;
   avatar?: AvatarType;
   style?: StyleProp<ViewStyle>;
@@ -32,6 +33,7 @@ const InlineCard: React.FC<InlineCardProps> = ({
   badge,
   badgeColor,
   icon,
+  iconColor,
   imageUrl,
   avatar,
   style,
@@ -43,7 +45,7 @@ const InlineCard: React.FC<InlineCardProps> = ({
 
   let IconElement: React.FC | null = null;
   if (compact && icon) {
-    IconElement = () => <Icon name={icon} size={25} color={colors.icon} />;
+    IconElement = () => <Icon name={icon} size={25} color={iconColor ?? colors.icon} />;
   } else if (icon || imageUrl || avatar) {
     IconElement = () => <Avatar size={50} imageUrl={imageUrl} icon={icon} avatar={avatar} />;
   }

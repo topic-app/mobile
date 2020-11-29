@@ -19,7 +19,7 @@ import AppNavigator from './index';
 import screens from './screens';
 
 type Props = {
-  useSystemTheme: Preferences['useSystemTheme'];
+  useSystemTheme: boolean;
   theme: Preferences['theme'];
   useDevServer: boolean;
 };
