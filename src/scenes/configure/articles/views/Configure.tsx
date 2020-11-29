@@ -25,6 +25,7 @@ import {
   ArticlePrefs,
   Account,
   Preferences,
+  EventListItem,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
@@ -67,7 +68,9 @@ function ArticleLists({
 
   const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
-  const [editingList, setEditingList] = React.useState<ArticleListItem | null>(null);
+  const [editingList, setEditingList] = React.useState<ArticleListItem | EventListItem | null>(
+    null,
+  );
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
   const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);
