@@ -1,10 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Text } from 'react-native-paper';
+// @ts-nocheck
+
 import _ from 'lodash';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import shortid from 'shortid';
 
 import populateEvents from './packer';
