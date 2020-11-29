@@ -5,9 +5,8 @@ import { Button } from 'react-native-paper';
 import { score } from 'react-native-zxcvbn';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, FormTextInput } from '@components/index';
+import { StepperViewPageProps, FormTextInput, StrengthMeter } from '@components/index';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import StrengthMeter from '@root/src/components/StrengthMeter';
 import { useTheme, request } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';

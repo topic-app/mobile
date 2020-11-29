@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { Theme } from '@root/src/ts/types';
+import { Theme } from '@ts/types';
 
 function getEventStyles(theme: Theme) {
   const { colors } = theme;
