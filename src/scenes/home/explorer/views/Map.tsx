@@ -1,19 +1,21 @@
-import React from 'react';
-import { View, Linking, Platform } from 'react-native';
-import { Text, FAB, IconButton } from 'react-native-paper';
-import Modal from 'react-native-modal';
-import PropTypes from 'prop-types';
+// @ts-nocheck
+
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as Location from 'expo-location';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { View, Linking, Platform } from 'react-native';
+import Modal from 'react-native-modal';
+import { Text, FAB, IconButton } from 'react-native-paper';
 
 import { TranslucentStatusBar } from '@components/Header';
-import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
 import LocationModal from '../components/LocationModal';
+import getExplorerStyles from '../styles/Styles';
 import { buildFeatureCollections } from '../utils/featureCollection';
 import { markerImages } from '../utils/getAsset';
-import getExplorerStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 // MapboxGL.setTelemetryEnabled(false);
