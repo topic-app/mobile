@@ -5,7 +5,7 @@ import { Button } from 'react-native-paper';
 import { score } from 'react-native-zxcvbn';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, FormTextInput, StrengthMeter } from '@components/index';
+import { StepperViewPageProps, FormTextInput, StrengthMeter } from '@components';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
 import { useTheme, request } from '@utils/index';
 

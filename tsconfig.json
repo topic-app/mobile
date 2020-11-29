@@ -10,15 +10,20 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@root/*": ["./*"],
-      "@src/*": ["./src/*"],
+      "@ts/*": ["./src/ts/*"],
+      "@components": ["./src/components"],
       "@components/*": ["./src/components/*"],
-      "@assets/*": ["./src/assets/*"],
-      "@redux/*": ["./src/redux/*"],
-      "@styles/*": ["./src/styles/*"],
-      "@utils/*": ["./src/utils/*"],
+      "@constants": ["./src/constants"],
       "@constants/*": ["./src/constants/*"],
-      "@ts/*": ["./src/ts/*"]
+      "@styles": ["./src/styles"],
+      "@styles/*": ["./src/styles/*"],
+      "@utils": ["./src/utils"],
+      "@utils/*": ["./src/utils/*"],
+      "@redux": ["./src/redux"],
+      "@redux/*": ["./src/redux/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@src/*": ["./src/*"],
+      "@root/*": ["./*"],
     }
   },
   "exclude": ["node_modules", "android", "ios", "web", "web-build", "android-build", "scripts"]
