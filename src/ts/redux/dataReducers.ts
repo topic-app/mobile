@@ -1,14 +1,13 @@
 import themes from '@styles/Theme';
 
 import {
-  AccountPermission,
-  AccountInfo,
-  AccountUser,
-  AccountCreationData,
   WaitingGroup,
   GroupWithMembership,
   SchoolPreload,
   DepartmentPreload,
+  Avatar,
+  GroupRolePermission,
+  User,
 } from '../api';
 import { LocationRequestState, AccountRequestState } from '../requestState';
 
@@ -44,6 +43,34 @@ export type Account =
     };
 
 export type AccountState = Account;
+
+export type AccountCreationData = {
+  avatar?: Avatar;
+  username?: string;
+  email?: string;
+  password?: string;
+  global?: boolean;
+  schools?: string[];
+  departments?: string[];
+  accountType?: 'public' | 'private';
+  firstName?: string;
+  lastName?: string;
+};
+
+export type AccountPermission = GroupRolePermission & { group: string };
+
+export type AccountUser = User & {
+  sensitiveData: {
+    email: string;
+  };
+};
+
+export type AccountInfo = {
+  accountId: string;
+  accountToken: string;
+  accountTokenExpiry: string;
+  user: AccountUser;
+};
 
 type UpdateAccountGroupsAction = {
   type: typeof UPDATE_ACCOUNT_GROUPS;

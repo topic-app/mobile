@@ -6,7 +6,6 @@ import {
   GroupRole,
   SchoolPreload,
   DepartmentPreload,
-  Avatar,
   GroupWithMembership,
   UPDATE_ACCOUNT_GROUPS,
   UPDATE_ACCOUNT_PERMISSIONS,
