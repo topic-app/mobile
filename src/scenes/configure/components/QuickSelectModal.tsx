@@ -41,7 +41,7 @@ import getArticleStyles from './styles/Styles';
 type QuickSelectModalProps = ModalProps & {
   articleQuicks: ArticleQuickItem[];
   eventQuicks: EventQuickItem[];
-  dataType: 'tag' | 'user' | 'group' | 'region' | 'school' | 'departement';
+  dataType: string;
   tags: TagsState;
   groups: GroupsState;
   users: UsersState;
