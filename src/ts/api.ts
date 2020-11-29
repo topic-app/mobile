@@ -14,8 +14,6 @@
  * Note: Don't import this file through `common/`, use `import { ... } from '@ts/types'` instead.
  */
 
-// Account stuff should probably go in redux.ts but too much risk of breakage
-
 // Common types
 export type Content = {
   parser: 'plaintext' | 'markdown';
@@ -206,34 +204,6 @@ export type User = {
       followers: number;
     };
   };
-};
-
-export type AccountCreationData = {
-  avatar?: Avatar;
-  username?: string;
-  email?: string;
-  password?: string;
-  global?: boolean;
-  schools?: string[];
-  departments?: string[];
-  accountType?: 'public' | 'private';
-  firstName?: string;
-  lastName?: string;
-};
-
-export type AccountPermission = GroupRolePermission & { group: string };
-
-export type AccountUser = User & {
-  sensitiveData: {
-    email: string;
-  };
-};
-
-export type AccountInfo = {
-  accountId: string;
-  accountToken: string;
-  accountTokenExpiry: string;
-  user: AccountUser;
 };
 
 export type WaitingGroup = Group & {
