@@ -115,8 +115,6 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
           }
         />
         <Divider />
-      </View>
-      <View>
         <View style={styles.contentContainer}>
           <Button
             mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
@@ -135,7 +133,7 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
 const mapStateToProps = (state: State) => {
   const { account } = state;
   return {
-    isInitialPublic: account.accountInfo?.user?.data?.public,
+    isInitialPublic: account.accountInfo?.user?.data?.public || false,
     state: account.state,
   };
 };

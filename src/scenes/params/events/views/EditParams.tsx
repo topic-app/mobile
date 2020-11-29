@@ -1,16 +1,16 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, ReduxLocation } from '@ts/types';
-import { updateEventParams } from '@redux/actions/contentData/events';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
 import LocationSelectPage from '@components/LocationSelectPage';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateEventParams } from '@redux/actions/contentData/events';
+import { State, ReduxLocation } from '@ts/types';
 
-import type { EventConfigureStackParams } from '../index';
+import type { EventParamsScreenNavigationProp, EventParamsStackParams } from '../index';
 
-type Navigation = StackNavigationProp<EventConfigureStackParams, 'EditParams'>;
+type Navigation = EventParamsScreenNavigationProp<'EditParams'>;
 
 function done(
   { schools, departments, global }: ReduxLocation,
@@ -31,7 +31,9 @@ function done(
   });
 }
 
-type EventEditParamsProps = StackScreenProps<EventConfigureStackParams, 'EditParams'> & {
+type EventEditParamsProps = {
+  navigation: EventParamsScreenNavigationProp<'EditParams'>;
+  route: RouteProp<EventParamsStackParams, 'EditParams'>;
   eventParams: ReduxLocation;
 };
 

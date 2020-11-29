@@ -1,14 +1,23 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import MyGroupsList from './views/List';
+import { MoreScreenNavigationProp } from '../index';
 import MyGroupsEdit from './views/Edit';
+import MyGroupsList from './views/List';
 
 export type MyGroupsStackParams = {
   List: undefined;
   Edit: undefined;
 };
+
+export type MyGroupsScreenNavigationProp<
+  K extends keyof MyGroupsStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<MyGroupsStackParams, K>,
+  MoreScreenNavigationProp<'MyGroups'>
+>;
 
 const Stack = createNativeStackNavigator<MyGroupsStackParams>();
 

@@ -1,5 +1,4 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from 'react-native';
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
@@ -32,7 +31,7 @@ import {
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
+import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo.ios';
 import ArticleListCard from '../components/Card';
 import ArticleEmptyList from '../components/EmptyList';
 
@@ -46,9 +45,11 @@ type Category = {
   params?: object;
 };
 
-type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
-  articles: (ArticlePreload | Article)[];
-  followingArticles: (ArticlePreload | Article)[];
+type ArticleListProps = {
+  navigation: HomeTwoScreenNavigationProp<'Article'>;
+  route: RouteProp<HomeTwoNavParams, 'Article'>;
+  articles: ArticlePreload[];
+  followingArticles: ArticlePreload[];
   search: ArticlePreload[];
   lists: ArticleListItem[];
   read: ArticleReadItem[];
@@ -209,12 +210,10 @@ const ArticleList: React.FC<ArticleListProps> = ({
   const section = getSection();
   const category = getCategory();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      updateArticles('initial');
-      updateArticlesFollowing('initial');
-    }, [null]),
-  );
+  React.useEffect(() => {
+    updateArticles('initial');
+    updateArticlesFollowing('initial');
+  }, [null]);
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -452,7 +451,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions?.some((p) => p.permission === 'article.add') && (
+      {account.loggedIn && account.permissions.some((p) => p.permission === 'article.add') && (
         <FAB
           icon="pencil"
           onPress={() =>

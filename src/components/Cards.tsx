@@ -12,7 +12,7 @@ import { PlatformTouchable } from './PlatformComponents';
 
 type InlineCardProps = {
   title: string;
-  subtitle?: string;
+  subtitle?: string | null;
   onPress?: () => void;
   badge?: string;
   badgeColor?: string;
@@ -21,6 +21,8 @@ type InlineCardProps = {
   avatar?: AvatarType;
   style?: StyleProp<ViewStyle>;
   compact?: boolean;
+  subtitleNumberOfLines?: number;
+  titleNumberOfLines?: number;
 };
 
 const InlineCard: React.FC<InlineCardProps> = ({
@@ -34,6 +36,8 @@ const InlineCard: React.FC<InlineCardProps> = ({
   avatar,
   style,
   compact,
+  subtitleNumberOfLines,
+  titleNumberOfLines,
 }) => {
   const { colors } = useTheme();
 
@@ -58,12 +62,16 @@ const InlineCard: React.FC<InlineCardProps> = ({
     >
       {IconElement ? <IconElement /> : null}
       <View style={{ paddingLeft: IconElement ? 15 : 0, alignSelf: 'center', flex: 1 }}>
-        <Text style={{ fontSize: 16 }}>
+        <Text style={{ fontSize: 16 }} numberOfLines={titleNumberOfLines}>
           {title}
           {'  '}
           {badge && <Icon color={badgeColor ?? colors.icon} name={badge} size={16} />}
         </Text>
-        {subtitle ? <Text style={{ color: colors.subtext }}>{subtitle}</Text> : null}
+        {subtitle ? (
+          <Text style={{ color: colors.subtext }} numberOfLines={subtitleNumberOfLines}>
+            {subtitle}
+          </Text>
+        ) : null}
       </View>
     </View>
   );

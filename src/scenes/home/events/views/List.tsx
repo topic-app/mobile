@@ -1,5 +1,4 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
@@ -32,7 +31,7 @@ import {
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
+import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo.ios';
 import EventListCard from '../components/Card';
 import EventEmptyList from '../components/EmptyList';
 
@@ -46,7 +45,9 @@ type Category = {
   params?: object;
 };
 
-type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
+type EventListProps = {
+  navigation: HomeTwoScreenNavigationProp<'Event'>;
+  route: RouteProp<HomeTwoNavParams, 'Event'>;
   upcomingEvents: EventPreload[];
   passedEvents: EventPreload[];
   followingEvents: EventPreload[];
@@ -207,13 +208,11 @@ const EventList: React.FC<EventListProps> = ({
   const section = getSection();
   const category = getCategory();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      updateUpcomingEvents('initial');
-      updatePassedEvents('initial');
-      updateEventsFollowing('initial');
-    }, [null]),
-  );
+  React.useEffect(() => {
+    updateUpcomingEvents('initial');
+    updatePassedEvents('initial');
+    updateEventsFollowing('initial');
+  }, [null]);
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -458,9 +457,9 @@ const EventList: React.FC<EventListProps> = ({
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions?.some((p) => p.permission === 'event.add') && (
+      {account.loggedIn && account.permissions.some((p) => p.permission === 'event.add') && (
         <FAB
-          icon="pencil"
+          icon="plus"
           onPress={() =>
             navigation.navigate('Main', {
               screen: 'Add',

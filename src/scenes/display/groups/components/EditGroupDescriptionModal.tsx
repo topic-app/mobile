@@ -9,21 +9,21 @@ import {
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State, Group, GroupRequestState } from '@ts/types';
 import { ErrorMessage, Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { groupModify } from '@redux/actions/apiActions/groups';
 import { fetchGroup } from '@redux/actions/api/groups';
+import { groupModify } from '@redux/actions/apiActions/groups';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, Group, GroupRequestState, GroupPreload } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
 type EditGroupDescriptionModalProps = ModalProps & {
-  group: Group | null;
+  group: Group | GroupPreload | null;
   editingGroup: {
-    shortName: string;
-    summary: string;
-    description: string;
+    shortName?: string;
+    summary?: string;
+    description?: string;
   } | null;
   setEditingGroup: ({
     shortName,
@@ -52,68 +52,72 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
 
   const [errorVisible, setErrorVisible] = React.useState(false);
 
+  const add = () => {
+    if (group) {
+      groupModify(group?._id, {
+        summary: editingGroup?.summary,
+        description: { parser: 'markdown', data: editingGroup?.description || '' },
+      }).then(() => {
+        fetchGroup(group?._id);
+        setVisible(false);
+      });
+    }
+  };
+
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      {state.modify?.loading && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
-      {state.modify?.error ? (
-        <ErrorMessage
-          type="axios"
-          strings={{
-            what: 'la modification du groupe',
-            contentSingular: 'Le groupe',
-          }}
-          error={state.modify?.error}
-          retry={add}
-        />
-      ) : null}
       <View>
-        <View style={articleStyles.activeCommentContainer}>
-          <PaperTextInput
-            mode="outlined"
-            multiline
-            label="Résumé"
-            value={editingGroup?.summary}
-            onChangeText={(text) => {
-              setEditingGroup({ ...editingGroup, summary: text });
+        {state.modify?.loading && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
+        {state.modify?.error ? (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la modification du groupe',
+              contentSingular: 'Le groupe',
             }}
+            error={state.modify?.error}
+            retry={add}
           />
-          <HelperText type="info">Décrivez ce que vous faites en une ou deux lignes</HelperText>
-        </View>
-        <View style={articleStyles.activeCommentContainer}>
-          <PaperTextInput
-            mode="outlined"
-            label="Description"
-            multiline
-            numberOfLines={5}
-            value={editingGroup?.description}
-            onChangeText={(text) => {
-              setEditingGroup({ ...editingGroup, description: text });
-            }}
-          />
-          <HelperText type="info">
-            Présentez votre groupe, ce que vous faites, sans limite de taille.
-          </HelperText>
-        </View>
-        <Divider style={{ marginTop: 10 }} />
-        <View style={styles.contentContainer}>
-          <Button
-            mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-            color={colors.primary}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              if (group) {
-                groupModify(group?._id, {
-                  summary: editingGroup?.summary,
-                  description: { parser: 'markdown', data: editingGroup?.description },
-                }).then(() => {
-                  fetchGroup(group?._id);
-                  setVisible(false);
-                });
-              }
-            }}
-          >
-            Mettre à jour
-          </Button>
+        ) : null}
+        <View>
+          <View style={articleStyles.activeCommentContainer}>
+            <PaperTextInput
+              mode="outlined"
+              multiline
+              label="Résumé"
+              value={editingGroup?.summary}
+              onChangeText={(text) => {
+                setEditingGroup({ ...editingGroup, summary: text });
+              }}
+            />
+            <HelperText type="info">Décrivez ce que vous faites en une ou deux lignes</HelperText>
+          </View>
+          <View style={articleStyles.activeCommentContainer}>
+            <PaperTextInput
+              mode="outlined"
+              label="Description"
+              multiline
+              numberOfLines={5}
+              value={editingGroup?.description}
+              onChangeText={(text) => {
+                setEditingGroup({ ...editingGroup, description: text });
+              }}
+            />
+            <HelperText type="info">
+              Présentez votre groupe, ce que vous faites, sans limite de taille.
+            </HelperText>
+          </View>
+          <Divider style={{ marginTop: 10 }} />
+          <View style={styles.contentContainer}>
+            <Button
+              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+              color={colors.primary}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={add}
+            >
+              Mettre à jour
+            </Button>
+          </View>
         </View>
       </View>
     </Modal>

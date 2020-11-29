@@ -17,38 +17,57 @@ import { connect } from 'react-redux';
 
 import { CollapsibleView, CategoryTitle, ErrorMessage, Modal } from '@components/index';
 import { fetchGroup } from '@redux/actions/api/groups';
-import { groupMemberAdd } from '@redux/actions/apiActions/groups';
+import { groupMemberAdd, groupMemberModify } from '@redux/actions/apiActions/groups';
 import getStyles from '@styles/Styles';
-import { ModalProps, State, GroupRole, UserPreload, GroupRequestState } from '@ts/types';
+import {
+  ModalProps,
+  State,
+  GroupRole,
+  UserPreload,
+  GroupRequestState,
+  User,
+  GroupMember,
+  AccountState,
+} from '@ts/types';
 import { useTheme } from '@utils/index';
 
 type AddUserRoleModalProps = ModalProps & {
   roles: GroupRole[];
-  user: UserPreload;
+  members: GroupMember[];
+  user: UserPreload | User | null;
   state: GroupRequestState;
   group: string;
   next: () => any;
+  modifying?: boolean;
+  account: AccountState;
 };
 
 const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   visible,
   setVisible,
   roles,
+  members,
   user,
   group,
   state,
   next,
+  modifying = false,
+  account,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [primaryRole, setPrimaryRole] = React.useState(null);
-  const [secondaryRoles, setSecondaryRoles] = React.useState([]);
-  const [expiryDate, setExpiryDate] = React.useState(0);
+  const [primaryRole, setPrimaryRole] = React.useState<string | null>(
+    modifying ? members.find((m) => m.user._id === user?._id)?.role || null : null,
+  );
+  const [secondaryRoles, setSecondaryRoles] = React.useState<string[]>(
+    modifying ? members.find((m) => m.user._id === user?._id)?.secondaryRoles || [] : [],
+  );
+  const [expiryDate, setExpiryDate] = React.useState<number>(0);
   const [errorVisible, setErrorVisible] = React.useState(false);
 
-  let sections = [
+  const sections = [
     {
       key: 'primary',
       title: 'Role principal',
@@ -61,23 +80,32 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
     },
   ];
 
-  let add = () => {
+  const add = () => {
     if (!primaryRole) {
       setErrorVisible(true);
     } else {
-      let date = new Date();
-      let expiry = new Date(date.setMonth(date.getMonth() + expiryDate));
-      groupMemberAdd(
-        group,
-        user._id,
-        primaryRole,
-        secondaryRoles,
-        expiryDate ? expiry : undefined,
-      ).then(() => {
-        setVisible(false);
-        fetchGroup(group);
-        next();
-      });
+      if (!user) return;
+      if (modifying) {
+        groupMemberModify(group, user._id, primaryRole, secondaryRoles).then(() => {
+          setVisible(false);
+          fetchGroup(group);
+          next();
+        });
+      } else {
+        const date = new Date();
+        const expiry = new Date(date.setMonth(date.getMonth() + expiryDate));
+        groupMemberAdd(
+          group,
+          user._id,
+          primaryRole,
+          secondaryRoles,
+          expiryDate ? expiry : undefined,
+        ).then(() => {
+          setVisible(false);
+          fetchGroup(group);
+          next();
+        });
+      }
     }
   };
 
@@ -89,18 +117,22 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
           <View>
             <View style={styles.contentContainer}>
               <View style={styles.centerIllustrationContainer}>
-                <Title>Ajouter @{user?.info?.username || user?.displayName}</Title>
+                <Title>
+                  {modifying ? 'Modifier' : 'Ajouter'} @{user?.info?.username || user?.displayName}
+                </Title>
               </View>
             </View>
-            {state.member_add?.loading && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
-            {state.member_add?.error ? (
+            {(modifying ? state.member_modify?.loading : state.member_add?.loading) && (
+              <ProgressBar indeterminate style={{ marginTop: -4 }} />
+            )}
+            {(modifying ? state.member_modify?.error : state.member_add?.error) ? (
               <ErrorMessage
                 type="axios"
                 strings={{
                   what: "l'ajout de l'utilisateur",
                   contentSingular: "L'utilisateur",
                 }}
-                error={state.member_add?.error}
+                error={modifying ? state.member_modify?.error : state.member_add?.error}
                 retry={() => add()}
               />
             ) : null}
@@ -115,8 +147,8 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
           </View>
         )}
         renderItem={({ item, section: { key } }) => {
-          let set = () => {
-            if (key === 'primary') {
+          const set = () => {
+            if (key === 'primary' && account.accountInfo?.accountId !== user?._id) {
               setErrorVisible(false);
               setPrimaryRole(item._id);
             } else if (secondaryRoles.includes(item._id)) {
@@ -135,11 +167,13 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                     : null
                 }
                 onPress={set}
+                disabled={key === 'primary' && account.accountInfo?.accountId === user?._id}
                 left={() =>
                   Platform.OS !== 'ios' &&
                   (key === 'primary' ? (
                     <RadioButton
                       value=""
+                      disabled={account.accountInfo?.accountId === user?._id}
                       color={colors.primary}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
@@ -158,6 +192,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                     <RadioButton
                       value=""
                       color={colors.primary}
+                      disabled={account.accountInfo?.accountId === user?._id}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
                     />
@@ -208,66 +243,72 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
           return (
             <View>
               <Divider />
-              <List.Item
-                title="Expire"
-                description="Retirer l'utilisateur du groupe au bout d'un certain temps"
-                onPress={setExpiry}
-                left={() =>
-                  Platform.OS !== 'ios' && (
-                    <Checkbox
-                      color={colors.primary}
-                      status={expiryDate ? 'checked' : 'unchecked'}
-                      onPress={setExpiry}
-                    />
-                  )
-                }
-                right={() =>
-                  Platform.OS === 'ios' && (
-                    <Checkbox
-                      color={colors.primary}
-                      status={expiryDate ? 'checked' : 'unchecked'}
-                      onPress={setExpiry}
-                    />
-                  )
-                }
-              />
-              <CollapsibleView collapsed={!expiryDate}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 10,
-                  }}
-                >
-                  <IconButton
-                    icon="minus"
-                    onPress={() => expiryDate && setExpiryDate(expiryDate - 1)}
-                  />
-                  <TextInput
-                    mode="outlined"
-                    style={{ minWidth: 80 }}
-                    dense
-                    render={(props) => (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}>
-                        <NativeTextInput
-                          {...props}
-                          value={expiryDate.toString()}
-                          autoCorrect={false}
-                          onChangeText={(text) => setExpiryDate(parseInt(text, 10) || 0)}
-                          keyboardType="number-pad"
-                          textAlign="center"
+              {!modifying && (
+                <View>
+                  <List.Item
+                    title="Expire"
+                    description="Retirer l'utilisateur du groupe au bout d'un certain temps"
+                    onPress={setExpiry}
+                    left={() =>
+                      Platform.OS !== 'ios' && (
+                        <Checkbox
+                          color={colors.primary}
+                          status={expiryDate ? 'checked' : 'unchecked'}
+                          onPress={setExpiry}
                         />
-                        <Text style={{ color: colors.disabled }}>mois</Text>
-                      </View>
-                    )}
+                      )
+                    }
+                    right={() =>
+                      Platform.OS === 'ios' && (
+                        <Checkbox
+                          color={colors.primary}
+                          status={expiryDate ? 'checked' : 'unchecked'}
+                          onPress={setExpiry}
+                        />
+                      )
+                    }
                   />
-                  <IconButton
-                    icon="plus"
-                    onPress={() => expiryDate && setExpiryDate(expiryDate + 1)}
-                  />
+                  <CollapsibleView collapsed={!expiryDate}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: 10,
+                      }}
+                    >
+                      <IconButton
+                        icon="minus"
+                        onPress={() => expiryDate && setExpiryDate(expiryDate - 1)}
+                      />
+                      <TextInput
+                        mode="outlined"
+                        style={{ minWidth: 80 }}
+                        dense
+                        render={(props) => (
+                          <View
+                            style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}
+                          >
+                            <NativeTextInput
+                              {...props}
+                              value={expiryDate.toString()}
+                              autoCorrect={false}
+                              onChangeText={(text) => setExpiryDate(parseInt(text, 10) || 0)}
+                              keyboardType="number-pad"
+                              textAlign="center"
+                            />
+                            <Text style={{ color: colors.disabled }}>mois</Text>
+                          </View>
+                        )}
+                      />
+                      <IconButton
+                        icon="plus"
+                        onPress={() => expiryDate && setExpiryDate(expiryDate + 1)}
+                      />
+                    </View>
+                  </CollapsibleView>
                 </View>
-              </CollapsibleView>
+              )}
               <Divider />
               <View style={styles.contentContainer}>
                 <Button
@@ -277,7 +318,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                   onPress={add}
                   style={{ flex: 1 }}
                 >
-                  Ajouter
+                  {modifying ? 'Modifier' : 'Ajouter'}
                 </Button>
               </View>
             </View>
@@ -290,8 +331,8 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups } = state;
-  return { state: groups.state };
+  const { groups, account } = state;
+  return { state: groups.state, account };
 };
 
 export default connect(mapStateToProps)(AddUserRoleModal);

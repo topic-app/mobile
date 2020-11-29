@@ -1,25 +1,32 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, Card } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { State, ArticleRequestState, Account } from '@ts/types';
 import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';
-import { logger, useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
+import getStyles from '@styles/Styles';
+import { State, ArticleRequestState, Account } from '@ts/types';
+import { logger, useTheme } from '@utils/index';
 
-import type { ArticleAddStackParams } from '../index';
+import type { ArticleAddScreenNavigationProp, ArticleAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-type Props = StackScreenProps<ArticleAddStackParams, 'Success'> & {
+type ArticleAddSuccessProps = {
+  navigation: ArticleAddScreenNavigationProp<'Success'>;
+  route: RouteProp<ArticleAddStackParams, 'Success'>;
   reqState: ArticleRequestState;
   account: Account;
 };
 
-const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, route }) => {
+const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
+  navigation,
+  reqState,
+  account,
+  route,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);

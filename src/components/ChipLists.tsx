@@ -217,7 +217,7 @@ const ChipAddList = <T extends ListItem>({
   );
 };
 
-type ChipSuggestionListItem = ListItem & { color: string };
+type ChipSuggestionListItem = ListItem & { color?: string };
 
 type ChipSuggestionListProps<T extends ChipSuggestionListItem> = {
   data?: T[];

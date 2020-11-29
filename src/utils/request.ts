@@ -5,6 +5,7 @@ import Store from '@redux/store';
 
 import axios from './axiosInstance';
 import logger from './logger';
+import { Config } from '../constants';
 
 type ApiDataType = {
   success: boolean;
@@ -25,6 +26,11 @@ async function request(
     params,
     sent: true,
   });
+  if (Store.getState().preferences.useDevServer) {
+    axios.defaults.baseURL = Config.api.devUrl;
+  } else {
+    axios.defaults.baseURL = Config.api.baseUrl;
+  }
   const headers = auth
     ? { Authorization: `Bearer ${Store.getState().account.accountInfo?.accountToken}` }
     : {};

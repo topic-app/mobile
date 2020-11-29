@@ -1,10 +1,8 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, EventRequestState, EventCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
   StepperView,
@@ -12,24 +10,25 @@ import {
   SafeAreaView,
   PlatformBackButton,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { eventAdd } from '@redux/actions/apiActions/events';
 import { clearEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { State, EventRequestState, EventCreationData } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { EventAddStackParams } from '../index';
-import getEventStyles from '../styles/Styles';
+import EventAddPageContact from '../components/AddContact';
+import EventAddPageDuration from '../components/AddDuration';
 import EventAddPageGroup from '../components/AddGroup';
 import EventAddPageLocation from '../components/AddLocation';
 import EventAddPageMeta from '../components/AddMeta';
-import EventAddPageDuration from '../components/AddDuration';
 import EventAddPagePlace from '../components/AddPlace';
 import EventAddPageProgram from '../components/AddProgram';
 import EventAddPageTags from '../components/AddTags';
-import EventAddPageContact from '../components/AddContact';
+import type { EventAddScreenNavigationProp } from '../index';
+import getEventStyles from '../styles/Styles';
 
 type Props = {
-  navigation: StackNavigationProp<EventAddStackParams, 'Add'>;
+  navigation: EventAddScreenNavigationProp<'Add'>;
   reqState: EventRequestState;
   creationData?: EventCreationData;
 };
@@ -47,15 +46,17 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       phone: creationData.phone,
       email: creationData.email,
       contact: creationData.contact,
-      organizers: creationData.organizers,
+      members: creationData.members,
       start: creationData.start,
       end: creationData.end,
-      date: Date.now(),
+      date: new Date(),
       location: creationData.location,
       group: creationData.group,
-      places: creationData.place,
+      place: creationData.place,
       parser: parser || creationData.parser,
-      preferences: null,
+      preferences: {
+        comments: true,
+      },
       tags: creationData.tags,
       program: creationData.program,
     }).then(({ _id }) => {

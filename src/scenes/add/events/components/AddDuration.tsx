@@ -18,10 +18,10 @@ type Props = StepperViewPageProps & { account: Account };
 const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   const [errorVisible, setErrorVisible] = React.useState(false);
   const [showError, setError] = React.useState(false);
-  const [startDate, setStartDate] = React.useState(null);
-  const [endDate, setEndDate] = React.useState(null);
-  const [startMode, setStartMode] = React.useState('time');
-  const [endMode, setEndMode] = React.useState('time');
+  const [startDate, setStartDate] = React.useState<Date|null>(null);
+  const [endDate, setEndDate] = React.useState<Date|null>(null);
+  const [startMode, setStartMode] = React.useState<'date'|'time'>('time');
+  const [endMode, setEndMode] = React.useState<'date'|'time'>('time');
   const [startShow, setStartShow] = React.useState(false);
   const [endShow, setEndShow] = React.useState(false);
 
@@ -29,13 +29,18 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
-  const changeStartDate = (event, selectedDate) => {
+  const changeStartDate = (event: unknown, selectedDate?: Date) => {
     const currentDate = selectedDate || startDate;
     setStartShow(false);
     setStartDate(currentDate);
-    startMode === 'date'
-      ? showStartMode()
-      : checkErrors() && endDate != null && currentDate >= endDate && setEndDate(currentDate);
+    if (startMode === 'date') {
+      showStartMode();
+    } else {
+      checkErrors();
+      if (currentDate && endDate && currentDate.valueOf() >= endDate.valueOf()) {
+        setEndDate(currentDate);
+      }
+    }
   };
 
   const showStartMode = () => {
@@ -44,7 +49,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
     setStartShow(true);
   };
 
-  const changeEndDate = (event, selectedDate) => {
+  const changeEndDate = (event: unknown, selectedDate?: Date) => {
     const currentDate = selectedDate || endDate;
     setEndShow(false);
     setEndDate(currentDate);
@@ -58,12 +63,12 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   };
 
   const checkErrors = () => {
-    startDate != null && endDate != null && setErrorVisible(false);
-    +(endDate - startDate).toFixed(2) >= 3.6 && setError(false);
+    if (startDate && endDate) setErrorVisible(false);
+    if (endDate && startDate && (endDate.valueOf() - startDate.valueOf()) >= 3.6) setError(false);
   };
 
   const submit = () => {
-    if (startDate != null && endDate != null && +((endDate - startDate) / 10e5).toFixed(2) >= 3.6) {
+    if (startDate && endDate && (endDate.valueOf() - startDate.valueOf()) >= 360000) {
       updateEventCreationData({ start: startDate, end: endDate });
       next();
     } else {
@@ -100,11 +105,10 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
           {startShow && (
             <DateTimePicker
               testID="dateTimePicker"
-              value={startDate}
+              value={startDate as Date}
               mode={startMode}
-              is24Hour={true}
               display={Platform.OS === 'ios' ? 'inline' : 'default'}
-              minimumDate={Date.now()}
+              minimumDate={new Date()}
               onChange={changeStartDate}
             />
           )}
@@ -125,12 +129,11 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
           {endShow && (
             <DateTimePicker
               testID="dateTimePicker"
-              value={endDate}
+              value={endDate as Date}
               mode={endMode}
-              is24Hour={true}
               display={Platform.OS === 'ios' ? 'inline' : 'default'}
               onChange={changeEndDate}
-              minimumDate={startDate}
+              minimumDate={startDate as Date}
             />
           )}
         </View>

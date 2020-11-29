@@ -1,7 +1,7 @@
-import { request } from '@utils/index';
 import Store from '@redux/store';
-import { hashPassword } from '@utils/crypto';
 import { AppThunk, UPDATE_ACCOUNT_STATE, User } from '@ts/types';
+import { hashPassword } from '@utils/crypto';
+import { request } from '@utils/index';
 
 /**
  * @docs actionCreators
@@ -9,7 +9,7 @@ import { AppThunk, UPDATE_ACCOUNT_STATE, User } from '@ts/types';
  * @param fields Les données à modifier
  * @returns Action
  */
-function updateDataCreator(fields: Partial<User>): AppThunk {
+function updateDataCreator(fields: Partial<User['data']>): AppThunk {
   return async (dispatch) => {
     dispatch({
       type: UPDATE_ACCOUNT_STATE,
@@ -107,7 +107,7 @@ function updateProfileStringCreator({ url, params }: UpdateStringCreatorParams):
   };
 }
 
-async function updateData(fields: Partial<User>) {
+async function updateData(fields: Partial<User['data']>) {
   await Store.dispatch(updateDataCreator(fields));
 }
 

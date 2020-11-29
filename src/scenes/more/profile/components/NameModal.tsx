@@ -1,14 +1,14 @@
 import React from 'react';
+import { View, Platform, TextInput as TextInputRef } from 'react-native';
 import { Divider, Button, TextInput, ProgressBar } from 'react-native-paper';
-import { View, Platform } from 'react-native';
 import { connect } from 'react-redux';
 
-import { ModalProps, State, Account } from '@ts/types';
 import { ErrorMessage, Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updateData } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
+import { updateData } from '@redux/actions/data/profile';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, Account } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getprofileStyles from '../styles/Styles';
 
@@ -23,8 +23,8 @@ const NameModal: React.FC<NameModalProps> = ({ visible, setVisible, account, sta
   const profileStyles = getprofileStyles(theme);
   const { colors } = theme;
 
-  const firstNameInputRef = React.useRef(null);
-  const lastNameInputRef = React.useRef(null);
+  const firstNameInputRef = React.useRef<TextInputRef>(null);
+  const lastNameInputRef = React.useRef<TextInputRef>(null);
 
   const [firstName, setFirstName] = React.useState(account.accountInfo?.user?.data?.firstName);
   const [lastName, setLastName] = React.useState(account.accountInfo?.user?.data?.lastName);

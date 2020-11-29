@@ -1,7 +1,6 @@
 import { AnyAction } from 'redux';
-import { request, logger } from '@utils/index';
-import Store from '@redux/store';
 
+import Store from '@redux/store';
 import {
   GroupRolePermission,
   GroupRole,
@@ -21,8 +20,10 @@ import {
   LOGIN,
   AccountRequestState,
   AppThunk,
+  AccountCreationData,
 } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
+import { request, logger } from '@utils/index';
 
 import { fetchLocationData } from './location';
 
@@ -259,7 +260,7 @@ type LoginFields = {
   device: { type: string; deviceId: null; canNotify: boolean };
 };
 
-function loginCreator(fields: LoginFields): AppThunk {
+function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
   return async (dispatch) => {
     const newFields = fields;
     dispatch({
@@ -277,7 +278,7 @@ function loginCreator(fields: LoginFields): AppThunk {
       // We also hash passwords on the server, this is just a small extra security
       newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password);
     } catch (err) {
-      return dispatch({
+      dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           login: {
@@ -288,75 +289,64 @@ function loginCreator(fields: LoginFields): AppThunk {
           },
         },
       });
+      return false;
     }
-    request('auth/login/local', 'post', newFields)
-      .then((result) => {
-        if (!result.data?.correct) {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              login: {
-                loading: false,
-                success: null,
-                error: null,
-                incorrect: true,
-              },
-            },
-          });
-          return Promise.reject();
-        }
-        dispatch({
-          type: UPDATE_ACCOUNT_STATE,
-          data: {
-            login: {
-              loading: false,
-              success: true,
-              error: null,
-              incorrect: false,
-            },
+    let result;
+    try {
+      result = await request('auth/login/local', 'post', newFields);
+    } catch (err) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          login: {
+            success: false,
+            loading: false,
+            error: err,
+            incorrect: null,
           },
-        });
-        dispatch({
-          type: LOGIN,
-          data: result.data,
-        });
-        dispatch(fetchAccountCreator());
-        dispatch(fetchGroupsCreator());
-        dispatch(fetchWaitingGroupsCreator());
-        logger.debug('Logged in');
-        return Promise.resolve();
-      })
-      .catch((err) => {
-        dispatch({
-          type: UPDATE_ACCOUNT_STATE,
-          data: {
-            login: {
-              success: false,
-              loading: false,
-              error: err,
-              incorrect: null,
-            },
-          },
-        });
-        return Promise.reject();
+        },
       });
+      return false;
+    }
+    if (!result?.data?.correct) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          login: {
+            loading: false,
+            success: null,
+            error: null,
+            incorrect: true,
+          },
+        },
+      });
+      return false;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        login: {
+          loading: false,
+          success: true,
+          error: null,
+          incorrect: false,
+        },
+      },
+    });
+    dispatch({
+      type: LOGIN,
+      data: result.data,
+    });
+    dispatch(fetchAccountCreator());
+    dispatch(fetchGroupsCreator());
+    dispatch(fetchWaitingGroupsCreator());
+    logger.debug('Logged in');
+    return true;
   };
 }
 
 type RegisterFields = {
-  accountInfo: {
-    username: string;
-    email: string;
-    password: string;
-    global: boolean;
-    schools: string[];
-    departments: string[];
-    avatar: Avatar;
-    description: string;
-    public: boolean;
-    firstName: string;
-    lastName: string;
-  };
+  accountInfo: AccountCreationData;
   device: { type: string; deviceId: null; canNotify: boolean };
 };
 
@@ -374,7 +364,7 @@ function registerCreator(fields: RegisterFields): AppThunk {
       },
     });
     try {
-      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password);
+      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password || '');
     } catch (err) {
       return dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -481,8 +471,8 @@ function profileActionCreator(
 
 /* Actions */
 
-async function login(fields: LoginFields) {
-  await Store.dispatch(loginCreator(fields));
+function login(fields: LoginFields) {
+  return Store.dispatch(loginCreator(fields));
 }
 
 function updateState(fields: {
@@ -505,19 +495,7 @@ function logout() {
   Store.dispatch(logoutCreator());
 }
 
-function updateCreationData(params: {
-  title?: string;
-  email?: string;
-  password?: string;
-  username?: string;
-  schools?: string[];
-  departments?: string;
-  global?: boolean;
-  accountType?: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: Avatar;
-}) {
+function updateCreationData(params: Partial<AccountCreationData>) {
   Store.dispatch(updateCreationDataCreator(params));
 }
 

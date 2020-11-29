@@ -13,6 +13,7 @@ import {
   UPDATE_ACCOUNT_CREATION_DATA,
   AccountActionTypes,
   AccountState,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: AccountState = {
@@ -22,8 +23,10 @@ const initialState: AccountState = {
         loggedIn: false,
         accountInfo: null,
         creationData: {},
-        permissions: [],
       }),
+  permissions: [],
+  groups: [],
+  waitingGroups: [],
   state: {
     login: {
       loading: false,
@@ -147,11 +150,16 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
         groups: [],
         waitingGroups: [],
       };
+    case FULL_CLEAR:
+      return initialState;
     case LOGOUT:
       return {
         loggedIn: false,
         accountInfo: null,
         creationData: {},
+        permissions: [],
+        groups: [],
+        waitingGroups: [],
         state: state.state,
       };
     default:

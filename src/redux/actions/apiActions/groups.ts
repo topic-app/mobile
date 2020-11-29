@@ -1,5 +1,11 @@
 import Store from '@redux/store';
-import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, AppThunk } from '@ts/types';
+import {
+  UPDATE_GROUPS_STATE,
+  ActionType,
+  ReduxLocation,
+  AppThunk,
+  GroupCreationData,
+} from '@ts/types';
 import { request } from '@utils/index';
 
 import { reportCreator, approveCreator } from './ActionCreator';
@@ -113,7 +119,7 @@ type GroupAddMemberCreatorParams = {
   group: string;
   role: string;
   secondaryRoles: string[];
-  expires: number;
+  expires?: Date | number;
 };
 
 function groupAddMemberCreator({
@@ -166,6 +172,71 @@ function groupAddMemberCreator({
             type: UPDATE_GROUPS_STATE,
             data: {
               member_add: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
+type GroupModifyMemberCreatorParams = {
+  user: string;
+  group: string;
+  role: string;
+  secondaryRoles: string[];
+};
+function groupModifyMemberCreator({
+  group,
+  user,
+  role,
+  secondaryRoles,
+}: GroupModifyMemberCreatorParams): AppThunk {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          member_modify: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        'groups/members/modify',
+        'post',
+        {
+          group,
+          user,
+          role,
+          secondaryRoles,
+        },
+        true,
+      )
+        .then(() => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              member_modify: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve();
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              member_modify: {
                 loading: false,
                 success: false,
                 error,
@@ -457,21 +528,6 @@ function groupModifyCreator({
   };
 }
 
-type GroupAddCreatorParams = {
-  name: string;
-  shortName: string;
-  type: string;
-  location: ReduxLocation;
-  summary: string;
-  description: string;
-  parser: string;
-  verification: {
-    name: string;
-    id: string;
-    extra: string;
-  };
-};
-
 function groupAddCreator({
   name,
   shortName,
@@ -481,7 +537,7 @@ function groupAddCreator({
   parser,
   description,
   verification,
-}: GroupAddCreatorParams): AppThunk {
+}: GroupCreationData): AppThunk {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -543,7 +599,7 @@ function groupAddCreator({
   };
 }
 
-function groupAdd(data: GroupAddCreatorParams) {
+async function groupAdd(data: GroupCreationData) {
   return Store.dispatch(groupAddCreator(data));
 }
 
@@ -568,7 +624,7 @@ async function groupMemberAdd(
   user: string,
   role: string,
   secondaryRoles: string[],
-  expires: number,
+  expires?: Date | number, // not sure about how this works exactly
 ) {
   await Store.dispatch(
     groupAddMemberCreator({
@@ -577,6 +633,22 @@ async function groupMemberAdd(
       group,
       secondaryRoles,
       expires,
+    }),
+  );
+}
+
+async function groupMemberModify(
+  group: string,
+  user: string,
+  role: string,
+  secondaryRoles: string[],
+) {
+  await Store.dispatch(
+    groupModifyMemberCreator({
+      user,
+      role,
+      group,
+      secondaryRoles,
     }),
   );
 }
@@ -626,7 +698,7 @@ async function groupReport(groupId: string, reason: string) {
   );
 }
 
-function groupVerificationApprove(id: string) {
+async function groupVerificationApprove(id: string) {
   return Store.dispatch(
     approveCreator({
       url: 'groups/verification/approve',
@@ -643,6 +715,7 @@ export {
   groupReport,
   groupMemberAdd,
   groupMemberDelete,
+  groupMemberModify,
   groupMemberAccept,
   groupMemberReject,
   groupMemberLeave,

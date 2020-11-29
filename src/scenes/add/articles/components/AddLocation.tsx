@@ -3,6 +3,10 @@ import { View, Platform } from 'react-native';
 import { Button, HelperText, List, Text, Checkbox, Divider, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import {
   Account,
   State,
@@ -14,11 +18,7 @@ import {
   GroupRolePermission,
   GroupRole,
 } from '@ts/types';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
 
 import getAuthStyles from '../styles/Styles';
 

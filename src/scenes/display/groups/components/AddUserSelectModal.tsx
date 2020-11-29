@@ -3,6 +3,9 @@ import { View, FlatList } from 'react-native';
 import { Divider, ProgressBar, Text, List } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { Avatar, Illustration, ErrorMessage, Searchbar, Modal } from '@components/index';
+import { searchUsers } from '@redux/actions/api/users';
+import getStyles from '@styles/Styles';
 import {
   ModalProps,
   State,
@@ -11,11 +14,9 @@ import {
   UserRequestState,
   GroupMember,
   Account,
+  UserPreload,
 } from '@ts/types';
-import { Avatar, Illustration, ErrorMessage, Searchbar, Modal } from '@components/index';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { searchUsers } from '@redux/actions/api/users';
 
 import getGroupStyles from '../styles/Styles';
 
@@ -24,7 +25,7 @@ type AddUserSelectModalProps = ModalProps & {
   state: UserRequestState;
   members: GroupMember[];
   account: Account;
-  next: (user: User) => any;
+  next: (user: UserPreload) => any;
 };
 
 const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
@@ -43,7 +44,7 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
 
   const [searchText, setSearchText] = React.useState('');
 
-  let update = (text = searchText) => {
+  const update = (text = searchText) => {
     if (text !== '') {
       searchUsers('initial', text);
     }
@@ -53,7 +54,7 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
     update();
   }, [null]);
 
-  let data = searchText === '' ? account.accountInfo?.user?.data?.following?.users : users.search;
+  const data = searchText === '' ? account.accountInfo?.user?.data?.following?.users : users.search;
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
@@ -118,7 +119,7 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
               left={() => <Avatar avatar={item.info?.avatar} size={50} />}
               onPress={
                 members.some((m) => m.user?._id === item._id)
-                  ? null
+                  ? undefined
                   : () => {
                       next(item);
                       setVisible(false);

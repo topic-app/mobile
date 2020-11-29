@@ -1,3 +1,4 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform } from 'react-native';
 import {
@@ -11,9 +12,13 @@ import {
   ProgressBar,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
+import getStyles from '@styles/Styles';
 import {
   Account,
   State,
@@ -24,18 +29,13 @@ import {
   ReduxLocation,
   LocationList,
 } from '@ts/types';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updateGroupCreationData } from '@redux/actions/contentData/groups';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
 
 import type { GroupAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
 type GroupAddLocationProps = StepperViewPageProps & {
-  navigation: StackNavigationProp<GroupAddStackParams, 'Location'>;
+  navigation: StackNavigationProp<GroupAddStackParams, 'Add'>;
   account: Account;
   creationData: ArticleCreationData;
   location: LocationList;
@@ -76,8 +76,8 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   departmentItems,
   locationStates,
 }) => {
-  const [schools, setSchools] = React.useState([]);
-  const [departments, setDepartments] = React.useState([]);
+  const [schools, setSchools] = React.useState<string[]>([]);
+  const [departments, setDepartments] = React.useState<string[]>([]);
   const [global, setGlobal] = React.useState(false);
   const [showError, setError] = React.useState(false);
 
@@ -120,7 +120,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             />
             <Text style={{ color: colors.text, flex: 1 }}>
               Vous pourrez publier des contenus dans ces localisations. Séléctionnez uniquement
-              celles qui correspondent à votre champ d'action.
+              celles qui correspondent à votre champ d&apos;action.
             </Text>
           </View>
         </Card>
@@ -199,6 +199,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'schools',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ schools: newSchools }: ReduxLocation) => {
                   fetchMultiSchool(newSchools);
@@ -239,6 +240,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'departements',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ departments: newDepartments }: ReduxLocation) => {
                   fetchMultiDepartment(newDepartments);
@@ -271,6 +273,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'regions',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ departments: newDepartments }: ReduxLocation) => {
                   fetchMultiDepartment(newDepartments);

@@ -5,3 +5,4 @@ export { default as Format } from './format';
 export * from './getAssetUrl';
 export * from './tags';
 export * from './hooks';
+export * from './permissions';

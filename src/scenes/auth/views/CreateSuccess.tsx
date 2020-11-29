@@ -1,26 +1,24 @@
 import React from 'react';
 import { Platform, View, FlatList } from 'react-native';
 import { Text, Button, Divider, Snackbar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { Location, Group, State, GroupRequestState } from '@ts/types';
 import { Illustration } from '@components/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateGroups } from '@redux/actions/api/groups';
+import getStyles from '@styles/Styles';
+import { State, LocationList, GroupPreload } from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import type { AuthStackParams } from '../index';
+import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-type Props = {
-  navigation: StackNavigationProp<AuthStackParams, 'CreateSuccess'>;
-  location: Location;
-  groups: Group[];
-  reqState: GroupRequestState;
+type AuthCreateSuccessProps = {
+  navigation: AuthScreenNavigationProp<'CreateSuccess'>;
+  location: LocationList;
+  groups: GroupPreload[];
 };
 
-const AuthCreateSuccess: React.FC<Props> = ({ navigation, location, groups, reqState }) => {
+const AuthCreateSuccess: React.FC<AuthCreateSuccessProps> = ({ navigation, location, groups }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);
@@ -75,7 +73,7 @@ const AuthCreateSuccess: React.FC<Props> = ({ navigation, location, groups, reqS
 
 const mapStateToProps = (state: State) => {
   const { location, groups } = state;
-  return { location, groups: groups.data, reqState: groups.state };
+  return { location, groups: groups.data };
 };
 
 export default connect(mapStateToProps)(AuthCreateSuccess);

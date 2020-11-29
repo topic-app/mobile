@@ -5,6 +5,7 @@ import {
   CLEAR_LOCATION,
   UPDATE_LOCATION_STATE,
   LocationState,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: LocationState = {
@@ -44,6 +45,8 @@ function locationReducer(state = initialState, action: LocationActionTypes): Loc
     case UPDATE_LOCATION:
       return { ...state, ...action.data };
     case CLEAR_LOCATION:
+      return initialState;
+    case FULL_CLEAR:
       return initialState;
     case UPDATE_LOCATION_STATE:
       return { ...state, state: { ...state.state, ...action.data } };

@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Platform, Image, ScrollView } from 'react-native';
 import { Text, Button, Divider } from 'react-native-paper';
@@ -13,12 +13,15 @@ import {
 import getStyles from '@styles/Styles';
 import { useTheme } from '@utils/index';
 
-import type { LandingStackParams } from '../index';
+import type { LandingScreenNavigationProp, LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
 
-type LandingArticlesProps = StackScreenProps<LandingStackParams, 'Info'>;
+type LandingInfoProps = {
+  navigation: LandingScreenNavigationProp<'Info'>;
+  route: RouteProp<LandingStackParams, 'Info'>;
+};
 
-const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) => {
+const LandingInfo: React.FC<LandingInfoProps> = ({ navigation, route }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
@@ -237,4 +240,4 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
   );
 };
 
-export default LandingArticles;
+export default LandingInfo;

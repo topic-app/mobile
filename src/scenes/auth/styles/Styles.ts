@@ -36,9 +36,6 @@ function getAuthStyles(theme: Theme) {
       alignSelf: 'center',
       paddingBottom: 3,
     },
-    textInputContainer: {
-      alignSelf: 'stretch',
-    },
     changeButtonContainer: {
       marginBottom: 20,
     },

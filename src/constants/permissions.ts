@@ -19,6 +19,8 @@ export const GROUP_ROLES_DELETE = 'group.roles.delete';
 export const GROUP_VERIFICATION_VIEW = 'group.verification.view';
 export const GROUP_VERIFICATION_APPROVE = 'group.verification.approve';
 
+export const CONTENT_UPLOAD = 'content.upload';
+
 export const PETITION_ADD = 'petition.add';
 export const PETITION_MESSAGE_ADD = 'petition.message.add';
 export const PETITION_DELETE = 'petition.delete';

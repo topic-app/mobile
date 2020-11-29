@@ -5,6 +5,7 @@ import {
   CLEAR_PREF,
   CLEAR_ALL_PREFS,
   PreferencesState,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: PreferencesState = {
@@ -19,6 +20,7 @@ const initialState: PreferencesState = {
   stripFormatting: false,
   themeEasterEggDiscovered: false,
   youtubeConsent: false,
+  useDevServer: false,
   ...Config.seedDb.preferences,
 };
 
@@ -46,6 +48,8 @@ function prefReducer(state = initialState, action: PrefActionTypes): Preferences
     case CLEAR_ALL_PREFS:
       // Return the default preferences
       return initialState;
+    case FULL_CLEAR:
+      return { ...initialState, useDevServer: state.useDevServer };
     default:
       return state;
   }

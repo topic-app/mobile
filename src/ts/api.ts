@@ -69,6 +69,7 @@ export type SchoolPreload = {
   cache: {
     events?: number;
   };
+  departments?: DepartmentPreload[];
 };
 
 export type School = {
@@ -108,18 +109,18 @@ export type Department = {
 };
 
 export type Image = {
-  _id: string; // Note: Not really useful
-  image: string;
+  _id?: string; // Note: Not really useful
+  image: string | null;
   thumbnails: {
-    small: boolean;
-    medium: boolean;
-    large: boolean;
+    small?: boolean;
+    medium?: boolean;
+    large?: boolean;
   };
 };
 
 // Location types
 export type Location = {
-  _id: string; // Note: Not really useful
+  _id?: string; // Note: Not really useful
   global: boolean;
   schools: SchoolPreload[];
   departments: DepartmentPreload[];
@@ -167,15 +168,21 @@ export type Avatar =
     };
 
 export type UserPreload = {
+  preload: true;
   _id: string;
   displayName: string;
   info: {
     username: string;
     avatar?: Avatar;
+    official?: boolean;
+  };
+  data?: {
+    public?: boolean;
   };
 };
 
 export type User = {
+  preload?: false;
   _id: string;
   name: string;
   displayName: string;
@@ -183,6 +190,7 @@ export type User = {
     username: string;
     avatar: Avatar;
     joinDate: string;
+    official?: boolean;
   };
   data: {
     public: boolean;
@@ -271,7 +279,7 @@ export type GroupMember = {
   };
 };
 
-export type GroupPreload = {
+type GroupBase = {
   _id: string;
   displayName: string;
   name: string;
@@ -279,13 +287,19 @@ export type GroupPreload = {
   type: string;
   avatar?: Avatar;
   summary?: string;
+  shortName?: string;
   cache: {
     followers?: number | null;
     members?: number | null;
   };
 };
 
-export type Group = GroupPreload & {
+export type GroupPreload = GroupBase & {
+  preload: true;
+};
+
+export type Group = GroupBase & {
+  preload?: false;
   shortName?: string;
   handle: string;
   aliases: string;
@@ -298,6 +312,10 @@ export type Group = GroupPreload & {
   roles: GroupRole[];
   members: GroupMember[];
   tags: TagPreload[];
+};
+
+export type GroupVerification = Group & {
+  verification: Verification;
 };
 
 export type GroupWithMembership = Group & {
@@ -360,23 +378,27 @@ export type EventPlace =
   | { _id: string; type: 'school'; associatedSchool: SchoolPreload }
   | { _id: string; type: 'standalone'; address: Address };
 
-export type EventPreload = {
+type EventBase = {
   _id: string;
   title: string;
   summary: string;
   image: Image;
   group: GroupPreload;
-  author: AuthorPreload;
+  authors: AuthorPreload[];
   tags: TagPreload[];
   duration: Duration;
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
 };
+export type EventPreload = EventBase & {
+  preload: true;
+};
 export type EventVerificationPreload = EventPreload & {
   verification: Verification;
 };
 
-export type Event = EventPreload & {
+export type Event = EventBase & {
+  preload?: false;
   description: Content;
   members: MemberPreload[];
   program: ProgramEntry[];
@@ -402,22 +424,18 @@ export type PlaceType = 'cultural' | 'history' | 'tourism' | 'club' | 'other';
 export type PlacePreload = {
   _id: string;
   name: string;
+  displayName: string;
   types: PlaceType[];
   summary: string;
   address: Address;
 };
 
-export type Place = {
-  _id: string;
-  name: string;
+export type Place = PlacePreload & {
   shortName?: string;
-  types: PlaceType[];
-  summary: string;
   description: Content;
   group: GroupPreload;
   tags: TagPreload[];
   image: Image;
-  address: Address;
   location: Location;
 };
 
@@ -445,7 +463,7 @@ export namespace ExplorerLocation {
 
 // Petition Types
 export type Publisher = {
-  _id: string; // Note: Not really useful
+  _id?: string; // Note: Not really useful
   type: 'user' | 'group';
   user?: UserPreload;
   group?: GroupPreload;

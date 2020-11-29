@@ -1,5 +1,6 @@
-import { Article, Event } from '../api';
+import { Article, Event, EventPlace, Image } from '../api';
 import { ApiAction } from './apiReducers';
+import { FullClearAction } from './actions';
 
 // Articles
 export const UPDATE_ARTICLES_PARAMS = 'UPDATE_ARTICLES_PARAMS';
@@ -47,6 +48,10 @@ export type ArticleCreationData = {
     schools?: string[];
     departments?: string[];
     global?: boolean;
+  };
+  image?: Image | null;
+  preferences?: {
+    comments: boolean;
   };
   date?: Date;
   title?: string;
@@ -101,7 +106,8 @@ export type ArticlesContentActionTypes =
   | UpdateArticlesReadAction
   | UpdateArticlesPrefsAction
   | UpdateArticlesQuicksAction
-  | UpdateArticlesCreationDataAction;
+  | UpdateArticlesCreationDataAction
+  | FullClearAction;
 
 // Events
 export const UPDATE_EVENTS_PARAMS = 'UPDATE_EVENTS_PARAMS';
@@ -147,6 +153,7 @@ export type EventCreationData = {
   title?: string;
   summary?: string;
   description?: string;
+  data?: string;
   phone?: string;
   email?: string;
   contact?: {
@@ -154,7 +161,7 @@ export type EventCreationData = {
     value: string;
     link: string;
   }[];
-  organizers?: string[];
+  members?: string[];
   start?: Date;
   end?: Date;
   date?: Date;
@@ -164,7 +171,7 @@ export type EventCreationData = {
     global?: boolean;
   };
   group?: string;
-  place?: string[];
+  place?: EventPlace[];
   parser?: 'markdown' | 'plaintext';
   preferences?: {
     comments?: boolean;
@@ -218,7 +225,8 @@ export type EventsContentActionTypes =
   | UpdateEventsReadAction
   | UpdateEventsPrefsAction
   | UpdateEventsQuicksAction
-  | UpdateEventsCreationDataAction;
+  | UpdateEventsCreationDataAction
+  | FullClearAction;
 
 // Groups
 export const UPDATE_GROUPS_CREATION_DATA = 'UPDATE_GROUPS_CREATION_DATA';
@@ -231,7 +239,13 @@ export type GroupCreationData = {
     departments?: string[];
     global?: boolean;
   };
-  shortName?: Date;
+  shortName?: string;
+  parser?: 'markdown' | 'plaintext';
+  verification?: {
+    name?: string;
+    id?: string;
+    extra?: string;
+  };
   description?: string;
   summary?: string;
 };
@@ -245,7 +259,7 @@ type UpdateGroupsCreationDataAction = {
   data: Partial<GroupCreationData>;
 };
 
-export type GroupsContentActionTypes = UpdateGroupsCreationDataAction;
+export type GroupsContentActionTypes = UpdateGroupsCreationDataAction | FullClearAction;
 
 export type ContentItemString = 'articleData' | 'eventData' | 'groupData';
 

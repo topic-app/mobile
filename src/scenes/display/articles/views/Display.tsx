@@ -1,16 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
-import {
-  View,
-  ActivityIndicator,
-  Animated,
-  Platform,
-  Share,
-  Dimensions,
-  Alert,
-} from 'react-native';
+import { View, ActivityIndicator, Animated, Platform, Share, Alert } from 'react-native';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -48,7 +39,6 @@ import {
   Comment,
   ArticleListItem,
   Preferences,
-  Publisher,
   Content as ContentType,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
@@ -57,11 +47,11 @@ import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
 import CommentInlineCard from '../../components/Comment';
-import type { ArticleDisplayStackParams } from '../index';
+import type { ArticleDisplayScreenNavigationProp, ArticleDisplayStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 // Common types
-type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
+type Navigation = ArticleDisplayScreenNavigationProp<'Display'>;
 type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
 
 type CombinedReqState = {
@@ -181,7 +171,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     screen: 'User',
                     params: {
                       screen: 'Display',
-                      params: { id: author?._id, title: author?.displayName },
+                      params: { id: author?._id || '' /* title: author?.displayName */ },
                     },
                   },
                 })
@@ -640,7 +630,6 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               contentSingular: "La suppression de l'article",
             }}
             error={reqState.articles.delete.error}
-            retry={() => fetch()}
           />
         )}
       </AnimatingHeader>
@@ -713,7 +702,11 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         setVisible={setCommentModalVisible}
         id={id}
         reqState={reqState}
-        add={(publisher: Publisher, content: ContentType, parent: string) =>
+        add={(
+          publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
+          content: ContentType,
+          parent: string,
+        ) =>
           commentAdd(publisher, content, parent, 'article').then(() =>
             updateComments('initial', { parentId: id }),
           )
