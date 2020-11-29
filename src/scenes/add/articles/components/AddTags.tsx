@@ -16,7 +16,7 @@ import {
 import { updateTags, searchTags } from '@redux/actions/api/tags';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
-import { Account, State, ArticleCreationData, TagRequestState, TagPreload } from '@ts/types';
+import { Account, State, TagRequestState, TagPreload } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';

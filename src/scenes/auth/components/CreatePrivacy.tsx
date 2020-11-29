@@ -12,7 +12,7 @@ import { ListHeading, ListItem } from './ListComponents';
 type Props = StepperViewPageProps;
 
 const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
-  const [accountType, setAccountType] = React.useState('private');
+  const [accountType, setAccountType] = React.useState<'private' | 'public'>('private');
 
   const submit = () => {
     updateCreationData({ accountType });

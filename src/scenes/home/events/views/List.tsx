@@ -208,13 +208,11 @@ const EventList: React.FC<EventListProps> = ({
   const section = getSection();
   const category = getCategory();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      updateUpcomingEvents('initial');
-      updatePassedEvents('initial');
-      updateEventsFollowing('initial');
-    }, [null]),
-  );
+  React.useEffect(() => {
+    updateUpcomingEvents('initial');
+    updatePassedEvents('initial');
+    updateEventsFollowing('initial');
+  }, [null]);
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 

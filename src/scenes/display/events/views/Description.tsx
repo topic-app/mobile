@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import shortid from 'shortid';
 
 import { CategoryTitle, Content, InlineCard, Illustration, ErrorMessage } from '@components/index';
-import { updateComments } from '@root/src/redux/actions/api/comments';
+import { updateComments } from '@redux/actions/api/comments';
 import getStyles from '@styles/Styles';
 import {
   State,

@@ -210,12 +210,10 @@ const ArticleList: React.FC<ArticleListProps> = ({
   const section = getSection();
   const category = getCategory();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      updateArticles('initial');
-      updateArticlesFollowing('initial');
-    }, [null]),
-  );
+  React.useEffect(() => {
+    updateArticles('initial');
+    updateArticlesFollowing('initial');
+  }, [null]);
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 

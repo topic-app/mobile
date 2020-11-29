@@ -5,6 +5,7 @@ import React from 'react';
 import { Platform, Appearance, ColorSchemeName, View, Text } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import { Provider as PaperProvider } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
@@ -14,7 +15,6 @@ import { Preferences, State } from '@ts/types';
 import { analytics } from '@utils/firebase';
 import { logger, useSafeAreaInsets } from '@utils/index';
 
-import { TranslucentStatusBar } from './components';
 import AppNavigator from './index';
 import screens from './screens';
 
@@ -112,16 +112,21 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevSer
               <View
                 style={{
                   position: 'absolute',
+                  right: 5,
                   zIndex: 10000,
-                  height: insets.top,
-                  width: '100%',
+                  marginTop: insets.top,
+                  paddingHorizontal: 2,
+                  borderRadius: 3,
                   // Mix red with current appBar color
-                  backgroundColor: Color('#d11111').mix(Color(colors.appBar), 0.2).rgb().string(),
-                  justifyContent: 'center',
+                  backgroundColor: Color('#d11111').alpha(0.6).rgb().string(),
+                  flexDirection: 'row',
                   alignItems: 'center',
                 }}
               >
-                <Text style={{ color: 'white' }}>Serveur de développement</Text>
+                <Icon name="wrench" color="white" size={12} />
+                <Text style={{ color: 'white', fontSize: 12, paddingLeft: 5 }}>
+                  Serveur de développement
+                </Text>
               </View>
               <AppNavigator />
             </View>

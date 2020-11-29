@@ -1,8 +1,9 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { Formik } from 'formik';
 import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
+import * as Yup from 'yup';
 
 import {
   TranslucentStatusBar,
@@ -35,37 +36,17 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
     },
   },
 }) => {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
   const usernameInput = React.createRef<RNTextInput>();
   const passwordInput = React.createRef<RNTextInput>();
 
-  const submit = () => {
-    const fields = {
-      accountInfo: {
-        username,
-        password,
-      },
-      device: {
-        type: 'app',
-        deviceId: null,
-        canNotify: true,
-      },
-    };
-    login(fields)
-      .then(() => {
-        navigation.navigate('Main', {
-          screen: 'Home1',
-          params: { screen: 'Home2', params: { screen: 'Article' } },
-        });
-      })
-      .catch((e) => logger.warn(e));
-  };
-
   const theme = useTheme();
-  const { colors } = theme;
   const authStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
+
+  const LoginSchema = Yup.object().shape({
+    username: Yup.string().required("Nom d'utilisateur requis"),
+    password: Yup.string().required('Mot de passe requis'),
+  });
 
   return (
     <View style={styles.page}>
@@ -80,7 +61,6 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
               contentSingular: 'Le compte',
             }}
             type="axios"
-            retry={submit}
           />
         )}
 
@@ -93,57 +73,95 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
             </View>
           </View>
           <View style={authStyles.formContainer}>
-            <View style={authStyles.textInputContainer}>
-              <TextInput
-                ref={usernameInput}
-                label="Nom d'utilisateur ou adresse mail"
-                value={username}
-                autoCompleteType="username"
-                onSubmitEditing={() => passwordInput.current?.focus()}
-                autoCorrect={false}
-                autoFocus
-                autoCapitalize="none"
-                error={!!reqState.login.incorrect} // `!!` transforms it into a boolean
-                mode="outlined"
-                textContentType="username"
-                style={authStyles.textInput}
-                onChangeText={setUsername}
-              />
-              <HelperText type="error" visible={false}>
-                Hello, I am an easter egg (because eslint)
-              </HelperText>
-              {/* Because spacing */}
-            </View>
-            <View style={authStyles.textInputContainer}>
-              <TextInput
-                ref={passwordInput}
-                label="Mot de passe"
-                value={password}
-                mode="outlined"
-                error={!!reqState.login.incorrect}
-                autoCorrect={false}
-                secureTextEntry
-                autoCapitalize="none"
-                onSubmitEditing={() => submit()}
-                textContentType="password"
-                autoCompleteType="password"
-                style={authStyles.textInput}
-                onChangeText={setPassword}
-              />
-              <HelperText type="error" visible={reqState.login.incorrect || false}>
-                Le nom d&apos;utilisateur ou le mot de passe est incorrect
-              </HelperText>
-            </View>
-            <View style={authStyles.buttonContainer}>
-              <Button
-                mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-                uppercase={Platform.OS !== 'ios'}
-                onPress={submit}
-                style={{ flex: 1 }}
-              >
-                Se connecter
-              </Button>
-            </View>
+            <Formik
+              initialValues={{ username: '', password: '' }}
+              validationSchema={LoginSchema}
+              onSubmit={async ({ username, password }) => {
+                const fields = {
+                  accountInfo: {
+                    username,
+                    password,
+                  },
+                  device: {
+                    type: 'app',
+                    deviceId: null,
+                    canNotify: true,
+                  },
+                };
+                let didLogin;
+                try {
+                  didLogin = await login(fields);
+                } catch (e) {
+                  logger.warn('Login: error encountered while logging in', e);
+                }
+                if (didLogin) {
+                  navigation.navigate('Main', {
+                    screen: 'Home1',
+                    params: { screen: 'Home2', params: { screen: 'Article' } },
+                  });
+                }
+              }}
+            >
+              {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                <View>
+                  <TextInput
+                    ref={usernameInput}
+                    label="Nom d'utilisateur ou adresse mail"
+                    value={values.username}
+                    error={(!!errors.username || !!reqState.login.incorrect) && touched.username} // `!!` transforms it into a boolean
+                    onChangeText={handleChange('username')}
+                    onBlur={handleBlur('username')}
+                    onSubmitEditing={() => passwordInput.current?.focus()}
+                    style={authStyles.textInput}
+                    mode="outlined"
+                    autoCompleteType="username"
+                    autoCapitalize="none"
+                    textContentType="username"
+                    autoCorrect={false}
+                    autoFocus
+                  />
+                  <HelperText type="error" visible={!!errors.username && touched.username}>
+                    {errors.username}
+                  </HelperText>
+                  <TextInput
+                    ref={passwordInput}
+                    label="Mot de passe"
+                    value={values.password}
+                    error={(!!errors.password || !!reqState.login.incorrect) && touched.password}
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    onSubmitEditing={() => handleSubmit()}
+                    style={authStyles.textInput}
+                    mode="outlined"
+                    secureTextEntry
+                    autoCapitalize="none"
+                    textContentType="password"
+                    autoCompleteType="password"
+                    autoCorrect={false}
+                  />
+                  <HelperText
+                    type="error"
+                    visible={(!!errors.password || !!reqState.login.incorrect) && touched.password}
+                  >
+                    {errors.password}
+                    {!errors.password
+                      ? "Le nom d'utilisateur ou le mot de passe est incorrect"
+                      : null}
+                  </HelperText>
+
+                  <View style={authStyles.buttonContainer}>
+                    <Button
+                      mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                      uppercase={Platform.OS !== 'ios'}
+                      onPress={handleSubmit}
+                      style={{ flex: 1 }}
+                    >
+                      Se connecter
+                    </Button>
+                  </View>
+                </View>
+              )}
+            </Formik>
           </View>
         </ScrollView>
       </SafeAreaView>

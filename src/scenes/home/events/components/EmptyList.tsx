@@ -1,17 +1,16 @@
-import React from 'react';
-import { View, Platform } from 'react-native';
-import { Button, Text } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React from 'react';
+import { useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { ArticleRequestState } from '@ts/types';
-import { Illustration } from '@components/index';
-import { useTheme } from '@utils/index';
+import { FullscreenIllustration } from '@components/index';
 import getStyles from '@styles/Styles';
+import { ArticleRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
-type ArticleEmptyListProps = {
+type EventEmptyListProps = {
   tab: string;
   sectionKey: string;
   reqState: ArticleRequestState;
@@ -19,7 +18,7 @@ type ArticleEmptyListProps = {
   changeTab: (tabKey: string) => void;
 };
 
-const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
+const EventEmptyList: React.FC<EventEmptyListProps> = ({
   tab,
   sectionKey,
   reqState,
@@ -30,6 +29,8 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
+  const height = useWindowDimensions().height - 300;
+
   if (
     (sectionKey === 'categories' && reqState.list.success) ||
     (sectionKey === 'quicks' && reqState.search.success) ||
@@ -37,56 +38,39 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   ) {
     if (tab === 'upcoming' || tab === 'passed') {
       return (
-        <View>
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name="event" height={400} width={400} />
-            <Text>Aucun événement {tab === 'upcoming' && 'prévu '}pour cette localisation</Text>
-          </View>
-          <View style={styles.container}>
-            <Button
-              mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={() =>
-                navigation.navigate('Main', {
-                  screen: 'Params',
-                  params: {
-                    screen: 'Article',
-                  },
-                })
-              }
-            >
-              Localisation
-            </Button>
-          </View>
-        </View>
+        <FullscreenIllustration
+          style={{ height }}
+          illustration="event"
+          buttonLabel="Localisation"
+          buttonOnPress={() =>
+            navigation.navigate('Main', {
+              screen: 'Params',
+              params: {
+                screen: 'Article',
+              },
+            })
+          }
+        >
+          Aucun événement {tab === 'upcoming' && 'prévu '}pour cette localisation
+        </FullscreenIllustration>
       );
     } else if (sectionKey === 'lists') {
       return (
-        <View style={styles.centerIllustrationContainer}>
-          <Illustration name="article-lists" height={400} width={400} />
-          <Text>Aucun événement dans cette liste</Text>
-          <View style={styles.contentContainer}>
-            <Text style={articleStyles.captionText}>
-              Ajoutez les grâce à l&apos;icone <Icon name="playlist-plus" size={20} />
-            </Text>
-          </View>
-        </View>
+        <FullscreenIllustration illustration="article-lists" style={{ height }}>
+          Aucun article dans cette liste{'\n'}Ajoutez les grâce à l&apos;icone{' '}
+          <Icon name="playlist-plus" size={20} />
+        </FullscreenIllustration>
       );
     } else {
       return (
-        <View style={styles.centerIllustrationContainer}>
-          <Illustration name="event" height={400} width={400} />
-          <Text>Aucun événement dans cette catégorie</Text>
-        </View>
+        <FullscreenIllustration illustration="event" style={{ height }}>
+          Aucun article dans cette catégorie
+        </FullscreenIllustration>
       );
     }
   } else {
-    return (
-      <View style={styles.centerIllustrationContainer}>
-        <Illustration name="event-greyed" height={400} width={400} />
-      </View>
-    );
+    return <FullscreenIllustration illustration="event-greyed" style={{ height }} />;
   }
 };
 
-export default ArticleEmptyList;
+export default EventEmptyList;
