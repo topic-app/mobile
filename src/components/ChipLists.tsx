@@ -81,9 +81,9 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             paddingRight: rightAction ? 0 : 10,
           }}
         >
-          {!rightAction && icon && <Icon name={icon} size={20} color={colors.icon} />}
+          {!rightAction && icon ? <Icon name={icon} size={20} color={colors.icon} /> : null}
           {children}
-          {rightAction && icon && (
+          {rightAction && icon ? (
             <IconButton
               icon={icon}
               color={colors.softContrast}
@@ -92,7 +92,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
               onPressIn={handlePressIn}
               onPressOut={handlePressOut}
             />
-          )}
+          ) : null}
         </View>
       </PlatformTouchable>
     </Animated.View>
