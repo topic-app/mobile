@@ -81,7 +81,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, n
     const { id, geometry, properties } = event.features[0];
     if (geometry.type === 'Point') {
       const coordinates = geometry.coordinates as [number, number];
-      cameraRef.current?.moveTo(coordinates, 100);
+      cameraRef.current?.moveTo(coordinates, 700);
       setData({
         id: id!,
         type: properties?.type,

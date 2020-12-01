@@ -1,18 +1,9 @@
 import { useDimensions } from '@react-native-community/hooks';
-import { useFocusEffect, useNavigation } from '@react-navigation/core';
-import _ from 'lodash';
-import moment from 'moment';
+import { useFocusEffect } from '@react-navigation/core';
 import React from 'react';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-  Platform,
-  BackHandler,
-} from 'react-native';
-import { Divider, Text, Card, Title, Subheading, IconButton } from 'react-native-paper';
-import Animated, { call } from 'react-native-reanimated';
+import { View, BackHandler } from 'react-native';
+import { Divider, Text } from 'react-native-paper';
+import Animated, { call, cond, greaterThan, lessThan, useCode } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import shortid from 'shortid';
 
@@ -27,41 +18,6 @@ import type { MapMarkerDataType } from '../views/Map';
 
 const bottomSheetPortraitSnapPoints = [0, 210, '103.5%'];
 const bottomSheetLandscapeSnapPoints = [0, 210, '103.5%'];
-
-// function LocationEvent({ title, summary, imageUrl, date }) {
-//   const styles = getStyles(useTheme());
-//   const Touchable = Platform.OS === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
-//   return (
-//     <Card style={styles.card}>
-//       <Touchable onPress={() => logger.warn('Navigate to event')}>
-//         <View style={{ padding: 10 }}>
-//           <Title
-//             style={[styles.cardTitle, { marginBottom: 0 }]}
-//             numberOfLines={1}
-//             ellipsizeMode="tail"
-//           >
-//             {title}
-//           </Title>
-//           <View style={{ flexDirection: 'row' }}>
-//             <Image
-//               source={{ uri: imageUrl }}
-//               style={{ width: 100, height: 100, alignSelf: 'center' }}
-//               resizeMode="contain"
-//             />
-//             <View style={{ margin: 10, width: '70%' }}>
-//               <Text style={{ color: 'gray', fontSize: 16 }}>
-//                 {_.capitalize(moment(date).fromNow())}
-//               </Text>
-//               <Text style={{ fontSize: 16 }} ellipsizeMode="tail" numberOfLines={3}>
-//                 {summary}
-//               </Text>
-//             </View>
-//           </View>
-//         </View>
-//       </Touchable>
-//     </Card>
-//   );
-// }
 
 type LocationBottomSheetProps = {
   bottomSheetRef?: React.RefObject<BottomSheetRef>;
@@ -80,7 +36,6 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
   const { colors } = theme;
 
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
   const minHeight = useDimensions().window.height - 21;
 
   const place = (places.find(
@@ -116,37 +71,40 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
 
   const minimizeBottomSheet = () => bottomSheetRef.current!.snapTo(1);
 
-  // TODO: Implement back handler
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     console.log('NAV TO BOTTOMSHEET');
-  //     const onBackPress = () => {
-  //       const isBottomSheetOpen = Animated.cond(
-  //         Animated.eq(bottomSheetY, 1),
-  //         call([], () => true),
-  //         call([], () => false),
-  //       );
-  //       if (isBottomSheetOpen) {
-  //         return false;
-  //       } else {
-  //         minimizeBottomSheet();
-  //         return true;
-  //       }
-  //     };
-
-  //     BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-  //     return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-  //   }, [minimizeBottomSheet]),
-  // );
-
-  if (!place) {
-    return (
-      <View style={{ flex: 1 }}>
-        <Text>Chargement du lieu</Text>
-      </View>
+  // extended keeps track of whether the Bottom Sheet is extended
+  let extended = false;
+  // useCode is a hook to run code if a certain condition is met
+  // For example, here we check whether bottomSheetY is almost extended
+  // and if so, then toggle value of extended
+  useCode(() => {
+    return cond(
+      lessThan(bottomSheetY, 0.1),
+      call([], () => {
+        if (!extended) extended = true;
+      }),
+      call([], () => {
+        if (extended) extended = false;
+      }),
     );
-  }
+  }, [bottomSheetY]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (!extended) {
+          return false;
+        } else {
+          minimizeBottomSheet();
+          return true;
+        }
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [extended, minimizeBottomSheet]),
+  );
+
+  if (!place) return null;
 
   const { icon, title, subtitle, description, detail, addresses } = getStrings(place);
 
@@ -190,7 +148,10 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
                 icon="map-marker-outline"
                 iconColor={colors.primary}
                 title={address}
-                onPress={() => zoomToLocation(mapMarkerData.coordinates)}
+                onPress={() => {
+                  minimizeBottomSheet();
+                  zoomToLocation(mapMarkerData.coordinates);
+                }}
                 compact
               />
               <Divider />
@@ -208,7 +169,6 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
   return (
     <>
       <Animated.View
-        pointerEvents="none"
         style={{
           position: 'absolute',
           top: 0,
@@ -217,6 +177,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
           opacity: animatedBackgroundOpacity,
           backgroundColor: colors.background,
         }}
+        pointerEvents="none"
       />
       <BottomSheet
         ref={bottomSheetRef}
@@ -239,9 +200,11 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
           flexDirection: 'row',
           alignItems: 'center',
         }}
+        // only allow onPress events if bottomSheet is almost fully extended
+        pointerEvents={cond(greaterThan(bottomSheetY, 0.1), 'none', 'auto')}
       >
         <PlatformBackButton onPress={minimizeBottomSheet} />
-        <Text numberOfLines={1} style={[explorerStyles.modalTitle, { paddingLeft: 65 }]}>
+        <Text numberOfLines={1} style={[explorerStyles.modalTitle, { paddingLeft: 10 }]}>
           {title}
         </Text>
       </Animated.View>
