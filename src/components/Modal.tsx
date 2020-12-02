@@ -1,10 +1,10 @@
 import React from 'react';
-import { Card } from 'react-native-paper';
 import ModalComponent from 'react-native-modal';
+import { Card } from 'react-native-paper';
 
+import getStyles from '@styles/Styles';
 import { ModalProps } from '@ts/types';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 
 const Modal = ({
   visible,
