@@ -1,7 +1,9 @@
+import { Formik } from 'formik';
 import React from 'react';
 import { View, Platform, TextInput } from 'react-native';
 import { Divider, Button, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
+import * as Yup from 'yup';
 
 import { CollapsibleView, Modal } from '@components/index';
 import { addArticleList } from '@redux/actions/contentData/articles';
@@ -24,10 +26,19 @@ function CreateModal({ visible, setVisible, articleLists, eventLists, type }: Cr
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  const [createListText, setCreateListText] = React.useState('');
-  const [errorVisible, setErrorVisible] = React.useState(false);
+  const lists = (type === 'articles' ? articleLists : eventLists) as Array<
+    ArticleListItem | EventListItem
+  >;
 
-  const lists = type === 'articles' ? articleLists : eventLists;
+  const CreateListSchema = Yup.object().shape({
+    name: Yup.string()
+      .required('Vous devez entrer un nom')
+      // check if there isn't already a list with the same name
+      .notOneOf(
+        lists.map((l) => l.name),
+        'Une liste avec ce nom existe déjà',
+      ),
+  });
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
@@ -35,62 +46,49 @@ function CreateModal({ visible, setVisible, articleLists, eventLists, type }: Cr
         <Divider />
 
         <View style={articleStyles.activeCommentContainer}>
-          <TextInput
-            autoFocus
-            placeholder="Nom de la liste"
-            placeholderTextColor={colors.disabled}
-            style={articleStyles.addListInput}
-            value={createListText}
-            onChangeText={(text) => {
-              setErrorVisible(false);
-              setCreateListText(text);
-            }}
-          />
-          <CollapsibleView collapsed={!errorVisible}>
-            <HelperText type="error" visible={errorVisible}>
-              Vous devez entrer un nom
-            </HelperText>
-          </CollapsibleView>
-          <CollapsibleView
-            collapsed={
-              !lists.some((l: ArticleListItem | EventListItem) => l.name === createListText)
-            }
-          >
-            <HelperText
-              type="error"
-              visible={lists.some(
-                (l: ArticleListItem | EventListItem) => l.name === createListText,
-              )}
-            >
-              Une liste avec ce nom existe déjà
-            </HelperText>
-          </CollapsibleView>
-        </View>
-        <Divider />
-        <View style={styles.contentContainer}>
-          <Button
-            mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-            color={colors.primary}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              if (createListText === '') {
-                setErrorVisible(true);
-              } else if (
-                !lists.some((l: ArticleListItem | EventListItem) => l.name === createListText)
-              ) {
-                // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
-                if (type === 'articles') {
-                  addArticleList(createListText);
-                } else {
-                  addEventList(createListText);
-                }
-                setCreateListText('');
-                setVisible(false);
+          <Formik
+            initialValues={{ name: '' }}
+            onSubmit={({ name }) => {
+              // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
+              if (type === 'articles') {
+                addArticleList(name);
+              } else {
+                addEventList(name);
               }
+              setVisible(false);
             }}
+            validationSchema={CreateListSchema}
           >
-            Créer la liste
-          </Button>
+            {({ handleSubmit, handleBlur, handleChange, errors, touched, values, handleReset }) => (
+              <View>
+                <TextInput
+                  placeholder="Nom de la liste"
+                  placeholderTextColor={colors.disabled}
+                  style={articleStyles.addListInput}
+                  value={values.name}
+                  onChangeText={handleChange('name')}
+                  onBlur={handleBlur('name')}
+                  autoFocus
+                />
+                <CollapsibleView collapsed={!errors.name && !touched.name}>
+                  <HelperText type="error">{errors.name}</HelperText>
+                </CollapsibleView>
+                <Divider />
+                <View style={styles.container}>
+                  <Button
+                    mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                    color={colors.primary}
+                    uppercase={Platform.OS !== 'ios'}
+                    onPress={() => {
+                      handleSubmit();
+                    }}
+                  >
+                    Créer la liste
+                  </Button>
+                </View>
+              </View>
+            )}
+          </Formik>
         </View>
       </View>
     </Modal>
