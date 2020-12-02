@@ -15,7 +15,14 @@ import {
 import { updateGroups } from '@redux/actions/api/groups';
 import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
-import { Account, GroupsState, GroupRequestState, AccountRequestState, State } from '@ts/types';
+import {
+  Account,
+  GroupsState,
+  GroupRequestState,
+  AccountRequestState,
+  State,
+  AnyGroup,
+} from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import { MyGroupsScreenNavigationProp } from '../index';
@@ -47,7 +54,13 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
 
   React.useEffect(fetch, [null]);
 
-  const data = [
+  type MyGroupsData = {
+    key: string;
+    title: string;
+    data: AnyGroup[];
+  };
+
+  const data: MyGroupsData[] = [
     // Groups where the user is a member
     {
       key: 'members',
@@ -130,11 +143,13 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
             <GroupsBanner />
           </View>
         )}
-        renderSectionHeader={({ section: { title, data } }) =>
-          data.length !== 0 ? (
+        renderSectionHeader={({ section }) =>
+          section.data.length !== 0 ? (
             <View style={{ marginTop: 10 }}>
               <Divider />
-              <CategoryTitle style={{ paddingTop: 13, paddingLeft: 15 }}>{title}</CategoryTitle>
+              <CategoryTitle style={{ paddingTop: 13, paddingLeft: 15 }}>
+                {section.title}
+              </CategoryTitle>
             </View>
           ) : (
             <View />

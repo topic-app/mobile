@@ -6,14 +6,14 @@ import LocationSelectPage from '@components/LocationSelectPage';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { updateEventParams } from '@redux/actions/contentData/events';
-import { State, ReduxLocation } from '@ts/types';
+import { State, ReduxLocation, EventParams } from '@ts/types';
 
 import type { EventParamsScreenNavigationProp, EventParamsStackParams } from '../index';
 
 type Navigation = EventParamsScreenNavigationProp<'EditParams'>;
 
 function done(
-  { schools, departments, global }: ReduxLocation,
+  { schools, departments, global }: Partial<ReduxLocation>,
   type: 'schools' | 'departements' | 'regions' | 'other',
   navigation: Navigation,
 ) {
@@ -22,9 +22,9 @@ function done(
     departments,
     global,
   }).then(() => {
-    if (type === 'schools') {
+    if (type === 'schools' && schools) {
       fetchMultiSchool(schools);
-    } else if (type === 'departements' || type === 'regions') {
+    } else if ((type === 'departements' || type === 'regions') && departments) {
       fetchMultiDepartment(departments);
     }
     navigation.goBack();
@@ -34,7 +34,7 @@ function done(
 type EventEditParamsProps = {
   navigation: EventParamsScreenNavigationProp<'EditParams'>;
   route: RouteProp<EventParamsStackParams, 'EditParams'>;
-  eventParams: ReduxLocation;
+  eventParams: EventParams;
 };
 
 const EventEditParams: React.FC<EventEditParamsProps> = ({ navigation, eventParams, route }) => {
@@ -45,7 +45,7 @@ const EventEditParams: React.FC<EventEditParamsProps> = ({ navigation, eventPara
       initialData={eventParams}
       type={type}
       hideSearch={hideSearch}
-      callback={(location: ReduxLocation) => done(location, type, navigation)}
+      callback={(location) => done(location, type, navigation)}
     />
   );
 };

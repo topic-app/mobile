@@ -1,7 +1,6 @@
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { View, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { View, FlatList, TouchableOpacity } from 'react-native';
 import { Text, Button, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -36,6 +35,9 @@ import {
   ArticleRequestState,
   TagPreload,
   Account,
+  PlacePreload,
+  PetitionPreload,
+  RequestStateComplex,
 } from '@ts/types';
 import { useTheme, useSafeAreaInsets } from '@utils/index';
 
@@ -80,12 +82,33 @@ const Search: React.FC<SearchProps> = ({
 
   const { initialCategory } = route.params || { initialCategory: 'articles' };
 
+  type Category<
+    T extends FiltersType['category'],
+    Item = {
+      articles: ArticlePreload;
+      events: EventPreload;
+      petitions: PetitionPreload;
+      groups: GroupPreload;
+      locations: PlacePreload;
+      users: UserPreload;
+    }[T]
+  > = {
+    key: T;
+    title: string;
+    icon: string;
+    data: Item[];
+    func: typeof searchArticles;
+    clear: typeof clearArticles;
+    component: (item: Item) => React.ReactElement;
+    state?: RequestStateComplex;
+  };
+
+  // Note: use type assertions on all elements of categories
   const categories = [
     {
       key: 'articles',
       title: 'Articles',
       icon: 'newspaper',
-      type: 'category',
       data: articles,
       func: searchArticles,
       clear: clearArticles,
@@ -113,12 +136,11 @@ const Search: React.FC<SearchProps> = ({
         />
       ),
       state: state.articles.search,
-    },
+    } as Category<'articles'>,
     {
       key: 'events',
       title: 'Évènements',
       icon: 'calendar',
-      type: 'category',
       data: events,
       func: searchEvents,
       clear: clearEvents,
@@ -144,13 +166,12 @@ const Search: React.FC<SearchProps> = ({
         />
       ),
       state: state.events.search,
-    },
+    } as Category<'events'>,
     // { key: 'locations', title: 'Lieux', icon: 'map-marker-outline', type: 'category' },
     {
       key: 'groups',
       title: 'Groupes',
       icon: 'account-group-outline',
-      type: 'category',
       data: groups,
       func: searchGroups,
       clear: clearGroups,
@@ -178,18 +199,17 @@ const Search: React.FC<SearchProps> = ({
         />
       ),
       state: state.groups.search,
-    },
+    } as Category<'groups'>,
     {
-      key: 'users',
+      key: 'users' as const,
       title: 'Utilisateurs',
       icon: 'account-outline',
-      type: 'category',
       data: users,
       func: searchUsers,
       clear: clearUsers,
       component: (_user: UserPreload) => <View />,
       state: state.users.search,
-    },
+    } as Category<'users'>,
   ];
 
   // State related to query, use these values when submitting search
@@ -339,6 +359,15 @@ const Search: React.FC<SearchProps> = ({
     searchTags('initial', text);
   };
 
+  const flatlistSearchData = (searchText === ''
+    ? []
+    : categories.find((c) => c.key === filters.category)?.data || []) as (
+    | ArticlePreload
+    | EventPreload
+    | UserPreload
+    | GroupPreload
+  )[];
+
   return (
     <View style={styles.page}>
       <View style={searchStyles.queryContainer}>
@@ -391,7 +420,7 @@ const Search: React.FC<SearchProps> = ({
             <CategoriesList
               categories={categories}
               selected={filters.category}
-              setSelected={(category: any) => setFilters({ ...filters, category })}
+              setSelected={(category) => setFilters({ ...filters, category })}
             />
           </View>
           <CollapsibleView collapsed={locationData.length === 0}>
@@ -440,12 +469,10 @@ const Search: React.FC<SearchProps> = ({
       </View>
       <View>
         <FlatList
-          data={
-            searchText === '' ? [] : categories.find((c) => c.key === filters.category)?.data || []
-          }
+          data={flatlistSearchData}
           keyExtractor={(i) => i._id}
           renderItem={({ item }) =>
-            categories.find((c) => c.key === filters.category)?.component(item)
+            categories.find((c) => c.key === filters.category)!.component(item as any)
           }
           ListHeaderComponent={
             <CollapsibleView

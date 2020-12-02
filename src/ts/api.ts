@@ -284,6 +284,9 @@ type GroupBase = {
   };
 };
 
+// Any group takes any valid group and ignores value of preload
+export type AnyGroup = GroupBase;
+
 export type GroupPreload = GroupBase & {
   preload: true;
 };
