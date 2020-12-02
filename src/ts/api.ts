@@ -55,7 +55,7 @@ export type Duration = {
   end: string;
 };
 
-type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
+export type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
 
 export type SchoolPreload = {
   _id: string;
@@ -64,6 +64,9 @@ export type SchoolPreload = {
   displayName: string;
   address?: Address;
   types: SchoolType[];
+  cache: {
+    events?: number;
+  };
   departments?: DepartmentPreload[];
 };
 
@@ -78,6 +81,9 @@ export type School = {
   image: Image;
   description: Content;
   departments: DepartmentPreload[]; // Also one in address but this one is for the admin group(s)
+  cache: {
+    events?: number;
+  };
 };
 
 export type DepartmentPreload = {
@@ -121,9 +127,13 @@ export type Location = {
 export type Address = {
   _id: string;
   shortName?: string;
-  coordinates: {
-    lat: number;
-    lon: number;
+  // coordinates: {
+  //   lat: number;
+  //   lon: number;
+  // };
+  geo: {
+    type: 'Point';
+    coordinates: number[];
   };
   address: {
     number: string;
@@ -333,13 +343,10 @@ export type ProgramEntry = {
   address: Address;
 };
 
-export type EventPlace = {
-  _id: string;
-  type: 'place' | 'school' | 'standalone';
-  associatedSchool?: SchoolPreload;
-  associatedPlace?: PlacePreload;
-  address?: Address;
-};
+export type EventPlace =
+  | { _id: string; type: 'place'; associatedPlace: PlacePreload }
+  | { _id: string; type: 'school'; associatedSchool: SchoolPreload }
+  | { _id: string; type: 'standalone'; address: Address };
 
 type EventBase = {
   _id: string;
@@ -382,7 +389,7 @@ export type EventVerification = Event & {
 };
 
 // Place Types (used for Explorer)
-type PlaceType = 'cultural' | 'education' | 'history' | 'tourism' | 'club' | 'other';
+export type PlaceType = 'cultural' | 'history' | 'tourism' | 'club' | 'other';
 
 export type PlacePreload = {
   _id: string;
@@ -401,6 +408,28 @@ export type Place = PlacePreload & {
   image: Image;
   location: Location;
 };
+
+export namespace ExplorerLocation {
+  export type LocationTypes = 'place' | 'school' | 'event' | 'secret' | 'collection';
+  export type Place = { type: 'place'; data: PlacePreload };
+  export type School = { type: 'school'; data: SchoolPreload & { address: Address } };
+  export type Event = { type: 'event'; data: EventPreload };
+  export type Secret = { type: 'secret'; data: PlacePreload };
+  export type Collection = {
+    type: 'collection';
+    data: {
+      number: number;
+      geo: { type: 'Point'; coordinates: [number, number] };
+    };
+  };
+
+  export type Location =
+    | ExplorerLocation.Place
+    | ExplorerLocation.School
+    | ExplorerLocation.Event
+    | ExplorerLocation.Secret
+    | ExplorerLocation.Collection;
+}
 
 // Petition Types
 export type Publisher = {

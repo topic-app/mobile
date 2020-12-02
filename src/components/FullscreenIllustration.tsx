@@ -2,11 +2,10 @@ import React from 'react';
 import { View, Platform, useWindowDimensions, StyleProp, ViewStyle } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
-import { Illustration } from '@components/index';
 import getStyles from '@styles/Styles';
 import { useTheme } from '@utils/index';
 
-import { IllustrationName } from './Illustration';
+import Illustration, { IllustrationName } from './Illustration';
 
 type FullscreenIllustrationProps = {
   illustration: IllustrationName;

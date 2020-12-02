@@ -31,7 +31,7 @@ import {
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo.ios';
+import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import EventListCard from '../components/Card';
 import EventEmptyList from '../components/EmptyList';
 

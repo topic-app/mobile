@@ -23,13 +23,13 @@ export { default as GroupsBanner } from './GroupsBanner';
 export { default as CustomImage } from './CustomImage';
 export { default as Modal } from './Modal';
 export { default as FormTextInput } from './FormTextInput';
-
-export { default as ArticleCard } from './cards/Article';
-export { default as EventCard } from './cards/Event';
-export { default as GroupCard } from './cards/Group';
-export { default as PetitionCard } from './cards/Petition';
 export { default as SafeAreaView } from './SafeAreaView';
 export { default as StrengthMeter } from './StrengthMeter';
 
-export { ARTICLE_CARD_HEADER_HEIGHT } from './cards/Article';
-export { EVENT_CARD_HEADER_HEIGHT } from './cards/Event';
+export { default as BottomSheet } from './BottomSheet';
+export * from './BottomSheet';
+
+export { default as ArticleCard, ARTICLE_CARD_HEADER_HEIGHT } from './cards/Article';
+export { default as EventCard, EVENT_CARD_HEADER_HEIGHT } from './cards/Event';
+export { default as GroupCard } from './cards/Group';
+export { default as PetitionCard } from './cards/Petition';
