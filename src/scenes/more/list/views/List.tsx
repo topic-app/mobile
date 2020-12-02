@@ -5,18 +5,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
 import { ErrorMessage, Illustration } from '@components/index';
+import { Permissions } from '@constants/index';
 import { fetchLocationData } from '@redux/actions/data/location';
 import getNavigatorStyles from '@styles/NavStyles';
 import getStyles from '@styles/Styles';
 import {
   Account,
+  AccountPermission,
   AccountRequestState,
   DepartmentPreload,
+  LocationList,
   LocationRequestState,
   SchoolPreload,
   State,
 } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, accountHasPermissions } from '@utils/index';
 
 import { MoreScreenNavigationProp } from '../../index';
 
@@ -29,26 +32,11 @@ function genName({ data, info }) {
 
 type MoreListProps = {
   navigation: MoreScreenNavigationProp<'List'>;
-  loggedIn: boolean;
-  accountInfo: Account['accountInfo'];
-  accountState: AccountRequestState;
-  location: {
-    schoolData: SchoolPreload[];
-    departmentData: DepartmentPreload[];
-    global: boolean;
-    state: LocationRequestState;
-  };
-  // TODO: Add permissions prop
+  location: LocationList;
+  account: Account;
 };
 
-const MoreList: React.FC<MoreListProps> = ({
-  navigation,
-  location,
-  accountInfo,
-  permissions,
-  accountState,
-  loggedIn,
-}) => {
+const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const navigatorStyles = getNavigatorStyles(theme);
@@ -59,8 +47,8 @@ const MoreList: React.FC<MoreListProps> = ({
         <ScrollView>
           <View style={navigatorStyles.profileBackground}>
             {(location.state.fetch.loading ||
-              accountState.fetchAccount.loading ||
-              accountState.fetchGroups.loading) && <ProgressBar indeterminate />}
+              account.state.fetchAccount.loading ||
+              account.state.fetchGroups.loading) && <ProgressBar indeterminate />}
             {location.state.fetch.error && (
               <ErrorMessage
                 type="axios"
@@ -71,8 +59,8 @@ const MoreList: React.FC<MoreListProps> = ({
                 }}
                 error={[
                   location.state.fetch.error,
-                  accountState.fetchAccount.error,
-                  accountState.fetchGroups.error,
+                  account.state.fetchAccount.error,
+                  account.state.fetchGroups.error,
                 ]}
                 retry={fetchLocationData}
               />
@@ -85,19 +73,19 @@ const MoreList: React.FC<MoreListProps> = ({
                   height={55}
                   width={55}
                 />
-                {loggedIn ? (
+                {account.loggedIn ? (
                   <View>
                     <Title style={[navigatorStyles.title]} ellipsizeMode="tail" numberOfLines={1}>
-                      {genName(accountInfo?.user) ||
-                        `@${accountInfo?.user?.info?.username || '...'}`}
+                      {genName(account.accountInfo?.user) ||
+                        `@${account.accountInfo?.user?.info?.username || '...'}`}
                     </Title>
-                    {genName(accountInfo?.user) ? (
+                    {genName(account.accountInfo?.user) ? (
                       <Title
                         style={[navigatorStyles.subtitle, { width: 200, marginTop: -8 }]}
                         ellipsizeMode="tail"
                         numberOfLines={1}
                       >
-                        @{accountInfo?.user?.info?.username}
+                        @{account.accountInfo?.user?.info?.username}
                       </Title>
                     ) : null}
                   </View>
@@ -126,10 +114,12 @@ const MoreList: React.FC<MoreListProps> = ({
                 title={departement?.shortName || departement?.name}
               />
             ))}
-            {location.global && <List.Item icon="flag" title="France entière" />}
+            {location.global && (
+              <List.Item left={() => <List.Icon icon="flag" />} title="France entière" />
+            )}
           </List.Section>
           <Divider />
-          {loggedIn ? (
+          {account.loggedIn ? (
             <List.Section>
               <List.Item
                 title="Mon profil"
@@ -151,14 +141,12 @@ const MoreList: React.FC<MoreListProps> = ({
                   });
                 }}
               />
-              {permissions?.some(
-                (p) =>
-                  p?.permission === 'article.verification.view' ||
-                  p?.permission === 'event.verification.view' ||
-                  p?.permission === 'petition.verification.view' ||
-                  p?.permission === 'place.verification.view' ||
-                  p?.permission === 'group.verification.view',
-              ) && (
+              {accountHasPermissions(account, [
+                Permissions.ARTICLE_VERIFICATION_VIEW,
+                Permissions.EVENT_VERIFICATION_VIEW,
+                Permissions.PETITION_VERIFICATION_VIEW,
+                Permissions.GROUP_VERIFICATION_VIEW,
+              ]) && (
                 <List.Item
                   title="Modération"
                   left={() => <List.Icon icon="shield-check-outline" />}
@@ -225,11 +213,8 @@ const MoreList: React.FC<MoreListProps> = ({
 const mapStateToProps = (state: State) => {
   const { account, location } = state;
   return {
-    accountInfo: account.accountInfo,
-    permissions: account.permissions,
-    accountState: account.state,
+    account,
     location,
-    loggedIn: account.loggedIn,
   };
 };
 

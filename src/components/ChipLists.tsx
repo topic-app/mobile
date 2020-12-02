@@ -120,7 +120,7 @@ type ListItem = {
 type CategoriesListProps<T extends ListItem> = {
   categories: T[];
   selected: string;
-  setSelected: (key: any) => void;
+  setSelected: (key: T['key']) => void;
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   chipProps?: object;

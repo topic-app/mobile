@@ -1,37 +1,24 @@
 import React from 'react';
-import { View, ScrollView, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { ChipAddList, ErrorMessage, ArticleCard } from '@components/index';
+import { updateArticlesVerification } from '@redux/actions/api/articles';
+import getStyles from '@styles/Styles';
 import {
   State,
-  ArticlePreload,
   Account,
-  GroupRolePermission,
   ArticleRequestState,
-  Article,
   AccountPermission,
   ArticleVerificationPreload,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
-import {
-  CustomTabView,
-  ChipAddList,
-  ErrorMessage,
-  ArticleCard,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components/index';
-import getStyles from '@styles/Styles';
-import { updateArticlesVerification } from '@redux/actions/api/articles';
 
-import type { ModerationStackParams } from '../index';
-import getModerationStyles from '../styles/Styles';
-import { useFocusEffect } from '@react-navigation/core';
+import type { ModerationScreenNavigationProp } from '../index';
 
 type Props = {
-  navigation: StackNavigationProp<ModerationStackParams, 'List'>;
+  navigation: ModerationScreenNavigationProp<'List'>;
   articlesVerification: ArticleVerificationPreload[];
   account: Account;
   state: ArticleRequestState;
