@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { Subheading } from 'react-native-paper';
 
 import { Illustration } from '@components/index';
@@ -8,10 +8,10 @@ import getStyles from '@styles/Styles';
 import { useTheme } from '@utils/index';
 
 import ArticleDisplay from '../../../display/articles/views/Display';
-import { HomeTwoNavParams } from '../../HomeTwo';
+import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import ArticleList from './List';
 
-type ArticleListDualProps = StackScreenProps<HomeTwoNavParams, 'Article'>;
+type ArticleListDualProps = HomeTwoScreenNavigationProp<'Article'>;
 
 const ArticleListDual: React.FC<ArticleListDualProps> = ({ navigation, route }) => {
   const [article, setArticle] = React.useState<{
@@ -43,6 +43,8 @@ const ArticleListDual: React.FC<ArticleListDualProps> = ({ navigation, route }) 
             key={article.id}
             navigation={navigation}
             route={{
+              key: 'ArticleDisplayDualPane',
+              name: 'Display',
               params: {
                 id: article.id,
                 title: article.title,

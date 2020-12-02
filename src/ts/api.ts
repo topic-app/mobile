@@ -363,6 +363,12 @@ type EventBase = {
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
 };
+
+// AnyEvent means anything that implements EventBase can match it
+// meaning you won't get any { preload: ... } errors if you give
+// an Event to a component that accepts AnyEvent
+export type AnyEvent = EventBase;
+
 export type EventPreload = EventBase & {
   preload: true;
 };

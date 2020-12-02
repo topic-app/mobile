@@ -24,9 +24,9 @@ import CommentInlineCard from '../../components/Comment';
 import getEventStyles from '../styles/Styles';
 
 function getPlaceLabels(place: EventPlace) {
-  const { type, address, associatedSchool, associatedPlace } = place;
-  switch (type) {
+  switch (place.type) {
     case 'standalone': {
+      const { address } = place;
       if (!address?.address) {
         return { title: '', description: '' };
       }
@@ -37,6 +37,7 @@ function getPlaceLabels(place: EventPlace) {
       };
     }
     case 'school': {
+      const { associatedSchool } = place;
       if (!associatedSchool?.address?.address) {
         return { title: '', description: '' };
       }
@@ -49,6 +50,7 @@ function getPlaceLabels(place: EventPlace) {
       };
     }
     case 'place': {
+      const { associatedPlace } = place;
       if (!associatedPlace?.address?.address) {
         return { title: '', description: '' };
       }

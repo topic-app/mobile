@@ -1,17 +1,17 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/core';
 import React from 'react';
-import { View, Text } from 'react-native';
-import { Subheading } from 'react-native-paper';
+import { View } from 'react-native';
 
-import { Illustration } from '@components/index';
-import getStyles from '@styles/Styles';
+import { FullscreenIllustration } from '@components/index';
 import { useTheme } from '@utils/index';
 
 import EventDisplay from '../../../display/events/views/Display';
-import { HomeTwoNavParams } from '../../HomeTwo';
+import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import EventList from './List';
 
-type EventListDualProps = StackScreenProps<HomeTwoNavParams, 'Article'>;
+type EventListDualProps = HomeTwoScreenNavigationProp<'Event'> & {
+  route: RouteProp<HomeTwoNavParams, 'Event'>;
+};
 
 const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
   const [event, setEvent] = React.useState<{
@@ -21,20 +21,12 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
   } | null>(null);
 
   const theme = useTheme();
-  const styles = getStyles(theme);
   const { colors } = theme;
 
   return (
     <View style={{ flexDirection: 'row', flex: 1 }}>
       <View style={{ flexGrow: 1, flex: 1 }}>
-        <EventList
-          navigation={navigation}
-          route={route}
-          dual
-          setEvent={(e) => {
-            setEvent(e);
-          }}
-        />
+        <EventList navigation={navigation} route={route} setEvent={(e) => setEvent(e)} dual />
       </View>
       <View style={{ backgroundColor: colors.disabled, width: 1 }} />
       <View style={{ flexGrow: 2, flex: 1 }}>
@@ -43,6 +35,8 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
             key={event.id}
             navigation={navigation}
             route={{
+              key: 'EventDisplayDualPane',
+              name: 'Display',
               params: {
                 id: event.id,
                 title: event.title,
@@ -53,10 +47,9 @@ const EventListDual: React.FC<EventListDualProps> = ({ navigation, route }) => {
             dual
           />
         ) : (
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name="event" width={500} height={500} />
-            <Subheading>Séléctionnez un évènement</Subheading>
-          </View>
+          <FullscreenIllustration illustration="event">
+            Séléctionnez un évènement
+          </FullscreenIllustration>
         )}
       </View>
     </View>

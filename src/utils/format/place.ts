@@ -41,7 +41,7 @@ export function shortAddress({ shortName, address, geo, departments }: Address):
 }
 
 /**
- * Obtient un string du type de l'école
+ * Get a string representing the place's type(s).
  *
  * ## Exemple
  * ```js
@@ -73,7 +73,7 @@ export function placeTypes(types: PlaceType[]): string {
         if (index === 1) {
           mappedType = `lieu ${mappedType}`;
         }
-      } else if (index == 0) {
+      } else if (index === 0) {
         mappedType = `lieu ${mappedType}`;
       }
       return mappedType;

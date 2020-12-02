@@ -2,8 +2,12 @@ import { StyleSheet } from 'react-native';
 
 import { Theme } from '@ts/types';
 
-function getEventStyles(_theme: Theme) {
-  return StyleSheet.create({});
+function getEventStyles({ colors }: Theme) {
+  return StyleSheet.create({
+    captionText: {
+      color: colors.disabled,
+    },
+  });
 }
 
 export default getEventStyles;

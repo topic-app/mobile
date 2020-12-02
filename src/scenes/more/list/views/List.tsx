@@ -9,26 +9,10 @@ import { Permissions } from '@constants/index';
 import { fetchLocationData } from '@redux/actions/data/location';
 import getNavigatorStyles from '@styles/NavStyles';
 import getStyles from '@styles/Styles';
-import {
-  Account,
-  AccountPermission,
-  AccountRequestState,
-  DepartmentPreload,
-  LocationList,
-  LocationRequestState,
-  SchoolPreload,
-  State,
-} from '@ts/types';
-import { useTheme, logger, accountHasPermissions } from '@utils/index';
+import { Account, LocationList, State } from '@ts/types';
+import { useTheme, logger, accountHasPermissions, Format } from '@utils/index';
 
 import { MoreScreenNavigationProp } from '../../index';
-
-function genName({ data, info }) {
-  if (data?.firstName && data?.lastName) {
-    return `${data.firstName} ${data.lastName}`;
-  }
-  return data?.firstName || data?.lastName || null;
-}
 
 type MoreListProps = {
   navigation: MoreScreenNavigationProp<'List'>;
@@ -76,18 +60,15 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
                 {account.loggedIn ? (
                   <View>
                     <Title style={[navigatorStyles.title]} ellipsizeMode="tail" numberOfLines={1}>
-                      {genName(account.accountInfo?.user) ||
-                        `@${account.accountInfo?.user?.info?.username || '...'}`}
+                      {Format.fullUserName(account.accountInfo.user)}
                     </Title>
-                    {genName(account.accountInfo?.user) ? (
-                      <Title
-                        style={[navigatorStyles.subtitle, { width: 200, marginTop: -8 }]}
-                        ellipsizeMode="tail"
-                        numberOfLines={1}
-                      >
-                        @{account.accountInfo?.user?.info?.username}
-                      </Title>
-                    ) : null}
+                    <Title
+                      style={[navigatorStyles.subtitle, { width: 200, marginTop: -8 }]}
+                      ellipsizeMode="tail"
+                      numberOfLines={1}
+                    >
+                      @{account.accountInfo.user.info.username}
+                    </Title>
                   </View>
                 ) : (
                   <Title style={navigatorStyles.topic}>Topic</Title>
@@ -101,7 +82,7 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
               <List.Item
                 key={school._id}
                 left={() => <List.Icon icon="school" />}
-                title={school?.shortName || school?.name}
+                title={school.shortName || school.name}
                 onPress={() => {
                   logger.warn('School pressed');
                 }}
@@ -111,7 +92,7 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
               <List.Item
                 key={departement._id}
                 left={() => <List.Icon icon="home-city" />}
-                title={departement?.shortName || departement?.name}
+                title={departement.shortName || departement.name}
               />
             ))}
             {location.global && (

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { SchoolType } from '@ts/types';
 
 /**
- * Obtient un string du type de l'école
+ * Get a string representing the school's type(s).
  *
  * ## Exemple
  * ```js

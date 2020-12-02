@@ -295,7 +295,6 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                               autoCorrect={false}
                               onChangeText={(text) => setExpiryDate(parseInt(text, 10) || 0)}
                               keyboardType="number-pad"
-                              textAlign="center"
                             />
                             <Text style={{ color: colors.disabled }}>mois</Text>
                           </View>

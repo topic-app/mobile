@@ -16,8 +16,8 @@ import { ErrorMessage, Avatar, Illustration, CollapsibleView } from '@components
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import getNavigatorStyles from '@styles/NavStyles';
-import { Account, AccountUser, LocationList, State } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { Account, LocationList, State } from '@ts/types';
+import { Format, useTheme } from '@utils/index';
 
 import { MainScreenNavigationProp } from '../Main';
 import HomeTwoNavigator, { HomeTwoNavParams } from './HomeTwo';
@@ -32,14 +32,6 @@ export type HomeOneScreenNavigationProp<K extends keyof HomeOneNavParams> = Comp
 >;
 
 const DrawerNav = createDrawerNavigator<HomeOneNavParams>();
-
-function genFullUserName(user: AccountUser) {
-  const { firstName, lastName } = user.data;
-  if (firstName && lastName) {
-    return `${firstName} ${lastName}`;
-  }
-  return user.displayName;
-}
 
 type DrawerItemAccordionProps = React.ComponentProps<typeof Drawer.Item> & {
   chevronColor: string;
@@ -80,14 +72,12 @@ type CustomDrawerContentProps = {
   navigation: DrawerNavigationHelpers;
   account: Account;
   location: LocationList;
-  // TODO: Add permissions prop
 };
 
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
   navigation,
   account,
   location,
-  permissions,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -159,7 +149,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
                   />
                 </View>
                 <Title style={navigatorStyles.title} numberOfLines={1}>
-                  {genFullUserName(account.accountInfo.user)}
+                  {Format.fullUserName(account.accountInfo.user)}
                 </Title>
                 <Subheading
                   style={[navigatorStyles.subtitle, { flex: 1 }]}
@@ -218,7 +208,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               });
             }}
           />
-          {permissions?.some(
+          {account.permissions?.some(
             (p) =>
               p?.permission === 'article.verification.view' ||
               p?.permission === 'event.verification.view' ||
@@ -303,8 +293,6 @@ const mapStateToProps = (state: State) => {
   const { account, location } = state;
   return {
     account,
-    permissions: account.permissions,
-    loggedIn: account.loggedIn,
     location,
   };
 };

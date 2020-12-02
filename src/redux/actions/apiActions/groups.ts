@@ -537,7 +537,7 @@ function groupAddCreator({
   parser,
   description,
   verification,
-}: GroupCreationData): AppThunk {
+}: GroupCreationData): AppThunk<Promise<{ _id: string }>> {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -580,7 +580,7 @@ function groupAddCreator({
               },
             },
           });
-          resolve(result.data);
+          resolve(result.data as { _id: string });
         })
         .catch((error) => {
           dispatch({
