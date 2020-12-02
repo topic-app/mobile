@@ -387,8 +387,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
             />
             {category.description ? (
               <Banner actions={[]} visible>
-                <Subheading>Description{'\n'}</Subheading>
-                <Text>{category.description}</Text>
+                {category.description}
               </Banner>
             ) : null}
           </View>

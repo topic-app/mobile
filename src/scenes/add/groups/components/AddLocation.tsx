@@ -45,9 +45,7 @@ type GroupAddLocationProps = StepperViewPageProps & {
 const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   prev,
   next,
-  account,
   location,
-  creationData,
   navigation,
   schoolItems,
   departmentItems,
@@ -278,11 +276,9 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, location, groupData, schools, departments } = state;
+  const { location, schools, departments } = state;
   return {
-    account,
     location,
-    creationData: groupData.creationData,
     schoolItems: schools.items,
     departmentItems: departments.items,
     locationStates: {
