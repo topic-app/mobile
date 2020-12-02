@@ -3,8 +3,7 @@ import moment from 'moment';
 import { Duration } from '@ts/types';
 
 /**
- * Obtient un string permettant, en une phrase de décrire
- * le status de l'évènement
+ * Get a string describing the event's status (open, closed, in progress)
  *
  * ## Exemple
  * ```js

@@ -1,4 +1,3 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform } from 'react-native';
 import {
@@ -13,6 +12,7 @@ import {
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
@@ -31,11 +31,11 @@ import {
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import type { GroupAddStackParams } from '../index';
+import type { GroupAddScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
 
 type GroupAddLocationProps = StepperViewPageProps & {
-  navigation: StackNavigationProp<GroupAddStackParams, 'Add'>;
+  navigation: GroupAddScreenNavigationProp<'Add'>;
   account: Account;
   creationData: ArticleCreationData;
   location: LocationList;
@@ -51,18 +51,27 @@ type GroupAddLocationProps = StepperViewPageProps & {
   };
 };
 
-const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
-  return {
-    left:
-      Platform.OS !== 'ios'
-        ? () => (
-            <View style={{ justifyContent: 'center' }}>
-              <Checkbox {...props} />
-            </View>
-          )
-        : null,
-    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
-  };
+type PlatformListItemProps = React.ComponentPropsWithoutRef<typeof List.Item> &
+  React.ComponentPropsWithoutRef<typeof Checkbox>;
+
+const CheckboxListItem: React.FC<PlatformListItemProps> = ({ status, color, onPress, ...rest }) => {
+  return Platform.OS === 'ios' ? (
+    <List.Item
+      {...rest}
+      onPress={onPress}
+      right={() => <Checkbox status={status} color={color} onPress={onPress} />}
+    />
+  ) : (
+    <List.Item
+      {...rest}
+      onPress={onPress}
+      left={() => (
+        <View style={{ justifyContent: 'center' }}>
+          <Checkbox status={status} color={color} onPress={onPress} />
+        </View>
+      )}
+    />
+  );
 };
 
 const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
@@ -127,37 +136,30 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
       </View>
       <View style={articleStyles.listContainer}>
         {location.schoolData?.map((s) => (
-          <List.Item
+          <CheckboxListItem
+            key={shortid()}
             title={s.name}
             description={`École · ${s.address?.shortName || s.address?.address?.city}`}
-            {...getListItemCheckbox({
-              status: schools.includes(s._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(s, schools, setSchools),
-            })}
+            status={schools.includes(s._id) ? 'checked' : 'unchecked'}
+            color={colors.primary}
             onPress={() => toggle(s, schools, setSchools)}
           />
         ))}
         {location.departmentData?.map((d) => (
-          <List.Item
+          <CheckboxListItem
+            key={shortid()}
             title={d.name}
             description={`Département ${d.code}`}
-            {...getListItemCheckbox({
-              status: departments.includes(d._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(d, departments, setDepartments),
-            })}
+            status={departments.includes(d._id) ? 'checked' : 'unchecked'}
+            color={colors.primary}
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
-        <List.Item
+        <CheckboxListItem
           title="France entière"
           description="Visible pour tous les utilisateurs"
-          {...getListItemCheckbox({
-            status: global ? 'checked' : 'unchecked',
-            color: colors.primary,
-            onPress: () => setGlobal(!global),
-          })}
+          status={global ? 'checked' : 'unchecked'}
+          color={colors.primary}
           onPress={() => setGlobal(!global)}
         />
         <View>

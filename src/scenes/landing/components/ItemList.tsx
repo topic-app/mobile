@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
 import { List, Checkbox, Text, ProgressBar } from 'react-native-paper';
 
-import { SchoolRequestState, DepartmentRequestState } from '@ts/types';
-import { useTheme } from '@utils/index';
 import { ErrorMessage } from '@components/index';
 import getStyles from '@styles/Styles';
+import { SchoolRequestState, DepartmentRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 type ItemListProps = {
   data: {
@@ -47,18 +47,24 @@ const ItemList: React.FC<ItemListProps> = ({
     }
   }
 
-  const states = [
-    state.schools.list,
-    state.departments.list,
-    state.schools.search,
-    state.departments.search,
-  ];
+  const states = [state.schools.list, state.departments.list];
+  // only add search states if they aren't undefined
+  if (state.schools.search) states.push(state.schools.search);
+  if (state.departments.search) states.push(state.departments.search);
 
   return (
     <View>
-      {states.some((s) => s?.loading.initial) && <ProgressBar indeterminate />}
-      {states.some((s) => s?.error) && (
-        <ErrorMessage type="axios" error={states.map((s) => s?.error)} retry={retry} />
+      {states.some((s) => s.loading.initial) && <ProgressBar indeterminate />}
+      {states.some((s) => s.error) && (
+        <ErrorMessage
+          type="axios"
+          strings={{
+            what: 'Le chargement des données',
+            contentPlural: 'Les données',
+          }}
+          error={states.map((s) => s.error)}
+          retry={retry}
+        />
       )}
       <FlatList
         data={data}
@@ -70,7 +76,7 @@ const ItemList: React.FC<ItemListProps> = ({
             ? () => (
                 <View style={styles.container}>
                   <View style={styles.centerIllustrationContainer}>
-                    <Text color={colors.text}>Aucun résultat</Text>
+                    <Text>Aucun résultat</Text>
                   </View>
                 </View>
               )

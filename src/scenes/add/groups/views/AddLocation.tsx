@@ -19,7 +19,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({ navigation, route }
       initialData={initialData}
       type={type}
       hideSearch={hideSearch}
-      callback={(location: ReduxLocation) => {
+      callback={(location) => {
         callback(location);
         navigation.goBack();
       }}

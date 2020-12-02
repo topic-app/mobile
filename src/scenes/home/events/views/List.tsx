@@ -1,4 +1,4 @@
-import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
 import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
@@ -391,8 +391,7 @@ const EventList: React.FC<EventListProps> = ({
             />
             {category.description ? (
               <Banner actions={[]} visible>
-                <Subheading>Description</Subheading>
-                <Text>{category.description}</Text>
+                {category.description}
               </Banner>
             ) : null}
           </View>

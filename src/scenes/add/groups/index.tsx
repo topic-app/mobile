@@ -18,7 +18,7 @@ export type GroupAddStackParams = {
     hideSearch: boolean;
     type: 'schools' | 'departements' | 'regions' | 'other';
     initialData?: ReduxLocation;
-    callback: (location: ReduxLocation) => any;
+    callback: (location: Partial<ReduxLocation>) => any;
   };
 };
 

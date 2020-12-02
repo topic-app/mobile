@@ -9,7 +9,7 @@ import SearchTags from './views/Tags';
 
 export type SearchStackParams = {
   Search: {
-    initialCategory: 'articles' | 'events' | 'petitions' | 'locations' | 'groups' | 'users';
+    initialCategory: 'articles' | 'events' | 'groups' | 'users';
   };
   Tags: undefined;
 };

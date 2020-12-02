@@ -83,7 +83,7 @@ const Search: React.FC<SearchProps> = ({
   const { initialCategory } = route.params || { initialCategory: 'articles' };
 
   type Category<
-    T extends FiltersType['category'],
+    T extends typeof initialCategory,
     Item = {
       articles: ArticlePreload;
       events: EventPreload;
@@ -104,6 +104,7 @@ const Search: React.FC<SearchProps> = ({
   };
 
   // Note: use type assertions on all elements of categories
+  //       and add any new key to SearchStackParams in ../index.tsx
   const categories = [
     {
       key: 'articles',
@@ -201,7 +202,7 @@ const Search: React.FC<SearchProps> = ({
       state: state.groups.search,
     } as Category<'groups'>,
     {
-      key: 'users' as const,
+      key: 'users',
       title: 'Utilisateurs',
       icon: 'account-outline',
       data: users,
@@ -216,7 +217,7 @@ const Search: React.FC<SearchProps> = ({
   const [searchText, setSearchText] = useState('');
 
   type FiltersType = {
-    category: typeof initialCategory;
+    category: typeof categories[number]['key'];
     tags: string[];
     locations: string[];
     groups: string[];

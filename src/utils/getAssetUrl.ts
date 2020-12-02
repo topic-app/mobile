@@ -40,15 +40,15 @@ function getImageSize(thumbnails: Image['thumbnails'], size: ImageSize): string 
   return imgSize;
 }
 
-function getImageUrl({ image, size }: { image?: Image; size: ImageSize }) {
+function getImageUrl({ image, size }: { image?: Image | string; size: ImageSize }) {
   if (!imageUrl) logger.warn('Warning: Please specify cdn.image.url in constants/config.ts');
   if (image) {
+    if (typeof image === 'string') {
+      return `${imageUrl}${image}?size=${size}`;
+    }
     const imageSize = getImageSize(image.thumbnails, size);
     if (image.image) {
       return `${imageUrl}${image.image}?size=${imageSize}`;
-    }
-    if (typeof image === 'string') {
-      return `${imageUrl}${image}?size=${imageSize}`;
     }
   }
 }

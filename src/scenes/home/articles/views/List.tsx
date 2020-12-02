@@ -385,8 +385,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
             />
             {category.description ? (
               <Banner actions={[]} visible>
-                <Subheading>Description{'\n'}</Subheading>
-                <Text>{category.description}</Text>
+                {category.description}
               </Banner>
             ) : null}
           </View>
@@ -407,7 +406,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
             {((section.key === 'categories' && state.list.loading.next) ||
-              (section.key === 'quicks' && state.search.loading.next)) && (
+              (section.key === 'quicks' && state.search?.loading.next)) && (
               <ActivityIndicator size="large" color={colors.primary} />
             )}
           </View>

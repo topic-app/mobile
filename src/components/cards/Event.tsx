@@ -1,45 +1,23 @@
-import { StackNavigationProp } from '@react-navigation/stack';
-import moment from 'moment';
 import React from 'react';
-import { View, Image, Dimensions } from 'react-native';
+import { View } from 'react-native';
 import { Text, Card, Paragraph, Title, Caption } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import shortid from 'shortid';
 
-import getStyles from '@styles/Styles';
-import { EventPreload, EventVerificationPreload, State, Preferences } from '@ts/types';
-import { useTheme, getImageUrl } from '@utils/index';
+import { EventVerificationPreload, State, Preferences, AnyEvent } from '@ts/types';
+import { Format, useTheme } from '@utils/index';
+import { NativeStackNavigationProp } from '@utils/stack';
 
 import { CardBase } from '../Cards';
 import CustomImage from '../CustomImage';
 import TagList from '../TagList';
 import getCardStyles from './styles/CardStyles';
 
-function buildDateString(start: string, end: string) {
-  if (start === undefined || end === undefined) return null;
-  const now = moment();
-  const startDate = moment(start);
-  const endDate = moment(end);
-
-  if (now.isAfter(endDate)) {
-    return `Terminé - ${endDate.fromNow()}`;
-  }
-  if (now.isBetween(startDate, endDate)) {
-    return `En cours - fin ${endDate.fromNow()}`;
-  }
-  // A partir d'ici, l'évènenement est dans le passé
-  if (startDate.isBefore(now.add(7, 'days'))) {
-    return `Prévu - ${startDate.calendar()}`;
-  }
-  return `Prévu - ${startDate.calendar()} (${startDate.fromNow()})`;
-}
-
 const EVENT_CARD_HEADER_HEIGHT = 157; // IMPORTANT: This should be updated every time something is changed (used for getItemLayout optimization)
 
 type EventCardProps = {
-  event: EventPreload;
-  navigate: StackNavigationProp<any, any>['navigate'];
+  event: AnyEvent;
+  navigate: NativeStackNavigationProp<any, any>['navigate'];
   verification?: boolean;
   preferences: Preferences;
   overrideImageWidth?: number;
@@ -55,17 +33,13 @@ const EventCard: React.FC<EventCardProps> = ({
   const [cardWidth, setCardWidth] = React.useState(600);
   const imageSize = cardWidth / 3.5;
 
-  const start = event.duration?.start; // Destructure this once duration works on the server
-  const end = event.duration?.end;
-
   const eventVerification = event as EventVerificationPreload;
 
   const theme = useTheme();
   const { colors } = theme;
-  const styles = getStyles(theme);
   const cardStyles = getCardStyles(theme);
 
-  if (!event)
+  if (!event) {
     return (
       <CardBase>
         <Card.Content>
@@ -73,6 +47,7 @@ const EventCard: React.FC<EventCardProps> = ({
         </Card.Content>
       </CardBase>
     );
+  }
 
   const verificationColors = ['green', 'yellow', 'yellow', 'orange', 'orange', 'orange'];
 
@@ -80,7 +55,7 @@ const EventCard: React.FC<EventCardProps> = ({
     <View
       onLayout={({
         nativeEvent: {
-          layout: { width, height },
+          layout: { width },
         },
       }) => {
         setCardWidth(width);
@@ -91,7 +66,7 @@ const EventCard: React.FC<EventCardProps> = ({
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
             <View>
               <Title numberOfLines={2}>{event?.title}</Title>
-              <Caption>{buildDateString(start, end)}</Caption>
+              <Caption>{Format.shortEventDate(event.duration)}</Caption>
             </View>
             {verification && eventVerification?.verification && (
               <View
@@ -135,7 +110,7 @@ const EventCard: React.FC<EventCardProps> = ({
               {Array.isArray(event?.places) &&
                 event.places.map((p) => (
                   <View
-                    key={shortid()}
+                    key={p._id}
                     style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
                   >
                     <Icon
@@ -147,11 +122,9 @@ const EventCard: React.FC<EventCardProps> = ({
                       style={[cardStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
                       numberOfLines={1}
                     >
-                      {p?.type === 'standalone' &&
-                        (p?.address?.shortName ||
-                          `${p?.address?.address?.street}, ${p?.address?.address?.city}`)}
-                      {p.type === 'school' && p?.associatedSchool?.displayName}
-                      {p.type === 'standalone' && p?.associatedPlace?.displayName}
+                      {p.type === 'standalone' && Format.shortAddress(p.address)}
+                      {p.type === 'school' && p.associatedSchool?.displayName}
+                      {p.type === 'place' && p.associatedPlace?.displayName}
                     </Text>
                   </View>
                 ))}
