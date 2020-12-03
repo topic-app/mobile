@@ -37,6 +37,7 @@ import {
   EventRequestState,
   GroupPreload,
   UserRequestState,
+  Group,
 } from '@ts/types';
 import { useTheme, logger, Format } from '@utils/index';
 
@@ -65,7 +66,7 @@ type UserDisplayProps = {
   account: Account;
   state: UserRequestState;
   users: UsersState;
-  groups: GroupPreload[];
+  groups: (GroupPreload | Group)[];
   groupsState: GroupRequestState;
   articles: ArticlePreload[];
   events: EventPreload[];

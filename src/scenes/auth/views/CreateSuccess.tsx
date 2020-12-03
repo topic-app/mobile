@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Illustration } from '@components/index';
 import { updateGroups } from '@redux/actions/api/groups';
 import getStyles from '@styles/Styles';
-import { State, LocationList, GroupPreload } from '@ts/types';
+import { State, LocationList, GroupPreload, Group } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
@@ -15,7 +15,7 @@ import getAuthStyles from '../styles/Styles';
 type AuthCreateSuccessProps = {
   navigation: AuthScreenNavigationProp<'CreateSuccess'>;
   location: LocationList;
-  groups: GroupPreload[];
+  groups: (GroupPreload | Group)[];
 };
 
 const AuthCreateSuccess: React.FC<AuthCreateSuccessProps> = ({ navigation, location, groups }) => {
@@ -32,7 +32,7 @@ const AuthCreateSuccess: React.FC<AuthCreateSuccessProps> = ({ navigation, locat
     <View style={styles.page}>
       <FlatList
         data={groups}
-        renderItem={(item) => <Text>{JSON.stringify(item)}</Text>}
+        renderItem={(item) => null /* <Text>{JSON.stringify(item)}</Text> */}
         ListHeaderComponent={() => (
           <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
             <Illustration name="auth-register-success" height={200} width={200} />
