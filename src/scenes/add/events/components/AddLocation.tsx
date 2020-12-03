@@ -1,8 +1,12 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, HelperText, List, Text, Checkbox, Divider, ProgressBar } from 'react-native-paper';
+import { Button, HelperText, List, Text, Divider, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { StepperViewPageProps, ErrorMessage, FullscreenIllustration } from '@components/index';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
 import {
   Account,
   State,
@@ -12,12 +16,9 @@ import {
   ReduxLocation,
   RequestState,
 } from '@ts/types';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import { updateEventCreationData } from '@redux/actions/contentData/events';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
 
+import { CheckboxListItem } from '../../components/ListItems';
 import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
@@ -36,20 +37,6 @@ type Props = StepperViewPageProps & {
   };
 };
 
-const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
-  return {
-    left:
-      Platform.OS !== 'ios'
-        ? () => (
-            <View style={{ justifyContent: 'center' }}>
-              <Checkbox {...props} />
-            </View>
-          )
-        : null,
-    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
-  };
-};
-
 const EventAddPageLocation: React.FC<Props> = ({
   prev,
   next,
@@ -60,8 +47,8 @@ const EventAddPageLocation: React.FC<Props> = ({
   departmentItems,
   locationStates,
 }) => {
-  const [schools, setSchools] = React.useState([]);
-  const [departments, setDepartments] = React.useState([]);
+  const [schools, setSchools] = React.useState<string[]>([]);
+  const [departments, setDepartments] = React.useState<string[]>([]);
   const [global, setGlobal] = React.useState(false);
   const [showError, setError] = React.useState(false);
 
@@ -75,17 +62,29 @@ const EventAddPageLocation: React.FC<Props> = ({
   };
 
   const theme = useTheme();
-  const { colors } = theme;
   const eventStyles = getAuthStyles(theme);
 
   const selectedGroup = account.groups.find((g) => g._id === creationData.group);
-  const selectedGroupLocation =
-    selectedGroup &&
-    selectedGroup.roles
-      ?.find((r) => r._id === selectedGroup.membership.role)
-      ?.permissions.find((p) => p.permission === 'event.add')?.scope;
+  const selectedGroupLocation = selectedGroup?.roles
+    ?.find((r) => r._id === selectedGroup?.membership.role)
+    ?.permissions.find((p) => p.permission === 'event.add')?.scope;
 
-  const toggle = (i: Partial<{ _id: string }>, data: string[], func: (arr: string[]) => void) => {
+  React.useEffect(() => {
+    if (selectedGroupLocation) {
+      fetchMultiSchool(selectedGroupLocation.schools?.map((s) => s._id));
+      fetchMultiDepartment(selectedGroupLocation.departments?.map((s) => s._id));
+    }
+  }, [null]);
+
+  if (!selectedGroupLocation) {
+    return (
+      <FullscreenIllustration illustration="empty" buttonLabel="Retour" buttonOnPress={prev}>
+        Groupe Introuvable, essayez de reséléctionner un groupe dont vous appartenez
+      </FullscreenIllustration>
+    );
+  }
+
+  const toggle = (i: { _id: string }, data: string[], func: (arr: string[]) => void) => {
     if (data.includes(i._id)) {
       func(data.filter((j) => j !== i._id));
     } else {
@@ -94,52 +93,37 @@ const EventAddPageLocation: React.FC<Props> = ({
     }
   };
 
-  React.useEffect(() => {
-    fetchMultiSchool(selectedGroupLocation?.schools?.map((s) => s._id));
-    fetchMultiDepartment(selectedGroupLocation?.departments?.map((s) => s._id));
-  }, [null]);
-
   return (
     <View style={eventStyles.formContainer}>
       <View style={eventStyles.listContainer}>
-        {selectedGroupLocation?.schools?.map((s) => (
-          <List.Item
+        {selectedGroupLocation.schools?.map((s) => (
+          <CheckboxListItem
+            key={s._id}
             title={s.name}
             description={`École · ${s.address?.shortName || s.address?.address?.city}`}
-            {...getListItemCheckbox({
-              status: schools.includes(s._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(s, schools, setSchools),
-            })}
+            status={schools.includes(s._id) ? 'checked' : 'unchecked'}
             onPress={() => toggle(s, schools, setSchools)}
           />
         ))}
-        {selectedGroupLocation?.departments?.map((d) => (
-          <List.Item
+        {selectedGroupLocation.departments?.map((d) => (
+          <CheckboxListItem
+            key={d._id}
             title={d.name}
             description={`Département ${d.code}`}
-            {...getListItemCheckbox({
-              status: departments.includes(d._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(d, departments, setDepartments),
-            })}
+            status={departments.includes(d._id) ? 'checked' : 'unchecked'}
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
-        {selectedGroupLocation?.global ||
-          (selectedGroupLocation?.everywhere && (
-            <List.Item
+        {selectedGroupLocation.global ||
+          (selectedGroupLocation.everywhere && (
+            <CheckboxListItem
               title="France entière"
               description="Visible pour tous les utilisateurs"
-              {...getListItemCheckbox({
-                status: global ? 'checked' : 'unchecked',
-                color: colors.primary,
-                onPress: () => setGlobal(!global),
-              })}
+              status={global ? 'checked' : 'unchecked'}
               onPress={() => setGlobal(!global)}
             />
           ))}
-        {selectedGroupLocation?.everywhere ? (
+        {selectedGroupLocation.everywhere ? (
           <View>
             <Divider style={{ marginTop: 20 }} />
             {(locationStates.schools.info.loading || locationStates.departments.info.loading) && (
@@ -154,8 +138,14 @@ const EventAddPageLocation: React.FC<Props> = ({
                 }}
                 type="axios"
                 retry={() => {
-                  fetchMultiSchool([...schools, ...selectedGroupLocation.schools]);
-                  fetchMultiDepartment([...departments, ...selectedGroupLocation.departments]);
+                  fetchMultiSchool([
+                    ...schools,
+                    ...selectedGroupLocation.schools.map((s) => s._id),
+                  ]);
+                  fetchMultiDepartment([
+                    ...departments,
+                    ...selectedGroupLocation.departments.map((d) => d._id),
+                  ]);
                 }}
               />
             )}

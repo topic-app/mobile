@@ -2,7 +2,6 @@ import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 
 import LocationSelectPage from '@components/LocationSelectPage';
-import { ReduxLocation } from '@ts/types';
 
 import type { GroupAddScreenNavigationProp, GroupAddStackParams } from '../index';
 

@@ -9,7 +9,12 @@ type TagAddProps = {
   data: string;
 };
 
-function tagAddCreator({ name, color, parser, data }: TagAddProps): AppThunk {
+function tagAddCreator({
+  name,
+  color,
+  parser,
+  data,
+}: TagAddProps): AppThunk<Promise<{ _id: string }>> {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -48,7 +53,7 @@ function tagAddCreator({ name, color, parser, data }: TagAddProps): AppThunk {
               },
             },
           });
-          resolve(result.data);
+          resolve(result.data as { _id: string });
         })
         .catch((error) => {
           dispatch({
