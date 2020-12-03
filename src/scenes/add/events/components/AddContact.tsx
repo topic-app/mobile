@@ -1,12 +1,12 @@
 import React, { createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
+import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { TextInput, Button, IconButton, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { StepperViewPageProps, InlineCard } from '@components/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import { Account, State, EventCreationData, UserPreload, EventPlace, User } from '@ts/types';
+import { Account, State, UserPreload } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
@@ -28,8 +28,8 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
-  const phoneInput = createRef<RNTestInput>();
-  const emailInput = createRef<RNTestInput>();
+  const phoneInput = createRef<RNTextInput>();
+  const emailInput = createRef<RNTextInput>();
 
   type InputStateType = {
     value: string;
