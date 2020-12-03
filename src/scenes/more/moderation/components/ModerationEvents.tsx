@@ -7,13 +7,7 @@ import { ChipAddList, ErrorMessage, EventCard } from '@components/index';
 import { Permissions } from '@constants/index';
 import { updateEventsVerification } from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
-import {
-  State,
-  Account,
-  EventRequestState,
-  EventVerificationPreload,
-  AccountPermission,
-} from '@ts/types';
+import { State, Account, EventRequestState, EventVerificationPreload } from '@ts/types';
 import { checkPermission, getPermissionGroups, useTheme } from '@utils/index';
 
 import type { ModerationScreenNavigationProp } from '../index';
