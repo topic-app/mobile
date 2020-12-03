@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Illustration, EventCard, ErrorMessage } from '@components/index';
+import { Illustration, ErrorMessage } from '@components/index';
 import { eventVerificationApprove } from '@redux/actions/apiActions/events';
 import getStyles from '@styles/Styles';
 import { State, EventRequestState, Account } from '@ts/types';

@@ -1,50 +1,21 @@
 import React from 'react';
-import {
-  ModalProps,
-  State,
-  ArticleQuickItem,
-  TagsState,
-  GroupsState,
-  UsersState,
-  Tag,
-  Group,
-  User,
-  RequestState,
-  UserRequestState,
-  GroupMember,
-  Account,
-} from '@ts/types';
-import {
-  Divider,
-  ProgressBar,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
-  Card,
-  Text,
-  List,
-  ThemeProvider,
-  useTheme,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import Illustration from '@components/Illustration';
-import Avatar from '@components/Avatar';
+import { View, FlatList } from 'react-native';
+import { Divider, ProgressBar, Text, List } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { Modal } from '@components/index';
-import { searchTags, updateTags } from '@redux/actions/api/tags';
-import { searchGroups, updateGroups } from '@redux/actions/api/groups';
-import { searchUsers, updateUsers } from '@redux/actions/api/users';
 
-import { CollapsibleView, ErrorMessage, Searchbar } from '@components/index';
+import Avatar from '@components/Avatar';
+import Illustration from '@components/Illustration';
+import { Modal, ErrorMessage, Searchbar } from '@components/index';
+import { searchUsers } from '@redux/actions/api/users';
 import getStyles from '@styles/Styles';
-import { addArticleQuick } from '@redux/actions/contentData/articles';
-import getEventStyles from '../styles/Styles';
+import { ModalProps, State, UsersState, UserRequestState, Account, UserPreload } from '@ts/types';
+import { useTheme } from '@utils';
 
 type UserSelectModalProps = ModalProps & {
   users: UsersState;
   state: UserRequestState;
   account: Account;
-  next: (user: User) => any;
+  next: (user: UserPreload) => any;
 };
 
 function UserSelectModal({
@@ -57,8 +28,6 @@ function UserSelectModal({
 }: UserSelectModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const eventStyles = getEventStyles(theme);
-  const { colors } = theme;
 
   const [searchText, setSearchText] = React.useState('');
 
@@ -93,7 +62,7 @@ function UserSelectModal({
               contentSingular: "La liste d'utilisateurs",
             }}
             error={state.add?.error}
-            retry={() => update()}
+            retry={update}
           />
         ) : null}
 

@@ -1,18 +1,8 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Button,
-  HelperText,
-  List,
-  Checkbox,
-  Card,
-  Text,
-  Divider,
-  ProgressBar,
-} from 'react-native-paper';
+import { Button, HelperText, List, Card, Text, Divider, ProgressBar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import shortid from 'shortid';
 
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
@@ -31,6 +21,7 @@ import {
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
+import { CheckboxListItem } from '../../components/ListItems';
 import type { GroupAddScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
 
@@ -49,29 +40,6 @@ type GroupAddLocationProps = StepperViewPageProps & {
       info: RequestState;
     };
   };
-};
-
-type PlatformListItemProps = React.ComponentPropsWithoutRef<typeof List.Item> &
-  React.ComponentPropsWithoutRef<typeof Checkbox>;
-
-const CheckboxListItem: React.FC<PlatformListItemProps> = ({ status, color, onPress, ...rest }) => {
-  return Platform.OS === 'ios' ? (
-    <List.Item
-      {...rest}
-      onPress={onPress}
-      right={() => <Checkbox status={status} color={color} onPress={onPress} />}
-    />
-  ) : (
-    <List.Item
-      {...rest}
-      onPress={onPress}
-      left={() => (
-        <View style={{ justifyContent: 'center' }}>
-          <Checkbox status={status} color={color} onPress={onPress} />
-        </View>
-      )}
-    />
-  );
 };
 
 const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
@@ -137,21 +105,19 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
       <View style={articleStyles.listContainer}>
         {location.schoolData?.map((s) => (
           <CheckboxListItem
-            key={shortid()}
+            key={s._id}
             title={s.name}
             description={`École · ${s.address?.shortName || s.address?.address?.city}`}
             status={schools.includes(s._id) ? 'checked' : 'unchecked'}
-            color={colors.primary}
             onPress={() => toggle(s, schools, setSchools)}
           />
         ))}
         {location.departmentData?.map((d) => (
           <CheckboxListItem
-            key={shortid()}
+            key={d._id}
             title={d.name}
             description={`Département ${d.code}`}
             status={departments.includes(d._id) ? 'checked' : 'unchecked'}
-            color={colors.primary}
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
@@ -159,7 +125,6 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
           title="France entière"
           description="Visible pour tous les utilisateurs"
           status={global ? 'checked' : 'unchecked'}
-          color={colors.primary}
           onPress={() => setGlobal(!global)}
         />
         <View>

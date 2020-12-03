@@ -21,6 +21,7 @@ import CommentEmptyDark from '@assets/images/illustrations/comments/comments_emp
 import CommentEmptyLight from '@assets/images/illustrations/comments/comments_empty_light.svg';
 import ConfigureDark from '@assets/images/illustrations/configure/configure_dark.svg';
 import ConfigureLight from '@assets/images/illustrations/configure/configure_light.svg';
+import ErrorsEmptyAll from '@assets/images/illustrations/errors/empty_all.svg';
 import EventDark from '@assets/images/illustrations/events/events_dark.svg';
 import EventGreyedDark from '@assets/images/illustrations/events/events_greyed_dark.svg';
 import EventGreyedLight from '@assets/images/illustrations/events/events_greyed_light.svg';
@@ -55,8 +56,7 @@ import { useTheme, logger } from '@utils/index';
 const illustrationList = {
   // Topic Icon
   'topic-icon': {
-    light: TopicIcon,
-    dark: TopicIcon,
+    all: TopicIcon,
   },
 
   // Article Illustrations
@@ -159,8 +159,7 @@ const illustrationList = {
 
   // Settings Illustrations
   'settings-theme': {
-    light: SettingsThemeAll,
-    dark: SettingsThemeAll,
+    all: SettingsThemeAll,
   },
   'settings-privacy': {
     light: SettingsPrivacyLight,
@@ -175,24 +174,22 @@ const illustrationList = {
 
   // Beta illustrations
   'beta-welcome': {
-    light: BetaWelcomeAll,
-    dark: BetaWelcomeAll,
+    all: BetaWelcomeAll,
   },
   'beta-privacy': {
-    light: BetaPrivacyAll,
-    dark: BetaPrivacyAll,
+    all: BetaPrivacyAll,
   },
   'beta-bugs': {
-    light: BetaBugsAll,
-    dark: BetaBugsAll,
+    all: BetaBugsAll,
   },
   'beta-messages': {
-    light: BetaMessagesAll,
-    dark: BetaMessagesAll,
+    all: BetaMessagesAll,
   },
   'beta-updates': {
-    light: BetaUpdatesAll,
-    dark: BetaUpdatesAll,
+    all: BetaUpdatesAll,
+  },
+  empty: {
+    all: ErrorsEmptyAll,
   },
 };
 
@@ -205,12 +202,17 @@ const Illustration: React.FC<Props> = ({ name, ...rest }) => {
 
   if (Platform.OS === 'web' || Config.dev.hideSvg) return null;
 
-  const Item = dark ? illustrationList[name]?.dark : illustrationList[name]?.light;
+  const illustrations: {
+    [key in IllustrationName]: { all?: any; dark?: any; light?: any };
+  } = illustrationList;
 
-  if (!Item) {
+  if (!(name in illustrations)) {
     logger.warn(`Error: ${name} not found in list of artwork`);
     return null;
   }
+
+  const Item =
+    illustrations[name].all ?? dark ? illustrations[name].dark : illustrations[name].light;
 
   return <Item {...rest} />;
 };

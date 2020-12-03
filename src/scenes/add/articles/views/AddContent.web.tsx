@@ -11,6 +11,7 @@ import {
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
+import { RichEditor } from '@components/richEditor';
 import { articleAdd } from '@redux/actions/apiActions/articles';
 import {
   clearArticleCreationData,
@@ -76,6 +77,8 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
       />
     );
   };
+
+  const textEditorRef = React.createRef<RichEditor>();
 
   const submit = async () => {
     const contentVal = await textEditorRef.current?.getContentHtml();

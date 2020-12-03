@@ -15,7 +15,7 @@ import getStyles from '@styles/Styles';
 import { Event, EventListItem } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import getArticleStyles from '../styles/Styles';
+import getEventStyles from '../styles/Styles';
 
 type EventListCardProps = {
   event: Event;
@@ -41,7 +41,7 @@ const EventListCard: React.FC<EventListCardProps> = ({
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
+  const eventStyles = getEventStyles(theme);
 
   const swipeRef = React.createRef<Swipeable>();
 
@@ -58,7 +58,7 @@ const EventListCard: React.FC<EventListCardProps> = ({
               marginRight: 20,
             }}
           >
-            <Text style={articleStyles.captionText}>Marquer comme {isRead ? 'non lu' : 'lu'}</Text>
+            <Text style={eventStyles.captionText}>Marquer comme {isRead ? 'non lu' : 'lu'}</Text>
             <Icon
               name={isRead ? 'eye-off' : 'eye'}
               size={32}
@@ -74,7 +74,7 @@ const EventListCard: React.FC<EventListCardProps> = ({
               marginRight: 20,
             }}
           >
-            <Text style={articleStyles.captionText}>Retirer</Text>
+            <Text style={eventStyles.captionText}>Retirer</Text>
             <Icon
               name="delete"
               color={colors.disabled}
