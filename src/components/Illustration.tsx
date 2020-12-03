@@ -1,51 +1,4 @@
-import ArticleCompletedDark from '@assets/images/illustrations/articles/articles_completed_dark.svg';
-import ArticleCompletedLight from '@assets/images/illustrations/articles/articles_completed_light.svg';
-import ArticleDark from '@assets/images/illustrations/articles/articles_dark.svg';
-import ArticleGreyedDark from '@assets/images/illustrations/articles/articles_greyed_dark.svg';
-import ArticleGreyedLight from '@assets/images/illustrations/articles/articles_greyed_light.svg';
-import ArticleLight from '@assets/images/illustrations/articles/articles_light.svg';
-import ArticleListsDark from '@assets/images/illustrations/articles/articles_lists_dark.svg';
-import ArticleListsLight from '@assets/images/illustrations/articles/articles_lists_light.svg';
-import AuthLoginDark from '@assets/images/illustrations/auth/login_dark.svg';
-import AuthLoginLight from '@assets/images/illustrations/auth/login_light.svg';
-import AuthRegisterDark from '@assets/images/illustrations/auth/register_dark.svg';
-import AuthRegisterLight from '@assets/images/illustrations/auth/register_light.svg';
-import AuthRegisterSuccessDark from '@assets/images/illustrations/auth/register_success_dark.svg';
-import AuthRegisterSuccessLight from '@assets/images/illustrations/auth/register_success_light.svg';
-import BetaBugsAll from '@assets/images/illustrations/beta/beta-bugs.svg';
-import BetaMessagesAll from '@assets/images/illustrations/beta/beta-messaging.svg';
-import BetaPrivacyAll from '@assets/images/illustrations/beta/beta-privacy.svg';
-import BetaUpdatesAll from '@assets/images/illustrations/beta/beta-updates.svg';
-import BetaWelcomeAll from '@assets/images/illustrations/beta/beta-welcome.svg';
-import CommentEmptyDark from '@assets/images/illustrations/comments/comments_empty_dark.svg';
-import CommentEmptyLight from '@assets/images/illustrations/comments/comments_empty_light.svg';
-import ConfigureDark from '@assets/images/illustrations/configure/configure_dark.svg';
-import ConfigureLight from '@assets/images/illustrations/configure/configure_light.svg';
-import ErrorsEmptyAll from '@assets/images/illustrations/errors/empty_all.svg';
-import EventDark from '@assets/images/illustrations/events/events_dark.svg';
-import EventGreyedDark from '@assets/images/illustrations/events/events_greyed_dark.svg';
-import EventGreyedLight from '@assets/images/illustrations/events/events_greyed_light.svg';
-import EventLight from '@assets/images/illustrations/events/events_light.svg';
-import ExploreDark from '@assets/images/illustrations/explore/explore_dark.svg';
-import ExploreGreyedDark from '@assets/images/illustrations/explore/explore_greyed_dark.svg';
-import ExploreGreyedLight from '@assets/images/illustrations/explore/explore_greyed_light.svg';
-import ExploreLight from '@assets/images/illustrations/explore/explore_light.svg';
-import GroupDark from '@assets/images/illustrations/groups/groups_dark.svg';
-import GroupLight from '@assets/images/illustrations/groups/groups_light.svg';
-import PetitionDark from '@assets/images/illustrations/petitions/petitions_dark.svg';
-import PetitionGreyedDark from '@assets/images/illustrations/petitions/petitions_greyed_dark.svg';
-import PetitionGreyedLight from '@assets/images/illustrations/petitions/petitions_greyed_light.svg';
-import PetitionLight from '@assets/images/illustrations/petitions/petitions_light.svg';
-import SearchDark from '@assets/images/illustrations/search/search_dark.svg';
-import SearchLight from '@assets/images/illustrations/search/search_light.svg';
-import LocationSelectDark from '@assets/images/illustrations/select_location/select_location_dark.svg';
-import LocationSelectLight from '@assets/images/illustrations/select_location/select_location_light.svg';
-import SettingsPrivacyDark from '@assets/images/illustrations/settings/settings_privacy_dark.svg';
-import SettingsPrivacyLight from '@assets/images/illustrations/settings/settings_privacy_light.svg';
-import SettingsThemeAll from '@assets/images/illustrations/settings/settings_theme_all.svg';
-import TagDark from '@assets/images/illustrations/tags/tags_dark.svg';
-import TagLight from '@assets/images/illustrations/tags/tags_light.svg';
-import TopicIcon from '@assets/images/topic-icon.svg';
+import * as Assets from '@assets/index';
 import React from 'react';
 import { Platform } from 'react-native';
 import { SvgProps } from 'react-native-svg';
@@ -56,140 +9,140 @@ import { useTheme, logger } from '@utils/index';
 const illustrationList = {
   // Topic Icon
   'topic-icon': {
-    all: TopicIcon,
+    all: Assets.TopicIcon,
   },
 
   // Article Illustrations
   article: {
-    light: ArticleLight,
-    dark: ArticleDark,
+    light: Assets.ArticleLight,
+    dark: Assets.ArticleDark,
   },
   'article-greyed': {
-    light: ArticleGreyedLight,
-    dark: ArticleGreyedDark,
+    light: Assets.ArticleGreyedLight,
+    dark: Assets.ArticleGreyedDark,
   },
   'article-completed': {
-    light: ArticleCompletedLight,
-    dark: ArticleCompletedDark,
+    light: Assets.ArticleCompletedLight,
+    dark: Assets.ArticleCompletedDark,
   },
   'article-lists': {
-    light: ArticleListsLight,
-    dark: ArticleListsDark,
+    light: Assets.ArticleListsLight,
+    dark: Assets.ArticleListsDark,
   },
 
   // Auth Illustrations
   'auth-login': {
-    light: AuthLoginLight,
-    dark: AuthLoginDark,
+    light: Assets.AuthLoginLight,
+    dark: Assets.AuthLoginDark,
   },
   'auth-register': {
-    light: AuthRegisterLight,
-    dark: AuthRegisterDark,
+    light: Assets.AuthRegisterLight,
+    dark: Assets.AuthRegisterDark,
   },
   'auth-register-success': {
-    light: AuthRegisterSuccessLight,
-    dark: AuthRegisterSuccessDark,
+    light: Assets.AuthRegisterSuccessLight,
+    dark: Assets.AuthRegisterSuccessDark,
   },
 
   // Comment Illustrations
   'comment-empty': {
-    light: CommentEmptyLight,
-    dark: CommentEmptyDark,
+    light: Assets.CommentEmptyLight,
+    dark: Assets.CommentEmptyDark,
   },
 
   // Configure Illustrations
   configure: {
-    light: ConfigureLight,
-    dark: ConfigureDark,
+    light: Assets.ConfigureLight,
+    dark: Assets.ConfigureDark,
   },
 
   // Event Illustrations
   event: {
-    light: EventLight,
-    dark: EventDark,
+    light: Assets.EventLight,
+    dark: Assets.EventDark,
   },
   'event-greyed': {
-    light: EventGreyedLight,
-    dark: EventGreyedDark,
+    light: Assets.EventGreyedLight,
+    dark: Assets.EventGreyedDark,
   },
 
   // Explore Illustrations
   explore: {
-    light: ExploreLight,
-    dark: ExploreDark,
+    light: Assets.ExploreLight,
+    dark: Assets.ExploreDark,
   },
   'explore-greyed': {
-    light: ExploreGreyedLight,
-    dark: ExploreGreyedDark,
+    light: Assets.ExploreGreyedLight,
+    dark: Assets.ExploreGreyedDark,
   },
 
   // Group Illustrations
   group: {
-    light: GroupLight,
-    dark: GroupDark,
+    light: Assets.GroupLight,
+    dark: Assets.GroupDark,
   },
 
   // Tag Illustrations
   tag: {
-    light: TagLight,
-    dark: TagDark,
+    light: Assets.TagLight,
+    dark: Assets.TagDark,
   },
 
   // User Illustrations TEMP: Find a better illustration
   user: {
-    light: GroupLight,
-    dark: GroupDark,
+    light: Assets.GroupLight,
+    dark: Assets.GroupDark,
   },
 
   // Petition Illustrations
   petition: {
-    light: PetitionLight,
-    dark: PetitionDark,
+    light: Assets.PetitionLight,
+    dark: Assets.PetitionDark,
   },
   'petition-greyed': {
-    light: PetitionGreyedLight,
-    dark: PetitionGreyedDark,
+    light: Assets.PetitionGreyedLight,
+    dark: Assets.PetitionGreyedDark,
   },
 
   // Select Location
   'location-select': {
-    light: LocationSelectLight,
-    dark: LocationSelectDark,
+    light: Assets.LocationSelectLight,
+    dark: Assets.LocationSelectDark,
   },
 
   // Settings Illustrations
   'settings-theme': {
-    all: SettingsThemeAll,
+    all: Assets.SettingsThemeAll,
   },
   'settings-privacy': {
-    light: SettingsPrivacyLight,
-    dark: SettingsPrivacyDark,
+    light: Assets.SettingsPrivacyLight,
+    dark: Assets.SettingsPrivacyDark,
   },
 
   // Search illustrations
   search: {
-    light: SearchLight,
-    dark: SearchDark,
+    light: Assets.SearchLight,
+    dark: Assets.SearchDark,
   },
 
   // Beta illustrations
   'beta-welcome': {
-    all: BetaWelcomeAll,
+    all: Assets.BetaWelcomeAll,
   },
   'beta-privacy': {
-    all: BetaPrivacyAll,
+    all: Assets.BetaPrivacyAll,
   },
   'beta-bugs': {
-    all: BetaBugsAll,
+    all: Assets.BetaBugsAll,
   },
   'beta-messages': {
-    all: BetaMessagesAll,
+    all: Assets.BetaMessagesAll,
   },
   'beta-updates': {
-    all: BetaUpdatesAll,
+    all: Assets.BetaUpdatesAll,
   },
   empty: {
-    all: ErrorsEmptyAll,
+    all: Assets.ErrorsEmptyAll,
   },
 };
 

@@ -71,6 +71,11 @@ const initialState: GroupsState = {
       error: null,
       loading: false,
     },
+    member_modify: {
+      success: null,
+      error: null,
+      loading: false,
+    },
     member_reject: {
       success: null,
       error: null,
