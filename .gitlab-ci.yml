@@ -31,6 +31,7 @@ eslint test:
   stage: test
   image: node:12
   script:
+    - npm install
     - npm install -g eslint
     - eslint ./
 
