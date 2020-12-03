@@ -30,13 +30,21 @@ function done(
   selectedOthers: string[],
   type: 'schools' | 'departements' | 'regions' | 'other',
   initialData: Partial<ReduxLocation>,
-  callback: (location: Partial<ReduxLocation>) => any,
+  callback: (location: ReduxLocation) => any,
 ) {
   callback({
-    schools: type === 'schools' ? selectedSchools : initialData.schools,
+    schools:
+      (type === 'schools' ? selectedSchools : initialData.schools) || initialData.schools || [],
     departments:
-      type === 'departements' || type === 'regions' ? selectedDepartments : initialData.departments,
-    global: type === 'other' ? selectedOthers.includes('global') : initialData.global,
+      (type === 'departements' || type === 'regions'
+        ? selectedDepartments
+        : initialData.departments) ||
+      initialData.departments ||
+      [],
+    global:
+      (type === 'other' ? selectedOthers.includes('global') : initialData.global) ||
+      initialData.global ||
+      false,
   });
 }
 
@@ -101,7 +109,7 @@ type LocationSelectProps = {
   initialData?: Partial<ReduxLocation>;
   type: 'schools' | 'departements' | 'regions' | 'other';
   hideSearch?: boolean;
-  callback: (location: Partial<ReduxLocation>) => any;
+  callback: (location: ReduxLocation) => any;
   headerOptions?: Partial<CustomHeaderBarProps['scene']['descriptor']['options']>;
 };
 

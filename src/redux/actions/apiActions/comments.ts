@@ -43,7 +43,7 @@ function commentAddCreator({
           },
           true,
         )
-          .then(() => {
+          .then((result) => {
             dispatch({
               type: UPDATE_COMMENTS_STATE,
               data: {
@@ -54,7 +54,7 @@ function commentAddCreator({
                 },
               },
             });
-            resolve();
+            resolve({ parent, _id: result.data?._id });
           })
           .catch((error) => {
             dispatch({
@@ -82,7 +82,7 @@ function commentAddCreator({
           },
           true,
         )
-          .then(() => {
+          .then((result) => {
             dispatch({
               type: UPDATE_COMMENTS_STATE,
               data: {
@@ -93,7 +93,7 @@ function commentAddCreator({
                 },
               },
             });
-            resolve();
+            resolve({ parent, _id: result.data?._id });
           })
           .catch((error) => {
             dispatch({

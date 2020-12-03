@@ -1,6 +1,6 @@
 import Store from '@redux/store';
-import { request } from '@utils/index';
 import { AppThunk, UPDATE_USERS_STATE } from '@ts/types';
+import { request } from '@utils/index';
 
 import { reportCreator } from './ActionCreator';
 
@@ -37,7 +37,7 @@ function userFollowCreator({ id }: { id: string }): AppThunk {
               },
             },
           });
-          resolve();
+          resolve({ type: 'user', id });
         })
         .catch((error) => {
           dispatch({
@@ -89,7 +89,7 @@ function userUnfollowCreator({ id }: { id: string }): AppThunk {
               },
             },
           });
-          resolve();
+          resolve({ type: 'user', id });
         })
         .catch((error) => {
           dispatch({

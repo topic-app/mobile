@@ -112,15 +112,15 @@ function uploadCreator(
             logger.debug('Trying image upload');
             const data = new FormData();
             data.append('resizeMode', resizeMode);
-            data.append('file', uploadFile);
-            let res = await fetch(Config.cdn.uploadUrl, {
+            data.append('file', uploadFile as any);
+            const res = await fetch(Config.cdn.uploadUrl, {
               method: 'POST',
               body: data,
               headers: {
                 Authorization: `Bearer ${permission.data?.token}`,
               },
             });
-            let responseJson = await res.json();
+            const responseJson = await res.json();
             if (!responseJson.error) {
               dispatch({
                 type: UPDATE_UPLOAD_STATE,
