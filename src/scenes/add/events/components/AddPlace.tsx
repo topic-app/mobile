@@ -1,15 +1,13 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { FlatList, View, Platform } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Button, IconButton, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { StepperViewPageProps, InlineCard, SafeAreaView } from '@components/index';
+import { StepperViewPageProps, InlineCard } from '@components/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import { Account, State, EventCreationData, EventPlace, EventCreationDataPlace } from '@ts/types';
+import { Account, State, EventCreationDataPlace } from '@ts/types';
 import { Format, useTheme } from '@utils';
 
 import getAuthStyles from '../styles/Styles';
@@ -76,7 +74,6 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
                   <InlineCard
-                    key={place.id}
                     icon={
                       place.type === 'school'
                         ? 'school'
@@ -85,22 +82,13 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
                         : 'map-marker'
                     }
                     title={
-                      place.type === 'school' || place.type === 'place'
-                        ? place.tempName || ''
-                        : `${place.address?.address.number}${
-                            place.address?.address.number === '' ? '' : ' '
-                          }${place.address?.address.street}${
-                            place.address?.address.extra !== '' &&
-                            place.address?.address.street !== ''
-                              ? ', '
-                              : ''
-                          }${place.address?.address.extra}${
-                            place.address?.address.street !== '' ||
-                            place.address?.address.extra !== ''
-                              ? ', '
-                              : ''
-                          }${place.address?.address.code} ${place.address?.address.city}`
+                      place.type === 'standalone'
+                        ? Format.shortAddress(place.address)
+                        : place.tempName ?? 'Lieu inconnu'
                     }
+                    onPress={() => {
+                      setEventPlaces(eventPlaces.filter((s) => s !== place));
+                    }}
                   />
                 </View>
                 <View style={{ flex: 1 }}>

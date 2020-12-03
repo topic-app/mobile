@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 import shortid from 'shortid';
 import * as Yup from 'yup';
@@ -16,11 +16,11 @@ type PlaceAddressModalProps = ModalProps & {
 };
 
 const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisible, add }) => {
-  const numberInput = React.createRef<RNTestInput>();
-  const streetInput = React.createRef<RNTestInput>();
-  const extraInput = React.createRef<RNTestInput>();
-  const codeInput = React.createRef<RNTestInput>();
-  const cityInput = React.createRef<RNTestInput>();
+  const numberInput = React.createRef<TextInput>();
+  const streetInput = React.createRef<TextInput>();
+  const extraInput = React.createRef<TextInput>();
+  const codeInput = React.createRef<TextInput>();
+  const cityInput = React.createRef<TextInput>();
 
   function blurInputs() {
     numberInput.current?.blur();
