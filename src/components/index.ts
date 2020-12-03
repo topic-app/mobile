@@ -25,6 +25,7 @@ export { default as Modal } from './Modal';
 export { default as FormTextInput } from './FormTextInput';
 export { default as SafeAreaView } from './SafeAreaView';
 export { default as StrengthMeter } from './StrengthMeter';
+export { default as Banner } from './Banner';
 
 export { default as BottomSheet } from './BottomSheet';
 export * from './BottomSheet';

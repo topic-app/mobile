@@ -1,4 +1,3 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform, FlatList, Alert } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';

@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, ScrollView, Alert } from 'react-native';
-import { List, Avatar, Divider, Banner, Switch } from 'react-native-paper';
+import { List, Avatar, Divider, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Illustration, CustomHeaderBar } from '@components/index';
+import { Illustration, CustomHeaderBar, Banner } from '@components/index';
 import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';

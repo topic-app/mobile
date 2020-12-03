@@ -12,6 +12,7 @@ import getStyles from '@styles/Styles';
 import { Content as ContentType, State, Preferences } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl, handleUrl } from '@utils/index';
+import { NativeStackNavigationProp } from '@utils/stack';
 import YouTube from '@utils/youtube';
 
 import { PlatformTouchable } from './PlatformComponents';
@@ -23,7 +24,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<any, any>>();
 
   if (parser === 'markdown') {
     return (
@@ -112,6 +113,9 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                 return (
                   <View style={{ flex: 1 }}>
                     <YouTube
+                      // apiKey an Android-specific but does not
+                      // appear in prop types but is required
+                      // @ts-expect-error
                       apiKey={config.google.youtubeKey}
                       videoId={src.substring(10)}
                       style={{ alignSelf: 'stretch', height: 300 }}

@@ -8,6 +8,8 @@ import {
   ApiAction,
   ApiStateMap,
   AppThunk,
+  School,
+  Department,
 } from '@ts/types';
 import { request, logger } from '@utils/index';
 
@@ -237,9 +239,9 @@ function fetchCreator<T extends ApiItemString>({
           const state = getState()[dataType];
 
           if (useArray && Array.isArray((state as SchoolsState | DepartmentsState).items)) {
-            data = (state as SchoolsState | DepartmentsState).items;
+            data = (state as SchoolsState | DepartmentsState).items as (School | Department)[];
             // Push data to state if it's not already in it
-            if (!data.includes(data?._id)) {
+            if (!data.includes(result.data?.[dataType][0])) {
               data.push(result.data?.[dataType][0]);
             }
           } else {

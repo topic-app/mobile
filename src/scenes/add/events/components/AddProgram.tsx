@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { connect } from 'react-redux';
 import { Button, Text, Title } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-import { Account, Content, State } from '@ts/types';
 import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { Account, Content, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -16,11 +16,10 @@ type Props = StepperViewPageProps & { account: Account; add: (parser: Content['p
 const EventAddPageProgram: React.FC<Props> = ({ prev, add, account }) => {
   const contentInput = React.createRef<RNTestInput>();
   const theme = useTheme();
-  const { colors } = theme;
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const submit = () => {
-    updateEventCreationData({ parser: 'markdown', program: null });
+    updateEventCreationData({ parser: 'markdown', program: [] });
     add('markdown');
   };
 

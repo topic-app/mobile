@@ -19,7 +19,6 @@ import {
   Subheading,
   Title,
   IconButton,
-  Banner,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -36,6 +35,7 @@ import {
   CollapsibleView,
   ErrorMessage,
   SafeAreaView,
+  Banner,
 } from '@components/index';
 import { searchArticles } from '@redux/actions/api/articles';
 import { searchEvents } from '@redux/actions/api/events';
@@ -54,7 +54,6 @@ import {
   GroupPreload,
   Group,
   Account,
-  Address,
   GroupRequestState,
   GroupsState,
   State,
@@ -481,7 +480,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <CategoryTitle>Membres</CategoryTitle>
               </View>
               <Banner visible={isAddSnackbarVisible} actions={[]}>
-                {`Une invitation a été envoyée à @${userToAdd?.info?.username || ''}`}
+                Une invitation a été envoyée à @${userToAdd?.info?.username || ''}
               </Banner>
               {account.loggedIn &&
                 group.members?.some((m) => m.user?._id === account.accountInfo?.accountId) && (

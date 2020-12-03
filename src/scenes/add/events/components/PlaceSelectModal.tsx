@@ -1,18 +1,23 @@
 import React from 'react';
-
-import { Divider, ProgressBar, Text, List } from 'react-native-paper';
 import { View, FlatList } from 'react-native';
+import { Divider, ProgressBar, Text, List } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State, SchoolsState, EventPlace, PlacesState, RequestState } from '@ts/types';
-import { Modal, Searchbar, Illustration, Avatar, ErrorMessage } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { searchSchools, updateSchools } from '@redux/actions/api/schools';
+import { Modal, Searchbar, Illustration, ErrorMessage } from '@components/index';
 import { searchPlaces, updatePlaces } from '@redux/actions/api/places';
+import { searchSchools, updateSchools } from '@redux/actions/api/schools';
+import getStyles from '@styles/Styles';
+import {
+  ModalProps,
+  State,
+  SchoolsState,
+  EventPlace,
+  PlacesState,
+  RequestStateComplex,
+} from '@ts/types';
+import { Format, useTheme } from '@utils/index';
 
 type EventPlaceSelectModalProps = ModalProps & {
-  eventPlaces: EventPlace[];
   type: 'school' | 'place';
   schools: SchoolsState;
   places: PlacesState;
@@ -25,7 +30,6 @@ function EventPlaceSelectModal({
   type,
   schools,
   places,
-  eventPlaces,
   add,
 }: EventPlaceSelectModalProps) {
   const theme = useTheme();
@@ -36,21 +40,50 @@ function EventPlaceSelectModal({
   let data: EventPlace[] = [];
   let update: (text?: string) => void = () => {};
   let icon = 'alert-decagram';
-  let state: { list: RequestState; search: RequestState } = {
-    list: { loading: { initial: false }, error: true },
-    search: { loading: { initial: false }, error: true },
+  let state: {
+    list: RequestStateComplex;
+    search?: RequestStateComplex;
+  } = {
+    list: { loading: { initial: false }, error: true, success: false },
+    search: { loading: { initial: false }, error: true, success: false },
   };
 
   switch (type) {
     case 'school':
-      data = searchText ? schools.search : schools.data;
+      if (searchText) {
+        data = schools.search.map((school) => ({
+          _id: school._id,
+          type: 'school',
+          associatedSchool: school,
+        }));
+      } else {
+        data = schools.data.map((school) => ({
+          _id: school._id,
+          type: 'school',
+          // Convert any School type to a SchoolPreload type
+          associatedSchool: { preload: true, displayName: school.name, ...school },
+        }));
+      }
       update = () =>
         searchText ? searchSchools('initial', searchText, {}) : updateSchools('initial');
       icon = 'school';
       state = schools.state;
       break;
     case 'place':
-      data = searchText ? places.search : places.data;
+      if (searchText) {
+        data = places.search.map((place) => ({
+          _id: place._id,
+          type: 'place',
+          associatedPlace: place,
+        }));
+      } else {
+        data = places.data.map((place) => ({
+          _id: place._id,
+          type: 'place',
+          // Convert any School type to a SchoolPreload type
+          associatedPlace: place,
+        }));
+      }
       update = () =>
         searchText ? searchPlaces('initial', searchText, {}) : updatePlaces('initial');
       icon = 'map-marker-radius';
@@ -67,13 +100,15 @@ function EventPlaceSelectModal({
       <View>
         <View style={{ height: 200 }}>
           <View style={styles.centerIllustrationContainer}>
-            <Illustration name={type} height={200} width={200} />
+            <Illustration name="search" height={200} width={200} />
           </View>
         </View>
         <Divider />
         {state.list.loading.initial ||
-          (state.search.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />)}
-        {(searchText === '' && state.list.error) || (searchText !== '' && state.search.error) ? (
+          (state.search?.loading.initial && (
+            <ProgressBar indeterminate style={{ marginTop: -4 }} />
+          ))}
+        {(searchText === '' && state.list.error) || (searchText !== '' && state.search?.error) ? (
           <ErrorMessage
             type="axios"
             strings={{
@@ -81,7 +116,7 @@ function EventPlaceSelectModal({
               contentPlural: 'des données',
               contentSingular: 'La liste de données',
             }}
-            error={[state.list.error, state.search.error]}
+            error={[state.list.error, state.search?.error]}
             retry={update}
           />
         ) : null}
@@ -103,7 +138,7 @@ function EventPlaceSelectModal({
           ListEmptyComponent={() => (
             <View style={{ minHeight: 50 }}>
               {(searchText === '' && state.list.success) ||
-                (searchText !== '' && state.search.success && (
+                (searchText !== '' && state.search?.success && (
                   <View style={styles.centerIllustrationContainer}>
                     <Text>Aucun résultat</Text>
                   </View>
@@ -112,34 +147,10 @@ function EventPlaceSelectModal({
           )}
           renderItem={({ item }) => (
             <List.Item
-              title={item.name || item.info?.username}
-              left={() =>
-                item.avatar || item.info?.avatar ? (
-                  <Avatar avatar={item.avatar || item.info?.avatar} size={50} />
-                ) : (
-                  <List.Icon icon={icon} />
-                )
-              }
+              title={Format.eventPlaceName(item)}
+              left={() => <List.Icon icon={icon} />}
               onPress={() => {
-                if (type === 'school') {
-                  add({
-                    id: item._id,
-                    type,
-                    address: null,
-                    tempName: item.name,
-                    associatedSchool: item._id,
-                    associatedPlace: undefined,
-                  });
-                } else {
-                  add({
-                    id: item._id,
-                    type,
-                    address: null,
-                    tempName: item.name,
-                    associatedSchool: undefined,
-                    associatedPlace: item._id,
-                  });
-                }
+                add(item);
                 setVisible(false);
               }}
             />
@@ -151,9 +162,8 @@ function EventPlaceSelectModal({
 }
 
 const mapStateToProps = (state: State) => {
-  const { eventData, schools, places } = state;
+  const { schools, places } = state;
   return {
-    creationData: eventData.creationData,
     schools,
     places,
   };

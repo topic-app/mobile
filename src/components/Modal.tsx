@@ -6,11 +6,7 @@ import getStyles from '@styles/Styles';
 import { ModalProps } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-const Modal = ({
-  visible,
-  setVisible,
-  children,
-}: ModalProps & { children: React.ReactElement }) => {
+const Modal: React.FC<ModalProps> = ({ visible, setVisible, children }) => {
   const styles = getStyles(useTheme());
   return (
     <ModalComponent

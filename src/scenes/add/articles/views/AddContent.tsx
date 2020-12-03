@@ -100,7 +100,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   };
 
   const submit = async () => {
-    const contentValid = markdown?.length && markdown?.length > 0;
+    const contentValid = markdown.length && markdown.length > 0;
     if (contentValid) {
       updateArticleCreationData({ parser: 'markdown', data: markdown });
       add('markdown', markdown);
@@ -209,6 +209,8 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 insertLink: icon('link'),
                 SET_PARAGRAPH: icon('format-clear'),
               }}
+              // RichEditor accepts props for custom actions
+              // @ts-expect-error
               insertLink={() => {
                 setLinkAddModalVisible(true);
               }}
