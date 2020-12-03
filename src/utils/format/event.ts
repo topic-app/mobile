@@ -1,11 +1,11 @@
 import moment from 'moment';
 
-import { Duration } from '@ts/types';
+import { Duration, EventPlace } from '@ts/types';
 
 /**
  * Get a string describing the event's status (open, closed, in progress)
  *
- * ## Exemple
+ * ## Usage
  * ```js
  * const date = {
  *   start: '2020-01-01T08:00:00Z',
@@ -38,4 +38,15 @@ export function shortEventDate(duration: Duration): string {
     return `Prévu le ${start.calendar()}`;
   }
   return `Prévu le ${start.calendar()} (${start.fromNow()})`;
+}
+
+export function eventPlaceName(eventPlace: EventPlace): string {
+  switch (eventPlace.type) {
+    case 'place':
+      return eventPlace.associatedPlace.name;
+    case 'school':
+      return eventPlace.associatedSchool.name;
+    case 'standalone':
+      return 'Lieu';
+  }
 }

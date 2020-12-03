@@ -81,7 +81,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
   const textEditorRef = React.createRef<RichEditor>();
 
   const submit = async () => {
-    const contentVal = await textEditorRef.current?.getContentHtml();
+    const contentVal = (await textEditorRef.current?.getContentHtml()) ?? '';
 
     const converter = new showdown.Converter();
 

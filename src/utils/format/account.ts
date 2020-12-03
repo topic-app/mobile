@@ -5,7 +5,7 @@ import { User } from '@ts/types';
  * Note: make sure you respect the user's privacy when displaying their
  *       firstname and lastname
  *
- * ## Exemple
+ * ## Usage
  * ```js
  * const bob = {
  *   data: {

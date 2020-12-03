@@ -3,10 +3,10 @@ import _ from 'lodash';
 import { Address, PlaceType } from '@ts/types';
 
 /**
- * Obtient une adresse courte d'un endroit
+ * Get a short address from an address object
  */
 export function shortAddress({ shortName, address, geo, departments }: Address): string {
-  // Si on a au moins une rue et une ville, utiliser l'addresse complete
+  // If we have at least a street and a city, then use complete address
   if (address.street && address.city) {
     const { number, street, city, extra, code } = address;
     if (number && street && city && code && extra) {
@@ -23,12 +23,17 @@ export function shortAddress({ shortName, address, geo, departments }: Address):
     }
   }
 
-  // Si on a des coordonnées GPS, utiliser celles-ci
-  if (Array.isArray(geo.coordinates) && geo.coordinates.length === 2) {
+  // If we have gps coordinates, then use them
+  if (
+    Array.isArray(geo.coordinates) &&
+    geo.coordinates.length === 2 &&
+    geo.coordinates[0] &&
+    geo.coordinates[1]
+  ) {
     return geo.coordinates.join(', ');
   }
 
-  // Sinon, euh... Utiliser le departement?
+  // Otherwise, use the department?
   if (Array.isArray(departments) && departments.length !== 0) {
     const departmentName = departments[0].displayName;
     if (shortName) {
@@ -43,7 +48,7 @@ export function shortAddress({ shortName, address, geo, departments }: Address):
 /**
  * Get a string representing the place's type(s).
  *
- * ## Exemple
+ * ## Usage
  * ```js
  * const place = {
  *   name: "Musée National de l'Art Contemporain",

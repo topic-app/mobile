@@ -8,7 +8,7 @@ import shortid from 'shortid';
 import { Modal, Illustration, PlatformTouchable, ErrorMessage } from '@components/index';
 import { tagAdd } from '@redux/actions/apiActions/tags';
 import getStyles from '@styles/Styles';
-import { ModalProps, State, TagRequestState } from '@ts/types';
+import { ModalProps, State, TagPreload, TagRequestState } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getEventStyles from '../styles/Styles';
@@ -16,7 +16,7 @@ import getEventStyles from '../styles/Styles';
 type TagAddModalProps = ModalProps & {
   state: TagRequestState;
   name: string;
-  add: ({ _id, name, color }: { _id: string; name: string; color: string }) => any;
+  add: (tag: TagPreload) => void;
 };
 
 function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps) {
@@ -47,7 +47,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
       parser: 'plaintext',
       data: descriptionText,
     }).then(({ _id }) => {
-      add({ _id, name, color });
+      add({ _id, displayName: name, name, color });
       setDescriptionText('');
       initialColor = randomColor();
       setColor(initialColor);

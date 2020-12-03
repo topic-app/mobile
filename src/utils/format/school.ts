@@ -5,7 +5,7 @@ import { SchoolType } from '@ts/types';
 /**
  * Get a string representing the school's type(s).
  *
- * ## Exemple
+ * ## Usage
  * ```js
  * const school = {
  *   name: 'Ecole des Arts de Machin-sur-Seine',

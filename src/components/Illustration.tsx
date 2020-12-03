@@ -146,6 +146,11 @@ const illustrationList = {
   },
 };
 
+// Re-define illustrations as an object with optional properties
+const illustrations: {
+  [key in IllustrationName]: { all?: any; dark?: any; light?: any };
+} = illustrationList;
+
 export type IllustrationName = keyof typeof illustrationList;
 
 type Props = SvgProps & { name: IllustrationName };
@@ -155,19 +160,17 @@ const Illustration: React.FC<Props> = ({ name, ...rest }) => {
 
   if (Platform.OS === 'web' || Config.dev.hideSvg) return null;
 
-  const illustrations: {
-    [key in IllustrationName]: { all?: any; dark?: any; light?: any };
-  } = illustrationList;
-
   if (!(name in illustrations)) {
     logger.warn(`Error: ${name} not found in list of artwork`);
     return null;
   }
 
-  const Item =
-    illustrations[name].all ?? dark ? illustrations[name].dark : illustrations[name].light;
-
-  return <Item {...rest} />;
+  const item = illustrations[name];
+  if (item.all) return <item.all {...rest} />;
+  if (item.light && item.dark) {
+    return dark ? <item.dark {...rest} /> : <item.light {...rest} />;
+  }
+  return null;
 };
 
 export default Illustration;
