@@ -30,7 +30,7 @@ function fetchGroupsCreator(): AppThunk {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       if (!getState().account.loggedIn) {
-        return resolve();
+        return resolve(null);
       }
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -85,7 +85,7 @@ function fetchGroupsCreator(): AppThunk {
             type: UPDATE_ACCOUNT_PERMISSIONS,
             data: permissions,
           });
-          resolve();
+          resolve(true);
         })
         .catch((err) => {
           dispatch({
@@ -108,7 +108,7 @@ function fetchWaitingGroupsCreator(): AppThunk {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       if (!getState().account.loggedIn) {
-        return resolve();
+        return resolve(null);
       }
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -136,7 +136,7 @@ function fetchWaitingGroupsCreator(): AppThunk {
               },
             },
           });
-          resolve();
+          resolve(true);
         })
         .catch((err) => {
           dispatch({
@@ -163,7 +163,7 @@ function fetchAccountCreator(): AppThunk {
           type: LOGOUT,
           data: null,
         });
-        return resolve();
+        return resolve(null);
       }
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -202,7 +202,7 @@ function fetchAccountCreator(): AppThunk {
             data,
           });
           fetchLocationData();
-          resolve();
+          resolve(true);
         })
         .catch((err) => {
           dispatch({

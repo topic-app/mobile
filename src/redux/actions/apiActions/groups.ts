@@ -43,7 +43,7 @@ function groupFollowCreator({ id }: { id: string }): AppThunk {
               },
             },
           });
-          resolve();
+          resolve({ type: 'group', id });
         })
         .catch((error) => {
           dispatch({
@@ -95,7 +95,7 @@ function groupUnfollowCreator({ id }: { id: string }): AppThunk {
               },
             },
           });
-          resolve();
+          resolve({ type: 'group', id });
         })
         .catch((error) => {
           dispatch({
@@ -165,7 +165,7 @@ function groupAddMemberCreator({
               },
             },
           });
-          resolve();
+          resolve({ user, group, role, secondaryRoles });
         })
         .catch((error) => {
           dispatch({
@@ -230,7 +230,7 @@ function groupModifyMemberCreator({
               },
             },
           });
-          resolve();
+          resolve({ user, group, role, secondaryRoles });
         })
         .catch((error) => {
           dispatch({
@@ -282,7 +282,7 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
               },
             },
           });
-          resolve();
+          resolve({ user, group });
         })
         .catch((error) => {
           dispatch({
@@ -333,7 +333,7 @@ function groupMemberAcceptCreator({ group }: { group: string }): AppThunk {
               },
             },
           });
-          resolve();
+          resolve({ group });
         })
         .catch((error) => {
           dispatch({
@@ -384,7 +384,7 @@ function groupMemberRejectCreator({ group }: { group: string }): AppThunk {
               },
             },
           });
-          resolve();
+          resolve({ group });
         })
         .catch((error) => {
           dispatch({
@@ -435,7 +435,7 @@ function groupMemberLeaveCreator({ group }: { group: string }): AppThunk {
               },
             },
           });
-          resolve();
+          resolve({ group });
         })
         .catch((error) => {
           dispatch({
@@ -509,7 +509,7 @@ function groupModifyCreator({
               },
             },
           });
-          resolve();
+          resolve({ group });
         })
         .catch((error) => {
           dispatch({

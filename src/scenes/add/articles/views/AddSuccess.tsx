@@ -1,4 +1,5 @@
 import { RouteProp } from '@react-navigation/native';
+import moment from 'moment';
 import React from 'react';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, Card } from 'react-native-paper';
@@ -175,34 +176,6 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
               </View>
             </Card>
           </View>
-          <ArticleCard
-            article={{
-              _id: '',
-              ...creationData,
-              summary: creationData?.summary || creationData?.data || '',
-              authors: [
-                {
-                  _id: account?.accountInfo?.user?._id || '',
-                  displayName: account?.accountInfo?.user?.info?.username || '',
-                  info: account?.accountInfo?.user?.info || { username: '' },
-                },
-              ],
-              group: {
-                _id: account?.groups?.find((g) => g._id === creationData?.group)?._id || '',
-                displayName:
-                  account?.groups?.find((g) => g._id === creationData?.group)?.name || '',
-                name: account?.groups?.find((g) => g._id === creationData?.group)?.name || '',
-                official: false,
-                summary: '',
-                cache: {
-                  followers: null,
-                },
-                type: '',
-              },
-            }}
-            navigate={() => logger.debug('add/articles/views/AddSuccess: Pressed article card')}
-            unread
-          />
         </View>
       </ScrollView>
       <Divider />

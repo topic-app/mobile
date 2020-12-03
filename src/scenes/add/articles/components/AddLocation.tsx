@@ -47,8 +47,8 @@ const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
               <Checkbox {...props} />
             </View>
           )
-        : null,
-    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
+        : undefined,
+    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : undefined,
   };
 };
 

@@ -37,10 +37,10 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
 
   const { id, creationData } = route?.params || {};
 
-  let groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
+  const groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
 
   const approve = () => {
-    eventVerificationApprove(id).then(() => setApproved(true));
+    if (id) eventVerificationApprove(id).then(() => setApproved(true));
   };
 
   return (
@@ -69,13 +69,13 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
               <Text style={{ marginTop: 40 }}>
                 Votre évènement doit être approuvé par un administrateur de {groupName}.
               </Text>
-              <Text>Vous serez notifiés par email dès que l'évènement est approuvé.</Text>
+              <Text>Vous serez notifiés par email dès que l&apos;évènement est approuvé.</Text>
             </View>
           )}
           {account.permissions?.some(
             (p) =>
-              p.name === 'event.verification.approve' &&
-              (p.scope?.groups?.includes(creationData?.group) ||
+              p.permission === 'event.verification.approve' &&
+              (p.scope?.groups?.includes(creationData?.group || '') ||
                 (p.group === creationData?.group && p.scope?.self)),
           ) &&
             (approved ? (
@@ -174,22 +174,6 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
               </View>
             </Card>
           </View>
-          <EventCard
-            event={{
-              ...creationData,
-              summary: creationData.summary || creationData.data,
-              authors: [
-                {
-                  displayName: account?.accountInfo?.user?.info?.username,
-                },
-              ],
-              group: {
-                displayName: account?.groups?.find((g) => g._id === creationData?.group)?.name,
-              },
-            }}
-            navigate={() => null}
-            unread
-          />
         </View>
       </ScrollView>
       <Divider />

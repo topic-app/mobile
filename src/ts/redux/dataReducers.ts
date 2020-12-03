@@ -10,6 +10,7 @@ import {
   User,
 } from '../api';
 import { LocationRequestState, AccountRequestState } from '../requestState';
+import { FullClearAction } from './actions';
 
 // Account
 export const UPDATE_ACCOUNT_GROUPS = 'UPDATE_ACCOUNT_GROUPS';
@@ -126,7 +127,8 @@ export type AccountActionTypes =
   | LoginAction
   | UpdateAccountUserAction
   | UpdateAccountCreationDataAction
-  | ClearAccountCreationDataAction;
+  | ClearAccountCreationDataAction
+  | FullClearAction;
 
 // Location
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';
@@ -163,7 +165,8 @@ type ClearLocationAction = {
 export type LocationActionTypes =
   | UpdateLocationAction
   | UpdateLocationStateAction
-  | ClearLocationAction;
+  | ClearLocationAction
+  | FullClearAction;
 
 // Prefs
 export const SET_PREFS = 'SET_PREFS';
@@ -203,4 +206,8 @@ type ClearAllPrefsAction = {
   data: {};
 };
 
-export type PrefActionTypes = SetPrefAction | ClearPrefAction | ClearAllPrefsAction;
+export type PrefActionTypes =
+  | SetPrefAction
+  | ClearPrefAction
+  | ClearAllPrefsAction
+  | FullClearAction;
