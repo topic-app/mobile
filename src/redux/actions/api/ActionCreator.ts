@@ -259,7 +259,7 @@ function fetchCreator<T extends ApiItemString>({
               },
             },
           });
-          resolve();
+          resolve({});
         })
         .catch((err) => {
           dispatch({

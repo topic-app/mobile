@@ -38,6 +38,7 @@ import {
   PlacePreload,
   PetitionPreload,
   RequestStateComplex,
+  Group,
 } from '@ts/types';
 import { useTheme, useSafeAreaInsets } from '@utils/index';
 
@@ -50,7 +51,7 @@ type SearchProps = {
   route: RouteProp<SearchStackParams, 'Search'>;
   articles: ArticlePreload[];
   events: EventPreload[];
-  groups: GroupPreload[];
+  groups: (GroupPreload | Group)[];
   users: UserPreload[];
   tags: TagPreload[];
   state: {

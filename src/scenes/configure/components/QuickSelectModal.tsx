@@ -81,6 +81,7 @@ function QuickSelectModal({
     | UserPreload
     | User
     | GroupPreload
+    | Group
     | SchoolPreload
     | School
     | DepartmentPreload

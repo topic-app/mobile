@@ -279,8 +279,8 @@ export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
-  data: GroupPreload[];
-  search: GroupPreload[];
+  data: (GroupPreload | Group)[];
+  search: (GroupPreload | Group)[];
   item: Group | GroupVerification | null;
   verification: (Group | GroupPreload)[];
   state: GroupRequestState;

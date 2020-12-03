@@ -6,7 +6,7 @@ import logger from './logger';
 const imageUrl = Config.cdn.baseUrl;
 const { defaultSize } = Config.cdn.image;
 
-type ImageSize = 'small' | 'medium' | 'large' | 'full';
+type ImageSize = 'small' | 'medium' | 'large' | 'extralarge' | 'full';
 
 function getImageSize(thumbnails: Image['thumbnails'], size: ImageSize): string {
   let imgSize = null;

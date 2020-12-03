@@ -1,5 +1,5 @@
-import { AppThunk, UPDATE_LEGAL, UPDATE_LEGAL_STATE } from '@ts/types';
 import Store from '@redux/store';
+import { AppThunk, UPDATE_LEGAL, UPDATE_LEGAL_STATE } from '@ts/types';
 import request from '@utils/request';
 
 type FetchCreatorParams = {
@@ -35,7 +35,7 @@ function fetchDocumentCreator({ document }: FetchCreatorParams): AppThunk {
               },
             },
           });
-          resolve();
+          resolve({ document });
         })
         .catch((err) => {
           dispatch({
