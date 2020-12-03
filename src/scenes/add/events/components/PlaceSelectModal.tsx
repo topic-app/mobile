@@ -12,8 +12,7 @@ import { searchSchools, updateSchools } from '@redux/actions/api/schools';
 import { searchPlaces, updatePlaces } from '@redux/actions/api/places';
 
 type EventPlaceSelectModalProps = ModalProps & {
-  eventPlaces: EventPlace[];
-  type: 'school' | 'place';
+  type: 'school' | 'place' |'standalone';
   schools: SchoolsState;
   places: PlacesState;
   add: (place: EventPlace) => void;
@@ -25,7 +24,6 @@ function EventPlaceSelectModal({
   type,
   schools,
   places,
-  eventPlaces,
   add,
 }: EventPlaceSelectModalProps) {
   const theme = useTheme();

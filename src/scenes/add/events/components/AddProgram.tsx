@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { TextInput, Button, List, Text } from 'react-native-paper';
+import { TextInput, Button, IconButton, List, Text } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { Account, Content, State, Duration, Address, EventCreationData } from '@ts/types';
@@ -86,21 +86,34 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account}) => {
     <View style={eventStyles.formContainer}>
       <View style={{ marginTop: 30 }}>
         <List.Subheader> Progamme </List.Subheader>
-        <FlatList
-          keyExtractor={(program) => program._id}
-          data={eventProgram}
-          renderItem={({ item: program }) => {
-            return (
-              <InlineCard
-                icon="timetable"
-                title={program.title}
-                onPress={() => {
-                  setProgram(program.filter((s) => s !== program));
+        {eventProgram?.map((program) => (
+            <View
+              key={program._id}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
                 }}
-              />
-            );
-          }}
-        />
+            >
+              <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
+              <InlineCard
+                  key={program._id}
+                  icon="timetable"
+                  title={program.title}
+                />
+              </View>
+              <View style={{ flexGrow: 1 }}>
+                <IconButton
+                  icon="delete"
+                  size={30}
+                  style={{ marginRight: 20, flexGrow: 1 }}
+                  onPress={() => {
+                    setProgram(program.filter((s) => s !== program));
+                    }}
+                />
+              </View>
+            </View>
+          ))}
       </View>
       <View style={styles.container}>
         <Button

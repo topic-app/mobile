@@ -12,16 +12,12 @@ import getStyles from '@styles/Styles';
 import getEventStyles from '../styles/Styles';
 
 type PlaceAddressModalProps = ModalProps & {
-  type: 'standalone';
-  eventPlaces: EventPlace[];
   add: (place: EventPlace) => void;
 };
 
 const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
   visible,
   setVisible,
-  type,
-  eventPlaces,
   add,
 }) => {
   const numberInput = React.createRef<RNTestInput>();

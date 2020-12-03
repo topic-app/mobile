@@ -1,8 +1,8 @@
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
-import { TextInput, Button, List, Text, useTheme } from 'react-native-paper';
+import { TextInput, Button, IconButton, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
-
+import { useTheme } from '@utils/index';
 import { Account, State, EventCreationData, EventPlace, User } from '@ts/types';
 import { StepperViewPageProps, InlineCard } from '@components/index';
 import getStyles from '@styles/Styles';
@@ -154,7 +154,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
       <View style={styles.container}>
         <Text>
           Les moyens de contact ci-dessous seront visibles publiquement. Vérifiez que vous avez bien
-          l'accord de la personne concernée avant de publier ses informations de contact.
+          l&apos;accord de la personne concernée avant de publier ses informations de contact.
         </Text>
       </View>
       <View style={styles.container}>
@@ -204,22 +204,35 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
       </View>
       <View style={{ marginTop: 30 }}>
         <List.Subheader> Autres moyen de contact (réseaux sociaux etc)</List.Subheader>
-        <FlatList
-          keyExtractor={(contact) => contact._id}
-          data={customContact}
-          renderItem={({ item: contact }) => {
-            return (
-              <InlineCard
-                icon="at"
-                title={contact.value}
-                subtitle={contact.key}
-                onPress={() => {
-                  setCustomContact(customContact.filter((s) => s !== contact));
-                }}
-              />
-            );
-          }}
-        />
+        {customContact?.map((contact) => (
+                    <View
+                      key={contact._id}
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
+                      <InlineCard
+                        key={contact._id}
+                        icon="at"
+                        title={contact.value}
+                        subtitle={contact.key}
+                      />
+                      </View>
+                      <View style={{ flexGrow: 1 }}>
+                        <IconButton
+                          icon="delete"
+                          size={30}
+                          style={{ marginRight: 20, flexGrow: 1 }}
+                          onPress={() => {
+                            setCustomContact(customContact.filter((s) => s !== contact));
+                          }}
+                        />
+                      </View>
+                    </View>
+                  ))}
       </View>
       <View style={styles.container}>
         <Button
@@ -235,21 +248,34 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
 
       <View style={{ marginTop: 30 }}>
         <List.Subheader> Organisateurs </List.Subheader>
-        <FlatList
-          keyExtractor={(user) => user._id}
-          data={eventOrganizers}
-          renderItem={({ item: user }) => {
-            return (
+        {eventOrganizers?.map((user) => (
+          <View
+            key={user._id}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+           >
+            <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
               <InlineCard
+                key={user._id}
                 avatar={user.info.avatar}
                 title={user.info.username}
-                onPress={() => {
-                  setEventOrganizers(eventOrganizers.filter((s) => s !== user));
-                }}
               />
-            );
-          }}
-        />
+            </View>
+              <View style={{ flexGrow: 1 }}>
+                <IconButton
+                  icon="delete"
+                  size={30}
+                  style={{ marginRight: 20, flexGrow: 1 }}
+                  onPress={() => {
+                    setEventOrganizers(eventOrganizers.filter((s) => s !== user));
+                    }}
+                />
+              </View>
+         </View>
+        ))}
       </View>
       <View style={styles.container}>
         <Button

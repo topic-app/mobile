@@ -88,12 +88,6 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
           <StepperView
             pages={[
               {
-                key: 'program',
-                icon: 'script-text',
-                title: 'Programme',
-                component: <EventAddPageProgram add={add} />,
-              },
-              {
                 key: 'group',
                 icon: 'account-group',
                 title: 'Groupe',
