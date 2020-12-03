@@ -27,6 +27,13 @@ unit test:
     - npm install
     - npm run test
 
+eslint test:
+  stage: test
+  image: node:12
+  script:
+    - npm install -g eslint
+    - eslint ./
+
 build app android:
   when: manual
   only:
