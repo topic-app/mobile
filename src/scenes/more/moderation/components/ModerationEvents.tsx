@@ -28,20 +28,15 @@ const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, acc
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  if (!account.loggedIn) return null;
-
-  console;
-
-  const allowedGroupsEvent = account.permissions.reduce(
-    (groups: string[], p: AccountPermission) => {
-      if (p.permission === 'event.verification.view') {
-        return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
-      } else {
-        return groups;
-      }
-    },
-    [],
-  );
+  const allowedGroupsEvent = account.loggedIn
+    ? account.permissions.reduce((groups: string[], p: AccountPermission) => {
+        if (p.permission === 'event.verification.view') {
+          return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
+        } else {
+          return groups;
+        }
+      }, [])
+    : [];
   const allowedEverywhereEvent = account.permissions.some(
     (p) => p.permission === 'event.verification.view' && p.scope.everywhere,
   );
@@ -52,8 +47,10 @@ const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, acc
     updateEventsVerification('initial', everywhere ? {} : { groups });
 
   React.useEffect(() => {
-    fetch();
+    if (account.loggedIn) fetch();
   }, [null]);
+
+  if (!account.loggedIn) return null;
 
   return (
     <View>

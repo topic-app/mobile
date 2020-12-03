@@ -76,7 +76,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                     <TouchableOpacity
                       onPress={() => navigation.push('Legal', { page: 'conditions' })}
                     >
-                      <Text style={styles.link}>Conditions d'utilisation</Text>
+                      <Text style={styles.link}>Conditions d&apos;utilisation</Text>
                     </TouchableOpacity>
                     <Text> - </Text>
                     <TouchableOpacity
@@ -113,7 +113,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                       />
                     </View>
                     <Text>
-                      La Mutuelle générale de l'Éducation nationale (MGEN) est l’entreprise qui
+                      La Mutuelle générale de l&apos;Éducation nationale (MGEN) est l’entreprise qui
                       finance l’application, au niveau des frais de serveur, de publication et des
                       frais associatifs. Nous les remercions sincèrement pour cette aide qui nous
                       permet de proposer une application gratuite et sans publicité.
@@ -152,10 +152,10 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                       />
                     </View>
                     <Text>
-                      L'ESTPER est un regroupement d'organisations qui agissent dans les domaines de
-                      la santé, l'assurance, la banque, le médico-social, l'éducation populaire ou
-                      les activités de loisirs. L'ESPER place l'économie sociale au service de
-                      l'éducation.
+                      L&apos;ESPER est un regroupement d&apos;organisations qui agissent dans les
+                      domaines de la santé, l&apos;assurance, la banque, le médico-social,
+                      l&apos;éducation populaire ou les activités de loisirs. L&apos;ESPER place
+                      l&apos;économie sociale au service de l&apos;éducation.
                     </Text>
                   </View>
                 </View>

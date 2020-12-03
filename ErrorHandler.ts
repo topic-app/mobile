@@ -1,5 +1,6 @@
 import { Alert, BackHandler } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+
 import Store from '@redux/store';
 import { request } from '@utils/index';
 
@@ -18,9 +19,9 @@ const errorHandler = async (error: any, isFatal: boolean) => {
     }
   }
 
-  let now = new Date();
+  const now = new Date();
 
-  let errorString = `
+  const errorString = `
 \`\`\`yaml
 Rapport de bug Topic
 ---
@@ -52,7 +53,7 @@ Modele: Id ${DeviceInfo.getDeviceId()} | Model ${DeviceInfo.getModel()} | Vendor
 Gen ErrorHandler
 \`\`\`  `;
 
-  let strippedErrorString = `
+  const strippedErrorString = `
 \`\`\`yaml
 Rapport de bug Topic (version sans données personnelles)
 ---

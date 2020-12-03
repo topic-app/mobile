@@ -33,18 +33,15 @@ const ModerationArticles: React.FC<Props> = ({
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  if (!account.loggedIn) return null;
-
-  const allowedGroupsArticle = account.permissions.reduce(
-    (groups: string[], p: AccountPermission) => {
-      if (p.permission === 'article.verification.view') {
-        return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
-      } else {
-        return groups;
-      }
-    },
-    [],
-  );
+  const allowedGroupsArticle = account.loggedIn
+    ? account.permissions.reduce((groups: string[], p: AccountPermission) => {
+        if (p.permission === 'article.verification.view') {
+          return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
+        } else {
+          return groups;
+        }
+      }, [])
+    : [];
   const allowedEverywhereArticle = account.permissions.some(
     (p) => p.permission === 'article.verification.view' && p.scope.everywhere,
   );
@@ -55,8 +52,10 @@ const ModerationArticles: React.FC<Props> = ({
     updateArticlesVerification('initial', everywhere ? {} : { groups });
 
   React.useEffect(() => {
-    fetch();
+    if (account.loggedIn) fetch();
   }, [null]);
+
+  if (!account.loggedIn) return null;
 
   return (
     <View>
