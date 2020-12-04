@@ -18,7 +18,7 @@ type PetitionAddProps = {
   navigation: PetitionAddScreenNavigationProp<'Add'>;
   reqState: PetitionRequestState;
   // TODO: Define PetitionCreationData
-  creationData: PetitionCreationData;
+  creationData: {};
 };
 
 // NOTE: Before working on this file, remove the @ts-nocheck and resolve problems
