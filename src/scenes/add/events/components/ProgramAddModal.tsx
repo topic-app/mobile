@@ -11,7 +11,6 @@ import { ModalProps, State, EventPlace, EventCreationData, Duration, Address } f
 import getStyles from '@styles/Styles';
 
 import getEventStyles from '../styles/Styles';
-import { updateEventCreationData } from '@root/src/redux/actions/contentData/events';
 
 
 type ProgramAddModalProps = ModalProps & {
@@ -41,7 +40,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
   const addressInput = React.createRef<RNTestInput>();
   const durationInput = React.createRef<RNTestInput>();
   const [isMenuVisible, setMenuVisible] = React.useState(false);
-  const [isDurationValid, setDurationValid] = React.useState(false);
+  const [error, setError] = React.useState(true);
   const [durationType, setDurationType] = React.useState<'minutes'|'hours'|'days'>('hours');
 
 
@@ -156,7 +155,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
       };
     }
     setTitle(validation);
-    return validation;
   }
 
   function preValidateTitleInput(title: string) {
@@ -189,7 +187,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     }
 
     setDescription(validation);
-    return validation;
   }
 
   function preValidateDescriptionInput(summary: string) {
@@ -199,43 +196,53 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
   }
 
   function checkDuration(){
-    if (currentDuration.value !== '' && date.valueOf() !== jan1970.valueOf()){
-      if (moment(date).isBetween(creationData?.start, creationData?.end) && moment(getEndDate()).isBetween(creationData?.start, creationData?.end)){
-        setDurationValid(true);
-        setStartDate({valid: true, error: false});
+    if (currentDuration.value !== ''){
+      if (moment(getEndDate()).isBetween(creationData?.start, creationData?.end)){
         setDuration({valid: true, error: false});
       } else {
-        if (!moment(date).isBetween(creationData?.start, creationData?.end)){
-            setStartDate({
-              valid: false,
-              error: true,
-              message: 'L\'horaire de début doit être compris entre les dates de début et de fin de l\'évènement.' });
-        }
-        else if (!moment(getEndDate()).isBetween(creationData?.start, creationData?.end)){
           setDuration({
             valid: false,
             error: true,
             message: 'L\'élément du programme ne doit pas dépasser la date de fin de l\'évènement.'});
-        }
       }
-    } else if (date.valueOf() === jan1970.valueOf()){
-      setStartDate({
-        valid: false,
-        error: true,
-        message: 'Choisissez un horaire de début.' });
     } else {
       setDuration({valid: false, error: true, message: 'Entrez une durée.'});
     }
   }
 
+  function checkStartDate(){
+    if (date.valueOf() !== jan1970.valueOf()){
+      if (moment(date).isBetween(creationData?.start, creationData?.end)){
+        setStartDate({valid: true, error: false});
+      } else {
+        setStartDate({
+          valid: false,
+          error: true,
+          message: 'L\'horaire de début doit être compris entre les dates de début et de fin de l\'évènement.' });
+      }
+    } else {
+      setStartDate({
+        valid: false,
+        error: true,
+        message: 'Choisissez un horaire de début.' });
+    }
+  }
+
+  function  checkErrors(titleVal : string, descriptionVal : string){
+    validateTitleInput(titleVal);
+    validateDescriptionInput(descriptionVal);
+    checkDuration();
+    checkStartDate();
+    if (currentTitle.valid && currentDescription.valid && currentAddress.valid && currentStartDate.valid && currentDuration.valid){
+      setError(false);
+    }}
+
   const submit = () => {
     const titleVal = currentTitle.value;
     const descriptionVal = currentDescription.value;
     const addressVal = currentAddress.value;
-    validateTitleInput(titleVal);
-    validateDescriptionInput(descriptionVal);
-    checkDuration();
-    if (currentTitle.valid && currentDescription.valid && currentAddress.valid && isDurationValid) {
+    checkErrors(titleVal, descriptionVal)
+    if (!error) {
       add({
         _id: shortid(),
         title: titleVal,

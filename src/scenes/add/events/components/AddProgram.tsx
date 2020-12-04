@@ -14,9 +14,12 @@ import ProgramAddModal from './ProgramAddModal';
 
 import getAuthStyles from '../styles/Styles';
 
-type Props = StepperViewPageProps & { account: Account; add: (parser: Content['parser']) => void };
+type Props = StepperViewPageProps & {
+  account: Account;
+  creationData?: EventCreationData;
+  add: (parser: Content['parser']) => void };
 
-const EventAddPageProgram: React.FC<Props> = ({ prev, add, account}) => {
+const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData}) => {
   const contentInput = React.createRef<RNTestInput>();
   const theme = useTheme();
   const { colors } = theme;
@@ -36,7 +39,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account}) => {
     setStartDate(new Date(0));
   };
 
-  const changeStartDate = (event: any, date?: Date) => {
+  const changeStartDate = (event: unknown, date?: Date) => {
     const currentDate = date || startDate;
     setDateTimePickerVisible(false);
     setStartDate(currentDate);
@@ -132,7 +135,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account}) => {
               value={startDate}
               mode={startMode}
               display={Platform.OS === 'ios' ? 'inline' : 'default'}
-              minimumDate={new Date()}
+              minimumDate={creationData?.start || new Date()}
               onChange={changeStartDate}
       />
       )}
