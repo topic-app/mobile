@@ -38,10 +38,6 @@ import QuickTypeModal from '../../components/QuickTypeModal';
 import type { ArticleConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
 
-// @ts-ignore
-
-// @ts-ignore Replace this when we find a better library
-
 type ArticleListsProps = {
   lists: ArticleListItem[];
   quicks: ArticleQuickItem[];
