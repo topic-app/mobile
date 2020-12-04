@@ -7,16 +7,14 @@ typescript test:
   image: node:12
   script:
     - npm install
-    - npm install --global typescript
-    - tsc
+    - npm run tsc
 
 eslint test:
   stage: test
   image: node:12
   script:
     - npm install
-    - npm install -g eslint
-    - eslint ./ --ext=.tsx,.ts,.jsx,.js
+    - npm run lint
 
 unit test:
   stage: test
