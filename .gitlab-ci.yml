@@ -35,6 +35,13 @@ eslint test:
     - npm install -g eslint
     - eslint ./ --ext=.tsx,.ts,.jsx,.js
 
+unit test:
+  stage: test
+  image: node:12
+  script:
+    - npm install
+    - npm run test
+
 build app android:
   when: manual
   only:
