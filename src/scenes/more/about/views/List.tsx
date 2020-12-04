@@ -18,6 +18,10 @@ type AboutProps = {
   navigation: AboutScreenNavigationProp<'Legal'>;
 };
 
+const image_mgen = require('@assets/images/sponsors/mgen.png');
+const image_jtac = require('@assets/images/sponsors/jtac.png');
+const image_esper = require('@assets/images/sponsors/esper.jpg');
+
 const About: React.FC<AboutProps> = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -106,11 +110,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                         { marginTop: 60, marginBottom: 10 },
                       ]}
                     >
-                      <Image
-                        style={{ height: 200 }}
-                        resizeMode="contain"
-                        source={require('@assets/images/sponsors/mgen.png')}
-                      />
+                      <Image style={{ height: 200 }} resizeMode="contain" source={image_mgen} />
                     </View>
                     <Text>
                       La Mutuelle générale de l&apos;Éducation nationale (MGEN) est l’entreprise qui
@@ -125,11 +125,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                         { marginTop: 60, marginBottom: 10 },
                       ]}
                     >
-                      <Image
-                        style={{ height: 200 }}
-                        resizeMode="contain"
-                        source={require('@assets/images/sponsors/jtac.png')}
-                      />
+                      <Image style={{ height: 200 }} resizeMode="contain" source={image_jtac} />
                     </View>
                     <Text>
                       La Jeunesse des Territoires pour l’Action Culturelle (JTAC) est une
@@ -145,11 +141,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                         { marginTop: 60, marginBottom: 10 },
                       ]}
                     >
-                      <Image
-                        style={{ height: 200 }}
-                        resizeMode="contain"
-                        source={require('@assets/images/sponsors/esper.jpg')}
-                      />
+                      <Image style={{ height: 200 }} resizeMode="contain" source={image_esper} />
                     </View>
                     <Text>
                       L&apos;ESPER est un regroupement d&apos;organisations qui agissent dans les

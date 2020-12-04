@@ -6,7 +6,7 @@ function AuthResetPassword() {
   return (
     <View>
       <Text>I forgot my password, please let me in :(</Text>
-      <Text>Sure, I hope you didn't want your history</Text>
+      <Text>Sure, I hope you didn&apos;t want your history</Text>
       <Text>(╯°□°）╯︵ ┻━┻</Text>
     </View>
   );
