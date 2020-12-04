@@ -1,6 +1,17 @@
 stages:
+  - install
   - build
   - test
+
+npm install:
+  stage: install
+  image: node:12
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules
+    expire_in: 1 hour
 
 typescript test:
   stage: test
@@ -12,13 +23,16 @@ typescript test:
 eslint test:
   stage: test
   image: node:12
-  script:
+  dependencies:
     - npm install
+  script:
     - npm run lint
 
 unit test:
   stage: test
   image: node:12
+  dependencies:
+    - npm install
   script:
     - npm install
     - npm run test
