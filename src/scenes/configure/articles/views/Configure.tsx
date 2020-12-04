@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Platform, FlatList, Alert } from 'react-native';
+// @ts-ignore Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -36,6 +37,10 @@ import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
 import type { ArticleConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
+
+// @ts-ignore
+
+// @ts-ignore Replace this when we find a better library
 
 type ArticleListsProps = {
   lists: ArticleListItem[];

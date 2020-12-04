@@ -75,8 +75,10 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
                   place.type === 'school' ? 'school' : place.type === 'place' ? 'map' : 'map-marker'
                 }
                 title={
-                  place.type === 'school' || place.type === 'place'
-                    ? place.tempName
+                  place.type === 'place'
+                    ? place.associatedPlace.displayName
+                    : place.type === 'school'
+                    ? place.associatedSchool.displayName
                     : Format.shortAddress(place.address)
                 }
                 onPress={() => {
