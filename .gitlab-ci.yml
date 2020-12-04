@@ -16,13 +16,16 @@ typescript test:
 eslint test:
   stage: test
   image: node:12
-  script:
+  dependencies:
     - npm install
+  script:
     - npm run lint
 
 unit test:
   stage: test
   image: node:12
+  dependencies:
+    - npm install
   script:
     - npm install
     - npm run test
