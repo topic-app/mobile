@@ -143,6 +143,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
         visible={isProgramAddModalVisible}
         setVisible={setProgramAddModalVisible}
         date={startDate}
+        resetDate={()=> setStartDate(new Date(0))}
         setDate={()=> showStartMode()}
         add={(program) => {
           addProgram(program);

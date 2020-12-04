@@ -17,6 +17,7 @@ type ProgramAddModalProps = ModalProps & {
   date: Date,
   creationData?: EventCreationData;
   setDate: () => void,
+  resetDate: () => void,
   add: (program: ProgramType) => void;
 };
 
@@ -34,7 +35,7 @@ type ProgramType = {
   address?: Address;
 };
 
-const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, date, setDate, add, creationData }) => {
+const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, date, setDate, resetDate, add, creationData }) => {
   const titleInput = React.createRef<RNTestInput>();
   const descriptionInput = React.createRef<RNTestInput>();
   const addressInput = React.createRef<RNTestInput>();
@@ -241,7 +242,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     const titleVal = currentTitle.value;
     const descriptionVal = currentDescription.value;
     const addressVal = currentAddress.value;
-    checkErrors(titleVal, descriptionVal)
+    checkErrors(titleVal, descriptionVal);
     if (!error) {
       add({
         _id: shortid(),
@@ -291,6 +292,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
 
   const cancel = () => {
     setVisible(false);
+    resetDate();
     setCurrentTitle({
       value: '',
       error: false,
@@ -311,6 +313,11 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     });
     setCurrentDuration({
       value: '',
+      error: false,
+      valid: false,
+      message: '',
+    });
+    setCurrentStartDate({
       error: false,
       valid: false,
       message: '',
