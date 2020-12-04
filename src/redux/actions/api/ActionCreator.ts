@@ -134,7 +134,7 @@ function updateCreator<T extends ApiItemString>({
               },
             });
           }
-          data = [...dbData]; // Shallow copy of dbData to get rid of reference
+          data = ([...dbData] as unknown) as Element[]; // Shallow copy of dbData to get rid of reference
           if (result.data) {
             result.data[dataType].forEach((a: Element) => {
               const element = { ...a, preload: true };
