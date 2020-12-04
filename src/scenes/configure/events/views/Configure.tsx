@@ -38,7 +38,6 @@ import QuickTypeModal from '../../components/QuickTypeModal';
 import { EventConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
 
-
 type EventListsProps = {
   lists: EventListItem[];
   quicks: EventQuickItem[];
