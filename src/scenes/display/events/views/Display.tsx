@@ -11,7 +11,7 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import { Text, Title, Card, Button } from 'react-native-paper';
+import { Text, Title, Card, Button, FAB } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
@@ -30,6 +30,7 @@ import {
   eventReport,
   eventVerificationApprove,
   eventDelete,
+  eventMessagesAdd,
 } from '@redux/actions/apiActions/events';
 import { addEventRead } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
@@ -50,6 +51,7 @@ import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
+import AddMessageModal from '../components/AddMessageModal';
 import type { EventDisplayScreenNavigationProp, EventDisplayStackParams } from '../index';
 import getEventStyles from '../styles/Styles';
 import EventDisplayContact from './Contact';
@@ -141,6 +143,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
   const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
   const [isListModalVisible, setListModalVisible] = React.useState(false);
+  const [isMessageModalVisible, setMessageModalVisible] = React.useState(false);
 
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
   const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
@@ -521,6 +524,17 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           )
         }
       />
+      <AddMessageModal
+        visible={isMessageModalVisible}
+        setVisible={setMessageModalVisible}
+        id={id}
+        state={reqState.events}
+        defaultGroup={event?.group?._id}
+        key={event?.group?._id || 'unk'}
+        add={(group: string, content: Content, type: 'high' | 'medium' | 'low') =>
+          eventMessagesAdd(id, group, content, type).then(fetch)
+        }
+      />
       <ReportModal
         visible={isArticleReportModalVisible}
         setVisible={setArticleReportModalVisible}
@@ -543,6 +557,19 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         id={id}
         type="event"
       />
+
+      {account.loggedIn &&
+        account.permissions.some(
+          (p) =>
+            p.permission === 'event.messages.add' &&
+            (p.scope?.groups.includes(event?.group?._id || '') || p.scope?.everywhere),
+        ) && (
+          <FAB
+            icon="message-processing"
+            onPress={() => setMessageModalVisible(true)}
+            style={styles.bottomRightFab}
+          />
+        )}
     </View>
   );
 };

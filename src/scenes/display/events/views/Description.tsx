@@ -2,10 +2,19 @@ import moment from 'moment';
 import React from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
 import { Text, Divider, List } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { CategoryTitle, Content, InlineCard, Illustration, ErrorMessage } from '@components/index';
+import {
+  CategoryTitle,
+  Content,
+  InlineCard,
+  Illustration,
+  ErrorMessage,
+  CollapsibleView,
+  PlatformTouchable,
+} from '@components/index';
 import { updateComments } from '@redux/actions/api/comments';
 import getStyles from '@styles/Styles';
 import {
@@ -21,6 +30,7 @@ import {
 import { useTheme, logger } from '@utils/index';
 
 import CommentInlineCard from '../../components/Comment';
+import MessageInlineCard from '../components/Message';
 import getEventStyles from '../styles/Styles';
 
 function getPlaceLabels(place: EventPlace) {
@@ -117,6 +127,8 @@ function EventDisplayDescriptionHeader({
   const eventStyles = getEventStyles(theme);
   const { colors } = theme;
 
+  const [messagesShown, setMessagesShown] = React.useState(false);
+
   if (!event) {
     // Render placeholder
     return (
@@ -165,13 +177,42 @@ function EventDisplayDescriptionHeader({
         onPress={() => logger.warn('time pressed, switch to program')}
       />
       <Divider />
-      <View style={eventStyles.description}>
+      <View style={[eventStyles.description, { marginBottom: 20 }]}>
         <Content
           parser={event?.description?.parser || 'plaintext'}
           data={event?.description?.data}
         />
       </View>
       <Divider />
+      {Array.isArray(event?.messages) && event.messages.length > 0 && (
+        <View>
+          <View style={styles.container}>
+            <CategoryTitle>Messages</CategoryTitle>
+          </View>
+          {(!messagesShown ? event.messages.slice(0, 3) : event.messages).map((m) => (
+            <View key={m._id}>
+              <MessageInlineCard message={m} isPublisher={m?.group?._id === event.group?._id} />
+            </View>
+          ))}
+          {event.messages.length > 3 && (
+            <View>
+              <PlatformTouchable onPress={() => setMessagesShown(!messagesShown)}>
+                <View style={{ flexDirection: 'row', margin: 10, alignSelf: 'center' }}>
+                  <Text style={{ color: colors.disabled, alignSelf: 'center' }}>
+                    Voir {messagesShown ? 'moins' : 'plus'} de messages
+                  </Text>
+                  <Icon
+                    name={!messagesShown ? 'chevron-down' : 'chevron-up'}
+                    color={colors.disabled}
+                    size={23}
+                  />
+                </View>
+              </PlatformTouchable>
+            </View>
+          )}
+          <Divider />
+        </View>
+      )}
       <View style={styles.container}>
         <CategoryTitle>Auteur{event.authors?.length > 1 ? 's' : ''}</CategoryTitle>
       </View>
