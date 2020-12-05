@@ -1,6 +1,14 @@
 import color from 'color';
 import React from 'react';
-import { View, Platform, Animated, FlatList, ViewStyle, StyleProp } from 'react-native';
+import {
+  View,
+  Platform,
+  Animated,
+  FlatList,
+  ViewStyle,
+  StyleProp,
+  TouchableOpacity,
+} from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -65,7 +73,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
         containerStyle,
       ]}
     >
-      <PlatformTouchable
+      <TouchableOpacity
         disabled={!onPress || rightAction}
         onPress={onPress}
         onPressIn={handlePressIn}
@@ -94,7 +102,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             />
           ) : null}
         </View>
-      </PlatformTouchable>
+      </TouchableOpacity>
     </Animated.View>
   );
 };
