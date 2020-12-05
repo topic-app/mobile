@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
-import { Text, Divider, List } from 'react-native-paper';
+import { View, FlatList, ActivityIndicator, Platform } from 'react-native';
+import { Text, Divider, List, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
@@ -111,6 +111,7 @@ type EventDisplayHeaderProps = {
   commentsDisplayed: boolean;
   setCommentModalVisible: (state: boolean) => any;
   reqState: CombinedReqState;
+  setMessageModalVisible: (state: boolean) => any;
 };
 
 function EventDisplayDescriptionHeader({
@@ -120,6 +121,7 @@ function EventDisplayDescriptionHeader({
   verification,
   reqState,
   setCommentModalVisible,
+  setMessageModalVisible,
   commentsDisplayed,
 }: EventDisplayHeaderProps) {
   const theme = useTheme();
@@ -210,9 +212,27 @@ function EventDisplayDescriptionHeader({
               </PlatformTouchable>
             </View>
           )}
-          <Divider />
         </View>
       )}
+      {account.loggedIn &&
+        account.permissions.some(
+          (p) =>
+            p.permission === 'event.messages.add' &&
+            (p.scope?.groups.includes(event?.group?._id || '') || p.scope?.everywhere),
+        ) && (
+          <View style={styles.container}>
+            <Button
+              icon="message-processing"
+              mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={() => setMessageModalVisible(true)}
+            >
+              Envoyer un message
+            </Button>
+          </View>
+        )}
+      <Divider />
+
       <View style={styles.container}>
         <CategoryTitle>Auteur{event.authors?.length > 1 ? 's' : ''}</CategoryTitle>
       </View>
@@ -348,6 +368,7 @@ type EventDisplayDescriptionProps = {
   setCommentModalVisible: (state: boolean) => any;
   setFocusedComment: (id: string) => any;
   setCommentReportModalVisible: (state: boolean) => any;
+  setMessageModalVisible: (state: boolean) => any;
   comments: Comment[];
   id: string;
 };
@@ -362,6 +383,7 @@ function EventDisplayDescription({
   reqState,
   setFocusedComment,
   setCommentReportModalVisible,
+  setMessageModalVisible,
   setCommentModalVisible,
   id,
 }: EventDisplayDescriptionProps) {
@@ -380,6 +402,7 @@ function EventDisplayDescription({
       ListHeaderComponent={() =>
         event ? (
           <EventDisplayDescriptionHeader
+            setMessageModalVisible={setMessageModalVisible}
             event={event}
             account={account}
             navigation={navigation}
