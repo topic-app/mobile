@@ -41,7 +41,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
   const addressInput = React.createRef<RNTestInput>();
   const durationInput = React.createRef<RNTestInput>();
   const [isMenuVisible, setMenuVisible] = React.useState(false);
-  const [error, setError] = React.useState(true);
   const [durationType, setDurationType] = React.useState<'minutes'|'hours'|'days'>('hours');
 
 
@@ -130,6 +129,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     }
     return new Date(endDate);
   }
+
   function validateTitleInput(title: string) {
     let validation: Partial<InputStateType> = { valid: false, error: false };
     if (title !== '') {
@@ -229,21 +229,20 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     }
   }
 
-  function  checkErrors(titleVal : string, descriptionVal : string){
+  async function  checkErrors(titleVal : string, descriptionVal : string){
     validateTitleInput(titleVal);
     validateDescriptionInput(descriptionVal);
     checkDuration();
     checkStartDate();
-    if (currentTitle.valid && currentDescription.valid && currentAddress.valid && currentStartDate.valid && currentDuration.valid){
-      setError(false);
-    }}
+    return currentTitle.valid && currentDescription.valid && currentStartDate.valid && currentDuration.valid;
+  }
 
-  const submit = () => {
+  async function submit() {
     const titleVal = currentTitle.value;
     const descriptionVal = currentDescription.value;
     const addressVal = currentAddress.value;
-    checkErrors(titleVal, descriptionVal);
-    if (!error) {
+    const valid = await checkErrors(titleVal, descriptionVal);
+    if (valid) {
       add({
         _id: shortid(),
         title: titleVal,
@@ -419,6 +418,10 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
                 style={{ flex: 1, marginRight: 5 }}
                 onPress={() => {
                   setVisible(false);
+                  setStartDate({
+                    error: false,
+                    valid: true,
+                  });
                   setDate();
                 }}
             >
@@ -459,7 +462,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
                     <Button
                       onPress={() => setMenuVisible(true)}
                       mode= "outlined"
-                      style={{width: 160, height: 50, padding: 10}}
+                      style={{width: 160, height: 50, padding: 10, zIndex: 100000}}
                     >
                       {durationType === 'minutes' ? 'minutes' : durationType === 'hours' ? 'heures' : 'jours'}
                     </Button>

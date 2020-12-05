@@ -111,7 +111,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
                   size={30}
                   style={{ marginRight: 20, flexGrow: 1 }}
                   onPress={() => {
-                    setProgram(program.filter((s) => s !== program));
+                    setProgram(eventProgram.filter((s) => s !== program));
                     }}
                 />
               </View>
@@ -131,12 +131,12 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
       </View>
       {isDateTimePickerVisible && (
       <DateTimePicker
-              testID="dateTimePicker"
-              value={startDate}
-              mode={startMode}
-              display={Platform.OS === 'ios' ? 'inline' : 'default'}
-              minimumDate={creationData?.start || new Date()}
-              onChange={changeStartDate}
+        testID="dateTimePicker"
+        value={startDate}
+        mode={startMode}
+        display={Platform.OS === 'ios' ? 'inline' : 'default'}
+        minimumDate={creationData?.start || new Date()}
+        onChange={changeStartDate}
       />
       )}
       <ProgramAddModal
@@ -153,7 +153,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={prev}
+          onPress={() => prev()}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour
