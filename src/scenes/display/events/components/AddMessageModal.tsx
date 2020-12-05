@@ -63,13 +63,17 @@ const AddMessageModal: React.FC<AddMessageModalProps> = ({
       ? defaultGroup
       : publishers
       ? publishers[0].key
-      : null,
+      : '',
   );
 
   const incrementType = () => {
-    const types = ['high', 'medium', 'low', 'high'];
-    const newType = types[types.indexOf(type) + 1];
-    setType(newType);
+    if (type === 'medium') {
+      setType('low');
+    } else if (type === 'low') {
+      setType('high');
+    } else {
+      setType('medium');
+    }
   };
 
   const submitMessage = () => {
