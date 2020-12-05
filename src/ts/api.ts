@@ -351,6 +351,18 @@ export type EventPlace =
   | { _id: string; type: 'school'; associatedSchool: SchoolPreload }
   | { _id: string; type: 'standalone'; address: Address };
 
+export type EventMessage = {
+  type: 'high' | 'medium' | 'low' | 'system';
+  date: string;
+  group: GroupPreload | null;
+  content: {
+    parser: 'plaintext' | 'markdown';
+    data: string;
+  };
+  important: boolean;
+  _id: string;
+};
+
 type EventBase = {
   _id: string;
   title: string;
@@ -381,6 +393,7 @@ export type Event = EventBase & {
   description: Content;
   members: MemberPreload[];
   program: ProgramEntry[];
+  messages: EventMessage[];
   contact: {
     email: string;
     phone: string;
