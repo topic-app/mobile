@@ -78,7 +78,6 @@ const ChipBase: React.FC<ChipBaseProps> = ({
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        activeOpacity={0.7}
       >
         <View
           style={{
