@@ -1,20 +1,17 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { FullscreenIllustration } from '@components/index';
-import getStyles from '@styles/Styles';
 import { ArticleRequestState } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getArticleStyles from '../styles/Styles';
+import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 
 type EventEmptyListProps = {
   tab: string;
   sectionKey: string;
   reqState: ArticleRequestState;
-  navigation: StackNavigationProp<any, any>;
+  navigation: HomeTwoScreenNavigationProp<'Event'>;
   changeTab: (tabKey: string) => void;
 };
 
@@ -25,15 +22,11 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
   navigation,
   changeTab,
 }) => {
-  const theme = useTheme();
-  const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
-
   const height = useWindowDimensions().height - 300;
 
   if (
     (sectionKey === 'categories' && reqState.list.success) ||
-    (sectionKey === 'quicks' && reqState.search.success) ||
+    (sectionKey === 'quicks' && reqState.search?.success) ||
     sectionKey === 'lists'
   ) {
     if (tab === 'upcoming' || tab === 'passed') {

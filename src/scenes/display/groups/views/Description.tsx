@@ -28,9 +28,8 @@ const GroupDescription: React.FC<GroupDescriptionProps> = ({ route, groups }) =>
       ? groups.item
       : groups.data.find((g) => g._id === id) || groups.search.find((g) => g._id === id) || null;
 
-  const { data, parser } = group?.description || {};
-
-  if (data && parser) {
+  if (group && !group.preload) {
+    const { data, parser } = group.description;
     return (
       <View style={styles.page}>
         <View style={styles.contentContainer}>

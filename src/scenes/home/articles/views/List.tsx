@@ -1,7 +1,7 @@
-import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
+import { ProgressBar, FAB, Subheading, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import {
@@ -10,6 +10,7 @@ import {
   TabChipList,
   GroupsBanner,
   ARTICLE_CARD_HEADER_HEIGHT,
+  Banner,
 } from '@components/index';
 import {
   updateArticles,
@@ -407,7 +408,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
             {((section.key === 'categories' && state.list.loading.next) ||
-              (section.key === 'quicks' && state.search.loading.next)) && (
+              (section.key === 'quicks' && state.search?.loading.next)) && (
               <ActivityIndicator size="large" color={colors.primary} />
             )}
           </View>

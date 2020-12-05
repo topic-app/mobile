@@ -21,7 +21,7 @@ const EventDisplayContact: React.FC<EventDisplayContactProps> = ({ event, naviga
 
   const { email, phone, other } = event?.contact || {};
 
-  const icons = {
+  const icons: { [key: string]: string } = {
     twitter: 'twitter',
     instagram: 'instagram',
     facebook: 'facebook',

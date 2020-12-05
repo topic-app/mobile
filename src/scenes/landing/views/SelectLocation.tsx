@@ -1,13 +1,6 @@
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import {
-  View,
-  Platform,
-  Alert,
-  FlatList,
-  TextInput as RNTextInput,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Platform, Alert, FlatList, ActivityIndicator } from 'react-native';
 import Location from 'react-native-geolocation-service';
 import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -219,7 +212,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
 
   const [searchText, setSearchText] = React.useState('');
   const scrollRef = React.createRef<FlatList>();
-  const inputRef = React.createRef<RNTextInput>();
+  const inputRef = React.createRef<Searchbar>();
 
   const [selectedSchools, setSelectedSchools] = React.useState(location.schools || []);
   const [selectedDepartments, setSelectedDepartments] = React.useState(location.departments || []);
@@ -435,11 +428,14 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       </View>
       <CategoriesList
         selected={chipCategory}
-        setSelected={(type: CategoryType) => {
+        setSelected={(type) => {
           setChipCategory(type);
           setCategory(type);
         }}
-        categories={Object.values(categoryData).map((s) => ({ title: s.title, key: s.key }))}
+        categories={Object.values(categoryData).map((s) => ({
+          key: s.key as CategoryType,
+          title: s.title,
+        }))}
       />
       {((searchText === '' &&
         (state.schools.near.loading.initial || state.departments.list.loading.initial)) ||

@@ -1,16 +1,6 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Button,
-  HelperText,
-  List,
-  Checkbox,
-  Card,
-  Text,
-  Divider,
-  ProgressBar,
-} from 'react-native-paper';
+import { Button, HelperText, List, Card, Text, Divider, ProgressBar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
@@ -31,11 +21,12 @@ import {
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import type { GroupAddStackParams } from '../index';
+import { CheckboxListItem } from '../../components/ListItems';
+import type { GroupAddScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
 
 type GroupAddLocationProps = StepperViewPageProps & {
-  navigation: StackNavigationProp<GroupAddStackParams, 'Add'>;
+  navigation: GroupAddScreenNavigationProp<'Add'>;
   account: Account;
   creationData: ArticleCreationData;
   location: LocationList;
@@ -48,20 +39,6 @@ type GroupAddLocationProps = StepperViewPageProps & {
     departments: {
       info: RequestState;
     };
-  };
-};
-
-const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
-  return {
-    left:
-      Platform.OS !== 'ios'
-        ? () => (
-            <View style={{ justifyContent: 'center' }}>
-              <Checkbox {...props} />
-            </View>
-          )
-        : null,
-    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
   };
 };
 
@@ -127,37 +104,27 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
       </View>
       <View style={articleStyles.listContainer}>
         {location.schoolData?.map((s) => (
-          <List.Item
+          <CheckboxListItem
+            key={s._id}
             title={s.name}
             description={`École · ${s.address?.shortName || s.address?.address?.city}`}
-            {...getListItemCheckbox({
-              status: schools.includes(s._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(s, schools, setSchools),
-            })}
+            status={schools.includes(s._id) ? 'checked' : 'unchecked'}
             onPress={() => toggle(s, schools, setSchools)}
           />
         ))}
         {location.departmentData?.map((d) => (
-          <List.Item
+          <CheckboxListItem
+            key={d._id}
             title={d.name}
             description={`Département ${d.code}`}
-            {...getListItemCheckbox({
-              status: departments.includes(d._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(d, departments, setDepartments),
-            })}
+            status={departments.includes(d._id) ? 'checked' : 'unchecked'}
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
-        <List.Item
+        <CheckboxListItem
           title="France entière"
           description="Visible pour tous les utilisateurs"
-          {...getListItemCheckbox({
-            status: global ? 'checked' : 'unchecked',
-            color: colors.primary,
-            onPress: () => setGlobal(!global),
-          })}
+          status={global ? 'checked' : 'unchecked'}
           onPress={() => setGlobal(!global)}
         />
         <View>

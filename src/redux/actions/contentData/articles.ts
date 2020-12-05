@@ -97,9 +97,9 @@ async function addArticleList(name: string, icon: string = '', description: stri
 async function modifyArticleList(
   listId: string,
   name: string,
-  icon: string,
+  icon: string | undefined,
   description: string | undefined,
-  items: Article[],
+  items?: Article[],
 ) {
   Store.dispatch(
     modifyListCreator({

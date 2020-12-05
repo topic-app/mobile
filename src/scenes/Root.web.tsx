@@ -42,8 +42,8 @@ const TabItem: React.FC<TabItemProps> = ({ label, onPress, icon, active }) => {
   );
 };
 
-type BottomTabProps = {
-  navigation: NavigationProp<any, any>;
+type DrawerContentProps = {
+  navigation: any;
   drawerExpanded: boolean;
   setDrawerExpanded: (state: boolean) => any;
   account: Account;
@@ -57,7 +57,7 @@ type NavRoute = [
   },
 ];
 
-const DrawerContent: React.FC<BottomTabProps> = ({
+const DrawerContent: React.FC<DrawerContentProps> = ({
   navigation,
   drawerExpanded,
   setDrawerExpanded,
@@ -192,6 +192,8 @@ const DrawerContent: React.FC<BottomTabProps> = ({
             );
           } else if (item.type === 'divider') {
             return <Divider style={{ marginVertical: 10 }} />;
+          } else {
+            return null;
           }
         })}
       </View>
@@ -208,13 +210,21 @@ const DrawerContent: React.FC<BottomTabProps> = ({
               icon="account-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               label="Se connecter"
-              {...useLinkProps({ to: '/auth/connexion' })}
+              onPress={() =>
+                navigation.navigate('Auth', {
+                  screen: 'Login',
+                })
+              }
             />
             <PaperDrawer.Item
               icon="account-plus-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               label="Créer un compte"
-              {...useLinkProps({ to: '/auth/creation' })}
+              onPress={() =>
+                navigation.navigate('Auth', {
+                  screen: 'Create',
+                })
+              }
             />
           </View>
         )}

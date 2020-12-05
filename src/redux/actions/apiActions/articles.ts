@@ -15,7 +15,7 @@ function articleAddCreator({
   data,
   preferences,
   tags,
-}: ArticleCreationData): AppThunk {
+}: ArticleCreationData): AppThunk<Promise<{ _id: string }>> {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -61,7 +61,7 @@ function articleAddCreator({
               },
             },
           });
-          resolve(result.data);
+          resolve(result.data as { _id: string });
         })
         .catch((error) => {
           dispatch({

@@ -43,7 +43,7 @@ const TabItem: React.FC<TabItemProps> = ({ label, onPress, icon, active }) => {
 };
 
 type BottomTabProps = {
-  navigation: NavigationProp<any, any>;
+  navigation: any;
 };
 
 enum RouteName {
@@ -67,7 +67,7 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
   let active = RouteName.MORE;
   let translucent = false;
 
-  const traverseState = (state) => {
+  const traverseState = (state: any) => {
     if (state?.name === 'Article' || state?.screen === 'Article') {
       active = RouteName.ARTICLE;
     } else if (state?.name === 'Event' || state?.screen === 'Event') {

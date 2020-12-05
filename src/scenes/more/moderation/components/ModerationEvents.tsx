@@ -1,36 +1,24 @@
 import React from 'react';
-import { View, ScrollView, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { ChipAddList, ErrorMessage, EventCard } from '@components/index';
+import { updateEventsVerification } from '@redux/actions/api/events';
+import getStyles from '@styles/Styles';
 import {
   State,
-  EventPreload,
   Account,
-  GroupRolePermission,
   EventRequestState,
-  Event,
   EventVerificationPreload,
   AccountPermission,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
-import {
-  CustomTabView,
-  ChipAddList,
-  ErrorMessage,
-  EventCard,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components/index';
-import getStyles from '@styles/Styles';
-import { updateEventsVerification } from '@redux/actions/api/events';
 
-import type { ModerationStackParams } from '../index';
-import getModerationStyles from '../styles/Styles';
+import type { ModerationScreenNavigationProp } from '../index';
 
 type Props = {
-  navigation: StackNavigationProp<ModerationStackParams, 'List'>;
+  navigation: ModerationScreenNavigationProp<'List'>;
   eventsVerification: EventVerificationPreload[];
   account: Account;
   state: EventRequestState;
@@ -40,20 +28,15 @@ const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, acc
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  if (!account.loggedIn) return null;
-
-  console;
-
-  const allowedGroupsEvent = account.permissions.reduce(
-    (groups: string[], p: AccountPermission) => {
-      if (p.permission === 'event.verification.view') {
-        return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
-      } else {
-        return groups;
-      }
-    },
-    [],
-  );
+  const allowedGroupsEvent = account.loggedIn
+    ? account.permissions.reduce((groups: string[], p: AccountPermission) => {
+        if (p.permission === 'event.verification.view') {
+          return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
+        } else {
+          return groups;
+        }
+      }, [])
+    : [];
   const allowedEverywhereEvent = account.permissions.some(
     (p) => p.permission === 'event.verification.view' && p.scope.everywhere,
   );
@@ -64,8 +47,10 @@ const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, acc
     updateEventsVerification('initial', everywhere ? {} : { groups });
 
   React.useEffect(() => {
-    fetch();
+    if (account.loggedIn) fetch();
   }, [null]);
+
+  if (!account.loggedIn) return null;
 
   return (
     <View>

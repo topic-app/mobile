@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, ScrollView, Alert, BackHandler } from 'react-native';
-import { List, Avatar, Divider, Banner, Switch } from 'react-native-paper';
+import { List, Avatar, Divider, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Illustration, CustomHeaderBar } from '@components/index';
-import { firebase } from '@utils/firebase';
+import { Illustration, CustomHeaderBar, Banner } from '@components/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
+import Store from '@redux/store';
 import getStyles from '@styles/Styles';
 import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
+import { firebase } from '@utils/firebase';
 import { useTheme } from '@utils/index';
 
-import Store from '@redux/store';
 import type { SettingsScreenNavigationProp } from '../index';
 import getSettingsStyles from '../styles/Styles';
 

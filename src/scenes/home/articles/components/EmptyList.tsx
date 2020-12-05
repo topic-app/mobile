@@ -1,4 +1,3 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -6,11 +5,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FullscreenIllustration } from '@components/index';
 import { ArticleRequestState } from '@ts/types';
 
+import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
+
 type ArticleEmptyListProps = {
   tab: string;
   sectionKey: string;
   reqState: ArticleRequestState;
-  navigation: StackNavigationProp<any, any>;
+  navigation: HomeTwoScreenNavigationProp<'Article'>;
   changeTab: (tabKey: string) => void;
 };
 

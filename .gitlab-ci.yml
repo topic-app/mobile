@@ -2,17 +2,29 @@ stages:
   - build
   - test
 
-typescript tests:
+typescript test:
   stage: test
   image: node:12
   script:
     - npm install
-    - npm install --global typescript
-    - tsc
+    - npm run tsc
+
+eslint test:
+  stage: test
+  image: node:12
+  script:
+    - npm install
+    - npm run lint
+
+unit test:
+  stage: test
+  image: node:12
+  script:
+    - npm install
+    - npm run test
 
 build app android:
-  when:
-    - manual
+  when: manual
   only:
     - tags
   image: reactnativecommunity/react-native-android

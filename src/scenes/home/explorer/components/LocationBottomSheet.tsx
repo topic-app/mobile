@@ -1,7 +1,6 @@
-import { useDimensions } from '@react-native-community/hooks';
 import { useFocusEffect } from '@react-navigation/core';
 import React from 'react';
-import { View, BackHandler } from 'react-native';
+import { View, BackHandler, useWindowDimensions } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
 import Animated, { call, cond, greaterThan, lessThan, useCode } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -36,7 +35,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
   const { colors } = theme;
 
   const insets = useSafeAreaInsets();
-  const minHeight = useDimensions().window.height - 21;
+  const minHeight = useWindowDimensions().height - 21;
 
   const place = (places.find(
     (t) => t.data._id === mapMarkerData.id,

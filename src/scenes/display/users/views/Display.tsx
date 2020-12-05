@@ -37,8 +37,9 @@ import {
   EventRequestState,
   GroupPreload,
   UserRequestState,
+  Group,
 } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, Format } from '@utils/index';
 
 import ContentTabView from '../../components/ContentTabView';
 import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '../index';
@@ -53,11 +54,10 @@ function getAddressString(address: Address['address']) {
 }
 
 function genName(user: User | UserPreload) {
-  const { firstName, lastName } = user.data || {};
-  if (firstName && lastName) {
-    return `${firstName} ${lastName}`;
+  if (user.preload) {
+    return user.displayName || null;
   }
-  return user.name || user.displayName || user.data?.firstName || user.data?.lastName || null;
+  return Format.fullUserName(user);
 }
 
 type UserDisplayProps = {
@@ -66,7 +66,7 @@ type UserDisplayProps = {
   account: Account;
   state: UserRequestState;
   users: UsersState;
-  groups: GroupPreload[];
+  groups: (GroupPreload | Group)[];
   groupsState: GroupRequestState;
   articles: ArticlePreload[];
   events: EventPreload[];
@@ -214,7 +214,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
               {user.data?.public ? (
                 <View style={{ alignItems: 'center' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Title>{genName(user) || `@${user.info.username}`}</Title>
+                    <Title>{genName(user)}</Title>
                     <View style={{ marginLeft: 5 }}>
                       {user.info.official && (
                         <Icon name="check-decagram" color={colors.primary} size={20} />

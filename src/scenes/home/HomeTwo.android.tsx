@@ -4,7 +4,7 @@ import {
   MaterialBottomTabNavigationProp,
 } from '@react-navigation/material-bottom-tabs';
 import React from 'react';
-import { Dimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Config } from '@constants/index';
@@ -21,8 +21,8 @@ import ExplorerList from './explorer/views/List';
 // import PetitionList from './petitions/views/List';
 
 export type HomeTwoNavParams = {
-  Article: { initialList?: string };
-  Event: undefined;
+  Article: { initialList?: string } | undefined;
+  Event: { initialList?: string } | undefined;
   Petition: undefined;
   Explorer: undefined;
 };
@@ -41,11 +41,7 @@ function HomeTwoNavigator() {
 
   const insets = useSafeAreaInsets();
 
-  const [deviceWidth, setDeviceWidth] = React.useState(Dimensions.get('window').width);
-
-  React.useEffect(() => {
-    Dimensions.addEventListener('change', () => setDeviceWidth(Dimensions.get('window').width));
-  }, [null]);
+  const deviceWidth = useWindowDimensions().width;
 
   return (
     <Tab.Navigator

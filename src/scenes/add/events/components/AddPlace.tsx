@@ -1,19 +1,18 @@
 import React from 'react';
 import { FlatList, View, Platform } from 'react-native';
-import { Button, List, Text, useTheme } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { Button, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Account, State, EventCreationData, EventPlace } from '@ts/types';
 import { StepperViewPageProps, InlineCard } from '@components/index';
-import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-
-import PlaceTypeModal from './PlaceTypeModal';
-import PlaceAddressModal from './PlaceAddressModal';
-import PlaceSelectModal from './PlaceSelectModal';
+import getStyles from '@styles/Styles';
+import { Account, State, EventPlace } from '@ts/types';
+import { Format, useTheme } from '@utils';
 
 import getAuthStyles from '../styles/Styles';
+import PlaceAddressModal from './PlaceAddressModal';
+import PlaceSelectModal from './PlaceSelectModal';
+import PlaceTypeModal from './PlaceTypeModal';
 
 type Props = StepperViewPageProps & {
   account: Account;
@@ -23,17 +22,21 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
   const [isPlaceTypeModalVisible, setPlaceTypeModalVisible] = React.useState(false);
   const [isPlaceSelectModalVisible, setPlaceSelectModalVisible] = React.useState(false);
   const [isPlaceAddressModalVisible, setPlaceAddressModalVisible] = React.useState(false);
-  const [placeType, setPlaceType] = React.useState('');
+  const [placeType, setPlaceType] = React.useState<'place' | 'school'>('place');
 
   const theme = useTheme();
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   const [eventPlaces, setEventPlaces] = React.useState<EventPlace[]>([]);
-  const toSelectedType = (data: string) => {
-    setPlaceType(data);
+  const toSelectedType = (type: 'place' | 'school' | 'standalone') => {
     setPlaceTypeModalVisible(false);
-    data === 'standalone' ? setPlaceAddressModalVisible(true) : setPlaceSelectModalVisible(true);
+    if (type === 'standalone') {
+      setPlaceAddressModalVisible(true);
+    } else {
+      setPlaceType(type);
+      setPlaceSelectModalVisible(true);
+    }
   };
 
   const addEventPlace = (place: EventPlace) => {
@@ -60,7 +63,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
 
   return (
     <View style={eventStyles.formContainer}>
-      <List.Subheader> Lieux Sélectionnés </List.Subheader>
+      <List.Subheader>Lieux Sélectionnés</List.Subheader>
       <View style={{ marginTop: 10 }}>
         <FlatList
           keyExtractor={(place) => place._id}
@@ -71,21 +74,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
                 icon={
                   place.type === 'school' ? 'school' : place.type === 'place' ? 'map' : 'map-marker'
                 }
-                title={
-                  place.type === 'school' || place.type === 'place'
-                    ? place.tempName || place.address?.shortName
-                    : `${place.address?.address.number}${
-                        place.address?.address.number === '' ? '' : ' '
-                      }${place.address?.address.street}${
-                        place.address?.address.extra !== '' && place.address?.address.street !== ''
-                          ? ', '
-                          : ''
-                      }${place.address?.address.extra}${
-                        place.address?.address.street !== '' || place.address?.address.extra !== ''
-                          ? ', '
-                          : ''
-                      }${place.address?.address.code} ${place.address?.address.city}`
-                }
+                title={Format.eventPlaceName(place)}
                 onPress={() => {
                   setEventPlaces(eventPlaces.filter((s) => s !== place));
                 }}

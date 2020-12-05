@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Platform, FlatList, Alert } from 'react-native';
+// @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -25,6 +26,7 @@ import {
   ArticlePrefs,
   Account,
   Preferences,
+  EventListItem,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
@@ -67,7 +69,9 @@ function ArticleLists({
 
   const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
-  const [editingList, setEditingList] = React.useState<ArticleListItem | null>(null);
+  const [editingList, setEditingList] = React.useState<ArticleListItem | EventListItem | null>(
+    null,
+  );
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
   const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);

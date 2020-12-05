@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import ViewPager from '@react-native-community/viewpager';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -16,8 +18,10 @@ type PetitionAddProps = {
   navigation: PetitionAddScreenNavigationProp<'Add'>;
   reqState: PetitionRequestState;
   // TODO: Define PetitionCreationData
-  creationData: PetitionCreationData;
+  creationData: {};
 };
+
+// NOTE: Before working on this file, remove the @ts-nocheck and resolve problems
 
 const PetitionAdd: React.FC<PetitionAddProps> = ({ navigation, reqState, creationData }) => {
   const viewPagerRef = React.createRef<ViewPager>();
@@ -97,8 +101,8 @@ const PetitionAdd: React.FC<PetitionAddProps> = ({ navigation, reqState, creatio
 };
 
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { creationData: account.creationData, reqState: account.state };
+  const { petitionData } = state;
+  return { creationData: petitionData.creationData, reqState: petitionData.state };
 };
 
 export default connect(mapStateToProps)(PetitionAdd);

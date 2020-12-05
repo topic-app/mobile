@@ -22,7 +22,7 @@ function eventAddCreator({
   preferences,
   tags,
   program,
-}: EventCreationData): AppThunk {
+}: EventCreationData): AppThunk<Promise<{ _id: string }>> {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -79,7 +79,7 @@ function eventAddCreator({
               },
             },
           });
-          resolve(result.data);
+          resolve(result.data as { _id: string });
         })
         .catch((error) => {
           dispatch({

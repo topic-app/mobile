@@ -98,9 +98,9 @@ async function addEventList(name: string, icon: string = '', description: string
 async function modifyEventList(
   listId: string,
   name: string,
-  icon: string,
-  description: string,
-  items: Event[],
+  icon: string | undefined,
+  description?: string,
+  items?: Event[],
 ) {
   Store.dispatch(
     modifyListCreator({

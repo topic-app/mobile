@@ -1,7 +1,7 @@
-import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
+import { ProgressBar, Text, Subheading, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import {
@@ -9,6 +9,7 @@ import {
   ErrorMessage,
   TabChipList,
   EVENT_CARD_HEADER_HEIGHT,
+  Banner,
 } from '@components/index';
 import {
   updateUpcomingEvents,
@@ -391,7 +392,7 @@ const EventList: React.FC<EventListProps> = ({
             />
             {category.description ? (
               <Banner actions={[]} visible>
-                <Subheading>Description</Subheading>
+                <Subheading>Description{'\n'}</Subheading>
                 <Text>{category.description}</Text>
               </Banner>
             ) : null}

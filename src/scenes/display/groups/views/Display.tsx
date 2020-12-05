@@ -19,7 +19,6 @@ import {
   Subheading,
   Title,
   IconButton,
-  Banner,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -36,6 +35,7 @@ import {
   CollapsibleView,
   ErrorMessage,
   SafeAreaView,
+  Banner,
 } from '@components/index';
 import { searchArticles } from '@redux/actions/api/articles';
 import { searchEvents } from '@redux/actions/api/events';
@@ -54,7 +54,6 @@ import {
   GroupPreload,
   Group,
   Account,
-  Address,
   GroupRequestState,
   GroupsState,
   State,
@@ -69,7 +68,7 @@ import {
   UserPreload,
   GroupVerification,
 } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, Format } from '@utils/index';
 
 import ContentTabView from '../../components/ContentTabView';
 import AddUserRoleModal from '../components/AddUserRoleModal';
@@ -78,16 +77,6 @@ import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
 import EditGroupModal from '../components/EditGroupModal';
 import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
 
-function getAddressString(address: Address) {
-  const { number, street, city, code } = address?.address || {};
-  if (number && street && city && code) {
-    return `${number} ${street}, ${code} ${city}`;
-  }
-  if (city) return city;
-  return null;
-}
-
-type GroupElement = Group | GroupPreload | GroupVerification;
 type GroupDisplayProps = {
   navigation: GroupDisplayScreenNavigationProp<'Display'>;
   route: RouteProp<GroupDisplayStackParams, 'Display'>;
@@ -471,7 +460,9 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   key={school._id}
                   icon="school"
                   title={school.displayName}
-                  subtitle={school?.address ? getAddressString(school?.address) : school?.shortName}
+                  subtitle={
+                    school?.address ? Format.shortAddress(school.address) : school?.shortName
+                  }
                   onPress={() => logger.warn(`school ${school._id} pressed!`)}
                 />
               ))}
@@ -489,7 +480,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <CategoryTitle>Membres</CategoryTitle>
               </View>
               <Banner visible={isAddSnackbarVisible} actions={[]}>
-                {`Une invitation a été envoyée à @${userToAdd?.info?.username || ''}`}
+                Une invitation a été envoyée à @${userToAdd?.info?.username || ''}
               </Banner>
               {account.loggedIn &&
                 group.members?.some((m) => m.user?._id === account.accountInfo?.accountId) && (
@@ -700,13 +691,17 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   <View style={styles.contentContainer}>
                     <Divider style={{ marginBottom: 20 }} />
                     <Subheading>Nom du créateur</Subheading>
-                    <Text>{group.verification?.data?.name}</Text>
+                    <Text>{(group as GroupVerification).verification?.data?.name}</Text>
                     <Divider style={{ marginVertical: 20 }} />
                     <Subheading>Identifiant (RNA, SIRET etc)</Subheading>
-                    <Text>{group.verification?.data?.id || 'Non spécifié'}</Text>
+                    <Text>
+                      {(group as GroupVerification).verification?.data?.id || 'Non spécifié'}
+                    </Text>
                     <Divider style={{ marginVertical: 20 }} />
                     <Subheading>Données de vérification supplémentaires</Subheading>
-                    <Text>{group.verification?.data?.extra || 'Non spécifié'}</Text>
+                    <Text>
+                      {(group as GroupVerification).verification?.data?.extra || 'Non spécifié'}
+                    </Text>
                   </View>
                   {state.verification_approve?.error && (
                     <ErrorMessage

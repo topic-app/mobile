@@ -35,6 +35,8 @@ import {
   DepartmentPreload,
   School,
   Department,
+  Avatar as AvatarType,
+  Address,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
@@ -43,8 +45,6 @@ import getArticleStyles from './styles/Styles';
 type QuickSelectModalProps = ModalProps & {
   articleQuicks: ArticleQuickItem[];
   eventQuicks: EventQuickItem[];
-  editingList: ArticleListItem | null;
-  setEditingList: (props: ArticleListItem | null) => void;
   dataType: string;
   tags: TagsState;
   groups: GroupsState;
@@ -76,12 +76,17 @@ function QuickSelectModal({
 
   const quicks = type === 'articles' ? articleQuicks : eventQuicks;
 
-  let data:
-    | TagPreload[]
-    | UserPreload[]
-    | GroupPreload[]
-    | (SchoolPreload | School)[]
-    | (DepartmentPreload | Department)[] = [];
+  let data: (
+    | TagPreload
+    | UserPreload
+    | User
+    | GroupPreload
+    | Group
+    | SchoolPreload
+    | School
+    | DepartmentPreload
+    | Department
+  )[] = [];
   let update: (text?: string) => void = () => {};
   let icon = 'alert-decagram';
   let state: { list: RequestStateComplex; search?: RequestStateComplex } = {
@@ -144,11 +149,13 @@ function QuickSelectModal({
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        <View style={{ height: 200 }}>
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name={dataType} height={200} width={200} />
+        {(dataType === 'tag' || dataType === 'user' || dataType === 'group') && (
+          <View style={{ height: 200 }}>
+            <View style={styles.centerIllustrationContainer}>
+              <Illustration name={dataType} height={200} width={200} />
+            </View>
           </View>
-        </View>
+        )}
         <Divider />
         {state.list.loading.initial ||
           (state.search?.loading.initial && (
@@ -184,15 +191,23 @@ function QuickSelectModal({
           ListEmptyComponent={() => (
             <View style={{ minHeight: 50 }}>
               {(searchText === '' && state.list.success) ||
-                (searchText !== '' && state.search.success && (
+                (searchText !== '' && state.search?.success && (
                   <View style={styles.centerIllustrationContainer}>
                     <Text>Aucun résultat</Text>
                   </View>
                 ))}
             </View>
           )}
-          renderItem={({ item }) =>
-            quicks.some((q) => q.id === item._id) ? null : (
+          renderItem={({ item: unknownItem }) => {
+            const item = unknownItem as {
+              _id: string;
+              name?: string;
+              color?: string;
+              info?: { username?: string; avatar?: AvatarType };
+              avatar?: AvatarType;
+              address?: Address;
+            };
+            return quicks.some((q) => q.id === item._id) ? null : (
               <List.Item
                 title={item.name || item.info?.username}
                 description={
@@ -209,15 +224,15 @@ function QuickSelectModal({
                 }
                 onPress={() => {
                   if (type === 'articles') {
-                    addArticleQuick(dataType, item._id, item.name || item.info?.username);
+                    addArticleQuick(dataType, item._id, item.name || item.info?.username || '');
                   } else {
-                    addEventQuick(dataType, item._id, item.name || item.info?.username);
+                    addEventQuick(dataType, item._id, item.name || item.info?.username || '');
                   }
                   setVisible(false);
                 }}
               />
-            )
-          }
+            );
+          }}
         />
       </View>
     </Modal>

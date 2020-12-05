@@ -17,10 +17,10 @@ type PetitionListProps = {
 };
 
 const PetitionList: React.FC<PetitionListProps> = ({ navigation, petitions }) => {
-  return <UnauthorizedBeta />;
+  return <UnauthorizedBeta back={navigation.goBack} />;
 
+  // eslint-disable-next-line no-unreachable
   const theme = useTheme();
-  const { colors } = theme;
 
   const scrollY = new Animated.Value(0);
   const styles = getStyles(theme);
@@ -56,7 +56,7 @@ const PetitionList: React.FC<PetitionListProps> = ({ navigation, petitions }) =>
         keyExtractor={(petition) => petition._id}
         ListFooterComponent={
           <View style={styles.container}>
-            <Button style={styles.text}>Retour en haut</Button>
+            <Button>Retour en haut</Button>
           </View>
         }
         renderItem={(petition) => (

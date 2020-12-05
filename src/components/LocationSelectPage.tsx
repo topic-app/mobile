@@ -1,9 +1,12 @@
+import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
 import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
 import { connect } from 'react-redux';
 
+import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
+import { updateSchools, searchSchools } from '@redux/actions/api/schools';
+import getStyles from '@styles/Styles';
 import {
   School,
   SchoolPreload,
@@ -15,28 +18,33 @@ import {
   ReduxLocation,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
-import { updateSchools, searchSchools } from '@redux/actions/api/schools';
-import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
-import getStyles from '@styles/Styles';
 
 import ErrorMessage from './ErrorMessage';
+import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
 import Searchbar from './Searchbar';
 import getLocationStyles from './styles/LocationSelectPageStyles';
-import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
 
 function done(
   selectedSchools: string[],
   selectedDepartments: string[],
   selectedOthers: string[],
   type: 'schools' | 'departements' | 'regions' | 'other',
-  initialData: ReduxLocation,
+  initialData: Partial<ReduxLocation>,
   callback: (location: ReduxLocation) => any,
 ) {
   callback({
-    schools: type === 'schools' ? selectedSchools : initialData.schools,
+    schools:
+      (type === 'schools' ? selectedSchools : initialData.schools) || initialData.schools || [],
     departments:
-      type === 'departements' || type === 'regions' ? selectedDepartments : initialData.departments,
-    global: type === 'other' ? selectedOthers.includes('global') : initialData.global,
+      (type === 'departements' || type === 'regions'
+        ? selectedDepartments
+        : initialData.departments) ||
+      initialData.departments ||
+      [],
+    global:
+      (type === 'other' ? selectedOthers.includes('global') : initialData.global) ||
+      initialData.global ||
+      false,
   });
 }
 
@@ -98,7 +106,7 @@ type LocationSelectProps = {
     schools: SchoolRequestState;
     departments: DepartmentRequestState;
   };
-  initialData?: ReduxLocation;
+  initialData?: Partial<ReduxLocation>;
   type: 'schools' | 'departements' | 'regions' | 'other';
   hideSearch?: boolean;
   callback: (location: ReduxLocation) => any;

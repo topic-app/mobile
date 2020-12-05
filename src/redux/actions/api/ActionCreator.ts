@@ -8,6 +8,8 @@ import {
   ApiAction,
   ApiStateMap,
   AppThunk,
+  School,
+  Department,
 } from '@ts/types';
 import { request, logger } from '@utils/index';
 
@@ -132,7 +134,7 @@ function updateCreator<T extends ApiItemString>({
               },
             });
           }
-          data = [...dbData]; // Shallow copy of dbData to get rid of reference
+          data = [...(dbData as Element[])]; // Shallow copy of dbData to get rid of reference
           if (result.data) {
             result.data[dataType].forEach((a: Element) => {
               const element = { ...a, preload: true };
@@ -237,9 +239,9 @@ function fetchCreator<T extends ApiItemString>({
           const state = getState()[dataType];
 
           if (useArray && Array.isArray((state as SchoolsState | DepartmentsState).items)) {
-            data = (state as SchoolsState | DepartmentsState).items;
+            data = (state as SchoolsState | DepartmentsState).items as (School | Department)[];
             // Push data to state if it's not already in it
-            if (!data.includes(data?._id)) {
+            if (!data.includes(result.data?.[dataType][0])) {
               data.push(result.data?.[dataType][0]);
             }
           } else {
@@ -259,7 +261,7 @@ function fetchCreator<T extends ApiItemString>({
               },
             },
           });
-          resolve();
+          resolve({});
         })
         .catch((err) => {
           dispatch({

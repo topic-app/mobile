@@ -50,6 +50,11 @@ const initialState: EventsState = {
       error: null,
       loading: false,
     },
+    report: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 
