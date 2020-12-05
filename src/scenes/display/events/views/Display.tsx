@@ -11,7 +11,7 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import { Text, Title, Card, Button, FAB } from 'react-native-paper';
+import { Text, Title, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
@@ -368,6 +368,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                         event={event}
                         navigation={navigation}
                         setCommentModalVisible={setCommentModalVisible}
+                        setMessageModalVisible={setMessageModalVisible}
                         setFocusedComment={setFocusedComment}
                         verification={verification}
                         commentsDisplayed={commentsDisplayed}
@@ -557,19 +558,6 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         id={id}
         type="event"
       />
-
-      {account.loggedIn &&
-        account.permissions.some(
-          (p) =>
-            p.permission === 'event.messages.add' &&
-            (p.scope?.groups.includes(event?.group?._id || '') || p.scope?.everywhere),
-        ) && (
-          <FAB
-            icon="message-processing"
-            onPress={() => setMessageModalVisible(true)}
-            style={styles.bottomRightFab}
-          />
-        )}
     </View>
   );
 };
