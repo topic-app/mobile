@@ -78,7 +78,11 @@ const EventAddPageLocation: React.FC<Props> = ({
 
   if (!selectedGroupLocation) {
     return (
-      <FullscreenIllustration illustration="empty" buttonLabel="Retour" buttonOnPress={prev}>
+      <FullscreenIllustration
+        illustration="empty"
+        buttonLabel="Retour"
+        buttonOnPress={() => prev()}
+      >
         Groupe Introuvable, essayez de reséléctionner un groupe dont vous appartenez
       </FullscreenIllustration>
     );

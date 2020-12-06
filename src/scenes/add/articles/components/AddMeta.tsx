@@ -47,7 +47,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
       .max(100, 'Le titre doit contenir moins de 100 caractères')
       .required('Titre requis'),
     summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères.'),
-    file: Yup.string(),
+    file: Yup.mixed(),
   });
 
   return (
@@ -188,7 +188,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}
-                onPress={prev}
+                onPress={() => prev()}
                 style={{ flex: 1, marginRight: 5 }}
               >
                 Retour
