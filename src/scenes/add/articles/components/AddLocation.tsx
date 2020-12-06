@@ -99,7 +99,7 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
   React.useEffect(() => {
     if (selectedGroupLocation?.schools) {
       fetchMultiSchool(selectedGroupLocation.schools.map((s) => s._id));
-      fetchMultiDepartment(selectedGroupLocation.departments.map((s) => s._id));
+      fetchMultiDepartment(selectedGroupLocation.departments?.map((s) => s._id) || []);
     }
   }, [null]);
 
@@ -159,11 +159,11 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
                 retry={() => {
                   fetchMultiSchool([
                     ...schools,
-                    ...selectedGroupLocation.schools.map((s) => s._id),
+                    ...(selectedGroupLocation.schools?.map((s) => s._id) || []),
                   ]);
                   fetchMultiDepartment([
                     ...departments,
-                    ...selectedGroupLocation.departments.map((d) => d._id),
+                    ...(selectedGroupLocation.departments?.map((d) => d._id) || []),
                   ]);
                 }}
               />

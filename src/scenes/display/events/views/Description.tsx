@@ -145,7 +145,6 @@ function EventDisplayDescriptionHeader({
     logger.warn('Invalid Program for event');
     // Handle invalid program
   }
-  id;
 
   // Note: using optional chaining is very risky with moment, if a property is undefined the whole
   // equality becomes undefined and moment then refers to current time, which is not at all what we want
