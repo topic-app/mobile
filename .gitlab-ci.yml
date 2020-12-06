@@ -55,6 +55,8 @@ sast:
   variables:
     SAST_DEFAULT_ANALYZERS: nodejs-scan
   stage: test
+  script:
+      - echo ""
 include:
 - template: Security/SAST.gitlab-ci.yml
 include:
