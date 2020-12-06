@@ -3,63 +3,59 @@
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
 stages:
-- build
-- test
+  - build
+  - test
 typescript test:
   stage: test
   image: node:12
   script:
-  - npm install
-  - npm run tsc
+    - npm install
+    - npm run tsc
 eslint test:
   stage: test
   image: node:12
   script:
-  - npm install
-  - npm run lint
+    - npm install
+    - npm run lint
 unit test:
   stage: test
   image: node:12
   script:
-  - npm install
-  - npm run test
+    - npm install
+    - npm run test
 build app android:
   when: manual
   only:
-  - tags
+    - tags
   image: reactnativecommunity/react-native-android
   stage: build
   script:
-  - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
-  - echo $ANDROID_KEYSTORE | base64 -d > android/app/topic.keystore
-  - sh gitlab/generate-dotenv.sh > .ENV
-  - npm install
-  - cd android/scripts
-  - "./genapks-gitlab.sh"
+    - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
+    - echo $ANDROID_KEYSTORE | base64 -d > android/app/topic.keystore
+    - sh gitlab/generate-dotenv.sh > .ENV
+    - npm install
+    - cd android/scripts
+    - './genapks-gitlab.sh'
   artifacts:
     paths:
-    - "./android/scripts/apks"
+      - './android/scripts/apks'
 build web:
   only:
-  - tags
+    - tags
   image: docker:stable
   stage: build
   services:
-  - docker:dind
+    - docker:dind
   script:
-  - export IMG_FULLNAME=$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
-  - docker build -t $IMG_FULLNAME .
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - docker push $IMG_FULLNAME
+    - export IMG_FULLNAME=$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - docker build -t $IMG_FULLNAME .
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push $IMG_FULLNAME
 sast:
   variables:
     SAST_DEFAULT_ANALYZERS: nodejs-scan
   stage: test
-  script:
-      - echo ""
 include:
-- template: Security/SAST.gitlab-ci.yml
-include:
+  - template: Security/SAST.gitlab-ci.yml
   - template: Dependency-Scanning.gitlab-ci.yml
-include:
   - template: License-Scanning.gitlab-ci.yml
