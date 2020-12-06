@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
 import React from 'react';
 import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
-import { Text, Button, ProgressBar, TextInput, HelperText } from 'react-native-paper';
+import { Text, Button, ProgressBar, TextInput, HelperText, Card } from 'react-native-paper';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
@@ -11,6 +11,7 @@ import {
   PlatformBackButton,
   Illustration,
   SafeAreaView,
+  PlatformTouchable,
 } from '@components/index';
 import { login } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
@@ -42,6 +43,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
   const theme = useTheme();
   const authStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
+  const { colors } = theme;
 
   const LoginSchema = Yup.object().shape({
     username: Yup.string().required("Nom d'utilisateur requis"),
@@ -162,6 +164,28 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                 </View>
               )}
             </Formik>
+            {Platform.OS === 'web' && (
+              <View style={[styles.container, { marginTop: 70 }]}>
+                <PlatformTouchable
+                  onPress={() => window.location.replace('https://beta.topicapp.fr/')}
+                >
+                  <Card
+                    elevation={0}
+                    style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+                  >
+                    <View style={[styles.container, { flexDirection: 'row' }]}>
+                      <Text style={{ color: colors.text, flex: 1 }}>
+                        Seuls les bêta-testeurs peuvent avoir accès au site. Utilisez les
+                        identifiants que vous avez créé dans l&apos;application pour vous connecter.
+                        {'\n\n'}
+                        Si vous n&apos;êtes pas inscrits à là bêta,{' '}
+                        <Text style={styles.link}>cliquez ici pour vous inscrire</Text>.
+                      </Text>
+                    </View>
+                  </Card>
+                </PlatformTouchable>
+              </View>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>

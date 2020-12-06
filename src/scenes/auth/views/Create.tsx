@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Platform } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -64,6 +64,10 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
         logger.warn('Failed to create account', e);
       });
   };
+
+  if (Platform.OS === 'web') {
+    return <View style={styles.page}>Accès non autorisé</View>;
+  }
 
   return (
     <View style={styles.page}>
