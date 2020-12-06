@@ -44,7 +44,7 @@ gemnasium-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
         $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/
+        $DS_DEFAULT_ANALYZERS =~ /gemnasium/
       exists:
         - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
         - '{composer.lock,*/composer.lock,*/*/composer.lock}'
@@ -55,21 +55,6 @@ gemnasium-dependency_scanning:
         - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
         - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
         - '{conan.lock,*/conan.lock,*/*/conan.lock}'
-
-bundler-audit-dependency_scanning:
-  extends: .ds-analyzer
-  image:
-    name: '$DS_ANALYZER_IMAGE'
-  variables:
-    DS_ANALYZER_IMAGE: '$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION'
-  rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-        $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /bundler-audit/
-      exists:
-        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
 
 retire-js-dependency_scanning:
   extends: .ds-analyzer
