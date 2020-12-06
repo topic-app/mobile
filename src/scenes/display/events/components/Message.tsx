@@ -6,7 +6,7 @@ import { Text, IconButton, Menu } from 'react-native-paper';
 import { Avatar, Content } from '@components/index';
 import getStyles from '@styles/Styles';
 import { EventMessage } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Format, useTheme } from '@utils/index';
 
 import getMessageStyles from '../styles/Styles';
 
@@ -33,9 +33,7 @@ const MessageInlineCard: React.FC<MessageInlineCardProps> = ({ message, isPublis
         <View style={{ paddingLeft: 10, flex: 1 }}>
           <View style={{ flexDirection: 'row' }}>
             <Text style={messageStyles.username}>
-              {type === 'system'
-                ? 'Message système'
-                : `Groupe ${group?.displayName || group?.shortName || group?.name}`}
+              {type === 'system' ? 'Message système' : `Groupe ${Format.groupName(group)}`}
               {isPublisher ? ' ✓' : ''} · {moment(date).fromNow()}
             </Text>
           </View>

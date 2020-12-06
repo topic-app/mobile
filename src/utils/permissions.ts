@@ -8,8 +8,8 @@ export function checkPermission(
   group?: string,
 ): boolean {
   if (!account.loggedIn) return false;
-  return account.permissions.some(
-    (accountPermission) =>
+  return account.permissions.some((accountPermission) => {
+    return (
       accountPermission.permission === permission.permission &&
       (!group || accountPermission.group === group) &&
       (((permission.scope.groups || []).every(
@@ -24,9 +24,10 @@ export function checkPermission(
           accountPermission.scope.departments?.includes(d),
         ) &&
         (!permission.scope.global || accountPermission.scope.global) &&
-        (!permission.scope.everywhere || accountPermission.scope.everywhere)) ||
-        accountPermission.scope.everywhere),
-  );
+        !permission.scope.everywhere) ||
+        accountPermission.scope.everywhere)
+    );
+  });
 }
 
 export function getPermissionGroups(
