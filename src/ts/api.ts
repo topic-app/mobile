@@ -223,8 +223,8 @@ export type GroupRolePermission = {
     everywhere?: boolean;
     global?: boolean;
     groups?: string[];
-    schools?: SchoolPreload[];
-    departments?: DepartmentPreload[];
+    schools?: string[];
+    departments?: string[];
   };
 };
 

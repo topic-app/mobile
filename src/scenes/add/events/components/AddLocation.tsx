@@ -71,8 +71,8 @@ const EventAddPageLocation: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (selectedGroupLocation) {
-      fetchMultiSchool(selectedGroupLocation.schools?.map((s) => s._id) || []);
-      fetchMultiDepartment(selectedGroupLocation.departments?.map((s) => s._id) || []);
+      fetchMultiSchool(selectedGroupLocation.schools || []);
+      fetchMultiDepartment(selectedGroupLocation.departments || []);
     }
   }, [null]);
 
@@ -96,24 +96,32 @@ const EventAddPageLocation: React.FC<Props> = ({
   return (
     <View style={eventStyles.formContainer}>
       <View style={eventStyles.listContainer}>
-        {selectedGroupLocation.schools?.map((s) => (
-          <CheckboxListItem
-            key={s._id}
-            title={s.name}
-            description={`École · ${s.address?.shortName || s.address?.address?.city}`}
-            status={schools.includes(s._id) ? 'checked' : 'unchecked'}
-            onPress={() => toggle(s, schools, setSchools)}
-          />
-        ))}
-        {selectedGroupLocation.departments?.map((d) => (
-          <CheckboxListItem
-            key={d._id}
-            title={d.name}
-            description={`Département ${d.code}`}
-            status={departments.includes(d._id) ? 'checked' : 'unchecked'}
-            onPress={() => toggle(d, departments, setDepartments)}
-          />
-        ))}
+        {selectedGroupLocation.schools?.map((sId) => {
+          const s = schoolItems.find((t) => t._id === sId);
+          if (!s) return null;
+          return (
+            <CheckboxListItem
+              key={s._id}
+              title={s.name}
+              description={`École · ${s.address?.shortName || s.address?.address?.city}`}
+              status={schools.includes(s._id) ? 'checked' : 'unchecked'}
+              onPress={() => toggle(s, schools, setSchools)}
+            />
+          );
+        })}
+        {selectedGroupLocation.departments?.map((dId) => {
+          const d = departmentItems.find((t) => t._id === dId);
+          if (!d) return null;
+          return (
+            <CheckboxListItem
+              key={d._id}
+              title={d.name}
+              description={`Département ${d.code}`}
+              status={departments.includes(d._id) ? 'checked' : 'unchecked'}
+              onPress={() => toggle(d, departments, setDepartments)}
+            />
+          );
+        })}
         {selectedGroupLocation.global ||
           (selectedGroupLocation.everywhere && (
             <CheckboxListItem
@@ -133,18 +141,16 @@ const EventAddPageLocation: React.FC<Props> = ({
               <ErrorMessage
                 error={[locationStates.schools.info.error, locationStates.departments.info.error]}
                 strings={{
-                  what: "l'ajout de l'évènement",
-                  contentSingular: "L'évènement",
+                  what: 'la recherche des localisations',
+                  contentSingular: 'La liste de localisations',
+                  contentPlural: 'Les localisations',
                 }}
                 type="axios"
                 retry={() => {
-                  fetchMultiSchool([
-                    ...schools,
-                    ...(selectedGroupLocation.schools?.map((s) => s._id) || []),
-                  ]);
+                  fetchMultiSchool([...schools, ...(selectedGroupLocation.schools || [])]);
                   fetchMultiDepartment([
                     ...departments,
-                    ...(selectedGroupLocation.departments?.map((d) => d._id) || []),
+                    ...(selectedGroupLocation.departments || []),
                   ]);
                 }}
               />
