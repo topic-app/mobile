@@ -56,49 +56,6 @@ gemnasium-dependency_scanning:
         - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
         - '{conan.lock,*/conan.lock,*/*/conan.lock}'
 
-gemnasium-maven-dependency_scanning:
-  extends: .ds-analyzer
-  image:
-    name: '$DS_ANALYZER_IMAGE'
-  variables:
-    DS_ANALYZER_IMAGE: '$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION'
-  rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-        $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/
-      exists:
-        - '{build.gradle,*/build.gradle,*/*/build.gradle}'
-        - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
-        - '{build.sbt,*/build.sbt,*/*/build.sbt}'
-        - '{pom.xml,*/pom.xml,*/*/pom.xml}'
-
-gemnasium-python-dependency_scanning:
-  extends: .ds-analyzer
-  image:
-    name: '$DS_ANALYZER_IMAGE'
-  variables:
-    DS_ANALYZER_IMAGE: '$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION'
-  rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-        $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/
-      exists:
-        - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
-        - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
-        - '{Pipfile,*/Pipfile,*/*/Pipfile}'
-        - '{requires.txt,*/requires.txt,*/*/requires.txt}'
-        - '{setup.py,*/setup.py,*/*/setup.py}'
-        # Support passing of $PIP_REQUIREMENTS_FILE
-        # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
-    - if: $CI_COMMIT_BRANCH &&
-        $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&
-        $PIP_REQUIREMENTS_FILE
-
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
   image:
