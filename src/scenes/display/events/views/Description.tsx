@@ -15,6 +15,7 @@ import {
   CollapsibleView,
   PlatformTouchable,
 } from '@components/index';
+import { Permissions } from '@constants';
 import { updateComments } from '@redux/actions/api/comments';
 import getStyles from '@styles/Styles';
 import {
@@ -27,7 +28,7 @@ import {
   CommentRequestState,
   Comment,
 } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, checkPermission } from '@utils/index';
 
 import CommentInlineCard from '../../components/Comment';
 import MessageInlineCard from '../components/Message';
@@ -144,6 +145,7 @@ function EventDisplayDescriptionHeader({
     logger.warn('Invalid Program for event');
     // Handle invalid program
   }
+  id;
 
   // Note: using optional chaining is very risky with moment, if a property is undefined the whole
   // equality becomes undefined and moment then refers to current time, which is not at all what we want
@@ -214,23 +216,21 @@ function EventDisplayDescriptionHeader({
           )}
         </View>
       )}
-      {account.loggedIn &&
-        account.permissions.some(
-          (p) =>
-            p.permission === 'event.messages.add' &&
-            (p.scope?.groups.includes(event?.group?._id || '') || p.scope?.everywhere),
-        ) && (
-          <View style={styles.container}>
-            <Button
-              icon="message-processing"
-              mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={() => setMessageModalVisible(true)}
-            >
-              Envoyer un message
-            </Button>
-          </View>
-        )}
+      {checkPermission(account, {
+        permission: Permissions.EVENT_MESSAGES_ADD,
+        scope: { groups: [event?.group?._id] },
+      }) && (
+        <View style={styles.container}>
+          <Button
+            icon="message-processing"
+            mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
+            uppercase={Platform.OS !== 'ios'}
+            onPress={() => setMessageModalVisible(true)}
+          >
+            Envoyer un message
+          </Button>
+        </View>
+      )}
       <Divider />
 
       <View style={styles.container}>

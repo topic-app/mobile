@@ -216,15 +216,15 @@ export type MemberPreload = UserPreload;
 
 // Group Types
 export type GroupRolePermission = {
-  _id: string;
+  _id?: string;
   permission: string; // might be an enum in the future
   scope: {
-    self: boolean;
-    everywhere: boolean;
-    global: boolean;
-    groups: string[];
-    schools: SchoolPreload[];
-    departments: DepartmentPreload[];
+    self?: boolean;
+    everywhere?: boolean;
+    global?: boolean;
+    groups?: string[];
+    schools?: SchoolPreload[];
+    departments?: DepartmentPreload[];
   };
 };
 
@@ -351,10 +351,8 @@ export type EventPlace =
   | { _id: string; type: 'school'; associatedSchool: SchoolPreload }
   | { _id: string; type: 'standalone'; address: Address };
 
-export type EventMessage = {
-  type: 'high' | 'medium' | 'low' | 'system';
+type EventMessageBase = {
   date: string;
-  group: GroupPreload | null;
   content: {
     parser: 'plaintext' | 'markdown';
     data: string;
@@ -362,6 +360,18 @@ export type EventMessage = {
   important: boolean;
   _id: string;
 };
+
+export type EventMessage = EventMessageBase &
+  (
+    | {
+        type: 'system';
+        group: null;
+      }
+    | {
+        type: 'high' | 'medium' | 'low';
+        group: GroupPreload;
+      }
+  );
 
 type EventBase = {
   _id: string;

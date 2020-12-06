@@ -36,6 +36,8 @@ export const EVENT_DELETE_IMMEDIATE = 'event.delete.immediate';
 export const EVENT_VERIFICATION_VIEW = 'event.verification.view';
 export const EVENT_VERIFICATION_APPROVE = 'event.verification.approve';
 export const EVENT_VERIFICATION_APPROVE_EXTRA = 'event.verification.approve.extra';
+export const EVENT_MESSAGES_ADD = 'event.messages.add';
+export const EVENT_MESSAGES_DELETE = 'event.messages.delete';
 
 export const PLACE_ADD = 'place.add';
 export const PLACE_MODIFY = 'place.modify';

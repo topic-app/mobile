@@ -13,11 +13,12 @@ import {
   CategoryTitle,
   Searchbar,
 } from '@components/index';
+import { Permissions } from '@constants/index';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { Account, State, TagRequestState, TagPreload } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 import TagAddModal from './TagAddModal';
@@ -94,7 +95,10 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
         {searchText !== '' &&
         state.search?.success &&
         !selectedData.some((t) => t.name?.toLowerCase() === searchText?.toLowerCase()) &&
-        account.permissions?.some((p) => p.permission === 'tag.add') ? (
+        checkPermission(account, {
+          permission: Permissions.TAG_ADD,
+          scope: {},
+        }) ? (
           <TextChip
             title={`Créer "${searchText.toLowerCase()}"`}
             icon="plus"
@@ -169,7 +173,12 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
             <Searchbar
               ref={inputRef}
               placeholder={`Rechercher ${
-                account.permissions?.some((p) => p.permission === 'tag.add') ? 'ou créer ' : ''
+                checkPermission(account, {
+                  permission: Permissions.TAG_ADD,
+                  scope: {},
+                })
+                  ? 'ou créer '
+                  : ''
               }un tag`}
               value={searchText}
               onChangeText={setSearchText}

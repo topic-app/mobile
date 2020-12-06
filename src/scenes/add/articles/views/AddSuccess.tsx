@@ -7,10 +7,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';
+import { Permissions } from '@constants/index';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, Account } from '@ts/types';
-import { logger, useTheme } from '@utils/index';
+import { checkPermission, logger, useTheme } from '@utils/index';
 
 import type { ArticleAddScreenNavigationProp, ArticleAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -74,12 +75,10 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
               <Text>Vous serez notifiés par email dès que l&apos;article est approuvé.</Text>
             </View>
           )}
-          {account.permissions?.some(
-            (p) =>
-              p.permission === 'article.verification.approve' &&
-              (p.scope?.groups?.includes(creationData?.group || '') ||
-                (p.group === creationData?.group && p.scope?.self)),
-          ) &&
+          {checkPermission(account, {
+            permission: Permissions.ARTICLE_VERIFICATION_APPROVE,
+            scope: { groups: [creationData?.group || ''] },
+          }) &&
             (approved ? (
               <Text>Article approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
             ) : (

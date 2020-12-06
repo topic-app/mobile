@@ -12,6 +12,7 @@ import {
   ARTICLE_CARD_HEADER_HEIGHT,
   Banner,
 } from '@components/index';
+import { Permissions } from '@constants/index';
 import {
   updateArticles,
   searchArticles,
@@ -30,7 +31,7 @@ import {
   ArticleRequestState,
   Account,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, useTheme } from '@utils/index';
 
 import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import ArticleListCard from '../components/Card';
@@ -452,7 +453,10 @@ const ArticleList: React.FC<ArticleListProps> = ({
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions.some((p) => p.permission === 'article.add') && (
+      {checkPermission(account, {
+        permission: Permissions.ARTICLE_ADD,
+        scope: {},
+      }) && (
         <FAB
           icon="pencil"
           onPress={() =>

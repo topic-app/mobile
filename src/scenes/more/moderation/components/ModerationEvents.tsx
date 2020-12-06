@@ -4,6 +4,7 @@ import { Text, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { ChipAddList, ErrorMessage, EventCard } from '@components/index';
+import { Permissions } from '@constants/index';
 import { updateEventsVerification } from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
 import {
@@ -13,7 +14,7 @@ import {
   EventVerificationPreload,
   AccountPermission,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, getPermissionGroups, useTheme } from '@utils/index';
 
 import type { ModerationScreenNavigationProp } from '../index';
 
@@ -28,18 +29,11 @@ const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, acc
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const allowedGroupsEvent = account.loggedIn
-    ? account.permissions.reduce((groups: string[], p: AccountPermission) => {
-        if (p.permission === 'event.verification.view') {
-          return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
-        } else {
-          return groups;
-        }
-      }, [])
-    : [];
-  const allowedEverywhereEvent = account.permissions.some(
-    (p) => p.permission === 'event.verification.view' && p.scope.everywhere,
-  );
+  const allowedGroupsEvent = getPermissionGroups(account, Permissions.EVENT_VERIFICATION_VIEW);
+  const allowedEverywhereEvent = checkPermission(account, {
+    permission: Permissions.EVENT_VERIFICATION_VIEW,
+    scope: { everywhere: true },
+  });
   const [selectedGroupsEvent, setSelectedGroupsEvent] = React.useState(allowedGroupsEvent);
   const [everywhereEvent, setEverywhereEvent] = React.useState(false);
 

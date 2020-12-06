@@ -4,9 +4,10 @@ import { Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CustomTabView, TranslucentStatusBar, CustomHeaderBar } from '@components/index';
+import { Permissions } from '@constants/index';
 import getStyles from '@styles/Styles';
 import { State, Account } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, useTheme } from '@utils/index';
 
 import ModerationArticles from '../components/ModerationArticles';
 import ModerationEvents from '../components/ModerationEvents';
@@ -26,12 +27,19 @@ const ModerationList: React.FC<Props> = ({ navigation, account }) => {
     return <Text>Non autorisé</Text>;
   }
 
-  const allowedArticles = account.permissions.some(
-    (p) => p.permission === 'article.verification.view',
-  );
-  const allowedEvents = account.permissions.some((p) => p.permission === 'event.verification.view');
+  const allowedArticles = checkPermission(account, {
+    permission: Permissions.ARTICLE_VERIFICATION_VIEW,
+    scope: {},
+  });
+  const allowedEvents = checkPermission(account, {
+    permission: Permissions.EVENT_VERIFICATION_VIEW,
+    scope: {},
+  });
 
-  const allowedGroups = account.permissions.some((p) => p.permission === 'group.verification.view');
+  const allowedGroups = checkPermission(account, {
+    permission: Permissions.GROUP_VERIFICATION_VIEW,
+    scope: {},
+  });
 
   return (
     <View style={styles.page}>
