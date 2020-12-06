@@ -47,7 +47,7 @@ import {
   Content,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl } from '@utils/index';
+import { useTheme, getImageUrl, handleUrl, checkPermission } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
@@ -248,11 +248,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                   title: 'Signaler',
                   onPress: () => setArticleReportModalVisible(true),
                 },
-                ...(account.permissions?.some(
-                  (p) =>
-                    p.permission === Permissions.EVENT_DELETE &&
-                    (p.scope.groups.includes(id) || p.scope.everywhere),
-                )
+                ...(checkPermission(account, {
+                  permission: Permissions.EVENT_DELETE,
+                  scope: { groups: [event?.group?._id] },
+                })
                   ? [
                       {
                         title: 'Supprimer',

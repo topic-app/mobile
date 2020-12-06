@@ -4,8 +4,9 @@ import { Divider, Menu, Provider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components/index';
+import { Permissions } from '@constants/index';
 import { ModalProps, State, Account, EventRequestState, Content } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, checkPermission } from '@utils/index';
 
 import getEventStyles from '../styles/Styles';
 
@@ -43,12 +44,10 @@ const AddMessageModal: React.FC<AddMessageModalProps> = ({
   const publishers: MessagePublisher[] = [];
   account.groups
     ?.filter((g) =>
-      account.permissions.some(
-        (p) =>
-          p.group === g._id &&
-          p.permission === 'event.messages.add' &&
-          (p.scope.everywhere || p.scope.groups.includes(id)),
-      ),
+      checkPermission(account, {
+        permission: Permissions.EVENT_MESSAGES_ADD,
+        scope: { groups: [id] },
+      }),
     )
     .forEach((g) =>
       publishers.push({

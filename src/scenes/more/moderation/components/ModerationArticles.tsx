@@ -4,6 +4,7 @@ import { Text, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { ChipAddList, ErrorMessage, ArticleCard } from '@components/index';
+import { Permissions } from '@constants/index';
 import { updateArticlesVerification } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
 import {
@@ -13,7 +14,7 @@ import {
   AccountPermission,
   ArticleVerificationPreload,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, getPermissionGroups, useTheme } from '@utils/index';
 
 import type { ModerationScreenNavigationProp } from '../index';
 
@@ -33,18 +34,11 @@ const ModerationArticles: React.FC<Props> = ({
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const allowedGroupsArticle = account.loggedIn
-    ? account.permissions.reduce((groups: string[], p: AccountPermission) => {
-        if (p.permission === 'article.verification.view') {
-          return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
-        } else {
-          return groups;
-        }
-      }, [])
-    : [];
-  const allowedEverywhereArticle = account.permissions.some(
-    (p) => p.permission === 'article.verification.view' && p.scope.everywhere,
-  );
+  const allowedGroupsArticle = getPermissionGroups(account, Permissions.ARTICLE_VERIFICATION_VIEW);
+  const allowedEverywhereArticle = checkPermission(account, {
+    permission: Permissions.ARTICLE_VERIFICATION_VIEW,
+    scope: { everywhere: true },
+  });
   const [selectedGroupsArticle, setSelectedGroupsArticle] = React.useState(allowedGroupsArticle);
   const [everywhereArticle, setEverywhereArticle] = React.useState(false);
 
