@@ -97,7 +97,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
               {
                 key: 'location',
                 icon: 'map-marker',
-                title: 'Localisation',
+                title: 'Loc.',
                 component: (props) => <EventAddPageLocation navigation={navigation} {...props} />,
               },
               {
@@ -133,7 +133,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
               {
                 key: 'program',
                 icon: 'script-text',
-                title: 'Programme',
+                title: 'Prog.',
                 component: (props) => <EventAddPageProgram add={add} {...props} />,
               },
             ]}
