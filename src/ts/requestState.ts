@@ -90,6 +90,7 @@ export type LocationRequestState = {
 export type LinkingRequestState = {
   emailChange: RequestState;
   emailVerify: RequestState;
+  accountDelete: RequestState;
 };
 export type UploadRequestState = {
   upload: RequestState;
