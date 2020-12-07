@@ -56,7 +56,12 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevSer
     : themes[themeName];
 
   const linking = {
-    prefixes: ['https://topicapp.fr', 'https://go.topicapp.fr', 'topic://'],
+    prefixes: [
+      'https://topicapp.fr',
+      'https://go.topicapp.fr',
+      'https://www.topicapp.fr',
+      'topic://',
+    ],
     config: {
       screens,
     },
