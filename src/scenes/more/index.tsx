@@ -6,7 +6,6 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/st
 
 import { MainScreenNavigationProp } from '../Main';
 import AboutStackNavigator, { AboutStackParams } from './about/index';
-import LinkingStackNavigator, { LinkingStackParams } from './linking/index';
 import MoreList from './list/views/List';
 import ModerationStackNavigator, { ModerationStackParams } from './moderation/index';
 import MyGroupStackNavigator, { MyGroupsStackParams } from './myGroups/index';
@@ -18,7 +17,6 @@ export type MoreStackParams = {
   Settings: NavigatorScreenParams<SettingsStackParams>;
   MyGroups: NavigatorScreenParams<MyGroupsStackParams>;
   Moderation: NavigatorScreenParams<ModerationStackParams>;
-  Linking: NavigatorScreenParams<LinkingStackParams>;
   About: NavigatorScreenParams<AboutStackParams>;
   List: undefined;
 };
@@ -51,11 +49,6 @@ function MoreStackNavigator() {
       <Stack.Screen
         name="Moderation"
         component={ModerationStackNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Linking"
-        component={LinkingStackNavigator}
         options={{ headerShown: false }}
       />
       <Stack.Screen name="About" component={AboutStackNavigator} options={{ headerShown: false }} />
