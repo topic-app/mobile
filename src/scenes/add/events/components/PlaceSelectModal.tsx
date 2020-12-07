@@ -61,7 +61,7 @@ function EventPlaceSelectModal({
           _id: school._id,
           type: 'school',
           // Convert any School type to a SchoolPreload type
-          associatedSchool: { preload: true, displayName: school.name, ...school },
+          associatedSchool: { ...school, preload: true, displayName: school.name },
         }));
       }
       update = () =>

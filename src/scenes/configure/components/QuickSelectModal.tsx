@@ -26,6 +26,7 @@ import {
   TagPreload,
   UserPreload,
   GroupPreload,
+  Group,
   RequestStateComplex,
   SchoolPreload,
   DepartmentPreload,
