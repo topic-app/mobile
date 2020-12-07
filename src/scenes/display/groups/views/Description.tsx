@@ -1,27 +1,35 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
+import { connect } from 'react-redux';
 
-import testGroupData from '@src/data/groupListData.json';
 import { Content } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { GroupsState, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { GroupDisplayStackParams } from '../index';
+import type { GroupDisplayScreenNavigationProp, GroupDisplayStackParams } from '../index';
 
-type GroupDescriptionProps = StackScreenProps<GroupDisplayStackParams, 'Description'> & {};
+type GroupDescriptionProps = {
+  navigation: GroupDisplayScreenNavigationProp<'Description'>;
+  route: RouteProp<GroupDisplayStackParams, 'Description'>;
+  groups: GroupsState;
+};
 
-const GroupDescription: React.FC<GroupDescriptionProps> = ({ route }) => {
+const GroupDescription: React.FC<GroupDescriptionProps> = ({ route, groups }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   const { id } = route.params;
-  const group = testGroupData.find((g) => g._id === id);
 
-  const { data, parser } = group.description || {};
+  const group =
+    groups.item?._id === id
+      ? groups.item
+      : groups.data.find((g) => g._id === id) || groups.search.find((g) => g._id === id) || null;
 
-  if (data && parser) {
+  if (group && !group.preload) {
+    const { data, parser } = group.description;
     return (
       <View style={styles.page}>
         <View style={styles.contentContainer}>
@@ -39,4 +47,11 @@ const GroupDescription: React.FC<GroupDescriptionProps> = ({ route }) => {
   );
 };
 
-export default GroupDescription;
+const mapStateToProps = (state: State) => {
+  const { groups } = state;
+  return {
+    groups,
+  };
+};
+
+export default connect(mapStateToProps)(GroupDescription);

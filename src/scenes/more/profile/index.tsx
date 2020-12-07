@@ -1,16 +1,25 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import Profile from './views/Profile';
+import { MoreScreenNavigationProp } from '../index';
 import ProfileAvatar from './views/Avatar';
 import ProfileEdit from './views/Edit';
+import Profile from './views/Profile';
 
 export type ProfileStackParams = {
   Profile: undefined;
   Avatar: undefined;
   Edit: undefined;
 };
+
+export type ProfileScreenNavigationProp<
+  K extends keyof ProfileStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<ProfileStackParams, K>,
+  MoreScreenNavigationProp<'Profile'>
+>;
 
 const Stack = createNativeStackNavigator();
 

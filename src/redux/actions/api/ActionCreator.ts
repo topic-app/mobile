@@ -1,12 +1,33 @@
-import { request, logger } from '@utils/index';
+import { AnyAction } from 'redux';
+
 import {
-  State,
-  Item,
-  ElementStringPlural,
-  ElementStringPluralMap,
+  ApiItemString,
+  ApiItemMap,
   DepartmentsState,
   SchoolsState,
+  ApiAction,
+  ApiStateMap,
+  AppThunk,
+  School,
+  Department,
 } from '@ts/types';
+import { request, logger } from '@utils/index';
+
+type UpdateCreatorParams<T extends ApiItemString> = {
+  dataType: T;
+  update: ApiAction.TypeMap[T];
+  stateUpdate: ApiAction.UpdateStateTypeMap[T];
+  listName: keyof ApiStateMap[T];
+  url: string;
+  stateName?: ApiAction.UpdateStateNameMap[T];
+  sort?: (data: ApiItemMap[T][]) => ApiItemMap[T][];
+  type?: 'initial' | 'next' | 'refresh';
+  params?: { [key: string]: any };
+  clear?: boolean;
+  initialNum?: number;
+  nextNum?: number;
+  auth?: boolean;
+};
 
 /**
  * @docs actionCreators
@@ -21,23 +42,7 @@ import {
  *
  * @returns Action
  */
-type updateCreatorProps<T extends keyof ElementStringPluralMap> = {
-  update: string;
-  stateUpdate: string;
-  url: string;
-  sort?: (data: ElementStringPluralMap[T][]) => ElementStringPluralMap[T][];
-  dataType: T;
-  stateName?: string;
-  type?: string;
-  params?: object;
-  listName?: string;
-  clear?: boolean;
-  initialNum?: number;
-  nextNum?: number;
-  auth?: boolean;
-};
-
-function updateCreator<T extends ElementStringPlural>({
+function updateCreator<T extends ApiItemString>({
   update,
   stateUpdate,
   url,
@@ -46,13 +51,14 @@ function updateCreator<T extends ElementStringPlural>({
   stateName = 'list',
   type = 'initial',
   params = {},
-  listName = 'data',
+  listName,
   clear = false,
   nextNum = 10,
   initialNum = 20,
   auth = false,
-}: updateCreatorProps<T>) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: UpdateCreatorParams<T>): AppThunk {
+  type Element = ApiItemMap[T];
+  return (dispatch, getState) => {
     let lastId;
     let number = initialNum;
     dispatch({
@@ -71,23 +77,66 @@ function updateCreator<T extends ElementStringPlural>({
     });
     if (type === 'next') {
       const elements = getState()[dataType][listName];
-      if (elements.length !== 0) {
+      if (Array.isArray(elements) && elements.length !== 0) {
         lastId = elements[elements.length - 1]._id;
         number = nextNum;
       } else {
         logger.warn(
-          `Warning: Requested state update type 'next' in updateCreator but no elements were found in redux db '${dataType}'`,
+          `updateCreator: Failed to get next elements of db: getState()[${dataType}][${listName}] is not an array or is an empty array`,
         );
+        return dispatch({
+          type: stateUpdate,
+          data: {
+            [stateName]: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error: {
+                success: false,
+                reason: 'redux',
+                status: null,
+                error: `updateCreator: Failed to update db: getState()[${dataType}][${listName}] is not an array`,
+              },
+            },
+          },
+        });
       }
     }
     request(url, 'get', { lastId, number, ...params }, auth)
       .then((result) => {
-        let data: Array<Item>;
+        let data: Element[];
         if (!clear) {
-          const dbData = getState()[dataType][listName] || []; // The old elements, in redux db // to actually have type, add as Array<ElementStringPluralMap[typeof dataType]>
-          data = [...dbData]; // Shallow copy of dbData to get rid of reference
+          const dbData = getState()[dataType][listName];
+          if (!Array.isArray(dbData)) {
+            logger.warn(
+              `updateCreator: Failed to update db: getState()[${dataType}][${listName}] is not an array`,
+            );
+            return dispatch({
+              type: stateUpdate,
+              data: {
+                [stateName]: {
+                  loading: {
+                    initial: false,
+                    refresh: false,
+                    next: false,
+                  },
+                  success: false,
+                  error: {
+                    success: false,
+                    reason: 'redux',
+                    status: null,
+                    error: `updateCreator: Failed to update db: getState()[${dataType}][${listName}] is not an array`,
+                  },
+                },
+              },
+            });
+          }
+          data = [...(dbData as Element[])]; // Shallow copy of dbData to get rid of reference
           if (result.data) {
-            result.data[dataType].forEach((a: Item) => {
+            result.data[dataType].forEach((a: Element) => {
               const element = { ...a, preload: true };
               const index = data.findIndex((p) => p._id === a._id);
               if (index !== -1) {
@@ -121,7 +170,7 @@ function updateCreator<T extends ElementStringPlural>({
         });
       })
       .catch((error) => {
-        console.error(error);
+        logger.error(error);
         return dispatch({
           type: stateUpdate,
           data: {
@@ -140,6 +189,17 @@ function updateCreator<T extends ElementStringPlural>({
   };
 }
 
+type FetchCreatorParams<T extends ApiItemString> = {
+  dataType: T;
+  url: string;
+  update: ApiAction.TypeMap[T];
+  stateUpdate: ApiAction.UpdateStateTypeMap[T];
+  stateName: ApiAction.UpdateStateNameMap[T];
+  params: { [key: string]: any };
+  useArray?: boolean;
+  auth?: boolean;
+};
+
 /**
  * @docs actionCreators
  * Créateur d'action pour tout (fetch)
@@ -151,27 +211,17 @@ function updateCreator<T extends ElementStringPlural>({
  * @param params.*Id L'id du contenu que l'on veut récupérer
  * @returns Action
  */
-type fetchCreatorProps = {
-  update: string;
-  stateUpdate: string;
-  dataType: ElementStringPlural;
-  url: string;
-  params: object;
-  stateName?: string;
-  useArray?: boolean;
-  auth?: boolean;
-};
-function fetchCreator({
+function fetchCreator<T extends ApiItemString>({
   update,
   stateUpdate,
   dataType,
   url,
   params,
-  stateName = 'info',
+  stateName,
   useArray = false,
   auth = false,
-}: fetchCreatorProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: FetchCreatorParams<T>): AppThunk {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: stateUpdate,
@@ -185,19 +235,21 @@ function fetchCreator({
       });
       request(url, 'get', params, auth)
         .then((result) => {
-          const data = result.data && result.data[dataType][0];
+          let data;
+          const state = getState()[dataType];
+
+          if (useArray && Array.isArray((state as SchoolsState | DepartmentsState).items)) {
+            data = (state as SchoolsState | DepartmentsState).items as (School | Department)[];
+            // Push data to state if it's not already in it
+            if (!data.includes(result.data?.[dataType][0])) {
+              data.push(result.data?.[dataType][0]);
+            }
+          } else {
+            data = result.data?.[dataType][0];
+          }
           dispatch({
             type: update,
-            data: useArray
-              ? [
-                  ...((getState()[dataType] as SchoolsState | DepartmentsState)?.items || []),
-                  ...((getState()[dataType] as SchoolsState | DepartmentsState)?.items?.includes(
-                    data?._id,
-                  )
-                    ? []
-                    : [data]),
-                ] // HACK: Whatever
-              : data,
+            data,
           });
           dispatch({
             type: stateUpdate,
@@ -209,7 +261,7 @@ function fetchCreator({
               },
             },
           });
-          resolve();
+          resolve({});
         })
         .catch((err) => {
           dispatch({
@@ -228,6 +280,10 @@ function fetchCreator({
   };
 }
 
+type ClearCreatorParams<T extends ApiItemString> = ApiAction.ClearDataMap[T] & {
+  clear: ApiAction.ClearTypeMap[T];
+};
+
 /**
  * @docs actionCreators
  * Créateur d'action pour tout clear
@@ -236,33 +292,13 @@ function fetchCreator({
  * @param search Si il faut effacer la recherche d'articles
  * @returns Action
  */
-function clearCreator({
+function clearCreator<T extends ApiItemString>({
   clear,
-  data = true,
-  search = true,
-  verification = true,
-  following = true,
-  items = true,
-  templates = true,
-}: {
-  clear: string;
-  data?: boolean;
-  search?: boolean;
-  verification?: boolean;
-  following?: boolean;
-  items?: boolean;
-  templates?: boolean;
-}) {
+  ...elementsToClear
+}: ClearCreatorParams<T>): AnyAction {
   return {
     type: clear,
-    data: {
-      search,
-      data,
-      verification,
-      following,
-      items,
-      templates,
-    },
+    data: elementsToClear,
   };
 }
 

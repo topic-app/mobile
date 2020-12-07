@@ -1,22 +1,24 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View } from 'react-native';
 import { Text, Paragraph, Title, Card } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { GroupPreload } from '@ts/types';
-import { Avatar, PlatformTouchable } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { AnyGroup } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-type MyGroupsListCardProps = {
-  group: GroupPreload;
+import Avatar from '../Avatar';
+import { PlatformTouchable } from '../PlatformComponents';
+
+type GroupCardProps = {
+  group: AnyGroup;
   navigate: StackNavigationProp<any, any>['navigate'];
   member?: boolean;
   following?: boolean;
 };
 
-const MyGroupsListCard: React.FC<MyGroupsListCardProps> = ({
+const GroupCard: React.FC<GroupCardProps> = ({
   group,
   navigate,
   member = false,
@@ -62,4 +64,4 @@ const MyGroupsListCard: React.FC<MyGroupsListCardProps> = ({
   );
 };
 
-export default MyGroupsListCard;
+export default GroupCard;

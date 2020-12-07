@@ -1,13 +1,13 @@
+import { Formik } from 'formik';
 import React from 'react';
-import { Button, HelperText, TextInput } from 'react-native-paper';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { connect } from 'react-redux';
+import { Button } from 'react-native-paper';
 import shortid from 'shortid';
+import * as Yup from 'yup';
 
-import { ModalProps, State, EventPlace } from '@ts/types';
-import { Modal } from '@components/index';
+import { FormTextInput, Modal } from '@components/index';
+import { ModalProps, EventPlace } from '@ts/types';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 
 import getEventStyles from '../styles/Styles';
 
@@ -15,83 +15,12 @@ type PlaceAddressModalProps = ModalProps & {
   add: (place: EventPlace) => void;
 };
 
-const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
-  visible,
-  setVisible,
-  add,
-}) => {
+const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisible, add }) => {
   const numberInput = React.createRef<RNTestInput>();
   const streetInput = React.createRef<RNTestInput>();
   const extraInput = React.createRef<RNTestInput>();
   const codeInput = React.createRef<RNTestInput>();
   const cityInput = React.createRef<RNTestInput>();
-
-  type InputStateType = {
-    value: string;
-    error: boolean;
-    valid: boolean;
-    message: string;
-  };
-
-  let tempNumber: InputStateType;
-  let tempStreet: InputStateType;
-  let tempExtra: InputStateType;
-  let tempCode: InputStateType;
-  let tempCity: InputStateType;
-
-  const [currentNumber, setCurrentNumber] = React.useState({
-    value: '',
-    error: false,
-    valid: true,
-    message: '',
-  });
-  const [currentStreet, setCurrentStreet] = React.useState({
-    value: '',
-    error: false,
-    valid: true,
-    message: '',
-  });
-  const [currentExtra, setCurrentExtra] = React.useState({
-    value: '',
-    error: false,
-    valid: true,
-    message: '',
-  });
-  const [currentCode, setCurrentCode] = React.useState({
-    value: '',
-    error: false,
-    valid: true,
-    message: '',
-  });
-  const [currentCity, setCurrentCity] = React.useState({
-    value: '',
-    error: false,
-    valid: false,
-    message: '',
-  });
-
-  function setNumber(data: Partial<InputStateType>) {
-    // Because async setState
-    tempNumber = { ...currentNumber, ...(tempNumber ?? {}), ...data };
-    setCurrentNumber(tempNumber);
-  }
-  function setStreet(data: Partial<InputStateType>) {
-    tempStreet = { ...currentStreet, ...(tempStreet ?? {}), ...data };
-    setCurrentStreet(tempStreet);
-  }
-  function setExtra(data: Partial<InputStateType>) {
-    tempExtra = { ...currentExtra, ...(tempExtra ?? {}), ...data };
-    setCurrentExtra(tempExtra);
-  }
-  function setCode(data: Partial<InputStateType>) {
-    // Because async setState
-    tempCode = { ...currentCode, ...(tempCode ?? {}), ...data };
-    setCurrentCode(tempCode);
-  }
-  function setCity(data: Partial<InputStateType>) {
-    tempCity = { ...currentCity, ...(tempCity ?? {}), ...data };
-    setCurrentCity(tempCity);
-  }
 
   function blurInputs() {
     numberInput.current?.blur();
@@ -101,310 +30,151 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({
     cityInput.current?.blur();
   }
 
-  const validateCityInput = (city: string) => {
-    let validation: Partial<InputStateType> = { valid: false, error: false };
-
-    if (city === undefined) {
-      validation = {
-        valid: false,
-        error: true,
-        message: 'Champ requis',
-      };
-    } else {
-      validation = { valid: true, error: false };
-    }
-    setCity(validation);
-  };
-
-  const validateCodeInput = (code: string) => {
-    let validation: Partial<InputStateType> = { valid: false, error: false };
-
-    if (code !== '' && code.length !== 5) {
-      validation = {
-        valid: false,
-        error: true,
-        message: 'Code postal erroné',
-      };
-    } else {
-      validation = { valid: true, error: false };
-    }
-    setCode(validation);
-  };
-
-  const validateNumberInput = (number: string, street: string) => {
-    let validation: Partial<InputStateType> = { valid: false, error: false };
-
-    if (number !== '' && street === '') {
-      validation = {
-        valid: false,
-        error: true,
-        message: 'Précisez la rue',
-      };
-    } else {
-      validation = { valid: true, error: false };
-    }
-    setNumber(validation);
-  };
-
-  const submit = () => {
-    const numberVal = currentNumber.value;
-    const streetVal = currentStreet.value;
-    const extraVal = currentExtra.value;
-    const codeVal = currentCode.value;
-    const cityVal = currentCity.value;
-    if (currentCity.valid && currentCode.valid && currentNumber.valid) {
-      add({
-        _id: shortid(),
-        type: 'standalone',
-        address: {
-          _id: shortid(),
-          shortName: undefined,
-          coordinates: undefined,
-          address: {
-            number: numberVal,
-            street: streetVal,
-            extra: extraVal,
-            city: cityVal,
-            code: codeVal,
-          },
-          departments: [],
-        },
-        associatedSchool: undefined,
-        associatedPlace: undefined,
-      });
-      setVisible(false);
-      setCurrentNumber({
-        value: '',
-        error: false,
-        valid: false,
-        message: '',
-      });
-      setCurrentStreet({
-        value: '',
-        error: false,
-        valid: false,
-        message: '',
-      });
-      setCurrentExtra({
-        value: '',
-        error: false,
-        valid: false,
-        message: '',
-      });
-      setCurrentCode({
-        value: '',
-        error: false,
-        valid: false,
-        message: '',
-      });
-      setCurrentCity({
-        value: '',
-        error: false,
-        valid: false,
-        message: '',
-      });
-    }
-  };
-
-  const cancel = () => {
-    setVisible(false);
-    setNumber({
-      value: '',
-      error: false,
-      valid: false,
-      message: '',
-    });
-    setStreet({
-      value: '',
-      error: false,
-      valid: false,
-      message: '',
-    });
-    setExtra({
-      value: '',
-      error: false,
-      valid: false,
-      message: '',
-    });
-    setCode({
-      value: '',
-      error: false,
-      valid: false,
-      message: '',
-    });
-    setCity({
-      value: '',
-      error: false,
-      valid: false,
-      message: '',
-    });
-  };
-
   const theme = useTheme();
-  const { colors } = theme;
   const eventStyles = getEventStyles(theme);
-  const styles = getStyles(theme);
+
+  const AddressSchema = Yup.object().shape({
+    number: Yup.string().max(10, 'Le numéro de rue doit comporter moins de 10 caractères'),
+    // If user enters something in number, make street required
+    street: Yup.string()
+      .when('number', {
+        is: (number) => number !== '',
+        then: Yup.string().required(
+          'Il faut préciser le nom de rue si vous entrer un numéro de rue',
+        ),
+        otherwise: Yup.string(),
+      })
+      .max(100, 'Le nom de rue doit comporter moins de 100 caractères.'),
+    extra: Yup.string().max(100, 'Ce champ dois être moins de 100 caractères'),
+    code: Yup.string().max(15, 'Code postal doit être moins de 15 caractères'),
+    city: Yup.string()
+      .when('code', {
+        is: (code) => code !== '',
+        then: Yup.string().required('Entrer le nom de la ville'),
+        otherwise: Yup.string(),
+      })
+      .max(150, 'Le nom de la ville doit comporter moins de 150 caractères'),
+  });
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View style={eventStyles.formContainer}>
-        <View style={eventStyles.textInputContainer}>
-          <TextInput
-            ref={numberInput}
-            label="Numéro de rue"
-            value={currentNumber.value}
-            error={currentNumber.error}
-            keyboardType="default"
-            disableFullscreenUI
-            onSubmitEditing={() => {
-              streetInput.current?.focus();
-            }}
-            autoFocus
-            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-            mode="outlined"
-            style={eventStyles.textInput}
-            onChangeText={(text) => {
-              setNumber({ value: text });
-            }}
-          />
-        </View>
-        {currentNumber.error && (
-          <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
-            {currentNumber.message}
-          </HelperText>
-        )}
-        <View style={eventStyles.textInputContainer}>
-          <TextInput
-            ref={streetInput}
-            label="Rue"
-            value={currentStreet.value}
-            error={currentStreet.error}
-            disableFullscreenUI
-            onSubmitEditing={() => {
-              extraInput.current?.focus();
-            }}
-            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-            mode="outlined"
-            style={eventStyles.textInput}
-            onChangeText={(text) => {
-              setStreet({ value: text });
-            }}
-          />
-        </View>
-        <View style={eventStyles.textInputContainer}>
-          <TextInput
-            ref={extraInput}
-            label="Autre"
-            value={currentExtra.value}
-            error={currentExtra.error}
-            disableFullscreenUI
-            onSubmitEditing={() => {
-              codeInput.current?.focus();
-            }}
-            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-            mode="outlined"
-            style={eventStyles.textInput}
-            onChangeText={(text) => {
-              setExtra({ value: text });
-            }}
-          />
-        </View>
-        <View style={eventStyles.textInputContainer}>
-          <TextInput
-            ref={codeInput}
-            label="Code Postal"
-            value={currentCode.value}
-            error={currentCode.error}
-            keyboardType="number-pad"
-            disableFullscreenUI
-            onSubmitEditing={({ nativeEvent }) => {
-              validateCodeInput(nativeEvent.text);
-              cityInput.current?.focus();
-            }}
-            onEndEditing={({ nativeEvent }) => {
-              validateCodeInput(nativeEvent.text);
-            }}
-            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-            mode="outlined"
-            style={eventStyles.textInput}
-            onChangeText={(text) => {
-              setCode({ value: text });
-            }}
-          />
-        </View>
-        {currentCode.error && (
-          <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
-            {currentCode.message}
-          </HelperText>
-        )}
-        <View style={eventStyles.textInputContainer}>
-          <TextInput
-            ref={cityInput}
-            label="Ville"
-            value={currentCity.value}
-            error={currentCity.error}
-            disableFullscreenUI
-            onSubmitEditing={({ nativeEvent }) => {
-              validateCityInput(nativeEvent.text);
-              blurInputs();
-            }}
-            autoCorrect={false}
-            theme={
-              currentCity.valid
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
-            mode="outlined"
-            style={eventStyles.textInput}
-            onEndEditing={({ nativeEvent }) => {
-              validateCityInput(nativeEvent.text);
-            }}
-            onChangeText={(text) => {
-              setCity({ value: text });
-            }}
-          />
-          <HelperText type="error" visible={currentCity.error} style={{ marginTop: -5 }}>
-            {currentCity.message}
-          </HelperText>
-        </View>
+        <Formik
+          initialValues={{ number: '', street: '', city: '', code: '', extra: '' }}
+          onSubmit={({ number, street, city, code, extra }) => {
+            add({
+              _id: shortid(),
+              type: 'standalone',
+              address: {
+                _id: shortid(),
+                shortName: undefined,
+                geo: {
+                  type: 'Point',
+                  coordinates: [],
+                },
+                address: { number, street, extra, city, code },
+                departments: [],
+              },
+            });
+            setVisible(false);
+          }}
+          validationSchema={AddressSchema}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
+            <View>
+              <FormTextInput
+                ref={numberInput}
+                label="Numéro de rue"
+                value={values.number}
+                touched={touched.number}
+                error={errors.number}
+                onChangeText={handleChange('number')}
+                onBlur={handleBlur('number')}
+                onSubmitEditing={() => streetInput.current!.focus()}
+                style={eventStyles.textInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+                autoFocus
+              />
+              <FormTextInput
+                ref={streetInput}
+                label="Nom de Rue"
+                value={values.street}
+                touched={touched.street}
+                error={errors.street}
+                onChangeText={handleChange('street')}
+                onBlur={handleBlur('street')}
+                onSubmitEditing={() => extraInput.current!.focus()}
+                style={eventStyles.textInput}
+              />
+              <FormTextInput
+                ref={extraInput}
+                label="Autre"
+                value={values.extra}
+                touched={touched.extra}
+                error={errors.extra}
+                onChangeText={handleChange('extra')}
+                onBlur={handleBlur('extra')}
+                onSubmitEditing={() => codeInput.current!.focus()}
+                style={eventStyles.textInput}
+              />
+              <FormTextInput
+                ref={codeInput}
+                label="Code Postal"
+                value={values.code}
+                touched={touched.code}
+                error={errors.code}
+                onChangeText={handleChange('code')}
+                onBlur={handleBlur('code')}
+                onSubmitEditing={() => cityInput.current!.focus()}
+                style={eventStyles.textInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="number-pad"
+                textContentType="postalCode"
+              />
+              <FormTextInput
+                ref={cityInput}
+                label="Ville"
+                value={values.city}
+                touched={touched.city}
+                error={errors.city}
+                onChangeText={handleChange('city')}
+                onBlur={handleBlur('city')}
+                onSubmitEditing={() => handleSubmit()}
+                style={eventStyles.textInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+                textContentType="addressCity"
+              />
+              <View style={eventStyles.buttonContainer}>
+                <Button
+                  mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+                  uppercase={Platform.OS !== 'ios'}
+                  style={{ flex: 1, marginRight: 5 }}
+                  onPress={() => {
+                    blurInputs();
+                    setVisible(false);
+                  }}
+                >
+                  Annuler
+                </Button>
+                <Button
+                  mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                  uppercase={Platform.OS !== 'ios'}
+                  onPress={handleSubmit}
+                  style={{ flex: 1, marginLeft: 5 }}
+                >
+                  Ajouter
+                </Button>
+              </View>
+            </View>
+          )}
+        </Formik>
         <View style={{ height: 20 }} />
-        <View style={eventStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-            uppercase={Platform.OS !== 'ios'}
-            style={{ flex: 1, marginRight: 5 }}
-            onPress={() => {
-              blurInputs();
-              cancel();
-            }}
-          >
-            Annuler
-          </Button>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              validateCityInput(currentCity.value);
-              validateCodeInput(currentCode.value);
-              validateNumberInput(currentNumber.value, currentStreet.value);
-              blurInputs();
-              submit();
-            }}
-            style={{ flex: 1, marginLeft: 5 }}
-          >
-            Ajouter
-          </Button>
-        </View>
       </View>
     </Modal>
   );
 };
 
-const mapStateToProps = (state: State) => {
-  const { eventData } = state;
-  return {
-    creationData: eventData.creationData,
-  };
-};
-
-export default connect(mapStateToProps)(PlaceAddressModal);
+export default PlaceAddressModal;

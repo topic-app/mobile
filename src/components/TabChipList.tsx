@@ -33,7 +33,6 @@ const TabChipList = <T extends ListItem>({
   return (
     <View>
       <SectionList
-        style={{ paddingTop: 13, paddingBottom: 8 }}
         horizontal
         stickySectionHeadersEnabled={false}
         keyboardShouldPersistTaps="handled"
@@ -49,6 +48,8 @@ const TabChipList = <T extends ListItem>({
             containerStyle={{
               marginLeft: index === 0 ? 15 : 5,
               marginRight: index === sections.length - 1 ? 15 : 5,
+              marginTop: 13,
+              marginBottom: 9,
             }}
           />
         )}

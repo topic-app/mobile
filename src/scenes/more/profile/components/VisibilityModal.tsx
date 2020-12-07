@@ -1,14 +1,14 @@
 import React from 'react';
-import { Divider, Button, RadioButton, List, ProgressBar } from 'react-native-paper';
 import { View, Platform } from 'react-native';
+import { Divider, Button, RadioButton, List, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps } from '@ts/types';
 import { ErrorMessage, Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updateData } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
+import { updateData } from '@redux/actions/data/profile';
+import getStyles from '@styles/Styles';
+import { ModalProps, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 type VisibilityModalProps = ModalProps & {
   isInitialPublic: boolean;
@@ -61,6 +61,7 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
           left={() =>
             Platform.OS !== 'ios' && (
               <RadioButton
+                value=""
                 color={colors.primary}
                 status={isPublic ? 'checked' : 'unchecked'}
                 onPress={() => {
@@ -72,6 +73,7 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
           right={() =>
             Platform.OS === 'ios' && (
               <RadioButton
+                value=""
                 color={colors.primary}
                 status={isPublic ? 'checked' : 'unchecked'}
                 onPress={() => {
@@ -90,6 +92,7 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
           left={() =>
             Platform.OS !== 'ios' && (
               <RadioButton
+                value=""
                 color={colors.primary}
                 status={!isPublic ? 'checked' : 'unchecked'}
                 onPress={() => {
@@ -101,6 +104,7 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
           right={() =>
             Platform.OS === 'ios' && (
               <RadioButton
+                value=""
                 color={colors.primary}
                 status={!isPublic ? 'checked' : 'unchecked'}
                 onPress={() => {
@@ -111,8 +115,6 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
           }
         />
         <Divider />
-      </View>
-      <View>
         <View style={styles.contentContainer}>
           <Button
             mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
@@ -128,10 +130,10 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const { account } = state;
   return {
-    isInitialPublic: account.accountInfo?.user?.data?.public,
+    isInitialPublic: account.accountInfo?.user?.data?.public || false,
     state: account.state,
   };
 };

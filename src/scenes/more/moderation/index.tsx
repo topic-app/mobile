@@ -1,12 +1,21 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
+import { MoreScreenNavigationProp } from '../index';
 import ModerationList from './views/List';
 
 export type ModerationStackParams = {
   List: undefined;
 };
+
+export type ModerationScreenNavigationProp<
+  K extends keyof ModerationStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<ModerationStackParams, K>,
+  MoreScreenNavigationProp<'Moderation'>
+>;
 
 const Stack = createNativeStackNavigator<ModerationStackParams>();
 

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
@@ -15,24 +16,21 @@ import { useTheme } from '@utils/index';
 import getPetitionStyles from '../styles/Styles';
 import MultiVote from './MultiVote';
 
-type PetitionNoGoalProps = { voteData: PetitionVoteDataNoGoal };
+type PetitionNoGoalProps = { signatures: number };
 
-const PetitionNoGoal: React.FC<PetitionNoGoalProps> = ({ voteData }) => {
+const PetitionNoGoal: React.FC<PetitionNoGoalProps> = ({ signatures }) => {
   const petitionStyles = getPetitionStyles(useTheme());
   return (
-    <Text style={[petitionStyles.signText, { fontWeight: 'bold' }]}>
-      {voteData.signatures} signatures
-    </Text>
+    <Text style={[petitionStyles.signText, { fontWeight: 'bold' }]}>{signatures} signatures</Text>
   );
 };
 
-type PetitionGoalProps = { voteData: PetitionVoteDataGoal };
+type PetitionGoalProps = { signatures: number; goals: number[] };
 
-const PetitionGoal: React.FC<PetitionGoalProps> = ({ voteData }) => {
+const PetitionGoal: React.FC<PetitionGoalProps> = ({ signatures, goals }) => {
   const theme = useTheme();
   const { colors } = theme;
   const petitionStyles = getPetitionStyles(theme);
-  const { signatures, goals } = voteData;
 
   // TODO: Intermediate goals
   const endGoal = goals[goals.length - 1];
@@ -41,13 +39,8 @@ const PetitionGoal: React.FC<PetitionGoalProps> = ({ voteData }) => {
     // TODO: Fix offset, not displaying properly on high density devices
     const offset = vote.toString().length * 2.5;
     // Return left spacing in percentage while making sure it stays in between 0% and 90%
-    let spacing = Math.round((vote / endGoal) * 100 - offset);
-    if (spacing < 0) {
-      spacing = 0;
-    } else if (spacing > 90) {
-      spacing = 90;
-    }
-    return `${spacing}$`;
+    const spacing = Math.round((vote / endGoal) * 100 - offset);
+    return `${_.clamp(spacing, 0, 90)}%`;
   };
 
   return (
@@ -60,7 +53,7 @@ const PetitionGoal: React.FC<PetitionGoalProps> = ({ voteData }) => {
         <Text style={[petitionStyles.voteLabel, { left: getLeftSpacing(signatures) }]}>
           {signatures}
         </Text>
-        <Text style={{ position: 'absolute', right: 0, top: -24, color: colors.subtitle }}>
+        <Text style={{ position: 'absolute', right: 0, top: -24, color: colors.subtext }}>
           {endGoal}
         </Text>
       </View>
@@ -71,23 +64,23 @@ const PetitionGoal: React.FC<PetitionGoalProps> = ({ voteData }) => {
   );
 };
 
-type PetitionMultipleProps = { voteData: PetitionVoteDataMultiple };
+type PetitionMultipleProps = { multiple: PetitionVoteDataMultiple['multiple'] };
 
-const PetitionMultiple: React.FC<PetitionMultipleProps> = ({ voteData }) => {
+const PetitionMultiple: React.FC<PetitionMultipleProps> = ({ multiple }) => {
   const { colors } = useTheme();
-  return <MultiVote items={voteData.multiple} barColors={Object.values(colors.solid)} />;
+  return <MultiVote items={multiple} barColors={Object.values(colors.solid)} />;
 };
 
-type PetitionDoubleProps = { voteData: PetitionVoteDataDouble };
+type PetitionDoubleProps = { double: PetitionVoteDataDouble['double'] };
 
-const PetitionDouble: React.FC<PetitionDoubleProps> = ({ voteData }) => {
+const PetitionDouble: React.FC<PetitionDoubleProps> = ({ double }) => {
   const { colors } = useTheme();
   return (
     <View>
       <MultiVote
         items={[
-          { title: 'Pour', votes: voteData.double.for },
-          { title: 'Contre', votes: voteData.double.against },
+          { title: 'Pour', votes: double.for },
+          { title: 'Contre', votes: double.against },
         ]}
         barColors={[colors.valid, colors.error]}
         showAllLabels
@@ -95,6 +88,8 @@ const PetitionDouble: React.FC<PetitionDoubleProps> = ({ voteData }) => {
     </View>
   );
 };
+
+const PetitionUnknownData: React.FC = () => <Text>Données Introuvables</Text>;
 
 type PetitionChartProps = {
   type: Petition['type'];
@@ -104,17 +99,30 @@ type PetitionChartProps = {
 const PetitionChart: React.FC<PetitionChartProps> = ({ type, voteData }) => {
   switch (type) {
     case 'sign':
-      return <PetitionNoGoal voteData={voteData} />;
+      // NOTE: cannot be !voteData.signatures since signatures could be 0
+      if (voteData.signatures === undefined) {
+        return <PetitionUnknownData />;
+      }
+      return <PetitionNoGoal signatures={voteData.signatures} />;
     case 'goal':
-      return <PetitionGoal voteData={voteData} />;
+      if (voteData.signatures === undefined || !voteData.goals) {
+        return <PetitionUnknownData />;
+      }
+      return <PetitionGoal signatures={voteData.signatures} goals={voteData.goals} />;
     case 'opinion':
-      return <PetitionDouble voteData={voteData} />;
+      if (!voteData.double) {
+        return <PetitionUnknownData />;
+      }
+      return <PetitionDouble double={voteData.double} />;
     case 'multiple':
-      return <PetitionMultiple voteData={voteData} />;
+      if (!voteData.multiple) {
+        return <PetitionUnknownData />;
+      }
+      return <PetitionMultiple multiple={voteData.multiple} />;
     default:
       return (
         <View>
-          <Text>Unknown Petition Type</Text>
+          <Text>Type de pétition inconnu</Text>
         </View>
       );
   }

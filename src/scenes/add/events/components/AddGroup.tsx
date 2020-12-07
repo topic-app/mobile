@@ -4,18 +4,18 @@ import { Button, RadioButton, HelperText, List, Text, Card } from 'react-native-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Account, State } from '@ts/types';
 import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { Account, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & { account: Account };
 
 const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
-  const [group, setGroup] = React.useState(null);
+  const [group, setGroup] = React.useState<string | null>(null);
   const [showError, setError] = React.useState(false);
 
   const submit = () => {
@@ -59,6 +59,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
               Platform.OS !== 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={group === g._id ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {
@@ -73,6 +74,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
               Platform.OS === 'ios' ? (
                 <View style={{ justifyContent: 'center' }}>
                   <RadioButton
+                    value=""
                     status={group === g._id ? 'checked' : 'unchecked'}
                     color={colors.primary}
                     onPress={() => {
@@ -94,8 +96,8 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
         </HelperText>
         {groupsWithPermission.length !== account.groups.length && (
           <Text>
-            Certains groupes n'apparaissent pas car vous ne pouvez pas écrire d'évènements pour ces
-            groupes
+            Certains groupes n&apos;apparaissent pas car vous ne pouvez pas écrire d&apos;évènements
+            pour ces groupes
           </Text>
         )}
       </View>
@@ -103,7 +105,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => submit()}
+          onPress={submit}
           style={{ flex: 1 }}
         >
           Suivant

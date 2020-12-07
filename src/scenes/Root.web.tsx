@@ -1,17 +1,24 @@
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+  NavigationProp,
+  useLinkProps,
+  Link,
+  NavigatorScreenParams,
+  CompositeNavigationProp,
+} from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { NavigationProp, useLinkProps, Link } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { State, Account } from '@ts/types';
-import { useTheme } from '@utils/index';
-import getLayout from '@utils/getLayout';
+import { useTheme, useLayout } from '@utils/index';
 
+import { AppScreenNavigationProp } from '..';
+import { NativeStackNavigationProp } from '../utils/stack';
+import MainStackNavigator, { MainStackParams } from './Main';
 import AndroidNavigator from './Root.android';
-import MainStackNavigator from './Main';
 
 type TabItemProps = {
   label: string;
@@ -35,8 +42,8 @@ const TabItem: React.FC<TabItemProps> = ({ label, onPress, icon, active }) => {
   );
 };
 
-type BottomTabProps = {
-  navigation: NavigationProp<any, any>;
+type DrawerContentProps = {
+  navigation: any;
   drawerExpanded: boolean;
   setDrawerExpanded: (state: boolean) => any;
   account: Account;
@@ -50,13 +57,13 @@ type NavRoute = [
   },
 ];
 
-const DrawerContent: React.FC<BottomTabProps> = ({
+const DrawerContent: React.FC<DrawerContentProps> = ({
   navigation,
   drawerExpanded,
   setDrawerExpanded,
   account,
 }) => {
-  let items = [
+  const items = [
     {
       key: 'articles',
       type: 'button',
@@ -185,6 +192,8 @@ const DrawerContent: React.FC<BottomTabProps> = ({
             );
           } else if (item.type === 'divider') {
             return <Divider style={{ marginVertical: 10 }} />;
+          } else {
+            return null;
           }
         })}
       </View>
@@ -201,13 +210,21 @@ const DrawerContent: React.FC<BottomTabProps> = ({
               icon="account-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               label="Se connecter"
-              {...useLinkProps({ to: '/auth/connexion' })}
+              onPress={() =>
+                navigation.navigate('Auth', {
+                  screen: 'Login',
+                })
+              }
             />
             <PaperDrawer.Item
               icon="account-plus-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               label="Créer un compte"
-              {...useLinkProps({ to: '/auth/creation' })}
+              onPress={() =>
+                navigation.navigate('Auth', {
+                  screen: 'Create',
+                })
+              }
             />
           </View>
         )}
@@ -231,14 +248,21 @@ const mapStateToProps = (state: State) => {
 const ReduxDrawerContent = connect(mapStateToProps)(DrawerContent);
 
 export type RootNavParams = {
-  Main: undefined;
+  Main: NavigatorScreenParams<MainStackParams>;
 };
+
+export type RootScreenNavigationProp<K extends keyof RootNavParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<RootNavParams, K>,
+  AppScreenNavigationProp<'Root'>
+>;
 
 const Drawer = createDrawerNavigator<RootNavParams>();
 
 function RootNavigator() {
-  if (getLayout() === 'desktop') {
-    let [drawerExpanded, setDrawerExpanded] = React.useState(false);
+  if (useLayout() === 'desktop') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [drawerExpanded, setDrawerExpanded] = React.useState(false);
+
     return (
       <Drawer.Navigator
         initialRouteName="Main"

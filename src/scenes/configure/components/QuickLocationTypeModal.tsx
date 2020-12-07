@@ -3,10 +3,10 @@ import { View, Platform, FlatList } from 'react-native';
 import { Divider, Button, RadioButton, List } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, ArticleQuickItem, State } from '@ts/types';
 import { Modal } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { ModalProps, ArticleQuickItem, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 type QuickTypeModalProps = ModalProps & {
   next: (type: string) => void;
@@ -58,7 +58,6 @@ const QuickTypeModal: React.FC<QuickTypeModalProps> = ({
             <View>
               <List.Item
                 title={item.title}
-                description={item.description}
                 onPress={
                   item.disabled
                     ? undefined
@@ -70,6 +69,7 @@ const QuickTypeModal: React.FC<QuickTypeModalProps> = ({
                 left={() =>
                   Platform.OS !== 'ios' && (
                     <RadioButton
+                      value=""
                       disabled={item.disabled}
                       color={colors.primary}
                       status={item.type === currentType ? 'checked' : 'unchecked'}
@@ -86,6 +86,7 @@ const QuickTypeModal: React.FC<QuickTypeModalProps> = ({
                 right={() =>
                   Platform.OS === 'ios' && (
                     <RadioButton
+                      value=""
                       disabled={item.disabled}
                       color={colors.primary}
                       status={item.type === currentType ? 'checked' : 'unchecked'}

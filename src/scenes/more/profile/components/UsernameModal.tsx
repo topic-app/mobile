@@ -1,14 +1,15 @@
 import React from 'react';
-import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { View, Platform, TextInput } from 'react-native';
+import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State } from '@ts/types';
 import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
-import { useTheme, request } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updateUsername } from '@redux/actions/data/profile';
 import { fetchAccount } from '@redux/actions/data/account';
+import { updateUsername } from '@redux/actions/data/profile';
+import getStyles from '@styles/Styles';
+import { ModalProps, State } from '@ts/types';
+import { useTheme, request } from '@utils/index';
+
 import getArticleStyles from '../styles/Styles';
 
 type UsernameModalProps = ModalProps & {
@@ -21,7 +22,7 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
   const profileStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  const usernameInput = React.useRef(null);
+  const usernameInput = React.useRef<TextInput>(null);
 
   const [usernameValidation, setValidation] = React.useState({
     valid: false,
@@ -30,9 +31,10 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
   });
 
   async function validateUsernameInput(username: string) {
-    let validation: { valid: boolean; error: any; message?: string } = {
+    let validation: { valid: boolean; error: any; message: string } = {
       valid: false,
       error: false,
+      message: '',
     };
 
     if (username !== '') {
@@ -63,7 +65,7 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
           };
         }
         if (result?.data?.usernameExists === false) {
-          validation = { valid: true, error: false };
+          validation = { valid: true, error: false, message: '' };
         } else {
           validation = {
             valid: false,
@@ -99,49 +101,51 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      {state.updateProfile.loading && <ProgressBar indeterminate />}
-      {state.updateProfile.error && (
-        <ErrorMessage
-          type="axios"
-          strings={{
-            what: 'la modification du compte',
-            contentSingular: 'Le compte',
-          }}
-          error={state.updateProfile.error}
-          retry={update}
-        />
-      )}
       <View>
-        <View style={profileStyles.inputContainer}>
-          <TextInput
-            ref={usernameInput}
-            autoFocus
-            placeholder="Nouveau nom d'utilisateur"
-            placeholderTextColor={colors.disabled}
-            style={profileStyles.borderlessInput}
-            value={username}
-            onChangeText={(text) => {
-              setUsername(text);
-              preValidateUsernameInput(text);
+        {state.updateProfile.loading && <ProgressBar indeterminate />}
+        {state.updateProfile.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'la modification du compte',
+              contentSingular: 'Le compte',
             }}
-            onSubmitEditing={update}
+            error={state.updateProfile.error}
+            retry={update}
           />
-          <CollapsibleView collapsed={!usernameValidation.error}>
-            <HelperText type="error" visible>
-              {usernameValidation.message}
-            </HelperText>
-          </CollapsibleView>
-        </View>
-        <Divider />
-        <View style={styles.contentContainer}>
-          <Button
-            mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-            color={colors.primary}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={update}
-          >
-            Confirmer
-          </Button>
+        )}
+        <View>
+          <View style={profileStyles.inputContainer}>
+            <TextInput
+              ref={usernameInput}
+              autoFocus
+              placeholder="Nouveau nom d'utilisateur"
+              placeholderTextColor={colors.disabled}
+              style={profileStyles.borderlessInput}
+              value={username}
+              onChangeText={(text) => {
+                setUsername(text);
+                preValidateUsernameInput(text);
+              }}
+              onSubmitEditing={update}
+            />
+            <CollapsibleView collapsed={!usernameValidation.error}>
+              <HelperText type="error" visible>
+                {usernameValidation.message}
+              </HelperText>
+            </CollapsibleView>
+          </View>
+          <Divider />
+          <View style={styles.contentContainer}>
+            <Button
+              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+              color={colors.primary}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={update}
+            >
+              Confirmer
+            </Button>
+          </View>
         </View>
       </View>
     </Modal>

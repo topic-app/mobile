@@ -4,11 +4,11 @@ import { Button, RadioButton, HelperText, List, Text, Card } from 'react-native-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Account, State } from '@ts/types';
 import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { Account, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -17,6 +17,7 @@ type ArticleAddPageGroupProps = StepperViewPageProps & { account: Account };
 const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account }) => {
   const [group, setGroup] = React.useState<string | null>(null);
   const [showError, setError] = React.useState(false);
+  const theme = useTheme();
 
   const submit = () => {
     if (group !== null) {
@@ -27,7 +28,6 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
     }
   };
 
-  const theme = useTheme();
   const { colors } = theme;
   const articleStyles = getAuthStyles(theme);
   const styles = getStyles(theme);

@@ -3,6 +3,10 @@ import { View, Platform } from 'react-native';
 import { Button, HelperText, List, Text, Checkbox, Divider, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import {
   Account,
   State,
@@ -11,12 +15,10 @@ import {
   School,
   ReduxLocation,
   RequestState,
+  GroupRolePermission,
+  GroupRole,
 } from '@ts/types';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -45,8 +47,8 @@ const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
               <Checkbox {...props} />
             </View>
           )
-        : null,
-    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
+        : undefined,
+    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : undefined,
   };
 };
 
@@ -65,6 +67,10 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
   const [global, setGlobal] = React.useState(false);
   const [showError, setError] = React.useState(false);
 
+  const theme = useTheme();
+  const { colors } = theme;
+  const articleStyles = getAuthStyles(theme);
+
   const submit = () => {
     if (schools.length !== 0 || departments.length !== 0 || global) {
       updateArticleCreationData({ location: { schools, departments, global } });
@@ -74,16 +80,12 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
     }
   };
 
-  const theme = useTheme();
-  const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
-
   const selectedGroup = account.groups?.find((g) => g._id === creationData.group);
   const selectedGroupLocation =
     selectedGroup &&
     selectedGroup.roles
-      ?.find((r) => r._id === selectedGroup.membership.role)
-      ?.permissions.find((p) => p.permission === 'article.add')?.scope;
+      ?.find((r: GroupRole) => r._id === selectedGroup.membership.role)
+      ?.permissions.find((p: GroupRolePermission) => p.permission === 'article.add')?.scope;
 
   const toggle = (i: { _id: string }, func: Function, data: string[]) => {
     if (data.includes(i._id)) {

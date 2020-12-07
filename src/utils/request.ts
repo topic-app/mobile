@@ -1,9 +1,11 @@
 /* eslint-disable no-throw-literal */
 import { AxiosResponse } from 'axios';
+
 import Store from '@redux/store';
 
-import logger from './logger';
 import axios from './axiosInstance';
+import logger from './logger';
+import { Config } from '../constants';
 
 type ApiDataType = {
   success: boolean;
@@ -22,7 +24,13 @@ async function request(
     method,
     endpoint,
     params,
+    sent: true,
   });
+  if (Store.getState().preferences.useDevServer) {
+    axios.defaults.baseURL = Config.api.devUrl;
+  } else {
+    axios.defaults.baseURL = Config.api.baseUrl;
+  }
   const headers = auth
     ? { Authorization: `Bearer ${Store.getState().account.accountInfo?.accountToken}` }
     : {};
@@ -110,7 +118,7 @@ async function request(
     });
     throw { success: false, reason: 'success', status: res?.status, error: null, res };
   }
-  logger.error(`Request failed to ${endpoint} because of missing method ${method}`);
+  logger.warn(`Request failed to ${endpoint} because of missing method ${method}`);
   throw { success: false, reason: 'method', status: null, error: null };
 }
 

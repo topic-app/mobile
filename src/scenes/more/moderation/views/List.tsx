@@ -1,21 +1,20 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, Account } from '@ts/types';
 import { CustomTabView, TranslucentStatusBar, CustomHeaderBar } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { State, Account } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { ModerationStackParams } from '../index';
 import ModerationArticles from '../components/ModerationArticles';
-import ModerationGroups from '../components/ModerationGroups';
 import ModerationEvents from '../components/ModerationEvents';
+import ModerationGroups from '../components/ModerationGroups';
+import type { ModerationScreenNavigationProp } from '../index';
 
 type Props = {
-  navigation: StackNavigationProp<ModerationStackParams, 'List'>;
+  navigation: ModerationScreenNavigationProp<'List'>;
   account: Account;
 };
 

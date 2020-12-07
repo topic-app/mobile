@@ -1,34 +1,8 @@
 import Store from '@redux/store';
+import { AppThunk, UPDATE_ARTICLES_STATE, ArticleCreationData } from '@ts/redux';
 import { request } from '@utils/index';
-import { UPDATE_ARTICLES_STATE } from '@ts/redux';
-import { State } from '@ts/types';
-import { reportCreator, approveCreator } from './ActionCreator';
 
-type ArticleAddProps = {
-  title: string;
-  date: Date;
-  location: {
-    schools: string[];
-    departments: string[];
-    global: boolean;
-  };
-  group: string;
-  image: {
-    image: string;
-    thumbnails: {
-      small?: boolean;
-      medium?: boolean;
-      large?: boolean;
-    };
-  };
-  summary: string;
-  parser: 'markdown' | 'plaintext';
-  data: string;
-  preferences?: {
-    comments?: boolean;
-  };
-  tags: string[];
-};
+import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
 
 function articleAddCreator({
   title,
@@ -41,8 +15,8 @@ function articleAddCreator({
   data,
   preferences,
   tags,
-}: ArticleAddProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: ArticleCreationData): AppThunk<Promise<{ _id: string }>> {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_ARTICLES_STATE,
@@ -87,7 +61,7 @@ function articleAddCreator({
               },
             },
           });
-          resolve(result.data);
+          resolve(result.data as { _id: string });
         })
         .catch((error) => {
           dispatch({
@@ -106,12 +80,12 @@ function articleAddCreator({
   };
 }
 
-async function articleAdd(data: ArticleAddProps) {
-  return await Store.dispatch(articleAddCreator(data));
+async function articleAdd(data: ArticleCreationData) {
+  return Store.dispatch(articleAddCreator(data));
 }
 
 async function articleVerificationApprove(id: string) {
-  return await Store.dispatch(
+  await Store.dispatch(
     approveCreator({
       url: 'articles/verification/approve',
       stateUpdate: UPDATE_ARTICLES_STATE,
@@ -133,4 +107,15 @@ async function articleReport(articleId: string, reason: string) {
   );
 }
 
-export { articleAdd, articleReport, articleVerificationApprove };
+async function articleDelete(id: string) {
+  await Store.dispatch(
+    deleteCreator({
+      id,
+      paramName: 'articleId',
+      url: 'articles/delete',
+      stateUpdate: UPDATE_ARTICLES_STATE,
+    }),
+  );
+}
+
+export { articleAdd, articleReport, articleVerificationApprove, articleDelete };

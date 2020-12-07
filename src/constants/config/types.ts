@@ -1,16 +1,7 @@
-import {
-  Account,
-  ArticleListItem,
-  ArticlePrefs,
-  ArticleQuickItem,
-  EventListItem,
-  EventPrefs,
-  EventQuickItem,
-  LocationList,
-  Preferences,
-} from '@ts/types';
-import { LogLevel } from '@utils/logger';
 import { DeepPartial } from 'redux';
+
+import { AccountState, ArticlesState, EventsState, LocationList, Preferences } from '@ts/types';
+import { LogLevel } from '@utils/logger';
 
 export type AppConfig = {
   logger: {
@@ -23,14 +14,23 @@ export type AppConfig = {
   };
   api: {
     baseUrl: string;
+    devUrl: string;
     timeout: number;
+  };
+  google: {
+    youtubeKey: string;
+    youtubePlaceholder: string;
   };
   cdn: {
     baseUrl: string;
+    uploadUrl: string;
     timeout: number;
     image: {
       defaultSize: string;
     };
+  };
+  layout: {
+    dualMinWidth: number;
   };
   maps: {
     baseUrl: string;
@@ -55,20 +55,12 @@ export type AppConfig = {
     digestWeb: 'SHA-1' | 'SHA-224' | 'SHA-256' | 'SHA-384' | 'SHA-512';
     keylen: number;
   };
-  defaults: {
-    preferences: Preferences;
-    articles: {
-      lists: ArticleListItem[];
-      quicks: ArticleQuickItem[];
-      prefs: ArticlePrefs;
-    };
-    events: {
-      lists: EventListItem[];
-      quicks: EventQuickItem[];
-      prefs: EventPrefs;
-    };
-    location: Omit<LocationList, 'state'>;
-    account: Omit<Account, 'state'>;
+  seedDb: {
+    preferences: Partial<Preferences>;
+    articles: Partial<ArticlesState>;
+    events: Partial<EventsState>;
+    location: Partial<LocationList>;
+    account: Omit<AccountState, 'state'> | {};
   };
 };
 

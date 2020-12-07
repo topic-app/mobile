@@ -1,8 +1,8 @@
+import moment from 'moment';
 import React from 'react';
 import { View, Dimensions } from 'react-native';
 import { Text, Subheading } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import moment from 'moment';
 
 import { Event } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
@@ -16,9 +16,9 @@ const EventEntry: React.FC<{ event: Event }> = ({ event }) => {
       <Text>{event.title}</Text>
       <Text>
         <Icon name="clock" />
-        {moment(event.start).format('HH:mm')}
+        {moment(event.duration.start).format('HH:mm')}
         <Icon name="chevron-right" />
-        {moment(event.end).format('HH:mm')}
+        {moment(event.duration.end).format('HH:mm')}
       </Text>
       {event.summary ? <Text style={{ color: colors.disabled }}>{event.summary}</Text> : null}
     </View>
@@ -38,16 +38,17 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
   if (Array.isArray(program) && program.length > 0) {
     const elements = program.map((p) => {
       return {
-        start: p?.duration?.start,
-        end: p?.duration?.end,
-        title: p?.title,
-        summary: p?.summary || '',
+        id: p._id,
+        title: p.title,
+        image: p.image,
+        address: p.address,
+        start: p.duration.start,
+        end: p.duration.end,
       };
     });
 
-    const startTime =
-      Math.min(...elements.map((e) => Math.floor(moment(e?.start).format('HH')))) - 1;
-    const endTime = Math.max(...elements.map((e) => Math.floor(moment(e?.end).format('HH')))) + 1;
+    const startTime = Math.min(...elements.map((e) => moment(e.start).hour())) - 1;
+    const endTime = Math.min(...elements.map((e) => moment(e.end).hour())) + 1;
 
     let { width, height } = getLayout();
 

@@ -1,11 +1,13 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import ArticleParams from './views/Params';
+import { ParamsScreenNavigationProp } from '../index';
 import ArticleEditParams from './views/EditParams';
+import ArticleParams from './views/Params';
 
-export type ArticleConfigureStackParams = {
+export type ArticleParamsStackParams = {
   Params: undefined;
   EditParams: {
     type: 'schools' | 'departements' | 'regions' | 'other';
@@ -13,9 +15,16 @@ export type ArticleConfigureStackParams = {
   };
 };
 
-const Stack = createNativeStackNavigator<ArticleConfigureStackParams>();
+export type ArticleParamsScreenNavigationProp<
+  K extends keyof ArticleParamsStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<ArticleParamsStackParams, K>,
+  ParamsScreenNavigationProp<'Article'>
+>;
 
-function ArticleConfigureStackNavigator() {
+const Stack = createNativeStackNavigator<ArticleParamsStackParams>();
+
+function ArticleParamsStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Params" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Params" component={ArticleParams} />
@@ -24,4 +33,4 @@ function ArticleConfigureStackNavigator() {
   );
 }
 
-export default ArticleConfigureStackNavigator;
+export default ArticleParamsStackNavigator;

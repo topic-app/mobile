@@ -1,15 +1,22 @@
+import { ApiAction, AppThunk } from '@ts/redux';
 import { request } from '@utils/index';
 
-type reportCreatorProps = {
+type ReportCreatorParams = {
   contentId: string;
   contentIdName: string;
   reason: string;
   url: string;
-  stateUpdate: string;
+  stateUpdate: ApiAction.UpdateStateType;
 };
 
-function reportCreator({ contentId, contentIdName, reason, url, stateUpdate }: reportCreatorProps) {
-  return (dispatch: (action: any) => void) => {
+function reportCreator({
+  contentId,
+  contentIdName,
+  reason,
+  url,
+  stateUpdate,
+}: ReportCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: stateUpdate,
@@ -60,15 +67,15 @@ function reportCreator({ contentId, contentIdName, reason, url, stateUpdate }: r
   };
 }
 
-type approveCreator = {
+type ApproveCreatorParams = {
   url: string;
-  stateUpdate: string;
   id: string;
   paramName: string;
+  stateUpdate: ApiAction.UpdateStateType;
 };
 
-function approveCreator({ url, stateUpdate, id, paramName }: approveCreator) {
-  return (dispatch: (action: any) => void) => {
+function approveCreator({ url, stateUpdate, id, paramName }: ApproveCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: stateUpdate,
@@ -118,4 +125,62 @@ function approveCreator({ url, stateUpdate, id, paramName }: approveCreator) {
   };
 }
 
-export { reportCreator, approveCreator };
+type deleteCreatorParams = {
+  url: string;
+  id: string;
+  paramName: string;
+  stateUpdate: ApiAction.UpdateStateType;
+};
+
+function deleteCreator({ url, stateUpdate, id, paramName }: deleteCreatorParams): AppThunk {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: stateUpdate,
+        data: {
+          delete: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        url,
+        'post',
+        {
+          [paramName]: id,
+        },
+        true,
+      )
+        .then((result) => {
+          dispatch({
+            type: stateUpdate,
+            data: {
+              delete: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve(result.data);
+        })
+        .catch((error) => {
+          dispatch({
+            type: stateUpdate,
+            data: {
+              delete: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
+export { reportCreator, approveCreator, deleteCreator };

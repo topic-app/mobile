@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-function getUserStyles(theme) {
-  const { colors } = theme;
+import { Theme } from '@ts/types';
+
+function getUserStyles(_theme: Theme) {
   return StyleSheet.create({});
 }
 

@@ -1,9 +1,21 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
-import HomeTwoNavigator from './HomeTwo';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-const Stack = createNativeStackNavigator();
+import { MainScreenNavigationProp } from '../Main';
+import HomeTwoNavigator, { HomeTwoNavParams } from './HomeTwo';
+
+export type HomeOneNavParams = {
+  Home2: NavigatorScreenParams<HomeTwoNavParams>;
+};
+
+export type HomeOneScreenNavigationProp<K extends keyof HomeOneNavParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<HomeOneNavParams, K>,
+  MainScreenNavigationProp<'Home1'>
+>;
+
+const Stack = createNativeStackNavigator<HomeOneNavParams>();
 
 function HomeOneNavigator() {
   return (

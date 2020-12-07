@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import 'mock-require-assets';
 
 import Module from 'module';

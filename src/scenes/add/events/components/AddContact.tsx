@@ -5,25 +5,23 @@ import { connect } from 'react-redux';
 import { useTheme } from '@utils/index';
 import { Account, State, EventCreationData, EventPlace, User } from '@ts/types';
 import { StepperViewPageProps, InlineCard } from '@components/index';
-import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-
-import UserSelectModal from './UserSelectModal';
-import ContactAddModal from './ContactAddModal';
+import getStyles from '@styles/Styles';
+import { Account, State, UserPreload } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
+import ContactAddModal from './ContactAddModal';
+import UserSelectModal from './UserSelectModal';
 
 type Props = StepperViewPageProps & {
   account: Account;
-  creationData: EventCreationData;
-  navigation: any;
 };
 
 const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
-  const [showError, setError] = React.useState(false);
   const [isAddUserModalVisible, setAddUserModalVisible] = React.useState(false);
   const [isContactAddModalVisible, setContactAddModalVisible] = React.useState(false);
-  const [eventOrganizers, setEventOrganizers] = React.useState<User[]>([]);
+  const [eventOrganizers, setEventOrganizers] = React.useState<UserPreload[]>([]);
   const [customContact, setCustomContact] = React.useState<CustomContactType[]>([]);
 
   const theme = useTheme();
@@ -65,7 +63,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
     message: '',
   });
 
-  const addEventOrganizer = (user: User) => {
+  const addEventOrganizer = (user: UserPreload) => {
     const previousEventIds = eventOrganizers.map((p) => p._id);
     if (!previousEventIds.includes(user._id)) {
       setEventOrganizers([...eventOrganizers, user]);
@@ -125,7 +123,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
         phone: phoneVal,
         email: emailVal,
         contact: customContact,
-        organizers: eventOrganizers,
+        members: eventOrganizers.map((u) => u._id),
       });
       next();
     } else {

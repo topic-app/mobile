@@ -8,7 +8,7 @@ import getStyles from '../styles/Styles';
 
 type CustomImageProps = {
   image?: ImageType;
-  imageSize: 'small' | 'medium' | 'large';
+  imageSize: 'small' | 'medium' | 'large' | 'extralarge' | 'full';
   height: number;
   width: number;
   style?: object;

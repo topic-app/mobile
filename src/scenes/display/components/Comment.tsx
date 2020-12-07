@@ -1,13 +1,13 @@
+import moment from 'moment';
 import React from 'react';
 import { View, Platform, TouchableOpacity } from 'react-native';
 import { Text, IconButton, Menu } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
-import moment from 'moment';
 
-import { Comment } from '@ts/types';
 import { Avatar, Content } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { Comment } from '@ts/types';
+import { useTheme } from '@utils/index';
+import { NativeStackNavigationProp } from '@utils/stack';
 
 import getCommentStyles from './styles/Styles';
 
@@ -15,7 +15,7 @@ type CommentInlineCardProps = {
   comment: Comment;
   report: (id: string) => any;
   loggedIn: boolean;
-  navigation: StackNavigationProp<any, any>;
+  navigation: NativeStackNavigationProp<any, any>;
 };
 
 const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
@@ -69,7 +69,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
             <Text style={commentStyles.username}> · {moment(date).fromNow()}</Text>
           </View>
           <Content data={content.data} parser={content.parser} />
-          {/* add a "View Replies" button if replies exist */}
+          {/* TODO: add a "View Replies" button if replies exist */}
         </View>
         {loggedIn && (
           <View style={{ alignItems: 'flex-end' }}>

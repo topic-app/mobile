@@ -1,18 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import { Text, Title, Subheading, Divider, Button, List, ProgressBar } from 'react-native-paper';
-import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import {
-  Account,
-  Address,
-  State,
-  ReduxLocation as OldReduxLocation,
-  SchoolPreload,
-  DepartmentPreload,
-} from '@ts/types';
 import {
   Avatar,
   ErrorMessage,
@@ -20,17 +12,27 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
-import { useTheme, logger } from '@utils/index';
+import { fetchAccount, logout, deleteAccount } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
-import { fetchAccount, logout } from '@redux/actions/data/account';
+import {
+  Account,
+  Address,
+  State,
+  ReduxLocation as OldReduxLocation,
+  SchoolPreload,
+  DepartmentPreload,
+  AccountRequestState,
+  User,
+} from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import { ProfileStackParams } from '../index';
-import ProfileItem from '../components/ProfileItem';
-import VisibilityModal from '../components/VisibilityModal';
-import NameModal from '../components/NameModal';
-import UsernameModal from '../components/UsernameModal';
 import EmailModal from '../components/EmailModal';
+import NameModal from '../components/NameModal';
 import PasswordModal from '../components/PasswordModal';
+import ProfileItem from '../components/ProfileItem';
+import UsernameModal from '../components/UsernameModal';
+import VisibilityModal from '../components/VisibilityModal';
+import { ProfileScreenNavigationProp, ProfileStackParams } from '../index';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
@@ -41,7 +43,7 @@ function getAddressString(address: Address['address']) {
   return null;
 }
 
-function genName({ data, info }) {
+function genName({ data, info }: { data: User['data']; info: User['info'] }) {
   if (data.firstName && data.lastName) {
     return `${data.firstName} ${data.lastName}`;
   }
@@ -56,10 +58,11 @@ type ReduxLocation = OldReduxLocation & {
 type ProfileProps = {
   account: Account;
   location: ReduxLocation;
-  navigation: StackNavigationProp<ProfileStackParams, 'Profile'>;
+  state: AccountRequestState;
+  navigation: ProfileScreenNavigationProp<'Profile'>;
 };
 
-const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
+const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -69,6 +72,30 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
   const [isUsernameVisible, setUsernameVisible] = React.useState(false);
   const [isEmailVisible, setEmailVisible] = React.useState(false);
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
+
+  if (!account.loggedIn) return <Text>Non autorisé</Text>;
+
+  const deleteAccountFunc = () => {
+    deleteAccount().then(() =>
+      Alert.alert(
+        'Vérifiez vos emails',
+        `Un lien de confirmation à été envoyé à ${account.accountInfo?.user?.sensitiveData?.email}.`,
+        [{ text: 'Fermer' }],
+        { cancelable: true },
+      ),
+    );
+  };
+
+  const exportAccountFunc = () => {
+    deleteAccount().then(() =>
+      Alert.alert(
+        'Vérifiez vos emails',
+        `Un lien de confirmation à été envoyé à ${account.accountInfo?.user?.sensitiveData?.email}.`,
+        [{ text: 'Fermer' }],
+        { cancelable: true },
+      ),
+    );
+  };
 
   return (
     <View style={styles.page}>
@@ -98,15 +125,15 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
       <ScrollView>
         <View style={[styles.contentContainer, { marginTop: 20 }]}>
           <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-            <Avatar size={120} avatar={account.accountInfo.user.info.avatar} />
+            <Avatar size={120} avatar={account.accountInfo?.user.info.avatar} />
           </View>
           <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
-            {account.accountInfo.user.data.public ? (
+            {account.accountInfo?.user.data.public ? (
               <View style={{ alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Title>
                     {genName(account.accountInfo.user) ||
-                      `@${account.accountInfo.user.info.username}`}
+                      `@${account.accountInfo?.user.info.username}`}
                   </Title>
                   <View style={{ marginLeft: 5 }}>
                     {account.accountInfo.user.info.official && (
@@ -121,7 +148,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
                 )}
               </View>
             ) : (
-              <Title>@{account.accountInfo.user.info.username}</Title>
+              <Title>@{account.accountInfo?.user.info.username}</Title>
             )}
           </View>
         </View>
@@ -129,26 +156,25 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
           <View style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: 40 }}>
-              {account.accountInfo.user.data.cache.followers || ''}
+              {account.accountInfo?.user.data.cache.followers || ''}
             </Text>
             <Text>
               Abonnés{' '}
               <Icon
-                name={account.accountInfo.user.data.public ? 'eye-outline' : 'lock-outline'}
+                name={account.accountInfo?.user.data.public ? 'eye-outline' : 'lock-outline'}
                 color={colors.disabled}
               />
             </Text>
           </View>
           <View style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: 40 }}>
-              {account.accountInfo.user.data.following.groups.length +
-                account.accountInfo.user.data.following.users.length +
-                account.accountInfo.user.data.following.events.length}
+              {(account.accountInfo?.user.data.following.groups.length || 0) +
+                (account.accountInfo?.user.data.following.users.length || 0)}
             </Text>
             <Text>
               Abonnements{' '}
               <Icon
-                name={account.accountInfo.user.data.public ? 'eye-outline' : 'lock-outline'}
+                name={account.accountInfo?.user.data.public ? 'eye-outline' : 'lock-outline'}
                 color={colors.disabled}
               />
             </Text>
@@ -237,9 +263,11 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
                 icon="school"
                 title={school.name}
                 subtitle={`${
-                  getAddressString(school.address?.address) || school.address.shortName
+                  school.address
+                    ? getAddressString(school.address?.address) || school.address?.shortName
+                    : 'Adresse inconnue'
                 }${
-                  school.departments[0]
+                  school.departments && school.departments[0]
                     ? `, ${school.departments[0].displayName || school.departments[0].name}`
                     : ''
                 }`}
@@ -303,6 +331,31 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
           <View style={{ height: 50 }} />
           <List.Subheader>Données</List.Subheader>
           <Divider />
+          {(state.export?.loading || state.delete?.loading) && <ProgressBar indeterminate />}
+          {state.delete?.error && (
+            <ErrorMessage
+              type="axios"
+              strings={{
+                what: 'la demande de suppression du compte',
+                contentPlural: 'Les éléments pour la suppression du compte',
+                contentSingular: 'La demande de suppression du compte',
+              }}
+              error={state.delete?.error}
+              retry={deleteAccountFunc}
+            />
+          )}
+          {state.export?.error && (
+            <ErrorMessage
+              type="axios"
+              strings={{
+                what: "la demande d'exportation de données",
+                contentPlural: "Les éléments pour l'exportation de données",
+                contentSingular: "La demande d'exportation de données",
+              }}
+              error={state.export?.error}
+              retry={exportAccountFunc}
+            />
+          )}
           <List.Item
             title="Exporter mes données"
             onPress={() =>
@@ -312,6 +365,10 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
                 [
                   {
                     text: 'Annuler',
+                  },
+                  {
+                    text: 'Exporter',
+                    onPress: deleteAccountFunc,
                   },
                 ],
                 { cancelable: true },
@@ -327,6 +384,10 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
                 [
                   {
                     text: 'Annuler',
+                  },
+                  {
+                    text: 'Supprimer',
+                    onPress: exportAccountFunc,
                   },
                 ],
                 { cancelable: true },
@@ -355,6 +416,7 @@ const mapStateToProps = (state: State) => {
   const { account, location } = state;
   return {
     account,
+    state: account.state,
     location,
   };
 };

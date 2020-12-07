@@ -1,19 +1,31 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import ArticleConfigureStackNavigator from './articles/index';
-import EventConfigureStackNavigator from './events/index';
+import { MainScreenNavigationProp } from '../Main';
+import ArticleParamsStackNavigator, { ArticleParamsStackParams } from './articles/index';
+import EventParamsStackNavigator, { EventParamsStackParams } from './events/index';
 
-const Stack = createNativeStackNavigator();
+export type ParamsStackParams = {
+  Article: NavigatorScreenParams<ArticleParamsStackParams>;
+  Event: NavigatorScreenParams<EventParamsStackParams>;
+};
 
-function ConfigureStackNavigator() {
+export type ParamsScreenNavigationProp<K extends keyof ParamsStackParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<ParamsStackParams, K>,
+  MainScreenNavigationProp<'Params'>
+>;
+
+const Stack = createNativeStackNavigator<ParamsStackParams>();
+
+function ParamsStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Article" component={ArticleConfigureStackNavigator} />
-      <Stack.Screen name="Event" component={EventConfigureStackNavigator} />
+      <Stack.Screen name="Article" component={ArticleParamsStackNavigator} />
+      <Stack.Screen name="Event" component={EventParamsStackNavigator} />
     </Stack.Navigator>
   );
 }
 
-export default ConfigureStackNavigator;
+export default ParamsStackNavigator;

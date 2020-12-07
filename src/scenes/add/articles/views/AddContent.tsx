@@ -1,12 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
 import { View, ScrollView, Platform, Alert } from 'react-native';
 import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
@@ -14,28 +11,34 @@ import {
   SafeAreaView,
 } from '@components/index';
 import { RichToolbar, RichEditor } from '@components/richEditor/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
+import { Config } from '@constants/index';
 import { articleAdd } from '@redux/actions/apiActions/articles';
+import { upload } from '@redux/actions/apiActions/upload';
 import {
   clearArticleCreationData,
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
+import { useTheme, logger } from '@utils/index';
 
-import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
+import YoutubeAddModal from '../components/YoutubeAddModal';
+import type { ArticleAddScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 type ArticleAddContentProps = {
-  navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
+  navigation: ArticleAddScreenNavigationProp<'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
+  account: Account;
 };
 
 const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   navigation,
   reqState,
   creationData = {},
+  account,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -44,17 +47,22 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const { colors } = theme;
 
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
+    const replacedData = (data || creationData.data)
+      ?.replace(Config.google.youtubePlaceholder, 'youtube://')
+      .replace(Config.cdn.baseUrl, 'cdn://');
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
-      date: Date.now(),
+      date: new Date(),
       location: creationData.location,
       group: creationData.group,
-      image: null,
+      image: creationData.image,
       parser: parser || creationData.parser,
-      data: data || creationData.data,
+      data: replacedData,
       tags: creationData.tags,
-      preferences: null,
+      preferences: {
+        comments: true,
+      },
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearArticleCreationData();
@@ -65,8 +73,13 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const [valid, setValid] = React.useState(true);
 
   const [markdown, setMarkdown] = React.useState('');
+  const [youtubeAddModalVisible, setYoutubeAddModalVisible] = React.useState(false);
+
+  const [linkAddModalVisible, setLinkAddModalVisible] = React.useState(false);
 
   const textEditorRef = React.createRef<RichEditor>();
+
+  if (!account.loggedIn) return null;
 
   const icon = (name: string) => {
     return ({
@@ -87,7 +100,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   };
 
   const submit = async () => {
-    const contentValid = markdown?.length && markdown?.length > 0;
+    const contentValid = markdown.length && markdown.length > 0;
     if (contentValid) {
       updateArticleCreationData({ parser: 'markdown', data: markdown });
       add('markdown', markdown);
@@ -95,8 +108,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       setValid(false);
     }
   };
-
-  const [linkAddModalVisible, setLinkAddModalVisible] = React.useState(false);
 
   return (
     <View style={styles.page}>
@@ -119,15 +130,15 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <PlatformBackButton
               onPress={() => {
                 Alert.alert(
-                  'Quitter cet article?',
-                  'Il sera sauvegardé comme un brouillon',
+                  'Supprimer cet article?',
+                  'Vous ne pourrez plus y revenir.',
                   [
+                    {
+                      text: 'Annuler',
+                    },
                     {
                       text: 'Quitter',
                       onPress: navigation.goBack,
-                    },
-                    {
-                      text: 'Annuler',
                     },
                   ],
                   { cancelable: true },
@@ -143,6 +154,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <View style={articleStyles.textInputContainer}>
               <View style={{ marginTop: 20 }}>
                 <RichEditor
+                  onHeightChange={() => {}}
                   ref={textEditorRef}
                   onChangeMarkdown={(data: string) => setMarkdown(data)}
                   editorStyle={{
@@ -165,8 +177,13 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <RichToolbar
               getEditor={() => textEditorRef.current!}
               actions={[
-                'insertImage',
+                ...(account.permissions?.some(
+                  (p) => p.permission === 'content.upload' && p.group === creationData.group,
+                )
+                  ? ['insertImage']
+                  : []),
                 'insertLink',
+                'insertYoutube',
                 'bold',
                 'italic',
                 'strikeThrough',
@@ -188,12 +205,21 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 unorderedList: icon('format-list-bulleted'),
                 orderedList: icon('format-list-numbered'),
                 insertImage: icon('image-outline'),
+                insertYoutube: icon('youtube'),
                 insertLink: icon('link'),
                 SET_PARAGRAPH: icon('format-clear'),
               }}
+              // RichEditor accepts props for custom actions
+              // @ts-expect-error
               insertLink={() => {
                 setLinkAddModalVisible(true);
               }}
+              insertImage={() =>
+                upload(creationData.group || '').then((fileId: string) => {
+                  textEditorRef.current?.insertImage(`${Config.cdn.baseUrl}${fileId}`);
+                })
+              }
+              insertYoutube={() => setYoutubeAddModalVisible(true)}
             />
           ) : null}
           {!valid && (
@@ -225,13 +251,25 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
           textEditorRef.current?.insertLink(name, link);
         }}
       />
+      <YoutubeAddModal
+        visible={youtubeAddModalVisible}
+        setVisible={setYoutubeAddModalVisible}
+        add={(url) => {
+          setLinkAddModalVisible(false);
+          textEditorRef.current?.insertImage(url);
+        }}
+      />
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData } = state;
-  return { creationData: articleData.creationData, reqState: articles.state };
+  const { articles, articleData, account } = state;
+  return {
+    creationData: articleData.creationData,
+    reqState: articles.state,
+    account,
+  };
 };
 
 export default connect(mapStateToProps)(ArticleAddContent);

@@ -35,6 +35,11 @@ const initialState: TagsState = {
       error: null,
       loading: false,
     },
+    report: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 

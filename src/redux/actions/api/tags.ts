@@ -1,6 +1,6 @@
 import Store from '@redux/store';
 
-import { Tag, Item } from '@ts/types';
+import { Tag } from '@ts/types';
 import {
   UPDATE_TAGS_DATA,
   UPDATE_TAGS_SEARCH,
@@ -11,7 +11,7 @@ import {
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) => (data as Tag[]).sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: Tag[]) => data.sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -24,6 +24,7 @@ async function updateTags(type: 'initial' | 'refresh' | 'next', params = {}) {
       update: UPDATE_TAGS_DATA,
       stateUpdate: UPDATE_TAGS_STATE,
       url: '/tags/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'tags',
       type,
@@ -58,6 +59,7 @@ async function fetchTag(tagId: string) {
     fetchCreator({
       update: UPDATE_TAGS_ITEM,
       stateUpdate: UPDATE_TAGS_STATE,
+      stateName: 'info',
       url: 'tags/list',
       dataType: 'tags',
       params: { tagId },
@@ -69,8 +71,8 @@ async function fetchTag(tagId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearTags(data = true, search = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_TAGS, data, search }));
+function clearTags(data = true, search = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_TAGS, data, search }));
 }
 
 export { updateTags, clearTags, fetchTag, searchTags };

@@ -23,6 +23,7 @@ type HTTPLog = {
   data?: any;
   method: 'get' | 'post' | 'put' | 'patch' | 'delete';
   endpoint: string;
+  sent?: boolean;
 };
 
 class Logger {
@@ -58,10 +59,10 @@ class Logger {
     if (this.shouldLog('info')) console.info(...msgs);
   }
 
-  http({ status, method, endpoint, params, data }: HTTPLog) {
+  http({ status, method, endpoint, params, data, sent = false }: HTTPLog) {
     if (this.shouldLog('http')) {
       let logEntry = `[request] ${method.toUpperCase()} `;
-      if (status) logEntry += `${status} `;
+      if (sent) logEntry += `${status || '-'} `;
       else logEntry += 'sent ';
       logEntry += `to ${endpoint} `;
       if (params) logEntry += `with params ${logObj(params)} `;

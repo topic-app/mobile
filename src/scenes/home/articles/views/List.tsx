@@ -1,10 +1,23 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo, Platform } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { ProgressBar, FAB, Subheading, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import {
+  AnimatingHeader,
+  ErrorMessage,
+  TabChipList,
+  GroupsBanner,
+  ARTICLE_CARD_HEADER_HEIGHT,
+  Banner,
+} from '@components/index';
+import {
+  updateArticles,
+  searchArticles,
+  updateArticlesFollowing,
+} from '@redux/actions/api/articles';
+import getStyles from '@styles/Styles';
 import {
   State,
   ArticleListItem,
@@ -17,18 +30,11 @@ import {
   ArticleRequestState,
   Account,
 } from '@ts/types';
-import { AnimatingHeader, ErrorMessage, TabChipList, GroupsBanner } from '@components/index';
 import { useTheme } from '@utils/index';
-import {
-  updateArticles,
-  searchArticles,
-  updateArticlesFollowing,
-} from '@redux/actions/api/articles';
-import getStyles from '@styles/Styles';
 
+import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import ArticleListCard from '../components/Card';
 import ArticleEmptyList from '../components/EmptyList';
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
 
 type Category = {
   key: string;
@@ -40,9 +46,11 @@ type Category = {
   params?: object;
 };
 
-type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
-  articles: (ArticlePreload | Article)[];
-  followingArticles: (ArticlePreload | Article)[];
+type ArticleListProps = {
+  navigation: HomeTwoScreenNavigationProp<'Article'>;
+  route: RouteProp<HomeTwoNavParams, 'Article'>;
+  articles: ArticlePreload[];
+  followingArticles: ArticlePreload[];
   search: ArticlePreload[];
   lists: ArticleListItem[];
   read: ArticleReadItem[];
@@ -51,6 +59,8 @@ type ArticleListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   preferences: Preferences;
   state: ArticleRequestState;
   account: Account;
+  dual?: boolean;
+  setArticle?: (article: { id: string; title: string; useLists: boolean }) => any;
 };
 
 const ArticleList: React.FC<ArticleListProps> = ({
@@ -66,6 +76,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
   articlePrefs,
   preferences,
   account,
+  dual = false,
+  setArticle = () => {},
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -199,12 +211,10 @@ const ArticleList: React.FC<ArticleListProps> = ({
   const section = getSection();
   const category = getCategory();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      updateArticles('initial');
-      updateArticlesFollowing('initial');
-    }, [null]),
-  );
+  React.useEffect(() => {
+    updateArticles('initial');
+    updateArticlesFollowing('initial');
+  }, [null]);
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -242,8 +252,24 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   const listData = category.data;
 
+  const [cardWidth, setCardWidth] = React.useState(100);
+  const imageSize = cardWidth / 3.5;
+
+  const itemHeight = ARTICLE_CARD_HEADER_HEIGHT + imageSize;
+
+  const getItemLayout = (data: unknown, index: number) => {
+    return { length: itemHeight, offset: itemHeight * index, index };
+  };
+
   return (
-    <View style={styles.page}>
+    <View
+      style={styles.page}
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => setCardWidth(width)}
+    >
       <AnimatingHeader
         home
         value={scrollY}
@@ -298,10 +324,14 @@ const ArticleList: React.FC<ArticleListProps> = ({
             : []),
         ]}
       >
-        {(state.list.loading.initial || state.search?.loading.initial) && (
+        {(state.list.loading.initial ||
+          state.search?.loading.initial ||
+          state.following?.loading.initial) && (
           <ProgressBar indeterminate style={{ marginTop: -4 }} />
         )}
-        {state.list.error || state.search?.error ? (
+        {(state.list.error && section.key === 'categories') ||
+        (state.search?.error && section.key === 'quicks') ||
+        (state.following?.error && section.key === 'categories' && category.key === 'following') ? (
           <ErrorMessage
             type="axios"
             strings={{
@@ -309,7 +339,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
               contentPlural: 'des articles',
               contentSingular: "La liste d'articles",
             }}
-            error={[state.list.error, state.search?.error]}
+            error={[state.list.error, state.search?.error, state.following?.error]}
             retry={() => updateArticles('initial')}
           />
         ) : null}
@@ -337,6 +367,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
             searchArticles('next', '', category.params, false, false);
           }
         }}
+        getItemLayout={getItemLayout}
         ListHeaderComponent={() => (
           <View>
             <GroupsBanner />
@@ -377,7 +408,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
             {((section.key === 'categories' && state.list.loading.next) ||
-              (section.key === 'quicks' && state.search.loading.next)) && (
+              (section.key === 'quicks' && state.search?.loading.next)) && (
               <ActivityIndicator size="large" color={colors.primary} />
             )}
           </View>
@@ -391,27 +422,37 @@ const ArticleList: React.FC<ArticleListProps> = ({
               isRead={read.some((r) => r.id === article._id)}
               historyActive={preferences.history}
               lists={lists}
-              navigate={() =>
-                navigation.navigate('Main', {
-                  screen: 'Display',
-                  params: {
-                    screen: 'Article',
-                    params: {
-                      screen: 'Display',
-                      params: {
+              overrideImageWidth={imageSize}
+              navigate={
+                dual
+                  ? () => {
+                      setArticle({
                         id: article._id,
                         title: article.title,
                         useLists: section.key === 'lists',
-                      },
-                    },
-                  },
-                })
+                      });
+                    }
+                  : () =>
+                      navigation.navigate('Main', {
+                        screen: 'Display',
+                        params: {
+                          screen: 'Article',
+                          params: {
+                            screen: 'Display',
+                            params: {
+                              id: article._id,
+                              title: article.title,
+                              useLists: section.key === 'lists',
+                            },
+                          },
+                        },
+                      })
               }
             />
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions?.some((p) => p.permission === 'article.add') && (
+      {account.loggedIn && account.permissions.some((p) => p.permission === 'article.add') && (
         <FAB
           icon="pencil"
           onPress={() =>

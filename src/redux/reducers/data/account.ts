@@ -1,5 +1,6 @@
+import _ from 'lodash';
+
 import { Config } from '@constants/index';
-import { logger } from '@root/src/utils';
 import {
   LOGOUT,
   LOGIN,
@@ -12,14 +13,20 @@ import {
   UPDATE_ACCOUNT_CREATION_DATA,
   AccountActionTypes,
   AccountState,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: AccountState = {
-  ...Config.defaults.account,
-  groups: [],
-  creationData: {},
-  waitingGroups: [],
+  ...(_.isEmpty(Config.seedDb.account)
+    ? (Config.seedDb.account as AccountState)
+    : {
+        loggedIn: false,
+        accountInfo: null,
+        creationData: {},
+      }),
   permissions: [],
+  groups: [],
+  waitingGroups: [],
   state: {
     login: {
       loading: false,
@@ -53,6 +60,16 @@ const initialState: AccountState = {
       error: null,
     },
     updateProfile: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    delete: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    export: {
       loading: false,
       success: null,
       error: null,
@@ -92,7 +109,7 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
           groups: action.data,
         };
       }
-      logger.warn('accountReducer: Attempted to update account groups while not logged in');
+      console.warn('accountReducer: Attempted to update account groups while not logged in');
       return state;
     case UPDATE_ACCOUNT_WAITING_GROUPS:
       if (state.loggedIn) {
@@ -101,7 +118,9 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
           waitingGroups: action.data,
         };
       }
-      logger.warn('accountReducer: Attempted to update account waiting groups while not logged in');
+      console.warn(
+        'accountReducer: Attempted to update account waiting groups while not logged in',
+      );
       return state;
     case UPDATE_ACCOUNT_PERMISSIONS:
       if (state.loggedIn) {
@@ -110,7 +129,7 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
           permissions: action.data,
         };
       }
-      logger.warn('accountReducer: Attempted to update account permissions while not logged in');
+      console.warn('accountReducer: Attempted to update account permissions while not logged in');
       return state;
     case UPDATE_ACCOUNT_USER:
       if (state.loggedIn) {
@@ -119,7 +138,7 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
           accountInfo: { ...state.accountInfo, user: action.data },
         };
       }
-      logger.warn('accountReducer: Attempted to update accountInfo while not logged in');
+      console.warn('accountReducer: Attempted to update accountInfo while not logged in');
       return state;
     case LOGIN:
       return {
@@ -131,11 +150,16 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
         groups: [],
         waitingGroups: [],
       };
+    case FULL_CLEAR:
+      return initialState;
     case LOGOUT:
       return {
         loggedIn: false,
         accountInfo: null,
         creationData: {},
+        permissions: [],
+        groups: [],
+        waitingGroups: [],
         state: state.state,
       };
     default:

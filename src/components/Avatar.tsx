@@ -1,14 +1,14 @@
+import color from 'color';
 import React from 'react';
 import { View, ViewStyle, TextStyle, ImageStyle, StyleProp } from 'react-native';
-import { Avatar as PaperAvatar, Text } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
-import color from 'color';
+import { Avatar as PaperAvatar, Text } from 'react-native-paper';
 
 import { Avatar as AvatarType } from '@ts/types';
-import { Illustration } from '@components/index';
 import { useTheme } from '@utils/index';
 
 import Image from './CustomImage';
+import Illustration from './Illustration';
 import { PlatformTouchable } from './PlatformComponents';
 
 const getInitials = (title: string) => {

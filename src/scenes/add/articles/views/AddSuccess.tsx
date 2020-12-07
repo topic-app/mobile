@@ -1,25 +1,33 @@
+import { RouteProp } from '@react-navigation/native';
+import moment from 'moment';
 import React from 'react';
 import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, Card } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { State, ArticleRequestState, Account } from '@ts/types';
 import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';
-import { logger, useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
+import getStyles from '@styles/Styles';
+import { State, ArticleRequestState, Account } from '@ts/types';
+import { logger, useTheme } from '@utils/index';
 
-import type { ArticleAddStackParams } from '../index';
+import type { ArticleAddScreenNavigationProp, ArticleAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-type Props = StackScreenProps<ArticleAddStackParams, 'Success'> & {
+type ArticleAddSuccessProps = {
+  navigation: ArticleAddScreenNavigationProp<'Success'>;
+  route: RouteProp<ArticleAddStackParams, 'Success'>;
   reqState: ArticleRequestState;
   account: Account;
 };
 
-const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, route }) => {
+const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
+  navigation,
+  reqState,
+  account,
+  route,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);
@@ -53,7 +61,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
         </SafeAreaView>
       )}
       <ScrollView>
-        <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
+        <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 40 }]}>
           <Illustration name="auth-register-success" height={200} width={200} />
           <Text style={authStyles.title}>
             Article {approved ? 'publié' : 'en attente de modération'}
@@ -168,34 +176,6 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
               </View>
             </Card>
           </View>
-          <ArticleCard
-            article={{
-              _id: '',
-              ...creationData,
-              summary: creationData?.summary || creationData?.data || '',
-              authors: [
-                {
-                  _id: account?.accountInfo?.user?._id || '',
-                  displayName: account?.accountInfo?.user?.info?.username || '',
-                  info: account?.accountInfo?.user?.info || { username: '' },
-                },
-              ],
-              group: {
-                _id: account?.groups?.find((g) => g._id === creationData?.group)?._id || '',
-                displayName:
-                  account?.groups?.find((g) => g._id === creationData?.group)?.name || '',
-                name: account?.groups?.find((g) => g._id === creationData?.group)?.name || '',
-                official: false,
-                summary: '',
-                cache: {
-                  followers: null,
-                },
-                type: '',
-              },
-            }}
-            navigate={() => logger.debug('add/articles/views/AddSuccess: Pressed article card')}
-            unread
-          />
         </View>
       </ScrollView>
       <Divider />

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 import {
   TranslucentStatusBar,
@@ -9,18 +8,18 @@ import {
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { useTheme } from '@utils/index';
 
-import type { ArticleAddStackParams } from '../index';
-import getArticleStyles from '../styles/Styles';
 import ArticleAddPageGroup from '../components/AddGroup';
 import ArticleAddPageLocation from '../components/AddLocation';
 import ArticleAddPageMeta from '../components/AddMeta';
 import ArticleAddPageTags from '../components/AddTags';
+import type { ArticleAddScreenNavigationProp } from '../index';
+import getArticleStyles from '../styles/Styles';
 
 type ArticleAddProps = {
-  navigation: StackNavigationProp<ArticleAddStackParams, 'Add'>;
+  navigation: ArticleAddScreenNavigationProp<'Add'>;
 };
 
 const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
@@ -43,33 +42,36 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
                 key: 'group',
                 icon: 'account-group',
                 title: 'Groupe',
-                component: <ArticleAddPageGroup />,
+                component: (props) => <ArticleAddPageGroup {...props} />,
               },
               {
                 key: 'location',
                 icon: 'map-marker',
                 title: 'Localisation',
-                component: <ArticleAddPageLocation navigation={navigation} />,
+                component: (props) => <ArticleAddPageLocation navigation={navigation} {...props} />,
               },
               {
                 key: 'meta',
                 icon: 'information',
                 title: 'Meta',
-                component: <ArticleAddPageMeta />,
+                component: (props) => <ArticleAddPageMeta {...props} />,
               },
               {
                 key: 'tags',
                 icon: 'tag-multiple',
                 title: 'Tags',
-                component: (
-                  <ArticleAddPageTags navigate={() => navigation.navigate('AddContent')} />
+                component: (props) => (
+                  <ArticleAddPageTags
+                    navigate={() => navigation.navigate('AddContent')}
+                    {...props}
+                  />
                 ),
               },
               {
                 key: 'content',
                 icon: 'pencil',
                 title: 'Contenu',
-                component: <View />,
+                component: () => <View />,
               },
             ]}
           />

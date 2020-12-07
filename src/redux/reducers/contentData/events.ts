@@ -1,23 +1,32 @@
 import {
-  EventsDataState,
-  EventsActionTypes,
+  EventsContentState,
   UPDATE_EVENTS_PARAMS,
   UPDATE_EVENTS_LISTS,
   UPDATE_EVENTS_READ,
   UPDATE_EVENTS_PREFS,
   UPDATE_EVENTS_QUICKS,
   UPDATE_EVENTS_CREATION_DATA,
+  EventsContentActionTypes,
+  FULL_CLEAR,
 } from '@ts/redux';
 
-import { Config } from '@constants/index';
-
-const initialState: EventsDataState = {
+const initialState: EventsContentState = {
   params: {},
-  lists: Config.defaults.events.lists,
-  prefs: Config.defaults.events.prefs,
-  quicks: Config.defaults.events.quicks,
   read: [],
   creationData: {},
+  lists: [
+    {
+      id: '0',
+      name: 'Favoris',
+      icon: 'star-outline',
+      items: [],
+    },
+  ],
+  quicks: [],
+  prefs: {
+    categories: ['upcoming', 'passed', 'following'],
+    hidden: [],
+  },
 };
 
 /**
@@ -29,7 +38,10 @@ const initialState: EventsDataState = {
  * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */
-function eventDataReducer(state = initialState, action: EventsActionTypes): EventsDataState {
+function eventDataReducer(
+  state = initialState,
+  action: EventsContentActionTypes,
+): EventsContentState {
   switch (action.type) {
     case UPDATE_EVENTS_PARAMS:
       return {
@@ -61,6 +73,8 @@ function eventDataReducer(state = initialState, action: EventsActionTypes): Even
         ...state,
         creationData: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     default:
       return state;
   }

@@ -1,19 +1,12 @@
+import color from 'color';
 import React from 'react';
-import {
-  View,
-  Platform,
-  Animated,
-  TextInput,
-  FlatList,
-  ViewStyle,
-  StyleProp,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Platform, Animated, FlatList, ViewStyle, StyleProp } from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import color from 'color';
 
 import { useTheme } from '@utils/index';
+
+import { PlatformTouchable } from './PlatformComponents';
 
 type ChipBaseProps = {
   icon?: string;
@@ -37,7 +30,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
 
   const handlePressIn = () => {
     Animated.timing(elevation, {
-      toValue: 4,
+      toValue: 3,
       duration: 200,
       useNativeDriver: false,
     }).start();
@@ -72,11 +65,12 @@ const ChipBase: React.FC<ChipBaseProps> = ({
         containerStyle,
       ]}
     >
-      <TouchableOpacity
+      <PlatformTouchable
         disabled={!onPress || rightAction}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        activeOpacity={0.7}
       >
         <View
           style={{
@@ -87,9 +81,9 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             paddingRight: rightAction ? 0 : 10,
           }}
         >
-          {!rightAction && icon && <Icon name={icon} size={20} color={colors.icon} />}
+          {!rightAction && icon ? <Icon name={icon} size={20} color={colors.icon} /> : null}
           {children}
-          {rightAction && icon && (
+          {rightAction && icon ? (
             <IconButton
               icon={icon}
               color={colors.softContrast}
@@ -98,9 +92,9 @@ const ChipBase: React.FC<ChipBaseProps> = ({
               onPressIn={handlePressIn}
               onPressOut={handlePressOut}
             />
-          )}
+          ) : null}
         </View>
-      </TouchableOpacity>
+      </PlatformTouchable>
     </Animated.View>
   );
 };
@@ -117,49 +111,6 @@ const TextChip: React.FC<TextChipProps> = ({ title, ...rest }) => {
   );
 };
 
-type TextInputChipProps = {
-  onSubmit: (tagText: string) => void;
-  endInput: () => void;
-  placeholder?: string;
-};
-
-const TextInputChip: React.FC<TextInputChipProps> = ({
-  onSubmit,
-  endInput,
-  placeholder,
-  ...rest
-}) => {
-  const textInputRef = React.useRef<TextInput>(null);
-  const [tagText, setTagText] = React.useState('');
-
-  const onFinish = () => {
-    if (tagText === '') {
-      endInput();
-    } else {
-      onSubmit(tagText);
-      endInput();
-    }
-  };
-
-  return (
-    <ChipBase {...rest}>
-      <TextInput
-        ref={textInputRef}
-        style={{ fontSize: 15, paddingVertical: 3 }}
-        autoFocus
-        blurOnSubmit
-        placeholder={placeholder}
-        autoCapitalize="none"
-        value={tagText}
-        onChangeText={setTagText}
-        onSubmitEditing={onFinish}
-        onEndEditing={onFinish}
-        onBlur={onFinish} // Debatable
-      />
-    </ChipBase>
-  );
-};
-
 type ListItem = {
   key: string;
   title: string;
@@ -168,8 +119,8 @@ type ListItem = {
 
 type CategoriesListProps<T extends ListItem> = {
   categories: T[];
-  selected: string;
-  setSelected: (key: any) => void;
+  selected: T['key'];
+  setSelected: (key: T['key']) => void;
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   chipProps?: object;
@@ -266,7 +217,7 @@ const ChipAddList = <T extends ListItem>({
   );
 };
 
-type ChipSuggestionListItem = ListItem & { color: string };
+type ChipSuggestionListItem = ListItem & { color?: string };
 
 type ChipSuggestionListProps<T extends ChipSuggestionListItem> = {
   data?: T[];

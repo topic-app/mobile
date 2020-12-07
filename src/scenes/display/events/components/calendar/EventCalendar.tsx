@@ -1,10 +1,12 @@
-import React from 'react';
-import { VirtualizedList, View, TouchableOpacity, Dimensions } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
-import { Text } from 'react-native-paper';
-import PropTypes from 'prop-types';
+// @ts-nocheck
+
 import _ from 'lodash';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { VirtualizedList, View, TouchableOpacity, Dimensions } from 'react-native';
+import { Text } from 'react-native-paper';
+import Entypo from 'react-native-vector-icons/Entypo';
 import shortid from 'shortid';
 
 import { useTheme } from '@utils/index';

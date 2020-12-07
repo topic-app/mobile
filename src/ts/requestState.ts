@@ -1,10 +1,13 @@
 type RequestStateBase = {
   success: boolean | null;
-  error: null | {
-    value: string;
-    message: string;
-    extraMessage: string;
-  };
+  error:
+    | null
+    | boolean
+    | {
+        value: string;
+        message: string;
+        extraMessage: string;
+      };
 };
 
 export type RequestState = RequestStateBase & {
@@ -23,10 +26,12 @@ export type StandardRequestState = {
   list: RequestStateComplex;
   search?: RequestStateComplex;
   info: RequestState;
-  report?: RequestState;
+  report: RequestState;
   add?: RequestState;
   verification_list?: RequestStateComplex;
   verification_approve?: RequestState;
+  following?: RequestStateComplex;
+  delete?: RequestState;
 };
 
 export type ArticleRequestState = StandardRequestState;
@@ -40,6 +45,7 @@ export type EventRequestState = StandardRequestState;
 export type GroupRequestState = StandardRequestState & {
   follow: RequestState;
   member_add: RequestState;
+  member_modify: RequestState;
   member_delete: RequestState;
   member_accept: RequestState;
   member_reject: RequestState;
@@ -69,6 +75,8 @@ export type AccountRequestState = {
   fetchAccount: RequestState;
   fetchWaitingGroups: RequestState;
   updateProfile: RequestState;
+  export: RequestState;
+  delete: RequestState;
 };
 
 export type LocationRequestState = {
@@ -79,4 +87,8 @@ export type LocationRequestState = {
 export type LinkingRequestState = {
   emailChange: RequestState;
   emailVerify: RequestState;
+};
+export type UploadRequestState = {
+  upload: RequestState;
+  permission: RequestState;
 };

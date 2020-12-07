@@ -1,18 +1,29 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import SettingsList from './views/List';
-import SettingsTheme from './views/Theme';
-import SettingsPrivacy from './views/Privacy';
+import { MoreScreenNavigationProp } from '../index';
 import SettingsContent from './views/Content';
+import SettingsList from './views/List';
+import SettingsPrivacy from './views/Privacy';
+import SettingsTheme from './views/Theme';
+import SettingsDev from './views/Dev';
 
 export type SettingsStackParams = {
   List: undefined;
   Theme: undefined;
   Privacy: undefined;
   Content: undefined;
+  Dev: undefined;
 };
+
+export type SettingsScreenNavigationProp<
+  K extends keyof SettingsStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<SettingsStackParams, K>,
+  MoreScreenNavigationProp<'Settings'>
+>;
 
 const Stack = createNativeStackNavigator<SettingsStackParams>();
 
@@ -23,6 +34,7 @@ const SettingsStackNavigator: React.FC<{}> = () => {
       <Stack.Screen name="Theme" component={SettingsTheme} />
       <Stack.Screen name="Privacy" component={SettingsPrivacy} />
       <Stack.Screen name="Content" component={SettingsContent} />
+      <Stack.Screen name="Dev" component={SettingsDev} />
     </Stack.Navigator>
   );
 };

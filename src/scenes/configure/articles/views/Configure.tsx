@@ -1,26 +1,16 @@
 import React from 'react';
-import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { View, Platform, FlatList, Alert } from 'react-native';
-import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
+// @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
+import { Divider, Text, List, Button, Switch } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-import {
-  State,
-  ArticleListItem,
-  ArticleQuickItem,
-  ArticlePrefs,
-  Account,
-  Preferences,
-} from '@ts/types';
 import {
   PlatformTouchable,
   Illustration,
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import {
   deleteArticleList,
   updateArticlePrefs,
@@ -28,14 +18,25 @@ import {
   deleteArticleQuick,
   modifyArticleList,
 } from '@redux/actions/contentData/articles';
-import getArticleStyles from '../styles/Styles';
+import getStyles from '@styles/Styles';
+import {
+  State,
+  ArticleListItem,
+  ArticleQuickItem,
+  ArticlePrefs,
+  Account,
+  Preferences,
+  EventListItem,
+} from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { ArticleListsStackParams } from '../index';
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';
-import QuickTypeModal from '../../components/QuickTypeModal';
-import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickLocationTypeModal from '../../components/QuickLocationTypeModal';
+import QuickSelectModal from '../../components/QuickSelectModal';
+import QuickTypeModal from '../../components/QuickTypeModal';
+import type { ArticleConfigureScreenNavigationProp } from '../index';
+import getArticleStyles from '../styles/Styles';
 
 type ArticleListsProps = {
   lists: ArticleListItem[];
@@ -43,7 +44,7 @@ type ArticleListsProps = {
   preferences: Preferences;
   articlePrefs: ArticlePrefs;
   account: Account;
-  navigation: StackNavigationProp<ArticleListsStackParams, 'Configure'>;
+  navigation: ArticleConfigureScreenNavigationProp<'Configure'>;
 };
 
 type Category = {
@@ -68,7 +69,9 @@ function ArticleLists({
 
   const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
-  const [editingList, setEditingList] = React.useState(null);
+  const [editingList, setEditingList] = React.useState<ArticleListItem | EventListItem | null>(
+    null,
+  );
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
   const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);
@@ -167,7 +170,7 @@ function ArticleLists({
                   <DraggableFlatList
                     data={categories}
                     scrollPercent={5}
-                    keyExtractor={(c) => c.id}
+                    keyExtractor={(c: Category) => c.id}
                     ItemSeparatorComponent={() => <Divider />}
                     ListHeaderComponent={() => (
                       <View>
@@ -182,14 +185,22 @@ function ArticleLists({
                         <Divider />
                       </View>
                     )}
-                    renderItem={({ item, move, moveEnd }) => {
+                    renderItem={({
+                      item,
+                      move,
+                      moveEnd,
+                    }: {
+                      item: Category;
+                      move: () => any;
+                      moveEnd: () => any;
+                    }) => {
                       const enabled = articlePrefs.categories?.some((d) => d === item.id);
                       return (
                         <List.Item
                           key={item.id}
                           title={item.name}
                           description={item.disable ? 'Indisponible' : null}
-                          left={() => <List.Icon />}
+                          left={() => <View style={{ width: 56, height: 56 }} />}
                           onPress={enabled && !item.disable ? item.navigate : () => null}
                           onLongPress={move}
                           titleStyle={!item.disable ? {} : { color: colors.disabled }}
@@ -220,11 +231,13 @@ function ArticleLists({
                       );
                     }}
                     ListFooterComponent={() => <Divider />}
-                    onMoveEnd={({ to, from }) => {
+                    onMoveEnd={({ to, from }: { to: number; from: number }) => {
                       const tempCategories = articlePrefs.categories;
-                      const buffer = articlePrefs.categories[to];
-                      tempCategories[to] = articlePrefs.categories[from];
-                      tempCategories[from] = buffer;
+                      if (articlePrefs.categories && tempCategories) {
+                        const buffer = articlePrefs.categories[to];
+                        tempCategories[to] = articlePrefs.categories[from];
+                        tempCategories[from] = buffer;
+                      }
                       updateArticlePrefs({ categories: tempCategories });
                     }}
                   />
@@ -255,8 +268,8 @@ function ArticleLists({
                     </View>
                   )}
                   ItemSeparatorComponent={() => <Divider />}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item, move }) => {
+                  keyExtractor={(item: ArticleListItem) => item.id}
+                  renderItem={({ item, move }: { item: ArticleListItem; move: () => any }) => {
                     return (
                       <List.Item
                         title={item.name}
@@ -332,7 +345,7 @@ function ArticleLists({
                       />
                     );
                   }}
-                  onMoveEnd={({ from, to }) => {
+                  onMoveEnd={({ from, to }: { from: number; to: number }) => {
                     const fromList = lists[from];
                     const toList = lists[to];
 

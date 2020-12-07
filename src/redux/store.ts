@@ -1,11 +1,12 @@
-import { Platform } from 'react-native';
-import { createStore, applyMiddleware } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist';
-import AsyncStorage from '@react-native-community/async-storage';
-import thunk from 'redux-thunk';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import localForage from 'localforage';
+import { Platform } from 'react-native';
+import { createStore, applyMiddleware, AnyAction } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import thunk, { ThunkDispatch } from 'redux-thunk';
 
 import { Config } from '@constants/index';
+import { State } from '@ts/types';
 
 import reducer from './reducers/index';
 
@@ -17,7 +18,9 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducer);
 
-const Store = createStore(persistedReducer, applyMiddleware(thunk));
+type DispatchFunctionType = ThunkDispatch<State, void, AnyAction>;
+
+const Store = createStore(persistedReducer, applyMiddleware<DispatchFunctionType, State>(thunk));
 
 const Persistor = persistStore(Store);
 

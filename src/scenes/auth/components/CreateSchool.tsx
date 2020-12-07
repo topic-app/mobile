@@ -3,10 +3,10 @@ import { View, Platform } from 'react-native';
 import { Button, Title, Subheading, Card } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { State } from '@ts/types';
 import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
 import { updateCreationData } from '@redux/actions/data/account';
+import { State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -27,7 +27,6 @@ const AuthCreatePageSchool: React.FC<Props> = ({ next, prev, location, landing }
 
   const theme = useTheme();
   const authStyles = getAuthStyles(theme);
-  const { colors } = theme;
 
   return (
     <View style={authStyles.formContainer}>

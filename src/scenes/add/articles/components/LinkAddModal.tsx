@@ -1,12 +1,12 @@
 import React from 'react';
-import { Divider, Button, TextInput, HelperText } from 'react-native-paper';
 import { View, Platform } from 'react-native';
+import { Divider, Button, TextInput, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State } from '@ts/types';
 import { Modal } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { ModalProps, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 

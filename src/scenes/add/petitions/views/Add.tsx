@@ -1,24 +1,27 @@
+// @ts-nocheck
+
+import ViewPager from '@react-native-community/viewpager';
 import React from 'react';
 import { connect } from 'react-redux';
-import { StackNavigationProp } from '@react-navigation/stack';
-import ViewPager from '@react-native-community/viewpager';
 
-import { PetitionRequestState, State } from '@ts/types';
-import { updateState } from '@redux/actions/data/account';
 import StepperView from '@components/StepperView';
+import { updateState } from '@redux/actions/data/account';
+import { PetitionRequestState, State } from '@ts/types';
 
-import type { PetitionAddStackParams } from '../index';
-import PetitionAddPageGeneral from '../components/AddGeneral';
-import PetitionAddPageLocation from '../components/AddLocation';
-import PetitionAddPageGoals from '../components/AddGoals';
 import PetitionAddPageDescription from '../components/AddDescription';
+import PetitionAddPageGeneral from '../components/AddGeneral';
+import PetitionAddPageGoals from '../components/AddGoals';
+import PetitionAddPageLocation from '../components/AddLocation';
+import type { PetitionAddScreenNavigationProp } from '../index';
 
 type PetitionAddProps = {
-  navigation: StackNavigationProp<PetitionAddStackParams, 'Add'>;
+  navigation: PetitionAddScreenNavigationProp<'Add'>;
   reqState: PetitionRequestState;
   // TODO: Define PetitionCreationData
-  creationData: PetitionCreationData;
+  creationData: {};
 };
+
+// NOTE: Before working on this file, remove the @ts-nocheck and resolve problems
 
 const PetitionAdd: React.FC<PetitionAddProps> = ({ navigation, reqState, creationData }) => {
   const viewPagerRef = React.createRef<ViewPager>();
@@ -35,30 +38,28 @@ const PetitionAdd: React.FC<PetitionAddProps> = ({ navigation, reqState, creatio
       title="Créer une pétition"
       pages={[
         {
+          key: 'title',
           icon: 'comment-outline',
-          label: 'Titre',
-          component: <PetitionAddPageGeneral />,
-          scrollToBottom: true,
-          height: 450,
+          title: 'Titre',
+          component: (props) => <PetitionAddPageGeneral {...props} />,
         },
         {
+          key: 'schools',
           icon: 'map-marker',
-          label: 'Écoles',
-          component: <PetitionAddPageLocation />,
-          scrollToBottom: true,
-          height: 260,
+          title: 'Écoles',
+          component: (props) => <PetitionAddPageLocation {...props} />,
         },
         {
+          key: 'description',
           icon: 'script-text',
-          label: 'Description',
-          component: <PetitionAddPageDescription />,
-          height: 950,
+          title: 'Description',
+          component: (props) => <PetitionAddPageDescription {...props} />,
         },
         {
+          key: 'goals',
           icon: 'check-decagram',
-          label: 'Objectifs',
-          component: <PetitionAddPageGoals />,
-          height: 950,
+          title: 'Objectifs',
+          component: (props) => <PetitionAddPageGoals {...props} />,
         },
       ]}
       success={{
@@ -100,8 +101,8 @@ const PetitionAdd: React.FC<PetitionAddProps> = ({ navigation, reqState, creatio
 };
 
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { creationData: account.creationData, reqState: account.state };
+  const { petitionData } = state;
+  return { creationData: petitionData.creationData, reqState: petitionData.state };
 };
 
 export default connect(mapStateToProps)(PetitionAdd);

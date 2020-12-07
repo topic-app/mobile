@@ -1,29 +1,28 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import { Button, Text, Divider, Searchbar, Card } from 'react-native-paper';
-import { connect } from 'react-redux';
+import { Button, Text, Divider, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { Account, State, EventCreationData, TagRequestState, TagPreload } from '@ts/types';
 import {
   StepperViewPageProps,
   ErrorMessage,
   TextChip,
   CollapsibleView,
   CategoryTitle,
+  Searchbar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { Account, State, TagRequestState, TagPreload } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import TagAddModal from './TagAddModal';
 import getAuthStyles from '../styles/Styles';
+import TagAddModal from './TagAddModal';
 
 type Props = StepperViewPageProps & {
   account: Account;
-  creationData: EventCreationData;
-  navigation: any;
   tagsData: TagPreload[];
   tagsSearch: TagPreload[];
   state: TagRequestState;
@@ -33,30 +32,28 @@ const EventAddPageTags: React.FC<Props> = ({
   prev,
   next,
   account,
-  creationData,
-  navigation,
   tagsData,
   tagsSearch,
   state,
 }) => {
-  const [selectedTags, setSelectedTags] = React.useState([]);
-  const [selectedData, setSelectedData] = React.useState([]);
+  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
+  const [selectedData, setSelectedData] = React.useState<TagPreload[]>([]);
   const [searchText, setSearchText] = React.useState('');
 
   const [tagAddModalVisible, setTagAddModalVisible] = React.useState(false);
-  const [tagName, setTagName] = React.useState(null);
+  const [tagName, setTagName] = React.useState<string>('');
 
   const submit = () => {
     updateEventCreationData({ tags: selectedTags });
     next();
   };
 
-  const addNewTag = (tag: { _id: string; name: string; color: string }) => {
+  const addNewTag = (tag: TagPreload) => {
     setSelectedTags([...selectedTags, tag._id]);
     setSelectedData([...selectedData, tag]);
   };
 
-  const inputRef = React.useRef(null);
+  const searchbarRef = React.createRef<Searchbar>();
 
   const theme = useTheme();
   const { colors } = theme;
@@ -162,9 +159,9 @@ const EventAddPageTags: React.FC<Props> = ({
     <View style={eventStyles.formContainer}>
       <View>
         <View>
-          <View style={eventStyles.searchContainer}>
+          <View>
             <Searchbar
-              ref={inputRef}
+              ref={searchbarRef}
               placeholder={`Rechercher ${
                 account.permissions?.some((p) => p.permission === 'tag.add') ? 'ou créer ' : ''
               }un tag`}
@@ -181,6 +178,11 @@ const EventAddPageTags: React.FC<Props> = ({
               type="axios"
               error={searchText === '' ? state.list.error : state.search?.error}
               retry={fetch}
+              strings={{
+                what: 'la récupération des tags',
+                contentPlural: 'des tags',
+                contentSingular: 'La liste des tags',
+              }}
             />
           )}
         </View>
@@ -207,10 +209,10 @@ const EventAddPageTags: React.FC<Props> = ({
         </View>
         <FlatList
           horizontal
-          data={selectedTags.map((t) => selectedData.find((u) => u?._id === t))}
+          data={selectedTags.map((t) => selectedData.find((u) => u._id === t)!)}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
-          keyExtractor={(i) => i?._id}
+          keyExtractor={(i) => i._id}
         />
       </CollapsibleView>
       <View style={[styles.container, { marginTop: 40 }]}>
@@ -239,7 +241,7 @@ const EventAddPageTags: React.FC<Props> = ({
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}
-            onPress={() => prev()}
+            onPress={prev}
             style={{ flex: 1, marginRight: 5 }}
           >
             Retour

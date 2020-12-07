@@ -1,18 +1,25 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import PetitionAddStackNavigator from './petitions/index';
-import EventAddStackNavigator from './events/index';
-import ArticleAddStackNavigator from './articles/index';
-import GroupAddStackNavigator from './groups/index';
+import { MainScreenNavigationProp } from '../Main';
+import ArticleAddStackNavigator, { ArticleAddStackParams } from './articles/index';
+import EventAddStackNavigator, { EventAddStackParams } from './events/index';
+import GroupAddStackNavigator, { GroupAddStackParams } from './groups/index';
+import PetitionAddStackNavigator, { PetitionAddStackParams } from './petitions/index';
 
-type AddStackParams = {
-  Article: undefined;
-  Event: undefined;
-  Group: undefined;
-  Petition: undefined;
+export type AddStackParams = {
+  Article: NavigatorScreenParams<ArticleAddStackParams>;
+  Event: NavigatorScreenParams<EventAddStackParams>;
+  Group: NavigatorScreenParams<GroupAddStackParams>;
+  Petition: NavigatorScreenParams<PetitionAddStackParams>;
 };
+
+export type AddScreenNavigationProp<K extends keyof AddStackParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<AddStackParams, K>,
+  MainScreenNavigationProp<'Add'>
+>;
 
 const Stack = createNativeStackNavigator<AddStackParams>();
 

@@ -1,19 +1,16 @@
 import React from 'react';
 import { View, Platform, FlatList, Alert } from 'react-native';
-import { Divider, Text, List, Button, Switch } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
+// @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
+import { Divider, Text, List, Button, Switch } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-import { State, EventListItem, EventQuickItem, EventPrefs, Account, Preferences } from '@ts/types';
 import {
   PlatformTouchable,
   Illustration,
   CustomHeaderBar,
   TranslucentStatusBar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import {
   deleteEventList,
   updateEventPrefs,
@@ -21,14 +18,26 @@ import {
   modifyEventList,
   addEventQuick,
 } from '@redux/actions/contentData/events';
-import getArticleStyles from '../styles/Styles';
+import getStyles from '@styles/Styles';
+import {
+  State,
+  EventListItem,
+  EventQuickItem,
+  EventPrefs,
+  Account,
+  Preferences,
+  ArticleListItem,
+} from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import { EventListsStackParams } from '../index';
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';
-import QuickTypeModal from '../../components/QuickTypeModal';
-import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickLocationTypeModal from '../../components/QuickLocationTypeModal';
+import QuickSelectModal from '../../components/QuickSelectModal';
+import QuickTypeModal from '../../components/QuickTypeModal';
+import { EventConfigureScreenNavigationProp } from '../index';
+import getArticleStyles from '../styles/Styles';
+
 
 type EventListsProps = {
   lists: EventListItem[];
@@ -36,7 +45,7 @@ type EventListsProps = {
   preferences: Preferences;
   eventPrefs: EventPrefs;
   account: Account;
-  navigation: StackNavigationProp<EventListsStackParams, 'Configure'>;
+  navigation: EventConfigureScreenNavigationProp<'Configure'>;
 };
 
 type Category = {
@@ -61,7 +70,9 @@ function EventLists({
 
   const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
-  const [editingList, setEditingList] = React.useState(null);
+  const [editingList, setEditingList] = React.useState<EventListItem | ArticleListItem | null>(
+    null,
+  );
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
   const [quickType, setQuickType] = React.useState('');
@@ -159,7 +170,7 @@ function EventLists({
                   <DraggableFlatList
                     data={categories}
                     scrollPercent={5}
-                    keyExtractor={(c) => c.id}
+                    keyExtractor={(c: Category) => c.id}
                     ItemSeparatorComponent={() => <Divider />}
                     ListHeaderComponent={() => (
                       <View>
@@ -174,14 +185,22 @@ function EventLists({
                         <Divider />
                       </View>
                     )}
-                    renderItem={({ item, move, moveEnd }) => {
+                    renderItem={({
+                      item,
+                      move,
+                      moveEnd,
+                    }: {
+                      item: Category;
+                      move: () => any;
+                      moveEnd: () => any;
+                    }) => {
                       const enabled = eventPrefs.categories?.some((d) => d === item.id);
                       return (
                         <List.Item
                           key={item.id}
                           title={item.name}
                           description={item.disable ? 'Indisponible' : null}
-                          left={() => <List.Icon />}
+                          left={() => <View style={{ width: 56, height: 56 }} />}
                           onPress={enabled && !item.disable ? item.navigate : () => null}
                           onLongPress={move}
                           titleStyle={!item.disable ? {} : { color: colors.disabled }}
@@ -212,11 +231,13 @@ function EventLists({
                       );
                     }}
                     ListFooterComponent={() => <Divider />}
-                    onMoveEnd={({ to, from }) => {
+                    onMoveEnd={({ to, from }: { to: number; from: number }) => {
                       const tempCategories = eventPrefs.categories;
-                      const buffer = eventPrefs.categories[to];
-                      tempCategories[to] = eventPrefs.categories[from];
-                      tempCategories[from] = buffer;
+                      if (eventPrefs.categories && tempCategories) {
+                        const buffer = eventPrefs.categories[to];
+                        tempCategories[to] = eventPrefs.categories[from];
+                        tempCategories[from] = buffer;
+                      }
                       updateEventPrefs({ categories: tempCategories });
                     }}
                   />
@@ -247,8 +268,8 @@ function EventLists({
                     </View>
                   )}
                   ItemSeparatorComponent={() => <Divider />}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item, move }) => {
+                  keyExtractor={(item: Category) => item.id}
+                  renderItem={({ item, move }: { item: EventListItem; move: () => any }) => {
                     return (
                       <List.Item
                         title={item.name}
@@ -322,7 +343,7 @@ function EventLists({
                       />
                     );
                   }}
-                  onMoveEnd={({ from, to }) => {
+                  onMoveEnd={({ from, to }: { from: number; to: number }) => {
                     const fromList = lists[from];
                     const toList = lists[to];
 
