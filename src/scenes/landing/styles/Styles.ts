@@ -58,7 +58,6 @@ function getLandingStyles(theme: Theme) {
       width: '100%',
       maxWidth: 600,
       alignSelf: 'center',
-      backgroundColor: colors.background,
     },
     listContainer: {
       marginTop: 30,

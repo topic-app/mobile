@@ -1,7 +1,7 @@
 import * as Permissions from 'expo-permissions';
 import LocationService from 'react-native-geolocation-service';
 
-import { logger } from '@utils';
+import logger from './logger';
 
 export namespace Location {
   /**

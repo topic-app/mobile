@@ -14,6 +14,7 @@ import {
   ChipAddList,
   Searchbar,
   PlatformBackButton,
+  FullscreenIllustration,
 } from '@components/index';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
@@ -78,6 +79,9 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const scrollRef = React.createRef<FlatList>();
   const inputRef = React.createRef<Searchbar>();
 
+  // If the user has already been to landing, used to show back buttons
+  const hasUserAlreadyBeenToLanding = !!route.params?.goBack;
+
   const initialLocations: LocationItem[] = [
     ...location.schoolData
       .filter((sch) => location.schools.includes(sch._id))
@@ -113,6 +117,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const [buttonVisible, setButtonVisible] = React.useState(false);
   const [userLocation, setUserLocation] = React.useState(false);
   const [locationError, setLocationError] = React.useState(false);
+  const [searchFocused, setSearchFocused] = React.useState(false);
 
   if (Platform.OS === 'web' && !account.loggedIn) {
     window.location.replace('https://beta.topicapp.fr');
@@ -241,7 +246,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         addEventQuick('school', depId, selectedLocations.find((loc) => loc.id === depId)!.name),
       ),
     ]).then(() => {
-      if (route.params?.goBack) {
+      if (hasUserAlreadyBeenToLanding) {
         navigation.goBack();
       } else {
         navigation.popToTop();
@@ -259,6 +264,8 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const schools = searchText === '' ? schoolsNear : schoolsSearch;
   const departments = searchText === '' ? departmentsData : departmentsSearch;
 
+  // useMemo is used to perform memoization on expensive calculations
+  // chipListData will be re-generated if schools or departments change
   const chiplistData = React.useMemo(
     () => ({
       schools: {
@@ -286,7 +293,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   );
 
   const shouldCollapseHeader =
-    !!searchText || chipCategory !== 'schools' || chiplistData.schools.data.length !== 0;
+    searchFocused || chipCategory !== 'schools' || chiplistData.schools.data.length !== 0;
 
   const ListHeaderComponent = (
     <View>
@@ -416,36 +423,57 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
     <View style={styles.page}>
       <TranslucentStatusBar backgroundColor={colors.background} />
       <View style={{ height: insets.top }} />
-      <CollapsibleView collapsed={shouldCollapseHeader} style={{ height: '40%' }}>
-        <PlatformBackButton onPress={navigation.goBack} />
-        <View
-          style={[
-            landingStyles.headerContainer,
-            { marginBottom: 0, flex: 1, justifyContent: 'flex-end' },
-          ]}
+      <Animated.View
+        style={{
+          elevation: headerElevation,
+          backgroundColor: colors.background,
+          justifyContent: 'flex-end',
+        }}
+      >
+        <CollapsibleView
+          collapsed={shouldCollapseHeader && !userLocation}
+          style={{ height: userLocation ? 50 : '40%' }}
         >
-          <View style={landingStyles.centerIllustrationContainer}>
-            <Illustration name="location-select" height={200} width={200} />
-            <Text style={landingStyles.sectionTitle}>Choisissez votre école</Text>
+          {hasUserAlreadyBeenToLanding ? <PlatformBackButton onPress={navigation.goBack} /> : null}
+          <View
+            style={[
+              landingStyles.headerContainer,
+              { marginBottom: 0, flex: 1, justifyContent: 'flex-end' },
+            ]}
+          >
+            <View style={landingStyles.centerIllustrationContainer}>
+              <CollapsibleView collapsed={userLocation}>
+                <Illustration name="location-select" height={200} width={200} />
+              </CollapsibleView>
+              <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 20 : 0 }]}>
+                Choisissez votre école
+              </Text>
+            </View>
+            <CollapsibleView collapsed={userLocation}>
+              <View style={styles.contentContainer}>
+                <Text style={{ textAlign: 'center', color: colors.subtext }}>
+                  Séléctionnez vos écoles et lieux pour suivre la publication d&apos;articles et
+                  évènements.
+                </Text>
+              </View>
+            </CollapsibleView>
           </View>
-          <View style={styles.contentContainer}>
-            <Text style={{ textAlign: 'center', color: colors.subtext }}>
-              Séléctionnez vos écoles et lieux pour suivre la publication d&apos;articles et
-              évènements.
-            </Text>
-          </View>
+        </CollapsibleView>
+        <View style={landingStyles.searchContainer}>
+          <Searchbar
+            ref={inputRef}
+            icon={shouldCollapseHeader && hasUserAlreadyBeenToLanding ? 'arrow-left' : undefined}
+            onIconPress={
+              shouldCollapseHeader && hasUserAlreadyBeenToLanding ? navigation.goBack : undefined
+            }
+            placeholder="Rechercher"
+            value={searchText}
+            onChangeText={setSearchText}
+            onIdle={onSearchChange}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+          />
         </View>
-      </CollapsibleView>
-      <Animated.View style={[landingStyles.searchContainer, { elevation: headerElevation }]}>
-        <Searchbar
-          ref={inputRef}
-          icon={shouldCollapseHeader ? 'arrow-left' : undefined}
-          onIconPress={shouldCollapseHeader ? navigation.goBack : undefined}
-          placeholder="Rechercher"
-          value={searchText}
-          onChangeText={setSearchText}
-          onIdle={onSearchChange}
-        />
       </Animated.View>
       <Animated.FlatList<LocationItem>
         ref={scrollRef}
