@@ -52,7 +52,7 @@ function DayView({
 
   React.useEffect(() => {
     if (scrollToFirst) {
-      if (initPosition && scrollViewRef) {
+      if (initPosition && scrollViewRef && scrollViewRef.current) {
         scrollViewRef.current.scrollTo({
           x: 0,
           y: initPosition,
@@ -158,12 +158,19 @@ function DayView({
                 {event.title || 'Évènement'}
               </Text>
               {numberOfLines > 2 && (
-                <Text style={styles.eventTimes} numberOfLines={1}>
-                  <Icon name="clock" />
-                  {moment(event.start).format(formatTime)}
-                  <Icon name="chevron-right" />
-                  {moment(event.end).format(formatTime)}
-                </Text>
+                <View>
+                  <Text style={styles.eventTimes} numberOfLines={1}>
+                    <Icon name="clock" />
+                    {moment(event.start).format(formatTime)}
+                    <Icon name="chevron-right" />
+                    {moment(event.end).format(formatTime)}
+                  </Text>
+                  {event.address?.shortName ? (
+                    <Text style={styles.eventTimes} numberOfLines={1}>
+                      {event.address?.shortName}
+                    </Text>
+                  ) : null}
+                </View>
               )}
               {numberOfLines > 1 && (
                 <Text numberOfLines={numberOfLines - 1} style={[styles.eventSummary]}>

@@ -13,7 +13,7 @@ import {
 import { eventAdd } from '@redux/actions/apiActions/events';
 import { clearEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import { State, EventRequestState, EventCreationData } from '@ts/types';
+import { State, EventRequestState, EventCreationData, ProgramEntry } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import EventAddPageContact from '../components/AddContact';
@@ -38,7 +38,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
 
-  const add = (parser?: 'markdown' | 'plaintext') => {
+  const add = (program: ProgramEntry[]) => {
     eventAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -53,12 +53,12 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       location: creationData.location,
       group: creationData.group,
       places: creationData.places,
-      parser: parser || creationData.parser,
+      parser: creationData.parser,
       preferences: {
         comments: true,
       },
       tags: creationData.tags,
-      program: creationData.program,
+      program: program || creationData.program,
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearEventCreationData();

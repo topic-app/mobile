@@ -24,7 +24,7 @@ import ProgramAddModal from './ProgramAddModal';
 type Props = StepperViewPageProps & {
   account: Account;
   creationData?: EventCreationData;
-  add: (parser: Content['parser']) => void;
+  add: (eventProgram: ProgramEntry[]) => void;
 };
 
 const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData }) => {
@@ -38,8 +38,8 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
   const [eventProgram, setProgram] = React.useState<ProgramEntry[]>([]);
   const [startDate, setStartDate] = React.useState<Date>(new Date(0));
   const submit = () => {
-    updateEventCreationData({ parser: 'markdown', program: eventProgram });
-    add('markdown');
+    updateEventCreationData({ program: eventProgram });
+    add(eventProgram);
   };
   const addProgram = (program: ProgramEntry) => {
     setProgram([...eventProgram, program]);
