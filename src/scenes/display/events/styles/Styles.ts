@@ -19,6 +19,9 @@ function getEventStyles(theme: Theme) {
       marginTop: 20,
       marginHorizontal: 20,
     },
+    username: {
+      color: colors.softContrast,
+    },
     time: {
       fontWeight: 'bold',
       marginLeft: 10,
@@ -46,9 +49,6 @@ function getEventStyles(theme: Theme) {
       padding: 0,
       paddingBottom: 10,
       paddingLeft: 2,
-    },
-    username: {
-      color: colors.softContrast,
     },
     commentBody: {},
     disabledText: {

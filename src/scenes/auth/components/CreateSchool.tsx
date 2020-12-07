@@ -63,7 +63,7 @@ const AuthCreatePageSchool: React.FC<Props> = ({ next, prev, location, landing }
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={prev}
+          onPress={() => prev()}
           style={{ flex: 1, marginRight: 5 }}
         >
           Retour

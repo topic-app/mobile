@@ -30,6 +30,7 @@ import {
   eventReport,
   eventVerificationApprove,
   eventDelete,
+  eventMessagesAdd,
 } from '@redux/actions/apiActions/events';
 import { addEventRead } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
@@ -46,10 +47,11 @@ import {
   Content,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl } from '@utils/index';
+import { useTheme, getImageUrl, handleUrl, checkPermission } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
+import AddMessageModal from '../components/AddMessageModal';
 import type { EventDisplayScreenNavigationProp, EventDisplayStackParams } from '../index';
 import getEventStyles from '../styles/Styles';
 import EventDisplayContact from './Contact';
@@ -141,6 +143,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
   const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
   const [isListModalVisible, setListModalVisible] = React.useState(false);
+  const [isMessageModalVisible, setMessageModalVisible] = React.useState(false);
 
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
   const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
@@ -245,11 +248,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                   title: 'Signaler',
                   onPress: () => setArticleReportModalVisible(true),
                 },
-                ...(account.permissions?.some(
-                  (p) =>
-                    p.permission === Permissions.EVENT_DELETE &&
-                    (p.scope.groups.includes(id) || p.scope.everywhere),
-                )
+                ...(checkPermission(account, {
+                  permission: Permissions.EVENT_DELETE,
+                  scope: { groups: [event?.group?._id] },
+                })
                   ? [
                       {
                         title: 'Supprimer',
@@ -365,6 +367,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                         event={event}
                         navigation={navigation}
                         setCommentModalVisible={setCommentModalVisible}
+                        setMessageModalVisible={setMessageModalVisible}
                         setFocusedComment={setFocusedComment}
                         verification={verification}
                         commentsDisplayed={commentsDisplayed}
@@ -519,6 +522,17 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           commentAdd(publisher, content, parent, 'event').then(() =>
             updateComments('initial', { parentId: id }),
           )
+        }
+      />
+      <AddMessageModal
+        visible={isMessageModalVisible}
+        setVisible={setMessageModalVisible}
+        id={id}
+        state={reqState.events}
+        defaultGroup={event?.group?._id}
+        key={event?.group?._id || 'unk'}
+        add={(group: string, content: Content, type: 'high' | 'medium' | 'low') =>
+          eventMessagesAdd(id, group, content, type).then(fetch)
         }
       />
       <ReportModal

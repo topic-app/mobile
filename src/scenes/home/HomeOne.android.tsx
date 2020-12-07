@@ -13,11 +13,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { ErrorMessage, Avatar, Illustration, CollapsibleView } from '@components/index';
+import { Permissions } from '@constants/index';
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import getNavigatorStyles from '@styles/NavStyles';
 import { Account, LocationList, State } from '@ts/types';
-import { Format, useTheme } from '@utils/index';
+import { checkPermission, Format, useTheme } from '@utils/index';
 
 import { MainScreenNavigationProp } from '../Main';
 import HomeTwoNavigator, { HomeTwoNavParams } from './HomeTwo';
@@ -208,14 +209,22 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               });
             }}
           />
-          {account.permissions?.some(
-            (p) =>
-              p?.permission === 'article.verification.view' ||
-              p?.permission === 'event.verification.view' ||
-              p?.permission === 'petition.verification.view' ||
-              p?.permission === 'place.verification.view' ||
-              p?.permission === 'group.verification.view',
-          ) && (
+          {(checkPermission(account, {
+            permission: Permissions.ARTICLE_VERIFICATION_VIEW,
+            scope: {},
+          }) ||
+            checkPermission(account, {
+              permission: Permissions.EVENT_VERIFICATION_VIEW,
+              scope: {},
+            }) ||
+            checkPermission(account, {
+              permission: Permissions.GROUP_VERIFICATION_VIEW,
+              scope: {},
+            }) ||
+            checkPermission(account, {
+              permission: Permissions.PLACE_VERIFICATION_VIEW,
+              scope: {},
+            })) && (
             <Drawer.Item
               label="Modération"
               icon="shield-check-outline"

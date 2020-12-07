@@ -68,7 +68,7 @@ function ArticleAddStackNavigator() {
         options={{
           ...HeaderConfig,
           title: 'Localisation',
-          headerShown: true,
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

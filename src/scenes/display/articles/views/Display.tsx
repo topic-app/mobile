@@ -42,7 +42,7 @@ import {
   Content as ContentType,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl } from '@utils/index';
+import { useTheme, getImageUrl, handleUrl, checkPermission } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
@@ -573,11 +573,10 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                   title: 'Signaler',
                   onPress: () => setArticleReportModalVisible(true),
                 },
-                ...(account.permissions?.some(
-                  (p) =>
-                    p.permission === Permissions.ARTICLE_DELETE &&
-                    (p.scope.groups.includes(id) || p.scope.everywhere),
-                )
+                ...(checkPermission(account, {
+                  permission: Permissions.ARTICLE_DELETE,
+                  scope: { groups: [article?.group?._id || ''] },
+                })
                   ? [
                       {
                         title: 'Supprimer',

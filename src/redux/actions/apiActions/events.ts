@@ -1,5 +1,6 @@
 import Store from '@redux/store';
 import { AppThunk, EventCreationData, UPDATE_EVENTS_STATE } from '@ts/redux';
+import { Content } from '@ts/types';
 import { request } from '@utils/index';
 
 import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
@@ -98,8 +99,83 @@ function eventAddCreator({
   };
 }
 
+type eventMessagesAddProps = {
+  content: Content;
+  group: string;
+  type?: 'high' | 'medium' | 'low';
+  event: string;
+};
+
+function eventMessagesAddCreator({
+  content,
+  group,
+  type = 'medium',
+  event,
+}: eventMessagesAddProps): AppThunk<Promise<{ _id: string }>> {
+  return (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_EVENTS_STATE,
+        data: {
+          messages_add: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        'events/messages/add',
+        'post',
+        {
+          content,
+          type,
+          group,
+          eventId: event,
+        },
+        true,
+      )
+        .then((result) => {
+          dispatch({
+            type: UPDATE_EVENTS_STATE,
+            data: {
+              messages_add: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve(result.data as { _id: string });
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_EVENTS_STATE,
+            data: {
+              messages_add: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
 async function eventAdd(data: EventCreationData) {
   return Store.dispatch(eventAddCreator(data));
+}
+
+async function eventMessagesAdd(
+  event: string,
+  group: string,
+  content: Content,
+  type: 'high' | 'medium' | 'low',
+) {
+  return Store.dispatch(eventMessagesAddCreator({ event, group, content, type }));
 }
 
 async function eventVerificationApprove(id: string) {
@@ -136,4 +212,4 @@ async function eventDelete(id: string) {
   );
 }
 
-export { eventAdd, eventReport, eventVerificationApprove, eventDelete };
+export { eventAdd, eventReport, eventVerificationApprove, eventDelete, eventMessagesAdd };
