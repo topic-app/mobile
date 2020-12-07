@@ -10,7 +10,7 @@ import { fetchLocationData } from '@redux/actions/data/location';
 import getNavigatorStyles from '@styles/NavStyles';
 import getStyles from '@styles/Styles';
 import { Account, LocationList, State } from '@ts/types';
-import { useTheme, logger, accountHasPermissions, Format } from '@utils/index';
+import { useTheme, logger, Format, checkPermission } from '@utils/index';
 
 import { MoreScreenNavigationProp } from '../../index';
 
@@ -122,12 +122,22 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
                   });
                 }}
               />
-              {accountHasPermissions(account, [
-                Permissions.ARTICLE_VERIFICATION_VIEW,
-                Permissions.EVENT_VERIFICATION_VIEW,
-                Permissions.PETITION_VERIFICATION_VIEW,
-                Permissions.GROUP_VERIFICATION_VIEW,
-              ]) && (
+              {(checkPermission(account, {
+                permission: Permissions.ARTICLE_VERIFICATION_VIEW,
+                scope: {},
+              }) ||
+                checkPermission(account, {
+                  permission: Permissions.EVENT_VERIFICATION_VIEW,
+                  scope: {},
+                }) ||
+                checkPermission(account, {
+                  permission: Permissions.GROUP_VERIFICATION_VIEW,
+                  scope: {},
+                }) ||
+                checkPermission(account, {
+                  permission: Permissions.PLACE_VERIFICATION_VIEW,
+                  scope: {},
+                })) && (
                 <List.Item
                   title="Modération"
                   left={() => <List.Icon icon="shield-check-outline" />}

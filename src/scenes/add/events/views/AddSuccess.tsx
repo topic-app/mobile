@@ -7,10 +7,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Illustration, ErrorMessage } from '@components/index';
+import { Permissions } from '@constants/index';
 import { eventVerificationApprove } from '@redux/actions/apiActions/events';
 import getStyles from '@styles/Styles';
 import { State, EventRequestState, Account } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, useTheme } from '@utils/index';
 
 import type { EventAddScreenNavigationProp, EventAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -72,12 +73,10 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
               <Text>Vous serez notifiés par email dès que l&apos;évènement est approuvé.</Text>
             </View>
           )}
-          {account.permissions?.some(
-            (p) =>
-              p.permission === 'event.verification.approve' &&
-              (p.scope?.groups?.includes(creationData?.group || '') ||
-                (p.group === creationData?.group && p.scope?.self)),
-          ) &&
+          {checkPermission(account, {
+            permission: Permissions.EVENT_VERIFICATION_APPROVE,
+            scope: { groups: [creationData?.group || ''] },
+          }) &&
             (approved ? (
               <Text>Evènement approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
             ) : (

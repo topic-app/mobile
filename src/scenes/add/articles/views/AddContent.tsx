@@ -11,7 +11,7 @@ import {
   SafeAreaView,
 } from '@components/index';
 import { RichToolbar, RichEditor } from '@components/richEditor/index';
-import { Config } from '@constants/index';
+import { Config, Permissions } from '@constants/index';
 import { articleAdd } from '@redux/actions/apiActions/articles';
 import { upload } from '@redux/actions/apiActions/upload';
 import {
@@ -20,7 +20,7 @@ import {
 } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, checkPermission } from '@utils/index';
 
 import LinkAddModal from '../components/LinkAddModal';
 import YoutubeAddModal from '../components/YoutubeAddModal';
@@ -177,8 +177,13 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <RichToolbar
               getEditor={() => textEditorRef.current!}
               actions={[
-                ...(account.permissions?.some(
-                  (p) => p.permission === 'content.upload' && p.group === creationData.group,
+                ...(checkPermission(
+                  account,
+                  {
+                    permission: Permissions.CONTENT_UPLOAD,
+                    scope: {},
+                  },
+                  creationData.group || '',
                 )
                   ? ['insertImage']
                   : []),

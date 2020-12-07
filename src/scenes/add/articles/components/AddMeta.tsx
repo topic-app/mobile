@@ -12,7 +12,7 @@ import { upload } from '@redux/actions/apiActions/upload';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleCreationData, UploadRequestState, Account } from '@ts/types';
-import { useTheme, getImageUrl, accountHasPermissions } from '@utils/index';
+import { useTheme, getImageUrl, checkPermission } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -47,7 +47,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
       .max(100, 'Le titre doit contenir moins de 100 caractères')
       .required('Titre requis'),
     summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères.'),
-    file: Yup.string(),
+    file: Yup.mixed(),
   });
 
   return (
@@ -100,7 +100,10 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               autoCorrect={false}
               autoCapitalize="none"
             />
-            {accountHasPermissions(account, [[Permissions.CONTENT_UPLOAD, creationData.group!]]) ? (
+            {checkPermission(account, {
+              permission: Permissions.CONTENT_UPLOAD,
+              scope: { groups: [creationData.group || ''] },
+            }) ? (
               <View>
                 {values.file && !state.upload?.loading && (
                   <View style={styles.container}>
@@ -185,7 +188,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}
-                onPress={prev}
+                onPress={() => prev()}
                 style={{ flex: 1, marginRight: 5 }}
               >
                 Retour

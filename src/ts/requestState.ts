@@ -41,7 +41,10 @@ export type SchoolRequestState = StandardRequestState & { near: RequestStateComp
 export type TagRequestState = StandardRequestState;
 export type UserRequestState = StandardRequestState & { follow: RequestState };
 export type DepartmentRequestState = StandardRequestState;
-export type EventRequestState = StandardRequestState;
+export type EventRequestState = StandardRequestState & {
+  messages_add: RequestState;
+  messages_delete: RequestState;
+};
 export type GroupRequestState = StandardRequestState & {
   follow: RequestState;
   member_add: RequestState;

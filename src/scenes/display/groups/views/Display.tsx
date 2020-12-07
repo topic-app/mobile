@@ -37,6 +37,7 @@ import {
   SafeAreaView,
   Banner,
 } from '@components/index';
+import { Permissions } from '@constants/index';
 import { searchArticles } from '@redux/actions/api/articles';
 import { searchEvents } from '@redux/actions/api/events';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
@@ -68,7 +69,7 @@ import {
   UserPreload,
   GroupVerification,
 } from '@ts/types';
-import { useTheme, logger, Format } from '@utils/index';
+import { useTheme, logger, Format, checkPermission } from '@utils/index';
 
 import ContentTabView from '../../components/ContentTabView';
 import AddUserRoleModal from '../components/AddUserRoleModal';
@@ -256,13 +257,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <PlatformBackButton onPress={navigation.goBack} />
             <View style={{ flexDirection: 'row' }}>
-              {account.loggedIn &&
-                !group.preload &&
-                account.permissions?.some(
-                  (p) =>
-                    p.permission === 'group.modify' &&
-                    (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
-                ) && (
+              {!group.preload &&
+                checkPermission(account, {
+                  permission: Permissions.GROUP_MODIFY,
+                  scope: { groups: [id] },
+                }) && (
                   <IconButton
                     icon="pencil"
                     onPress={() => {
@@ -403,26 +402,24 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       <Paragraph style={{ color: colors.disabled }}>Groupe {group.type}</Paragraph>
                       <Paragraph numberOfLines={5}>{group.summary}</Paragraph>
                     </View>
-                    {account.loggedIn &&
-                      account.permissions?.some(
-                        (p) =>
-                          p.permission === 'group.modify' &&
-                          (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
-                      ) && (
-                        <View onResponderTerminationRequest={() => false}>
-                          <IconButton
-                            icon="pencil-outline"
-                            onPress={() => {
-                              setEditingGroup({
-                                shortName: group.shortName,
-                                summary: group.summary,
-                                description: group.description?.data,
-                              });
-                              setEditGroupDescriptionModalVisible(true);
-                            }}
-                          />
-                        </View>
-                      )}
+                    {checkPermission(account, {
+                      permission: Permissions.GROUP_MODIFY,
+                      scope: { groups: [id] },
+                    }) && (
+                      <View onResponderTerminationRequest={() => false}>
+                        <IconButton
+                          icon="pencil-outline"
+                          onPress={() => {
+                            setEditingGroup({
+                              shortName: group.shortName,
+                              summary: group.summary,
+                              description: group.description?.data,
+                            });
+                            setEditGroupDescriptionModalVisible(true);
+                          }}
+                        />
+                      </View>
+                    )}
                   </View>
                   {group.description?.data ? (
                     <View>
@@ -524,12 +521,10 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         badgeColor={colors.solid.gold}
                         avatar={account.accountInfo?.user?.info?.avatar}
                       />
-                      {account.loggedIn &&
-                        account.permissions?.some(
-                          (p) =>
-                            p.permission === 'group.members.modify' &&
-                            (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
-                        ) &&
+                      {checkPermission(account, {
+                        permission: Permissions.GROUP_MEMBERS_MODIFY,
+                        scope: { groups: [id] },
+                      }) &&
                         (state.member_modify?.loading &&
                         userToAdd?._id === account.accountInfo.accountId ? (
                           <ActivityIndicator size="large" color={colors.primary} />
@@ -594,12 +589,10 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         }
                       />
                     </View>
-                    {account.loggedIn &&
-                      account.permissions?.some(
-                        (p) =>
-                          p.permission === 'group.members.modify' &&
-                          (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
-                      ) &&
+                    {checkPermission(account, {
+                      permission: Permissions.GROUP_MEMBERS_MODIFY,
+                      scope: { groups: [id] },
+                    }) &&
                       (state.member_modify?.loading && userToAdd?._id === mem.user?._id ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                       ) : (
@@ -616,12 +609,10 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           style={{ marginRight: 20 }}
                         />
                       ))}
-                    {account.loggedIn &&
-                      account.permissions?.some(
-                        (p) =>
-                          p.permission === 'group.members.delete' &&
-                          (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
-                      ) &&
+                    {checkPermission(account, {
+                      permission: Permissions.GROUP_MEMBERS_DELETE,
+                      scope: { groups: [id] },
+                    }) &&
                       (state.member_delete?.loading && userToAdd?._id === mem.user?._id ? (
                         <ActivityIndicator size="large" color={colors.primary} />
                       ) : (
@@ -651,27 +642,25 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       ))}
                   </View>
                 ))}
-              {account.loggedIn &&
-                account.permissions?.some(
-                  (p) =>
-                    p.permission === 'group.members.add' &&
-                    (p.scope?.groups?.includes(id) || (p.group === id && p?.scope?.self)),
-                ) && (
-                  <View style={styles.container}>
-                    <Button
-                      mode="outlined"
-                      uppercase={Platform.OS !== 'ios'}
-                      onPress={() => {
-                        setCurrentMembers(group.members || []);
-                        setCurrentRoles(group.roles || []);
-                        setModifying(false);
-                        setAddUserModalVisible(true);
-                      }}
-                    >
-                      Ajouter
-                    </Button>
-                  </View>
-                )}
+              {checkPermission(account, {
+                permission: Permissions.GROUP_MEMBERS_ADD,
+                scope: { groups: [id] },
+              }) && (
+                <View style={styles.container}>
+                  <Button
+                    mode="outlined"
+                    uppercase={Platform.OS !== 'ios'}
+                    onPress={() => {
+                      setCurrentMembers(group.members || []);
+                      setCurrentRoles(group.roles || []);
+                      setModifying(false);
+                      setAddUserModalVisible(true);
+                    }}
+                  >
+                    Ajouter
+                  </Button>
+                </View>
+              )}
               <View style={{ height: 40 }} />
               {!verification && (
                 <ContentTabView

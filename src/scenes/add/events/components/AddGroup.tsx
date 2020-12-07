@@ -5,10 +5,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { StepperViewPageProps } from '@components/index';
+import { Permissions } from '@constants/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
 import { Account, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -32,7 +33,14 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const groupsWithPermission = account.groups.filter((g) =>
-    account.permissions.some((p) => p.group === g._id && p.permission === 'event.add'),
+    checkPermission(
+      account,
+      {
+        permission: Permissions.EVENT_ADD,
+        scope: {},
+      },
+      g._id,
+    ),
   );
 
   if (!account.loggedIn) {

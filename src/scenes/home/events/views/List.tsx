@@ -11,6 +11,7 @@ import {
   EVENT_CARD_HEADER_HEIGHT,
   Banner,
 } from '@components/index';
+import { Permissions } from '@constants/index';
 import {
   updateUpcomingEvents,
   updatePassedEvents,
@@ -30,7 +31,7 @@ import {
   EventRequestState,
   Account,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, useTheme } from '@utils/index';
 
 import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import EventListCard from '../components/Card';
@@ -458,7 +459,10 @@ const EventList: React.FC<EventListProps> = ({
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions.some((p) => p.permission === 'event.add') && (
+      {checkPermission(account, {
+        permission: Permissions.EVENT_ADD,
+        scope: {},
+      }) && (
         <FAB
           icon="plus"
           onPress={() =>
