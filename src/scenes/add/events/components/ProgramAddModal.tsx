@@ -75,7 +75,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
     message: '',
   });
   const [currentDuration, setCurrentDuration] = React.useState({
-    value: '',
+    value: '1',
     error: false,
     valid: true,
     message: '',
@@ -87,6 +87,33 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   });
 
   const jan1970 = new Date(0);
+
+  const durations = [
+    {
+      key: '0.25',
+      title: '15m',
+    },
+    {
+      key: '0.5',
+      title: '30m',
+    },
+    {
+      key: '0.74',
+      title: '45m',
+    },
+    {
+      key: '1',
+      title: '1h',
+    },
+    {
+      key: '1.5',
+      title: '1h30',
+    },
+    ...Array.from({ length: 23 }, (x, i) => i + 2).map((e) => ({
+      key: e.toString(),
+      title: `${e.toString()}h`,
+    })),
+  ];
 
   function setTitle(data: Partial<InputStateType>) {
     tempTitle = { ...currentTitle, ...(tempTitle ?? {}), ...data };
@@ -118,15 +145,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   }
 
   function getEndDate() {
-    let endDate: number;
-    if (durationType === 'minutes') {
-      endDate = Number(currentDuration.value) * 6e4 + date.valueOf();
-    } else if (durationType === 'hours') {
-      endDate = Number(currentDuration.value) * 3.6e6 + date.valueOf();
-    } else {
-      endDate = Number(currentDuration.value) * 8.64e7 + date.valueOf();
-    }
-    return new Date(endDate);
+    return new Date(Number(currentDuration.value) * 3.6e6 + date.valueOf());
   }
 
   function validateTitleInput(title: string) {
@@ -444,65 +463,15 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
               {currentStartDate.message}
             </HelperText>
           )}
-          <View style={{ height: 20 }} />
-          <View style={eventStyles.textInputContainer}>
-            <List.Subheader> Durée </List.Subheader>
-            <View style={{ flexDirection: 'row' }}>
-              <TextInput
-                ref={durationInput}
-                value={currentDuration.value}
-                error={currentDuration.error}
-                disableFullscreenUI
-                onSubmitEditing={() => {
-                  blurInputs();
-                  checkDuration();
-                }}
-                autoCorrect={false}
-                theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-                mode="flat"
-                keyboardType="number-pad"
-                style={{ width: 160, height: 50 }}
-                onChangeText={(text) => {
-                  setDuration({ value: text });
-                }}
-              />
-              <Menu
-                visible={isMenuVisible}
-                onDismiss={() => setMenuVisible(false)}
-                anchor={
-                  <Button
-                    onPress={() => setMenuVisible(true)}
-                    mode="outlined"
-                    style={{ width: 160, height: 50, padding: 10, zIndex: 100000 }}
-                  >
-                    {durationType === 'minutes'
-                      ? 'minutes'
-                      : durationType === 'hours'
-                      ? 'heures'
-                      : 'jours'}
-                  </Button>
-                }
-              >
-                <Menu.Item
-                  onPress={() => {
-                    setDurationType('minutes');
-                  }}
-                  title="minutes"
-                />
-                <Menu.Item
-                  onPress={() => {
-                    setDurationType('hours');
-                  }}
-                  title="heures"
-                />
-                <Menu.Item
-                  onPress={() => {
-                    setDurationType('days');
-                  }}
-                  title="jours"
-                />
-              </Menu>
-            </View>
+          <View>
+            <TabChipList
+              sections={[{ key: 'main', data: durations }]}
+              selected={currentDuration.value}
+              setSelected={(data) => {
+                console.log(data);
+                setDuration({ value: data });
+              }}
+            />
             {currentDuration.error && (
               <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
                 {currentDuration.message}

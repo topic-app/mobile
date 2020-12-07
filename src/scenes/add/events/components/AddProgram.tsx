@@ -1,4 +1,5 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
 import React from 'react';
 import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
 import { TextInput, Button, IconButton, List, Text } from 'react-native-paper';
@@ -92,7 +93,14 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
             }}
           >
             <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
-              <InlineCard key={program._id} icon="timetable" title={program.title} />
+              <InlineCard
+                key={program._id}
+                icon="timetable"
+                title={program.title}
+                subtitle={`${moment(program.duration?.start).format('ddd D H:mm')} à ${moment(
+                  program.duration?.end,
+                ).format('ddd D H:mm')}`}
+              />
             </View>
             <View style={{ flexGrow: 1 }}>
               <IconButton
