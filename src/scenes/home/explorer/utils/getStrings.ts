@@ -68,7 +68,7 @@ export function getStrings(place: ExplorerLocation.Location): LocationStrings {
       break;
     case 'school':
       strings.icon = 'school';
-      strings.title = place.data.name || place.data.displayName;
+      strings.title = place.data.displayName ?? place.data.name;
       strings.subtitle = place.data.shortName;
       strings.detail = Format.schoolTypes(place.data.types);
       strings.addresses = [Format.address(place.data.address)];

@@ -54,7 +54,7 @@ function getPlaceLabels(place: EventPlace) {
       }
       const { number, street, extra, city } = associatedSchool.address.address;
       return {
-        title: associatedSchool.displayName,
+        title: associatedSchool.name,
         description: `${
           associatedSchool.address.shortName || `${number}, ${street} ${extra}`
         }, ${city}`,

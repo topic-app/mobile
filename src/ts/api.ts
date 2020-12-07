@@ -69,7 +69,7 @@ type SchoolBase = {
 
 export type SchoolPreload = SchoolBase & {
   preload: true;
-  displayName: string;
+  displayName?: string;
   address?: Address;
   image?: Image;
   departments?: DepartmentPreload[];

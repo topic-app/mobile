@@ -83,7 +83,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
                     }
                     title={
                       place.type === 'standalone'
-                        ? Format.shortAddress(place.address)
+                        ? Format.address(place.address)
                         : place.tempName ?? 'Lieu inconnu'
                     }
                     onPress={() => {

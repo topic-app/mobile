@@ -456,7 +456,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <InlineCard
                   key={school._id}
                   icon="school"
-                  title={school.displayName}
+                  title={school.name}
                   subtitle={
                     school?.address ? Format.shortAddress(school.address) : school?.shortName
                   }

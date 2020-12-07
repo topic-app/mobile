@@ -55,12 +55,7 @@ function EventPlaceSelectModal({
         data = schools.search.map((school) => ({
           _id: school._id,
           name: school.displayName || school.name,
-          description: `${school.address?.address?.city} - ${
-            school.address?.departments?.length
-              ? school.address?.departments[0]?.displayName ||
-                school.address?.departments[0]?.displayName
-              : 'Département inconnu'
-          }`,
+          description: school.address && Format.shortAddress(school.address),
           type: 'school',
           associatedSchool: school,
         }));
@@ -68,11 +63,7 @@ function EventPlaceSelectModal({
         data = schools.data.map((school) => ({
           _id: school._id,
           name: school.displayName || school.name,
-          description: `${school.address?.address?.city} - ${
-            school?.departments?.length
-              ? school?.departments[0]?.displayName || school?.departments[0]?.displayName
-              : 'Département inconnu'
-          }`,
+          description: school.address && Format.shortAddress(school.address),
           type: 'school',
           // Convert any School type to a SchoolPreload type
           associatedSchool: { ...school, preload: true, displayName: school.name },
@@ -88,12 +79,7 @@ function EventPlaceSelectModal({
         data = places.search.map((place) => ({
           _id: place._id,
           name: place.displayName || place.name,
-          description: `${place.address?.address?.city} - ${
-            place.address?.departments?.length
-              ? place.address?.departments[0]?.displayName ||
-                place.address?.departments[0]?.displayName
-              : 'Département inconnu'
-          }`,
+          description: Format.shortAddress(place.address),
           type: 'place',
           associatedPlace: place,
         }));
@@ -101,12 +87,7 @@ function EventPlaceSelectModal({
         data = places.data.map((place) => ({
           _id: place._id,
           type: 'place',
-          description: `${place.address?.address?.city} - ${
-            place.address?.departments?.length
-              ? place.address?.departments[0]?.displayName ||
-                place.address?.departments[0]?.displayName
-              : 'Département inconnu'
-          }`,
+          description: Format.shortAddress(place.address),
           name: place.displayName || place.name,
           // Convert any School type to a SchoolPreload type
           associatedPlace: place,

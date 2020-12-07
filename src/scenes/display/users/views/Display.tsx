@@ -392,7 +392,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                       <InlineCard
                         key={school._id}
                         icon="school"
-                        title={school.displayName}
+                        title={school.name}
                         subtitle={`${
                           school.address?.address
                             ? getAddressString(school.address?.address)
