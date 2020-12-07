@@ -52,7 +52,7 @@ export function getStrings(place: ExplorerLocation.Location): LocationStrings {
       strings.detail = Format.shortEventDate(place.data.duration);
       strings.addresses = place.data.places.map((p) => {
         if (p.type === 'standalone') {
-          return Format.shortAddress(p.address);
+          return Format.address(p.address);
         }
         // Si le serveur envoie les bonnes données, on devrait jamais
         // atteindre ce cas
@@ -64,14 +64,14 @@ export function getStrings(place: ExplorerLocation.Location): LocationStrings {
       strings.title = place.data.name || place.data.displayName;
       strings.description = place.data.summary;
       strings.detail = Format.placeTypes(place.data.types);
-      strings.addresses = [Format.shortAddress(place.data.address)];
+      strings.addresses = [Format.address(place.data.address)];
       break;
     case 'school':
       strings.icon = 'school';
       strings.title = place.data.name || place.data.displayName;
       strings.subtitle = place.data.shortName;
       strings.detail = Format.schoolTypes(place.data.types);
-      strings.addresses = [Format.shortAddress(place.data.address)];
+      strings.addresses = [Format.address(place.data.address)];
       break;
     case 'secret':
       strings.icon = 'egg-easter';
@@ -88,7 +88,7 @@ export function getStrings(place: ExplorerLocation.Location): LocationStrings {
           other: 'autre',
         },
       );
-      strings.addresses = [Format.shortAddress(place.data.address)];
+      strings.addresses = [Format.address(place.data.address)];
   }
 
   return strings;
