@@ -375,17 +375,28 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                       />
                     ),
                   },
-                  {
-                    key: 'program',
-                    title: 'Programme',
-                    component: <EventDisplayProgram event={event} />,
-                    onVisible: () => scrollViewRef.current?.scrollToEnd({ animated: true }),
-                  },
-                  {
-                    key: 'contact',
-                    title: 'Contact',
-                    component: <EventDisplayContact event={event} navigation={navigation} />,
-                  },
+                  ...(Array.isArray(event.program) && event.program.length
+                    ? [
+                        {
+                          key: 'program',
+                          title: 'Programme',
+                          component: <EventDisplayProgram event={event} />,
+                          onVisible: () => scrollViewRef.current?.scrollToEnd({ animated: true }),
+                        },
+                      ]
+                    : []),
+                  ...(event.contact?.phone ||
+                  event.contact?.email ||
+                  event.members?.length ||
+                  event.contact?.other?.length
+                    ? [
+                        {
+                          key: 'contact',
+                          title: 'Contact',
+                          component: <EventDisplayContact event={event} navigation={navigation} />,
+                        },
+                      ]
+                    : []),
                 ]}
               />
               {verification && (
