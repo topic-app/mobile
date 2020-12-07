@@ -38,7 +38,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
 
-  const add = (program: ProgramEntry[]) => {
+  const add = (program?: ProgramEntry[]) => {
     eventAdd({
       title: creationData.title,
       summary: creationData.summary,
