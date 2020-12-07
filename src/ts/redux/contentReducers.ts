@@ -203,6 +203,7 @@ export type EventCreationData = {
     comments?: boolean;
   };
   tags?: string[];
+  image?: Image;
   program?: ProgramEntry[];
 };
 

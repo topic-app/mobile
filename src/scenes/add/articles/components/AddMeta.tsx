@@ -76,10 +76,6 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               onBlur={handleBlur('title')}
               onSubmitEditing={() => summaryInput.current?.focus()}
               style={articleStyles.textInput}
-              textContentType="username"
-              autoCompleteType="username"
-              autoCorrect={false}
-              autoCapitalize="none"
               autoFocus
             />
             <FormTextInput
@@ -95,10 +91,6 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               onBlur={handleBlur('summary')}
               onSubmitEditing={() => handleSubmit()}
               style={articleStyles.textInput}
-              textContentType="username"
-              autoCompleteType="username"
-              autoCorrect={false}
-              autoCapitalize="none"
             />
             {accountHasPermissions(account, [[Permissions.CONTENT_UPLOAD, creationData.group!]]) ? (
               <View>
