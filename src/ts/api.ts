@@ -57,34 +57,35 @@ export type Duration = {
 
 export type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
 
-export type SchoolPreload = {
+type SchoolBase = {
   _id: string;
   name: string;
   shortName?: string;
-  displayName: string;
-  address?: Address;
   types: SchoolType[];
-  cache: {
+  cache?: {
     events?: number;
   };
+};
+
+export type SchoolPreload = SchoolBase & {
+  preload: true;
+  displayName: string;
+  address?: Address;
+  image?: Image;
   departments?: DepartmentPreload[];
 };
 
-export type School = {
-  _id: string;
-  shortName?: string;
+export type School = SchoolBase & {
+  preload?: false;
   displayName?: string;
-  name: string;
-  types: SchoolType[];
   address: Address;
   adminGroups?: GroupPreload[];
   image: Image;
   description: Content;
   departments: DepartmentPreload[]; // Also one in address but this one is for the admin group(s)
-  cache: {
-    events?: number;
-  };
 };
+
+export type AnySchool = SchoolPreload | School;
 
 export type DepartmentPreload = {
   _id: string;

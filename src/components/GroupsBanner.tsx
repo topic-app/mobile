@@ -3,7 +3,6 @@ import { Alert, View } from 'react-native';
 import { Text, Subheading } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Banner } from '@components';
 import { Config } from '@constants/index';
 import { groupMemberAccept, groupMemberReject } from '@redux/actions/apiActions/groups';
 import { fetchWaitingGroups, fetchGroups } from '@redux/actions/data/account';
@@ -11,6 +10,7 @@ import { State, Account, GroupRequestState } from '@ts/types';
 import { handleUrl } from '@utils/index';
 
 import Avatar from './Avatar';
+import Banner from './Banner';
 import ErrorMessage from './ErrorMessage';
 
 type Props = {

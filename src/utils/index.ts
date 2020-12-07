@@ -5,4 +5,6 @@ export { default as Format } from './format';
 export * from './getAssetUrl';
 export * from './tags';
 export * from './hooks';
-export * from './permissions';
+export * from './groupPermissions';
+// Note: devicePermissions is for Permissions AND location functions
+export { Location } from './deviceLocation';

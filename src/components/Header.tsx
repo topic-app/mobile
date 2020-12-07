@@ -122,8 +122,4 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   );
 };
 
-const HeaderConfig = {
-  header: ({ scene }: CustomHeaderBarProps) => <CustomHeaderBar scene={scene} />,
-};
-
-export { TranslucentStatusBar, HeaderConfig, CustomHeaderBar };
+export { TranslucentStatusBar, CustomHeaderBar };
