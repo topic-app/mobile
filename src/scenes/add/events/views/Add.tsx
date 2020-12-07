@@ -54,6 +54,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       group: creationData.group,
       places: creationData.places,
       parser: creationData.parser,
+      image: creationData.image,
       preferences: {
         comments: true,
       },

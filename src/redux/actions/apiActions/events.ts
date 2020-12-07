@@ -22,6 +22,7 @@ function eventAddCreator({
   parser,
   preferences,
   tags,
+  image,
   program,
 }: EventCreationData): AppThunk<Promise<{ _id: string }>> {
   return (dispatch, getState) => {
@@ -61,6 +62,7 @@ function eventAddCreator({
             date,
             location,
             group,
+            image,
             preferences,
             tags,
             program,
