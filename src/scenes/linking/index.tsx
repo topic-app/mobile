@@ -3,7 +3,7 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { MoreScreenNavigationProp } from '../index';
+import { AppScreenNavigationProp } from '../../index';
 import types from './data/types.json';
 import Linking from './views/Linking';
 
@@ -18,7 +18,7 @@ export type LinkingScreenNavigationProp<
   K extends keyof LinkingStackParams
 > = CompositeNavigationProp<
   NativeStackNavigationProp<LinkingStackParams, K>,
-  MoreScreenNavigationProp<'Linking'>
+  AppScreenNavigationProp<'Linking'>
 >;
 
 const Stack = createNativeStackNavigator<LinkingStackParams>();

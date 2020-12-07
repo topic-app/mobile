@@ -189,9 +189,12 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                   mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                   uppercase={Platform.OS !== 'ios'}
                   onPress={() =>
-                    navigation.replace('Main', {
-                      screen: 'Home1',
-                      params: { screen: 'Home2', params: { screen: 'Article' } },
+                    navigation.replace('Root', {
+                      screen: 'Main',
+                      params: {
+                        screen: 'Home1',
+                        params: { screen: 'Home2', params: { screen: 'Article' } },
+                      },
                     })
                   }
                   style={{ flex: 1 }}
