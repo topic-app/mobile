@@ -222,10 +222,6 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const [userLocation, setUserLocation] = React.useState(false);
   const [locationError, setLocationError] = React.useState(false);
 
-  if (Platform.OS === 'web' && !account.loggedIn) {
-    window.location.replace('https://beta.topicapp.fr');
-  }
-
   React.useEffect(() => {
     updateDepartments('initial');
     // Check if Location is requestable

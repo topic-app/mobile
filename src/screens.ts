@@ -10,6 +10,11 @@ export default {
       SelectLocation: '/localisation',
     },
   },
+  Linking: {
+    screens: {
+      Linking: '/linking/:type',
+    },
+  },
   Root: {
     screens: {
       Main: {
@@ -33,11 +38,6 @@ export default {
               MyGroups: {
                 screens: {
                   List: '/groupes',
-                },
-              },
-              Linking: {
-                screens: {
-                  Linking: '/linking/:type',
                 },
               },
             },
