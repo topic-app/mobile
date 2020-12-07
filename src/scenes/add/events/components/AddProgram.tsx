@@ -7,7 +7,15 @@ import { connect } from 'react-redux';
 import { StepperViewPageProps, InlineCard } from '@components/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import { Account, Content, State, Duration, Address, EventCreationData } from '@ts/types';
+import {
+  Account,
+  Content,
+  State,
+  Duration,
+  Address,
+  EventCreationData,
+  ProgramEntry,
+} from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
@@ -27,13 +35,13 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
   const [isProgramAddModalVisible, setProgramAddModalVisible] = React.useState(false);
   const [isDateTimePickerVisible, setDateTimePickerVisible] = React.useState(false);
   const [startMode, setStartMode] = React.useState<'time' | 'date'>('time');
-  const [eventProgram, setProgram] = React.useState<ProgramType[]>([]);
+  const [eventProgram, setProgram] = React.useState<ProgramEntry[]>([]);
   const [startDate, setStartDate] = React.useState<Date>(new Date(0));
   const submit = () => {
     updateEventCreationData({ parser: 'markdown', program: eventProgram });
     add('markdown');
   };
-  const addProgram = (program: ProgramType) => {
+  const addProgram = (program: ProgramEntry) => {
     setProgram([...eventProgram, program]);
     setStartDate(new Date(0));
   };
@@ -54,20 +62,6 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
     startDate === null && setStartDate(new Date());
     startMode === 'time' ? setStartMode('date') : setStartMode('time');
     setDateTimePickerVisible(true);
-  };
-
-  type ProgramType = {
-    _id: string;
-    title: string;
-    duration: {
-      start: Date;
-      end: Date;
-    };
-    description?: {
-      parser?: string;
-      data: string;
-    };
-    address?: Address;
   };
 
   function blurInputs() {
@@ -130,7 +124,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
           value={startDate}
           mode={startMode}
           display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          minimumDate={creationData?.start || new Date()}
+          minimumDate={creationData?.start ? new Date(creationData.start) : new Date()}
           onChange={changeStartDate}
         />
       )}

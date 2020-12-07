@@ -52,7 +52,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       date: new Date(),
       location: creationData.location,
       group: creationData.group,
-      place: creationData.place,
+      places: creationData.places,
       parser: parser || creationData.parser,
       preferences: {
         comments: true,

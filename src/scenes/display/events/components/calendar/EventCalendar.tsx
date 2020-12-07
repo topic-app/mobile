@@ -9,6 +9,7 @@ import { Text } from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
 import shortid from 'shortid';
 
+import { ProgramEntry } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import DayView from './DayView';

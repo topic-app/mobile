@@ -1,48 +1,47 @@
-import React from 'react';
-import { Button, Menu, HelperText, TextInput, List, Card, ThemeProvider } from 'react-native-paper';
-import { View, Platform, ScrollView, TextInput as RNTestInput } from 'react-native';
-import { connect } from 'react-redux';
 import moment from 'moment';
+import React from 'react';
+import { View, Platform, ScrollView, TextInput as RNTestInput } from 'react-native';
+import { Button, Menu, HelperText, TextInput, List, Card, ThemeProvider } from 'react-native-paper';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
-import { Modal, TabChipList } from '@components/index';
 
-import { useTheme } from '@utils/index';
-import { ModalProps, State, EventPlace, EventCreationData, Duration, Address } from '@ts/types';
+import { Modal, TabChipList } from '@components/index';
 import getStyles from '@styles/Styles';
+import {
+  ModalProps,
+  State,
+  EventPlace,
+  EventCreationData,
+  Duration,
+  ProgramEntry,
+} from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getEventStyles from '../styles/Styles';
 
-
 type ProgramAddModalProps = ModalProps & {
-  date: Date,
+  date: Date;
   creationData?: EventCreationData;
-  setDate: () => void,
-  resetDate: () => void,
-  add: (program: ProgramType) => void;
+  setDate: () => void;
+  resetDate: () => void;
+  add: (program: ProgramEntry) => void;
 };
 
-type ProgramType = {
-  _id: string;
-  title: string;
-  duration: {
-    start: Date,
-    end: Date,
-  },
-  description?: {
-    parser?: string;
-    data: string;
-  };
-  address?: Address;
-};
-
-const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, date, setDate, resetDate, add, creationData }) => {
+const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
+  visible,
+  setVisible,
+  date,
+  setDate,
+  resetDate,
+  add,
+  creationData,
+}) => {
   const titleInput = React.createRef<RNTestInput>();
   const descriptionInput = React.createRef<RNTestInput>();
   const addressInput = React.createRef<RNTestInput>();
   const durationInput = React.createRef<RNTestInput>();
   const [isMenuVisible, setMenuVisible] = React.useState(false);
-  const [durationType, setDurationType] = React.useState<'minutes'|'hours'|'days'>('hours');
-
+  const [durationType, setDurationType] = React.useState<'minutes' | 'hours' | 'days'>('hours');
 
   type InputStateType = {
     value: string;
@@ -118,11 +117,11 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     durationInput.current?.blur();
   }
 
-  function getEndDate(){
+  function getEndDate() {
     let endDate: number;
-    if (durationType === 'minutes'){
+    if (durationType === 'minutes') {
       endDate = Number(currentDuration.value) * 6e4 + date.valueOf();
-    } else if (durationType === 'hours'){
+    } else if (durationType === 'hours') {
       endDate = Number(currentDuration.value) * 3.6e6 + date.valueOf();
     } else {
       endDate = Number(currentDuration.value) * 8.64e7 + date.valueOf();
@@ -175,11 +174,11 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
           message: 'La description doit contenir moins de 500 caractères.',
         };
       } else if (description.length <= 10) {
-          validation = {
-            valid: false,
-            error: true,
-            message: 'La description doit contenir au moins 10 caractères.',
-          };
+        validation = {
+          valid: false,
+          error: true,
+          message: 'La description doit contenir au moins 10 caractères.',
+        };
       } else {
         validation = { valid: true, error: false };
       }
@@ -196,45 +195,54 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     }
   }
 
-  function checkDuration(){
-    if (currentDuration.value !== ''){
-      if (moment(getEndDate()).isBetween(creationData?.start, creationData?.end)){
-        setDuration({valid: true, error: false});
+  function checkDuration() {
+    if (currentDuration.value !== '') {
+      if (moment(getEndDate()).isBetween(creationData?.start, creationData?.end)) {
+        setDuration({ valid: true, error: false });
       } else {
-          setDuration({
-            valid: false,
-            error: true,
-            message: 'L\'élément du programme ne doit pas dépasser la date de fin de l\'évènement.'});
+        setDuration({
+          valid: false,
+          error: true,
+          message: "L'élément du programme ne doit pas dépasser la date de fin de l'évènement.",
+        });
       }
     } else {
-      setDuration({valid: false, error: true, message: 'Entrez une durée.'});
+      setDuration({ valid: false, error: true, message: 'Entrez une durée.' });
     }
   }
 
-  function checkStartDate(){
-    if (date.valueOf() !== jan1970.valueOf()){
-      if (moment(date).isBetween(creationData?.start, creationData?.end)){
-        setStartDate({valid: true, error: false});
+  function checkStartDate() {
+    if (date.valueOf() !== jan1970.valueOf()) {
+      if (moment(date).isBetween(creationData?.start, creationData?.end)) {
+        setStartDate({ valid: true, error: false });
       } else {
         setStartDate({
           valid: false,
           error: true,
-          message: 'L\'horaire de début doit être compris entre les dates de début et de fin de l\'évènement.' });
+          message:
+            "L'horaire de début doit être compris entre les dates de début et de fin de l'évènement.",
+        });
       }
     } else {
       setStartDate({
         valid: false,
         error: true,
-        message: 'Choisissez un horaire de début.' });
+        message: 'Choisissez un horaire de début.',
+      });
     }
   }
 
-  async function  checkErrors(titleVal : string, descriptionVal : string){
+  async function checkErrors(titleVal: string, descriptionVal: string) {
     validateTitleInput(titleVal);
     validateDescriptionInput(descriptionVal);
     checkDuration();
     checkStartDate();
-    return currentTitle.valid && currentDescription.valid && currentStartDate.valid && currentDuration.valid;
+    return (
+      currentTitle.valid &&
+      currentDescription.valid &&
+      currentStartDate.valid &&
+      currentDuration.valid
+    );
   }
 
   async function submit() {
@@ -246,18 +254,19 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
       add({
         _id: shortid(),
         title: titleVal,
-        duration:{
+        duration: {
           start: date,
           end: getEndDate(),
         },
-        description:
-        { data: descriptionVal,
-        },
+        description: { parser: 'plaintext', data: descriptionVal },
         address: {
           _id: shortid(),
           shortName: addressVal,
-          coordinates: undefined,
-          address: undefined,
+          geo: {
+            type: 'Point',
+            coordinates: [],
+          },
+          address: { number: '', street: '', code: '', city: '', extra: '' },
           departments: [],
         },
       });
@@ -287,7 +296,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
         message: '',
       });
     }
-  };
+  }
 
   const cancel = () => {
     setVisible(false);
@@ -331,7 +340,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
     <Modal visible={visible} setVisible={setVisible}>
       <View style={eventStyles.formContainer}>
         <ScrollView>
-          <View style={eventStyles.textInputContainer}> 
+          <View style={eventStyles.textInputContainer}>
             <List.Subheader> Informations </List.Subheader>
             <TextInput
               ref={titleInput}
@@ -384,11 +393,11 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
                 preValidateDescriptionInput(text);
               }}
             />
-          {currentDescription.error && (
-            <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
-              {currentDescription.message}
-            </HelperText>
-          )}
+            {currentDescription.error && (
+              <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
+                {currentDescription.message}
+              </HelperText>
+            )}
           </View>
           <View style={eventStyles.textInputContainer}>
             <TextInput
@@ -401,7 +410,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
                 blurInputs();
               }}
               autoCorrect={false}
-              theme={{colors: { primary: colors.primary, placeholder: colors.valid }}}
+              theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
               mode="outlined"
               style={eventStyles.textInput}
               onChangeText={(text) => {
@@ -413,19 +422,21 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
           <List.Subheader> Début </List.Subheader>
           <View style={eventStyles.textInputContainer}>
             <Button
-                mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-                uppercase={Platform.OS !== 'ios'}
-                style={{ flex: 1, marginRight: 5 }}
-                onPress={() => {
-                  setVisible(false);
-                  setStartDate({
-                    error: false,
-                    valid: true,
-                  });
-                  setDate();
-                }}
+              mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+              uppercase={Platform.OS !== 'ios'}
+              style={{ flex: 1, marginRight: 5 }}
+              onPress={() => {
+                setVisible(false);
+                setStartDate({
+                  error: false,
+                  valid: true,
+                });
+                setDate();
+              }}
             >
-                {date.valueOf() === jan1970.valueOf() ? 'Horaire de début' : moment(date).format('LLL')}
+              {date.valueOf() === jan1970.valueOf()
+                ? 'Horaire de début'
+                : moment(date).format('LLL')}
             </Button>
           </View>
           {currentStartDate.error && (
@@ -436,7 +447,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
           <View style={{ height: 20 }} />
           <View style={eventStyles.textInputContainer}>
             <List.Subheader> Durée </List.Subheader>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TextInput
                 ref={durationInput}
                 value={currentDuration.value}
@@ -447,36 +458,56 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({ visible, setVisible, 
                   checkDuration();
                 }}
                 autoCorrect={false}
-                theme={{colors: { primary: colors.primary, placeholder: colors.valid }}}
+                theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
                 mode="flat"
                 keyboardType="number-pad"
-                style={{width: 160, height: 50}}
+                style={{ width: 160, height: 50 }}
                 onChangeText={(text) => {
                   setDuration({ value: text });
                 }}
               />
               <Menu
-                  visible={isMenuVisible}
-                  onDismiss={() => setMenuVisible(false)}
-                  anchor={
-                    <Button
-                      onPress={() => setMenuVisible(true)}
-                      mode= "outlined"
-                      style={{width: 160, height: 50, padding: 10, zIndex: 100000}}
-                    >
-                      {durationType === 'minutes' ? 'minutes' : durationType === 'hours' ? 'heures' : 'jours'}
-                    </Button>
-                  }>
-                <Menu.Item onPress={() => {setDurationType('minutes');}} title="minutes" />
-                <Menu.Item onPress={() => {setDurationType('hours');}} title="heures" />
-                <Menu.Item onPress={() => {setDurationType('days');}} title="jours" />
+                visible={isMenuVisible}
+                onDismiss={() => setMenuVisible(false)}
+                anchor={
+                  <Button
+                    onPress={() => setMenuVisible(true)}
+                    mode="outlined"
+                    style={{ width: 160, height: 50, padding: 10, zIndex: 100000 }}
+                  >
+                    {durationType === 'minutes'
+                      ? 'minutes'
+                      : durationType === 'hours'
+                      ? 'heures'
+                      : 'jours'}
+                  </Button>
+                }
+              >
+                <Menu.Item
+                  onPress={() => {
+                    setDurationType('minutes');
+                  }}
+                  title="minutes"
+                />
+                <Menu.Item
+                  onPress={() => {
+                    setDurationType('hours');
+                  }}
+                  title="heures"
+                />
+                <Menu.Item
+                  onPress={() => {
+                    setDurationType('days');
+                  }}
+                  title="jours"
+                />
               </Menu>
             </View>
             {currentDuration.error && (
-            <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
-              {currentDuration.message}
-            </HelperText>
-          )}
+              <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
+                {currentDuration.message}
+              </HelperText>
+            )}
           </View>
         </ScrollView>
         <View style={{ height: 20 }} />

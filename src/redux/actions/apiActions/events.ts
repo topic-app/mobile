@@ -17,7 +17,7 @@ function eventAddCreator({
   date,
   location,
   group,
-  place,
+  places,
   parser,
   preferences,
   tags,
@@ -41,7 +41,7 @@ function eventAddCreator({
         {
           event: {
             title,
-            place,
+            places,
             summary,
             description: {
               parser,

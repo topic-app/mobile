@@ -341,9 +341,13 @@ export type ArticleVerification = Article & {
 export type ProgramEntry = {
   _id: string;
   title: string;
-  duration: Duration;
+  duration: {
+    start: string | Date;
+    end: string | Date;
+  };
+  description?: Content;
   image?: Image;
-  address: Address;
+  address?: Address | undefined;
 };
 
 export type EventPlace =

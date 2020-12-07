@@ -6,13 +6,13 @@ import shortid from 'shortid';
 import * as Yup from 'yup';
 
 import { FormTextInput, Modal } from '@components/index';
-import { ModalProps, EventPlace } from '@ts/types';
+import { ModalProps, EventCreationDataPlace } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getEventStyles from '../styles/Styles';
 
 type PlaceAddressModalProps = ModalProps & {
-  add: (place: EventPlace) => void;
+  add: (place: EventCreationDataPlace) => void;
 };
 
 const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisible, add }) => {
@@ -63,7 +63,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
           initialValues={{ number: '', street: '', city: '', code: '', extra: '' }}
           onSubmit={({ number, street, city, code, extra }) => {
             add({
-              _id: shortid(),
+              id: shortid(),
               type: 'standalone',
               address: {
                 _id: shortid(),

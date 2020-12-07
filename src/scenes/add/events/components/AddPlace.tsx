@@ -4,11 +4,12 @@ import { FlatList, View, Platform } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Button, IconButton, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 
 import { StepperViewPageProps, InlineCard, SafeAreaView } from '@components/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import { Account, State, EventCreationData, EventPlace } from '@ts/types';
+import { Account, State, EventCreationData, EventPlace, EventCreationDataPlace } from '@ts/types';
 import { Format, useTheme } from '@utils';
 
 import getAuthStyles from '../styles/Styles';
@@ -30,7 +31,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
-  const [eventPlaces, setEventPlaces] = React.useState<EventPlace[]>([]);
+  const [eventPlaces, setEventPlaces] = React.useState<EventCreationDataPlace[]>([]);
   const toSelectedType = (data: 'school' | 'place' | 'standalone') => {
     setPlaceTypeModalVisible(false);
     if (data === 'standalone') {
@@ -41,15 +42,15 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
     }
   };
 
-  const addEventPlace = (place: EventPlace) => {
-    const previousEventIds = eventPlaces.map((p) => p._id);
-    if (!previousEventIds.includes(place._id)) {
+  const addEventPlace = (place: EventCreationDataPlace) => {
+    const previousEventIds = eventPlaces.map((p) => p.id);
+    if (!previousEventIds.includes(place.id)) {
       setEventPlaces([...eventPlaces, place]);
     }
   };
 
   const submit = () => {
-    updateEventCreationData({ place: eventPlaces });
+    updateEventCreationData({ places: eventPlaces });
     next();
   };
 
@@ -68,14 +69,14 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
       <List.Subheader>Lieux Sélectionnés</List.Subheader>
       <View style={{ marginTop: 10 }}>
         <FlatList
-          keyExtractor={(place) => place._id}
+          keyExtractor={(place) => place.id || shortid()}
           data={eventPlaces}
           renderItem={({ item: place }) => {
             return (
-              <View>
+              <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
                   <InlineCard
-                    key={place._id}
+                    key={place.id}
                     icon={
                       place.type === 'school'
                         ? 'school'
@@ -85,7 +86,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
                     }
                     title={
                       place.type === 'school' || place.type === 'place'
-                        ? place.tempName || place.address?.shortName
+                        ? place.tempName || ''
                         : `${place.address?.address.number}${
                             place.address?.address.number === '' ? '' : ' '
                           }${place.address?.address.street}${
@@ -102,7 +103,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
                     }
                   />
                 </View>
-                <View style={{ flexGrow: 1 }}>
+                <View style={{ flex: 1 }}>
                   <IconButton
                     icon="delete"
                     size={30}

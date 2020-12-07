@@ -63,7 +63,7 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
         <EventCalendar
           width={width}
           eventTapped={(e) => logger.warn('Event program detail not implemented', e)}
-          events={elements}
+          events={elements as any}
           initDate={duration?.start}
           start={startTime}
           end={endTime}
