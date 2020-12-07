@@ -293,7 +293,9 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   );
 
   const shouldCollapseHeader =
-    searchFocused || chipCategory !== 'schools' || chiplistData.schools.data.length !== 0;
+    searchFocused ||
+    chipCategory !== 'schools' ||
+    (chiplistData.schools.data.length !== 0 && !userLocation);
 
   const ListHeaderComponent = (
     <View>
@@ -431,7 +433,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         }}
       >
         <CollapsibleView
-          collapsed={shouldCollapseHeader && !userLocation}
+          collapsed={shouldCollapseHeader}
           style={{ height: userLocation ? 50 : '40%' }}
         >
           {hasUserAlreadyBeenToLanding ? <PlatformBackButton onPress={navigation.goBack} /> : null}
@@ -445,18 +447,10 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
               <CollapsibleView collapsed={userLocation}>
                 <Illustration name="location-select" height={200} width={200} />
               </CollapsibleView>
-              <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 20 : 0 }]}>
+              <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 80 : 0 }]}>
                 Choisissez votre école
               </Text>
             </View>
-            <CollapsibleView collapsed={userLocation}>
-              <View style={styles.contentContainer}>
-                <Text style={{ textAlign: 'center', color: colors.subtext }}>
-                  Séléctionnez vos écoles et lieux pour suivre la publication d&apos;articles et
-                  évènements.
-                </Text>
-              </View>
-            </CollapsibleView>
           </View>
         </CollapsibleView>
         <View style={landingStyles.searchContainer}>
