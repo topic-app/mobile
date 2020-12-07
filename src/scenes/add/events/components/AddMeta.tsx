@@ -12,7 +12,7 @@ import { upload } from '@redux/actions/apiActions/upload';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
 import { State, EventCreationData, UploadRequestState, Account } from '@ts/types';
-import { useTheme, getImageUrl, accountHasPermissions } from '@utils/index';
+import { useTheme, getImageUrl, checkPermission } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -109,7 +109,10 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
               onSubmitEditing={() => handleSubmit()}
               style={articleStyles.textInput}
             />
-            {accountHasPermissions(account, [[Permissions.CONTENT_UPLOAD, creationData.group!]]) ? (
+            {checkPermission(account, {
+              permission: Permissions.CONTENT_UPLOAD,
+              scope: { groups: [creationData.group || ''] },
+            }) ? (
               <View>
                 {values.file && !state.upload?.loading && (
                   <View style={styles.container}>
