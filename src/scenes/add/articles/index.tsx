@@ -1,7 +1,6 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { HeaderConfig } from '@components/Header';
 import { ArticleCreationData, ReduxLocation } from '@ts/redux';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
@@ -37,40 +36,11 @@ const Stack = createNativeStackNavigator<ArticleAddStackParams>();
 
 function ArticleAddStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Add">
-      <Stack.Screen
-        name="Add"
-        component={ArticleAdd}
-        options={{
-          title: 'Écrire un article',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="AddContent"
-        component={ArticleAddContent}
-        options={{
-          title: 'Écrire un article',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Success"
-        component={ArticleAddSuccess}
-        options={{
-          title: 'Article ajouté',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Location"
-        component={ArticleAddLocation}
-        options={{
-          ...HeaderConfig,
-          title: 'Localisation',
-          headerShown: true,
-        }}
-      />
+    <Stack.Navigator initialRouteName="Add" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Add" component={ArticleAdd} />
+      <Stack.Screen name="AddContent" component={ArticleAddContent} />
+      <Stack.Screen name="Success" component={ArticleAddSuccess} />
+      <Stack.Screen name="Location" component={ArticleAddLocation} />
     </Stack.Navigator>
   );
 }

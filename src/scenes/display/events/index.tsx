@@ -23,18 +23,6 @@ function EventDisplayStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={EventDisplay} />
-      {/*
-      <Stack.Screen
-        name="Program"
-        component={EventProgram}
-        options={({ route }) => ({
-          ...HeaderConfig,
-          title: 'Programme',
-          subtitle: route.params.title,
-          overflow: [{ title: 'Hello', onPress: () => console.log('Hello') }],
-        })}
-      />
-      */}
     </Stack.Navigator>
   );
 }
