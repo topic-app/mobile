@@ -1,6 +1,6 @@
-import { Article, Event, EventPlace, Image } from '../api';
-import { ApiAction } from './apiReducers';
+import { Article, Event, EventPlace, Image, ProgramEntry, Address } from '../api';
 import { FullClearAction } from './actions';
+import { ApiAction } from './apiReducers';
 
 // Articles
 export const UPDATE_ARTICLES_PARAMS = 'UPDATE_ARTICLES_PARAMS';
@@ -149,6 +149,32 @@ export type EventReadItem = {
   marked: boolean;
 };
 
+export type EventCreationDataPlace =
+  | {
+      id?: string;
+      type: 'place';
+      associatedPlace: string;
+      address?: undefined;
+      associatedSchool?: undefined;
+      tempName?: string;
+    }
+  | {
+      id?: string;
+      type: 'school';
+      associatedSchool: string;
+      address?: undefined;
+      associatedPlace?: undefined;
+      tempName?: string;
+    }
+  | {
+      id?: string;
+      type: 'standalone';
+      address: Address;
+      tempName?: string;
+      associatedPlace?: undefined;
+      associatedSchool?: undefined;
+    };
+
 export type EventCreationData = {
   title?: string;
   summary?: string;
@@ -162,22 +188,23 @@ export type EventCreationData = {
     link: string;
   }[];
   members?: string[];
-  start?: Date;
-  end?: Date;
-  date?: Date;
+  start?: string | Date;
+  end?: string | Date;
+  date?: string | Date;
   location?: {
     schools?: string[];
     departments?: string[];
     global?: boolean;
   };
   group?: string;
-  place?: EventPlace[];
+  places?: EventCreationDataPlace[];
   parser?: 'markdown' | 'plaintext';
   preferences?: {
     comments?: boolean;
   };
   tags?: string[];
-  program?: string[];
+  image?: Image;
+  program?: ProgramEntry[];
 };
 
 export type EventsContentState = {

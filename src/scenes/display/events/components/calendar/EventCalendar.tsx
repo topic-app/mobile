@@ -9,6 +9,7 @@ import { Text } from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
 import shortid from 'shortid';
 
+import { ProgramEntry } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import DayView from './DayView';
@@ -17,6 +18,9 @@ import getCalendarStyles from './Styles';
 function EventCalendar({
   start,
   end,
+  startDay,
+  endDay,
+  colors,
   initDate,
   size,
   width,
@@ -75,9 +79,20 @@ function EventCalendar({
 
   const renderItem = ({ index, item }) => {
     const date = moment(initDate).add(index - size, 'days');
+    const day = date.day();
 
-    const leftIcon = headerIconLeft || <Entypo name="chevron-thin-left" style={styles.arrow} />;
-    const rightIcon = headerIconRight || <Entypo name="chevron-thin-right" style={styles.arrow} />;
+    const leftIcon = headerIconLeft || (
+      <Entypo
+        name="chevron-thin-left"
+        style={[styles.arrow, { color: day > startDay ? colors.text : colors.disabled }]}
+      />
+    );
+    const rightIcon = headerIconRight || (
+      <Entypo
+        name="chevron-thin-right"
+        style={[styles.arrow, { color: day < endDay ? colors.text : colors.disabled }]}
+      />
+    );
 
     const headerText = upperCaseHeader
       ? date.format(formatHeader || 'DD MMMM YYYY').toUpperCase()
@@ -86,13 +101,16 @@ function EventCalendar({
     return (
       <View style={[styles.container, { width }]}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.arrowButton} onPress={previous}>
+          <TouchableOpacity
+            style={styles.arrowButton}
+            onPress={day > startDay ? previous : undefined}
+          >
             {leftIcon}
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
             <Text style={styles.headerText}>{headerText}</Text>
           </View>
-          <TouchableOpacity style={styles.arrowButton} onPress={next}>
+          <TouchableOpacity style={styles.arrowButton} onPress={day < endDay ? next : undefined}>
             {rightIcon}
           </TouchableOpacity>
         </View>

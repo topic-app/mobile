@@ -1,12 +1,15 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { FlatList, View, Platform } from 'react-native';
-import { Button, List, Text } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Button, IconButton, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 
-import { StepperViewPageProps, InlineCard } from '@components/index';
+import { StepperViewPageProps, InlineCard, SafeAreaView } from '@components/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import { Account, State, EventPlace } from '@ts/types';
+import { Account, State, EventCreationData, EventPlace, EventCreationDataPlace } from '@ts/types';
 import { Format, useTheme } from '@utils';
 
 import getAuthStyles from '../styles/Styles';
@@ -22,32 +25,32 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
   const [isPlaceTypeModalVisible, setPlaceTypeModalVisible] = React.useState(false);
   const [isPlaceSelectModalVisible, setPlaceSelectModalVisible] = React.useState(false);
   const [isPlaceAddressModalVisible, setPlaceAddressModalVisible] = React.useState(false);
-  const [placeType, setPlaceType] = React.useState<'place' | 'school'>('place');
+  const [placeType, setPlaceType] = React.useState<'school' | 'place' | 'standalone'>('school');
 
   const theme = useTheme();
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
-  const [eventPlaces, setEventPlaces] = React.useState<EventPlace[]>([]);
-  const toSelectedType = (type: 'place' | 'school' | 'standalone') => {
+  const [eventPlaces, setEventPlaces] = React.useState<EventCreationDataPlace[]>([]);
+  const toSelectedType = (data: 'school' | 'place' | 'standalone') => {
     setPlaceTypeModalVisible(false);
-    if (type === 'standalone') {
+    if (data === 'standalone') {
       setPlaceAddressModalVisible(true);
     } else {
-      setPlaceType(type);
+      setPlaceType(data);
       setPlaceSelectModalVisible(true);
     }
   };
 
-  const addEventPlace = (place: EventPlace) => {
-    const previousEventIds = eventPlaces.map((p) => p._id);
-    if (!previousEventIds.includes(place._id)) {
+  const addEventPlace = (place: EventCreationDataPlace) => {
+    const previousEventIds = eventPlaces.map((p) => p.id);
+    if (!previousEventIds.includes(place.id)) {
       setEventPlaces([...eventPlaces, place]);
     }
   };
 
   const submit = () => {
-    updateEventCreationData({ place: eventPlaces });
+    updateEventCreationData({ places: eventPlaces });
     next();
   };
 
@@ -66,19 +69,51 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
       <List.Subheader>Lieux Sélectionnés</List.Subheader>
       <View style={{ marginTop: 10 }}>
         <FlatList
-          keyExtractor={(place) => place._id}
+          keyExtractor={(place) => place.id || shortid()}
           data={eventPlaces}
           renderItem={({ item: place }) => {
             return (
-              <InlineCard
-                icon={
-                  place.type === 'school' ? 'school' : place.type === 'place' ? 'map' : 'map-marker'
-                }
-                title={Format.eventPlaceName(place)}
-                onPress={() => {
-                  setEventPlaces(eventPlaces.filter((s) => s !== place));
-                }}
-              />
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
+                  <InlineCard
+                    key={place.id}
+                    icon={
+                      place.type === 'school'
+                        ? 'school'
+                        : place.type === 'place'
+                        ? 'map'
+                        : 'map-marker'
+                    }
+                    title={
+                      place.type === 'school' || place.type === 'place'
+                        ? place.tempName || ''
+                        : `${place.address?.address.number}${
+                            place.address?.address.number === '' ? '' : ' '
+                          }${place.address?.address.street}${
+                            place.address?.address.extra !== '' &&
+                            place.address?.address.street !== ''
+                              ? ', '
+                              : ''
+                          }${place.address?.address.extra}${
+                            place.address?.address.street !== '' ||
+                            place.address?.address.extra !== ''
+                              ? ', '
+                              : ''
+                          }${place.address?.address.code} ${place.address?.address.city}`
+                    }
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <IconButton
+                    icon="delete"
+                    size={30}
+                    style={{ marginRight: 20, flexGrow: 1 }}
+                    onPress={() => {
+                      setEventPlaces(eventPlaces.filter((s) => s !== place));
+                    }}
+                  />
+                </View>
+              </View>
             );
           }}
         />

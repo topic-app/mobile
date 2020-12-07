@@ -35,6 +35,10 @@ function getLayout() {
 
 const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
   const { program, duration } = event;
+
+  const theme = useTheme();
+  const { colors } = theme;
+
   if (Array.isArray(program) && program.length > 0) {
     const elements = program.map((p) => {
       return {
@@ -48,7 +52,10 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
     });
 
     const startTime = Math.min(...elements.map((e) => moment(e.start).hour())) - 1;
-    const endTime = Math.min(...elements.map((e) => moment(e.end).hour())) + 1;
+    const endTime = Math.max(...elements.map((e) => moment(e.end).hour())) + 1;
+
+    const startDay = Math.min(...elements.map((e) => moment(e.start).day()));
+    const endDay = Math.max(...elements.map((e) => moment(e.end).day()));
 
     let { width, height } = getLayout();
 
@@ -63,10 +70,13 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
         <EventCalendar
           width={width}
           eventTapped={(e) => logger.warn('Event program detail not implemented', e)}
-          events={elements}
+          events={elements as any}
           initDate={duration?.start}
           start={startTime}
           end={endTime}
+          colors={colors}
+          startDay={startDay}
+          endDay={endDay}
           // renderEvent={(e) => <EventEntry event={e} />}
         />
       </View>

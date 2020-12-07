@@ -14,14 +14,15 @@ import {
   EventPlace,
   PlacesState,
   RequestStateComplex,
+  EventCreationDataPlace,
 } from '@ts/types';
 import { Format, useTheme } from '@utils/index';
 
 type EventPlaceSelectModalProps = ModalProps & {
-  type: 'school' | 'place';
+  type: 'school' | 'place' | 'standalone';
   schools: SchoolsState;
   places: PlacesState;
-  add: (place: EventPlace) => void;
+  add: (place: EventCreationDataPlace) => void;
 };
 
 function EventPlaceSelectModal({
@@ -37,7 +38,7 @@ function EventPlaceSelectModal({
 
   const [searchText, setSearchText] = React.useState('');
 
-  let data: EventPlace[] = [];
+  let data: (EventPlace & { name?: string; description?: string })[] = [];
   let update: (text?: string) => void = () => {};
   let icon = 'alert-decagram';
   let state: {
@@ -53,12 +54,25 @@ function EventPlaceSelectModal({
       if (searchText) {
         data = schools.search.map((school) => ({
           _id: school._id,
+          name: school.displayName || school.name,
+          description: `${school.address?.address?.city} - ${
+            school.address?.departments?.length
+              ? school.address?.departments[0]?.displayName ||
+                school.address?.departments[0]?.displayName
+              : 'Département inconnu'
+          }`,
           type: 'school',
           associatedSchool: school,
         }));
       } else {
         data = schools.data.map((school) => ({
           _id: school._id,
+          name: school.displayName || school.name,
+          description: `${school.address?.address?.city} - ${
+            school?.departments?.length
+              ? school?.departments[0]?.displayName || school?.departments[0]?.displayName
+              : 'Département inconnu'
+          }`,
           type: 'school',
           // Convert any School type to a SchoolPreload type
           associatedSchool: { preload: true, displayName: school.name, ...school },
@@ -73,6 +87,13 @@ function EventPlaceSelectModal({
       if (searchText) {
         data = places.search.map((place) => ({
           _id: place._id,
+          name: place.displayName || place.name,
+          description: `${place.address?.address?.city} - ${
+            place.address?.departments?.length
+              ? place.address?.departments[0]?.displayName ||
+                place.address?.departments[0]?.displayName
+              : 'Département inconnu'
+          }`,
           type: 'place',
           associatedPlace: place,
         }));
@@ -80,6 +101,13 @@ function EventPlaceSelectModal({
         data = places.data.map((place) => ({
           _id: place._id,
           type: 'place',
+          description: `${place.address?.address?.city} - ${
+            place.address?.departments?.length
+              ? place.address?.departments[0]?.displayName ||
+                place.address?.departments[0]?.displayName
+              : 'Département inconnu'
+          }`,
+          name: place.displayName || place.name,
           // Convert any School type to a SchoolPreload type
           associatedPlace: place,
         }));
@@ -148,9 +176,28 @@ function EventPlaceSelectModal({
           renderItem={({ item }) => (
             <List.Item
               title={Format.eventPlaceName(item)}
+              description={item.description}
               left={() => <List.Icon icon={icon} />}
               onPress={() => {
-                add(item);
+                if (type === 'school') {
+                  add({
+                    id: item._id,
+                    type,
+                    address: undefined,
+                    tempName: item.name,
+                    associatedSchool: item._id,
+                    associatedPlace: undefined,
+                  });
+                } else if (type === 'place') {
+                  add({
+                    id: item._id,
+                    type,
+                    address: undefined,
+                    tempName: item.name,
+                    associatedSchool: undefined,
+                    associatedPlace: item._id,
+                  });
+                }
                 setVisible(false);
               }}
             />
