@@ -146,6 +146,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
           addProgram(program);
         }}
       />
+      <View style={{ height: 30 }} />
       <View style={eventStyles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
