@@ -95,7 +95,7 @@ function genTagListData({ publisher, authors, group, tags, location }: ItemData)
       data.push({
         key: school._id,
         type: 'school',
-        label: school.displayName,
+        label: school.name,
         icon: 'map-marker',
       }),
     );

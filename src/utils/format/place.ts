@@ -1,14 +1,36 @@
 import _ from 'lodash';
 
-import { Address, PlaceType } from '@ts/types';
+import { Address, DepartmentPreload, PlaceType } from '@ts/types';
 
 /**
- * Get a short address from an address object
+ * Get a long address string from an address object
+ *
+ * ## Usage
+ * ```js
+ * const place = {
+ *   address: {
+ *     shortName: 'PIA',
+ *     address: {
+ *       number: '4',
+ *       street: 'rue des mouches',
+ *       city: 'Terre-Neuve',
+ *       extra: 'Apartement B',
+ *       code: '01360',
+ *     },
+ *     // ...
+ *   },
+ *   // ...
+ * };
+ *
+ * const address = Format.address(place.address);
+ *
+ * console.log(address); // '4 rue des mouches, 01360 Terre-Neuve (Apartement B)'
+ * ```
  */
-export function shortAddress({ shortName, address, geo, departments }: Address): string {
+export function address({ shortName, address: addr, geo, departments }: Address): string {
   // If we have at least a street and a city, then use complete address
-  if (address.street && address.city) {
-    const { number, street, city, extra, code } = address;
+  if (addr.street && addr.city) {
+    const { number, street, city, extra, code } = addr;
     if (number && street && city && code && extra) {
       return `${number} ${street}, ${code} ${city} (${extra})`;
     }
@@ -43,6 +65,44 @@ export function shortAddress({ shortName, address, geo, departments }: Address):
   }
 
   return 'Addresse non reconnue';
+}
+
+/**
+ * Get a short address string from an address object
+ *
+ * ## Usage
+ * ```js
+ * const place = {
+ *   address: {
+ *     shortName: 'PIA',
+ *     address: {
+ *       number: '4',
+ *       street: 'rue des mouches',
+ *       city: 'Terre-Neuve',
+ *       extra: 'Apartement B',
+ *       code: '01360',
+ *     },
+ *     departments: [
+ *       { name: 'Hautes-Alpes', type: 'departement' },
+ *     ],
+ *   },
+ *   // ...
+ * };
+ *
+ * const address = Format.shortAddress(place.address);
+ *
+ * console.log(address); // 'Terre-Neuve, Hautes-Alpes'
+ * ```
+ */
+export function shortAddress(addr: Address, departments?: DepartmentPreload[]): string | undefined {
+  const deps = addr.departments;
+  if (departments) deps.push(...departments);
+
+  const department = deps.find((dep) => dep.type === 'departement');
+
+  if (addr.address.city && department) {
+    return `${addr.address.city}, ${department.name}`;
+  }
 }
 
 /**

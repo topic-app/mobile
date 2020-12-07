@@ -9,16 +9,7 @@ import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import getStyles from '@styles/Styles';
-import {
-  Account,
-  State,
-  ArticleCreationData,
-  Department,
-  School,
-  RequestState,
-  ReduxLocation,
-  LocationList,
-} from '@ts/types';
+import { State, Department, School, RequestState, ReduxLocation, LocationList } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import { CheckboxListItem } from '../../components/ListItems';
@@ -27,8 +18,6 @@ import getAuthStyles from '../styles/Styles';
 
 type GroupAddLocationProps = StepperViewPageProps & {
   navigation: GroupAddScreenNavigationProp<'Add'>;
-  account: Account;
-  creationData: ArticleCreationData;
   location: LocationList;
   schoolItems: School[];
   departmentItems: Department[];
@@ -45,9 +34,7 @@ type GroupAddLocationProps = StepperViewPageProps & {
 const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   prev,
   next,
-  account,
   location,
-  creationData,
   navigation,
   schoolItems,
   departmentItems,
@@ -278,11 +265,9 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, location, groupData, schools, departments } = state;
+  const { location, schools, departments } = state;
   return {
-    account,
     location,
-    creationData: groupData.creationData,
     schoolItems: schools.items,
     departmentItems: departments.items,
     locationStates: {

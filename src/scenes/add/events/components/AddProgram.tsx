@@ -1,22 +1,14 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import React from 'react';
-import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
-import { TextInput, Button, IconButton, List, Text } from 'react-native-paper';
+import { View, Platform } from 'react-native';
+import { Button, IconButton, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { StepperViewPageProps, InlineCard } from '@components/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import {
-  Account,
-  Content,
-  State,
-  Duration,
-  Address,
-  EventCreationData,
-  ProgramEntry,
-} from '@ts/types';
+import { Account, State, EventCreationData, ProgramEntry } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
@@ -29,7 +21,6 @@ type Props = StepperViewPageProps & {
 };
 
 const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData }) => {
-  const contentInput = React.createRef<RNTestInput>();
   const theme = useTheme();
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
@@ -64,10 +55,6 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
     startMode === 'time' ? setStartMode('date') : setStartMode('time');
     setDateTimePickerVisible(true);
   };
-
-  function blurInputs() {
-    contentInput.current?.blur();
-  }
 
   if (!account.loggedIn) {
     return (
@@ -159,10 +146,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => {
-            blurInputs();
-            submit();
-          }}
+          onPress={() => submit()}
           style={{ flex: 1, marginLeft: 5 }}
         >
           Publier

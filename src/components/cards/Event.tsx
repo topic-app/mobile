@@ -122,7 +122,7 @@ const EventCard: React.FC<EventCardProps> = ({
                       style={[cardStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
                       numberOfLines={1}
                     >
-                      {p.type === 'standalone' && Format.shortAddress(p.address)}
+                      {p.type === 'standalone' && Format.address(p.address)}
                       {p.type === 'school' && p.associatedSchool?.displayName}
                       {p.type === 'place' && p.associatedPlace?.displayName}
                     </Text>
