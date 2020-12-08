@@ -2,13 +2,14 @@ import { Formik } from 'formik';
 import randomColor from 'randomcolor';
 import React from 'react';
 import { View, Platform, FlatList, TextInput as RNTextInput } from 'react-native';
-import { Button, Divider } from 'react-native-paper';
+import { Button, Card, Divider, Subheading, Title } from 'react-native-paper';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
 import * as Yup from 'yup';
 
 import { Avatar, CollapsibleView, FormTextInput, StepperViewPageProps } from '@components/index';
 import { updateCreationData } from '@redux/actions/data/account';
-import { Avatar as AvatarType } from '@ts/types';
+import { Avatar as AvatarType, State, LocationList } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
@@ -16,6 +17,8 @@ import getAuthStyles from '../styles/Styles';
 type Props = StepperViewPageProps & {
   username: string;
   accountType: 'public' | 'private';
+  location: LocationList;
+  landing: () => any;
 };
 
 const AuthCreatePageProfile: React.FC<Props> = ({
@@ -23,6 +26,8 @@ const AuthCreatePageProfile: React.FC<Props> = ({
   prev,
   username = '',
   accountType = 'private',
+  location,
+  landing,
 }) => {
   const firstnameInput = React.createRef<RNTextInput>();
   const lastnameInput = React.createRef<RNTextInput>();
@@ -133,51 +138,82 @@ const AuthCreatePageProfile: React.FC<Props> = ({
               firstName: firstname,
               lastName: lastname,
               avatar: activeAvatar,
+              schools: location.schools,
+              departments: location.departments,
+              global: location.global,
             });
             next();
           }}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View>
-              <FormTextInput
-                ref={firstnameInput}
-                label={
-                  accountType === 'public'
-                    ? 'Prénom (facultatif)'
-                    : 'Prénom (comptes publics uniquement)'
-                }
-                value={values.firstname}
-                touched={touched.firstname}
-                error={errors.firstname}
-                onChangeText={handleChange('firstname')}
-                onBlur={handleBlur('firstname')}
-                disabled={accountType !== 'public'}
-                onSubmitEditing={() => lastnameInput.current?.focus()}
-                style={authStyles.textInput}
-                textContentType="givenName"
-                autoCompleteType="name"
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoFocus
-              />
-              <FormTextInput
-                ref={lastnameInput}
-                label={
-                  accountType === 'public' ? 'Nom (facultatif)' : 'Nom (comptes publics uniquement)'
-                }
-                value={values.lastname}
-                touched={touched.lastname}
-                error={errors.lastname}
-                onChangeText={handleChange('lastname')}
-                onBlur={handleBlur('lastname')}
-                disabled={accountType !== 'public'}
-                onSubmitEditing={() => handleSubmit()}
-                style={authStyles.textInput}
-                textContentType="givenName"
-                autoCompleteType="name"
-                autoCorrect={false}
-                autoCapitalize="none"
-              />
+              {accountType === 'public' && (
+                <View>
+                  <FormTextInput
+                    ref={firstnameInput}
+                    label="Prénom (facultatif)"
+                    value={values.firstname}
+                    touched={touched.firstname}
+                    error={errors.firstname}
+                    onChangeText={handleChange('firstname')}
+                    onBlur={handleBlur('firstname')}
+                    onSubmitEditing={() => lastnameInput.current?.focus()}
+                    style={authStyles.textInput}
+                    textContentType="givenName"
+                    autoCompleteType="name"
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    autoFocus
+                  />
+                  <FormTextInput
+                    ref={lastnameInput}
+                    label="Nom (falcultatif)"
+                    value={values.lastname}
+                    touched={touched.lastname}
+                    error={errors.lastname}
+                    onChangeText={handleChange('lastname')}
+                    onBlur={handleBlur('lastname')}
+                    onSubmitEditing={() => handleSubmit()}
+                    style={authStyles.textInput}
+                    textContentType="givenName"
+                    autoCompleteType="name"
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                  />
+                </View>
+              )}
+              <View style={{ marginBottom: 10, marginTop: 20 }}>
+                <Subheading>Localisation</Subheading>
+              </View>
+              {location.schoolData.map((s) => (
+                <Card key={s._id} style={{ marginBottom: 10 }}>
+                  <Card.Content>
+                    <Title>{s?.name}</Title>
+                    <Subheading>{s?.address?.shortName || s?.address?.address?.city}</Subheading>
+                  </Card.Content>
+                </Card>
+              ))}
+              {location.departmentData.map((d) => (
+                <Card key={d._id} style={{ marginBottom: 10 }}>
+                  <Card.Content>
+                    <Title>{d?.name}</Title>
+                    <Subheading>{d?.type === 'region' ? 'Région' : 'Département'}</Subheading>
+                  </Card.Content>
+                </Card>
+              ))}
+              {location.global && (
+                <Card style={{ marginBottom: 10 }}>
+                  <Card.Content>
+                    <Title>France entière</Title>
+                    <Subheading>Pas d&apos;école ou département spécifique</Subheading>
+                  </Card.Content>
+                </Card>
+              )}
+              <View style={[authStyles.changeButtonContainer, { marginBottom: 40 }]}>
+                <Button mode="text" onPress={landing}>
+                  Changer
+                </Button>
+              </View>
               <View style={authStyles.buttonContainer}>
                 <Button
                   mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
@@ -204,4 +240,9 @@ const AuthCreatePageProfile: React.FC<Props> = ({
   );
 };
 
-export default AuthCreatePageProfile;
+const mapStateToProps = (state: State) => {
+  const { location } = state;
+  return { location };
+};
+
+export default connect(mapStateToProps)(AuthCreatePageProfile);

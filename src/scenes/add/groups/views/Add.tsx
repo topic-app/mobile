@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -43,42 +43,44 @@ const GroupAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
-          <PlatformBackButton onPress={navigation.goBack} />
-          <View style={styles.centerIllustrationContainer}>
-            <Text style={articleStyles.title}>Créer un groupe</Text>
-          </View>
-          <StepperView
-            pages={[
-              {
-                key: 'group',
-                icon: 'account-group',
-                title: 'Type',
-                component: (props) => (
-                  <GroupAddPageTemplate templates={templates} state={groupState} {...props} />
-                ),
-              },
-              {
-                key: 'location',
-                icon: 'map-marker',
-                title: 'Localisation',
-                component: (props) => <GroupAddPageLocation navigation={navigation} {...props} />,
-              },
-              {
-                key: 'meta',
-                icon: 'information',
-                title: 'Info',
-                component: (props) => <GroupAddPageMeta {...props} />,
-              },
-              {
-                key: 'proof',
-                icon: 'script-text',
-                title: 'Légal',
-                component: (props) => <GroupAddPageProof navigation={navigation} {...props} />,
-              },
-            ]}
-          />
-        </ScrollView>
+        <KeyboardAvoidingView behavior="height">
+          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+            <PlatformBackButton onPress={navigation.goBack} />
+            <View style={styles.centerIllustrationContainer}>
+              <Text style={articleStyles.title}>Créer un groupe</Text>
+            </View>
+            <StepperView
+              pages={[
+                {
+                  key: 'group',
+                  icon: 'account-group',
+                  title: 'Type',
+                  component: (props) => (
+                    <GroupAddPageTemplate templates={templates} state={groupState} {...props} />
+                  ),
+                },
+                {
+                  key: 'location',
+                  icon: 'map-marker',
+                  title: 'Localisation',
+                  component: (props) => <GroupAddPageLocation navigation={navigation} {...props} />,
+                },
+                {
+                  key: 'meta',
+                  icon: 'information',
+                  title: 'Info',
+                  component: (props) => <GroupAddPageMeta {...props} />,
+                },
+                {
+                  key: 'proof',
+                  icon: 'script-text',
+                  title: 'Légal',
+                  component: (props) => <GroupAddPageProof navigation={navigation} {...props} />,
+                },
+              ]}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );

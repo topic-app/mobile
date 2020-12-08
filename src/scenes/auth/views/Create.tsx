@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -20,7 +20,6 @@ import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageLegal from '../components/CreateLegal';
 import AuthCreatePagePrivacy from '../components/CreatePrivacy';
 import AuthCreatePageProfile from '../components/CreateProfile';
-import AuthCreatePageSchool from '../components/CreateSchool';
 import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
 
@@ -99,71 +98,62 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
             error={reqState.check.error}
           />
         )}
-
-        <ScrollView keyboardShouldPersistTaps="handled">
-          <PlatformBackButton onPress={navigation.goBack} />
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name="auth-register" height={200} width={200} />
-            <Text style={authStyles.title}>Créer un compte</Text>
-          </View>
-          <StepperView
-            pages={[
-              {
-                key: 'general',
-                icon: 'account',
-                title: 'General',
-                component: (props) => <AuthCreatePageGeneral {...props} />,
-              },
-              {
-                key: 'location',
-                icon: 'school',
-                title: 'École',
-                component: (props) => (
-                  <AuthCreatePageSchool
-                    landing={() =>
-                      navigation.push('Landing', {
-                        screen: 'SelectLocation',
-                        params: { goBack: true },
-                      })
-                    }
-                    {...props}
-                  />
-                ),
-              },
-              {
-                key: 'privacy',
-                icon: 'shield',
-                title: 'Vie privée',
-                component: (props) => <AuthCreatePagePrivacy {...props} />,
-              },
-              {
-                key: 'profile',
-                icon: 'comment-account',
-                title: 'Profil',
-                component: (props) => (
-                  <AuthCreatePageProfile
-                    username={creationData.username || ''}
-                    accountType={creationData.accountType || 'private'}
-                    {...props}
-                  />
-                ),
-              },
-              {
-                key: 'legal',
-                icon: 'script-text',
-                title: 'Conditions',
-                component: (props) => (
-                  <AuthCreatePageLegal
-                    userEmail={creationData.email}
-                    create={create}
-                    navigation={navigation}
-                    {...props}
-                  />
-                ),
-              },
-            ]}
-          />
-        </ScrollView>
+        <KeyboardAvoidingView behavior="height">
+          <ScrollView keyboardShouldPersistTaps="handled">
+            <PlatformBackButton onPress={navigation.goBack} />
+            <View style={styles.centerIllustrationContainer}>
+              <Illustration name="auth-register" height={200} width={200} />
+              <Text style={authStyles.title}>Créer un compte</Text>
+            </View>
+            <StepperView
+              pages={[
+                {
+                  key: 'general',
+                  icon: 'account',
+                  title: 'General',
+                  component: (props) => <AuthCreatePageGeneral {...props} />,
+                },
+                {
+                  key: 'privacy',
+                  icon: 'shield',
+                  title: 'Vie privée',
+                  component: (props) => <AuthCreatePagePrivacy {...props} />,
+                },
+                {
+                  key: 'profile',
+                  icon: 'comment-account',
+                  title: 'Profil',
+                  component: (props) => (
+                    <AuthCreatePageProfile
+                      landing={() =>
+                        navigation.push('Landing', {
+                          screen: 'SelectLocation',
+                          params: { goBack: true },
+                        })
+                      }
+                      username={creationData.username || ''}
+                      accountType={creationData.accountType || 'private'}
+                      {...props}
+                    />
+                  ),
+                },
+                {
+                  key: 'legal',
+                  icon: 'script-text',
+                  title: 'Conditions',
+                  component: (props) => (
+                    <AuthCreatePageLegal
+                      userEmail={creationData.email}
+                      create={create}
+                      navigation={navigation}
+                      {...props}
+                    />
+                  ),
+                },
+              ]}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );
