@@ -49,7 +49,7 @@ const MainHistory: React.FC<MainHistoryProps> = ({ navigation, preferences }) =>
           title="Événements"
         />
         <View style={{ height: 20 }} />
-        <List.Subheader>Centres d&amp;interêt</List.Subheader>
+        <List.Subheader>Centres d&apos;interêt</List.Subheader>
         <Divider />
         {!preferences.recommendations ? (
           <List.Item

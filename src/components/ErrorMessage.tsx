@@ -219,8 +219,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     } else if (err?.error?.response?.status === 422) {
       message = {
         icon: 'alert-decagram-outline',
-        text:
-          'L&apos;application a envoyé des données malformées au serveur. Merci de signaler ce bug.',
+        text: "L'application a envoyé des données malformées au serveur. Merci de signaler ce bug.",
       };
       if (back) {
         actions.push({
@@ -232,8 +231,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     } else if (err?.error?.response?.status === 400) {
       message = {
         icon: 'file-alert-outline',
-        text:
-          'L&apos;application a envoyé des données invalides au serveur. Merci de signaler ce bug.',
+        text: "L'application a envoyé des données invalides au serveur. Merci de signaler ce bug.",
       };
       if (restart) {
         actions.push({
