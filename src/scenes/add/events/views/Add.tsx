@@ -82,66 +82,64 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
             retry={add}
           />
         )}
-        <KeyboardAvoidingView behavior="height">
-          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
-            <PlatformBackButton onPress={navigation.goBack} />
-            <View style={styles.centerIllustrationContainer}>
-              <Text style={eventStyles.title}>Créer un évènement</Text>
-            </View>
-            <StepperView
-              pages={[
-                {
-                  key: 'group',
-                  icon: 'account-group',
-                  title: 'Groupe',
-                  component: (props) => <EventAddPageGroup {...props} />,
-                },
-                {
-                  key: 'location',
-                  icon: 'map-marker',
-                  title: 'Loc.',
-                  component: (props) => <EventAddPageLocation navigation={navigation} {...props} />,
-                },
-                {
-                  key: 'meta',
-                  icon: 'information',
-                  title: 'Info',
-                  component: (props) => <EventAddPageMeta {...props} />,
-                },
-                {
-                  key: 'tags',
-                  icon: 'tag-multiple',
-                  title: 'Tags',
-                  component: (props) => <EventAddPageTags {...props} />,
-                },
-                {
-                  key: 'place',
-                  icon: 'map',
-                  title: 'Lieu',
-                  component: (props) => <EventAddPagePlace {...props} />,
-                },
-                {
-                  key: 'duration',
-                  icon: 'clock',
-                  title: 'Durée',
-                  component: (props) => <EventAddPageDuration {...props} />,
-                },
-                {
-                  key: 'contact',
-                  icon: 'at',
-                  title: 'Contact',
-                  component: (props) => <EventAddPageContact {...props} />,
-                },
-                {
-                  key: 'program',
-                  icon: 'script-text',
-                  title: 'Prog.',
-                  component: (props) => <EventAddPageProgram add={add} {...props} />,
-                },
-              ]}
-            />
-          </ScrollView>
-        </KeyboardAvoidingView>
+        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+          <PlatformBackButton onPress={navigation.goBack} />
+          <View style={styles.centerIllustrationContainer}>
+            <Text style={eventStyles.title}>Créer un évènement</Text>
+          </View>
+          <StepperView
+            pages={[
+              {
+                key: 'group',
+                icon: 'account-group',
+                title: 'Groupe',
+                component: (props) => <EventAddPageGroup {...props} />,
+              },
+              {
+                key: 'location',
+                icon: 'map-marker',
+                title: 'Loc.',
+                component: (props) => <EventAddPageLocation navigation={navigation} {...props} />,
+              },
+              {
+                key: 'meta',
+                icon: 'information',
+                title: 'Info',
+                component: (props) => <EventAddPageMeta {...props} />,
+              },
+              {
+                key: 'tags',
+                icon: 'tag-multiple',
+                title: 'Tags',
+                component: (props) => <EventAddPageTags {...props} />,
+              },
+              {
+                key: 'place',
+                icon: 'map',
+                title: 'Lieu',
+                component: (props) => <EventAddPagePlace {...props} />,
+              },
+              {
+                key: 'duration',
+                icon: 'clock',
+                title: 'Durée',
+                component: (props) => <EventAddPageDuration {...props} />,
+              },
+              {
+                key: 'contact',
+                icon: 'at',
+                title: 'Contact',
+                component: (props) => <EventAddPageContact {...props} />,
+              },
+              {
+                key: 'program',
+                icon: 'script-text',
+                title: 'Prog.',
+                component: (props) => <EventAddPageProgram add={add} {...props} />,
+              },
+            ]}
+          />
+        </ScrollView>
       </SafeAreaView>
     </View>
   );
