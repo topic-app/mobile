@@ -98,60 +98,62 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
             error={reqState.check.error}
           />
         )}
-        <ScrollView keyboardShouldPersistTaps="handled">
-          <PlatformBackButton onPress={navigation.goBack} />
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name="auth-register" height={200} width={200} />
-            <Text style={authStyles.title}>Créer un compte</Text>
-          </View>
-          <StepperView
-            pages={[
-              {
-                key: 'general',
-                icon: 'account',
-                title: 'General',
-                component: (props) => <AuthCreatePageGeneral {...props} />,
-              },
-              {
-                key: 'privacy',
-                icon: 'shield',
-                title: 'Vie privée',
-                component: (props) => <AuthCreatePagePrivacy {...props} />,
-              },
-              {
-                key: 'profile',
-                icon: 'comment-account',
-                title: 'Profil',
-                component: (props) => (
-                  <AuthCreatePageProfile
-                    landing={() =>
-                      navigation.push('Landing', {
-                        screen: 'SelectLocation',
-                        params: { goBack: true },
-                      })
-                    }
-                    username={creationData.username || ''}
-                    accountType={creationData.accountType || 'private'}
-                    {...props}
-                  />
-                ),
-              },
-              {
-                key: 'legal',
-                icon: 'script-text',
-                title: 'Conditions',
-                component: (props) => (
-                  <AuthCreatePageLegal
-                    userEmail={creationData.email}
-                    create={create}
-                    navigation={navigation}
-                    {...props}
-                  />
-                ),
-              },
-            ]}
-          />
-        </ScrollView>
+        <KeyboardAvoidingView behavior="height">
+          <ScrollView keyboardShouldPersistTaps="handled">
+            <PlatformBackButton onPress={navigation.goBack} />
+            <View style={styles.centerIllustrationContainer}>
+              <Illustration name="auth-register" height={200} width={200} />
+              <Text style={authStyles.title}>Créer un compte</Text>
+            </View>
+            <StepperView
+              pages={[
+                {
+                  key: 'general',
+                  icon: 'account',
+                  title: 'General',
+                  component: (props) => <AuthCreatePageGeneral {...props} />,
+                },
+                {
+                  key: 'privacy',
+                  icon: 'shield',
+                  title: 'Vie privée',
+                  component: (props) => <AuthCreatePagePrivacy {...props} />,
+                },
+                {
+                  key: 'profile',
+                  icon: 'comment-account',
+                  title: 'Profil',
+                  component: (props) => (
+                    <AuthCreatePageProfile
+                      landing={() =>
+                        navigation.push('Landing', {
+                          screen: 'SelectLocation',
+                          params: { goBack: true },
+                        })
+                      }
+                      username={creationData.username || ''}
+                      accountType={creationData.accountType || 'private'}
+                      {...props}
+                    />
+                  ),
+                },
+                {
+                  key: 'legal',
+                  icon: 'script-text',
+                  title: 'Conditions',
+                  component: (props) => (
+                    <AuthCreatePageLegal
+                      userEmail={creationData.email}
+                      create={create}
+                      navigation={navigation}
+                      {...props}
+                    />
+                  ),
+                },
+              ]}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );
