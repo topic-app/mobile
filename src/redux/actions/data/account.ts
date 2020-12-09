@@ -20,6 +20,7 @@ import {
   AccountRequestState,
   AppThunk,
   AccountCreationData,
+  UPDATE_ACCOUNT_EMAIL,
 } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
 import { request, logger } from '@utils/index';
@@ -221,6 +222,61 @@ function fetchAccountCreator(): AppThunk {
   };
 }
 
+function fetchEmailCreator(): AppThunk {
+  return (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      if (!getState().account.loggedIn) {
+        dispatch({
+          type: LOGOUT,
+          data: null,
+        });
+        return resolve(null);
+      }
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          fetchEmail: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request('profile/email', 'get', {}, true, 'auth')
+        .then((result) => {
+          dispatch({
+            type: UPDATE_ACCOUNT_STATE,
+            data: {
+              fetchEmail: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          dispatch({
+            type: UPDATE_ACCOUNT_EMAIL,
+            data: result.data?.email, // TEMP: This should change on server
+          });
+          resolve(true);
+        })
+        .catch((err) => {
+          dispatch({
+            type: UPDATE_ACCOUNT_STATE,
+            data: {
+              fetchEmail: {
+                success: false,
+                loading: false,
+                error: err,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
 function updateCreationDataCreator(fields: { [key: string]: any }): AnyAction {
   return {
     type: UPDATE_ACCOUNT_CREATION_DATA,
@@ -280,7 +336,7 @@ function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
     }
     let result;
     try {
-      result = await request('auth/login/local', 'post', newFields);
+      result = await request('auth/login/local', 'post', newFields, false, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -365,7 +421,7 @@ function registerCreator(fields: RegisterFields): AppThunk {
         },
       });
     }
-    request('auth/register/local', 'post', newFields)
+    request('auth/register/local', 'post', newFields, false, 'auth')
       .then((result) => {
         dispatch({
           type: UPDATE_ACCOUNT_STATE,
@@ -425,7 +481,7 @@ function profileActionCreator(
           },
         },
       });
-      request(`profile/${api}`, 'post', {}, true)
+      request(`profile/${api}`, 'post', {}, true, 'auth')
         .then((result) => {
           dispatch({
             type: UPDATE_ACCOUNT_STATE,
@@ -478,6 +534,10 @@ async function register(fields: RegisterFields) {
   await Store.dispatch(registerCreator(fields));
 }
 
+async function fetchEmail() {
+  await Store.dispatch(fetchEmailCreator());
+}
+
 function logout() {
   Store.dispatch(logoutCreator());
 }
@@ -514,6 +574,7 @@ export {
   updateCreationData,
   clearCreationData,
   fetchGroups,
+  fetchEmail,
   fetchWaitingGroups,
   fetchAccount,
   register,

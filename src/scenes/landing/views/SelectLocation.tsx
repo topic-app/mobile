@@ -222,7 +222,12 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
     const params = { schools: schoolIds, departments: departmentIds.concat(schoolDepartmentIds) };
 
     Promise.all([
-      updateLocation({ selected: true, global, ...params }),
+      updateLocation({
+        selected: true,
+        global,
+        schools: schoolIds,
+        departments: departmentIds,
+      }),
       updateArticleParams({ global: true, ...params }),
       updateEventParams({ global: true, ...params }),
       ...schoolIds.map((schId) =>

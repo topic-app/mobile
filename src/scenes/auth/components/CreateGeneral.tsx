@@ -37,7 +37,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
 
         let result;
         try {
-          result = await request('auth/check/local/username', 'get', { username });
+          result = await request('auth/check/local/username', 'get', { username }, false, 'auth');
         } catch (err) {
           updateState({ check: { success: false, error: err, loading: false } });
         }
@@ -53,7 +53,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
         }
         let result;
         try {
-          result = await request('auth/check/local/email', 'get', { email });
+          result = await request('auth/check/local/email', 'get', { email }, false, 'auth');
         } catch (err) {
           updateState({ check: { success: false, error: err, loading: false } });
         }

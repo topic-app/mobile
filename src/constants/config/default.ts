@@ -16,8 +16,16 @@ import { AppConfig } from './types';
 
 const defaultConfig: AppConfig = {
   api: {
-    baseUrl: 'https://api.topicapp.fr/v1',
-    devUrl: 'https://api-dev.topicapp.fr/v1',
+    url: {
+      base: 'https://api.topicapp.fr/v1',
+      auth: 'https://auth.topicapp.fr/v1',
+      data: 'https://data.topicapp.fr/v1',
+    },
+    devUrl: {
+      base: 'https://api-dev.topicapp.fr/v1',
+      auth: 'https://auth-dev.topicapp.fr/v1',
+      data: 'https://data-dev.topicapp.fr/v1',
+    },
     timeout: 10000,
   },
   links: {

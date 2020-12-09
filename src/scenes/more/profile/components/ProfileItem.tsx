@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 import { useTheme } from '@utils/index';
@@ -13,6 +13,7 @@ type Props = {
   disabled?: boolean;
   type?: 'public' | 'private' | 'none';
   onPress: () => any;
+  loading?: boolean;
 };
 
 const ProfileItem: React.FC<Props> = ({
@@ -22,6 +23,7 @@ const ProfileItem: React.FC<Props> = ({
   disabled = false,
   type = 'public',
   onPress,
+  loading = false,
 }) => {
   const theme = useTheme();
   const profileStyles = getProfileStyles(theme);
@@ -40,6 +42,7 @@ const ProfileItem: React.FC<Props> = ({
         )}
       </View>
       <View style={{ flexDirection: 'row' }}>
+        {loading && <ActivityIndicator size="large" color={colors.primary} />}
         {type !== 'none' && (
           <View>
             {type === 'private' ? (

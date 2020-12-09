@@ -13,8 +13,16 @@ export type AppConfig = {
     disablePersist: boolean;
   };
   api: {
-    baseUrl: string;
-    devUrl: string;
+    url: {
+      base: string;
+      auth: string;
+      data: string;
+    };
+    devUrl: {
+      base: string;
+      auth: string;
+      data: string;
+    };
     timeout: number;
   };
   google: {

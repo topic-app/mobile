@@ -12,7 +12,7 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
-import { fetchAccount, logout, deleteAccount } from '@redux/actions/data/account';
+import { fetchAccount, logout, deleteAccount, fetchEmail } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import {
   Account,
@@ -73,13 +73,18 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
   const [isEmailVisible, setEmailVisible] = React.useState(false);
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
 
+  React.useEffect(() => {
+    fetchAccount();
+    fetchEmail();
+  }, []);
+
   if (!account.loggedIn) return <Text>Non autorisé</Text>;
 
   const deleteAccountFunc = () => {
     deleteAccount().then(() =>
       Alert.alert(
         'Vérifiez vos emails',
-        `Un lien de confirmation à été envoyé à ${account.accountInfo?.user?.sensitiveData?.email}.`,
+        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
         [{ text: 'Fermer' }],
         { cancelable: true },
       ),
@@ -90,7 +95,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
     deleteAccount().then(() =>
       Alert.alert(
         'Vérifiez vos emails',
-        `Un lien de confirmation à été envoyé à ${account.accountInfo?.user?.sensitiveData?.email}.`,
+        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
         [{ text: 'Fermer' }],
         { cancelable: true },
       ),
@@ -110,7 +115,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
         }}
       />
       {account.state.fetchAccount.loading && <ProgressBar indeterminate />}
-      {account.state.fetchAccount.error && (
+      {(account.state.fetchAccount.error || account.state.fetchEmail.error) && (
         <ErrorMessage
           type="axios"
           strings={{
@@ -118,8 +123,11 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
             contentPlural: 'des informations de profil',
             contentSingular: 'Le profil',
           }}
-          error={account.state.fetchAccount.error}
-          retry={fetchAccount}
+          error={[account.state.fetchAccount.error, account.state.fetchEmail.error]}
+          retry={() => {
+            fetchAccount();
+            fetchEmail();
+          }}
         />
       )}
       <ScrollView>
@@ -241,10 +249,11 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
           )}
           <ProfileItem
             item="Adresse email"
-            value={account.accountInfo.user.sensitiveData.email}
+            value={account.accountInfo.email || ''}
             editable
             type="private"
             onPress={() => setEmailVisible(true)}
+            loading={account.state.fetchEmail.loading}
           />
           <View style={{ height: 50 }} />
           <List.Subheader>Localisation</List.Subheader>

@@ -26,7 +26,7 @@ function uploadCreator(
         },
       });
       request(
-        'auth/permission/upload',
+        'permission/upload',
         'post',
         {
           groupId,
