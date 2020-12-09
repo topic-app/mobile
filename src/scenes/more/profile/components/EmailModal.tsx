@@ -4,7 +4,7 @@ import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
-import { fetchAccount } from '@redux/actions/data/account';
+import { fetchEmail } from '@redux/actions/data/account';
 import { updateEmail } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
@@ -110,7 +110,7 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
               updateEmail(email).then(() => {
                 setEmail('');
                 setVisible(false);
-                fetchAccount();
+                fetchEmail();
               });
             },
           },
