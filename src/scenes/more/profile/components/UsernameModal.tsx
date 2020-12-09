@@ -54,9 +54,15 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
       } else {
         let result;
         try {
-          result = await request('auth/check/local/username', 'get', {
-            username,
-          });
+          result = await request(
+            'auth/check/local/username',
+            'get',
+            {
+              username,
+            },
+            false,
+            'auth',
+          );
         } catch (err) {
           validation = {
             valid: false,

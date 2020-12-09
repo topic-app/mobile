@@ -49,9 +49,15 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
       } else {
         let result;
         try {
-          result = await request('auth/check/local/email', 'get', {
-            email: emailText,
-          });
+          result = await request(
+            'auth/check/local/email',
+            'get',
+            {
+              email: emailText,
+            },
+            false,
+            'auth',
+          );
         } catch (err) {
           validation = {
             valid: false,
