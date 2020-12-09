@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -20,7 +20,6 @@ import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageLegal from '../components/CreateLegal';
 import AuthCreatePagePrivacy from '../components/CreatePrivacy';
 import AuthCreatePageProfile from '../components/CreateProfile';
-import AuthCreatePageSchool from '../components/CreateSchool';
 import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
 
@@ -99,7 +98,6 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
             error={reqState.check.error}
           />
         )}
-
         <ScrollView keyboardShouldPersistTaps="handled">
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
@@ -115,22 +113,6 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
                 component: (props) => <AuthCreatePageGeneral {...props} />,
               },
               {
-                key: 'location',
-                icon: 'school',
-                title: 'École',
-                component: (props) => (
-                  <AuthCreatePageSchool
-                    landing={() =>
-                      navigation.push('Landing', {
-                        screen: 'SelectLocation',
-                        params: { goBack: true },
-                      })
-                    }
-                    {...props}
-                  />
-                ),
-              },
-              {
                 key: 'privacy',
                 icon: 'shield',
                 title: 'Vie privée',
@@ -142,6 +124,12 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
                 title: 'Profil',
                 component: (props) => (
                   <AuthCreatePageProfile
+                    landing={() =>
+                      navigation.push('Landing', {
+                        screen: 'SelectLocation',
+                        params: { goBack: true },
+                      })
+                    }
                     username={creationData.username || ''}
                     accountType={creationData.accountType || 'private'}
                     {...props}

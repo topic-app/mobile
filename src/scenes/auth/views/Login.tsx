@@ -1,6 +1,12 @@
 import { Formik } from 'formik';
 import React from 'react';
-import { View, ScrollView, Platform, TextInput as RNTextInput } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Platform,
+  TextInput as RNTextInput,
+  KeyboardAvoidingView,
+} from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, Card } from 'react-native-paper';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
@@ -65,7 +71,6 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
             type="axios"
           />
         )}
-
         <ScrollView keyboardShouldPersistTaps="handled">
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={authStyles.stepIndicatorContainer}>

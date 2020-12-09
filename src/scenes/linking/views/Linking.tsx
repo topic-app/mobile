@@ -98,7 +98,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
           descriptor: {
             options: {
               hideBack: true,
-              title: 'Action',
+              title: 'Topic',
               subtitle: 'Lien email',
             },
           },
@@ -199,7 +199,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                   }
                   style={{ flex: 1 }}
                 >
-                  {state[type]?.error || error ? 'Annuler' : 'Continuer'}
+                  Continuer
                 </Button>
               ) : (
                 <Button
