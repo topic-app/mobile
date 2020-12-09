@@ -29,6 +29,9 @@ import Store, { Persistor } from '@redux/store';
 import errorHandler from './ErrorHandler';
 import StoreApp from './src/StoreApp';
 
+const OpenDyslexic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Regular.otf');
+const OpenDyslexic_Italic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Italic.otf');
+
 enableScreens();
 
 /* if (Platform.OS !== 'web') {
@@ -49,6 +52,8 @@ function App() {
     'Roboto-Slab_Italic': Roboto_400Regular_Italic,
     'Roboto-Mono': RobotoMono_400Regular,
     'Roboto-Mono_Italic': RobotoMono_400Regular_Italic,
+    OpenDyslexic,
+    OpenDyslexic_Italic,
   });
 
   if (!fontsLoaded) {
