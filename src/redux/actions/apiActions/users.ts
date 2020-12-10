@@ -1,7 +1,7 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator } from './ActionCreator';
 import { UPDATE_USERS_STATE } from '@ts/types';
+import { reportCreator } from './ActionCreator';
 
 function userFollowCreator({ id }: { id: string }) {
   return (dispatch: (action: { type: string; data: any }) => void) => {

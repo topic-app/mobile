@@ -63,7 +63,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
               <Text style={{ marginTop: 40 }}>
                 Votre article doit être approuvé par un administrateur de {groupName}.
               </Text>
-              <Text>Vous serez notifiés par email dès que l&apos;article est approuvé.</Text>
+              <Text>Vous serez notifié par email dès que l&apos;article sera approuvé.</Text>
             </View>
           )}
           {account.permissions?.some(
@@ -76,7 +76,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
               <Text>Article approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
             ) : (
               <View>
-                <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous même cet article</Text>
+                <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous-même cet article.</Text>
                 <Button
                   uppercase={Platform.OS !== 'ios'}
                   loading={reqState.verification_approve?.loading}
@@ -84,8 +84,8 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
                   style={{ marginTop: 10 }}
                   onPress={() => {
                     Alert.alert(
-                      "Approuver l'article?",
-                      "L'article doit ềtre conforme aux conditions d'utilisation.\nVous êtes responsables si l'article ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs.",
+                      "Approuver l'article ?",
+                      "L'article doit être conforme aux conditions d'utilisation.\nVous êtes responsable si l'article ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs.",
                       [
                         {
                           text: 'Annuler',
@@ -142,7 +142,7 @@ const ArticleAddSuccess: React.FC<Props> = ({ navigation, reqState, account, rou
                   onPress={() => {
                     Alert.alert(
                       "Partager l'article",
-                      "L'article ne sera pas accessible tant qu'il n'a pas été approuvé",
+                      "L'article ne sera pas accessible tant qu'il n'aura pas été approuvé.",
                       [
                         { text: 'Annuler' },
                         {

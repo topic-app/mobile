@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Image, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
 import { Text, Card, Paragraph, Title, Caption } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,7 +14,6 @@ import getStyles from '@styles/Styles';
 import getCardStyles from './styles/CardStyles';
 import { CardBase } from '../Cards';
 import TagList from '../TagList';
-import { connect } from 'react-redux';
 import CustomImage from '../CustomImage';
 
 function buildDateString(start: string, end: string) {
@@ -47,7 +47,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, navigate, verification, pr
   const minWidth = Math.min(screenDimensions.height, screenDimensions.width);
   const imageSize = minWidth / 3.5;
 
-  if (!event)
+  if (!event){
     return (
       <CardBase>
         <Card.Content>
@@ -55,6 +55,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, navigate, verification, pr
         </Card.Content>
       </CardBase>
     );
+  }
 
   const start = event.duration?.start; // Destructure this once duration works on the server
   const end = event.duration?.end;

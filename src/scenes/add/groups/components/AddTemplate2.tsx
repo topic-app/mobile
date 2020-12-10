@@ -47,8 +47,8 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
         <ErrorMessage
           error={state.templates?.error}
           strings={{
-            what: 'la récupération des types de groups',
-            contentPlural: 'Les types de groups',
+            what: 'la récupération des types de groupes',
+            contentPlural: 'Les types de groupes',
           }}
           type="axios"
           retry={updateGroupTemplates}
@@ -95,7 +95,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
           />
         ))}
         <HelperText visible={showError} type="error">
-          Vous devez selectionner un type de groupe
+          Vous devez sélectionner un type de groupe
         </HelperText>
       </View>
       <View style={groupStyles.buttonContainer}>

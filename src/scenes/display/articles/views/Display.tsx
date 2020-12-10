@@ -197,7 +197,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               ) : (
                 <View style={styles.contentContainer}>
                   <Text style={articleStyles.disabledText}>
-                    Connectez vous pour écrire un commentaire
+                    Connectez-vous pour écrire un commentaire
                   </Text>
                   <Text>
                     <Text
@@ -219,7 +219,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                       }
                       style={[styles.link, styles.primaryText]}
                     >
-                      créér un compte
+                      Créer un compte
                     </Text>
                   </Text>
                 </View>
@@ -256,21 +256,21 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     />
                     <Text style={{ color: colors.text }}>
                       Pour vérifier cet article:{'\n'}- Vérifiez que le contenu est bien conforme
-                      aux conditions générales d'utilisation{'\n'}- Vérifiez que tous les médias
-                      sont conformes, et que vous avez bien le droit d'utiliser ceux-ci{'\n'}-
+                      aux conditions générales d&apos;utilisation{'\n'}- Vérifiez que tous les médias
+                      sont conformes et que vous avez bien le droit d&apos;utiliser ceux-ci{'\n'}-
                       Visitez chacun des liens afin de vous assurer que tous les sites sont
                       conformes{'\n'}
                       {'\n'}
-                      Nous vous rappelons que les contenus suivants ne sont pas autorisés: {'\n'}-
+                      Nous vous rappelons que les contenus suivants ne sont pas autorisés : {'\n'}-
                       Tout contenu illégal{'\n'}- Tout contenu haineux ou discriminatoire{'\n'}-
                       Tout contenu à caractère pornographique ou qui ne convient pas aux enfants
                       {'\n'}- Toute atteinte à la propriété intellectuelle{'\n'}- Tout contenu
                       trompeur{'\n'}- Toute atteinte à la vie privée{'\n'}- Tout contenu publié de
                       façon automatisée
-                      {'\n'}- Tout contenu qui pointe vers un site web, logiciel, ou autre média qui
+                      {'\n'}- Tout contenu qui pointe vers un site web, logiciel ou autre média qui
                       ne respecte pas les présentes règles{'\n'}
                       {'\n'}
-                      En tant qu'administrateur, vous êtes en partie responsable des contenus
+                      En tant qu&apos;administrateur, vous êtes en partie responsable des contenus
                       publiés, comme détaillé dans la Charte des administrateurs.
                     </Text>
                   </View>
@@ -291,7 +291,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                         color={colors.disabled}
                       />
                       <Text style={{ color: colors.text }}>
-                        Liens contenus dans l'article:{'\n'}
+                        Liens contenus dans l&apos;article:{'\n'}
                         {article?.content?.data
                           ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
                           ?.map((u: string) => (

@@ -137,7 +137,7 @@ Gen ErrorMessage
         Alert.alert(
           'Signaler un bug',
           `
-Le rapport généré peut contenir des données sensibles, telles que votre mot de passe, votre adresse email, l'historique etc.
+Le rapport généré peut contenir des données sensibles, telles que votre mot de passe, votre adresse email, l'historique, etc.
 Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données personnelles (mais qui est moins utile pour les développeurs)
 `,
           [
@@ -190,7 +190,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     if (err?.error?.response?.status === 503) {
       message = {
         icon: 'hammer-wrench',
-        text: 'Le serveur est en maintenance. Merci de réessayer plus tard',
+        text: 'Le serveur est en maintenance. Merci de réessayer plus tard.',
       };
       if (retry) {
         actions = [
@@ -207,7 +207,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     ) {
       message = {
         icon: 'alert-decagram-outline',
-        text: `Notre serveur a eu un problème lors de ${strings.what}. Merci de signaler ce bug ou de réessayer plus tard`,
+        text: `Notre serveur a eu un problème lors de ${strings.what}. Merci de signaler ce bug ou de réessayer plus tard.`,
       };
       if (retry) {
         actions.push({
@@ -245,7 +245,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     } else if (err?.error?.response?.status === 404) {
       message = {
         icon: 'file-alert-outline',
-        text: `${strings.contentSingular} n'a pas été trouvé. Il n'existe pas ou n'a pas encore été publié`,
+        text: `${strings.contentSingular} n'a pas été trouvé. Il n'existe pas ou n'a pas encore été publié.`,
       };
       if (retry) {
         actions.push({
@@ -263,7 +263,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     } else if (err?.error?.response?.status === 410) {
       message = {
         icon: 'delete-outline',
-        text: `${strings.contentSingular} a été supprimé`,
+        text: `${strings.contentSingular} a été supprimé.`,
       };
       if (back) {
         actions.push({
@@ -275,7 +275,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     } else if (err?.error?.response?.status === 451) {
       message = {
         icon: 'shield-alert-outline',
-        text: `${strings.contentSingular} est en attente de modération `,
+        text: `${strings.contentSingular} est en attente de modération. `,
       };
       if (retry) {
         actions.push({
@@ -295,7 +295,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
         message = {
           icon: 'account-alert-outline',
           text:
-            "Cette action nécéssite un compte, mais il semblerait que vous ne soyez pas connectés ou qu'il y a un problème avec votre compte",
+            "Cette action nécessite un compte, mais il semblerait que vous ne soyez pas connecté ou qu'il y a un problème avec votre compte.",
         };
         if (back) {
           actions.push({
@@ -307,7 +307,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
       } else if (err?.error?.response?.data?.error?.value === 'expired') {
         message = {
           icon: 'account-alert-outline',
-          text: 'La connexion à votre compte a expiré, merci de vous reconnecter',
+          text: 'La connexion à votre compte a expiré, merci de vous reconnecter.',
         };
         if (back) {
           actions.push({
@@ -320,7 +320,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
         message = {
           icon: 'lock-alert',
           text:
-            "Vous n'êtes pas autorisés à faire cette action, merci de vérifier que vous avez bien la permission.",
+            "Vous n'êtes pas autorisé à faire cette action, merci de vérifier que vous avez bien la permission.",
         };
         if (back) {
           actions.push({
@@ -333,7 +333,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
         message = {
           icon: 'lock-alert',
           text:
-            "Cette action ne peut être faite qu'une seule fois, et il semblerait que vous l'ayez déjà fait",
+            "Cette action ne peut être faite qu'une seule fois, et il semblerait que vous l'ayez déjà fait.",
         };
         if (back) {
           actions.push({
@@ -346,7 +346,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
         message = {
           icon: 'reload-alert',
           text:
-            "Seul l'auteur peut faire cette action, et il semblerait que vous n'êtes pas l&auteur",
+            "Seul l'auteur peut faire cette action, et il semblerait que vous n'êtes pas l&apos;auteur.",
         };
         if (back) {
           actions.push({
@@ -358,7 +358,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
       } else if (err?.error?.response?.data?.error?.value === 'maximum') {
         message = {
           icon: 'reload',
-          text: `Vous avez déjà créée trop ${strings.contentPlural}, merci d'en supprimer ou d'attendre la fermeture/suppression.`,
+          text: `Vous avez déjà créé trop ${strings.contentPlural}, merci d'en supprimer ou d'attendre la fermeture/suppression.`,
         };
         if (back) {
           actions.push({
@@ -371,7 +371,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
         message = {
           icon: 'account-alert-outline',
           text:
-            "Vous n'avez pas la permission de faire cette action, ou vous n'etes pas connectés. Si vous pensez avoir cette permission, merci de signaler un bug",
+            "Vous n'avez pas la permission de faire cette action ou vous n'êtes pas connecté. Si vous pensez avoir cette permission, merci de signaler un bug.",
         };
         if (back) {
           actions.push({
@@ -385,7 +385,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
       message = {
         icon: 'clock-alert-outline',
         text:
-          'Votre appareil a été temporairement bloqué à cause d&un nombre trop grand de requêtes',
+          'Votre appareil a été temporairement bloqué à cause d&apos;un nombre trop grand de requêtes.',
       };
       if (back) {
         actions.push({
@@ -421,7 +421,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     } else if (!netInfo.isConnected || !netInfo.isInternetReachable) {
       message = {
         icon: 'wifi-strength-off-outline',
-        text: "Vous n'êtes pas connectés à Internet",
+        text: "Vous n'êtes pas connecté à Internet.",
       };
       if (retry) {
         actions = [
@@ -448,7 +448,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
   } else {
     message = {
       icon: 'alert-decagram-outline',
-      text: 'Une erreur inconnue est survenue',
+      text: 'Une erreur inconnue est survenue.',
     };
     if (back) {
       actions.push({

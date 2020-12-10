@@ -79,7 +79,7 @@ const PetitionAdd: React.FC<PetitionAddProps> = ({ navigation, reqState, creatio
         icon: 'account-remove-outline',
         title: 'Erreur lors de la création du compte',
         description:
-          'Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données soient correctes ou signaler un bug depuis le menu principal',
+          'Veuillez vérifier votre connexion internet, réessayer en vérifiant que les données sont correctes ou signaler un bug depuis le menu principal',
         actions: [
           {
             label: 'Réessayer',

@@ -86,7 +86,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
             <View style={styles.contentContainer}>
               <View style={styles.centerIllustrationContainer}>
                 <Text>Reporter ce contenu</Text>
-                <Text>Nous vous contacterons si nécéssaire pour avoir plus de détails</Text>
+                <Text>Nous vous contacterons si nécessaire pour avoir plus de détails</Text>
               </View>
             </View>
             {state.error && (
@@ -183,7 +183,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
                   </Button>
                 ) : (
                   <View>
-                    <Text>Connectez vous pour signaler un contenu</Text>
+                    <Text>Connectez-vous pour signaler un contenu</Text>
                     <Text>
                       <Text
                         onPress={() =>
@@ -204,7 +204,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
                         }
                         style={[styles.link, styles.primaryText]}
                       >
-                        créér un compte
+                        Créer un compte
                       </Text>
                     </Text>
                   </View>

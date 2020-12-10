@@ -55,13 +55,13 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
         validation = {
           valid: false,
           error: true,
-          message: 'Le titre doit contenir au moins 10 caractères',
+          message: 'Le titre doit contenir au moins 10 caractères.',
         };
       } else if (title.length >= 100) {
         validation = {
           valid: false,
           error: true,
-          message: 'Le titre doit contenir moins de 100 caractères',
+          message: 'Le titre doit contenir moins de 100 caractères.',
         };
       } else {
         validation = { valid: true, error: false };
@@ -201,7 +201,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({ next, prev }) =
           <HelperText type={currentDescription.value ? 'error' : 'info'} visible>
             {currentDescription.value
               ? currentDescription.message
-              : "Laissez vide pour selectionner les premières lignes de l'article"}
+              : "Laissez vide pour sélectionner les premières lignes de l'article."}
           </HelperText>
         </CollapsibleView>
         <CollapsibleView collapsed={!currentDescription.value}>

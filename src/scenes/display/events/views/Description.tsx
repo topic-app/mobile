@@ -93,7 +93,7 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
     // Render placeholder
     return (
       <View>
-        <Text>En attente du server</Text>
+        <Text>En attente du serveur</Text>
       </View>
     );
   }

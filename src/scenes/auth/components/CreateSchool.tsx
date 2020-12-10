@@ -51,7 +51,7 @@ const AuthCreatePageSchool: React.FC<Props> = ({ next, prev, location, landing }
         <Card style={{ marginBottom: 30 }}>
           <Card.Content>
             <Title>France entière</Title>
-            <Subheading>Pas d&apos;école ou département spécifique</Subheading>
+            <Subheading>Pas d&apos;école ou département spécifiques</Subheading>
           </Card.Content>
         </Card>
       )}

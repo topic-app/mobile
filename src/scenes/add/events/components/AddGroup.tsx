@@ -90,11 +90,11 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
           />
         ))}
         <HelperText visible={showError} type="error">
-          Vous devez selectionner un groupe
+          Vous devez sélectionner un groupe
         </HelperText>
         {groupsWithPermission.length !== account.groups.length && (
           <Text>
-            Certains groupes n'apparaissent pas car vous ne pouvez pas écrire d'évènements pour ces
+            Certains groupes n&apos;apparaissent pas car vous ne pouvez pas écrire d&apos;évènements pour ces
             groupes
           </Text>
         )}

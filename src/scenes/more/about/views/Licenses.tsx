@@ -53,7 +53,7 @@ const Licenses: React.FC<LicensesProps> = ({ route }) => {
                 <Divider />
                 <View style={styles.contentContainer}>
                   <Text>
-                    Les librairies suivantes, utilisées par l&amp;application Topic, sont licensées
+                    Les librairies suivantes, utilisées par l&apos;application Topic, sont licensées
                     sous {id} :
                   </Text>
                 </View>

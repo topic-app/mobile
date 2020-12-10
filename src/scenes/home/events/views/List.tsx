@@ -224,7 +224,7 @@ const EventList: React.FC<EventListProps> = ({
       <AnimatingHeader
         home
         value={scrollY}
-        title="Événements"
+        title="Évènements"
         actions={[
           {
             icon: 'magnify',

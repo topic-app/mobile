@@ -113,8 +113,8 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
                     </View>
                     <View style={landingStyles.contentContainer}>
                       <Text>
-                        Nous vous proposons une carte interactive des territoires français, où
-                        seront répertoriés, avec votre aide, les lieux culturels, les établissements
+                        Nous vous proposons une carte interactive des territoires français où
+                        seront répertoriés, avec votre aide, les lieux culturels et les établissements
                         scolaires et où apparaîtront vos évènements et ceux de la communauté.
                       </Text>
                       <Text>En avant la culture ! En avant l’engagement !</Text>
@@ -167,7 +167,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
                         />
                       </View>
                       <Text>
-                        La Mutuelle générale de l'Éducation nationale (MGEN) est l’entreprise qui
+                        La Mutuelle générale de l&apos;Éducation nationale (MGEN) est l’entreprise qui
                         finance l’application, au niveau des frais de serveur, de publication et des
                         frais associatifs. Nous les remercions sincèrement pour cette aide qui nous
                         permet de proposer une application gratuite et sans publicité.
@@ -206,10 +206,10 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
                         />
                       </View>
                       <Text>
-                        L'ESTPER est un regroupement d'organisations qui agissent dans les domaines
-                        de la santé, l'assurance, la banque, le médico-social, l'éducation populaire
-                        ou les activités de loisirs. L'ESPER place l'économie sociale au service de
-                        l'éducation.
+                        L&apos;ESPER est un regroupement d&apos;organisations qui agissent dans les domaines
+                        de la santé, l&apos;assurance, la banque, le médico-social, l&apos;éducation populaire
+                        ou les activités de loisirs. L&apos;ESPER place l&apos;économie sociale au service de
+                        l&apos;éducation.
                       </Text>
                     </View>
                   </View>

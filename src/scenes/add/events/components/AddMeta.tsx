@@ -68,13 +68,13 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
         validation = {
           valid: false,
           error: true,
-          message: 'Le titre doit contenir au moins 10 caractères',
+          message: 'Le titre doit contenir au moins 10 caractères.',
         };
       } else if (title.length >= 100) {
         validation = {
           valid: false,
           error: true,
-          message: 'Le titre doit contenir moins de 100 caractères',
+          message: 'Le titre doit contenir moins de 100 caractères.',
         };
       } else {
         validation = { valid: true, error: false };
@@ -263,7 +263,7 @@ const EventAddPageMeta: React.FC<Props> = ({ next, prev }) => {
       <View style={eventStyles.textInputContainer}>
         <TextInput
           ref={descriptionInput}
-          label="Décrivez votre évènement..."
+          label="Décrivez votre évènement"
           multiline
           numberOfLines={4}
           value={currentDescription.value}

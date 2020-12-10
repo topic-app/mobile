@@ -226,7 +226,7 @@ const EventAddPageTags: React.FC<Props> = ({
               color={colors.primary}
             />
             <Text style={{ color: colors.text, flex: 1 }}>
-              Les tags permettent aux utilisateurs de trouver plus facilement vos évènements et nous
+              Les tags permettent aux utilisateurs de trouver plus facilement vos évènements, et nous
               les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez pour
               rechercher ou pour créer un nouveau tag si aucun ne correspond.
             </Text>

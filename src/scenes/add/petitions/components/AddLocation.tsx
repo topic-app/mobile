@@ -70,7 +70,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
         validation = {
           valid: false,
           error: true,
-          message: "Le nom d'utilisateur doit contenir au moins 3 caractères",
+          message: "Le nom d'utilisateur doit contenir au moins 3 caractères.",
         };
       } else if (username.match(/^[a-zA-Z0-9_.]+$/i) === null) {
         validation = {
@@ -130,7 +130,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           validation = {
             valid: false,
             error: true,
-            message: 'Cette adresse email à déjà été utilisée',
+            message: 'Cette adresse email à déjà été utilisée.',
           };
         }
       }
@@ -155,14 +155,14 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
         validation = {
           valid: false,
           error: true,
-          message: 'Le mot de passe doit contenir au moins 8 caractères',
+          message: 'Le mot de passe doit contenir au moins 8 caractères.',
         };
       } else if (password.match(/^\S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/) === null) {
         validation = {
           valid: false,
           error: true,
           message:
-            'Le mot de passe doit contenir au moins un chiffre, une minuscule et une majuscule',
+            'Le mot de passe doit contenir au moins un chiffre, une minuscule et une majuscule.',
         };
       } else {
         validation = { valid: true, error: false };

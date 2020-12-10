@@ -249,8 +249,8 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           <ErrorMessage
             type="axios"
             strings={{
-              what: 'la procéure pour quitter le groupe',
-              contentSingular: 'La prodédure pour quitter le groupe',
+              what: 'la procédure pour quitter le groupe',
+              contentSingular: 'La procédure pour quitter le groupe',
             }}
             error={state.member_leave?.error}
             retry={leave}

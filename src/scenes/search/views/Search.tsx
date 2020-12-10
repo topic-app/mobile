@@ -386,7 +386,7 @@ const Search: React.FC<SearchProps> = ({
         <CollapsibleView collapsed={filterCollapsed}>
           <View>
             <CategoryTitle icon="shape" containerStyle={searchStyles.container}>
-              Categorie
+              Catégorie
             </CategoryTitle>
             <CategoriesList
               categories={categories}

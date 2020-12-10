@@ -27,7 +27,7 @@ function EventAddStackNavigator() {
       <Stack.Screen
         name="Success"
         component={EventAddSuccess}
-        options={{ title: 'Evènement ajouté' }}
+        options={{ title: 'Évènement ajouté' }}
       />
       <Stack.Screen
         name="Location"

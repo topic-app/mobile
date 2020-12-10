@@ -94,7 +94,7 @@ const DrawerContent: React.FC<BottomTabProps> = ({
             key: 'groups',
             type: 'button',
             icon: 'account-group-outline',
-            text: 'Mes groups',
+            text: 'Mes groupes',
             path: '/groupes',
           },
           /* ...(account.permissions?.some(
@@ -136,7 +136,7 @@ const DrawerContent: React.FC<BottomTabProps> = ({
     },
     {
       key: 'about',
-      text: 'A propos',
+      text: 'À propos',
       type: 'button',
       icon: 'information-outline',
       path: '/apropos',

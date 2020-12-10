@@ -91,10 +91,10 @@ const initialState: GroupsState = {
 
 /**
  * @docs reducers
- * Reducer pour les groups
+ * Reducer pour les groupes
  * @param state Contient le contenu de la database redux
  * @param action
- * @param action.type Le type d'action à effectuer: mettre à jour les groups avec action.data ou vider la database
+ * @param action.type Le type d'action à effectuer: mettre à jour l avec action.data ou vider la database
  * @param action.data Les données à remplacer dans la database redux
  * @returns Nouveau state
  */

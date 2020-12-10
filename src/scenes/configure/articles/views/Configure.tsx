@@ -299,7 +299,7 @@ function ArticleLists({
                                 }
                                 onPress={() => {
                                   Alert.alert(
-                                    `Voulez vous vraiment supprimer la liste ${item.name}?`,
+                                    `Voulez-vous vraiment supprimer la liste ${item.name} ?`,
                                     'Cette action est irréversible',
                                     [
                                       {

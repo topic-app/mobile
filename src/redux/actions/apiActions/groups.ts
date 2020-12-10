@@ -1,7 +1,7 @@
 import Store from '@redux/store';
 import { request } from '@utils/index';
-import { reportCreator, approveCreator } from './ActionCreator';
 import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, State } from '@ts/types';
+import { reportCreator, approveCreator } from './ActionCreator';
 
 function groupFollowCreator({ id }: { id: string }) {
   return (dispatch: (action: ActionType) => void) => {

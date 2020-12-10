@@ -261,7 +261,7 @@ const EventAddPageLocation: React.FC<Props> = ({
           <Text>Vous pouvez publier seulement dans ces localisations</Text>
         )}
         <HelperText visible={showError} type="error">
-          Vous devez selectionner au moins une localisation
+          Vous devez sélectionner au moins une localisation
         </HelperText>
       </View>
       <View style={eventStyles.buttonContainer}>

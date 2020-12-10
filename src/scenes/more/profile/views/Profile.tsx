@@ -322,7 +322,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation }) => {
             title="Supprimer mon compte"
             onPress={() => {
               Alert.alert(
-                'Supprimer le compte?',
+                'Supprimer le compte ?',
                 'Cette action est irréversible. Vous recevrez un email de confirmation.',
                 [
                   {

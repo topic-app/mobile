@@ -119,8 +119,8 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             <PlatformBackButton
               onPress={() => {
                 Alert.alert(
-                  'Quitter cet article?',
-                  'Il sera sauvegardé comme un brouillon',
+                  'Quitter cet article ?',
+                  'Il sera sauvegardé comme un brouillon.',
                   [
                     {
                       text: 'Quitter',

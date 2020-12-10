@@ -40,7 +40,7 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
         <View>
           <View style={styles.centerIllustrationContainer}>
             <Illustration name="event" height={400} width={400} />
-            <Text>Aucun événement {tab === 'upcoming' && 'prévu '}pour cette localisation</Text>
+            <Text>Aucun évènement {tab === 'upcoming' && 'prévu '}pour cette localisation</Text>
           </View>
           <View style={styles.container}>
             <Button
@@ -64,10 +64,10 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
       return (
         <View style={styles.centerIllustrationContainer}>
           <Illustration name="article-lists" height={400} width={400} />
-          <Text>Aucun événement dans cette liste</Text>
+          <Text>Aucun évènement dans cette liste</Text>
           <View style={styles.contentContainer}>
             <Text style={articleStyles.captionText}>
-              Ajoutez les grâce à l&apos;icone <Icon name="playlist-plus" size={20} />
+              Ajoutez les grâce à l&apos;icône <Icon name="playlist-plus" size={20} />
             </Text>
           </View>
         </View>
@@ -76,7 +76,7 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
       return (
         <View style={styles.centerIllustrationContainer}>
           <Illustration name="event" height={400} width={400} />
-          <Text>Aucun événement dans cette catégorie</Text>
+          <Text>Aucun évènement dans cette catégorie</Text>
         </View>
       );
     }

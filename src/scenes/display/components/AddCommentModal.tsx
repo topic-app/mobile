@@ -96,7 +96,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
         <ErrorMessage
           type="axios"
           strings={{
-            what: 'l&apos;ajout du commentaire',
+            what: "l'ajout du commentaire",
             contentSingular: 'Le commentaire',
           }}
           error={reqState.comments.add.error}

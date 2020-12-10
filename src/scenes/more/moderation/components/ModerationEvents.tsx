@@ -74,7 +74,7 @@ const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, acc
         <ErrorMessage
           type="axios"
           strings={{
-            what: 'la récupération des évènments à vérifier',
+            what: 'la récupération des évènements à vérifier',
             contentSingular: "La liste d'évènements à vérifier",
             contentPlural: 'Les évènements à vérifier',
           }}

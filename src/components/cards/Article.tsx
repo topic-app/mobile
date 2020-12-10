@@ -34,7 +34,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   const theme = useTheme();
   const { colors } = theme;
 
-  if (!article)
+  if (!article){
     return (
       <CardBase>
         <Card.Content>
@@ -42,6 +42,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
         </Card.Content>
       </CardBase>
     );
+  }
 
   // TODO: Find a better way than this
   const articleVerification = article as ArticleVerificationPreload;

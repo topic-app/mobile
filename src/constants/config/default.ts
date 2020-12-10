@@ -82,7 +82,7 @@ const defaultConfig: AppConfig = {
         },
         {
           id: '1',
-          name: 'A lire plus tard',
+          name: 'À lire plus tard',
           icon: 'history',
           items: [],
         },
