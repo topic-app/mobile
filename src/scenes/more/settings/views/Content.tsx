@@ -120,11 +120,12 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 uppercase={false}
                 labelStyle={{
                   color: colors.text,
+                  fontFamily: 'OpenDyslexic',
                 }}
-                onPress={() => updatePrefs({ fontFamily: 'Open-Dyslexia' })}
-                mode={preferences.fontFamily === 'Open-Dyslexia' ? 'outlined' : 'text'}
+                onPress={() => updatePrefs({ fontFamily: 'OpenDyslexic' })}
+                mode={preferences.fontFamily === 'OpenDyslexic' ? 'outlined' : 'text'}
               >
-                Dyslexique
+                Dyslexie
               </Button>
             </View>
           </View>

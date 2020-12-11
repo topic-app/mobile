@@ -77,6 +77,7 @@ export type AccountRequestState = {
   fetchGroups: RequestState;
   fetchAccount: RequestState;
   fetchWaitingGroups: RequestState;
+  fetchEmail: RequestState;
   updateProfile: RequestState;
   export: RequestState;
   delete: RequestState;

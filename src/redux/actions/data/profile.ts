@@ -53,8 +53,9 @@ function updateDataCreator(fields: Partial<User['data']>): AppThunk {
 }
 
 type UpdateStringCreatorParams = {
-  url: string;
+  url: 'profile/modify/username' | 'profile/modify/email' | 'profile/modify/password';
   params: { [key: string]: any };
+  authServer?: boolean;
 };
 
 /**
@@ -64,7 +65,11 @@ type UpdateStringCreatorParams = {
  * @param params Les paramètres de la requête
  * @returns Action
  */
-function updateProfileStringCreator({ url, params }: UpdateStringCreatorParams): AppThunk {
+function updateProfileStringCreator({
+  url,
+  params,
+  authServer = false,
+}: UpdateStringCreatorParams): AppThunk {
   return async (dispatch) => {
     dispatch({
       type: UPDATE_ACCOUNT_STATE,
@@ -78,7 +83,7 @@ function updateProfileStringCreator({ url, params }: UpdateStringCreatorParams):
     });
 
     try {
-      await request(url, 'post', params, true);
+      await request(url, 'post', params, true, authServer ? 'auth' : 'base');
     } catch (error) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -125,6 +130,7 @@ async function updateEmail(email: string) {
     updateProfileStringCreator({
       url: 'profile/modify/email',
       params: { email },
+      authServer: true,
     }),
   );
 }
@@ -135,6 +141,7 @@ async function updatePassword(password: string) {
     updateProfileStringCreator({
       url: 'profile/modify/password',
       params: { password: hashedPassword },
+      authServer: true,
     }),
   );
 }

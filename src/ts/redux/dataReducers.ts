@@ -20,6 +20,7 @@ export const UPDATE_ACCOUNT_WAITING_GROUPS = 'UPDATE_ACCOUNT_WAITING_GROUPS';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN = 'LOGIN';
 export const UPDATE_ACCOUNT_USER = 'UPDATE_ACCOUNT_USER';
+export const UPDATE_ACCOUNT_EMAIL = 'UPDATE_ACCOUNT_EMAIL';
 export const UPDATE_ACCOUNT_CREATION_DATA = 'UPDATE_ACCOUNT_CREATION_DATA';
 export const CLEAR_ACCOUNT_CREATION_DATA = 'CLEAR_ACCOUNT_CREATION_DATA';
 
@@ -60,17 +61,14 @@ export type AccountCreationData = {
 
 export type AccountPermission = GroupRolePermission & { group: string };
 
-export type AccountUser = User & {
-  sensitiveData: {
-    email: string;
-  };
-};
+export type AccountUser = User;
 
 export type AccountInfo = {
   accountId: string;
   accountToken: string;
   accountTokenExpiry: string;
   user: AccountUser;
+  email: string | null;
 };
 
 type UpdateAccountGroupsAction = {
@@ -108,6 +106,11 @@ type UpdateAccountUserAction = {
   data: AccountUser;
 };
 
+type UpdateAccountEmailAction = {
+  type: typeof UPDATE_ACCOUNT_EMAIL;
+  data: string;
+};
+
 type UpdateAccountCreationDataAction = {
   type: typeof UPDATE_ACCOUNT_CREATION_DATA;
   data: Partial<AccountCreationData>;
@@ -126,6 +129,7 @@ export type AccountActionTypes =
   | LogoutAction
   | LoginAction
   | UpdateAccountUserAction
+  | UpdateAccountEmailAction
   | UpdateAccountCreationDataAction
   | ClearAccountCreationDataAction
   | FullClearAction;

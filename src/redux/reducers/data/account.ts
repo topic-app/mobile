@@ -11,6 +11,7 @@ import {
   UPDATE_ACCOUNT_GROUPS,
   UPDATE_ACCOUNT_WAITING_GROUPS,
   UPDATE_ACCOUNT_CREATION_DATA,
+  UPDATE_ACCOUNT_EMAIL,
   AccountActionTypes,
   AccountState,
   FULL_CLEAR,
@@ -45,6 +46,11 @@ const initialState: AccountState = {
       error: null,
     },
     fetchGroups: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    fetchEmail: {
       loading: false,
       success: null,
       error: null,
@@ -139,6 +145,15 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
         };
       }
       console.warn('accountReducer: Attempted to update accountInfo while not logged in');
+      return state;
+    case UPDATE_ACCOUNT_EMAIL:
+      if (state.loggedIn) {
+        return {
+          ...state,
+          accountInfo: { ...state.accountInfo, email: action.data },
+        };
+      }
+      console.warn('accountReducer: Attempted to update email while not logged in');
       return state;
     case LOGIN:
       return {

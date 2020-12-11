@@ -9,8 +9,8 @@ import { DevAppConfig } from './types';
 
 const config: DevAppConfig = {
   logger: {
-    level: 'debug',
-    exclude: ['http'],
+    level: 'verbose',
+    exclude: [],
   },
   api: {
     timeout: 3000,

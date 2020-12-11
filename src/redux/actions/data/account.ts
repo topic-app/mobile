@@ -20,6 +20,7 @@ import {
   AccountRequestState,
   AppThunk,
   AccountCreationData,
+  UPDATE_ACCOUNT_EMAIL,
 } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
 import { request, logger } from '@utils/index';
@@ -27,197 +28,244 @@ import { request, logger } from '@utils/index';
 import { fetchLocationData } from './location';
 
 function fetchGroupsCreator(): AppThunk {
-  return (dispatch, getState) => {
-    return new Promise((resolve, reject) => {
-      if (!getState().account.loggedIn) {
-        return resolve(null);
-      }
+  return async (dispatch, getState) => {
+    if (!getState().account.loggedIn) {
+      return null;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        fetchGroups: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request('groups/my', 'get', {}, true);
+    } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           fetchGroups: {
-            loading: true,
-            success: null,
-            error: null,
+            success: false,
+            loading: false,
+            error: err,
           },
         },
       });
-      request('groups/my', 'get', {}, true)
-        .then((result) => {
-          // TODO: This really needs tested
-          let permissions: GroupRolePermission[] = [];
-          result.data?.groups?.forEach((g: GroupWithMembership) => {
-            const user = g?.membership;
-            const userMainPermissions = g?.roles?.find((r) => r._id === user?.role)?.permissions;
-            permissions = [
-              ...permissions,
-              ...(userMainPermissions || []).map((p) => {
-                return { ...p, group: g._id };
-              }),
-            ];
-            const userSecondaryPermissions = g?.roles
-              .filter((r: GroupRole) => user?.secondaryRoles?.includes(r._id))
-              .map((i: GroupRole) => i?.permissions)
-              .flat();
-            permissions = [
-              ...permissions,
-              ...(userSecondaryPermissions || [])?.map((p: GroupRolePermission) => {
-                return { ...p, group: g._id };
-              }),
-            ];
-          });
-          permissions = permissions.flat();
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              fetchGroups: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          dispatch({
-            type: UPDATE_ACCOUNT_GROUPS,
-            data: result.data?.groups,
-          });
-          dispatch({
-            type: UPDATE_ACCOUNT_PERMISSIONS,
-            data: permissions,
-          });
-          resolve(true);
-        })
-        .catch((err) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              fetchGroups: {
-                success: false,
-                loading: false,
-                error: err,
-              },
-            },
-          });
-          reject();
-        });
+      throw err;
+    }
+    // TODO: This really needs unit tests
+    let permissions: GroupRolePermission[] = [];
+    result.data?.groups?.forEach((g: GroupWithMembership) => {
+      const user = g?.membership;
+      const userMainPermissions = g?.roles?.find((r) => r._id === user?.role)?.permissions;
+      permissions = [
+        ...permissions,
+        ...(userMainPermissions || []).map((p) => {
+          return { ...p, group: g._id };
+        }),
+      ];
+      const userSecondaryPermissions = g?.roles
+        .filter((r: GroupRole) => user?.secondaryRoles?.includes(r._id))
+        .map((i: GroupRole) => i?.permissions)
+        .flat();
+      permissions = [
+        ...permissions,
+        ...(userSecondaryPermissions || [])?.map((p: GroupRolePermission) => {
+          return { ...p, group: g._id };
+        }),
+      ];
     });
+    permissions = permissions.flat();
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        fetchGroups: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    dispatch({
+      type: UPDATE_ACCOUNT_GROUPS,
+      data: result.data?.groups,
+    });
+    dispatch({
+      type: UPDATE_ACCOUNT_PERMISSIONS,
+      data: permissions,
+    });
+    return true;
   };
 }
 
 function fetchWaitingGroupsCreator(): AppThunk {
-  return (dispatch, getState) => {
-    return new Promise((resolve, reject) => {
-      if (!getState().account.loggedIn) {
-        return resolve(null);
-      }
+  return async (dispatch, getState) => {
+    if (!getState().account.loggedIn) {
+      return null;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        fetchWaitingGroups: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request('groups/members/waiting', 'get', {}, true);
+    } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           fetchWaitingGroups: {
-            loading: true,
-            success: null,
-            error: null,
+            success: false,
+            loading: false,
+            error: err,
           },
         },
       });
-      request('groups/members/waiting', 'get', {}, true)
-        .then((result) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_WAITING_GROUPS,
-            data: result.data?.groups,
-          });
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              fetchWaitingGroups: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(true);
-        })
-        .catch((err) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              fetchWaitingGroups: {
-                success: false,
-                loading: false,
-                error: err,
-              },
-            },
-          });
-          reject();
-        });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_WAITING_GROUPS,
+      data: result.data?.groups,
     });
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        fetchWaitingGroups: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
   };
 }
 
 function fetchAccountCreator(): AppThunk {
-  return (dispatch, getState) => {
-    return new Promise((resolve, reject) => {
-      if (!getState().account.loggedIn) {
-        dispatch({
-          type: LOGOUT,
-          data: null,
-        });
-        return resolve(null);
-      }
+  return async (dispatch, getState) => {
+    if (!getState().account.loggedIn) {
+      dispatch({
+        type: LOGOUT,
+        data: null,
+      });
+      return null;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        fetchAccount: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request('profile/info', 'get', {}, true);
+    } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           fetchAccount: {
-            loading: true,
-            success: null,
-            error: null,
+            success: false,
+            loading: false,
+            error: err,
           },
         },
       });
-      request('profile/info', 'get', {}, true)
-        .then((result) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              fetchAccount: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          dispatch({
-            type: UPDATE_ACCOUNT_USER,
-            data: result.data?.profile[0], // TEMP: This should change on server
-          });
-          const location = result.data?.profile[0]?.data?.location;
-          const data = {
-            schools: location?.schools?.map((l: SchoolPreload) => l._id),
-            departments: location?.departments?.map((l: DepartmentPreload) => l._id),
-            global: location?.global,
-          };
-          dispatch({
-            type: UPDATE_LOCATION,
-            data,
-          });
-          fetchLocationData();
-          resolve(true);
-        })
-        .catch((err) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              fetchAccount: {
-                success: false,
-                loading: false,
-                error: err,
-              },
-            },
-          });
-          reject();
-        });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        fetchAccount: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    dispatch({
+      type: UPDATE_ACCOUNT_USER,
+      data: result.data?.profile[0], // TEMP: This should change on server
+    });
+    const location = result.data?.profile[0]?.data?.location;
+    const data = {
+      schools: location?.schools?.map((l: SchoolPreload) => l._id),
+      departments: location?.departments?.map((l: DepartmentPreload) => l._id),
+      global: location?.global,
+    };
+    dispatch({
+      type: UPDATE_LOCATION,
+      data,
+    });
+    fetchLocationData();
+    return true;
+  };
+}
+
+function fetchEmailCreator(): AppThunk {
+  return async (dispatch, getState) => {
+    if (!getState().account.loggedIn) {
+      dispatch({
+        type: LOGOUT,
+        data: null,
+      });
+      return null;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        fetchEmail: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request('profile/email', 'get', {}, true, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          fetchEmail: {
+            success: false,
+            loading: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        fetchEmail: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    dispatch({
+      type: UPDATE_ACCOUNT_EMAIL,
+      data: result.data?.email, // TEMP: This should change on server
+    });
+    return true;
   };
 }
 
@@ -276,11 +324,11 @@ function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
           },
         },
       });
-      return false;
+      throw err;
     }
     let result;
     try {
-      result = await request('auth/login/local', 'post', newFields);
+      result = await request('auth/login/local', 'post', newFields, false, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -293,7 +341,7 @@ function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
           },
         },
       });
-      return false;
+      throw err;
     }
     if (!result?.data?.correct) {
       dispatch({
@@ -365,40 +413,40 @@ function registerCreator(fields: RegisterFields): AppThunk {
         },
       });
     }
-    request('auth/register/local', 'post', newFields)
-      .then((result) => {
-        dispatch({
-          type: UPDATE_ACCOUNT_STATE,
-          data: {
-            register: {
-              loading: false,
-              success: true,
-              error: null,
-            },
+    let result;
+    try {
+      result = await request('auth/register/local', 'post', newFields, false, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          register: {
+            success: false,
+            loading: false,
+            error: err,
           },
-        });
-        dispatch({
-          type: LOGIN,
-          data: result.data,
-        });
-        dispatch(fetchAccountCreator());
-        dispatch(fetchGroupsCreator());
-        dispatch(fetchWaitingGroupsCreator());
-        return Promise.resolve();
-      })
-      .catch((err) => {
-        dispatch({
-          type: UPDATE_ACCOUNT_STATE,
-          data: {
-            register: {
-              success: false,
-              loading: false,
-              error: err,
-            },
-          },
-        });
-        return Promise.reject(err);
+        },
       });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        register: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    dispatch({
+      type: LOGIN,
+      data: result.data,
+    });
+    dispatch(fetchAccountCreator());
+    dispatch(fetchGroupsCreator());
+    dispatch(fetchWaitingGroupsCreator());
+    return true;
   };
 }
 
@@ -412,47 +460,45 @@ function logoutCreator(): AnyAction {
 function profileActionCreator(
   api: 'export/request' | 'delete/request',
   stateName: 'delete' | 'export',
-) {
-  return (dispatch: (action: any) => void) => {
-    return new Promise((resolve, reject) => {
+): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        [stateName]: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request(`profile/${api}`, 'post', {}, true, 'auth');
+    } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           [stateName]: {
-            loading: true,
-            success: null,
-            error: null,
+            loading: false,
+            success: false,
+            err,
           },
         },
       });
-      request(`profile/${api}`, 'post', {}, true)
-        .then((result) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              [stateName]: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data);
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_ACCOUNT_STATE,
-            data: {
-              [stateName]: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        [stateName]: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data;
   };
 }
 
@@ -476,6 +522,10 @@ function updateState(fields: {
 
 async function register(fields: RegisterFields) {
   await Store.dispatch(registerCreator(fields));
+}
+
+async function fetchEmail() {
+  await Store.dispatch(fetchEmailCreator());
 }
 
 function logout() {
@@ -514,6 +564,7 @@ export {
   updateCreationData,
   clearCreationData,
   fetchGroups,
+  fetchEmail,
   fetchWaitingGroups,
   fetchAccount,
   register,

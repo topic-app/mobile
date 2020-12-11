@@ -6,9 +6,7 @@ const truncateLength = 100;
 
 const logObj = (data: any) => {
   const str = JSON.stringify(data);
-  let truncatedStr = str.substring(0, truncateLength);
-  if (str.length !== truncatedStr.length) truncatedStr += ' ...';
-  return truncatedStr;
+  return str;
 };
 
 export type LogLevel = typeof logTypes[number];
