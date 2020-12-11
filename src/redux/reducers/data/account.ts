@@ -153,7 +153,7 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
           accountInfo: { ...state.accountInfo, email: action.data },
         };
       }
-      console.warn('accountReducer: Attempted to update accountInfo while not logged in');
+      console.warn('accountReducer: Attempted to update email while not logged in');
       return state;
     case LOGIN:
       return {
