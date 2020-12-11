@@ -1,14 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import {
-  ScrollView,
-  View,
-  Platform,
-  ActivityIndicator,
-  Alert,
-  StatusBar,
-  Share,
-} from 'react-native';
+import { ScrollView, View, Platform, ActivityIndicator, StatusBar, Share } from 'react-native';
 import {
   Button,
   Text,
@@ -69,7 +61,7 @@ import {
   UserPreload,
   GroupVerification,
 } from '@ts/types';
-import { useTheme, logger, Format, checkPermission } from '@utils/index';
+import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
 
 import ContentTabView from '../../components/ContentTabView';
 import AddUserRoleModal from '../components/AddUserRoleModal';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Platform, Alert } from 'react-native';
+import { View, ScrollView, Platform } from 'react-native';
 import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -20,7 +20,7 @@ import {
 } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
-import { useTheme, logger, checkPermission } from '@utils/index';
+import { useTheme, logger, checkPermission, Alert } from '@utils/index';
 
 import LinkAddModal from '../components/LinkAddModal';
 import YoutubeAddModal from '../components/YoutubeAddModal';

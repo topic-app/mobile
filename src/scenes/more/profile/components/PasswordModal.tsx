@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform, TextInput, Alert } from 'react-native';
+import { View, Platform, TextInput } from 'react-native';
 import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -8,7 +8,7 @@ import { fetchAccount } from '@redux/actions/data/account';
 import { updatePassword } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme, Alert } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 

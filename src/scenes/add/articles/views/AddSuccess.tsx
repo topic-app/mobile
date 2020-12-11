@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
 import React from 'react';
-import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
+import { Platform, View, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import { Permissions } from '@constants/index';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, Account } from '@ts/types';
-import { checkPermission, logger, useTheme } from '@utils/index';
+import { checkPermission, logger, useTheme, Alert } from '@utils/index';
 
 import type { ArticleAddScreenNavigationProp, ArticleAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';

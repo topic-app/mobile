@@ -1,12 +1,11 @@
 import { useNetInfo } from '@react-native-community/netinfo';
 import React from 'react';
-import { Alert } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Banner, Avatar } from 'react-native-paper';
 
 import Store from '@redux/store';
 import { Error as ErrorType, RequestState } from '@ts/types';
-import { useTheme, request, logger } from '@utils/index';
+import { useTheme, request, logger, Alert } from '@utils/index';
 
 type Props = {
   /* Please change me if 'app' is too vague! */

@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Platform, FlatList, Alert } from 'react-native';
-// @ts-expect-error Replace this when we find a better library
+import { View, Platform, FlatList } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -28,7 +27,7 @@ import {
   Preferences,
   EventListItem,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme, Alert } from '@utils/index';
 
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';
@@ -37,6 +36,8 @@ import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
 import type { ArticleConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
+
+// @ts-expect-error Replace this when we find a better library
 
 type ArticleListsProps = {
   lists: ArticleListItem[];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Dimensions, Alert } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,7 +13,7 @@ import {
 } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { ArticleListItem, Article, ArticlePreload } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme, Alert } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
