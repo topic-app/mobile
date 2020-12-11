@@ -9,7 +9,6 @@ import {
   Share,
   ScrollView,
   Dimensions,
-  Alert,
 } from 'react-native';
 import { Text, Title, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -47,7 +46,7 @@ import {
   Content,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl, checkPermission } from '@utils/index';
+import { useTheme, getImageUrl, handleUrl, checkPermission, Alert } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';

@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
+import { Platform, View, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, Card } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,7 +11,7 @@ import { Permissions } from '@constants/index';
 import { eventVerificationApprove } from '@redux/actions/apiActions/events';
 import getStyles from '@styles/Styles';
 import { State, EventRequestState, Account } from '@ts/types';
-import { checkPermission, useTheme } from '@utils/index';
+import { checkPermission, useTheme, Alert } from '@utils/index';
 
 import type { EventAddScreenNavigationProp, EventAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';

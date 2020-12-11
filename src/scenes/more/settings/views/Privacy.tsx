@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { List, Avatar, Divider, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -8,7 +8,7 @@ import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import { Preferences, State, AccountState } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme, Alert } from '@utils/index';
 
 import type { SettingsScreenNavigationProp } from '../index';
 import getSettingsStyles from '../styles/Styles';

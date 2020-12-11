@@ -6,5 +6,5 @@ export * from './getAssetUrl';
 export * from './tags';
 export * from './hooks';
 export * from './permissions';
-// Note: devicePermissions is for Permissions AND location functions
+export { default as Alert } from './alert';
 export { Location } from './deviceLocation';

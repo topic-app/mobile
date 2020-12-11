@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform, FlatList, Alert } from 'react-native';
+import { View, Platform, FlatList } from 'react-native';
 // @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
@@ -28,7 +28,7 @@ import {
   Preferences,
   ArticleListItem,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme, Alert } from '@utils/index';
 
 import CreateModal from '../../components/CreateModal';
 import EditModal from '../../components/EditModal';

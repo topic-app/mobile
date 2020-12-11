@@ -1,5 +1,8 @@
+import { Linking } from 'react-native';
+
 import { Config } from '@constants/index';
-import { Linking, Alert } from 'react-native';
+
+import Alert from './alert';
 
 const truncate = (str: string, len: number) => {
   return str.length > len ? `${str.substring(0, len)}..` : str;

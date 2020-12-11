@@ -1,6 +1,6 @@
 import Color from 'color';
 import React from 'react';
-import { View, Platform, Alert, FlatList, ActivityIndicator, Animated } from 'react-native';
+import { View, Platform, FlatList, ActivityIndicator, Animated } from 'react-native';
 import { Text, Button, Divider, List, ProgressBar } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
@@ -34,7 +34,7 @@ import {
   LocationList,
   Account,
 } from '@ts/types';
-import { useTheme, logger, Location, Format } from '@utils/index';
+import { useTheme, logger, Location, Format, Alert } from '@utils/index';
 
 import LocationListItem from '../components/LocationListItem';
 import type { LandingScreenNavigationProp } from '../index';

@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { Text, Title, Subheading, Divider, Button, List, ProgressBar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -24,7 +24,7 @@ import {
   AccountRequestState,
   User,
 } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, Alert } from '@utils/index';
 
 import EmailModal from '../components/EmailModal';
 import NameModal from '../components/NameModal';

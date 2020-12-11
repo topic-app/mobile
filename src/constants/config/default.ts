@@ -81,6 +81,7 @@ const defaultConfig: AppConfig = {
   dev: {
     hideSvg: false,
     disablePersist: false,
+    webAllowAnonymous: false,
   },
   layout: {
     dualMinWidth: 1000,

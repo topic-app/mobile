@@ -12,8 +12,9 @@ import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
+import { Permissions } from '@constants/index';
 import { State, Account } from '@ts/types';
-import { useTheme, useLayout } from '@utils/index';
+import { useTheme, useLayout, checkPermission } from '@utils/index';
 
 import { AppScreenNavigationProp } from '..';
 import { NativeStackNavigationProp } from '../utils/stack';
@@ -70,6 +71,11 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       icon: 'newspaper',
       text: 'Actus',
       path: '/articles',
+      route: () =>
+        navigation.navigate('Main', {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Article' } },
+        }),
     },
     {
       key: 'events',
@@ -77,6 +83,11 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       icon: 'calendar-outline',
       text: 'Évènements',
       path: '/evenements',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Event' } },
+        }),
     },
     {
       key: 'explore',
@@ -84,6 +95,11 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       icon: 'compass-outline',
       text: 'Explorer',
       path: '/explorer',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Explore' } },
+        }),
     },
     {
       type: 'divider',
@@ -96,6 +112,11 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
             icon: 'account-outline',
             text: 'Profil',
             path: '/profil',
+            navigate: () =>
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: { screen: 'Profile', params: { screen: 'Profile' } },
+              }),
           },
           {
             key: 'groups',
@@ -103,15 +124,28 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
             icon: 'account-group-outline',
             text: 'Mes groups',
             path: '/groupes',
+            navigate: () =>
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: { screen: 'MyGroups', params: { screen: 'List' } },
+              }),
           },
-          /* ...(account.permissions?.some(
-            (p) =>
-              p?.permission === 'article.verification.view' ||
-              p?.permission === 'event.verification.view' ||
-              p?.permission === 'petition.verification.view' ||
-              p?.permission === 'place.verification.view' ||
-              p?.permission === 'group.verification.view',
-          )
+          ...(checkPermission(account, {
+            permission: Permissions.ARTICLE_VERIFICATION_VIEW,
+            scope: {},
+          }) ||
+          checkPermission(account, {
+            permission: Permissions.EVENT_VERIFICATION_VIEW,
+            scope: {},
+          }) ||
+          checkPermission(account, {
+            permission: Permissions.GROUP_VERIFICATION_VIEW,
+            scope: {},
+          }) ||
+          checkPermission(account, {
+            permission: Permissions.PLACE_VERIFICATION_VIEW,
+            scope: {},
+          })
             ? [
                 {
                   key: 'moderation',
@@ -119,9 +153,14 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                   icon: 'shield-check-outline',
                   text: 'Modération',
                   path: '/moderation',
+                  navigate: () =>
+                    navigation.navigate('Main', {
+                      screen: 'More',
+                      params: { screen: 'Moderation', params: { screen: 'List' } },
+                    }),
                 },
               ]
-            : []), */
+            : []),
           {
             type: 'divider',
           },
@@ -133,6 +172,11 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       type: 'button',
       icon: 'settings-outline',
       path: '/parametres',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'More',
+          params: { screen: 'Settings', params: { screen: 'List' } },
+        }),
     },
     {
       key: 'legal',
@@ -140,6 +184,11 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       type: 'button',
       icon: 'script-outline',
       path: '/legal',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'More',
+          params: { screen: 'About', params: { screen: 'Legal' } },
+        }),
     },
     {
       key: 'about',
@@ -147,6 +196,11 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       type: 'button',
       icon: 'information-outline',
       path: '/apropos',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'More',
+          params: { screen: 'About', params: { screen: 'List' } },
+        }),
     },
   ];
 
@@ -163,6 +217,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
         <Divider style={{ marginVertical: 10 }} />
         {items.map((item) => {
           const onLinkPress = () => {
+            if (item.navigate) item.navigate();
             setActive(item.key);
           };
           if (item.type === 'button') {
@@ -174,20 +229,18 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                   justifyContent: drawerExpanded ? undefined : 'center',
                 }}
               >
-                <Link to={item.path || ''}>
-                  <PaperDrawer.Item
-                    style={{
-                      ...(isActive(item.key || '')
-                        ? { backgroundColor: colors.activeDrawerItem }
-                        : {}),
-                      width: drawerExpanded ? 230 : 40,
-                    }}
-                    key={item.key}
-                    icon={item.icon}
-                    label={drawerExpanded ? item.text || '' : ''}
-                    onPress={onLinkPress}
-                  />
-                </Link>
+                <PaperDrawer.Item
+                  style={{
+                    ...(isActive(item.key || '')
+                      ? { backgroundColor: colors.activeDrawerItem }
+                      : {}),
+                    width: drawerExpanded ? 230 : 40,
+                  }}
+                  key={item.key}
+                  icon={item.icon}
+                  label={drawerExpanded ? item.text || '' : ''}
+                  onPress={onLinkPress}
+                />
               </View>
             );
           } else if (item.type === 'divider') {
