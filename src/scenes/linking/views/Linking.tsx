@@ -82,6 +82,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
           .map((t: string) => ({ [t]: parameters[t] || '' }))
           .reduce((e, prev) => ({ ...e, ...prev })),
         type,
+        currentType.auth || false,
       );
     }
   };
@@ -215,6 +216,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                         ...(currentType.showExtras ? { [currentType.extrasName]: values } : {}),
                       },
                       type,
+                      currentType.auth || false,
                     );
                   }}
                   style={{ flex: 1 }}

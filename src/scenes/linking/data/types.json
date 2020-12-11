@@ -9,7 +9,8 @@
     "confirmTitle": "",
     "confirmText": "",
     "confirmButton": "",
-    "extrasName": ""
+    "extrasName": "",
+    "auth": true
   },
   "emailChange": {
     "parameters": ["id", "token"],
@@ -21,7 +22,8 @@
     "confirmTitle": "",
     "confirmText": "",
     "confirmButton": "",
-    "extrasName": ""
+    "extrasName": "",
+    "auth": true
   },
   "accountDelete": {
     "parameters": ["id", "token"],
@@ -33,6 +35,7 @@
     "confirmTitle": "Voulez vous vraiment supprimer votre compte?",
     "confirmText": "Cette action est irréversible. Votre compte ne sera plus accessible, et sera définitivement supprimé d'ici au plus tard un mois.\n\nVous pouvez choisir de supprimer vos contenus ou non ci-dessous, toutefois cette décision n'est pas modifiable plus tard.\n\nSi vous ne les supprimez pas, ceux-ci seront attribués au groupe avec la mention 'Utilisateur supprimé'.\n\nSupprimer les contenus:",
     "confirmButton": "Supprimer définitivement",
-    "extrasName": "deletions"
+    "extrasName": "deletions",
+    "auth": true
   }
 }
