@@ -18,6 +18,9 @@ const config: DevAppConfig = {
   cdn: {
     timeout: 3000,
   },
+  dev: {
+    webAllowAnonymous: true,
+  },
 };
 
 export default config;

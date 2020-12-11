@@ -15,6 +15,11 @@ export default {
       Linking: '/linking/:type',
     },
   },
+  Search: {
+    screens: {
+      Search: '/recherche',
+    },
+  },
   Root: {
     screens: {
       Main: {
@@ -24,6 +29,11 @@ export default {
               Article: {
                 screens: {
                   Add: '/ajout/article',
+                },
+              },
+              Event: {
+                screens: {
+                  Add: '/ajout/evenement',
                 },
               },
             },
@@ -40,6 +50,22 @@ export default {
                   List: '/groupes',
                 },
               },
+              Settings: {
+                screens: {
+                  List: '/parametres',
+                  Theme: '/parametres/theme',
+                  Content: '/parametres/contenu',
+                  Privacy: '/parametres/confidentialite',
+                  Beta: '/parametres/beta',
+                },
+              },
+              About: {
+                screens: {
+                  List: '/apropos',
+                  Legal: '/legal',
+                  Licenses: '/legal/licenses',
+                },
+              },
             },
           },
           Configure: {
@@ -47,6 +73,11 @@ export default {
               Article: {
                 screens: {
                   Configure: '/articles/configurer',
+                },
+              },
+              Event: {
+                screens: {
+                  Configure: '/evenements/configurer',
                 },
               },
             },
@@ -58,14 +89,11 @@ export default {
                   Params: '/articles/localisation',
                 },
               },
-            },
-          },
-          Settings: {
-            screens: {
-              List: '/parametres',
-              Theme: '/parametres/theme',
-              Content: '/parametres/contenu',
-              Privacy: '/parametres/confidentialite',
+              Event: {
+                screens: {
+                  Params: '/evenement/localisation',
+                },
+              },
             },
           },
           History: {
@@ -73,6 +101,16 @@ export default {
               Article: {
                 screens: {
                   History: '/articles/historique',
+                },
+              },
+              Event: {
+                screens: {
+                  History: '/evenements/historique',
+                },
+              },
+              Main: {
+                screens: {
+                  History: '/parametres/historique',
                 },
               },
             },
@@ -89,6 +127,16 @@ export default {
                   Display: '/articles/:id',
                 },
               },
+              Event: {
+                screens: {
+                  Display: '/evenements/:id',
+                },
+              },
+              Group: {
+                screens: {
+                  Display: '/groupes/:id',
+                },
+              },
             },
           },
           Home1: {
@@ -96,6 +144,8 @@ export default {
               Home2: {
                 screens: {
                   Article: '/articles',
+                  Event: '/evenements',
+                  Explore: '/carte',
                 },
               },
             },

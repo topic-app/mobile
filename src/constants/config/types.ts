@@ -11,6 +11,7 @@ export type AppConfig = {
   dev: {
     hideSvg: boolean;
     disablePersist: boolean;
+    webAllowAnonymous: boolean;
   };
   api: {
     url: {

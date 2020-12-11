@@ -3,6 +3,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 
+import { Config } from '@constants';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import RootNavigator, { RootNavParams } from './scenes/Root';
@@ -34,15 +35,19 @@ const AppStackNavigator: React.FC<AppStackNavigatorProps> = ({ locationSelected,
   return (
     <Stack.Navigator
       initialRouteName={
-        Platform.OS === 'web' && !loggedIn ? 'Auth' : locationSelected ? 'Root' : 'Landing'
+        Platform.OS === 'web' && !loggedIn && !Config.dev.webAllowAnonymous
+          ? 'Auth'
+          : locationSelected
+          ? 'Root'
+          : 'Landing'
       }
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
-      {(Platform.OS !== 'web' || loggedIn) && (
+      {(Platform.OS !== 'web' || loggedIn || Config.dev.webAllowAnonymous) && (
         <Stack.Screen name="Root" component={RootNavigator} />
       )}
-      {(Platform.OS !== 'web' || loggedIn) && (
+      {(Platform.OS !== 'web' || loggedIn || Config.dev.webAllowAnonymous) && (
         <Stack.Screen name="Landing" component={LandingStackNavigator} />
       )}
       <Stack.Screen name="Linking" component={LinkingStackNavigator} />
