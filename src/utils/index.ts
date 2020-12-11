@@ -7,5 +7,4 @@ export * from './tags';
 export * from './hooks';
 export * from './permissions';
 export { default as Alert } from './alert';
-// Note: devicePermissions is for Permissions AND location functions
 export { Location } from './deviceLocation';
