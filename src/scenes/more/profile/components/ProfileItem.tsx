@@ -31,7 +31,7 @@ const ProfileItem: React.FC<Props> = ({
 
   return (
     <View style={profileStyles.profileItem}>
-      <View>
+      <View style={{ flex: 1 }}>
         {item?.length > 0 && <Text style={profileStyles.keyText}>{item}</Text>}
         {value?.length > 0 && (
           <Text
