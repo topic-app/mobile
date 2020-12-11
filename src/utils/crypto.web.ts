@@ -1,17 +1,19 @@
-// import crypto from 'react-native-simple-crypto';
-// import { Config } from '@constants/index';
+import crypto from 'crypto-browserify';
 
-const hashPassword = async (password: string) => {
-  // For web, we dont hash the password on the client side first, it's hashed twice server-side
-  /* let hashedPassword = await crypto.PBKDF2.hash(
-    crypto.utils.convertUtf8ToArrayBuffer(password),
-    crypto.utils.convertUtf8ToArrayBuffer(config.auth.salt),
-    config.auth.iterations,
-    config.auth.keylen,
-    config.auth.digest,
-  );
-  return crypto.utils.convertArrayBufferToBase64(hashedPassword); */
-  return password;
+import { Config } from '@constants/index';
+import { logger } from '@utils';
+
+const hashPassword = (password: string) => {
+  return new Promise((resolve, reject) => {
+    const hashedPassword = crypto.pbkdf2(
+      Buffer.from(password),
+      Buffer.from(Config.auth.salt),
+      Config.auth.iterations,
+      Config.auth.keylen,
+      Config.auth.digest,
+      (err, derivedKey) => resolve(derivedKey.toString('base64')),
+    );
+  });
 };
 
 export { hashPassword };
