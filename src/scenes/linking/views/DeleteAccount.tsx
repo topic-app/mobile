@@ -10,7 +10,6 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
-import { linking } from '@redux/actions/apiActions/linking';
 import { logout } from '@redux/actions/data/account';
 import { accountDelete } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
@@ -22,8 +21,8 @@ import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';
 import getLinkingStyles from '../styles/Styles';
 
 type Props = {
-  navigation: LinkingScreenNavigationProp<'Linking'>;
-  route: RouteProp<LinkingStackParams, 'Linking'>;
+  navigation: LinkingScreenNavigationProp<'DeleteAccount'>;
+  route: RouteProp<LinkingStackParams, 'DeleteAccount'>;
   state: LinkingRequestState;
 };
 

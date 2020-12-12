@@ -15,7 +15,6 @@ import {
   StrengthMeter,
   FormTextInput,
 } from '@components/index';
-import { linking } from '@redux/actions/apiActions/linking';
 import { accountDelete, passwordReset } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LinkingRequestState } from '@ts/types';
@@ -26,8 +25,8 @@ import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';
 import getLinkingStyles from '../styles/Styles';
 
 type Props = {
-  navigation: LinkingScreenNavigationProp<'Linking'>;
-  route: RouteProp<LinkingStackParams, 'Linking'>;
+  navigation: LinkingScreenNavigationProp<'ResetPassword'>;
+  route: RouteProp<LinkingStackParams, 'ResetPassword'>;
   state: LinkingRequestState;
 };
 
@@ -100,7 +99,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <View style={styles.container}>
-                {state.accountDelete.error ? (
+                {state.resetPassword.error ? (
                   <View>
                     <ErrorMessage
                       type="axios"
@@ -108,7 +107,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                         what: "l'ouverture du lien",
                         contentSingular: 'Le lien',
                       }}
-                      error={state.accountDelete.error}
+                      error={state.resetPassword.error}
                       retry={() => handleSubmit()}
                     />
                   </View>
@@ -144,6 +143,8 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                     <StrengthMeter level={passwordStrength} />
                     <View style={linkingStyles.buttonContainer}>
                       <Button
+                        loading={state.resetPassword.loading}
+                        disabled={state.resetPassword.loading}
                         mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                         uppercase={Platform.OS !== 'ios'}
                         onPress={() => handleSubmit()}

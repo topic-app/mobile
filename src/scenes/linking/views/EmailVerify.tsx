@@ -10,7 +10,6 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
-import { linking } from '@redux/actions/apiActions/linking';
 import { emailVerify } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LinkingRequestState } from '@ts/types';
@@ -21,8 +20,8 @@ import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';
 import getLinkingStyles from '../styles/Styles';
 
 type Props = {
-  navigation: LinkingScreenNavigationProp<'Linking'>;
-  route: RouteProp<LinkingStackParams, 'Linking'>;
+  navigation: LinkingScreenNavigationProp<'EmailVerify'>;
+  route: RouteProp<LinkingStackParams, 'EmailVerify'>;
   state: LinkingRequestState;
 };
 
