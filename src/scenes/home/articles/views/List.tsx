@@ -96,7 +96,6 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation, route, hist
         />
         <ArticleListComponent
           scrollY={scrollY}
-          historyEnabled={historyEnabled}
           initialTabKey={route.params?.initialList}
           onArticleCreatePressed={() =>
             navigation.navigate('Main', {

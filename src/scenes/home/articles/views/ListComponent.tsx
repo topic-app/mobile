@@ -361,7 +361,7 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData, account } = state;
+  const { articles, articleData, account, preferences } = state;
   return {
     articles: articles.data,
     followingArticles: articles.following,
@@ -372,6 +372,7 @@ const mapStateToProps = (state: State) => {
     read: articleData.read,
     state: articles.state,
     account,
+    historyEnabled: preferences.history,
   };
 };
 
