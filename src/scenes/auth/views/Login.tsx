@@ -169,6 +169,11 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                 </View>
               )}
             </Formik>
+            <View style={{ alignItems: 'flex-end', marginTop: 20 }}>
+              <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>
+                Mot de passe oublié ?
+              </Text>
+            </View>
             {Platform.OS === 'web' && (
               <View style={[styles.container, { marginTop: 70 }]}>
                 <PlatformTouchable
