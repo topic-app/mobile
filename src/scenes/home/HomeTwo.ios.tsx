@@ -6,7 +6,6 @@ import { Config } from '@constants/index';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleDualList from './articles/views/Dual';
 import ArticleList from './articles/views/List';
 import EventDualList from './events/views/Dual';
 import EventList from './events/views/List';
@@ -31,10 +30,7 @@ function HomeTwoNavigator() {
 
   return (
     <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="Article"
-        component={deviceWidth > Config.layout.dualMinWidth ? ArticleDualList : ArticleList}
-      />
+      <Stack.Screen name="Article" component={ArticleList} />
       <Stack.Screen
         name="Event"
         component={deviceWidth > Config.layout.dualMinWidth ? EventDualList : EventList}
