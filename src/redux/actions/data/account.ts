@@ -502,6 +502,48 @@ function profileActionCreator(
   };
 }
 
+function requestPasswordResetCreator({ username }: { username: string }): AppThunk {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        passwordRequest: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      await request('auth/password/request', 'post', { username }, false, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          passwordRequest: {
+            success: false,
+            loading: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        passwordRequest: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
 /* Actions */
 
 function login(fields: LoginFields) {
@@ -560,6 +602,10 @@ async function exportAccount() {
   await Store.dispatch(profileActionCreator('export/request', 'export'));
 }
 
+async function requestPasswordReset(username: string) {
+  await Store.dispatch(requestPasswordResetCreator({ username }));
+}
+
 export {
   updateCreationData,
   clearCreationData,
@@ -573,4 +619,5 @@ export {
   logout,
   deleteAccount,
   exportAccount,
+  requestPasswordReset,
 };

@@ -35,6 +35,16 @@ const initialState: AccountState = {
       error: null,
       incorrect: null,
     },
+    passwordRequest: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    passwordReset: {
+      loading: false,
+      success: null,
+      error: null,
+    },
     register: {
       loading: false,
       success: null,

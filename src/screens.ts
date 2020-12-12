@@ -12,7 +12,10 @@ export default {
   },
   Linking: {
     screens: {
-      Linking: '/linking/:type',
+      AccountDelete: '/linking/accountDelete',
+      EmailVerify: '/linking/emailVerify',
+      EmailChange: '/linking/emailChange',
+      ResetPassword: '/linking/passwordReset',
     },
   },
   Search: {

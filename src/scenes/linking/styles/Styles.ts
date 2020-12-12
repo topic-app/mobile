@@ -25,6 +25,11 @@ function getAuthStyles(theme: Theme) {
       maxWidth: 600,
       alignSelf: 'center',
     },
+    textInput: {
+      width: '100%',
+      alignSelf: 'center',
+      paddingBottom: 3,
+    },
   });
 }
 

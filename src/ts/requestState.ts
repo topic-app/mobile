@@ -81,6 +81,8 @@ export type AccountRequestState = {
   updateProfile: RequestState;
   export: RequestState;
   delete: RequestState;
+  passwordRequest: RequestState;
+  passwordReset: RequestState;
 };
 
 export type LocationRequestState = {
