@@ -5,10 +5,10 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/st
 
 import { MoreScreenNavigationProp } from '../index';
 import SettingsContent from './views/Content';
+import SettingsDev from './views/Dev';
 import SettingsList from './views/List';
 import SettingsPrivacy from './views/Privacy';
 import SettingsTheme from './views/Theme';
-import SettingsDev from './views/Dev';
 
 export type SettingsStackParams = {
   List: undefined;
