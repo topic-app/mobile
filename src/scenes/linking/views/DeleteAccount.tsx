@@ -127,7 +127,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
             <Text style={linkingStyles.title}>Voulez vous vraiment supprimer votre compte?</Text>
             <Text>
               Cette action est réversible dans les 7 jours qui suivent la suppression, et votre
-              compte sera supprimé au bout d&aposun mois au plus tard.{'\n\n'}Vous pouvez toujours
+              compte sera supprimé au bout d&apos;un mois au plus tard.{'\n\n'}Vous pouvez toujours
               utiliser l&apos;application sans compte ou le site web www.topicapp.fr.{'\n\n\n'}Vous
               pouvez choisir de supprimer certaines données ou non, toutefois cette décision
               n&apos;est pas reversible :
