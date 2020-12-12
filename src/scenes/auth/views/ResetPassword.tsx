@@ -51,7 +51,7 @@ const AuthResetPassword: React.FC<AuthResetPasswordProps> = ({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const LoginSchema = Yup.object().shape({
+  const ResetPasswordSchema = Yup.object().shape({
     username: Yup.string().required("Nom d'utilisateur ou email requis"),
   });
 
