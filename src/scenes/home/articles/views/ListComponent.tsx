@@ -372,7 +372,7 @@ const mapStateToProps = (state: State) => {
     read: articleData.read,
     state: articles.state,
     account,
-    historyEnabled: preferences.history,
+    historyEnabled: preferences.history,
   };
 };
 
