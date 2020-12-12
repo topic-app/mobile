@@ -74,7 +74,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
         <ScrollView>
           <Formik
             initialValues={{ username: '', email: '', password: '' }}
-            validationSchema={RegisterSchema}
+            validationSchema={ResetPasswordSchema}
             onSubmit={(values) => {
               passwordReset(id, token, values.password).then(() => {
                 navigation.replace('Root', {
