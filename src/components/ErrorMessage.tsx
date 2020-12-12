@@ -37,7 +37,9 @@ const ErrorMessage: React.FC<Props> = ({
   restart,
   back,
 }) => {
-  const err = (Array.isArray(error) && error?.length > 0 ? error[0] : error) as ErrorType;
+  const err = (Array.isArray(error) && error?.length > 0
+    ? error.find((e) => !!e) || error[0]
+    : error) as ErrorType;
   const theme = useTheme();
   const netInfo = useNetInfo();
   const { colors } = theme;

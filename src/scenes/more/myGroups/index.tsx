@@ -4,7 +4,6 @@ import React from 'react';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import { MoreScreenNavigationProp } from '../index';
-import MyGroupsEdit from './views/Edit';
 import MyGroupsList from './views/List';
 
 export type MyGroupsStackParams = {
@@ -25,7 +24,6 @@ function MyGroupsStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="List" component={MyGroupsList} />
-      <Stack.Screen name="Edit" component={MyGroupsEdit} />
     </Stack.Navigator>
   );
 }

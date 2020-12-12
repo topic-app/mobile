@@ -54,14 +54,14 @@ export default {
                 screens: {
                   List: '/parametres',
                   Theme: '/parametres/theme',
-                  Content: '/parametres/contenu',
                   Privacy: '/parametres/confidentialite',
-                  Beta: '/parametres/beta',
+                  Content: '/parametres/contenu',
+                  Dev: '/parametres/beta',
                 },
               },
               About: {
                 screens: {
-                  List: '/apropos',
+                  List: '/a_propos',
                   Legal: '/legal',
                   Licenses: '/legal/licenses',
                 },

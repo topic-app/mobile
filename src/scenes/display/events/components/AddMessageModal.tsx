@@ -93,7 +93,7 @@ const AddMessageModal: React.FC<AddMessageModalProps> = ({
           <ErrorMessage
             type="axios"
             strings={{
-              what: 'l&apos;ajout du message',
+              what: "l'ajout du message",
               contentSingular: 'Le message',
             }}
             error={state.messages_add?.error}

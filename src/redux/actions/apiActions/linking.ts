@@ -1,14 +1,15 @@
 import Store from '@redux/store';
-import { request } from '@utils/index';
 import { AppThunk, UPDATE_LINKING_STATE } from '@ts/redux';
+import { request } from '@utils/index';
 
 type LinkingProps = {
   url: string;
   parameters: { [key: string]: any };
   state: string;
+  auth?: boolean;
 };
 
-function linkingCreator({ url, parameters, state }: LinkingProps): AppThunk {
+function linkingCreator({ url, parameters, state, auth = false }: LinkingProps): AppThunk {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -21,7 +22,7 @@ function linkingCreator({ url, parameters, state }: LinkingProps): AppThunk {
           },
         },
       });
-      request(url, 'get', parameters, false)
+      request(url, 'get', parameters, false, auth ? 'auth' : 'base')
         .then((result) => {
           dispatch({
             type: UPDATE_LINKING_STATE,
@@ -52,12 +53,18 @@ function linkingCreator({ url, parameters, state }: LinkingProps): AppThunk {
   };
 }
 
-async function linking(url: string, parameters: { [key: string]: any }, state: string) {
+async function linking(
+  url: string,
+  parameters: { [key: string]: any },
+  state: string,
+  auth: boolean,
+) {
   await Store.dispatch(
     linkingCreator({
       url,
       parameters,
       state,
+      auth,
     }),
   );
 }
