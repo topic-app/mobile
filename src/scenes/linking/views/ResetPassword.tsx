@@ -40,7 +40,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
 
-  const RegisterSchema = Yup.object().shape({
+  const ResetPasswordSchema = Yup.object().shape({
     password: Yup.string()
       .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
       .max(128, 'Le mot de passe doit contenir moins de 128 caractères')
