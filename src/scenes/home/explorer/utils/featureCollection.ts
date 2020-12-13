@@ -34,9 +34,6 @@ function buildFeatureCollections(places: MapLocation.Element[]) {
       },
     };
 
-    if (dataType === 'cluster') {
-      feature.properties.point_count = feature.properties.point_count.toString();
-    }
     features.push(feature as any);
   });
   return featureCollections;
