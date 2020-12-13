@@ -473,8 +473,9 @@ export namespace ExplorerLocation {
     | ExplorerLocation.Place
     | ExplorerLocation.School
     | ExplorerLocation.Event
-    | ExplorerLocation.Secret
-    | ExplorerLocation.Collection;
+    | ExplorerLocation.Secret;
+
+  export type Marker = ExplorerLocation.Location | ExplorerLocation.Collection;
 }
 
 // Petition Types
