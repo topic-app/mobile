@@ -50,14 +50,6 @@ type DrawerContentProps = {
   account: Account;
 };
 
-type NavRoute = [
-  string,
-  {
-    screen: string;
-    params?: object;
-  },
-];
-
 const DrawerContent: React.FC<DrawerContentProps> = ({
   navigation,
   drawerExpanded,
@@ -71,7 +63,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       icon: 'newspaper',
       text: 'Actus',
       path: '/articles',
-      route: () =>
+      navigate: () =>
         navigation.navigate('Main', {
           screen: 'Home1',
           params: { screen: 'Home2', params: { screen: 'Article' } },
@@ -102,6 +94,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
         }),
     },
     {
+      key: 'divider1',
       type: 'divider',
     },
     ...(account.loggedIn
@@ -162,6 +155,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
               ]
             : []),
           {
+            key: 'divider2',
             type: 'divider',
           },
         ]
@@ -195,7 +189,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       text: 'A propos',
       type: 'button',
       icon: 'information-outline',
-      path: '/apropos',
+      path: '/a_propos',
       navigate: () =>
         navigation.navigate('Main', {
           screen: 'More',
@@ -216,13 +210,10 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
         <View style={{ height: 70 }} />
         <Divider style={{ marginVertical: 10 }} />
         {items.map((item) => {
-          const onLinkPress = () => {
-            if (item.navigate) item.navigate();
-            setActive(item.key);
-          };
           if (item.type === 'button') {
             return (
               <View
+                key={item.key}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -231,20 +222,20 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
               >
                 <PaperDrawer.Item
                   style={{
-                    ...(isActive(item.key || '')
-                      ? { backgroundColor: colors.activeDrawerItem }
-                      : {}),
+                    backgroundColor: isActive(item.key) ? colors.activeDrawerItem : undefined,
                     width: drawerExpanded ? 230 : 40,
                   }}
-                  key={item.key}
                   icon={item.icon}
                   label={drawerExpanded ? item.text || '' : ''}
-                  onPress={onLinkPress}
+                  onPress={() => {
+                    item.navigate?.();
+                    setActive(item.key);
+                  }}
                 />
               </View>
             );
           } else if (item.type === 'divider') {
-            return <Divider style={{ marginVertical: 10 }} />;
+            return <Divider key={item.key} style={{ marginVertical: 10 }} />;
           } else {
             return null;
           }
@@ -312,10 +303,9 @@ export type RootScreenNavigationProp<K extends keyof RootNavParams> = CompositeN
 const Drawer = createDrawerNavigator<RootNavParams>();
 
 function RootNavigator() {
-  if (useLayout() === 'desktop') {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [drawerExpanded, setDrawerExpanded] = React.useState(false);
+  const [drawerExpanded, setDrawerExpanded] = React.useState(false);
 
+  if (useLayout() === 'desktop') {
     return (
       <Drawer.Navigator
         initialRouteName="Main"
