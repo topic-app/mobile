@@ -3,6 +3,8 @@ import _ from 'lodash';
 import { ExplorerLocation } from '@ts/types';
 import { Format } from '@utils/index';
 
+import { MapMarkerDataType } from '../views/Map';
+
 type LocationStrings = {
   icon: string;
   title: string;
@@ -33,16 +35,42 @@ function formatTypes<T extends string>(
   return _.capitalize(`${newTypes.join(', ')} et ${lastType}`);
 }
 
+const EVENT_ICON = 'calendar-outline';
+const PLACE_ICON = 'map-marker-outline';
+const SCHOOL_ICON = 'school';
+const SECRET_ICON = 'egg-easter';
+
 /**
  * Obtient les strings correspondants pour chaque type de données
  */
-export function getStrings(place: ExplorerLocation.Location): LocationStrings {
+export function getStrings(
+  mapMarkerData: MapMarkerDataType,
+  place?: ExplorerLocation.Marker,
+): LocationStrings {
   const strings: LocationStrings = {
     icon: '',
     title: '',
     description: '',
     addresses: [],
   };
+
+  if (!place) {
+    const { type } = mapMarkerData;
+    if (type === 'event') {
+      strings.icon = EVENT_ICON;
+    } else if (type === 'place') {
+      strings.icon = PLACE_ICON;
+    } else if (type === 'school') {
+      strings.icon === SCHOOL_ICON;
+    } else if (type === 'secret') {
+      strings.icon === SECRET_ICON;
+    } else {
+      strings.icon = 'map-marker-question-outline';
+    }
+    strings.title = mapMarkerData.name;
+    strings.description = 'Chargement...';
+    return strings;
+  }
 
   switch (place.type) {
     case 'event':
@@ -77,17 +105,7 @@ export function getStrings(place: ExplorerLocation.Location): LocationStrings {
       strings.icon = 'egg-easter';
       strings.title = place.data.name || place.data.displayName;
       strings.description = place.data.summary;
-      strings.detail = formatTypes(
-        place.data.types,
-        ['club', 'cultural', 'history', 'tourism', 'other'],
-        {
-          club: 'club',
-          cultural: 'culturel',
-          history: 'historique',
-          tourism: 'touristique',
-          other: 'autre',
-        },
-      );
+      strings.detail = Format.placeTypes(place.data.types);
       strings.addresses = [Format.address(place.data.address)];
   }
 
