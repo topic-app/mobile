@@ -155,10 +155,8 @@ export type IllustrationName = keyof typeof illustrationList;
 
 type Props = SvgProps & { name: IllustrationName };
 
-const Illustration: React.FC<Props> = ({ name, ...rest }) => {
+const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, ...rest }) => {
   const { dark } = useTheme();
-
-  if (Platform.OS === 'web' || Config.dev.hideSvg) return null;
 
   if (!(name in illustrations)) {
     logger.warn(`Error: ${name} not found in list of artwork`);
@@ -166,10 +164,12 @@ const Illustration: React.FC<Props> = ({ name, ...rest }) => {
   }
 
   const item = illustrations[name];
-  if (item.all) return <item.all {...rest} />;
-  if (item.light && item.dark) {
-    return dark ? <item.dark {...rest} /> : <item.light {...rest} />;
+  const IllustrationComponent = item.all || (dark ? item.dark : item.light);
+
+  if (IllustrationComponent) {
+    return <IllustrationComponent height={height} width={width} {...rest} />;
   }
+
   return null;
 };
 
