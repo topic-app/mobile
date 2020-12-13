@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { AppThunk, UPDATE_ACCOUNT_STATE, User } from '@ts/types';
+import { AppThunk, UPDATE_ACCOUNT_STATE, UPDATE_LINKING_STATE, User } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
 import { request } from '@utils/index';
 
@@ -112,6 +112,194 @@ function updateProfileStringCreator({
   };
 }
 
+function emailChangeCreator({ id, token }: { id: string; token: string }): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        emailChange: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      request('profile/modify/email/confirm', 'post', { id, token }, false, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_LINKING_STATE,
+        data: {
+          emailChange: {
+            loading: false,
+            success: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        emailChange: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
+function emailVerifyCreator({ id, token }: { id: string; token: string }): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        emailVerify: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      request('auth/email/verify', 'post', { id, token }, false, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_LINKING_STATE,
+        data: {
+          emailVerify: {
+            loading: false,
+            success: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        emailVerify: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
+type ExtraParams = {
+  articles: boolean;
+  events: boolean;
+  places: boolean;
+  petitions: boolean;
+  comments: boolean;
+};
+
+function accountDeleteCreator({
+  id,
+  token,
+  extra,
+}: {
+  id: string;
+  token: string;
+  extra: ExtraParams;
+}): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        accountDelete: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      request('profile/delete/verify', 'post', { id, token, extra }, false, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_LINKING_STATE,
+        data: {
+          accountDelete: {
+            loading: false,
+            success: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        accountDelete: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
+function passwordResetCreator({
+  id,
+  token,
+  password,
+}: {
+  id: string;
+  token: string;
+  password: string;
+}): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        passwordReset: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      request('auth/password/reset', 'post', { id, token, password }, false, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_LINKING_STATE,
+        data: {
+          passwordReset: {
+            loading: false,
+            success: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        passwordReset: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
 async function updateData(fields: Partial<User['data']>) {
   await Store.dispatch(updateDataCreator(fields));
 }
@@ -146,4 +334,30 @@ async function updatePassword(password: string) {
   );
 }
 
-export { updateData, updateUsername, updateEmail, updatePassword };
+async function emailChange(id: string, token: string) {
+  await Store.dispatch(emailChangeCreator({ id, token }));
+}
+
+async function emailVerify(id: string, token: string) {
+  await Store.dispatch(emailVerifyCreator({ id, token }));
+}
+
+async function accountDelete(id: string, token: string, extra: ExtraParams) {
+  await Store.dispatch(accountDeleteCreator({ id, token, extra }));
+}
+
+async function passwordReset(id: string, token: string, password: string) {
+  const hashedPassword = await hashPassword(password);
+  await Store.dispatch(passwordResetCreator({ id, token, password: hashedPassword }));
+}
+
+export {
+  updateData,
+  updateUsername,
+  updateEmail,
+  updatePassword,
+  emailChange,
+  emailVerify,
+  accountDelete,
+  passwordReset,
+};

@@ -81,6 +81,8 @@ export type AccountRequestState = {
   updateProfile: RequestState;
   export: RequestState;
   delete: RequestState;
+  passwordRequest: RequestState;
+  passwordReset: RequestState;
 };
 
 export type LocationRequestState = {
@@ -92,6 +94,7 @@ export type LinkingRequestState = {
   emailChange: RequestState;
   emailVerify: RequestState;
   accountDelete: RequestState;
+  resetPassword: RequestState;
 };
 export type UploadRequestState = {
   upload: RequestState;

@@ -12,7 +12,6 @@ import getNavigatorStyles from '@styles/NavStyles';
 import { useTheme, useSafeAreaInsets } from '@utils/index';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleDualList from './articles/views/Dual';
 import ArticleList from './articles/views/List';
 import EventDualList from './events/views/Dual';
 import EventList from './events/views/List';
@@ -77,15 +76,10 @@ function HomeTwoNavigator() {
         },
       })}
     >
-      <Tab.Screen
-        name="Article"
-        component={deviceWidth > Config.layout.dualMinWidth ? ArticleDualList : ArticleList}
-        options={{ title: 'Actus' }}
-      />
+      <Tab.Screen name="Article" component={ArticleList} />
       <Tab.Screen
         name="Event"
         component={deviceWidth > Config.layout.dualMinWidth ? EventDualList : EventList}
-        options={{ title: 'Evènements' }}
       />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
       <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
