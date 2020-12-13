@@ -9,6 +9,7 @@ import {
   GroupsBanner,
   ARTICLE_CARD_HEADER_HEIGHT,
   Banner,
+  VerificationBanner,
 } from '@components/index';
 import { Permissions } from '@constants/index';
 import {
@@ -297,6 +298,7 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         ListHeaderComponent={() => (
           <View>
             <GroupsBanner />
+            <VerificationBanner />
             <TabChipList
               sections={Object.entries(tabGroups).map(([key, data]) => ({ key, data }))}
               selected={chipTab}

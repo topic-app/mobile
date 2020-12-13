@@ -10,6 +10,8 @@ import {
   TabChipList,
   EVENT_CARD_HEADER_HEIGHT,
   Banner,
+  VerificationBanner,
+  GroupsBanner,
 } from '@components/index';
 import { Permissions } from '@constants/index';
 import {
@@ -378,6 +380,8 @@ const EventList: React.FC<EventListProps> = ({
         }}
         ListHeaderComponent={() => (
           <View>
+            <GroupsBanner />
+            <VerificationBanner />
             <TabChipList
               sections={tabGroups}
               selected={chipTab}

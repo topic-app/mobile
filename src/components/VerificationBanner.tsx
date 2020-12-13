@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Subheading, Avatar } from 'react-native-paper';
+import { Text, Subheading, Avatar, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Config } from '@constants/index';
@@ -39,8 +39,9 @@ const VerificationBanner: React.FC<Props> = ({ account, state }) => {
           retry={() => resendVerification()}
         />
       )}
+      {state.resend?.loading && <ProgressBar indeterminate />}
       <Banner
-        visible={account.accountInfo.user.verification?.verified || false}
+        visible={!account.accountInfo.user.verification?.verified || false}
         actions={[
           {
             label: 'Renvoyer',
@@ -56,7 +57,11 @@ const VerificationBanner: React.FC<Props> = ({ account, state }) => {
           },
         ]}
         icon={({ size }) => (
-          <Avatar.Icon style={{ backgroundColor: colors.invalid }} size={size} icon="shield" />
+          <Avatar.Icon
+            style={{ backgroundColor: colors.primary }}
+            size={size}
+            icon="shield-account"
+          />
         )}
       >
         Votre compte est en attente de vérification. Veuillez vérifier votre boite mail.

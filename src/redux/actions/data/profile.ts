@@ -393,7 +393,7 @@ async function passwordReset(id: string, token: string, password: string) {
 }
 
 async function resendVerification() {
-  await Store.dispatch(resendVerificationCreator);
+  await Store.dispatch(resendVerificationCreator());
 }
 
 export {
