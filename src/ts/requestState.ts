@@ -83,6 +83,7 @@ export type AccountRequestState = {
   delete: RequestState;
   passwordRequest: RequestState;
   passwordReset: RequestState;
+  resend: RequestState;
 };
 
 export type LocationRequestState = {

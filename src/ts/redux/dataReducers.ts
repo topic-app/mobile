@@ -61,7 +61,7 @@ export type AccountCreationData = {
 
 export type AccountPermission = GroupRolePermission & { group: string };
 
-export type AccountUser = User;
+export type AccountUser = User & { verification?: { verified?: boolean } };
 
 export type AccountInfo = {
   accountId: string;
