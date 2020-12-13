@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,7 +12,6 @@ type ArticleEmptyListProps = {
   tab: string;
   sectionKey: string;
   reqState: ArticleRequestState;
-  navigation: HomeTwoScreenNavigationProp<'Article'>;
   changeTab: (tabKey: string) => void;
 };
 
@@ -19,10 +19,11 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   tab,
   sectionKey,
   reqState,
-  navigation,
   changeTab,
 }) => {
+  const navigation = useNavigation<HomeTwoScreenNavigationProp<'Article'>>();
   const height = useWindowDimensions().height - 300;
+
   if (
     (sectionKey === 'categories' && reqState.list.success) ||
     (sectionKey === 'quicks' && reqState.search?.success) ||
