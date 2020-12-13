@@ -11,6 +11,7 @@ import {
   InlineCard,
   TranslucentStatusBar,
   CustomHeaderBar,
+  VerificationBanner,
 } from '@components/index';
 import { fetchAccount, logout, deleteAccount, fetchEmail } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
@@ -131,6 +132,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
         />
       )}
       <ScrollView>
+        <VerificationBanner />
         <View style={[styles.contentContainer, { marginTop: 20 }]}>
           <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
             <Avatar size={120} avatar={account.accountInfo?.user.info.avatar} />

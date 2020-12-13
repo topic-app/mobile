@@ -179,21 +179,23 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
           </>
         )}
       />
-      <FAB
-        icon="plus"
-        onPress={() =>
-          navigation.navigate('Main', {
-            screen: 'Add',
-            params: {
-              screen: 'Group',
+      {account.accountInfo?.user?.verification?.verified && (
+        <FAB
+          icon="plus"
+          onPress={() =>
+            navigation.navigate('Main', {
+              screen: 'Add',
               params: {
-                screen: 'Add',
+                screen: 'Group',
+                params: {
+                  screen: 'Add',
+                },
               },
-            },
-          })
-        }
-        style={styles.bottomRightFab}
-      />
+            })
+          }
+          style={styles.bottomRightFab}
+        />
+      )}
     </View>
   );
 };

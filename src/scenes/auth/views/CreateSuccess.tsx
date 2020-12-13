@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import { Illustration } from '@components/index';
 import { updateGroups } from '@redux/actions/api/groups';
+import { fetchAccount } from '@redux/actions/data/account';
+import { resendVerification } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LocationList, GroupPreload, Group } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
@@ -45,7 +47,7 @@ const AuthCreateSuccess: React.FC<AuthCreateSuccessProps> = ({ navigation, locat
         theme={{ colors: { accent: colors.primaryLighter } }}
         visible
         onDismiss={() => null}
-        action={{ label: 'Renvoyer', onPress: () => logger.warn('Resend email not implemented') }}
+        action={{ label: 'Renvoyer', onPress: () => resendVerification() }}
       >
         Email de vérification envoyé
       </Snackbar>
@@ -55,12 +57,13 @@ const AuthCreateSuccess: React.FC<AuthCreateSuccessProps> = ({ navigation, locat
           <Button
             mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
             uppercase={Platform.OS !== 'ios'}
-            onPress={() =>
+            onPress={() => {
+              fetchAccount();
               navigation.navigate('Main', {
                 screen: 'Home1',
                 params: { screen: 'Home2', params: { screen: 'Article' } },
-              })
-            }
+              });
+            }}
             style={{ flex: 1 }}
           >
             Continuer

@@ -300,6 +300,47 @@ function passwordResetCreator({
   };
 }
 
+function resendVerificationCreator(): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        resend: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      request('auth/email/resend', 'post', {}, true, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          resend: {
+            loading: false,
+            success: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        resend: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
 async function updateData(fields: Partial<User['data']>) {
   await Store.dispatch(updateDataCreator(fields));
 }
@@ -351,6 +392,10 @@ async function passwordReset(id: string, token: string, password: string) {
   await Store.dispatch(passwordResetCreator({ id, token, password: hashedPassword }));
 }
 
+async function resendVerification() {
+  await Store.dispatch(resendVerificationCreator());
+}
+
 export {
   updateData,
   updateUsername,
@@ -360,4 +405,5 @@ export {
   emailVerify,
   accountDelete,
   passwordReset,
+  resendVerification,
 };

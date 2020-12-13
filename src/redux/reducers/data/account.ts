@@ -90,6 +90,11 @@ const initialState: AccountState = {
       success: null,
       error: null,
     },
+    resend: {
+      loading: false,
+      success: null,
+      error: null,
+    },
   },
 };
 
