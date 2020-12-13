@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import shortid from 'shortid';
 
 import { BottomSheet, BottomSheetRef, InlineCard, PlatformBackButton } from '@components/index';
-import places from '@src/data/explorerListData.json';
+import placesTestData from '@src/data/explorerListData.json';
 import { ExplorerLocation } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
@@ -19,17 +19,23 @@ const bottomSheetPortraitSnapPoints = [0, 210, '103.5%'];
 const bottomSheetLandscapeSnapPoints = [0, 210, '103.5%'];
 
 type LocationBottomSheetProps = {
-  bottomSheetRef?: React.RefObject<BottomSheetRef>;
+  bottomSheetRef: React.RefObject<BottomSheetRef>;
   mapMarkerData: MapMarkerDataType;
   zoomToLocation: (coordinates: [number, number]) => void;
+  // Places that have already been fetched before
+  // Right now it is not hooked up to redux, because I don't know
+  // what places is, is it...
+  // - Explorer.Location[]
+  // - (Place | PlacePreload)[] ?
+  places?: ExplorerLocation.Location[];
 };
 
 const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
-  bottomSheetRef: propBottomSheetRef,
+  bottomSheetRef,
   mapMarkerData,
   zoomToLocation,
+  places = (placesTestData as unknown) as ExplorerLocation.Location[],
 }) => {
-  const bottomSheetRef = propBottomSheetRef ?? React.createRef<BottomSheetRef>();
   const theme = useTheme();
   const explorerStyles = getExplorerStyles(theme);
   const { colors } = theme;
@@ -37,9 +43,16 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
   const insets = useSafeAreaInsets();
   const minHeight = useWindowDimensions().height - 21;
 
-  const place = (places.find(
-    (t) => t.data._id === mapMarkerData.id,
-  ) as unknown) as ExplorerLocation.Location;
+  // Search for desired place in places
+  const place = places.find((loc) => loc.data._id === mapMarkerData.id);
+
+  React.useEffect(() => {
+    if (mapMarkerData.id !== '') {
+      // Fetch location and add it to redux places
+      // updateLocations(mapMarkerData.id);
+      console.log('Get location with id', mapMarkerData.id);
+    }
+  }, [mapMarkerData.id]);
 
   // Value that goes from 0 to 1 (where 1 is the bottom sheet hidden)
   const bottomSheetY = new Animated.Value(1);
@@ -72,9 +85,15 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
 
   // extended keeps track of whether the Bottom Sheet is extended
   let extended = false;
-  // useCode is a hook to run code if a certain condition is met
+
+  // Since Animated runs on the native thread (if you use useNativeDriver)
+  // you have to use certain hooks to directly access and perform
+  // operations with this value
+  // - useCode is a hook to run code when a certain value is updated
+  // - cond is a equivalent to an if else
+  // - call is used to call a function
   // For example, here we check whether bottomSheetY is almost extended
-  // and if so, then toggle value of extended
+  // and if it is, then toggle value of extended
   useCode(() => {
     return cond(
       lessThan(bottomSheetY, 0.1),
@@ -103,9 +122,10 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
     }, [extended, minimizeBottomSheet]),
   );
 
-  if (!place) return null;
-
-  const { icon, title, subtitle, description, detail, addresses } = getStrings(place);
+  const { icon, title, subtitle, description, detail, addresses } = getStrings(
+    mapMarkerData,
+    place,
+  );
 
   const renderContent = () => {
     return (
@@ -125,7 +145,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
                 ]}
                 numberOfLines={2}
               >
-                {title}
+                {place}
               </Animated.Text>
               <Animated.Text
                 style={[explorerStyles.modalSubtitle, { opacity: animatedSubtitleOpacity }]}
@@ -167,6 +187,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
 
   return (
     <>
+      {/* Background fade out view */}
       <Animated.View
         style={{
           position: 'absolute',
@@ -178,6 +199,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
         }}
         pointerEvents="none"
       />
+      {/* Actual modal */}
       <BottomSheet
         ref={bottomSheetRef}
         callbackNode={bottomSheetY}
@@ -185,6 +207,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
         landscapeSnapPoints={bottomSheetLandscapeSnapPoints}
         renderContent={renderContent}
       />
+      {/* Header component for the modal */}
       <Animated.View
         style={{
           position: 'absolute',

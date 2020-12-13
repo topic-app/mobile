@@ -53,7 +53,7 @@ export type FeatureCollection = {
   features: Feature[];
 };
 
-function buildFeatureCollections(places: ExplorerLocation.Location[]) {
+function buildFeatureCollections(places: ExplorerLocation.Marker[]) {
   const featureCollections: { [key in ExplorerLocation.LocationTypes]: FeatureCollection } = {
     collection: {
       type: 'FeatureCollection',
