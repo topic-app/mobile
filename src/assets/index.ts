@@ -47,3 +47,5 @@ export { default as SettingsThemeAll } from '@assets/images/illustrations/settin
 export { default as TagDark } from '@assets/images/illustrations/tags/tags_dark.svg';
 export { default as TagLight } from '@assets/images/illustrations/tags/tags_light.svg';
 export { default as TopicIcon } from '@assets/images/topic-icon.svg';
+export { default as TopicIconTextLight } from '@assets/images/topic-icon-text-light.svg';
+export { default as TopicIconTextDark } from '@assets/images/topic-icon-text-dark.svg';

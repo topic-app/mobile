@@ -11,6 +11,10 @@ const illustrationList = {
   'topic-icon': {
     all: Assets.TopicIcon,
   },
+  'topic-icon-text': {
+    light: Assets.TopicIconTextLight,
+    dark: Assets.TopicIconTextDark,
+  },
 
   // Article Illustrations
   article: {

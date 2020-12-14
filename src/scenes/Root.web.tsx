@@ -8,11 +8,13 @@ import {
 } from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
+import { Text, Divider, Drawer as PaperDrawer, Provider, Menu } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
+import { Avatar, Illustration } from '@components';
 import { Permissions } from '@constants/index';
+import getStyles from '@styles/Styles';
 import { State, Account } from '@ts/types';
 import { useTheme, useLayout, checkPermission } from '@utils/index';
 
@@ -143,7 +145,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                 {
                   key: 'moderation',
                   type: 'button',
-                  icon: 'shield-check-outline',
+                  icon: 'shield-outline',
                   text: 'Modération',
                   path: '/moderation',
                   navigate: () =>
@@ -202,12 +204,19 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
 
   const isActive = (name: string) => active === name;
 
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
 
   return (
     <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: colors.surface }}>
       <View>
-        <View style={{ height: 70 }} />
+        <View style={styles.centerIllustrationContainer}>
+          <Illustration
+            name={drawerExpanded ? 'topic-icon-text' : 'topic-icon'}
+            style={{ height: 40, marginTop: 10 }}
+          />
+        </View>
         <Divider style={{ marginVertical: 10 }} />
         {items.map((item) => {
           if (item.type === 'button') {
@@ -243,11 +252,19 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       </View>
       <View style={{ alignItems: 'center' }}>
         {account.loggedIn ? (
-          <PaperDrawer.Item
-            icon="account"
-            style={drawerExpanded ? { width: 230 } : { width: 40 }}
-            label={`@${account.accountInfo?.user?.info?.username}`}
-          />
+          <View>
+            <PaperDrawer.Item
+              icon={() => (
+                <Avatar
+                  avatar={account.accountInfo?.user?.info?.avatar}
+                  size={35}
+                  style={{ marginLeft: -6 }}
+                />
+              )}
+              style={drawerExpanded ? { width: 230 } : { width: 40 }}
+              label={`@${account.accountInfo?.user?.info?.username}`}
+            />
+          </View>
         ) : (
           <View>
             <PaperDrawer.Item

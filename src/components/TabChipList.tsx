@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, SectionList } from 'react-native';
+import { View, SectionList, Platform } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 import { useTheme } from '@utils/index';
@@ -36,7 +36,7 @@ const TabChipList = <T extends ListItem>({
         horizontal
         stickySectionHeadersEnabled={false}
         keyboardShouldPersistTaps="handled"
-        showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={Platform.OS === 'web'}
         sections={sections}
         keyExtractor={(cat) => cat.key}
         renderItem={({ item, index }) => (
