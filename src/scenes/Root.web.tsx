@@ -117,7 +117,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
             key: 'groups',
             type: 'button',
             icon: 'account-group-outline',
-            text: 'Mes groups',
+            text: 'Mes groupes',
             path: '/groupes',
             navigate: () =>
               navigation.navigate('Main', {
