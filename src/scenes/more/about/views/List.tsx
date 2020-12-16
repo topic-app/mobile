@@ -162,7 +162,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                     title="Instagram"
                     description="@topic_application"
                     onPress={() => handleUrl('https://instagram.com/topic_application')}
-                    right={() => <List.Icon icon="twitter" />}
+                    right={() => <List.Icon icon="instagram" />}
                   />
                   <List.Item
                     title="Gitlab (code source)"

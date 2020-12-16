@@ -203,6 +203,7 @@ function fetchAccountCreator(): AppThunk {
     });
     const location = result.data?.profile[0]?.data?.location;
     const data = {
+      selected: true,
       schools: location?.schools?.map((l: SchoolPreload) => l._id),
       departments: location?.departments?.map((l: DepartmentPreload) => l._id),
       global: location?.global,

@@ -19,7 +19,7 @@ import {
   SafeAreaView,
   PlatformTouchable,
 } from '@components/index';
-import { login } from '@redux/actions/data/account';
+import { fetchAccount, login } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { AccountRequestState, State } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
@@ -102,10 +102,22 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                   logger.warn('Login: error encountered while logging in', e);
                 }
                 if (didLogin) {
-                  navigation.navigate('Main', {
-                    screen: 'Home1',
-                    params: { screen: 'Home2', params: { screen: 'Article' } },
-                  });
+                  if (Platform.OS === 'web') {
+                    await fetchAccount();
+                    setTimeout(
+                      () =>
+                        navigation.navigate('Main', {
+                          screen: 'Home1',
+                          params: { screen: 'Home2', params: { screen: 'Article' } },
+                        }),
+                      200,
+                    ); // HACK : Because otherwise it doesnt redirect properly
+                  } else {
+                    navigation.navigate('Main', {
+                      screen: 'Home1',
+                      params: { screen: 'Home2', params: { screen: 'Article' } },
+                    });
+                  }
                 }
               }}
             >

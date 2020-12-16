@@ -86,6 +86,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             alignItems: 'center',
             paddingLeft: 8,
             paddingRight: rightAction ? 0 : 10,
+            marginVertical: Platform.OS === 'web' ? 10 : undefined,
           }}
         >
           {!rightAction && icon ? <Icon name={icon} size={20} color={colors.icon} /> : null}
@@ -113,7 +114,14 @@ type TextChipProps = ChipBaseProps & {
 const TextChip: React.FC<TextChipProps> = ({ title, ...rest }) => {
   return (
     <ChipBase {...rest}>
-      <Text style={{ paddingLeft: 6, fontSize: 15 }}>{title}</Text>
+      <Text
+        style={{
+          paddingLeft: 6,
+          fontSize: 15,
+        }}
+      >
+        {title}
+      </Text>
     </ChipBase>
   );
 };
