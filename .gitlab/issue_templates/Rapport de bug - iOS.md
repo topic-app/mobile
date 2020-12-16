@@ -3,18 +3,18 @@
 ---
 
 - **Informations sur l'appareil**
-  
-   - Version de l'application :
-  
-   - Installée depuis : App Store / Testflight / autre
-  
-   - Modèle :
-  
-   - Version d'iOS :
-  
-   - Téléphone Jailbreak : oui / non
-  
-   - Autre :
+
+  - Version de l'application :
+
+  - Installée depuis : App Store / Testflight / autre
+
+  - Modèle :
+
+  - Version d'iOS :
+
+  - Téléphone Jailbreak : oui / non
+
+  - Autre :
 
 ---
 

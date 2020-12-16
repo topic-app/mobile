@@ -3,18 +3,18 @@
 ---
 
 - **Informations sur l'appareil**
-  
-   - Version de l'application :
-  
-   - Installée depuis : Play Store / apk / autre
-  
-   - Modèle du téléphone :
-  
-   - Version d'android :
-  
-   - Téléphone rooté ou rom custom : oui / non
-  
-   - Autre :
+
+  - Version de l'application :
+
+  - Installée depuis : Play Store / apk / autre
+
+  - Modèle du téléphone :
+
+  - Version d'android :
+
+  - Téléphone rooté ou rom custom : oui / non
+
+  - Autre :
 
 ---
 

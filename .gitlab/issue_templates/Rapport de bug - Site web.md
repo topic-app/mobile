@@ -3,16 +3,16 @@
 ---
 
 - **Informations sur l'appareil**
-  
-   - Version du site web :
-  
-   - Navigateur et version :
-  
-   - Système d'exploitation et version :
-  
-   - Extensions qui pourraient interférer (eg, bloqueur de pub, thème sombre) :
-  
-   - Autre :
+
+  - Version du site web :
+
+  - Navigateur et version :
+
+  - Système d'exploitation et version :
+
+  - Extensions qui pourraient interférer (eg, bloqueur de pub, thème sombre) :
+
+  - Autre :
 
 ---
 
