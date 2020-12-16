@@ -1,15 +1,15 @@
-import React from 'react';
-import { Divider, Button, TextInput, Title, ProgressBar } from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import { connect } from 'react-redux';
 import randomColor from 'randomcolor';
+import React from 'react';
+import { View, Platform, FlatList } from 'react-native';
+import { Divider, Button, TextInput, Title, ProgressBar } from 'react-native-paper';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { ModalProps, State, TagPreload, TagRequestState } from '@ts/types';
 import { Illustration, PlatformTouchable, ErrorMessage, Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { tagAdd } from '@redux/actions/apiActions/tags';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, TagPreload, TagRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 

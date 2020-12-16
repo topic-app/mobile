@@ -21,6 +21,7 @@ import {
   GroupTemplate,
   EventVerificationPreload,
   ArticleVerificationPreload,
+  GroupVerification,
 } from '../api';
 import {
   ArticleRequestState,
@@ -37,6 +38,7 @@ import {
   LinkingRequestState,
   UploadRequestState,
 } from '../requestState';
+import { FullClearAction } from './actions';
 
 // Articles
 export const UPDATE_ARTICLES_STATE = 'UPDATE_ARTICLES_STATE';
@@ -99,7 +101,8 @@ export type ArticlesActionTypes =
   | UpdateArticlesFollowingAction
   | UpdateArticlesSearchAction
   | UpdateArticlesVerificationAction
-  | ClearArticlesAction;
+  | ClearArticlesAction
+  | FullClearAction;
 
 // Comments
 export const UPDATE_COMMENTS_STATE = 'UPDATE_COMMENTS_STATE';
@@ -137,7 +140,8 @@ export type CommentsActionTypes =
   | UpdateCommentsStateAction
   | UpdateCommentsDataAction
   | UpdateCommentsSearchAction
-  | ClearCommentsAction;
+  | ClearCommentsAction
+  | FullClearAction;
 
 // Departments
 export const UPDATE_DEPARTMENTS_STATE = 'UPDATE_DEPARTMENTS_STATE';
@@ -191,7 +195,8 @@ export type DepartmentsActionTypes =
   | UpdateDepartmentsItemAction
   | UpdateDepartmentsItemsAction
   | UpdateDepartmentsSearchAction
-  | ClearDepartmentsAction;
+  | ClearDepartmentsAction
+  | FullClearAction;
 
 // Events
 export const UPDATE_EVENTS_STATE = 'UPDATE_EVENTS_STATE';
@@ -261,7 +266,8 @@ export type EventsActionTypes =
   | UpdateEventsSearchAction
   | UpdateEventsVerificationAction
   | UpdateEventsFollowingAction
-  | ClearEventsAction;
+  | ClearEventsAction
+  | FullClearAction;
 
 // Groups
 export const UPDATE_GROUPS_STATE = 'UPDATE_GROUPS_STATE';
@@ -273,9 +279,9 @@ export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
-  data: (Group | GroupPreload)[];
-  search: GroupPreload[];
-  item: Group | null;
+  data: (GroupPreload | Group)[];
+  search: (GroupPreload | Group)[];
+  item: Group | GroupVerification | null;
   verification: (Group | GroupPreload)[];
   state: GroupRequestState;
   templates: GroupTemplate[];
@@ -323,7 +329,8 @@ export type GroupsActionTypes =
   | UpdateGroupsSearchAction
   | UpdateGroupsTemplatesAction
   | UpdateGroupsVerificationAction
-  | ClearGroupsAction;
+  | ClearGroupsAction
+  | FullClearAction;
 
 // Petitions
 export const UPDATE_PETITIONS_STATE = 'UPDATE_PETITIONS_STATE';
@@ -369,7 +376,8 @@ export type PetitionsActionTypes =
   | UpdatePetitionsDataAction
   | UpdatePetitionsItemAction
   | UpdatePetitionsSearchAction
-  | ClearPetitionsAction;
+  | ClearPetitionsAction
+  | FullClearAction;
 
 // Places
 export const UPDATE_PLACES_STATE = 'UPDATE_PLACES_STATE';
@@ -415,7 +423,8 @@ export type PlacesActionTypes =
   | UpdatePlacesDataAction
   | UpdatePlacesItemAction
   | UpdatePlacesSearchAction
-  | ClearPlacesAction;
+  | ClearPlacesAction
+  | FullClearAction;
 
 // Schools
 export const UPDATE_SCHOOLS_STATE = 'UPDATE_SCHOOLS_STATE';
@@ -477,7 +486,8 @@ export type SchoolsActionTypes =
   | UpdateSchoolsItemsAction
   | UpdateSchoolsSearchAction
   | UpdateSchoolsNearAction
-  | ClearSchoolsAction;
+  | ClearSchoolsAction
+  | FullClearAction;
 
 // Tags
 export const UPDATE_TAGS_STATE = 'UPDATE_TAGS_STATE';
@@ -523,7 +533,8 @@ export type TagsActionTypes =
   | UpdateTagsDataAction
   | UpdateTagsItemAction
   | UpdateTagsSearchAction
-  | ClearTagsAction;
+  | ClearTagsAction
+  | FullClearAction;
 
 // User
 export const UPDATE_USERS_STATE = 'UPDATE_USERS_STATE';
@@ -569,7 +580,8 @@ export type UsersActionTypes =
   | UpdateUsersDataAction
   | UpdateUsersItemAction
   | UpdateUsersSearchAction
-  | ClearUsersAction;
+  | ClearUsersAction
+  | FullClearAction;
 
 export const UPDATE_LEGAL_STATE = 'UPDATE_LEGAL_STATE';
 export const UPDATE_LEGAL = 'UPDATE_LEGAL';

@@ -1,3 +1,4 @@
+import color from 'color';
 import React from 'react';
 import {
   View,
@@ -10,9 +11,10 @@ import {
 } from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import color from 'color';
 
 import { useTheme } from '@utils/index';
+
+import { PlatformTouchable } from './PlatformComponents';
 
 type ChipBaseProps = {
   icon?: string;
@@ -36,7 +38,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
 
   const handlePressIn = () => {
     Animated.timing(elevation, {
-      toValue: 4,
+      toValue: 3,
       duration: 200,
       useNativeDriver: false,
     }).start();
@@ -84,11 +86,12 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             alignItems: 'center',
             paddingLeft: 8,
             paddingRight: rightAction ? 0 : 10,
+            marginVertical: Platform.OS === 'web' ? 10 : undefined,
           }}
         >
-          {!rightAction && icon && <Icon name={icon} size={20} color={colors.icon} />}
+          {!rightAction && icon ? <Icon name={icon} size={20} color={colors.icon} /> : null}
           {children}
-          {rightAction && icon && (
+          {rightAction && icon ? (
             <IconButton
               icon={icon}
               color={colors.softContrast}
@@ -97,7 +100,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
               onPressIn={handlePressIn}
               onPressOut={handlePressOut}
             />
-          )}
+          ) : null}
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -111,7 +114,14 @@ type TextChipProps = ChipBaseProps & {
 const TextChip: React.FC<TextChipProps> = ({ title, ...rest }) => {
   return (
     <ChipBase {...rest}>
-      <Text style={{ paddingLeft: 6, fontSize: 15 }}>{title}</Text>
+      <Text
+        style={{
+          paddingLeft: 6,
+          fontSize: 15,
+        }}
+      >
+        {title}
+      </Text>
     </ChipBase>
   );
 };
@@ -124,8 +134,8 @@ type ListItem = {
 
 type CategoriesListProps<T extends ListItem> = {
   categories: T[];
-  selected: string;
-  setSelected: (key: any) => void;
+  selected: T['key'];
+  setSelected: (key: T['key']) => void;
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   chipProps?: object;
@@ -222,7 +232,7 @@ const ChipAddList = <T extends ListItem>({
   );
 };
 
-type ChipSuggestionListItem = ListItem & { color: string };
+type ChipSuggestionListItem = ListItem & { color?: string };
 
 type ChipSuggestionListProps<T extends ChipSuggestionListItem> = {
   data?: T[];

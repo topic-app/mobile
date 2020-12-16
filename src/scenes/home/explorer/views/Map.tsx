@@ -1,28 +1,54 @@
+import MapboxGL, { OnPressEvent } from '@react-native-mapbox-gl/maps';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import * as Location from 'expo-location';
 import React from 'react';
 import { View, Linking, Platform } from 'react-native';
 import { Text, FAB, IconButton } from 'react-native-paper';
-import Modal from 'react-native-modal';
-import PropTypes from 'prop-types';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import * as Location from 'expo-location';
 
-import { TranslucentStatusBar } from '@components/Header';
-import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
+import { BottomSheetRef } from '@components/index';
 import getStyles from '@styles/Styles';
+import { ExplorerLocation } from '@ts/types';
+import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
-import LocationModal from '../components/LocationModal';
+import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
+import LocationBottomSheet from '../components/LocationBottomSheet';
+import getExplorerStyles from '../styles/Styles';
 import { buildFeatureCollections } from '../utils/featureCollection';
 import { markerImages } from '../utils/getAsset';
-import getExplorerStyles from '../styles/Styles';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 // MapboxGL.setTelemetryEnabled(false);
 
-function ExplorerMap({ places, map, tileServerUrl, navigation }) {
-  const cameraRef = React.createRef<MapboxGL.Camera>();
+export type MapMarkerDataType = {
+  id: string | number;
+  type: ExplorerLocation.LocationTypes;
+  name: string;
+  coordinates: [number, number];
+};
 
-  const [data, setData] = React.useState({ id: null, type: null, name: null });
-  const [isModalVisible, setModalVisible] = React.useState(false);
+type ExplorerMapProps = {
+  places: ExplorerLocation.Location[];
+  map: {
+    minZoom: number;
+    maxZoom: number;
+    defaultZoom: number;
+    centerCoordinate: [number, number];
+    bounds: { ne: [number, number]; sw: [number, number] };
+  };
+  tileServerUrl: string;
+  navigation: HomeTwoScreenNavigationProp<'Explorer'>;
+};
+
+const ExplorerMap: React.FC<ExplorerMapProps> = ({ places, map, tileServerUrl, navigation }) => {
+  const cameraRef = React.createRef<MapboxGL.Camera>();
+  const bottomSheetRef = React.createRef<BottomSheetRef>();
+
+  const [data, setData] = React.useState<MapMarkerDataType>({
+    id: '',
+    type: 'school',
+    name: '',
+    coordinates: [0, 0],
+  });
   const [userLocation, setUserLocation] = React.useState(false);
   const [fabVisible, setFabVisible] = React.useState(false);
 
@@ -50,16 +76,20 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
       .catch((e) => logger.warn('Error while requesting user location permission', e));
   }, []);
 
-  const onMarkerPress = ({ features }) => {
-    const feature = features[0];
-    const { coordinates } = feature.geometry;
-    cameraRef.current.moveTo(coordinates, 100);
-    setData({
-      id: feature.id,
-      type: feature.properties.type,
-      name: feature.properties.name,
-    });
-    setModalVisible(true);
+  const onMarkerPress = (event: OnPressEvent) => {
+    logger.verbose('explorer/Map: Pressed on marker');
+    const { id, geometry, properties } = event.features[0];
+    if (geometry.type === 'Point') {
+      const coordinates = geometry.coordinates as [number, number];
+      cameraRef.current?.moveTo(coordinates, 700);
+      setData({
+        id: id!,
+        type: properties?.type,
+        name: properties?.name,
+        coordinates,
+      });
+      partialOpenBottomSheet();
+    }
   };
 
   const requestUserLocation = async () => {
@@ -71,7 +101,7 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
     }
     if (status === Location.PermissionStatus.GRANTED) {
       const { coords } = await Location.getCurrentPositionAsync({});
-      cameraRef.current.setCamera({
+      cameraRef.current?.setCamera({
         centerCoordinate: [coords.longitude, coords.latitude],
         zoomLevel: 11,
         animationDuration: 700,
@@ -81,6 +111,19 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
       logger.info('Location permission request prompt denied, hiding location FAB.');
     }
   };
+
+  const zoomToLocation = (coordinates: [number, number]) => {
+    cameraRef.current?.setCamera({
+      centerCoordinate: coordinates,
+      animationDuration: 2000,
+      zoomLevel: 16,
+      animationMode: 'flyTo',
+      heading: 0,
+    });
+  };
+
+  const partialOpenBottomSheet = () => bottomSheetRef.current?.snapTo(1);
+  const closeBottomSheet = () => bottomSheetRef.current?.snapTo(0);
 
   const featureCollections = buildFeatureCollections(places);
 
@@ -98,11 +141,10 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
     >
       <MapboxGL.MapView
         style={{ flex: 1 }}
-        onPress={() => setModalVisible(false)}
+        onPress={closeBottomSheet}
         logoEnabled={false}
         attributionEnabled={false}
         pitchEnabled={false}
-        showUserLocation
         styleURL={tileServerUrl}
         compassViewMargins={{
           x: 10,
@@ -117,38 +159,64 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
           defaultSettings={{ centerCoordinate: map.centerCoordinate, zoomLevel: map.defaultZoom }}
         />
         <MapboxGL.Images images={markerImages} />
-        {featureCollections.map((fc) => {
-          if (fc.collectionType === 'secret') {
-            return (
-              <MapboxGL.ShapeSource key="secret" id="secret" shape={fc} onPress={onMarkerPress}>
-                <MapboxGL.SymbolLayer
-                  id="secret-zoom1"
-                  minZoomLevel={19}
-                  style={{ iconImage: ['get', 'circleIcon'], iconSize: 1 }}
-                />
-              </MapboxGL.ShapeSource>
-            );
-          }
+        <MapboxGL.ShapeSource
+          id="secret-shape"
+          shape={featureCollections.secret}
+          onPress={onMarkerPress}
+        >
+          <MapboxGL.SymbolLayer
+            id="secret-zoom1"
+            minZoomLevel={19}
+            style={{ iconImage: ['get', 'circleIcon'], iconSize: 1 }}
+          />
+        </MapboxGL.ShapeSource>
+        {(['event', 'place'] as const).map((placeType) => {
           return (
             <MapboxGL.ShapeSource
-              key={fc.collectionType}
-              id={fc.collectionType}
-              shape={fc}
+              key={`${placeType}-shape`}
+              id={`${placeType}-shape`}
+              shape={featureCollections[placeType]}
               onPress={onMarkerPress}
             >
               <MapboxGL.SymbolLayer
-                id={`${fc.collectionType}-zoom1`}
+                id={`${placeType}-zoom1`}
                 maxZoomLevel={9}
                 style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.3 }}
               />
               <MapboxGL.SymbolLayer
-                id={`${fc.collectionType}-zoom2`}
+                id={`${placeType}-zoom2`}
                 minZoomLevel={9}
                 style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
               />
             </MapboxGL.ShapeSource>
           );
         })}
+        <MapboxGL.ShapeSource
+          id="school-shape"
+          shape={featureCollections.school}
+          onPress={onMarkerPress}
+        >
+          <MapboxGL.SymbolLayer
+            id="school-zoom1"
+            maxZoomLevel={9}
+            style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.3 }}
+          />
+          <MapboxGL.SymbolLayer
+            id="school-zoom2"
+            minZoomLevel={9}
+            style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
+          />
+        </MapboxGL.ShapeSource>
+        <MapboxGL.ShapeSource
+          id="collection-shape"
+          shape={featureCollections.collection}
+          onPress={onMarkerPress}
+        >
+          <MapboxGL.SymbolLayer
+            id="collection-zoom1"
+            style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.3 }}
+          />
+        </MapboxGL.ShapeSource>
         <MapboxGL.UserLocation visible={userLocation} animated />
       </MapboxGL.MapView>
 
@@ -163,15 +231,13 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
           }}
         >
           <IconButton
-            onPress={() => navigation.openDrawer()}
+            onPress={((navigation as unknown) as DrawerNavigationProp<any, any>).openDrawer}
             icon="menu"
             color={colors.text}
             size={24}
           />
         </View>
-      ) : (
-        <TranslucentStatusBar />
-      )}
+      ) : null}
 
       {fabVisible && (
         <View
@@ -191,22 +257,16 @@ function ExplorerMap({ places, map, tileServerUrl, navigation }) {
         </View>
       )}
 
-      <ExplorerAttribution theme={theme} />
+      <ExplorerAttribution />
 
-      <Modal
-        supportedOrientations={['portrait', 'landscape']}
-        isVisible={isModalVisible}
-        hasBackdrop={false}
-        onBackButtonPress={() => setModalVisible(false)}
-        coverScreen={false}
-        animationOutTiming={200} // We want it to dissapear fast
-        style={explorerStyles.modal}
-      >
-        <LocationModal data={data} hideModal={() => setModalVisible(false)} />
-      </Modal>
+      <LocationBottomSheet
+        bottomSheetRef={bottomSheetRef}
+        mapMarkerData={data}
+        zoomToLocation={zoomToLocation}
+      />
     </View>
   );
-}
+};
 
 function ExplorerAttribution() {
   const theme = useTheme();
@@ -237,32 +297,3 @@ function ExplorerAttribution() {
 }
 
 export default ExplorerMap;
-
-ExplorerMap.propTypes = {
-  places: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      position: PropTypes.shape({
-        lat: PropTypes.number.isRequired,
-        lng: PropTypes.number.isRequired,
-      }).isRequired,
-    }).isRequired,
-  ).isRequired,
-  map: PropTypes.shape({
-    minZoom: PropTypes.number.isRequired,
-    maxZoom: PropTypes.number.isRequired,
-    defaultZoom: PropTypes.number.isRequired,
-    centerCoordinate: PropTypes.arrayOf(PropTypes.number).isRequired,
-    bounds: PropTypes.shape({
-      ne: PropTypes.arrayOf(PropTypes.number).isRequired,
-      sw: PropTypes.arrayOf(PropTypes.number).isRequired,
-    }),
-  }).isRequired,
-  tileServerUrl: PropTypes.string.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    openDrawer: PropTypes.func,
-  }).isRequired,
-};

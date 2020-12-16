@@ -33,7 +33,7 @@ function getLandingStyles(theme: Theme) {
     },
     sectionTitle: {
       fontSize: 30,
-      marginBottom: 10,
+      marginBottom: 30,
     },
     sectionSubtitle: {
       fontSize: 24,
@@ -52,8 +52,9 @@ function getLandingStyles(theme: Theme) {
       alignSelf: 'center',
     },
     searchContainer: {
-      paddingHorizontal: 20,
-      paddingBottom: 5,
+      paddingTop: 10,
+      paddingHorizontal: 15,
+      paddingBottom: 10,
       width: '100%',
       maxWidth: 600,
       alignSelf: 'center',

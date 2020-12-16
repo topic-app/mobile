@@ -7,28 +7,30 @@ import getStyles from '@styles/Styles';
 import { ModalProps } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-type PlaceTypeModalProps = ModalProps & { next: (type: 'school' | 'place' | 'standalone') => void };
+type PlaceType = 'school' | 'place' | 'standalone';
+
+type PlaceTypeModalProps = ModalProps & { next: (type: PlaceType) => void };
 
 function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [currentType, setCurrentType] = React.useState('school');
+  const [currentType, setCurrentType] = React.useState<PlaceType>('school');
 
-  const placeTypes = [
+  const placeTypes: { type: PlaceType; title: string; description: string }[] = [
     {
-      type: 'school',
+      type: 'school' as 'school',
       title: 'Établissement',
       description: "L'évènement a lieu dans un établissement scolaire",
     },
     {
-      type: 'place',
+      type: 'place' as 'place',
       title: 'Lieu',
       description: "L'évènement a lieu dans un lieu culturel",
     },
     {
-      type: 'standalone',
+      type: 'standalone' as 'standalone',
       title: 'Adresse',
       description: "L'évènement a lieu à une adresse spécifique",
     },

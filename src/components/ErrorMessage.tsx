@@ -1,12 +1,11 @@
-import React from 'react';
-import { Alert } from 'react-native';
-import { Banner, Avatar } from 'react-native-paper';
 import { useNetInfo } from '@react-native-community/netinfo';
+import React from 'react';
 import DeviceInfo from 'react-native-device-info';
+import { Banner, Avatar } from 'react-native-paper';
 
-import { Error as ErrorType, RequestState } from '@ts/types';
-import { useTheme, request, logger } from '@utils/index';
 import Store from '@redux/store';
+import { Error as ErrorType, RequestState } from '@ts/types';
+import { useTheme, request, logger, Alert } from '@utils/index';
 
 type Props = {
   /* Please change me if 'app' is too vague! */
@@ -38,7 +37,9 @@ const ErrorMessage: React.FC<Props> = ({
   restart,
   back,
 }) => {
-  const err = (Array.isArray(error) && error?.length > 0 ? error[0] : error) as ErrorType;
+  const err = (Array.isArray(error) && error?.length > 0
+    ? error.find((e) => !!e) || error[0]
+    : error) as ErrorType;
   const theme = useTheme();
   const netInfo = useNetInfo();
   const { colors } = theme;
@@ -219,8 +220,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     } else if (err?.error?.response?.status === 422) {
       message = {
         icon: 'alert-decagram-outline',
-        text:
-          'L&apos;application a envoyé des données malformées au serveur. Merci de signaler ce bug.',
+        text: "L'application a envoyé des données malformées au serveur. Merci de signaler ce bug.",
       };
       if (back) {
         actions.push({
@@ -232,8 +232,7 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
     } else if (err?.error?.response?.status === 400) {
       message = {
         icon: 'file-alert-outline',
-        text:
-          'L&apos;application a envoyé des données invalides au serveur. Merci de signaler ce bug.',
+        text: "L'application a envoyé des données invalides au serveur. Merci de signaler ce bug.",
       };
       if (restart) {
         actions.push({
@@ -478,11 +477,11 @@ Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données 
         <Avatar.Icon style={{ backgroundColor: colors.invalid }} size={size} icon={message.icon} />
       )}
     >
-      {message.text} (
-      {Array.isArray(error) && error.length > 0
-        ? error.map((e) => e?.error?.toString()).join(', ')
-        : err?.error?.toString()}
-      )
+      {`${message.text} (${
+        Array.isArray(error) && error.length > 0
+          ? error.map((e) => e?.error?.toString()).join(', ')
+          : err?.error?.toString()
+      })`}
     </Banner>
   );
 };

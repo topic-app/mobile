@@ -1,10 +1,13 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
-import AuthLoginScreen from './views/Login';
+import { AppScreenNavigationProp } from '@root/src';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+
 import AuthCreateScreen from './views/Create';
-import AuthResetPasswordScreen from './views/ResetPassword';
 import AuthCreateSuccessScreen from './views/CreateSuccess';
+import AuthLoginScreen from './views/Login';
+import AuthResetPasswordScreen from './views/ResetPassword';
 
 export type AuthStackParams = {
   Login: undefined;
@@ -12,6 +15,11 @@ export type AuthStackParams = {
   ResetPassword: undefined;
   CreateSuccess: undefined;
 };
+
+export type AuthScreenNavigationProp<K extends keyof AuthStackParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<AuthStackParams, K>,
+  AppScreenNavigationProp<'Auth'>
+>;
 
 const Stack = createNativeStackNavigator<AuthStackParams>();
 

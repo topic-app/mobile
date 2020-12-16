@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
 import React from 'react';
 import { View, ScrollView, Platform } from 'react-native';
@@ -28,7 +28,7 @@ import {
 import { useTheme } from '@utils/index';
 
 import PetitionChart from '../components/Charts';
-import type { PetitionDisplayStackParams } from '../index';
+import type { PetitionDisplayScreenNavigationProp, PetitionDisplayStackParams } from '../index';
 
 type StatusChipProps = {
   mode: 'contained' | 'text' | 'outlined';
@@ -147,7 +147,9 @@ const PetitionTime: React.FC<PetitionTimeProps> = ({
   );
 };
 
-type PetitionDisplayProps = StackScreenProps<PetitionDisplayStackParams, 'Display'> & {
+type PetitionDisplayProps = {
+  navigation: PetitionDisplayScreenNavigationProp<'Display'>;
+  route: RouteProp<PetitionDisplayStackParams, 'Display'>;
   petitions: (PetitionPreload | Petition)[];
   reqState: PetitionRequestState;
 };
@@ -177,20 +179,20 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
           />
         </View>
         <View style={{ paddingBottom: 5, paddingTop: 2 }}>
-          <TagList item={petition} />
+          <TagList item={petition} scrollable />
         </View>
         <View
           style={
-            (petition.voteData.type === 'goal' || petition.voteData.type === 'sign') && {
+            (petition.type === 'goal' || petition.type === 'sign') && {
               paddingHorizontal: 20,
               paddingTop: 5,
             }
           }
         >
-          <PetitionChart voteData={petition.voteData} />
+          <PetitionChart type={petition.type} voteData={petition.cache} />
         </View>
         <View style={styles.contentContainer}>
-          <Text>{petition.description}</Text>
+          <Text>{petition.summary}</Text>
         </View>
         <Divider />
         <View style={styles.contentContainer}>
@@ -293,7 +295,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
           </View>
           <View style={styles.contentContainer}>
             <Paragraph>
-              Merci pour votre soutien! En tant que membre de la CVL je fais le plus possible pour
+              Merci pour votre soutien! En tant que membre de la CVL je fais le plus possible pour
               mener à l&apos;aboutissement de ce projet
             </Paragraph>
           </View>

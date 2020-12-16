@@ -4,11 +4,12 @@ import { Button, RadioButton, HelperText, List, Text, Card } from 'react-native-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Account, State } from '@ts/types';
 import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
+import { Permissions } from '@constants/index';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { Account, State } from '@ts/types';
+import { checkPermission, useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -32,7 +33,14 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
   const articleStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const groupsWithPermission = account.groups?.filter((g) =>
-    account.permissions.some((p) => p.group === g._id && p.permission === 'article.add'),
+    checkPermission(
+      account,
+      {
+        permission: Permissions.ARTICLE_ADD,
+        scope: {},
+      },
+      g._id,
+    ),
   );
 
   if (!account.loggedIn) {

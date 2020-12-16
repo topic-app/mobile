@@ -1,12 +1,12 @@
+import { useNavigation } from '@react-navigation/core';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp } from 'react-native';
 import { Appbar, Menu } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/core';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
 import shortid from 'shortid';
 
-import { useTheme, useSafeAreaInsets, useLayout } from '@utils/index';
 import getNavigatorStyles from '@styles/NavStyles';
+import { useTheme, useSafeAreaInsets, useLayout } from '@utils/index';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
@@ -39,6 +39,7 @@ export type CustomHeaderBarProps = {
         home?: boolean;
         actions?: ActionItem[];
         overflow?: OverflowItem[];
+        hideBack?: boolean;
       };
     };
   };
@@ -59,6 +60,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
     home = false,
     actions = [],
     overflow,
+    hideBack = false,
   } = scene.descriptor.options;
 
   const layout = useLayout();
@@ -70,7 +72,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
     primaryAction =
       layout === 'desktop' ? null : <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
   } else {
-    primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
+    primaryAction = hideBack ? null : <Appbar.BackAction onPress={navigation.goBack} />;
   }
 
   const secondaryActions = actions.map((item) => (
@@ -120,8 +122,4 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   );
 };
 
-const HeaderConfig = {
-  header: ({ scene }: CustomHeaderBarProps) => <CustomHeaderBar scene={scene} />,
-};
-
-export { TranslucentStatusBar, HeaderConfig, CustomHeaderBar };
+export { TranslucentStatusBar, CustomHeaderBar };

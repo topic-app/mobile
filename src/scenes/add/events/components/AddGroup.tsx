@@ -5,17 +5,18 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { StepperViewPageProps } from '@components/index';
+import { Permissions } from '@constants/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
 import { Account, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & { account: Account };
 
 const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
-  const [group, setGroup] = React.useState(null);
+  const [group, setGroup] = React.useState<string | null>(null);
   const [showError, setError] = React.useState(false);
 
   const submit = () => {
@@ -32,7 +33,14 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const groupsWithPermission = account.groups.filter((g) =>
-    account.permissions.some((p) => p.group === g._id && p.permission === 'event.add'),
+    checkPermission(
+      account,
+      {
+        permission: Permissions.EVENT_ADD,
+        scope: {},
+      },
+      g._id,
+    ),
   );
 
   if (!account.loggedIn) {
@@ -96,8 +104,8 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
         </HelperText>
         {groupsWithPermission.length !== account.groups.length && (
           <Text>
-            Certains groupes n'apparaissent pas car vous ne pouvez pas écrire d'évènements pour ces
-            groupes
+            Certains groupes n&apos;apparaissent pas car vous ne pouvez pas écrire d&apos;évènements
+            pour ces groupes
           </Text>
         )}
       </View>
@@ -105,7 +113,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}
-          onPress={() => submit()}
+          onPress={submit}
           style={{ flex: 1 }}
         >
           Suivant

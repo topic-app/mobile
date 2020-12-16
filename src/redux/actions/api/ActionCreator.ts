@@ -1,3 +1,5 @@
+import { AnyAction } from 'redux';
+
 import {
   ApiItemString,
   ApiItemMap,
@@ -6,9 +8,10 @@ import {
   ApiAction,
   ApiStateMap,
   AppThunk,
+  School,
+  Department,
 } from '@ts/types';
 import { request, logger } from '@utils/index';
-import { AnyAction } from 'redux';
 
 type UpdateCreatorParams<T extends ApiItemString> = {
   dataType: T;
@@ -131,7 +134,7 @@ function updateCreator<T extends ApiItemString>({
               },
             });
           }
-          data = [...dbData]; // Shallow copy of dbData to get rid of reference
+          data = [...(dbData as Element[])]; // Shallow copy of dbData to get rid of reference
           if (result.data) {
             result.data[dataType].forEach((a: Element) => {
               const element = { ...a, preload: true };
@@ -232,17 +235,18 @@ function fetchCreator<T extends ApiItemString>({
       });
       request(url, 'get', params, auth)
         .then((result) => {
-          let data = result.data?.[dataType][0];
+          let data;
           const state = getState()[dataType];
 
           if (useArray && Array.isArray((state as SchoolsState | DepartmentsState).items)) {
-            data = (state as SchoolsState | DepartmentsState).items;
+            data = (state as SchoolsState | DepartmentsState).items as (School | Department)[];
             // Push data to state if it's not already in it
-            if (!data.includes(data?._id)) {
-              data.push(data);
+            if (!data.includes(result.data?.[dataType][0])) {
+              data.push(result.data?.[dataType][0]);
             }
+          } else {
+            data = result.data?.[dataType][0];
           }
-
           dispatch({
             type: update,
             data,
@@ -257,7 +261,7 @@ function fetchCreator<T extends ApiItemString>({
               },
             },
           });
-          resolve();
+          resolve({});
         })
         .catch((err) => {
           dispatch({

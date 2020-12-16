@@ -1,17 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
-import {
-  View,
-  ActivityIndicator,
-  Animated,
-  Platform,
-  Share,
-  Dimensions,
-  Alert,
-} from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
+import { View, ActivityIndicator, Animated, Platform, Share } from 'react-native';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -49,19 +39,19 @@ import {
   Comment,
   ArticleListItem,
   Preferences,
-  Publisher,
   Content as ContentType,
 } from '@ts/types';
-import { useTheme, getImageUrl, handleUrl } from '@utils/index';
+import AutoHeightImage from '@utils/autoHeightImage';
+import { useTheme, getImageUrl, handleUrl, checkPermission, Alert } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
 import CommentInlineCard from '../../components/Comment';
-import type { ArticleDisplayStackParams } from '../index';
+import type { ArticleDisplayScreenNavigationProp, ArticleDisplayStackParams } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 // Common types
-type Navigation = StackNavigationProp<ArticleDisplayStackParams, 'Display'>;
+type Navigation = ArticleDisplayScreenNavigationProp<'Display'>;
 type Route = RouteProp<ArticleDisplayStackParams, 'Display'>;
 
 type CombinedReqState = {
@@ -99,10 +89,19 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
 
   const following = account.accountInfo?.user?.data.following;
 
+  const [imageWidth, setImageWidth] = React.useState(0);
+
   return (
     <View style={styles.page}>
       {article.image?.image && (
-        <View style={[styles.image, { minHeight: 150 }]}>
+        <View
+          style={[styles.image, { minHeight: 150 }]}
+          onLayout={({
+            nativeEvent: {
+              layout: { width },
+            },
+          }) => setImageWidth(width)}
+        >
           <PlatformTouchable
             onPress={() =>
               navigation.push('Main', {
@@ -119,7 +118,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           >
             <AutoHeightImage
               source={{ uri: getImageUrl({ image: article.image, size: 'full' }) || '' }}
-              width={Dimensions.get('window').width}
+              width={imageWidth}
               maxHeight={400}
             />
           </PlatformTouchable>
@@ -172,7 +171,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     screen: 'User',
                     params: {
                       screen: 'Display',
-                      params: { id: author?._id, title: author?.displayName },
+                      params: { id: author?._id || '' /* title: author?.displayName */ },
                     },
                   },
                 })
@@ -411,6 +410,7 @@ type ArticleDisplayProps = {
   account: Account;
   lists: ArticleListItem[];
   preferences: Preferences;
+  dual?: boolean;
 };
 
 const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
@@ -424,6 +424,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   account,
   preferences,
   lists,
+  dual = false,
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
   const { id, useLists = false, verification = false } = route.params;
@@ -521,6 +522,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   return (
     <View style={styles.page}>
       <AnimatingHeader
+        hideBack={dual}
         value={scrollY}
         title={
           route.params.title ||
@@ -571,11 +573,10 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                   title: 'Signaler',
                   onPress: () => setArticleReportModalVisible(true),
                 },
-                ...(account.permissions?.some(
-                  (p) =>
-                    p.permission === Permissions.ARTICLE_DELETE &&
-                    (p.scope.groups.includes(id) || p.scope.everywhere),
-                )
+                ...(checkPermission(account, {
+                  permission: Permissions.ARTICLE_DELETE,
+                  scope: { groups: [article?.group?._id || ''] },
+                })
                   ? [
                       {
                         title: 'Supprimer',
@@ -628,7 +629,6 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               contentSingular: "La suppression de l'article",
             }}
             error={reqState.articles.delete.error}
-            retry={() => fetch()}
           />
         )}
       </AnimatingHeader>
@@ -701,7 +701,11 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         setVisible={setCommentModalVisible}
         id={id}
         reqState={reqState}
-        add={(publisher: Publisher, content: ContentType, parent: string) =>
+        add={(
+          publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
+          content: ContentType,
+          parent: string,
+        ) =>
           commentAdd(publisher, content, parent, 'article').then(() =>
             updateComments('initial', { parentId: id }),
           )

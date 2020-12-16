@@ -11,6 +11,7 @@ import {
   ArticlePrefs,
   ArticleCreationData,
   Article,
+  ArticleParams,
 } from '@ts/types';
 
 import { clearCreator } from '../api/ActionCreator';
@@ -97,9 +98,9 @@ async function addArticleList(name: string, icon: string = '', description: stri
 async function modifyArticleList(
   listId: string,
   name: string,
-  icon: string,
-  description: string,
-  items: Article[],
+  icon: string | undefined,
+  description: string | undefined,
+  items?: Article[],
 ) {
   Store.dispatch(
     modifyListCreator({
@@ -163,7 +164,7 @@ async function clearArticlesRead() {
  * Change les parametres de requete pour un article
  * @param articleId L'id de l'article à récuperer
  */
-async function updateArticleParams(params: object) {
+async function updateArticleParams(params: Partial<ArticleParams>) {
   Store.dispatch(
     updateParamsCreator({
       updateParams: UPDATE_ARTICLES_PARAMS,

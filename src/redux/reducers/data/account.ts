@@ -11,8 +11,10 @@ import {
   UPDATE_ACCOUNT_GROUPS,
   UPDATE_ACCOUNT_WAITING_GROUPS,
   UPDATE_ACCOUNT_CREATION_DATA,
+  UPDATE_ACCOUNT_EMAIL,
   AccountActionTypes,
   AccountState,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: AccountState = {
@@ -22,14 +24,26 @@ const initialState: AccountState = {
         loggedIn: false,
         accountInfo: null,
         creationData: {},
-        permissions: [],
       }),
+  permissions: [],
+  groups: [],
+  waitingGroups: [],
   state: {
     login: {
       loading: false,
       success: null,
       error: null,
       incorrect: null,
+    },
+    passwordRequest: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    passwordReset: {
+      loading: false,
+      success: null,
+      error: null,
     },
     register: {
       loading: false,
@@ -42,6 +56,11 @@ const initialState: AccountState = {
       error: null,
     },
     fetchGroups: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    fetchEmail: {
       loading: false,
       success: null,
       error: null,
@@ -67,6 +86,11 @@ const initialState: AccountState = {
       error: null,
     },
     export: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    resend: {
       loading: false,
       success: null,
       error: null,
@@ -137,6 +161,15 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
       }
       console.warn('accountReducer: Attempted to update accountInfo while not logged in');
       return state;
+    case UPDATE_ACCOUNT_EMAIL:
+      if (state.loggedIn) {
+        return {
+          ...state,
+          accountInfo: { ...state.accountInfo, email: action.data },
+        };
+      }
+      console.warn('accountReducer: Attempted to update email while not logged in');
+      return state;
     case LOGIN:
       return {
         loggedIn: true,
@@ -147,11 +180,16 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
         groups: [],
         waitingGroups: [],
       };
+    case FULL_CLEAR:
+      return initialState;
     case LOGOUT:
       return {
         loggedIn: false,
         accountInfo: null,
         creationData: {},
+        permissions: [],
+        groups: [],
+        waitingGroups: [],
         state: state.state,
       };
     default:

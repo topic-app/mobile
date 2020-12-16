@@ -1,15 +1,15 @@
 import React from 'react';
-import { Divider, Button, TextInput, HelperText } from 'react-native-paper';
 import { View, Platform } from 'react-native';
+import { Divider, Button, TextInput, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State } from '@ts/types';
 import { Modal } from '@components/index';
-import { useTheme } from '@utils/index';
+import config from '@constants/config';
 import getStyles from '@styles/Styles';
+import { ModalProps, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
-import config from '@constants/config';
 
 type YoutubeAddModalProps = ModalProps & {
   add: (url: string) => any;
@@ -22,25 +22,23 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
   const { colors } = theme;
 
   const [linkText, setLinkText] = React.useState('');
-  const [nameText, setNameText] = React.useState('');
   const [errorVisible, setErrorVisible] = React.useState(false);
 
   const submit = () => {
     if (
       linkText.match(
-        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi,
+        /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/gi,
       )
     ) {
-      let id = linkText
+      const id = linkText
         .replace('https://', '')
         .replace('http://', '')
         .replace(
-          /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi,
+          /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/gi,
           '$1',
         );
       add(`${config.google.youtubePlaceholder}${id}`);
       setVisible(false);
-      setNameText('');
       setLinkText('');
     } else {
       setErrorVisible(true);

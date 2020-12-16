@@ -1,17 +1,32 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import React from 'react';
 import { Platform } from 'react-native';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import MoreList from './list/views/List'; // This is the iOS 'more' menu (equivalent to drawer in Android)
-import ProfileStackNavigator from './profile/index';
-import SettingsStackNavigator from './settings/index';
-import MyGroupStackNavigator from './myGroups/index';
-import ModerationStackNavigator from './moderation/index';
-import AboutStackNavigator from './about/index';
-import LinkingStackNavigator from './linking/index';
+import { MainScreenNavigationProp } from '../Main';
+import AboutStackNavigator, { AboutStackParams } from './about/index';
+import MoreList from './list/views/List';
+import ModerationStackNavigator, { ModerationStackParams } from './moderation/index';
+import MyGroupStackNavigator, { MyGroupsStackParams } from './myGroups/index';
+import ProfileStackNavigator, { ProfileStackParams } from './profile/index';
+import SettingsStackNavigator, { SettingsStackParams } from './settings/index';
 
-const Stack = createNativeStackNavigator();
+export type MoreStackParams = {
+  Profile: NavigatorScreenParams<ProfileStackParams>;
+  Settings: NavigatorScreenParams<SettingsStackParams>;
+  MyGroups: NavigatorScreenParams<MyGroupsStackParams>;
+  Moderation: NavigatorScreenParams<ModerationStackParams>;
+  About: NavigatorScreenParams<AboutStackParams>;
+  List: undefined;
+};
+
+export type MoreScreenNavigationProp<K extends keyof MoreStackParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<MoreStackParams, K>,
+  MainScreenNavigationProp<'More'>
+>;
+
+const Stack = createNativeStackNavigator<MoreStackParams>();
 
 function MoreStackNavigator() {
   return (
@@ -34,11 +49,6 @@ function MoreStackNavigator() {
       <Stack.Screen
         name="Moderation"
         component={ModerationStackNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Linking"
-        component={LinkingStackNavigator}
         options={{ headerShown: false }}
       />
       <Stack.Screen name="About" component={AboutStackNavigator} options={{ headerShown: false }} />

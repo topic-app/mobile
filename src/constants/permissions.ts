@@ -19,6 +19,8 @@ export const GROUP_ROLES_DELETE = 'group.roles.delete';
 export const GROUP_VERIFICATION_VIEW = 'group.verification.view';
 export const GROUP_VERIFICATION_APPROVE = 'group.verification.approve';
 
+export const CONTENT_UPLOAD = 'content.upload';
+
 export const PETITION_ADD = 'petition.add';
 export const PETITION_MESSAGE_ADD = 'petition.message.add';
 export const PETITION_DELETE = 'petition.delete';
@@ -34,6 +36,8 @@ export const EVENT_DELETE_IMMEDIATE = 'event.delete.immediate';
 export const EVENT_VERIFICATION_VIEW = 'event.verification.view';
 export const EVENT_VERIFICATION_APPROVE = 'event.verification.approve';
 export const EVENT_VERIFICATION_APPROVE_EXTRA = 'event.verification.approve.extra';
+export const EVENT_MESSAGES_ADD = 'event.messages.add';
+export const EVENT_MESSAGES_DELETE = 'event.messages.delete';
 
 export const PLACE_ADD = 'place.add';
 export const PLACE_MODIFY = 'place.modify';

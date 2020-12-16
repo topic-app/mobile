@@ -1,10 +1,8 @@
 import React from 'react';
-import { View, SectionList } from 'react-native';
+import { View, SectionList, ActivityIndicator } from 'react-native';
 import { Text, ProgressBar, Divider, FAB } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { Account, GroupsState, GroupRequestState, AccountRequestState, State } from '@ts/types';
 import {
   Illustration,
   CategoryTitle,
@@ -14,19 +12,27 @@ import {
   CustomHeaderBar,
   TranslucentStatusBar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateGroups } from '@redux/actions/api/groups';
 import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
+import {
+  Account,
+  GroupsState,
+  GroupRequestState,
+  AccountRequestState,
+  State,
+  AnyGroup,
+} from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import { MyGroupsStackParams } from '../index';
+import { MyGroupsScreenNavigationProp } from '../index';
 
 type MyGroupsListProps = {
   account: Account;
   groups: GroupsState;
   state: GroupRequestState;
   accountState: AccountRequestState;
-  navigation: StackNavigationProp<MyGroupsStackParams, 'List'>;
+  navigation: MyGroupsScreenNavigationProp<'List'>;
 };
 
 const MyGroupsList: React.FC<MyGroupsListProps> = ({
@@ -40,7 +46,7 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  let fetch = (refresh = false) => {
+  const fetch = (refresh = false) => {
     updateGroups(refresh ? 'refresh' : 'initial');
     fetchWaitingGroups();
     fetchGroups();
@@ -48,7 +54,13 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
 
   React.useEffect(fetch, [null]);
 
-  const data = [
+  type MyGroupsData = {
+    key: string;
+    title: string;
+    data: AnyGroup[];
+  };
+
+  const data: MyGroupsData[] = [
     // Groups where the user is a member
     {
       key: 'members',
@@ -131,11 +143,13 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
             <GroupsBanner />
           </View>
         )}
-        renderSectionHeader={({ section: { title, data } }) =>
-          data.length !== 0 ? (
+        renderSectionHeader={({ section }) =>
+          section.data.length !== 0 ? (
             <View style={{ marginTop: 10 }}>
               <Divider />
-              <CategoryTitle style={{ paddingTop: 13, paddingLeft: 15 }}>{title}</CategoryTitle>
+              <CategoryTitle style={{ paddingTop: 13, paddingLeft: 15 }}>
+                {section.title}
+              </CategoryTitle>
             </View>
           ) : (
             <View />
@@ -165,21 +179,23 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
           </>
         )}
       />
-      <FAB
-        icon="plus"
-        onPress={() =>
-          navigation.navigate('Main', {
-            screen: 'Add',
-            params: {
-              screen: 'Group',
+      {account.accountInfo?.user?.verification?.verified && (
+        <FAB
+          icon="plus"
+          onPress={() =>
+            navigation.navigate('Main', {
+              screen: 'Add',
               params: {
-                screen: 'Add',
+                screen: 'Group',
+                params: {
+                  screen: 'Add',
+                },
               },
-            },
-          })
-        }
-        style={styles.bottomRightFab}
-      />
+            })
+          }
+          style={styles.bottomRightFab}
+        />
+      )}
     </View>
   );
 };

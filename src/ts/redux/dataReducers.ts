@@ -1,16 +1,16 @@
 import themes from '@styles/Theme';
 
 import {
-  AccountPermission,
-  AccountInfo,
-  AccountUser,
-  AccountCreationData,
   WaitingGroup,
   GroupWithMembership,
   SchoolPreload,
   DepartmentPreload,
+  Avatar,
+  GroupRolePermission,
+  User,
 } from '../api';
 import { LocationRequestState, AccountRequestState } from '../requestState';
+import { FullClearAction } from './actions';
 
 // Account
 export const UPDATE_ACCOUNT_GROUPS = 'UPDATE_ACCOUNT_GROUPS';
@@ -20,6 +20,7 @@ export const UPDATE_ACCOUNT_WAITING_GROUPS = 'UPDATE_ACCOUNT_WAITING_GROUPS';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN = 'LOGIN';
 export const UPDATE_ACCOUNT_USER = 'UPDATE_ACCOUNT_USER';
+export const UPDATE_ACCOUNT_EMAIL = 'UPDATE_ACCOUNT_EMAIL';
 export const UPDATE_ACCOUNT_CREATION_DATA = 'UPDATE_ACCOUNT_CREATION_DATA';
 export const CLEAR_ACCOUNT_CREATION_DATA = 'CLEAR_ACCOUNT_CREATION_DATA';
 
@@ -44,6 +45,31 @@ export type Account =
     };
 
 export type AccountState = Account;
+
+export type AccountCreationData = {
+  avatar?: Avatar;
+  username?: string;
+  email?: string;
+  password?: string;
+  global?: boolean;
+  schools?: string[];
+  departments?: string[];
+  accountType?: 'public' | 'private';
+  firstName?: string;
+  lastName?: string;
+};
+
+export type AccountPermission = GroupRolePermission & { group: string };
+
+export type AccountUser = User & { verification?: { verified?: boolean } };
+
+export type AccountInfo = {
+  accountId: string;
+  accountToken: string;
+  accountTokenExpiry: string;
+  user: AccountUser;
+  email: string | null;
+};
 
 type UpdateAccountGroupsAction = {
   type: typeof UPDATE_ACCOUNT_GROUPS;
@@ -80,6 +106,11 @@ type UpdateAccountUserAction = {
   data: AccountUser;
 };
 
+type UpdateAccountEmailAction = {
+  type: typeof UPDATE_ACCOUNT_EMAIL;
+  data: string;
+};
+
 type UpdateAccountCreationDataAction = {
   type: typeof UPDATE_ACCOUNT_CREATION_DATA;
   data: Partial<AccountCreationData>;
@@ -98,8 +129,10 @@ export type AccountActionTypes =
   | LogoutAction
   | LoginAction
   | UpdateAccountUserAction
+  | UpdateAccountEmailAction
   | UpdateAccountCreationDataAction
-  | ClearAccountCreationDataAction;
+  | ClearAccountCreationDataAction
+  | FullClearAction;
 
 // Location
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';
@@ -136,7 +169,8 @@ type ClearLocationAction = {
 export type LocationActionTypes =
   | UpdateLocationAction
   | UpdateLocationStateAction
-  | ClearLocationAction;
+  | ClearLocationAction
+  | FullClearAction;
 
 // Prefs
 export const SET_PREFS = 'SET_PREFS';
@@ -156,6 +190,7 @@ export type Preferences = {
   fontFamily: string;
   themeEasterEggDiscovered: boolean;
   youtubeConsent: boolean;
+  useDevServer: boolean;
 };
 
 export type PreferencesState = Preferences;
@@ -175,4 +210,8 @@ type ClearAllPrefsAction = {
   data: {};
 };
 
-export type PrefActionTypes = SetPrefAction | ClearPrefAction | ClearAllPrefsAction;
+export type PrefActionTypes =
+  | SetPrefAction
+  | ClearPrefAction
+  | ClearAllPrefsAction
+  | FullClearAction;

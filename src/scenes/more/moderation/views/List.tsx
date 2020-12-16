@@ -1,21 +1,21 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, Account } from '@ts/types';
 import { CustomTabView, TranslucentStatusBar, CustomHeaderBar } from '@components/index';
-import { useTheme } from '@utils/index';
+import { Permissions } from '@constants/index';
 import getStyles from '@styles/Styles';
+import { State, Account } from '@ts/types';
+import { checkPermission, useTheme } from '@utils/index';
 
-import type { ModerationStackParams } from '../index';
 import ModerationArticles from '../components/ModerationArticles';
-import ModerationGroups from '../components/ModerationGroups';
 import ModerationEvents from '../components/ModerationEvents';
+import ModerationGroups from '../components/ModerationGroups';
+import type { ModerationScreenNavigationProp } from '../index';
 
 type Props = {
-  navigation: StackNavigationProp<ModerationStackParams, 'List'>;
+  navigation: ModerationScreenNavigationProp<'List'>;
   account: Account;
 };
 
@@ -27,12 +27,19 @@ const ModerationList: React.FC<Props> = ({ navigation, account }) => {
     return <Text>Non autorisé</Text>;
   }
 
-  const allowedArticles = account.permissions.some(
-    (p) => p.permission === 'article.verification.view',
-  );
-  const allowedEvents = account.permissions.some((p) => p.permission === 'event.verification.view');
+  const allowedArticles = checkPermission(account, {
+    permission: Permissions.ARTICLE_VERIFICATION_VIEW,
+    scope: {},
+  });
+  const allowedEvents = checkPermission(account, {
+    permission: Permissions.EVENT_VERIFICATION_VIEW,
+    scope: {},
+  });
 
-  const allowedGroups = account.permissions.some((p) => p.permission === 'group.verification.view');
+  const allowedGroups = checkPermission(account, {
+    permission: Permissions.GROUP_VERIFICATION_VIEW,
+    scope: {},
+  });
 
   return (
     <View style={styles.page}>

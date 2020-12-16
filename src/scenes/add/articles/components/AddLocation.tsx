@@ -3,6 +3,10 @@ import { View, Platform } from 'react-native';
 import { Button, HelperText, List, Text, Checkbox, Divider, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import {
   Account,
   State,
@@ -14,12 +18,9 @@ import {
   GroupRolePermission,
   GroupRole,
 } from '@ts/types';
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
 import { useTheme } from '@utils/index';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
-import { fetchMultiDepartment } from '@redux/actions/api/departments';
 
+import { CheckboxListItem } from '../../components/ListItems';
 import getAuthStyles from '../styles/Styles';
 
 type ArticleAddPageLocationProps = StepperViewPageProps & {
@@ -47,8 +48,8 @@ const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
               <Checkbox {...props} />
             </View>
           )
-        : null,
-    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
+        : undefined,
+    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : undefined,
   };
 };
 
@@ -98,38 +99,40 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
 
   React.useEffect(() => {
     if (selectedGroupLocation?.schools) {
-      fetchMultiSchool(selectedGroupLocation.schools.map((s) => s._id));
-      fetchMultiDepartment(selectedGroupLocation.departments.map((s) => s._id));
+      fetchMultiSchool(selectedGroupLocation.schools || []);
+      fetchMultiDepartment(selectedGroupLocation.departments || []);
     }
   }, [null]);
 
   return (
     <View style={articleStyles.formContainer}>
       <View style={articleStyles.listContainer}>
-        {selectedGroupLocation?.schools?.map((s) => (
-          <List.Item
-            title={s.name}
-            description={`École · ${s.address?.shortName || s.address?.address?.city}`}
-            {...getListItemCheckbox({
-              status: schools.includes(s._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(s, setSchools, schools),
-            })}
-            onPress={() => toggle(s, setSchools, schools)}
-          />
-        ))}
-        {selectedGroupLocation?.departments?.map((d) => (
-          <List.Item
-            title={d.name}
-            description={`Département ${d.code}`}
-            {...getListItemCheckbox({
-              status: departments.includes(d._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(d, setDepartments, departments),
-            })}
-            onPress={() => toggle(d, setDepartments, departments)}
-          />
-        ))}
+        {selectedGroupLocation?.schools?.map((sId) => {
+          const s = schoolItems.find((t) => t._id === sId);
+          if (!s) return null;
+          return (
+            <CheckboxListItem
+              key={s._id}
+              title={s.name}
+              description={`École · ${s.address?.shortName || s.address?.address?.city}`}
+              status={schools.includes(s._id) ? 'checked' : 'unchecked'}
+              onPress={() => toggle(s, setDepartments, departments)}
+            />
+          );
+        })}
+        {selectedGroupLocation?.departments?.map((dId) => {
+          const d = departmentItems.find((t) => t._id === dId);
+          if (!d) return null;
+          return (
+            <CheckboxListItem
+              key={d._id}
+              title={d.name}
+              description={`Département ${d.code}`}
+              status={departments.includes(d._id) ? 'checked' : 'unchecked'}
+              onPress={() => toggle(d, setDepartments, departments)}
+            />
+          );
+        })}
         {(selectedGroupLocation?.global || selectedGroupLocation?.everywhere) && (
           <List.Item
             title="France entière"
@@ -152,18 +155,16 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
               <ErrorMessage
                 error={[locationStates.schools.info.error, locationStates.departments.info.error]}
                 strings={{
-                  what: "l'ajout de l'article",
-                  contentSingular: "L'article",
+                  what: 'la recherche des localisations',
+                  contentSingular: 'La liste de localisations',
+                  contentPlural: 'Les localisations',
                 }}
                 type="axios"
                 retry={() => {
-                  fetchMultiSchool([
-                    ...schools,
-                    ...selectedGroupLocation.schools.map((s) => s._id),
-                  ]);
+                  fetchMultiSchool([...schools, ...(selectedGroupLocation.schools || [])]);
                   fetchMultiDepartment([
                     ...departments,
-                    ...selectedGroupLocation.departments.map((d) => d._id),
+                    ...(selectedGroupLocation.departments || []),
                   ]);
                 }}
               />

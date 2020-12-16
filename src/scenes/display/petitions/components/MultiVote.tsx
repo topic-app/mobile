@@ -1,8 +1,8 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { PieChart } from 'react-native-svg-charts';
 import { G, Path } from 'react-native-svg';
+import { PieChart } from 'react-native-svg-charts';
 import shortid from 'shortid';
 
 import { useTheme } from '@utils/index';
@@ -47,8 +47,20 @@ function getPath(
   return `M${x1} ${y1} L ${x2} ${y2} Q ${b1x1} ${b1y1} ${b1x} ${b1y} Q ${b2x1} ${b2y1} ${b2x} ${b2y}`;
 }
 
-function PieLabels({ slices }) {
-  return slices.map((slice, index) => {
+type PieLabelsProps = {
+  slices?: {
+    pieCentroid: [number, number];
+    data: { svg: { fill: string } };
+    startAngle: number;
+    endAngle: number;
+  }[];
+  showTitle?: boolean;
+};
+
+// react-native-svg has some weird incompatible components
+// @ts-expect-error
+const PieLabels: React.FC<PieLabelsProps> = ({ slices }) => {
+  return slices?.map((slice, index) => {
     const { pieCentroid, data, startAngle, endAngle } = slice;
     if (startAngle < (3 / 4) * Math.PI) {
       const linePath = getPath(startAngle, endAngle, pieCentroid, index, slices.length);
@@ -60,7 +72,7 @@ function PieLabels({ slices }) {
     }
     return null;
   });
-}
+};
 
 type MultiVoteProps = {
   items: { title: string; votes: number }[];

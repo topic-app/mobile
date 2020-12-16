@@ -1,10 +1,8 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, EventRequestState, EventCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
   StepperView,
@@ -12,24 +10,25 @@ import {
   SafeAreaView,
   PlatformBackButton,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { eventAdd } from '@redux/actions/apiActions/events';
 import { clearEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { State, EventRequestState, EventCreationData, ProgramEntry } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { EventAddStackParams } from '../index';
-import getEventStyles from '../styles/Styles';
+import EventAddPageContact from '../components/AddContact';
+import EventAddPageDuration from '../components/AddDuration';
 import EventAddPageGroup from '../components/AddGroup';
 import EventAddPageLocation from '../components/AddLocation';
 import EventAddPageMeta from '../components/AddMeta';
-import EventAddPageDuration from '../components/AddDuration';
 import EventAddPagePlace from '../components/AddPlace';
 import EventAddPageProgram from '../components/AddProgram';
 import EventAddPageTags from '../components/AddTags';
-import EventAddPageContact from '../components/AddContact';
+import type { EventAddScreenNavigationProp } from '../index';
+import getEventStyles from '../styles/Styles';
 
 type Props = {
-  navigation: StackNavigationProp<EventAddStackParams, 'Add'>;
+  navigation: EventAddScreenNavigationProp<'Add'>;
   reqState: EventRequestState;
   creationData?: EventCreationData;
 };
@@ -39,7 +38,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
 
-  const add = (parser?: 'markdown' | 'plaintext') => {
+  const add = (program?: ProgramEntry[]) => {
     eventAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -47,17 +46,20 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       phone: creationData.phone,
       email: creationData.email,
       contact: creationData.contact,
-      organizers: creationData.organizers,
+      members: creationData.members,
       start: creationData.start,
       end: creationData.end,
-      date: Date.now(),
+      date: new Date(),
       location: creationData.location,
       group: creationData.group,
-      places: creationData.place,
-      parser: parser || creationData.parser,
-      preferences: null,
+      places: creationData.places,
+      parser: creationData.parser,
+      image: creationData.image,
+      preferences: {
+        comments: true,
+      },
       tags: creationData.tags,
-      program: creationData.program,
+      program: program || creationData.program,
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearEventCreationData();
@@ -96,7 +98,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
               {
                 key: 'location',
                 icon: 'map-marker',
-                title: 'Localisation',
+                title: 'Loc.',
                 component: (props) => <EventAddPageLocation navigation={navigation} {...props} />,
               },
               {
@@ -132,7 +134,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
               {
                 key: 'program',
                 icon: 'script-text',
-                title: 'Programme',
+                title: 'Prog.',
                 component: (props) => <EventAddPageProgram add={add} {...props} />,
               },
             ]}

@@ -50,6 +50,21 @@ const initialState: EventsState = {
       error: null,
       loading: false,
     },
+    report: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    messages_add: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    messages_delete: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 

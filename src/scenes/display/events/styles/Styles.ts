@@ -1,7 +1,9 @@
-import { Theme } from '@root/src/ts/types';
 import { StyleSheet } from 'react-native';
 
-function getEventStyles(_theme: Theme) {
+import { Theme } from '@ts/types';
+
+function getEventStyles(theme: Theme) {
+  const { colors } = theme;
   return StyleSheet.create({
     date: {
       fontSize: 15,
@@ -17,12 +19,40 @@ function getEventStyles(_theme: Theme) {
       marginTop: 20,
       marginHorizontal: 20,
     },
+    username: {
+      color: colors.softContrast,
+    },
     time: {
       fontWeight: 'bold',
       marginLeft: 10,
     },
     subject: {
       marginLeft: 20,
+    },
+    image: {
+      minHeight: 250,
+    },
+    placeholder: {
+      color: colors.disabled,
+    },
+    activeCommentContainer: {
+      paddingHorizontal: 15,
+      paddingBottom: 0,
+      paddingTop: 15,
+    },
+    divider: {
+      marginVertical: 5,
+    },
+    commentInput: {
+      color: colors.text,
+      fontSize: 16,
+      padding: 0,
+      paddingBottom: 10,
+      paddingLeft: 2,
+    },
+    commentBody: {},
+    disabledText: {
+      color: colors.disabled,
     },
   });
 }

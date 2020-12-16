@@ -1,32 +1,32 @@
 import React from 'react';
-import { View, ScrollView, Platform, Alert } from 'react-native';
+import { View, ScrollView, Platform } from 'react-native';
 import { ProgressBar, Button, HelperText, Title, Divider } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 import showdown from 'showdown';
 
-import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
   ErrorMessage,
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
+import { RichEditor } from '@components/richEditor';
 import { articleAdd } from '@redux/actions/apiActions/articles';
 import {
   clearArticleCreationData,
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
+import { useTheme, Alert } from '@utils/index';
 
-import type { ArticleAddStackParams } from '../index';
 import LinkAddModal from '../components/LinkAddModal';
+import type { ArticleAddScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
 
 type Props = {
-  navigation: StackNavigationProp<ArticleAddStackParams, 'AddContent'>;
+  navigation: ArticleAddScreenNavigationProp<'AddContent'>;
   reqState: ArticleRequestState;
   creationData?: ArticleCreationData;
 };
@@ -42,14 +42,16 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
-      date: Date.now(),
+      date: new Date(),
       location: creationData.location,
       group: creationData.group,
       image: null,
       parser: parser || creationData.parser,
       data: data || creationData.data,
       tags: creationData.tags,
-      preferences: null,
+      preferences: {
+        comments: true,
+      },
     }).then(({ _id }) => {
       navigation.replace('Success', { id: _id, creationData });
       clearArticleCreationData();
@@ -57,8 +59,6 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
   };
 
   const [valid, setValid] = React.useState(true);
-
-  const textEditorRef = React.createRef<RichEditor>(null);
 
   const icon = (icon: string) => {
     return ({
@@ -78,8 +78,10 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
     );
   };
 
+  const textEditorRef = React.createRef<RichEditor>();
+
   const submit = async () => {
-    const contentVal = await textEditorRef.current?.getContentHtml();
+    const contentVal = (await textEditorRef.current?.getContentHtml()) ?? '';
 
     const converter = new showdown.Converter();
 
@@ -139,7 +141,7 @@ const ArticleAddContent: React.FC<Props> = ({ navigation, reqState, creationData
           </View>
           <Divider />
           <View style={articleStyles.formContainer}>
-            <View style={articleStyles.textInputContainer}></View>
+            <View style={articleStyles.textInputContainer} />
           </View>
         </ScrollView>
         <View style={{ backgroundColor: colors.surface }}>

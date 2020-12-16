@@ -3,20 +3,20 @@ import { View, Platform } from 'react-native';
 import { Divider, Button, HelperText, TextInput as PaperTextInput } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
 import { CollapsibleView, Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { modifyArticleList } from '@redux/actions/contentData/articles';
 import { modifyEventList } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
 type EditModalProps = ModalProps & {
   articleLists: ArticleListItem[];
   eventLists: EventListItem[];
-  editingList: ArticleListItem | null;
-  setEditingList: (props: ArticleListItem | null) => void;
+  editingList: ArticleListItem | EventListItem | null;
+  setEditingList: (props: ArticleListItem | EventListItem | null) => void;
   type: 'articles' | 'events';
 };
 
@@ -60,11 +60,19 @@ function EditModal({
             </HelperText>
           </CollapsibleView>
           <CollapsibleView
-            collapsed={!lists.some((l) => l.name === editingList.name && l.id !== editingList.id)}
+            collapsed={
+              !lists.some(
+                (l: ArticleListItem | EventListItem) =>
+                  l.name === editingList.name && l.id !== editingList.id,
+              )
+            }
           >
             <HelperText
               type="error"
-              visible={lists.some((l) => l.name === editingList.name && l.id !== editingList.id)}
+              visible={lists.some(
+                (l: ArticleListItem | EventListItem) =>
+                  l.name === editingList.name && l.id !== editingList.id,
+              )}
             >
               Une liste avec ce nom existe déjà
             </HelperText>
@@ -91,18 +99,26 @@ function EditModal({
               if (editingList.name === '') {
                 setErrorVisible(true);
               } else if (
-                !lists.some((l) => l.name === editingList.name && l.id !== editingList.id)
+                !lists.some(
+                  (l: ArticleListItem | EventListItem) =>
+                    l.name === editingList.name && l.id !== editingList.id,
+                )
               ) {
                 // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                 if (type === 'articles') {
                   modifyArticleList(
                     editingList.id,
                     editingList.name,
-                    null,
+                    undefined,
                     editingList.description,
                   );
                 } else {
-                  modifyEventList(editingList.id, editingList.name, null, editingList.description);
+                  modifyEventList(
+                    editingList.id,
+                    editingList.name,
+                    undefined,
+                    editingList.description,
+                  );
                 }
                 setEditingList(null);
                 setVisible(false);

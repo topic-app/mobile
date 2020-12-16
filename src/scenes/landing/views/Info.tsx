@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Platform, Image, ScrollView } from 'react-native';
 import { Text, Button, Divider } from 'react-native-paper';
@@ -13,12 +13,19 @@ import {
 import getStyles from '@styles/Styles';
 import { useTheme } from '@utils/index';
 
-import type { LandingStackParams } from '../index';
+import type { LandingScreenNavigationProp, LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
 
-type LandingArticlesProps = StackScreenProps<LandingStackParams, 'Info'>;
+type LandingInfoProps = {
+  navigation: LandingScreenNavigationProp<'Info'>;
+  route: RouteProp<LandingStackParams, 'Info'>;
+};
 
-const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) => {
+const image_mgen = require('@assets/images/sponsors/mgen.png');
+const image_jtac = require('@assets/images/sponsors/jtac.png');
+const image_esper = require('@assets/images/sponsors/esper.jpg');
+
+const LandingInfo: React.FC<LandingInfoProps> = ({ navigation, route }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
@@ -160,17 +167,13 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
                           { marginTop: 60, marginBottom: 10 },
                         ]}
                       >
-                        <Image
-                          style={{ height: 200 }}
-                          resizeMode="contain"
-                          source={require('@assets/images/sponsors/mgen.png')}
-                        />
+                        <Image style={{ height: 200 }} resizeMode="contain" source={image_mgen} />
                       </View>
                       <Text>
-                        La Mutuelle générale de l'Éducation nationale (MGEN) est l’entreprise qui
-                        finance l’application, au niveau des frais de serveur, de publication et des
-                        frais associatifs. Nous les remercions sincèrement pour cette aide qui nous
-                        permet de proposer une application gratuite et sans publicité.
+                        La Mutuelle générale de l&apos;Éducation nationale (MGEN) est l’entreprise
+                        qui finance l’application, au niveau des frais de serveur, de publication et
+                        des frais associatifs. Nous les remercions sincèrement pour cette aide qui
+                        nous permet de proposer une application gratuite et sans publicité.
                       </Text>
                       <Divider style={{ marginTop: 20 }} />
                       <View
@@ -179,11 +182,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
                           { marginTop: 60, marginBottom: 10 },
                         ]}
                       >
-                        <Image
-                          style={{ height: 200 }}
-                          resizeMode="contain"
-                          source={require('@assets/images/sponsors/jtac.png')}
-                        />
+                        <Image style={{ height: 200 }} resizeMode="contain" source={image_jtac} />
                       </View>
                       <Text>
                         La Jeunesse des Territoires pour l’Action Culturelle (JTAC) est une
@@ -199,17 +198,13 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
                           { marginTop: 60, marginBottom: 10 },
                         ]}
                       >
-                        <Image
-                          style={{ height: 200 }}
-                          resizeMode="contain"
-                          source={require('@assets/images/sponsors/esper.jpg')}
-                        />
+                        <Image style={{ height: 200 }} resizeMode="contain" source={image_esper} />
                       </View>
                       <Text>
-                        L'ESTPER est un regroupement d'organisations qui agissent dans les domaines
-                        de la santé, l'assurance, la banque, le médico-social, l'éducation populaire
-                        ou les activités de loisirs. L'ESPER place l'économie sociale au service de
-                        l'éducation.
+                        L&apos;ESPER est un regroupement d&apos;organisations qui agissent dans les
+                        domaines de la santé, l&apos;assurance, la banque, le médico-social,
+                        l&apos;éducation populaire ou les activités de loisirs. L&apos;ESPER place
+                        l&apos;économie sociale au service de l&apos;éducation.
                       </Text>
                     </View>
                   </View>
@@ -237,4 +232,4 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation, route }) 
   );
 };
 
-export default LandingArticles;
+export default LandingInfo;

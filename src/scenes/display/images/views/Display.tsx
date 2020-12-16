@@ -1,11 +1,20 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Dimensions, ScrollView } from 'react-native';
-import { useTheme, getImageUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { TranslucentStatusBar, PlatformBackButton, SafeAreaView } from '@components/index';
-import AutoHeightImage from 'react-native-auto-height-image';
 
-function ImageDisplay({ navigation, route }) {
+import { TranslucentStatusBar, PlatformBackButton, SafeAreaView } from '@components/index';
+import getStyles from '@styles/Styles';
+import AutoHeightImage from '@utils/autoHeightImage';
+import { useTheme, getImageUrl } from '@utils/index';
+
+import { ImageDisplayScreenNavigationProp, ImageDisplayStackParams } from '../index';
+
+type ImageDisplayProps = {
+  navigation: ImageDisplayScreenNavigationProp<'Display'>;
+  route: RouteProp<ImageDisplayStackParams, 'Display'>;
+};
+
+const ImageDisplay: React.FC<ImageDisplayProps> = ({ navigation, route }) => {
   const { image } = route.params;
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -21,14 +30,16 @@ function ImageDisplay({ navigation, route }) {
     >
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <PlatformBackButton onPress={navigation.goBack} />
-        <AutoHeightImage
-          source={{ uri: getImageUrl({ image, size: 'full' }) || '' }}
-          width={Dimensions.get('window').width}
-        />
+        <ScrollView>
+          <PlatformBackButton onPress={navigation.goBack} />
+          <AutoHeightImage
+            source={{ uri: getImageUrl({ image, size: 'full' }) || '' }}
+            width={Dimensions.get('window').width}
+          />
+        </ScrollView>
       </SafeAreaView>
     </View>
   );
-}
+};
 
 export default ImageDisplay;

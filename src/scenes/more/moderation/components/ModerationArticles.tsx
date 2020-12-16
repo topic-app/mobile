@@ -1,37 +1,25 @@
 import React from 'react';
-import { View, ScrollView, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { ChipAddList, ErrorMessage, ArticleCard } from '@components/index';
+import { Permissions } from '@constants/index';
+import { updateArticlesVerification } from '@redux/actions/api/articles';
+import getStyles from '@styles/Styles';
 import {
   State,
-  ArticlePreload,
   Account,
-  GroupRolePermission,
   ArticleRequestState,
-  Article,
   AccountPermission,
   ArticleVerificationPreload,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
-import {
-  CustomTabView,
-  ChipAddList,
-  ErrorMessage,
-  ArticleCard,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components/index';
-import getStyles from '@styles/Styles';
-import { updateArticlesVerification } from '@redux/actions/api/articles';
+import { checkPermission, getPermissionGroups, useTheme } from '@utils/index';
 
-import type { ModerationStackParams } from '../index';
-import getModerationStyles from '../styles/Styles';
-import { useFocusEffect } from '@react-navigation/core';
+import type { ModerationScreenNavigationProp } from '../index';
 
 type Props = {
-  navigation: StackNavigationProp<ModerationStackParams, 'List'>;
+  navigation: ModerationScreenNavigationProp<'List'>;
   articlesVerification: ArticleVerificationPreload[];
   account: Account;
   state: ArticleRequestState;
@@ -46,21 +34,11 @@ const ModerationArticles: React.FC<Props> = ({
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  if (!account.loggedIn) return null;
-
-  const allowedGroupsArticle = account.permissions.reduce(
-    (groups: string[], p: AccountPermission) => {
-      if (p.permission === 'article.verification.view') {
-        return [...groups, ...(p.scope.self ? [p.group] : []), ...p.scope.groups];
-      } else {
-        return groups;
-      }
-    },
-    [],
-  );
-  const allowedEverywhereArticle = account.permissions.some(
-    (p) => p.permission === 'article.verification.view' && p.scope.everywhere,
-  );
+  const allowedGroupsArticle = getPermissionGroups(account, Permissions.ARTICLE_VERIFICATION_VIEW);
+  const allowedEverywhereArticle = checkPermission(account, {
+    permission: Permissions.ARTICLE_VERIFICATION_VIEW,
+    scope: { everywhere: true },
+  });
   const [selectedGroupsArticle, setSelectedGroupsArticle] = React.useState(allowedGroupsArticle);
   const [everywhereArticle, setEverywhereArticle] = React.useState(false);
 
@@ -68,8 +46,10 @@ const ModerationArticles: React.FC<Props> = ({
     updateArticlesVerification('initial', everywhere ? {} : { groups });
 
   React.useEffect(() => {
-    fetch();
+    if (account.loggedIn) fetch();
   }, [null]);
+
+  if (!account.loggedIn) return null;
 
   return (
     <View>

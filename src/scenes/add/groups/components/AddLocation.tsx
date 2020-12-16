@@ -1,43 +1,23 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import {
-  Button,
-  HelperText,
-  List,
-  Checkbox,
-  Card,
-  Text,
-  Divider,
-  ProgressBar,
-} from 'react-native-paper';
+import { Button, HelperText, List, Card, Text, Divider, ProgressBar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import {
-  Account,
-  State,
-  ArticleCreationData,
-  Department,
-  School,
-  RequestState,
-  ReduxLocation,
-  LocationList,
-} from '@ts/types';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
+import getStyles from '@styles/Styles';
+import { State, Department, School, RequestState, ReduxLocation, LocationList } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { GroupAddStackParams } from '../index';
+import { CheckboxListItem } from '../../components/ListItems';
+import type { GroupAddScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
 
 type GroupAddLocationProps = StepperViewPageProps & {
-  navigation: StackNavigationProp<GroupAddStackParams, 'Location'>;
-  account: Account;
-  creationData: ArticleCreationData;
+  navigation: GroupAddScreenNavigationProp<'Add'>;
   location: LocationList;
   schoolItems: School[];
   departmentItems: Department[];
@@ -51,33 +31,17 @@ type GroupAddLocationProps = StepperViewPageProps & {
   };
 };
 
-const getListItemCheckbox = (props: React.ComponentProps<typeof Checkbox>) => {
-  return {
-    left:
-      Platform.OS !== 'ios'
-        ? () => (
-            <View style={{ justifyContent: 'center' }}>
-              <Checkbox {...props} />
-            </View>
-          )
-        : null,
-    right: Platform.OS === 'ios' ? () => <Checkbox {...props} /> : null,
-  };
-};
-
 const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   prev,
   next,
-  account,
   location,
-  creationData,
   navigation,
   schoolItems,
   departmentItems,
   locationStates,
 }) => {
-  const [schools, setSchools] = React.useState([]);
-  const [departments, setDepartments] = React.useState([]);
+  const [schools, setSchools] = React.useState<string[]>([]);
+  const [departments, setDepartments] = React.useState<string[]>([]);
   const [global, setGlobal] = React.useState(false);
   const [showError, setError] = React.useState(false);
 
@@ -120,44 +84,34 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             />
             <Text style={{ color: colors.text, flex: 1 }}>
               Vous pourrez publier des contenus dans ces localisations. Séléctionnez uniquement
-              celles qui correspondent à votre champ d'action.
+              celles qui correspondent à votre champ d&apos;action.
             </Text>
           </View>
         </Card>
       </View>
       <View style={articleStyles.listContainer}>
         {location.schoolData?.map((s) => (
-          <List.Item
+          <CheckboxListItem
+            key={s._id}
             title={s.name}
             description={`École · ${s.address?.shortName || s.address?.address?.city}`}
-            {...getListItemCheckbox({
-              status: schools.includes(s._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(s, schools, setSchools),
-            })}
+            status={schools.includes(s._id) ? 'checked' : 'unchecked'}
             onPress={() => toggle(s, schools, setSchools)}
           />
         ))}
         {location.departmentData?.map((d) => (
-          <List.Item
+          <CheckboxListItem
+            key={d._id}
             title={d.name}
             description={`Département ${d.code}`}
-            {...getListItemCheckbox({
-              status: departments.includes(d._id) ? 'checked' : 'unchecked',
-              color: colors.primary,
-              onPress: () => toggle(d, departments, setDepartments),
-            })}
+            status={departments.includes(d._id) ? 'checked' : 'unchecked'}
             onPress={() => toggle(d, departments, setDepartments)}
           />
         ))}
-        <List.Item
+        <CheckboxListItem
           title="France entière"
           description="Visible pour tous les utilisateurs"
-          {...getListItemCheckbox({
-            status: global ? 'checked' : 'unchecked',
-            color: colors.primary,
-            onPress: () => setGlobal(!global),
-          })}
+          status={global ? 'checked' : 'unchecked'}
           onPress={() => setGlobal(!global)}
         />
         <View>
@@ -199,6 +153,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'schools',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ schools: newSchools }: ReduxLocation) => {
                   fetchMultiSchool(newSchools);
@@ -239,6 +194,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'departements',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ departments: newDepartments }: ReduxLocation) => {
                   fetchMultiDepartment(newDepartments);
@@ -271,6 +227,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() =>
               navigation.navigate('Location', {
                 type: 'regions',
+                hideSearch: false,
                 initialData: { schools, departments, global },
                 callback: ({ departments: newDepartments }: ReduxLocation) => {
                   fetchMultiDepartment(newDepartments);
@@ -308,11 +265,9 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, location, groupData, schools, departments } = state;
+  const { location, schools, departments } = state;
   return {
-    account,
     location,
-    creationData: groupData.creationData,
     schoolItems: schools.items,
     departmentItems: departments.items,
     locationStates: {

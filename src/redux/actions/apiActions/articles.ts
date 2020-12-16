@@ -1,34 +1,8 @@
 import Store from '@redux/store';
-import { AppThunk, UPDATE_ARTICLES_STATE } from '@ts/redux';
+import { AppThunk, UPDATE_ARTICLES_STATE, ArticleCreationData } from '@ts/redux';
 import { request } from '@utils/index';
 
 import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
-
-type ArticleAddProps = {
-  title: string;
-  date: Date;
-  location: {
-    schools: string[];
-    departments: string[];
-    global: boolean;
-  };
-  group: string;
-  image: {
-    image: string;
-    thumbnails: {
-      small?: boolean;
-      medium?: boolean;
-      large?: boolean;
-    };
-  };
-  summary: string;
-  parser: 'markdown' | 'plaintext';
-  data: string;
-  preferences?: {
-    comments?: boolean;
-  };
-  tags: string[];
-};
 
 function articleAddCreator({
   title,
@@ -41,7 +15,7 @@ function articleAddCreator({
   data,
   preferences,
   tags,
-}: ArticleAddProps): AppThunk {
+}: ArticleCreationData): AppThunk<Promise<{ _id: string }>> {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -87,7 +61,7 @@ function articleAddCreator({
               },
             },
           });
-          resolve(result.data);
+          resolve(result.data as { _id: string });
         })
         .catch((error) => {
           dispatch({
@@ -106,7 +80,7 @@ function articleAddCreator({
   };
 }
 
-function articleAdd(data: ArticleAddProps) {
+async function articleAdd(data: ArticleCreationData) {
   return Store.dispatch(articleAddCreator(data));
 }
 

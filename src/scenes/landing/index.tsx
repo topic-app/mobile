@@ -1,6 +1,13 @@
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { CompositeNavigationProp } from '@react-navigation/core';
+import {
+  createStackNavigator,
+  TransitionPresets,
+  StackNavigationProp,
+} from '@react-navigation/stack';
 import React from 'react';
 import { Platform } from 'react-native';
+
+import { AppScreenNavigationProp } from '@src/index';
 
 import LandingBeta from './views/Beta';
 import LandingInfo from './views/Info';
@@ -13,6 +20,13 @@ export type LandingStackParams = {
   Info: { index: number };
   Beta: undefined;
 };
+
+export type LandingScreenNavigationProp<
+  K extends keyof LandingStackParams
+> = CompositeNavigationProp<
+  StackNavigationProp<LandingStackParams, K>,
+  AppScreenNavigationProp<'Landing'>
+>;
 
 const Stack = createStackNavigator<LandingStackParams>();
 

@@ -1,16 +1,27 @@
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+  NavigationProp,
+  useLinkProps,
+  Link,
+  NavigatorScreenParams,
+  CompositeNavigationProp,
+} from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { NavigationProp, useLinkProps, Link } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
+import { Text, Divider, Drawer as PaperDrawer, Provider, Menu } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
+import { Avatar, Illustration } from '@components';
+import { Permissions } from '@constants/index';
+import getStyles from '@styles/Styles';
 import { State, Account } from '@ts/types';
-import { useTheme, useLayout } from '@utils/index';
+import { useTheme, useLayout, checkPermission } from '@utils/index';
 
+import { AppScreenNavigationProp } from '..';
+import { NativeStackNavigationProp } from '../utils/stack';
+import MainStackNavigator, { MainStackParams } from './Main';
 import AndroidNavigator from './Root.android';
-import MainStackNavigator from './Main';
 
 type TabItemProps = {
   label: string;
@@ -34,22 +45,14 @@ const TabItem: React.FC<TabItemProps> = ({ label, onPress, icon, active }) => {
   );
 };
 
-type BottomTabProps = {
-  navigation: NavigationProp<any, any>;
+type DrawerContentProps = {
+  navigation: any;
   drawerExpanded: boolean;
   setDrawerExpanded: (state: boolean) => any;
   account: Account;
 };
 
-type NavRoute = [
-  string,
-  {
-    screen: string;
-    params?: object;
-  },
-];
-
-const DrawerContent: React.FC<BottomTabProps> = ({
+const DrawerContent: React.FC<DrawerContentProps> = ({
   navigation,
   drawerExpanded,
   setDrawerExpanded,
@@ -62,6 +65,11 @@ const DrawerContent: React.FC<BottomTabProps> = ({
       icon: 'newspaper',
       text: 'Actus',
       path: '/articles',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Article' } },
+        }),
     },
     {
       key: 'events',
@@ -69,6 +77,11 @@ const DrawerContent: React.FC<BottomTabProps> = ({
       icon: 'calendar-outline',
       text: 'Évènements',
       path: '/evenements',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Event' } },
+        }),
     },
     {
       key: 'explore',
@@ -76,8 +89,14 @@ const DrawerContent: React.FC<BottomTabProps> = ({
       icon: 'compass-outline',
       text: 'Explorer',
       path: '/explorer',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Explore' } },
+        }),
     },
     {
+      key: 'divider1',
       type: 'divider',
     },
     ...(account.loggedIn
@@ -88,33 +107,57 @@ const DrawerContent: React.FC<BottomTabProps> = ({
             icon: 'account-outline',
             text: 'Profil',
             path: '/profil',
+            navigate: () =>
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: { screen: 'Profile', params: { screen: 'Profile' } },
+              }),
           },
           {
             key: 'groups',
             type: 'button',
             icon: 'account-group-outline',
-            text: 'Mes groups',
+            text: 'Mes groupes',
             path: '/groupes',
+            navigate: () =>
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: { screen: 'MyGroups', params: { screen: 'List' } },
+              }),
           },
-          /* ...(account.permissions?.some(
-            (p) =>
-              p?.permission === 'article.verification.view' ||
-              p?.permission === 'event.verification.view' ||
-              p?.permission === 'petition.verification.view' ||
-              p?.permission === 'place.verification.view' ||
-              p?.permission === 'group.verification.view',
-          )
+          ...(checkPermission(account, {
+            permission: Permissions.ARTICLE_VERIFICATION_VIEW,
+            scope: {},
+          }) ||
+          checkPermission(account, {
+            permission: Permissions.EVENT_VERIFICATION_VIEW,
+            scope: {},
+          }) ||
+          checkPermission(account, {
+            permission: Permissions.GROUP_VERIFICATION_VIEW,
+            scope: {},
+          }) ||
+          checkPermission(account, {
+            permission: Permissions.PLACE_VERIFICATION_VIEW,
+            scope: {},
+          })
             ? [
                 {
                   key: 'moderation',
                   type: 'button',
-                  icon: 'shield-check-outline',
+                  icon: 'shield-outline',
                   text: 'Modération',
                   path: '/moderation',
+                  navigate: () =>
+                    navigation.navigate('Main', {
+                      screen: 'More',
+                      params: { screen: 'Moderation', params: { screen: 'List' } },
+                    }),
                 },
               ]
-            : []), */
+            : []),
           {
+            key: 'divider2',
             type: 'divider',
           },
         ]
@@ -125,6 +168,11 @@ const DrawerContent: React.FC<BottomTabProps> = ({
       type: 'button',
       icon: 'settings-outline',
       path: '/parametres',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'More',
+          params: { screen: 'Settings', params: { screen: 'List' } },
+        }),
     },
     {
       key: 'legal',
@@ -132,13 +180,23 @@ const DrawerContent: React.FC<BottomTabProps> = ({
       type: 'button',
       icon: 'script-outline',
       path: '/legal',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'More',
+          params: { screen: 'About', params: { screen: 'Legal' } },
+        }),
     },
     {
       key: 'about',
       text: 'A propos',
       type: 'button',
       icon: 'information-outline',
-      path: '/apropos',
+      path: '/a_propos',
+      navigate: () =>
+        navigation.navigate('Main', {
+          screen: 'More',
+          params: { screen: 'About', params: { screen: 'List' } },
+        }),
     },
   ];
 
@@ -146,67 +204,88 @@ const DrawerContent: React.FC<BottomTabProps> = ({
 
   const isActive = (name: string) => active === name;
 
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
 
   return (
     <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: colors.surface }}>
       <View>
-        <View style={{ height: 70 }} />
+        <View style={styles.centerIllustrationContainer}>
+          <Illustration
+            name={drawerExpanded ? 'topic-icon-text' : 'topic-icon'}
+            style={{ height: 40, marginTop: 10 }}
+          />
+        </View>
         <Divider style={{ marginVertical: 10 }} />
         {items.map((item) => {
-          const onLinkPress = () => {
-            setActive(item.key);
-          };
           if (item.type === 'button') {
             return (
               <View
+                key={item.key}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: drawerExpanded ? undefined : 'center',
                 }}
               >
-                <Link to={item.path || ''}>
-                  <PaperDrawer.Item
-                    style={{
-                      ...(isActive(item.key || '')
-                        ? { backgroundColor: colors.activeDrawerItem }
-                        : {}),
-                      width: drawerExpanded ? 230 : 40,
-                    }}
-                    key={item.key}
-                    icon={item.icon}
-                    label={drawerExpanded ? item.text || '' : ''}
-                    onPress={onLinkPress}
-                  />
-                </Link>
+                <PaperDrawer.Item
+                  style={{
+                    backgroundColor: isActive(item.key) ? colors.activeDrawerItem : undefined,
+                    width: drawerExpanded ? 230 : 40,
+                  }}
+                  icon={item.icon}
+                  label={drawerExpanded ? item.text || '' : ''}
+                  onPress={() => {
+                    item.navigate?.();
+                    setActive(item.key);
+                  }}
+                />
               </View>
             );
           } else if (item.type === 'divider') {
-            return <Divider style={{ marginVertical: 10 }} />;
+            return <Divider key={item.key} style={{ marginVertical: 10 }} />;
+          } else {
+            return null;
           }
         })}
       </View>
       <View style={{ alignItems: 'center' }}>
         {account.loggedIn ? (
-          <PaperDrawer.Item
-            icon="account"
-            style={drawerExpanded ? { width: 230 } : { width: 40 }}
-            label={`@${account.accountInfo?.user?.info?.username}`}
-          />
+          <View>
+            <PaperDrawer.Item
+              icon={() => (
+                <Avatar
+                  avatar={account.accountInfo?.user?.info?.avatar}
+                  size={35}
+                  style={{ marginLeft: -6 }}
+                />
+              )}
+              style={drawerExpanded ? { width: 230 } : { width: 40 }}
+              label={`@${account.accountInfo?.user?.info?.username}`}
+            />
+          </View>
         ) : (
           <View>
             <PaperDrawer.Item
               icon="account-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               label="Se connecter"
-              {...useLinkProps({ to: '/auth/connexion' })}
+              onPress={() =>
+                navigation.navigate('Auth', {
+                  screen: 'Login',
+                })
+              }
             />
             <PaperDrawer.Item
               icon="account-plus-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               label="Créer un compte"
-              {...useLinkProps({ to: '/auth/creation' })}
+              onPress={() =>
+                navigation.navigate('Auth', {
+                  screen: 'Create',
+                })
+              }
             />
           </View>
         )}
@@ -230,16 +309,20 @@ const mapStateToProps = (state: State) => {
 const ReduxDrawerContent = connect(mapStateToProps)(DrawerContent);
 
 export type RootNavParams = {
-  Main: undefined;
+  Main: NavigatorScreenParams<MainStackParams>;
 };
+
+export type RootScreenNavigationProp<K extends keyof RootNavParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<RootNavParams, K>,
+  AppScreenNavigationProp<'Root'>
+>;
 
 const Drawer = createDrawerNavigator<RootNavParams>();
 
 function RootNavigator() {
-  if (useLayout() === 'desktop') {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [drawerExpanded, setDrawerExpanded] = React.useState(false);
+  const [drawerExpanded, setDrawerExpanded] = React.useState(false);
 
+  if (useLayout() === 'desktop') {
     return (
       <Drawer.Navigator
         initialRouteName="Main"

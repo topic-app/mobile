@@ -12,7 +12,7 @@ function uploadCreator(
   resizeMode: 'content-primary' = 'content-primary',
   avatar: boolean = false,
   camera: false | 'back' | 'front' = false,
-): AppThunk {
+): AppThunk<Promise<string>> {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -26,7 +26,7 @@ function uploadCreator(
         },
       });
       request(
-        'auth/permission/upload',
+        'permission/upload',
         'post',
         {
           groupId,
@@ -112,15 +112,15 @@ function uploadCreator(
             logger.debug('Trying image upload');
             const data = new FormData();
             data.append('resizeMode', resizeMode);
-            data.append('file', uploadFile);
-            let res = await fetch(Config.cdn.uploadUrl, {
+            data.append('file', uploadFile as any);
+            const res = await fetch(Config.cdn.uploadUrl, {
               method: 'POST',
               body: data,
               headers: {
                 Authorization: `Bearer ${permission.data?.token}`,
               },
             });
-            let responseJson = await res.json();
+            const responseJson = await res.json();
             if (!responseJson.error) {
               dispatch({
                 type: UPDATE_UPLOAD_STATE,
@@ -177,7 +177,7 @@ function uploadCreator(
   };
 }
 
-function upload(groupId: string) {
+async function upload(groupId: string) {
   return Store.dispatch(uploadCreator(groupId));
 }
 

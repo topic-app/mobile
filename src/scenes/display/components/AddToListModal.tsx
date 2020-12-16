@@ -40,7 +40,10 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  const lists = type === 'article' ? articleLists : eventLists;
+  const lists = (type === 'article' ? articleLists : eventLists) as (
+    | ArticleListItem
+    | EventListItem
+  )[];
 
   const [list, setList] = React.useState<string | null>(lists[0]?.id);
   const [createList, setCreateList] = React.useState(false);

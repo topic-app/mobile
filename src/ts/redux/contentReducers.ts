@@ -1,4 +1,5 @@
-import { Article, Event } from '../api';
+import { Article, Event, EventPlace, Image, ProgramEntry, Address } from '../api';
+import { FullClearAction } from './actions';
 import { ApiAction } from './apiReducers';
 
 // Articles
@@ -47,6 +48,10 @@ export type ArticleCreationData = {
     schools?: string[];
     departments?: string[];
     global?: boolean;
+  };
+  image?: Image | null;
+  preferences?: {
+    comments: boolean;
   };
   date?: Date;
   title?: string;
@@ -101,7 +106,8 @@ export type ArticlesContentActionTypes =
   | UpdateArticlesReadAction
   | UpdateArticlesPrefsAction
   | UpdateArticlesQuicksAction
-  | UpdateArticlesCreationDataAction;
+  | UpdateArticlesCreationDataAction
+  | FullClearAction;
 
 // Events
 export const UPDATE_EVENTS_PARAMS = 'UPDATE_EVENTS_PARAMS';
@@ -143,10 +149,37 @@ export type EventReadItem = {
   marked: boolean;
 };
 
+export type EventCreationDataPlace =
+  | {
+      id?: string;
+      type: 'place';
+      associatedPlace: string;
+      address?: undefined;
+      associatedSchool?: undefined;
+      tempName?: string;
+    }
+  | {
+      id?: string;
+      type: 'school';
+      associatedSchool: string;
+      address?: undefined;
+      associatedPlace?: undefined;
+      tempName?: string;
+    }
+  | {
+      id?: string;
+      type: 'standalone';
+      address: Address;
+      tempName?: string;
+      associatedPlace?: undefined;
+      associatedSchool?: undefined;
+    };
+
 export type EventCreationData = {
   title?: string;
   summary?: string;
   description?: string;
+  data?: string;
   phone?: string;
   email?: string;
   contact?: {
@@ -154,23 +187,24 @@ export type EventCreationData = {
     value: string;
     link: string;
   }[];
-  organizers?: string[];
-  start?: Date;
-  end?: Date;
-  date?: Date;
+  members?: string[];
+  start?: string | Date;
+  end?: string | Date;
+  date?: string | Date;
   location?: {
     schools?: string[];
     departments?: string[];
     global?: boolean;
   };
   group?: string;
-  place?: string[];
+  places?: EventCreationDataPlace[];
   parser?: 'markdown' | 'plaintext';
   preferences?: {
     comments?: boolean;
   };
   tags?: string[];
-  program?: string[];
+  image?: Image;
+  program?: ProgramEntry[];
 };
 
 export type EventsContentState = {
@@ -218,7 +252,8 @@ export type EventsContentActionTypes =
   | UpdateEventsReadAction
   | UpdateEventsPrefsAction
   | UpdateEventsQuicksAction
-  | UpdateEventsCreationDataAction;
+  | UpdateEventsCreationDataAction
+  | FullClearAction;
 
 // Groups
 export const UPDATE_GROUPS_CREATION_DATA = 'UPDATE_GROUPS_CREATION_DATA';
@@ -231,7 +266,13 @@ export type GroupCreationData = {
     departments?: string[];
     global?: boolean;
   };
-  shortName?: Date;
+  shortName?: string;
+  parser?: 'markdown' | 'plaintext';
+  verification?: {
+    name?: string;
+    id?: string;
+    extra?: string;
+  };
   description?: string;
   summary?: string;
 };
@@ -245,7 +286,7 @@ type UpdateGroupsCreationDataAction = {
   data: Partial<GroupCreationData>;
 };
 
-export type GroupsContentActionTypes = UpdateGroupsCreationDataAction;
+export type GroupsContentActionTypes = UpdateGroupsCreationDataAction | FullClearAction;
 
 export type ContentItemString = 'articleData' | 'eventData' | 'groupData';
 

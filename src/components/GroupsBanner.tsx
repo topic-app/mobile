@@ -1,24 +1,24 @@
 import React from 'react';
-import { Alert, View } from 'react-native';
-import { Banner, Text, Subheading } from 'react-native-paper';
+import { View } from 'react-native';
+import { Text, Subheading } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Config } from '@constants/index';
-import { State, Account, AccountRequestState, GroupRequestState } from '@ts/types';
-import { handleUrl } from '@utils/index';
 import { groupMemberAccept, groupMemberReject } from '@redux/actions/apiActions/groups';
 import { fetchWaitingGroups, fetchGroups } from '@redux/actions/data/account';
+import { State, Account, GroupRequestState } from '@ts/types';
+import { handleUrl, Alert } from '@utils/index';
 
 import Avatar from './Avatar';
+import Banner from './Banner';
 import ErrorMessage from './ErrorMessage';
 
 type Props = {
   account: Account;
   state: GroupRequestState;
-  accountState: AccountRequestState;
 };
 
-const GroupsBanner: React.FC<Props> = ({ account, state, accountState }) => {
+const GroupsBanner: React.FC<Props> = ({ account, state }) => {
   if (!account.loggedIn || !account.waitingGroups || account.waitingGroups.length === 0) {
     return null;
   }
@@ -53,7 +53,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state, accountState }) => {
         />
       )}
       <Banner
-        visible={account.waitingGroups?.length > 0}
+        visible={account.waitingGroups && account.waitingGroups.length > 0}
         actions={[
           {
             label: 'Refuser',
@@ -106,13 +106,13 @@ const GroupsBanner: React.FC<Props> = ({ account, state, accountState }) => {
         icon={({ size }) => <Avatar size={size} avatar={account.waitingGroups[0]?.avatar} />}
       >
         <Subheading>
-          Rejoindre le groupe {account.waitingGroups[0]?.name} ? {'\n\n'}
+          Rejoindre le groupe {account.waitingGroups[0].name} ? {'\n\n'}
         </Subheading>
         <Text>
-          Vous avez été invité à rejoindre le groupe {account.waitingGroups[0]?.name} en tant que{' '}
+          Vous avez été invité à rejoindre le groupe {account.waitingGroups[0].name} en tant que{' '}
           {
-            account.waitingGroups[0]?.roles?.find(
-              (r) => r._id === account.waitingGroups[0]?.waitingMembership?.role,
+            account.waitingGroups[0].roles?.find(
+              (r) => r._id === account.waitingGroups[0].waitingMembership?.role,
             )?.name
           }
           .
@@ -124,7 +124,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state, accountState }) => {
 
 const mapStateToProps = (state: State) => {
   const { account, groups } = state;
-  return { account, state: groups.state, accountState: account.state };
+  return { account, state: groups.state };
 };
 
 export default connect(mapStateToProps)(GroupsBanner);

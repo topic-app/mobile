@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
 import { Button, Text, Divider, Card } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { Account, State, ArticleCreationData, TagRequestState, TagPreload } from '@ts/types';
 import {
   StepperViewPageProps,
   ErrorMessage,
@@ -13,14 +13,15 @@ import {
   CategoryTitle,
   Searchbar,
 } from '@components/index';
-import { useTheme } from '@utils/index';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import getStyles from '@styles/Styles';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import { Permissions } from '@constants/index';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
+import getStyles from '@styles/Styles';
+import { Account, State, TagRequestState, TagPreload } from '@ts/types';
+import { checkPermission, useTheme } from '@utils/index';
 
-import TagAddModal from './TagAddModal';
 import getAuthStyles from '../styles/Styles';
+import TagAddModal from './TagAddModal';
 
 type ArticleAddPageTagsProps = StepperViewPageProps & {
   account: Account;
@@ -94,7 +95,10 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
         {searchText !== '' &&
         state.search?.success &&
         !selectedData.some((t) => t.name?.toLowerCase() === searchText?.toLowerCase()) &&
-        account.permissions?.some((p) => p.permission === 'tag.add') ? (
+        checkPermission(account, {
+          permission: Permissions.TAG_ADD,
+          scope: {},
+        }) ? (
           <TextChip
             title={`Créer "${searchText.toLowerCase()}"`}
             icon="plus"
@@ -169,7 +173,12 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
             <Searchbar
               ref={inputRef}
               placeholder={`Rechercher ${
-                account.permissions?.some((p) => p.permission === 'tag.add') ? 'ou créer ' : ''
+                checkPermission(account, {
+                  permission: Permissions.TAG_ADD,
+                  scope: {},
+                })
+                  ? 'ou créer '
+                  : ''
               }un tag`}
               value={searchText}
               onChangeText={setSearchText}
@@ -244,7 +253,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}
-            onPress={prev}
+            onPress={() => prev()}
             style={{ flex: 1, marginRight: 5 }}
           >
             Retour

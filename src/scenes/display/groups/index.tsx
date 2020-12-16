@@ -1,7 +1,9 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
+import { DisplayScreenNavigationProp } from '../index';
 import GroupDescription from './views/Description';
 import GroupDisplay from './views/Display';
 
@@ -9,6 +11,13 @@ export type GroupDisplayStackParams = {
   Display: { id: string; verification: boolean };
   Description: { id: string };
 };
+
+export type GroupDisplayScreenNavigationProp<
+  K extends keyof GroupDisplayStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<GroupDisplayStackParams, K>,
+  DisplayScreenNavigationProp<'Group'>
+>;
 
 const Stack = createNativeStackNavigator<GroupDisplayStackParams>();
 

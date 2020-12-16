@@ -1,19 +1,21 @@
-import React from 'react';
-import { ImageStyle, View, Dimensions } from 'react-native';
-import { Text, Card, Title, Button } from 'react-native-paper';
-import Markdown, { MarkdownIt } from 'react-native-markdown-display';
-import { connect } from 'react-redux';
-import YouTube from 'react-native-youtube';
-
-import { Content as ContentType, State, Preferences } from '@ts/types';
-import { useTheme, getImageUrl, handleUrl } from '@utils/index';
-import getStyles from '@styles/Styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import updatePrefs from '@redux/actions/data/prefs';
-import config from '@constants/config';
-import AutoHeightImage from 'react-native-auto-height-image';
-import { PlatformTouchable } from './PlatformComponents';
 import { useNavigation } from '@react-navigation/core';
+import React from 'react';
+import { ImageStyle, View, Dimensions, Platform, Linking } from 'react-native';
+import Markdown, { MarkdownIt } from 'react-native-markdown-display';
+import { Text, Card, Title, Button } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
+
+import config from '@constants/config';
+import updatePrefs from '@redux/actions/data/prefs';
+import getStyles from '@styles/Styles';
+import { Content as ContentType, State, Preferences } from '@ts/types';
+import AutoHeightImage from '@utils/autoHeightImage';
+import { useTheme, getImageUrl, handleUrl } from '@utils/index';
+import { NativeStackNavigationProp } from '@utils/stack';
+import YouTube from '@utils/youtube';
+
+import { PlatformTouchable } from './PlatformComponents';
 
 type Props = ContentType & { preferences: Preferences };
 
@@ -22,7 +24,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<any, any>>();
 
   if (parser === 'markdown') {
     return (
@@ -87,10 +89,33 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                 </View>
               );
             } else if (src.startsWith('youtube://')) {
-              if (preferences.youtubeConsent) {
+              if (Platform.OS === 'web') {
+                return (
+                  <Card style={{ flex: 1, minHeight: 200 }}>
+                    <View style={[styles.container, { alignItems: 'center' }]}>
+                      <Icon name="youtube" size={40} color={colors.disabled} />
+                      <Title>Vidéo youtube</Title>
+                      <Text>
+                        Le site web Topic ne supporte pas encore les vidéos Youtube. Veuillez
+                        cliquer sur le bouton ci-dessous pour la visionner.
+                      </Text>
+                      <Button
+                        mode="outlined"
+                        onPress={() => Linking.openURL(`https://youtu.be/${src.subString(10)}`)}
+                        style={{ marginTop: 20 }}
+                      >
+                        Voir
+                      </Button>
+                    </View>
+                  </Card>
+                );
+              } else if (preferences.youtubeConsent) {
                 return (
                   <View style={{ flex: 1 }}>
                     <YouTube
+                      // apiKey an Android-specific but does not
+                      // appear in prop types but is required
+                      // @ts-expect-error
                       apiKey={config.google.youtubeKey}
                       videoId={src.substring(10)}
                       style={{ alignSelf: 'stretch', height: 300 }}
@@ -104,9 +129,9 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                       <Icon name="youtube" size={40} color={colors.disabled} />
                       <Title>GDPR - Youtube</Title>
                       <Text>
-                        Si vous choississez d'activer les vidéos Youtube, Google pourra avoir accès
-                        à certaines informations sur votre téléphone conformément à leur politique
-                        de vie privée.
+                        Si vous choississez d&apos;activer les vidéos Youtube, Google pourra avoir
+                        accès à certaines informations sur votre téléphone conformément à leur
+                        politique de vie privée.
                       </Text>
                       <Button
                         mode="outlined"
@@ -120,7 +145,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                 );
               }
             } else {
-              return <Text>[CONTENU NON VALIDE]</Text>;
+              return <Text>[CONTENU NON VALIDE]</Text>;
             }
           },
         }}

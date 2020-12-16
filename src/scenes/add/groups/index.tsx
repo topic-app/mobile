@@ -1,12 +1,15 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-// TODO: Define GroupCreationData
 import { ReduxLocation, GroupCreationData } from '@ts/types';
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
+import { AddScreenNavigationProp } from '../index';
 import GroupAdd from './views/Add';
-import GroupAddSuccess from './views/AddSuccess';
 import GroupAddLocation from './views/AddLocation';
+import GroupAddSuccess from './views/AddSuccess';
+
+// TODO: Define GroupCreationData
 
 export type GroupAddStackParams = {
   Add: undefined;
@@ -15,9 +18,16 @@ export type GroupAddStackParams = {
     hideSearch: boolean;
     type: 'schools' | 'departements' | 'regions' | 'other';
     initialData?: ReduxLocation;
-    callback: (location: ReduxLocation) => any;
+    callback: (location: Partial<ReduxLocation>) => any;
   };
 };
+
+export type GroupAddScreenNavigationProp<
+  K extends keyof GroupAddStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<GroupAddStackParams, K>,
+  AddScreenNavigationProp<'Group'>
+>;
 
 const Stack = createNativeStackNavigator<GroupAddStackParams>();
 

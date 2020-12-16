@@ -1,21 +1,17 @@
+import { useNavigation } from '@react-navigation/core';
 import React from 'react';
-import { View, Platform } from 'react-native';
-import { Button, Text } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { FullscreenIllustration } from '@components/index';
 import { ArticleRequestState } from '@ts/types';
-import { Illustration } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 
-import getArticleStyles from '../styles/Styles';
+import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 
 type ArticleEmptyListProps = {
   tab: string;
   sectionKey: string;
   reqState: ArticleRequestState;
-  navigation: StackNavigationProp<any, any>;
   changeTab: (tabKey: string) => void;
 };
 
@@ -23,85 +19,61 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   tab,
   sectionKey,
   reqState,
-  navigation,
   changeTab,
 }) => {
-  const theme = useTheme();
-  const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
+  const navigation = useNavigation<HomeTwoScreenNavigationProp<'Article'>>();
+  const height = useWindowDimensions().height - 300;
 
   if (
     (sectionKey === 'categories' && reqState.list.success) ||
-    (sectionKey === 'quicks' && reqState.search.success) ||
+    (sectionKey === 'quicks' && reqState.search?.success) ||
     sectionKey === 'lists'
   ) {
     if (tab === 'unread') {
       return (
-        <View style={styles.centerIllustrationContainer}>
-          <Illustration name="article-completed" height={400} width={400} />
-          <Text>Vous avez lu tous les articles !</Text>
-          <View style={{ marginTop: 30 }}>
-            <Button
-              uppercase={Platform.OS !== 'ios'}
-              mode="outlined"
-              onPress={() => changeTab('all')}
-            >
-              Voir les articles lus
-            </Button>
-          </View>
-        </View>
+        <FullscreenIllustration
+          style={{ height }}
+          illustration="article-completed"
+          buttonLabel="Voir les articles lus"
+          buttonOnPress={() => changeTab('all')}
+        >
+          Vous avez lu tous les articles !
+        </FullscreenIllustration>
       );
     } else if (tab === 'all') {
       return (
-        <View>
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name="article" height={400} width={400} />
-            <Text>Aucun article pour cette localisation</Text>
-          </View>
-          <View style={styles.container}>
-            <Button
-              mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={() =>
-                navigation.navigate('Main', {
-                  screen: 'Params',
-                  params: {
-                    screen: 'Article',
-                  },
-                })
-              }
-            >
-              Localisation
-            </Button>
-          </View>
-        </View>
+        <FullscreenIllustration
+          style={{ height }}
+          illustration="article"
+          buttonLabel="Localisation"
+          buttonOnPress={() =>
+            navigation.navigate('Main', {
+              screen: 'Params',
+              params: {
+                screen: 'Article',
+              },
+            })
+          }
+        >
+          Aucun article pour cette localisation
+        </FullscreenIllustration>
       );
     } else if (sectionKey === 'lists') {
       return (
-        <View style={styles.centerIllustrationContainer}>
-          <Illustration name="article-lists" height={400} width={400} />
-          <Text>Aucun article dans cette liste</Text>
-          <View style={styles.contentContainer}>
-            <Text style={articleStyles.captionText}>
-              Ajoutez les grâce à l&apos;icone <Icon name="playlist-plus" size={20} />
-            </Text>
-          </View>
-        </View>
+        <FullscreenIllustration illustration="article-lists" style={{ height }}>
+          Aucun article dans cette liste{'\n'}Ajoutez les grâce à l&apos;icone{' '}
+          <Icon name="playlist-plus" size={20} />
+        </FullscreenIllustration>
       );
     } else {
       return (
-        <View style={styles.centerIllustrationContainer}>
-          <Illustration name="article" height={400} width={400} />
-          <Text>Aucun article dans cette catégorie</Text>
-        </View>
+        <FullscreenIllustration illustration="article" style={{ height }}>
+          Aucun article dans cette catégorie
+        </FullscreenIllustration>
       );
     }
   } else {
-    return (
-      <View style={styles.centerIllustrationContainer}>
-        <Illustration name="article-greyed" height={400} width={400} />
-      </View>
-    );
+    return <FullscreenIllustration illustration="article-greyed" style={{ height }} />;
   }
 };
 

@@ -1,10 +1,8 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Text, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, AccountRequestState, AccountCreationData } from '@ts/types';
 import {
   TranslucentStatusBar,
   StepperView,
@@ -13,25 +11,25 @@ import {
   PlatformBackButton,
   SafeAreaView,
 } from '@components/index';
-import { logger, useTheme } from '@utils/index';
 import { register } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
+import { State, AccountRequestState, AccountCreationData } from '@ts/types';
+import { logger, useTheme } from '@utils/index';
 
-import type { AuthStackParams } from '../index';
-import getAuthStyles from '../styles/Styles';
 import AuthCreatePageGeneral from '../components/CreateGeneral';
-import AuthCreatePageSchool from '../components/CreateSchool';
+import AuthCreatePageLegal from '../components/CreateLegal';
 import AuthCreatePagePrivacy from '../components/CreatePrivacy';
 import AuthCreatePageProfile from '../components/CreateProfile';
-import AuthCreatePageLegal from '../components/CreateLegal';
+import type { AuthScreenNavigationProp } from '../index';
+import getAuthStyles from '../styles/Styles';
 
-type Props = {
-  navigation: StackNavigationProp<AuthStackParams, 'Create'>;
+type AuthCreateProps = {
+  navigation: AuthScreenNavigationProp<'Create'>;
   reqState: AccountRequestState;
   creationData?: AccountCreationData;
 };
 
-const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }) => {
+const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationData = {} }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);
@@ -48,8 +46,8 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
         avatar: creationData.avatar,
         description: null,
         public: creationData.accountType === 'public',
-        firstName: creationData.accountType === 'public' ? creationData.firstName : null,
-        lastName: creationData.accountType === 'public' ? creationData.lastName : null,
+        firstName: creationData.accountType === 'public' ? creationData.firstName : undefined,
+        lastName: creationData.accountType === 'public' ? creationData.lastName : undefined,
       },
       device: {
         type: 'app',
@@ -65,6 +63,10 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
         logger.warn('Failed to create account', e);
       });
   };
+
+  if (Platform.OS === 'web') {
+    return <View style={styles.page}>Accès non autorisé</View>;
+  }
 
   return (
     <View style={styles.page}>
@@ -96,7 +98,6 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
             error={reqState.check.error}
           />
         )}
-
         <ScrollView keyboardShouldPersistTaps="handled">
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
@@ -112,22 +113,6 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 component: (props) => <AuthCreatePageGeneral {...props} />,
               },
               {
-                key: 'location',
-                icon: 'school',
-                title: 'École',
-                component: (props) => (
-                  <AuthCreatePageSchool
-                    landing={() =>
-                      navigation.push('Landing', {
-                        screen: 'SelectLocation',
-                        params: { goBack: true },
-                      })
-                    }
-                    {...props}
-                  />
-                ),
-              },
-              {
                 key: 'privacy',
                 icon: 'shield',
                 title: 'Vie privée',
@@ -139,6 +124,12 @@ const AuthCreate: React.FC<Props> = ({ navigation, reqState, creationData = {} }
                 title: 'Profil',
                 component: (props) => (
                   <AuthCreatePageProfile
+                    landing={() =>
+                      navigation.push('Landing', {
+                        screen: 'SelectLocation',
+                        params: { goBack: true },
+                      })
+                    }
                     username={creationData.username || ''}
                     accountType={creationData.accountType || 'private'}
                     {...props}

@@ -7,6 +7,7 @@ import {
   UPDATE_EVENTS_QUICKS,
   UPDATE_EVENTS_CREATION_DATA,
   EventsContentActionTypes,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: EventsContentState = {
@@ -72,6 +73,8 @@ function eventDataReducer(
         ...state,
         creationData: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     default:
       return state;
   }

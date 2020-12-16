@@ -1,4 +1,5 @@
 import { StyleSheet, StatusBar } from 'react-native';
+
 import { Theme } from '@ts/types';
 
 function getNavigatorStyles(theme: Theme) {
@@ -21,20 +22,25 @@ function getNavigatorStyles(theme: Theme) {
     },
 
     // Drawer styles
-    title: {
-      color: colors.drawerContent,
-    },
     topic: {
       color: colors.drawerContent,
       fontFamily: 'Rubik-Light',
       fontSize: 30,
     },
+    title: {
+      color: colors.drawerContent,
+      fontSize: 16,
+      marginTop: 14,
+      flex: 1,
+    },
     subtitle: {
-      color: colors.disabled,
+      marginTop: -10,
+      fontSize: 14,
+      flex: 1,
     },
     profileIconContainer: {
-      paddingHorizontal: 20,
-      paddingTop: 20,
+      paddingHorizontal: 15,
+      paddingTop: 15,
       paddingBottom: 10,
     },
     profileBackground: {

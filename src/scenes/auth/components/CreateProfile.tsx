@@ -1,18 +1,24 @@
+import { Formik } from 'formik';
+import randomColor from 'randomcolor';
 import React from 'react';
 import { View, Platform, FlatList, TextInput as RNTextInput } from 'react-native';
-import { TextInput, HelperText, Button, Divider } from 'react-native-paper';
-import randomColor from 'randomcolor';
+import { Button, Card, Divider, Subheading, Title } from 'react-native-paper';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
+import * as Yup from 'yup';
 
-import { Avatar, CollapsibleView, StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
+import { Avatar, CollapsibleView, FormTextInput, StepperViewPageProps } from '@components/index';
 import { updateCreationData } from '@redux/actions/data/account';
+import { Avatar as AvatarType, State, LocationList } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
   username: string;
   accountType: 'public' | 'private';
+  location: LocationList;
+  landing: () => any;
 };
 
 const AuthCreatePageProfile: React.FC<Props> = ({
@@ -20,44 +26,12 @@ const AuthCreatePageProfile: React.FC<Props> = ({
   prev,
   username = '',
   accountType = 'private',
+  location,
+  landing,
 }) => {
   const firstnameInput = React.createRef<RNTextInput>();
   const lastnameInput = React.createRef<RNTextInput>();
   const flatlistRef = React.createRef<FlatList>();
-
-  type InputStateType = {
-    value: string;
-    error: boolean;
-    valid: boolean;
-    message: string;
-  };
-
-  const [currentFirstname, setCurrentFirstname] = React.useState<InputStateType>({
-    value: '',
-    error: false,
-    valid: false,
-    message: '',
-  });
-
-  const [currentLastname, setCurrentLastname] = React.useState<InputStateType>({
-    value: '',
-    error: false,
-    valid: false,
-    message: '',
-  });
-
-  let tempFirstname: InputStateType;
-  let tempLastname: InputStateType;
-
-  function setFirstname(data: Partial<InputStateType>) {
-    tempFirstname = { ...currentFirstname, ...(tempFirstname ?? {}), ...data };
-    setCurrentFirstname(tempFirstname);
-  }
-
-  function setLastname(data: Partial<InputStateType>) {
-    tempLastname = { ...currentLastname, ...(tempLastname ?? {}), ...data };
-    setCurrentLastname(tempLastname);
-  }
 
   const generateAvatars = () =>
     ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((i) => {
@@ -76,7 +50,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
 
   const addAvatars = () => setAvatars([...avatars, ...generateAvatars()]);
 
-  const [activeAvatar, setActiveAvatar] = React.useState({
+  const [activeAvatar, setActiveAvatar] = React.useState<AvatarType & { key?: string }>({
     type: 'gradient',
     gradient: avatars[0].gradient,
     text: username?.substring(0, 1) || '',
@@ -84,76 +58,34 @@ const AuthCreatePageProfile: React.FC<Props> = ({
 
   const [avatarsVisible, setAvatarsVisible] = React.useState(false);
 
-  function validateFirstnameInput(firstname: string) {
-    let validation: Partial<InputStateType> = { valid: false, error: false };
-    if (firstname !== '') {
-      validation = { valid: true, error: false, message: '' };
-    }
-
-    setFirstname(validation);
-    return validation;
-  }
-
-  function preValidateFirstnameInput(firstname: string) {
-    if (firstname.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null) {
-      setFirstname({ valid: false, error: false });
-    }
-  }
-
-  function validateLastnameInput(lastname: string) {
-    let validation: Partial<InputStateType> = { valid: false, error: false };
-    if (lastname !== '') {
-      validation = { valid: true, error: false };
-    }
-
-    setLastname(validation);
-    return validation;
-  }
-
-  function preValidateLastnameInput(lastname: string) {
-    if (lastname.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i) !== null) {
-      setLastname({ valid: true, error: false });
-    }
-  }
-
-  function blurInputs() {
-    firstnameInput.current?.blur();
-    lastnameInput.current?.blur();
-  }
-
-  function submit() {
-    const firstnameVal = currentFirstname.value;
-    const lastnameVal = currentLastname.value;
-    delete activeAvatar.key;
-    updateCreationData({
-      firstName: firstnameVal,
-      lastName: lastnameVal,
-      avatar: activeAvatar,
-    });
-    next();
-  }
-
   const theme = useTheme();
   const { colors } = theme;
   const authStyles = getAuthStyles(theme);
 
+  const ProfileSchema = Yup.object().shape({
+    firstname: Yup.string().matches(/^([0-9]|[a-z])+([0-9a-z]+)$/i, 'Prénom invalide'),
+    lastname: Yup.string().matches(/^([0-9]|[a-z])+([0-9a-z]+)$/i, 'Nom invalide'),
+  });
+
   return (
     <View>
-      <View style={authStyles.mainAvatarContainer}>
+      <View>
         <View style={authStyles.centerAvatarContainer}>
-          <Avatar
-            size={100}
-            onPress={() => setAvatarsVisible(!avatarsVisible)}
-            avatar={{
-              type: 'gradient',
-              gradient: {
-                start: activeAvatar.gradient.start,
-                end: activeAvatar.gradient.end,
-                angle: activeAvatar.gradient.angle,
-              },
-              text: username?.substring(0, 1) || '',
-            }}
-          />
+          {activeAvatar.type === 'gradient' && (
+            <Avatar
+              size={100}
+              onPress={() => setAvatarsVisible(!avatarsVisible)}
+              avatar={{
+                type: 'gradient',
+                gradient: {
+                  start: activeAvatar.gradient.start,
+                  end: activeAvatar.gradient.end,
+                  angle: activeAvatar.gradient.angle,
+                },
+                text: username?.substring(0, 1) || '',
+              }}
+            />
+          )}
         </View>
         <CollapsibleView collapsed={!avatarsVisible}>
           <Divider />
@@ -196,105 +128,121 @@ const AuthCreatePageProfile: React.FC<Props> = ({
         </CollapsibleView>
       </View>
       <View style={authStyles.formContainer}>
-        <View style={authStyles.textInputContainer}>
-          <TextInput
-            disabled={accountType !== 'public'}
-            ref={firstnameInput}
-            label={
-              accountType === 'public'
-                ? 'Prénom (facultatif)'
-                : 'Prénom (comptes publics uniquement)'
-            }
-            value={currentFirstname.value}
-            error={currentFirstname.error}
-            autoCompleteType="name"
-            disableFullscreenUI
-            onSubmitEditing={({ nativeEvent }) => {
-              validateFirstnameInput(nativeEvent.text);
-              lastnameInput.current?.focus();
-            }}
-            autoFocus
-            theme={
-              currentFirstname.valid
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
-            mode="outlined"
-            onEndEditing={({ nativeEvent }) => {
-              validateFirstnameInput(nativeEvent.text);
-            }}
-            textContentType="givenName"
-            style={authStyles.textInput}
-            onChangeText={(text) => {
-              setFirstname({ value: text });
-              preValidateFirstnameInput(text);
-            }}
-          />
-          <HelperText type="error" visible={currentFirstname.error}>
-            {currentFirstname.message}
-          </HelperText>
-        </View>
-        <View style={authStyles.textInputContainer}>
-          <TextInput
-            disabled={accountType !== 'public'}
-            ref={lastnameInput}
-            label={
-              accountType === 'public' ? 'Nom (facultatif)' : 'Nom (comptes publics uniquement)'
-            }
-            value={currentLastname.value}
-            error={currentLastname.error}
-            autoCompleteType="email"
-            disableFullscreenUI
-            onSubmitEditing={({ nativeEvent }) => {
-              validateLastnameInput(nativeEvent.text);
-              blurInputs();
-              submit();
-            }}
-            autoCorrect={false}
-            theme={
-              currentLastname.valid
-                ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                : theme
-            }
-            textContentType="emailAddress"
-            mode="outlined"
-            onEndEditing={({ nativeEvent }) => {
-              validateLastnameInput(nativeEvent.text);
-            }}
-            style={authStyles.textInput}
-            onChangeText={(text) => {
-              setLastname({ value: text });
-              preValidateLastnameInput(text);
-            }}
-          />
-          <HelperText type="error" visible={currentLastname.error}>
-            {currentLastname.message}
-          </HelperText>
-        </View>
-        <View style={authStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => prev()}
-            style={{ flex: 1, marginRight: 5 }}
-          >
-            Retour
-          </Button>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              blurInputs();
-              submit();
-            }}
-            style={{ flex: 1, marginLeft: 5 }}
-          >
-            Suivant
-          </Button>
-        </View>
+        <Formik
+          initialValues={{ firstname: '', lastname: '' }}
+          validationSchema={ProfileSchema}
+          onSubmit={({ firstname, lastname }) => {
+            delete activeAvatar.key;
+
+            updateCreationData({
+              firstName: firstname,
+              lastName: lastname,
+              avatar: activeAvatar,
+              schools: location.schools,
+              departments: location.departments,
+              global: location.global,
+            });
+            next();
+          }}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <View>
+              {accountType === 'public' && (
+                <View>
+                  <FormTextInput
+                    ref={firstnameInput}
+                    label="Prénom (facultatif)"
+                    value={values.firstname}
+                    touched={touched.firstname}
+                    error={errors.firstname}
+                    onChangeText={handleChange('firstname')}
+                    onBlur={handleBlur('firstname')}
+                    onSubmitEditing={() => lastnameInput.current?.focus()}
+                    style={authStyles.textInput}
+                    textContentType="givenName"
+                    autoCompleteType="name"
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    autoFocus
+                  />
+                  <FormTextInput
+                    ref={lastnameInput}
+                    label="Nom (falcultatif)"
+                    value={values.lastname}
+                    touched={touched.lastname}
+                    error={errors.lastname}
+                    onChangeText={handleChange('lastname')}
+                    onBlur={handleBlur('lastname')}
+                    onSubmitEditing={() => handleSubmit()}
+                    style={authStyles.textInput}
+                    textContentType="givenName"
+                    autoCompleteType="name"
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                  />
+                </View>
+              )}
+              <View style={{ marginBottom: 10, marginTop: 20 }}>
+                <Subheading>Localisation</Subheading>
+              </View>
+              {location.schoolData.map((s) => (
+                <Card key={s._id} style={{ marginBottom: 10 }}>
+                  <Card.Content>
+                    <Title>{s?.name}</Title>
+                    <Subheading>{s?.address?.shortName || s?.address?.address?.city}</Subheading>
+                  </Card.Content>
+                </Card>
+              ))}
+              {location.departmentData.map((d) => (
+                <Card key={d._id} style={{ marginBottom: 10 }}>
+                  <Card.Content>
+                    <Title>{d?.name}</Title>
+                    <Subheading>{d?.type === 'region' ? 'Région' : 'Département'}</Subheading>
+                  </Card.Content>
+                </Card>
+              ))}
+              {location.global && (
+                <Card style={{ marginBottom: 10 }}>
+                  <Card.Content>
+                    <Title>France entière</Title>
+                    <Subheading>Pas d&apos;école ou département spécifique</Subheading>
+                  </Card.Content>
+                </Card>
+              )}
+              <View style={[authStyles.changeButtonContainer, { marginBottom: 40 }]}>
+                <Button mode="text" onPress={landing}>
+                  Changer
+                </Button>
+              </View>
+              <View style={authStyles.buttonContainer}>
+                <Button
+                  mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+                  uppercase={Platform.OS !== 'ios'}
+                  onPress={() => prev()}
+                  style={{ flex: 1, marginRight: 5 }}
+                >
+                  Retour
+                </Button>
+                <Button
+                  mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                  uppercase={Platform.OS !== 'ios'}
+                  onPress={handleSubmit}
+                  style={{ flex: 1, marginLeft: 5 }}
+                >
+                  Suivant
+                </Button>
+              </View>
+            </View>
+          )}
+        </Formik>
       </View>
     </View>
   );
 };
 
-export default AuthCreatePageProfile;
+const mapStateToProps = (state: State) => {
+  const { location } = state;
+  return { location };
+};
+
+export default connect(mapStateToProps)(AuthCreatePageProfile);

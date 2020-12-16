@@ -7,6 +7,7 @@ import {
   UPDATE_ARTICLES_PREFS,
   UPDATE_ARTICLES_QUICKS,
   UPDATE_ARTICLES_CREATION_DATA,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: ArticlesContentState = {
@@ -78,6 +79,8 @@ function articleDataReducer(
         ...state,
         creationData: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     default:
       return state;
   }

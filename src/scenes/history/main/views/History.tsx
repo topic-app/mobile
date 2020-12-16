@@ -3,12 +3,15 @@ import { View, ScrollView } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { TranslucentStatusBar, CustomHeaderBar } from '@components/index';
+import getStyles from '@styles/Styles';
 import { ArticleReadItem, Preferences, State } from '@ts/types';
 import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
+
+import { HistoryScreenNavigationProp } from '../../index';
 
 type MainHistoryProps = {
-  navigation: StackNavigationProp<any, any>;
+  navigation: HistoryScreenNavigationProp<'Main'>;
   read: ArticleReadItem[];
   preferences: Preferences;
 };
@@ -20,6 +23,16 @@ const MainHistory: React.FC<MainHistoryProps> = ({ navigation, preferences }) =>
 
   return (
     <View style={styles.page}>
+      <TranslucentStatusBar />
+      <CustomHeaderBar
+        scene={{
+          descriptor: {
+            options: {
+              title: 'Historique',
+            },
+          },
+        }}
+      />
       <ScrollView>
         <List.Subheader>Historique</List.Subheader>
         <Divider />
@@ -36,7 +49,7 @@ const MainHistory: React.FC<MainHistoryProps> = ({ navigation, preferences }) =>
           title="Événements"
         />
         <View style={{ height: 20 }} />
-        <List.Subheader>Centres d&amp;interêt</List.Subheader>
+        <List.Subheader>Centres d&apos;interêt</List.Subheader>
         <Divider />
         {!preferences.recommendations ? (
           <List.Item

@@ -1,11 +1,19 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Animated, ActivityIndicator, AccessibilityInfo } from 'react-native';
-import { ProgressBar, Banner, Text, Subheading, FAB } from 'react-native-paper';
+import { ProgressBar, Text, Subheading, FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { AnimatingHeader, ErrorMessage, TabChipList } from '@components/index';
+import {
+  AnimatingHeader,
+  ErrorMessage,
+  TabChipList,
+  EVENT_CARD_HEADER_HEIGHT,
+  Banner,
+  VerificationBanner,
+  GroupsBanner,
+} from '@components/index';
+import { Permissions } from '@constants/index';
 import {
   updateUpcomingEvents,
   updatePassedEvents,
@@ -25,9 +33,9 @@ import {
   EventRequestState,
   Account,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { checkPermission, useTheme } from '@utils/index';
 
-import { HomeTwoNavParams } from '../../HomeTwo.ios';
+import { HomeTwoNavParams, HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import EventListCard from '../components/Card';
 import EventEmptyList from '../components/EmptyList';
 
@@ -41,7 +49,9 @@ type Category = {
   params?: object;
 };
 
-type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
+type EventListProps = {
+  navigation: HomeTwoScreenNavigationProp<'Event'>;
+  route: RouteProp<HomeTwoNavParams, 'Event'>;
   upcomingEvents: EventPreload[];
   passedEvents: EventPreload[];
   followingEvents: EventPreload[];
@@ -53,6 +63,8 @@ type EventListProps = StackScreenProps<HomeTwoNavParams, 'Article'> & {
   preferences: Preferences;
   state: EventRequestState;
   account: Account;
+  dual?: boolean;
+  setEvent?: (event: { id: string; title: string; useLists: boolean }) => void;
 };
 
 const EventList: React.FC<EventListProps> = ({
@@ -69,6 +81,8 @@ const EventList: React.FC<EventListProps> = ({
   eventPrefs,
   preferences,
   account,
+  dual = false,
+  setEvent = () => {},
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -198,13 +212,11 @@ const EventList: React.FC<EventListProps> = ({
   const section = getSection();
   const category = getCategory();
 
-  useFocusEffect(
-    React.useCallback(() => {
-      updateUpcomingEvents('initial');
-      updatePassedEvents('initial');
-      updateEventsFollowing('initial');
-    }, [null]),
-  );
+  React.useEffect(() => {
+    updateUpcomingEvents('initial');
+    updatePassedEvents('initial');
+    updateEventsFollowing('initial');
+  }, [null]);
 
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -241,8 +253,23 @@ const EventList: React.FC<EventListProps> = ({
 
   const listData = category.data;
 
+  const [cardWidth, setCardWidth] = React.useState(100);
+  const imageSize = cardWidth / 3.5;
+
+  const itemHeight = EVENT_CARD_HEADER_HEIGHT - imageSize;
+  const getItemLayout = (data: unknown, index: number) => {
+    return { length: itemHeight, offset: itemHeight * index, index };
+  };
+
   return (
-    <View style={styles.page}>
+    <View
+      style={styles.page}
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => setCardWidth(width)}
+    >
       <AnimatingHeader
         home
         value={scrollY}
@@ -299,7 +326,9 @@ const EventList: React.FC<EventListProps> = ({
       >
         {(state.list.loading.initial ||
           state.search?.loading.initial ||
-          state.following?.loading) && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
+          state.following?.loading?.initial) && (
+          <ProgressBar indeterminate style={{ marginTop: -4 }} />
+        )}
         {(state.list.error && section.key === 'categories') ||
         (state.search?.error && section.key === 'quicks') ||
         (state.following?.error && section.key === 'categories' && category.key === 'following') ? (
@@ -324,6 +353,7 @@ const EventList: React.FC<EventListProps> = ({
           useNativeDriver: true,
         })}
         data={listData || []}
+        getItemLayout={getItemLayout}
         refreshing={
           (section.key === 'categories' && state.list.loading.refresh) ||
           (section.key === 'quicks' && state.search?.loading.refresh)
@@ -352,6 +382,8 @@ const EventList: React.FC<EventListProps> = ({
         }}
         ListHeaderComponent={() => (
           <View>
+            <GroupsBanner />
+            <VerificationBanner />
             <TabChipList
               sections={tabGroups}
               selected={chipTab}
@@ -367,7 +399,7 @@ const EventList: React.FC<EventListProps> = ({
             />
             {category.description ? (
               <Banner actions={[]} visible>
-                <Subheading>Description</Subheading>
+                <Subheading>Description{'\n'}</Subheading>
                 <Text>{category.description}</Text>
               </Banner>
             ) : null}
@@ -402,30 +434,43 @@ const EventList: React.FC<EventListProps> = ({
               itemKey={category.key}
               isRead={read.some((r) => r.id === event._id)}
               historyActive={preferences.history}
+              overrideImageWidth={imageSize}
               lists={lists}
-              navigate={() =>
-                navigation.navigate('Main', {
-                  screen: 'Display',
-                  params: {
-                    screen: 'Event',
-                    params: {
-                      screen: 'Display',
-                      params: {
+              navigate={
+                dual
+                  ? () => {
+                      setEvent({
                         id: event._id,
                         title: event.title,
                         useLists: section.key === 'lists',
-                      },
-                    },
-                  },
-                })
+                      });
+                    }
+                  : () =>
+                      navigation.navigate('Main', {
+                        screen: 'Display',
+                        params: {
+                          screen: 'Event',
+                          params: {
+                            screen: 'Display',
+                            params: {
+                              id: event._id,
+                              title: event.title,
+                              useLists: section.key === 'lists',
+                            },
+                          },
+                        },
+                      })
               }
             />
           </Animated.View>
         )}
       />
-      {account.loggedIn && account.permissions?.some((p) => p.permission === 'event.add') && (
+      {checkPermission(account, {
+        permission: Permissions.EVENT_ADD,
+        scope: {},
+      }) && (
         <FAB
-          icon="pencil"
+          icon="plus"
           onPress={() =>
             navigation.navigate('Main', {
               screen: 'Add',

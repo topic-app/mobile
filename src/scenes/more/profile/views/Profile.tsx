@@ -1,10 +1,20 @@
-import React from 'react';
-import { View, ScrollView, Alert } from 'react-native';
-import { Text, Title, Subheading, Divider, Button, List, ProgressBar } from 'react-native-paper';
-import { connect } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React from 'react';
+import { View, ScrollView } from 'react-native';
+import { Text, Title, Subheading, Divider, Button, List, ProgressBar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
+import {
+  Avatar,
+  ErrorMessage,
+  InlineCard,
+  TranslucentStatusBar,
+  CustomHeaderBar,
+  VerificationBanner,
+} from '@components/index';
+import { fetchAccount, logout, deleteAccount, fetchEmail } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
 import {
   Account,
   Address,
@@ -13,25 +23,17 @@ import {
   SchoolPreload,
   DepartmentPreload,
   AccountRequestState,
+  User,
 } from '@ts/types';
-import {
-  Avatar,
-  ErrorMessage,
-  InlineCard,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { fetchAccount, logout, deleteAccount } from '@redux/actions/data/account';
+import { useTheme, logger, Alert } from '@utils/index';
 
-import { ProfileStackParams } from '../index';
-import ProfileItem from '../components/ProfileItem';
-import VisibilityModal from '../components/VisibilityModal';
-import NameModal from '../components/NameModal';
-import UsernameModal from '../components/UsernameModal';
 import EmailModal from '../components/EmailModal';
+import NameModal from '../components/NameModal';
 import PasswordModal from '../components/PasswordModal';
+import ProfileItem from '../components/ProfileItem';
+import UsernameModal from '../components/UsernameModal';
+import VisibilityModal from '../components/VisibilityModal';
+import { ProfileScreenNavigationProp, ProfileStackParams } from '../index';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
@@ -42,7 +44,7 @@ function getAddressString(address: Address['address']) {
   return null;
 }
 
-function genName({ data, info }) {
+function genName({ data, info }: { data: User['data']; info: User['info'] }) {
   if (data.firstName && data.lastName) {
     return `${data.firstName} ${data.lastName}`;
   }
@@ -58,7 +60,7 @@ type ProfileProps = {
   account: Account;
   location: ReduxLocation;
   state: AccountRequestState;
-  navigation: StackNavigationProp<ProfileStackParams, 'Profile'>;
+  navigation: ProfileScreenNavigationProp<'Profile'>;
 };
 
 const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state }) => {
@@ -72,13 +74,18 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
   const [isEmailVisible, setEmailVisible] = React.useState(false);
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
 
+  React.useEffect(() => {
+    fetchAccount();
+    fetchEmail();
+  }, []);
+
   if (!account.loggedIn) return <Text>Non autorisé</Text>;
 
   const deleteAccountFunc = () => {
     deleteAccount().then(() =>
       Alert.alert(
         'Vérifiez vos emails',
-        `Un lien de confirmation à été envoyé à ${account.accountInfo?.user?.sensitiveData?.email}.`,
+        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
         [{ text: 'Fermer' }],
         { cancelable: true },
       ),
@@ -89,7 +96,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
     deleteAccount().then(() =>
       Alert.alert(
         'Vérifiez vos emails',
-        `Un lien de confirmation à été envoyé à ${account.accountInfo?.user?.sensitiveData?.email}.`,
+        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
         [{ text: 'Fermer' }],
         { cancelable: true },
       ),
@@ -109,7 +116,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
         }}
       />
       {account.state.fetchAccount.loading && <ProgressBar indeterminate />}
-      {account.state.fetchAccount.error && (
+      {(account.state.fetchAccount.error || account.state.fetchEmail.error) && (
         <ErrorMessage
           type="axios"
           strings={{
@@ -117,11 +124,15 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
             contentPlural: 'des informations de profil',
             contentSingular: 'Le profil',
           }}
-          error={account.state.fetchAccount.error}
-          retry={fetchAccount}
+          error={[account.state.fetchAccount.error, account.state.fetchEmail.error]}
+          retry={() => {
+            fetchAccount();
+            fetchEmail();
+          }}
         />
       )}
       <ScrollView>
+        <VerificationBanner />
         <View style={[styles.contentContainer, { marginTop: 20 }]}>
           <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
             <Avatar size={120} avatar={account.accountInfo?.user.info.avatar} />
@@ -240,10 +251,11 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
           )}
           <ProfileItem
             item="Adresse email"
-            value={account.accountInfo.user.sensitiveData.email}
+            value={account.accountInfo.email || ''}
             editable
             type="private"
             onPress={() => setEmailVisible(true)}
+            loading={account.state.fetchEmail.loading}
           />
           <View style={{ height: 50 }} />
           <List.Subheader>Localisation</List.Subheader>
@@ -262,9 +274,11 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                 icon="school"
                 title={school.name}
                 subtitle={`${
-                  getAddressString(school.address?.address) || school.address.shortName
+                  school.address
+                    ? getAddressString(school.address?.address) || school.address?.shortName
+                    : 'Adresse inconnue'
                 }${
-                  school.departments[0]
+                  school.departments && school.departments[0]
                     ? `, ${school.departments[0].displayName || school.departments[0].name}`
                     : ''
                 }`}

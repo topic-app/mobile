@@ -1,6 +1,7 @@
+import { DeepPartial } from 'redux';
+
 import { AccountState, ArticlesState, EventsState, LocationList, Preferences } from '@ts/types';
 import { LogLevel } from '@utils/logger';
-import { DeepPartial } from 'redux';
 
 export type AppConfig = {
   logger: {
@@ -10,9 +11,19 @@ export type AppConfig = {
   dev: {
     hideSvg: boolean;
     disablePersist: boolean;
+    webAllowAnonymous: boolean;
   };
   api: {
-    baseUrl: string;
+    url: {
+      base: string;
+      auth: string;
+      data: string;
+    };
+    devUrl: {
+      base: string;
+      auth: string;
+      data: string;
+    };
     timeout: number;
   };
   google: {
@@ -26,6 +37,9 @@ export type AppConfig = {
     image: {
       defaultSize: string;
     };
+  };
+  layout: {
+    dualMinWidth: number;
   };
   maps: {
     baseUrl: string;

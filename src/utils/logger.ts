@@ -6,9 +6,7 @@ const truncateLength = 100;
 
 const logObj = (data: any) => {
   const str = JSON.stringify(data);
-  let truncatedStr = str.substring(0, truncateLength);
-  if (str.length !== truncatedStr.length) truncatedStr += ' ...';
-  return truncatedStr;
+  return str;
 };
 
 export type LogLevel = typeof logTypes[number];
@@ -62,7 +60,7 @@ class Logger {
   http({ status, method, endpoint, params, data, sent = false }: HTTPLog) {
     if (this.shouldLog('http')) {
       let logEntry = `[request] ${method.toUpperCase()} `;
-      if (sent) logEntry += `${status || 'ERROR'} `;
+      if (sent) logEntry += `${status || '-'} `;
       else logEntry += 'sent ';
       logEntry += `to ${endpoint} `;
       if (params) logEntry += `with params ${logObj(params)} `;

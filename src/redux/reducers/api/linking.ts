@@ -12,6 +12,16 @@ const initialState: LinkingState = {
       success: null,
       error: null,
     },
+    accountDelete: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    resetPassword: {
+      loading: false,
+      success: null,
+      error: null,
+    },
   },
 };
 

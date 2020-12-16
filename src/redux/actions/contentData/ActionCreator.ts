@@ -1,7 +1,7 @@
-import Store from '@redux/store';
-import shortid from 'shortid';
 import { AnyAction } from 'redux';
+import shortid from 'shortid';
 
+import Store from '@redux/store';
 import {
   ApiItemString,
   ListItem,
@@ -12,6 +12,8 @@ import {
   AppThunk,
   ContentItemMap,
   ContentItemString,
+  EventListItem,
+  ArticleListItem,
 } from '@ts/types';
 import { request } from '@utils/index';
 
@@ -66,24 +68,26 @@ function addToListCreator<T extends ContentItemWithListsString>({
         const { lists } = getState()[dataType];
 
         if (
-          lists
-            .find((l) => l.id === id)
+          (lists as (ArticleListItem | EventListItem)[])
+            .find((l: ArticleListItem | EventListItem) => l.id === id)
             ?.items.some((i: ApiItem) => i._id === result.data?.[resType][0]?._id)
         ) {
           return;
         }
         dispatch({
           type: update,
-          data: lists.map((l) => {
-            if (l.id === id) {
-              return {
-                ...l,
-                items: [...l.items, result.data?.[resType][0]],
-              };
-            } else {
-              return l;
-            }
-          }),
+          data: (lists as (ArticleListItem | EventListItem)[]).map(
+            (l: ArticleListItem | EventListItem) => {
+              if (l.id === id) {
+                return {
+                  ...l,
+                  items: [...l.items, result.data?.[resType][0]],
+                };
+              } else {
+                return l;
+              }
+            },
+          ),
         });
         return dispatch({
           type: stateUpdate,

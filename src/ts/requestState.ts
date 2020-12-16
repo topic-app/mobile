@@ -1,10 +1,13 @@
 type RequestStateBase = {
   success: boolean | null;
-  error: null | {
-    value: string;
-    message: string;
-    extraMessage: string;
-  };
+  error:
+    | null
+    | boolean
+    | {
+        value: string;
+        message: string;
+        extraMessage: string;
+      };
 };
 
 export type RequestState = RequestStateBase & {
@@ -38,10 +41,14 @@ export type SchoolRequestState = StandardRequestState & { near: RequestStateComp
 export type TagRequestState = StandardRequestState;
 export type UserRequestState = StandardRequestState & { follow: RequestState };
 export type DepartmentRequestState = StandardRequestState;
-export type EventRequestState = StandardRequestState;
+export type EventRequestState = StandardRequestState & {
+  messages_add: RequestState;
+  messages_delete: RequestState;
+};
 export type GroupRequestState = StandardRequestState & {
   follow: RequestState;
   member_add: RequestState;
+  member_modify: RequestState;
   member_delete: RequestState;
   member_accept: RequestState;
   member_reject: RequestState;
@@ -70,9 +77,13 @@ export type AccountRequestState = {
   fetchGroups: RequestState;
   fetchAccount: RequestState;
   fetchWaitingGroups: RequestState;
+  fetchEmail: RequestState;
   updateProfile: RequestState;
   export: RequestState;
   delete: RequestState;
+  passwordRequest: RequestState;
+  passwordReset: RequestState;
+  resend: RequestState;
 };
 
 export type LocationRequestState = {
@@ -83,6 +94,8 @@ export type LocationRequestState = {
 export type LinkingRequestState = {
   emailChange: RequestState;
   emailVerify: RequestState;
+  accountDelete: RequestState;
+  resetPassword: RequestState;
 };
 export type UploadRequestState = {
   upload: RequestState;
