@@ -148,6 +148,11 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
               return <Text>[CONTENU NON VALIDE]</Text>;
             }
           },
+          textgroup: (node, children, parent, textStyles) => (
+            <Text selectable key={node.key} style={textStyles.textgroup}>
+              {children}
+            </Text>
+          ),
         }}
         onLinkPress={(url: string) => {
           handleUrl(url);
@@ -160,7 +165,10 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
   }
   if (parser === 'plaintext') {
     return (
-      <Text style={{ fontSize: preferences.fontSize, fontFamily: preferences.fontFamily }}>
+      <Text
+        selectable
+        style={{ fontSize: preferences.fontSize, fontFamily: preferences.fontFamily }}
+      >
         {data}
       </Text>
     );

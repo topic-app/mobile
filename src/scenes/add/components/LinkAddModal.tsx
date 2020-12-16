@@ -4,41 +4,34 @@ import { Divider, Button, TextInput, HelperText } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Modal } from '@components/index';
-import config from '@constants/config';
 import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import getArticleStyles from '../styles/Styles';
+import getArticleStyles from './styles/Styles';
 
-type YoutubeAddModalProps = ModalProps & {
-  add: (url: string) => any;
+type LinkAddModalProps = ModalProps & {
+  add: (link: string, name: string) => any;
 };
 
-const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, add }) => {
+const LinkAddModal: React.FC<LinkAddModalProps> = ({ visible, setVisible, add }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [linkText, setLinkText] = React.useState('');
+  const [nameText, setNameText] = React.useState('');
   const [errorVisible, setErrorVisible] = React.useState(false);
 
   const submit = () => {
     if (
       linkText.match(
-        /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/gi,
+        /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/,
       )
     ) {
-      const id = linkText
-        .replace('https://', '')
-        .replace('http://', '')
-        .replace(
-          /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/gi,
-          '$1',
-        );
-      add(`${config.google.youtubePlaceholder}${id}`);
-      setVisible(false);
+      add(linkText, nameText || linkText);
+      setNameText('');
       setLinkText('');
     } else {
       setErrorVisible(true);
@@ -52,11 +45,26 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
           <TextInput
             autoFocus
             mode="outlined"
-            label="Lien YouTube"
+            label="Lien"
+            autoCapitalize="none"
+            keyboardType="url"
+            textContentType="URL"
             value={linkText}
             onChangeText={(text) => {
               setErrorVisible(false);
               setLinkText(text);
+            }}
+          />
+        </View>
+        <View style={articleStyles.activeCommentContainer}>
+          <TextInput
+            mode="outlined"
+            label="Texte (facultatif)"
+            autoCapitalize="none"
+            value={nameText}
+            onChangeText={(text) => {
+              setErrorVisible(false);
+              setNameText(text);
             }}
           />
         </View>
@@ -71,7 +79,7 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
             uppercase={Platform.OS !== 'ios'}
             onPress={submit}
           >
-            Insérer la vidéo
+            Insérer le lien
           </Button>
         </View>
       </View>
@@ -79,11 +87,4 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
   );
 };
 
-const mapStateToProps = (state: State) => {
-  const { tags } = state;
-  return {
-    state: tags.state,
-  };
-};
-
-export default connect(mapStateToProps)(YoutubeAddModal);
+export default LinkAddModal;
