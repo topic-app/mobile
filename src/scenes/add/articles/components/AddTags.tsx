@@ -20,8 +20,8 @@ import getStyles from '@styles/Styles';
 import { Account, State, TagRequestState, TagPreload } from '@ts/types';
 import { checkPermission, useTheme } from '@utils/index';
 
+import TagAddModal from '../../components/TagAddModal';
 import getAuthStyles from '../styles/Styles';
-import TagAddModal from './TagAddModal';
 
 type ArticleAddPageTagsProps = StepperViewPageProps & {
   account: Account;

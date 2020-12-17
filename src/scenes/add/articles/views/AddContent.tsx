@@ -22,8 +22,8 @@ import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
 import { useTheme, logger, checkPermission, Alert } from '@utils/index';
 
-import LinkAddModal from '../components/LinkAddModal';
-import YoutubeAddModal from '../components/YoutubeAddModal';
+import LinkAddModal from '../../components/LinkAddModal';
+import YoutubeAddModal from '../../components/YoutubeAddModal';
 import type { ArticleAddScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
 
@@ -48,8 +48,8 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
     const replacedData = (data || creationData.data)
-      ?.replace(Config.google.youtubePlaceholder, 'youtube://')
-      .replace(Config.cdn.baseUrl, 'cdn://');
+      ?.replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
+      .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://');
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -125,7 +125,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             retry={add}
           />
         )}
-        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View style={{ flexDirection: 'row' }}>
             <PlatformBackButton
               onPress={() => {
@@ -149,7 +149,23 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               <Title numberOfLines={1}>{creationData?.title}</Title>
             </View>
           </View>
-          <Divider />
+          <View style={[styles.container, { alignSelf: 'flex-end' }]}>
+            <Button
+              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+              uppercase={Platform.OS !== 'ios'}
+              loading={reqState.add?.loading}
+              onPress={() => {
+                textEditorRef.current?.blurContentEditor();
+                submit();
+              }}
+              style={{ flex: 1, marginLeft: 5 }}
+            >
+              Publier
+            </Button>
+          </View>
+        </View>
+        <Divider />
+        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
           <View style={articleStyles.formContainer}>
             <View style={articleStyles.textInputContainer}>
               <View style={{ marginTop: 20 }}>
@@ -232,20 +248,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               Veuillez ajouter un contenu
             </HelperText>
           )}
-          <View style={[styles.container, { flexDirection: 'row' }]}>
-            <Button
-              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-              uppercase={Platform.OS !== 'ios'}
-              loading={reqState.add?.loading}
-              onPress={() => {
-                textEditorRef.current?.blurContentEditor();
-                submit();
-              }}
-              style={{ flex: 1, marginLeft: 5 }}
-            >
-              Publier
-            </Button>
-          </View>
         </View>
       </SafeAreaView>
       <LinkAddModal

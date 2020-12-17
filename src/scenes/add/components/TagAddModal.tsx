@@ -1,28 +1,28 @@
 import randomColor from 'randomcolor';
 import React from 'react';
-import { View, Platform, FlatList } from 'react-native';
+import { View, Platform, FlatList, TouchableOpacity } from 'react-native';
 import { Divider, Button, TextInput, Title, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { Modal, Illustration, PlatformTouchable, ErrorMessage } from '@components/index';
+import { Illustration, PlatformTouchable, ErrorMessage, Modal } from '@components/index';
 import { tagAdd } from '@redux/actions/apiActions/tags';
 import getStyles from '@styles/Styles';
 import { ModalProps, State, TagPreload, TagRequestState } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import getEventStyles from '../styles/Styles';
+import getArticleStyles from './styles/Styles';
 
 type TagAddModalProps = ModalProps & {
   state: TagRequestState;
   name: string;
-  add: (tag: TagPreload) => void;
+  add: (tag: TagPreload) => any;
 };
 
 function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const eventStyles = getEventStyles(theme);
+  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [descriptionText, setDescriptionText] = React.useState('');
@@ -47,7 +47,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
       parser: 'plaintext',
       data: descriptionText,
     }).then(({ _id }) => {
-      add({ _id, displayName: name, name, color });
+      add({ _id, name, color, displayName: name });
       setDescriptionText('');
       initialColor = randomColor();
       setColor(initialColor);
@@ -80,11 +80,11 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
           <Divider />
         </View>
         <Divider />
-        <View style={eventStyles.activeCommentContainer}>
+        <View style={articleStyles.activeCommentContainer}>
           <TextInput mode="outlined" label="Nom" value={name} disabled />
         </View>
 
-        <View style={eventStyles.activeCommentContainer}>
+        <View style={articleStyles.activeCommentContainer}>
           <TextInput
             autoFocus
             mode="outlined"
@@ -98,26 +98,28 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
             }}
           />
         </View>
-        <View style={[eventStyles.activeCommentContainer, { marginVertical: 20 }]}>
+        <View style={[articleStyles.activeCommentContainer, { marginVertical: 20 }]}>
           <FlatList
             horizontal
             onEndReached={() => setColorList([...colorList, ...generateColors()])}
             data={colorList}
             keyExtractor={(i) => shortid()}
             renderItem={({ item, index }: { item: string; index: number }) => (
-              <PlatformTouchable onPress={() => setColor(item)}>
-                <View
-                  style={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 20,
-                    backgroundColor: item,
-                    borderWidth: color === item ? 3 : 0,
-                    borderColor: colors.primary,
-                    marginLeft: index === 0 ? 20 : 10,
-                  }}
-                />
-              </PlatformTouchable>
+              <View>
+                <TouchableOpacity onPress={() => setColor(item)}>
+                  <View
+                    style={{
+                      height: 40,
+                      width: 40,
+                      borderRadius: 20,
+                      backgroundColor: item,
+                      borderWidth: color === item ? 3 : 0,
+                      borderColor: colors.primary,
+                      marginLeft: index === 0 ? 20 : 10,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
             )}
           />
         </View>

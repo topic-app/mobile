@@ -60,7 +60,7 @@ const AddMessageModal: React.FC<AddMessageModalProps> = ({
   const [publisher, setPublisher] = React.useState(
     publishers.some((p) => p.key === defaultGroup)
       ? defaultGroup
-      : publishers
+      : publishers && publishers[0]
       ? publishers[0].key
       : '',
   );

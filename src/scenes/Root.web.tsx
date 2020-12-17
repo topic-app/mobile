@@ -255,11 +255,9 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           <View>
             <PaperDrawer.Item
               icon={() => (
-                <Avatar
-                  avatar={account.accountInfo?.user?.info?.avatar}
-                  size={35}
-                  style={{ marginLeft: -6 }}
-                />
+                <View style={{ marginLeft: -6 }}>
+                  <Avatar avatar={account.accountInfo?.user?.info?.avatar} size={35} />
+                </View>
               )}
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               label={`@${account.accountInfo?.user?.info?.username}`}

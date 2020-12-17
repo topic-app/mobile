@@ -21,7 +21,7 @@ import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, ArticleCreationData } from '@ts/types';
 import { useTheme, Alert } from '@utils/index';
 
-import LinkAddModal from '../components/LinkAddModal';
+import LinkAddModal from '../../components/LinkAddModal';
 import type { ArticleAddScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
 
