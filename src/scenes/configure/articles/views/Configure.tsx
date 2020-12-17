@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
-// @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -37,6 +36,8 @@ import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
 import type { ArticleConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
+
+// @ts-expect-error Replace this when we find a better library
 
 type ArticleListsProps = {
   lists: ArticleListItem[];
@@ -211,18 +212,16 @@ function ArticleLists({
                                 disabled={item.disable}
                                 value={enabled && !item.disable}
                                 color={colors.primary}
-                                onTouchEnd={
-                                  enabled
-                                    ? () =>
-                                        updateArticlePrefs({
-                                          categories: articlePrefs.categories?.filter(
-                                            (d) => d !== item.id,
-                                          ),
-                                        })
-                                    : () =>
-                                        updateArticlePrefs({
-                                          categories: [...(articlePrefs.categories || []), item.id],
-                                        })
+                                onValueChange={(val) =>
+                                  val
+                                    ? updateArticlePrefs({
+                                        categories: [...(articlePrefs.categories || []), item.id],
+                                      })
+                                    : updateArticlePrefs({
+                                        categories: articlePrefs.categories?.filter(
+                                          (d) => d !== item.id,
+                                        ),
+                                      })
                                 }
                               />
                             </View>

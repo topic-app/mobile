@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
-// @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -37,6 +36,8 @@ import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
 import { EventConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
+
+// @ts-expect-error Replace this when we find a better library
 
 type EventListsProps = {
   lists: EventListItem[];
@@ -210,18 +211,16 @@ function EventLists({
                                 disabled={item.disable}
                                 value={enabled && !item.disable}
                                 color={colors.primary}
-                                onTouchEnd={
-                                  enabled
-                                    ? () =>
-                                        updateEventPrefs({
-                                          categories: eventPrefs.categories?.filter(
-                                            (d) => d !== item.id,
-                                          ),
-                                        })
-                                    : () =>
-                                        updateEventPrefs({
-                                          categories: [...(eventPrefs.categories || []), item.id],
-                                        })
+                                onValueChange={(val) =>
+                                  val
+                                    ? updateEventPrefs({
+                                        categories: [...(eventPrefs.categories || []), item.id],
+                                      })
+                                    : updateEventPrefs({
+                                        categories: eventPrefs.categories?.filter(
+                                          (d) => d !== item.id,
+                                        ),
+                                      })
                                 }
                               />
                             </View>
