@@ -173,7 +173,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                 onValueChange={toggleHistory}
               />
             )}
-            onPress={toggleHistory}
+            onPress={() => toggleHistory(!preferences.history)}
             style={settingsStyles.listItem}
           />
           <List.Item
@@ -194,7 +194,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                 onValueChange={toggleRecommendations}
               />
             )}
-            onPress={toggleRecommendations}
+            onPress={() => toggleRecommendations(!preferences.recommendations)}
             style={settingsStyles.listItem}
           />
         </List.Section>
@@ -241,7 +241,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                 onValueChange={toggleSyncHistory}
               />
             )}
-            onPress={toggleSyncHistory}
+            onPress={() => toggleSyncHistory(!preferences.syncHistory)}
             style={settingsStyles.listItem}
           />
           <List.Item
@@ -262,7 +262,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                 onValueChange={toggleSyncLists}
               />
             )}
-            onPress={toggleSyncLists}
+            onPress={() => toggleSyncLists(!preferences.syncLists)}
             style={settingsStyles.listItem}
           />
         </List.Section>
