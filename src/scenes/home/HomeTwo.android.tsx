@@ -76,10 +76,11 @@ function HomeTwoNavigator() {
         },
       })}
     >
-      <Tab.Screen name="Article" component={ArticleList} />
+      <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
       <Tab.Screen
         name="Event"
         component={deviceWidth > Config.layout.dualMinWidth ? EventDualList : EventList}
+        options={{ title: 'Évènements' }}
       />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
       <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />

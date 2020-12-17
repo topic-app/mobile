@@ -274,8 +274,8 @@ function EventLists({
                         title={item.name}
                         description={`${
                           item.items.length
-                            ? `${item.items.length} événements${item.items.length === 1 ? '' : 's'}`
-                            : 'Aucun événement'
+                            ? `${item.items.length} évènements${item.items.length === 1 ? '' : 's'}`
+                            : 'Aucun évènement'
                         }${item.description ? `\n${item.description}` : ''}`}
                         descriptionNumberOfLines={100}
                         onPress={() =>
@@ -309,7 +309,7 @@ function EventLists({
                                 disabled={lists.length === 1 && eventPrefs.categories?.length === 0}
                                 onPress={() => {
                                   Alert.alert(
-                                    `Voulez vous vraiment supprimer la liste ${item.name}?`,
+                                    `Voulez-vous vraiment supprimer la liste ${item.name} ?`,
                                     'Cette action est irréversible',
                                     [
                                       {
@@ -391,7 +391,7 @@ function EventLists({
                       <View style={articleStyles.subheaderDescriptionContainer}>
                         <Text>
                           Choisissez des sujets et des groupes à afficher pour un accès rapide aux
-                          événements qui vous intéressent
+                          évènements qui vous intéressent
                         </Text>
                       </View>
                       <Divider />

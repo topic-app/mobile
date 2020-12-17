@@ -273,7 +273,7 @@ const EventList: React.FC<EventListProps> = ({
       <AnimatingHeader
         home
         value={scrollY}
-        title="Événements"
+        title="Évènements"
         actions={[
           {
             icon: 'magnify',
@@ -282,7 +282,7 @@ const EventList: React.FC<EventListProps> = ({
                 screen: 'Search',
                 params: {
                   screen: 'Search',
-                  params: { initialCategory: 'events', previous: 'Evènements' },
+                  params: { initialCategory: 'events', previous: 'Évènements' },
                 },
               }),
           },

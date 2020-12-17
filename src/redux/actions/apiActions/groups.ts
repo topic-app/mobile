@@ -1,11 +1,5 @@
 import Store from '@redux/store';
-import {
-  UPDATE_GROUPS_STATE,
-  ActionType,
-  ReduxLocation,
-  AppThunk,
-  GroupCreationData,
-} from '@ts/types';
+import { UPDATE_GROUPS_STATE, AppThunk, GroupCreationData } from '@ts/types';
 import { request } from '@utils/index';
 
 import { reportCreator, approveCreator } from './ActionCreator';

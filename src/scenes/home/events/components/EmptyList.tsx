@@ -44,20 +44,20 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
             })
           }
         >
-          Aucun événement {tab === 'upcoming' && 'prévu '}pour cette localisation
+          Aucun évènement {tab === 'upcoming' && 'prévu '} pour cette localisation
         </FullscreenIllustration>
       );
     } else if (sectionKey === 'lists') {
       return (
         <FullscreenIllustration illustration="article-lists" style={{ height }}>
-          Aucun article dans cette liste{'\n'}Ajoutez les grâce à l&apos;icone{' '}
+          Aucun évènement dans cette liste{'\n'}Ajoutez les grâce à l&apos;icône{' '}
           <Icon name="playlist-plus" size={20} />
         </FullscreenIllustration>
       );
     } else {
       return (
         <FullscreenIllustration illustration="event" style={{ height }}>
-          Aucun article dans cette catégorie
+          Aucun évènement dans cette catégorie
         </FullscreenIllustration>
       );
     }

@@ -63,7 +63,7 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
         <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
           <Illustration name="auth-register-success" height={200} width={200} />
           <Text style={authStyles.title}>
-            Evènement {approved ? 'publié' : 'en attente de modération'}
+            Évènement {approved ? 'publié' : 'en attente de modération'}
           </Text>
           {!approved && (
             <View>
@@ -78,10 +78,10 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
             scope: { groups: [creationData?.group || ''] },
           }) &&
             (approved ? (
-              <Text>Evènement approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
+              <Text>Évènement approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
             ) : (
               <View>
-                <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous même cet évènement</Text>
+                <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous-même cet évènement.</Text>
                 <Button
                   uppercase={Platform.OS !== 'ios'}
                   loading={reqState.verification_approve?.loading}
@@ -90,7 +90,7 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
                   onPress={() => {
                     Alert.alert(
                       "Approuver l'évènement ?",
-                      "L'évènement doit ềtre conforme aux conditions d'utilisation.\nVous êtes responsables si l'évènement ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs",
+                      "L'évènement doit être conforme aux conditions d'utilisation.\nVous êtes responsable si l'évènement ne les respecte pas, et nous pouvons désactiver votre compte si c'est le cas.\n\nDe plus, nous vous conseillons d'attendre l'approbation d'un autre membre, afin d'éviter les erreurs",
                       [
                         {
                           text: 'Annuler',
@@ -147,7 +147,7 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
                   onPress={() => {
                     Alert.alert(
                       "Partager l'évènement",
-                      "L'évènement ne sera pas accessible tant qu'il n'a pas été approuvé",
+                      "L'évènement ne sera pas accessible tant qu'il n'aura pas été approuvé.",
                       [
                         { text: 'Annuler' },
                         {

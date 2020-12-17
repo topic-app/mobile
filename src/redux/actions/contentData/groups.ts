@@ -1,5 +1,4 @@
 import Store from '@redux/store';
-
 import { UPDATE_GROUPS_CREATION_DATA, GroupCreationData } from '@ts/types';
 
 import { updateCreationDataCreator, clearCreationDataCreator } from './ActionCreator';

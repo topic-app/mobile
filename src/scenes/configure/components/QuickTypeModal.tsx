@@ -40,7 +40,7 @@ function QuickTypeModal({ visible, setVisible, next, type }: QuickTypeModalProps
     {
       type: 'location',
       title: 'Localisation',
-      description: `${contentName} destinés à une école, à un département, ou à une région`,
+      description: `${contentName} destinés à une école, à un département ou à une région`,
     },
   ];
 

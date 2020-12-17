@@ -103,7 +103,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
           pages={[
             {
               key: 'about',
-              title: 'A propos',
+              title: 'À propos',
               component: (
                 <View>
                   <View style={styles.contentContainer}>
@@ -292,10 +292,10 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                   <View style={styles.contentContainer}>
                     <Subheading>Librairies et ressources</Subheading>
                     <Text>
-                      Nous remercions les projets et les personnes qui nous ont fournit les outils
-                      et éléments nécéssaires à cet application.{'\n'}Pour tous les projets
+                      Nous remercions les projets et les personnes qui nous ont fourni les outils et
+                      éléments nécessaires à cette application.{'\n'}Pour tous les projets
                       open-source, vous trouverez ci-dessous des liens vers chacun des projets et la
-                      license sous laquelle elle se trouve.
+                      license sous laquelle il se trouve.
                     </Text>
                   </View>
                   <List.Item

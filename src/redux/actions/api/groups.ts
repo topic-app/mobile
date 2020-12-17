@@ -135,7 +135,7 @@ function clearGroups(data = true, search = true, templates = true) {
 /**
  * @docs actions
  * Récupère les templates de création de groupe
- * @param next Si il faut récupérer les groups après le dernier
+ * @param next Si il faut récupérer les groupes après le dernier
  */
 function updateGroupTemplatesCreator(): AppThunk {
   return (dispatch) => {

@@ -29,10 +29,10 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
       .max(25, "Le nom d'utilisateur doit contenir moins de 26 caractères")
       .matches(
         /^[a-zA-Z0-9_.]+$/i,
-        "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux sauf « _ » et « . »",
+        "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux sauf « _ » et « . ».",
       )
       .required("Nom d'utilisateur requis")
-      .test('checkUsernameTaken', "Ce nom d'utilisateur existe déjà", async (username) => {
+      .test('checkUsernameTaken', "Ce nom d'utilisateur existe déjà.", async (username) => {
         if (!username) return true;
 
         let result;
@@ -46,7 +46,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
     email: Yup.string()
       .matches(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/, 'Email invalide')
       .required('Email requis')
-      .test('checkEmailInUse', 'Cet adresse email est déjà utilisée', async (email) => {
+      .test('checkEmailInUse', 'Cet adresse email a déjà été utilisée.', async (email) => {
         // Make sure the email is valid before sending a request
         if (!email || email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-zA-Z]{2,13})+$/) === null) {
           return false;
@@ -60,7 +60,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
         return !result?.data?.emailExists;
       }),
     password: Yup.string()
-      .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+      .min(8, 'Le mot de passe doit contenir au moins 8 caractères.')
       .max(128, 'Le mot de passe doit contenir moins de 128 caractères')
       .required('Mot de passe requis')
       .test(

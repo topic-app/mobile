@@ -188,7 +188,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
     },
     {
       key: 'about',
-      text: 'A propos',
+      text: 'À propos',
       type: 'button',
       icon: 'information-outline',
       path: '/a_propos',

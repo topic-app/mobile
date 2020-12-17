@@ -337,7 +337,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                     <ErrorMessage
                       type="axios"
                       strings={{
-                        what: 'le chargement des groups',
+                        what: 'le chargement des groupes',
                         contentPlural: 'les groupes',
                       }}
                       error={groupsState.search?.error}

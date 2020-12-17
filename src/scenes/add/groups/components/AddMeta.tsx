@@ -80,13 +80,13 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
           valid: false,
           error: true,
           message:
-            "Le nom du groupe doit contenir au moins 3 caractères. N'utilisez pas d'abbréviations ou de raccourcis.",
+            "Le nom du groupe doit contenir au moins 3 caractères. N'utilisez pas d'abréviations ou de raccourcis.",
         };
       } else if (name.length >= 50) {
         validation = {
           valid: false,
           error: true,
-          message: 'Le nom du groupe doit contenir moins de 50 caractères',
+          message: 'Le nom du groupe doit contenir moins de 50 caractères.',
         };
       } else {
         validation = { valid: true, error: false };
@@ -110,13 +110,13 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
         validation = {
           valid: false,
           error: true,
-          message: "L'acronyme doit contenir au moins 2 caractères",
+          message: "L'acronyme doit contenir au moins 2 caractères.",
         };
       } else if (name.length >= 15) {
         validation = {
           valid: false,
           error: true,
-          message: "L'acronyme doit contenir moins de 15 caractères",
+          message: "L'acronyme doit contenir moins de 15 caractères.",
         };
       } else {
         validation = { valid: true, error: false };
@@ -236,13 +236,13 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
         <HelperText type={currentName.error ? 'error' : 'info'} visible>
           {currentName.error
             ? currentName.message
-            : 'Donnez un nom reconnaissable à votre groupe, sans abbréviations ou acronymes. Pour des raisons de sécurité, vous devrez nous contacter pour changer le nom du groupe après sa création.'}
+            : 'Donnez un nom reconnaissable à votre groupe, sans abréviations ou acronymes. Pour des raisons de sécurité, vous devrez nous contacter pour changer le nom du groupe après sa création.'}
         </HelperText>
       </View>
       <View style={articleStyles.textInputContainer}>
         <TextInput
           ref={shortNameInput}
-          label="Abbréviation (facultatif)"
+          label="Abréviation (facultatif)"
           value={currentShortName.value}
           error={currentShortName.error}
           disableFullscreenUI
@@ -268,7 +268,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
         <HelperText type={currentShortName.error ? 'error' : 'info'} visible>
           {currentShortName.error
             ? currentShortName.message
-            : 'Si vous avez un acronyme ou une abbréviation reconnaissable, fournissez-la içi. Ce nom sera affiché en priorité, donc laissez le vide si vous préférez afficher le nom complet sur vos publications.'}
+            : 'Si vous avez un acronyme ou une abréviation reconnaissable, fournissez-la ici. Ce nom sera affiché en priorité, donc laissez-le vide si vous préférez afficher le nom complet sur vos publications.'}
         </HelperText>
       </View>
       <View style={articleStyles.textInputContainer}>

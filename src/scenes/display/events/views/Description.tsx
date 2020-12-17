@@ -136,7 +136,7 @@ function EventDisplayDescriptionHeader({
     // Render placeholder
     return (
       <View>
-        <Text>En attente du server</Text>
+        <Text>En attente du serveur</Text>
       </View>
     );
   }

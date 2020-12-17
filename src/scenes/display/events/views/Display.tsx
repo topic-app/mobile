@@ -159,26 +159,26 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           title={
             route.params.title ||
             (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-              ? 'Événements - Hors ligne'
+              ? 'Évènements - Hors ligne'
               : verification
-              ? 'Événements - modération'
-              : 'Événements')
+              ? 'Évènements - modération'
+              : 'Évènements')
           }
           subtitle={
             route.params.title &&
             (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-              ? 'Événements - Hors ligne'
+              ? 'Évènements - Hors ligne'
               : verification
-              ? 'Événements - modération'
-              : 'Événements')
+              ? 'Évènements - modération'
+              : 'Évènements')
           }
         />
         {reqState.events.info.error && (
           <ErrorMessage
             type="axios"
             strings={{
-              what: 'la récupération de cet événement',
-              contentSingular: "L'événement",
+              what: 'la récupération de cet évènement',
+              contentSingular: "L'évènement",
             }}
             error={reqState.events.info.error}
             retry={fetch}
@@ -201,18 +201,18 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         title={
           route.params.title ||
           (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? 'Événement - Hors ligne'
+            ? 'Évènement - Hors ligne'
             : verification
-            ? 'Événement - modération'
-            : 'Événement')
+            ? 'Évènement - modération'
+            : 'Évènement')
         }
         subtitle={
           route.params.title &&
           (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? 'Événement - Hors ligne'
+            ? 'Évènement - Hors ligne'
             : verification
-            ? 'Événement - modération'
-            : 'Événement')
+            ? 'Évènement - modération'
+            : 'Évènement')
         }
         actions={
           verification
@@ -329,7 +329,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                 ? `Du ${moment(event.duration?.start).format('DD/MM/YYYY')} au ${moment(
                     event.duration?.end,
                   ).format('DD/MM/YYYY')}`
-                : 'Aucune Date Spécifiée'}
+                : 'Aucune date spécifiée'}
             </Text>
           </View>
           <TagList item={event} scrollable />
@@ -415,18 +415,18 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                         <Text style={{ color: colors.text }}>
                           Pour vérifier cet évènement:{'\n'}- Vérifiez que le contenu est bien
                           conforme aux conditions générales d&apos;utilisation{'\n'}- Vérifiez que
-                          tous les médias sont conformes, et que vous avez bien le droit
+                          tous les médias sont conformes et que vous avez bien le droit
                           d&apos;utiliser ceux-ci{'\n'}- Visitez chacun des liens afin de vous
                           assurer que tous les sites sont conformes{'\n'}
                           {'\n'}
-                          Nous vous rappelons que les contenus suivants ne sont pas autorisés:{' '}
+                          Nous vous rappelons que les contenus suivants ne sont pas autorisés :{' '}
                           {'\n'}- Tout contenu illégal{'\n'}- Tout contenu haineux ou
                           discriminatoire{'\n'}- Tout contenu à caractère pornographique ou qui ne
                           convient pas aux enfants
                           {'\n'}- Toute atteinte à la propriété intellectuelle{'\n'}- Tout contenu
                           trompeur{'\n'}- Toute atteinte à la vie privée{'\n'}- Tout contenu publié
                           de façon automatisée
-                          {'\n'}- Tout contenu qui pointe vers un site web, logiciel, ou autre média
+                          {'\n'}- Tout contenu qui pointe vers un site web, logiciel ou autre média
                           qui ne respecte pas les présentes règles{'\n'}
                           {'\n'}
                           En tant qu&apos;administrateur, vous êtes en partie responsable des
@@ -472,8 +472,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                     <ErrorMessage
                       type="axios"
                       strings={{
-                        what: "l'approbation de l'événement",
-                        contentSingular: "l'événement",
+                        what: "l'approbation de l'évènement",
+                        contentSingular: "l'évènement",
                       }}
                       error={reqState.events.verification_approve?.error}
                       retry={() =>

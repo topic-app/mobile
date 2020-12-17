@@ -217,7 +217,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
       </View>
       <CollapsibleView collapsed={selectedTags.length === 0} style={{ marginTop: 20 }}>
         <View style={{ marginBottom: 15 }}>
-          <CategoryTitle>Tags séléctionnés</CategoryTitle>
+          <CategoryTitle>Tags sélectionnés</CategoryTitle>
         </View>
         <FlatList
           horizontal
@@ -240,9 +240,9 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
               color={colors.primary}
             />
             <Text style={{ color: colors.text, flex: 1 }}>
-              Les tags permettent aux utilisateurs de trouver plus facilement vos articles, et nous
+              Les tags permettent aux utilisateurs de trouver plus facilement vos articles,et nous
               les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez pour
-              rechercher, ou pour créer un nouveau tag si aucun ne correspond.
+              rechercher ou pour créer un nouveau tag si aucun ne correspond.
             </Text>
           </View>
         </Card>

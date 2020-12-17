@@ -44,8 +44,8 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
 
   const MetaSchema = Yup.object().shape({
     title: Yup.string()
-      .min(10, 'Le titre doit contenir au moins 10 caractères')
-      .max(100, 'Le titre doit contenir moins de 100 caractères')
+      .min(10, 'Le titre doit contenir au moins 10 caractères.')
+      .max(100, 'Le titre doit contenir moins de 100 caractères.')
       .required('Titre requis'),
     summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères.'),
     file: Yup.mixed(),
@@ -98,7 +98,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
             />
             <FormTextInput
               ref={descriptionInput}
-              label="Description"
+              label="Décrivez votre évènement"
               multiline
               numberOfLines={8}
               value={values.description}

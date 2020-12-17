@@ -43,8 +43,8 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
 
   const MetaSchema = Yup.object().shape({
     title: Yup.string()
-      .min(10, 'Le titre doit contenir au moins 10 caractères')
-      .max(100, 'Le titre doit contenir moins de 100 caractères')
+      .min(10, 'Le titre doit contenir au moins 10 caractères.')
+      .max(100, 'Le titre doit contenir moins de 100 caractères.')
       .required('Titre requis'),
     summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères.'),
     file: Yup.mixed(),
@@ -81,7 +81,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
             <FormTextInput
               ref={summaryInput}
               label="Résumé"
-              placeholder="Laissez vide pour selectionner les premières lignes de l'article"
+              placeholder="Laissez vide pour sélectionner les premières lignes de l'article."
               multiline
               numberOfLines={4}
               value={values.summary}

@@ -51,8 +51,8 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
               color={colors.primary}
             />
             <Text style={{ color: colors.text, flex: 1 }}>
-              Assurez vous que vous avez bien l&apos;autorisation de créer ce groupe. Nous pourrons
-              vous demander des preuves d&apos;autorité ci nécéssaire.
+              Assurez-vous que vous avez bien l&apos;autorisation de créer ce groupe. Nous pourrons
+              vous demander des preuves d&apos;autorité si nécessaire.
             </Text>
           </View>
         </Card>
@@ -66,8 +66,8 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
         <ErrorMessage
           error={state.templates?.error}
           strings={{
-            what: 'la récupération des types de groups',
-            contentPlural: 'Les types de groups',
+            what: 'la récupération des types de groupes',
+            contentPlural: 'Les types de groupes',
           }}
           type="axios"
           retry={updateGroupTemplates}
@@ -116,7 +116,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
           />
         ))}
         <HelperText visible={showError} type="error">
-          Vous devez selectionner un type de groupe
+          Vous devez sélectionner un type de groupe
         </HelperText>
       </View>
       <View style={groupStyles.buttonContainer}>

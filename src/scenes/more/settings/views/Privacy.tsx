@@ -32,8 +32,8 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
       });
     } else {
       Alert.alert(
-        "Voulez vous vraiment désactiver l'historique ?",
-        "L'historique actuel et les centres d'interet seront aussi supprimés. Vous n'aurez plus de recommendations.",
+        "Voulez-vous vraiment désactiver l'historique ?",
+        "L'historique actuel et les centres d'intérêt seront aussi supprimés. Vous n'aurez plus de recommendations.",
         [
           {
             text: 'Annuler',
@@ -64,8 +64,8 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
       });
     } else {
       Alert.alert(
-        'Voulez vous vraiment désactiver les recommendations ?',
-        "Les centres d'interet actuels seront aussi supprimés.",
+        'Voulez-vous vraiment désactiver les recommendations ?',
+        "Les centres d'intérêt actuels seront aussi supprimés.",
         [
           {
             text: 'Annuler',
@@ -93,7 +93,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
       });
     } else {
       Alert.alert(
-        "Voulez vous vraiment désactiver la synchronisation de l'historique ?",
+        "Voulez-vous vraiment désactiver la synchronisation de l'historique ?",
         'Les données sur le serveur seront supprimées',
         [
           {
@@ -122,7 +122,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
       });
     } else {
       Alert.alert(
-        'Voulez vous vraiment désactiver la synchronisation des listes de contenu ?',
+        'Voulez-vous vraiment désactiver la synchronisation des listes de contenu ?',
         'Les données sur le serveur seront supprimées',
         [
           {
@@ -212,7 +212,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                 />
               )}
             >
-              Si vous choissisez de synchroniser l&apos;historique, les centres d&apos;interêt ou
+              Si vous choisissez de synchroniser l&apos;historique, les centres d&apos;intérêt ou
               les listes sur le serveur, ces informations seront chiffrées avec l&apos;aide de votre
               mot de passe et nous n&apos;y aurons pas accès.
             </Banner>
@@ -220,13 +220,13 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
         )}
         <List.Section>
           <List.Item
-            title="Synchroniser l'historique et les centres d'interet"
+            title="Synchroniser l'historique et les centres d'intérêt"
             description={
               account.loggedIn
                 ? preferences.history
-                  ? "Associer l'historique et les recommendations avec votre compte, et synchroniser entre vos appareils"
+                  ? "Associer l'historique et les recommendations avec votre compte et synchroniser entre vos appareils"
                   : "Activez l'historique pour synchroniser"
-                : "Connectez vous pour synchroniser l'historique avec votre compte"
+                : "Connectez-vous pour synchroniser l'historique avec votre compte"
             }
             disabled={!account.loggedIn || !preferences.history}
             titleStyle={account.loggedIn && preferences.history ? {} : { color: colors.disabled }}
@@ -248,8 +248,8 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
             title="Synchroniser les listes de contenu"
             description={
               account.loggedIn
-                ? "Associer les listes (favoris, pour plus tard...) à votre compte afin de pouvoir y accéder à partir d'autres appareils"
-                : 'Connectez vous pour synchroniser les listes avec votre compte'
+                ? "Associer les listes (favoris, pour plus tard, ...) à votre compte afin de pouvoir y accéder à partir d'autres appareils"
+                : 'Connectez-vous pour synchroniser les listes avec votre compte'
             }
             disabled={!account.loggedIn}
             titleStyle={account.loggedIn ? {} : { color: colors.disabled }}
@@ -269,7 +269,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
         <Divider />
         <List.Section>
           <List.Item
-            title="Voir l'historique et les centres d'interet"
+            title="Voir l'historique et les centres d'intérêt"
             right={() => (
               <List.Icon
                 style={{ height: 15 }}
@@ -294,7 +294,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
             title="Supprimer l'historique"
             onPress={() =>
               Alert.alert(
-                "Voulez vous vraiment supprimer l'intégralité de l'historique ?",
+                "Voulez-vous vraiment supprimer l'intégralité de l'historique ?",
                 'Cette action est irréversible',
                 [
                   {
@@ -316,13 +316,13 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
             style={settingsStyles.listItem}
           />
           <List.Item
-            title="Supprimer les centres d'interet"
+            title="Supprimer les centres d'intérêt"
             disabled={!preferences.recommendations}
             titleStyle={preferences.recommendations ? {} : { color: colors.disabled }}
             descriptionStyle={preferences.recommendations ? {} : { color: colors.disabled }}
             onPress={() =>
               Alert.alert(
-                "Voulez vous vraiment supprimer tous les centres d'interet ?",
+                "Voulez-vous vraiment supprimer tous les centres d'intérêt ?",
                 'Cette action est irréversible NON IMPLEMENTÉ',
                 [
                   {

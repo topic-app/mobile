@@ -62,7 +62,7 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
           validation = {
             valid: false,
             error: true,
-            message: 'Erreur lors de la validation de l&apos;adresse mail',
+            message: "Erreur lors de la validation de l'adresse mail",
           };
         }
         if (result?.data?.emailExists === false) {
