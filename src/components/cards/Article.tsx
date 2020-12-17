@@ -37,7 +37,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   const [cardWidth, setCardWidth] = React.useState(600);
   const imageSize = cardWidth / 3.5;
 
-  if (!article)
+  if (!article) {
     return (
       <CardBase>
         <Card.Content>
