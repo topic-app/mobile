@@ -1,22 +1,22 @@
+import randomColor from 'randomcolor';
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
 import { Divider, Button, TextInput, Title, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
-import randomColor from 'randomcolor';
 import shortid from 'shortid';
 
-import { ModalProps, State, TagRequestState } from '@ts/types';
 import { Modal, Illustration, PlatformTouchable, ErrorMessage } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { tagAdd } from '@redux/actions/apiActions/tags';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, TagPreload, TagRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getEventStyles from '../styles/Styles';
 
 type TagAddModalProps = ModalProps & {
   state: TagRequestState;
   name: string;
-  add: ({ _id, name, color }: { _id: string; name: string; color: string }) => any;
+  add: (tag: TagPreload) => void;
 };
 
 function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps) {
@@ -47,7 +47,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
       parser: 'plaintext',
       data: descriptionText,
     }).then(({ _id }) => {
-      add({ _id, name, color });
+      add({ _id, displayName: name, name, color });
       setDescriptionText('');
       initialColor = randomColor();
       setColor(initialColor);
@@ -98,7 +98,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
             }}
           />
         </View>
-        <View style={[styles.activeCommentContainer, { marginVertical: 20 }]}>
+        <View style={[eventStyles.activeCommentContainer, { marginVertical: 20 }]}>
           <FlatList
             horizontal
             onEndReached={() => setColorList([...colorList, ...generateColors()])}

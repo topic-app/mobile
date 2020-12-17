@@ -1,21 +1,24 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { Platform, View, Alert, ScrollView, Clipboard, Share } from 'react-native';
+import { Platform, View, ScrollView, Clipboard, Share } from 'react-native';
 import { Text, Button, Divider, Card } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { State, EventRequestState, Account } from '@ts/types';
-import { Illustration, EventCard, ErrorMessage } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
+import { Illustration, ErrorMessage } from '@components/index';
+import { Permissions } from '@constants/index';
 import { eventVerificationApprove } from '@redux/actions/apiActions/events';
+import getStyles from '@styles/Styles';
+import { State, EventRequestState, Account } from '@ts/types';
+import { checkPermission, useTheme, Alert } from '@utils/index';
 
-import type { EventAddStackParams } from '../index';
+import type { EventAddScreenNavigationProp, EventAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
 
-type EventAddSuccessProps = StackScreenProps<EventAddStackParams, 'Success'> & {
+type EventAddSuccessProps = {
+  navigation: EventAddScreenNavigationProp<'Success'>;
+  route: RouteProp<EventAddStackParams, 'Success'>;
   reqState: EventRequestState;
   account: Account;
 };
@@ -35,10 +38,10 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
 
   const { id, creationData } = route?.params || {};
 
-  let groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
+  const groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
 
   const approve = () => {
-    eventVerificationApprove(id).then(() => setApproved(true));
+    if (id) eventVerificationApprove(id).then(() => setApproved(true));
   };
 
   return (
@@ -70,12 +73,10 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
               <Text>Vous serez notifiés par email dès que l&apos;évènement est approuvé.</Text>
             </View>
           )}
-          {account.permissions?.some(
-            (p) =>
-              p.name === 'event.verification.approve' &&
-              (p.scope?.groups?.includes(creationData?.group) ||
-                (p.group === creationData?.group && p.scope?.self)),
-          ) &&
+          {checkPermission(account, {
+            permission: Permissions.EVENT_VERIFICATION_APPROVE,
+            scope: { groups: [creationData?.group || ''] },
+          }) &&
             (approved ? (
               <Text>Évènement approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
             ) : (
@@ -172,22 +173,6 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
               </View>
             </Card>
           </View>
-          <EventCard
-            event={{
-              ...creationData,
-              summary: creationData.summary || creationData.data,
-              authors: [
-                {
-                  displayName: account?.accountInfo?.user?.info?.username,
-                },
-              ],
-              group: {
-                displayName: account?.groups?.find((g) => g._id === creationData?.group)?.name,
-              },
-            }}
-            navigate={() => null}
-            unread
-          />
         </View>
       </ScrollView>
       <Divider />

@@ -1,35 +1,19 @@
 import React from 'react';
-import { View, ScrollView, FlatList } from 'react-native';
-import { Text, useTheme, ProgressBar } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { View, FlatList } from 'react-native';
+import { Text, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import {
-  State,
-  GroupPreload,
-  Account,
-  GroupRolePermission,
-  GroupRequestState,
-  Group,
-} from '@ts/types';
-import {
-  CustomTabView,
-  ChipAddList,
-  ErrorMessage,
-  ArticleCard,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-  GroupCard,
-} from '@components/index';
-import getStyles from '@styles/Styles';
+import { ErrorMessage, GroupCard } from '@components/index';
 import { updateGroupsVerification } from '@redux/actions/api/groups';
+import getStyles from '@styles/Styles';
+import { State, Account, GroupRequestState, AnyGroup } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { ModerationStackParams } from '../index';
-import getModerationStyles from '../styles/Styles';
+import type { ModerationScreenNavigationProp } from '../index';
 
 type Props = {
-  navigation: StackNavigationProp<ModerationStackParams, 'List'>;
-  groupsVerification: GroupPreload[];
+  navigation: ModerationScreenNavigationProp<'List'>;
+  groupsVerification: AnyGroup[];
   account: Account;
   state: GroupRequestState;
 };
@@ -77,12 +61,10 @@ const ModerationArticles: React.FC<Props> = ({
               </View>
             )
           }
-          renderItem={({ item }: { item: Group }) => (
+          renderItem={({ item }) => (
             <View>
               <GroupCard
                 group={item}
-                unread
-                verification
                 navigate={() =>
                   navigation.navigate('Main', {
                     screen: 'Display',

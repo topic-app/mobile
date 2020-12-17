@@ -1,17 +1,23 @@
 import Store from '@redux/store';
+import { UPDATE_COMMENTS_STATE, Publisher, Content, AppThunk, Comment } from '@ts/types';
 import { request } from '@utils/index';
-import { reportCreator } from './ActionCreator';
-import { UPDATE_COMMENTS_STATE, Publisher, Content } from '@ts/types';
 
-type commentAddProps = {
-  publisher: Publisher;
+import { reportCreator } from './ActionCreator';
+
+type CommentAddCreatorParams = {
+  publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null };
   content: Content;
   parent: string;
-  parentType: string;
+  parentType: Comment['parentType'];
 };
 
-function commentAddCreator({ publisher, content, parent, parentType }: commentAddProps) {
-  return (dispatch: (action: any) => void) => {
+function commentAddCreator({
+  publisher,
+  content,
+  parent,
+  parentType,
+}: CommentAddCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_COMMENTS_STATE,
@@ -37,7 +43,7 @@ function commentAddCreator({ publisher, content, parent, parentType }: commentAd
           },
           true,
         )
-          .then(() => {
+          .then((result) => {
             dispatch({
               type: UPDATE_COMMENTS_STATE,
               data: {
@@ -48,7 +54,7 @@ function commentAddCreator({ publisher, content, parent, parentType }: commentAd
                 },
               },
             });
-            resolve();
+            resolve({ parent, _id: result.data?._id });
           })
           .catch((error) => {
             dispatch({
@@ -76,7 +82,7 @@ function commentAddCreator({ publisher, content, parent, parentType }: commentAd
           },
           true,
         )
-          .then(() => {
+          .then((result) => {
             dispatch({
               type: UPDATE_COMMENTS_STATE,
               data: {
@@ -87,7 +93,7 @@ function commentAddCreator({ publisher, content, parent, parentType }: commentAd
                 },
               },
             });
-            resolve();
+            resolve({ parent, _id: result.data?._id });
           })
           .catch((error) => {
             dispatch({
@@ -108,10 +114,10 @@ function commentAddCreator({ publisher, content, parent, parentType }: commentAd
 }
 
 async function commentAdd(
-  publisher: Publisher,
+  publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
   content: Content,
   parent: string,
-  parentType: string,
+  parentType: Comment['parentType'],
 ) {
   await Store.dispatch(
     commentAddCreator({

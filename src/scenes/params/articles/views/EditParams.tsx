@@ -1,17 +1,17 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, ReduxLocation } from '@ts/types';
 import LocationSelectPage from '@components/LocationSelectPage';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
+import { fetchMultiSchool } from '@redux/actions/api/schools';
+import { updateArticleParams } from '@redux/actions/contentData/articles';
+import { State, ReduxLocation, ArticleParams } from '@ts/types';
 
-import type { ArticleConfigureStackParams } from '../index';
+import type { ArticleParamsScreenNavigationProp, ArticleParamsStackParams } from '../index';
 
 function done(
-  { schools, departments, global }: ReduxLocation,
+  { schools, departments, global }: Partial<ReduxLocation>,
   type: 'schools' | 'departements' | 'regions' | 'other',
   goBack: () => void,
 ) {
@@ -20,17 +20,19 @@ function done(
     departments,
     global,
   }).then(() => {
-    if (type === 'schools') {
+    if (type === 'schools' && schools) {
       fetchMultiSchool(schools);
-    } else if (type === 'departements' || type === 'regions') {
+    } else if ((type === 'departements' || type === 'regions') && departments) {
       fetchMultiDepartment(departments);
     }
     goBack();
   });
 }
 
-type ArticleEditParamsProps = StackScreenProps<ArticleConfigureStackParams, 'EditParams'> & {
-  articleParams: ReduxLocation;
+type ArticleEditParamsProps = {
+  navigation: ArticleParamsScreenNavigationProp<'EditParams'>;
+  route: RouteProp<ArticleParamsStackParams, 'EditParams'>;
+  articleParams: ArticleParams;
 };
 
 const ArticleEditParams: React.FC<ArticleEditParamsProps> = ({
@@ -45,7 +47,7 @@ const ArticleEditParams: React.FC<ArticleEditParamsProps> = ({
       initialData={articleParams}
       type={type}
       hideSearch={hideSearch}
-      callback={(location: ReduxLocation) => done(location, type, navigation.goBack)}
+      callback={(location) => done(location, type, navigation.goBack)}
     />
   );
 };

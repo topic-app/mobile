@@ -1,7 +1,7 @@
-import { request } from '@utils/index';
 import Store from '@redux/store';
+import { AppThunk, UPDATE_ACCOUNT_STATE, UPDATE_LINKING_STATE, User } from '@ts/types';
 import { hashPassword } from '@utils/crypto';
-import { State, UPDATE_ACCOUNT_STATE, User } from '@ts/types';
+import { request } from '@utils/index';
 
 /**
  * @docs actionCreators
@@ -9,217 +9,401 @@ import { State, UPDATE_ACCOUNT_STATE, User } from '@ts/types';
  * @param fields Les données à modifier
  * @returns Action
  */
-function updateDataCreator(fields: Partial<User>) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: UPDATE_ACCOUNT_STATE,
-        data: {
-          updateProfile: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+function updateDataCreator(fields: Partial<User['data']>): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateProfile: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
+      },
+    });
 
-      try {
-        await request('profile/modify/data', 'post', { data: fields }, true);
-      } catch (error) {
-        dispatch({
-          type: UPDATE_ACCOUNT_STATE,
-          data: {
-            updateProfile: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
+    try {
+      await request('profile/modify/data', 'post', { data: fields }, true);
+    } catch (error) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error,
           },
         },
       });
-      resolve();
+      return Promise.reject();
+    }
+
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateProfile: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return Promise.resolve();
   };
 }
+
+type UpdateStringCreatorParams = {
+  url: 'profile/modify/username' | 'profile/modify/email' | 'profile/modify/password';
+  params: { [key: string]: any };
+  authServer?: boolean;
+};
 
 /**
  * @docs actionCreators
- * Modifie le username du compte
- * @param username Le nom d'utilisateur
+ * Modifie un string quelquonque du compte
+ * @param url L'url à appeler, sans la base (eg. 'articles/list')
+ * @param params Les paramètres de la requête
  * @returns Action
  */
-function updateUsernameCreator(username: string) {
-  return (dispatch: (action: any) => void) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: UPDATE_ACCOUNT_STATE,
-        data: {
-          updateProfile: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+function updateProfileStringCreator({
+  url,
+  params,
+  authServer = false,
+}: UpdateStringCreatorParams): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateProfile: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
+      },
+    });
 
-      try {
-        await request('profile/modify/username', 'post', { username }, true);
-      } catch (error) {
-        dispatch({
-          type: UPDATE_ACCOUNT_STATE,
-          data: {
-            updateProfile: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
+    try {
+      await request(url, 'post', params, true, authServer ? 'auth' : 'base');
+    } catch (error) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           updateProfile: {
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error,
           },
         },
       });
-      resolve();
+      return Promise.reject();
+    }
+
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateProfile: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return Promise.resolve();
   };
 }
 
-/**
- * @docs actionCreators
- * Modifie le username du compte
- * @param username Le nom d'utilisateur
- * @returns Action
- */
-function updateEmailCreator(email: string) {
-  return (dispatch: (action: any) => void) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: UPDATE_ACCOUNT_STATE,
-        data: {
-          updateProfile: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+function emailChangeCreator({ id, token }: { id: string; token: string }): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        emailChange: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-
-      try {
-        await request('profile/modify/email', 'post', { email }, true);
-      } catch (error) {
-        dispatch({
-          type: UPDATE_ACCOUNT_STATE,
-          data: {
-            updateProfile: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
+      },
+    });
+    try {
+      request('profile/modify/email/confirm', 'post', { id, token }, false, 'auth');
+    } catch (err) {
       dispatch({
-        type: UPDATE_ACCOUNT_STATE,
+        type: UPDATE_LINKING_STATE,
         data: {
-          updateProfile: {
+          emailChange: {
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error: err,
           },
         },
       });
-      resolve();
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        emailChange: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return true;
   };
 }
 
-function updatePasswordCreator(password: string) {
-  return (dispatch: (action: any) => void) => {
-    return new Promise(async (resolve, reject) => {
-      dispatch({
-        type: UPDATE_ACCOUNT_STATE,
-        data: {
-          updateProfile: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+function emailVerifyCreator({ id, token }: { id: string; token: string }): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        emailVerify: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-
-      try {
-        let newPassword = await hashPassword(password);
-        await request('profile/modify/password', 'post', { password: newPassword }, true);
-      } catch (error) {
-        dispatch({
-          type: UPDATE_ACCOUNT_STATE,
-          data: {
-            updateProfile: {
-              loading: false,
-              success: false,
-              error,
-            },
-          },
-        });
-        reject();
-        return;
-      }
-
+      },
+    });
+    try {
+      request('auth/email/verify', 'post', { id, token }, false, 'auth');
+    } catch (err) {
       dispatch({
-        type: UPDATE_ACCOUNT_STATE,
+        type: UPDATE_LINKING_STATE,
         data: {
-          updateProfile: {
+          emailVerify: {
             loading: false,
-            success: true,
-            error: null,
+            success: false,
+            error: err,
           },
         },
       });
-      resolve();
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        emailVerify: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return true;
   };
 }
 
-async function updateData(fields: Partial<User>) {
+type ExtraParams = {
+  articles: boolean;
+  events: boolean;
+  places: boolean;
+  petitions: boolean;
+  comments: boolean;
+};
+
+function accountDeleteCreator({
+  id,
+  token,
+  extra,
+}: {
+  id: string;
+  token: string;
+  extra: ExtraParams;
+}): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        accountDelete: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      request('profile/delete/verify', 'post', { id, token, extra }, false, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_LINKING_STATE,
+        data: {
+          accountDelete: {
+            loading: false,
+            success: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        accountDelete: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
+function passwordResetCreator({
+  id,
+  token,
+  password,
+}: {
+  id: string;
+  token: string;
+  password: string;
+}): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        passwordReset: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      request('auth/password/reset', 'post', { id, token, password }, false, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_LINKING_STATE,
+        data: {
+          passwordReset: {
+            loading: false,
+            success: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_LINKING_STATE,
+      data: {
+        passwordReset: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
+function resendVerificationCreator(): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        resend: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    try {
+      request('auth/email/resend', 'post', {}, true, 'auth');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          resend: {
+            loading: false,
+            success: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        resend: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
+async function updateData(fields: Partial<User['data']>) {
   await Store.dispatch(updateDataCreator(fields));
 }
 
 async function updateUsername(username: string) {
-  await Store.dispatch(updateUsernameCreator(username));
+  await Store.dispatch(
+    updateProfileStringCreator({
+      url: 'profile/modify/username',
+      params: { username },
+    }),
+  );
 }
 
 async function updateEmail(email: string) {
-  await Store.dispatch(updateEmailCreator(email));
+  await Store.dispatch(
+    updateProfileStringCreator({
+      url: 'profile/modify/email',
+      params: { email },
+      authServer: true,
+    }),
+  );
 }
 
 async function updatePassword(password: string) {
-  await Store.dispatch(updatePasswordCreator(password));
+  const hashedPassword = await hashPassword(password);
+  await Store.dispatch(
+    updateProfileStringCreator({
+      url: 'profile/modify/password',
+      params: { password: hashedPassword },
+      authServer: true,
+    }),
+  );
 }
 
-export { updateData, updateUsername, updateEmail, updatePassword };
+async function emailChange(id: string, token: string) {
+  await Store.dispatch(emailChangeCreator({ id, token }));
+}
+
+async function emailVerify(id: string, token: string) {
+  await Store.dispatch(emailVerifyCreator({ id, token }));
+}
+
+async function accountDelete(id: string, token: string, extra: ExtraParams) {
+  await Store.dispatch(accountDeleteCreator({ id, token, extra }));
+}
+
+async function passwordReset(id: string, token: string, password: string) {
+  const hashedPassword = await hashPassword(password);
+  await Store.dispatch(passwordResetCreator({ id, token, password: hashedPassword }));
+}
+
+async function resendVerification() {
+  await Store.dispatch(resendVerificationCreator());
+}
+
+export {
+  updateData,
+  updateUsername,
+  updateEmail,
+  updatePassword,
+  emailChange,
+  emailVerify,
+  accountDelete,
+  passwordReset,
+  resendVerification,
+};

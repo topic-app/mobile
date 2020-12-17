@@ -1,15 +1,25 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+
+import { ConfigureScreenNavigationProp } from '../index';
 import ArticleConfigure from './views/Configure';
 
-export type ArticleListsStackParams = {
+export type ArticleConfigureStackParams = {
   Configure: undefined;
 };
 
-const Stack = createNativeStackNavigator<ArticleListsStackParams>();
+export type ArticleConfigureScreenNavigationProp<
+  K extends keyof ArticleConfigureStackParams
+> = CompositeNavigationProp<
+  NativeStackNavigationProp<ArticleConfigureStackParams, K>,
+  ConfigureScreenNavigationProp<'Article'>
+>;
 
-function ArticleListsStackNavigator() {
+const Stack = createNativeStackNavigator<ArticleConfigureStackParams>();
+
+function ArticleConfigureStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Configure" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Configure" component={ArticleConfigure} />
@@ -17,4 +27,4 @@ function ArticleListsStackNavigator() {
   );
 }
 
-export default ArticleListsStackNavigator;
+export default ArticleConfigureStackNavigator;

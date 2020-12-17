@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 import { WebViewProps } from 'react-native-webview';
 import { ImageSourcePropType, StyleProp, ViewStyle } from 'react-native';
 import * as React from 'react';

@@ -16,9 +16,17 @@ const initialState: ArticlesState = {
   item: null,
   search: [],
   verification: [],
-  creationData: {},
   state: {
     list: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
+    following: {
       success: null,
       error: null,
       loading: {
@@ -61,6 +69,11 @@ const initialState: ArticlesState = {
       },
     },
     verification_approve: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    delete: {
       success: null,
       error: null,
       loading: false,
@@ -117,7 +130,6 @@ function articleReducer(state = initialState, action: ArticlesActionTypes): Arti
         verification: action.data.verification ? [] : state.verification,
         item: null,
         state: state.state,
-        creationData: state.creationData,
       };
     default:
       return state;

@@ -2,21 +2,23 @@ import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
 import { Divider, Button, RadioButton, List } from 'react-native-paper';
 
-import { ModalProps } from '@ts/types';
 import { Modal } from '@components/index';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { ModalProps } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-type PlaceTypeModalProps = ModalProps & { next: (type: 'school'|'place'|'standalone') => void };
+type PlaceType = 'school' | 'place' | 'standalone';
+
+type PlaceTypeModalProps = ModalProps & { next: (type: PlaceType) => void };
 
 function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [currentType, setCurrentType] = React.useState<'school'|'place'|'standalone'>('school');
+  const [currentType, setCurrentType] = React.useState<PlaceType>('school');
 
-  const placeTypes = [
+  const placeTypes: { type: PlaceType; title: string; description: string }[] = [
     {
       type: 'school' as 'school',
       title: 'Établissement',
@@ -50,6 +52,7 @@ function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
                 left={() =>
                   Platform.OS !== 'ios' && (
                     <RadioButton
+                      value=""
                       color={colors.primary}
                       status={item.type === currentType ? 'checked' : 'unchecked'}
                       onPress={() => {
@@ -61,6 +64,7 @@ function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
                 right={() =>
                   Platform.OS === 'ios' && (
                     <RadioButton
+                      value=""
                       color={colors.primary}
                       status={item.type === currentType ? 'checked' : 'unchecked'}
                       onPress={() => {

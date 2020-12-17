@@ -1,9 +1,11 @@
 /* eslint-disable no-throw-literal */
 import { AxiosResponse } from 'axios';
+
 import Store from '@redux/store';
 
-import logger from './logger';
+import { Config } from '../constants';
 import axios from './axiosInstance';
+import logger from './logger';
 
 type ApiDataType = {
   success: boolean;
@@ -17,11 +19,19 @@ async function request(
   method: 'get' | 'post' | 'put' | 'patch' | 'delete',
   params = {},
   auth = false,
+  server: 'base' | 'auth' | 'data' = 'base',
 ) {
+  let url;
+  if (Store.getState().preferences.useDevServer) {
+    url = Config.api.devUrl[server];
+  } else {
+    url = Config.api.url[server];
+  }
   logger.http({
     method,
-    endpoint,
+    endpoint: `${url}/${endpoint}`,
     params,
+    sent: true,
   });
   const headers = auth
     ? { Authorization: `Bearer ${Store.getState().account.accountInfo?.accountToken}` }
@@ -29,14 +39,15 @@ async function request(
   if (method === 'get') {
     let res: AxiosResponse<ApiDataType>;
     try {
-      res = await axios.get(endpoint, { params, headers });
+      res = await axios.get(`${url}/${endpoint}`, { params, headers });
     } catch (error) {
+      logger.warn('Request error');
       logger.http({
         status: error?.status,
         method,
-        endpoint,
+        endpoint: `${url}/${endpoint}`,
         params,
-        data: error?.data,
+        data: error.response,
       });
       throw {
         success: false,
@@ -50,7 +61,7 @@ async function request(
       logger.http({
         status: res.status,
         method,
-        endpoint,
+        endpoint: `${url}/${endpoint}`,
         params,
         data: res.data.info,
       });
@@ -59,6 +70,7 @@ async function request(
         data: res.data.info,
       };
     }
+    logger.warn('Request error');
     logger.http({
       status: res?.status,
       method,
@@ -71,14 +83,15 @@ async function request(
   if (method === 'post') {
     let res: AxiosResponse<ApiDataType>;
     try {
-      res = await axios.post(endpoint, params, { headers });
+      res = await axios.post(`${url}/${endpoint}`, params, { headers });
     } catch (error) {
+      logger.warn('Request error');
       logger.http({
         status: error.status,
         method,
-        endpoint,
+        endpoint: `${url}/${endpoint}`,
         params,
-        data: error.data,
+        data: error.response,
       });
       throw {
         success: false,
@@ -92,7 +105,7 @@ async function request(
       logger.http({
         status: res.status,
         method,
-        endpoint,
+        endpoint: `${url}/${endpoint}`,
         params,
         data: res.data.info,
       });
@@ -101,16 +114,17 @@ async function request(
         data: res.data.info,
       };
     }
+    logger.warn('Request error');
     logger.http({
       status: res.status,
       method,
-      endpoint,
+      endpoint: `${url}/${endpoint}`,
       params,
       data: res.data.info,
     });
     throw { success: false, reason: 'success', status: res?.status, error: null, res };
   }
-  logger.error(`Request failed to ${endpoint} because of missing method ${method}`);
+  logger.warn(`Request failed to ${endpoint} because of missing method ${method}`);
   throw { success: false, reason: 'method', status: null, error: null };
 }
 

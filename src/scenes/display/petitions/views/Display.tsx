@@ -1,3 +1,5 @@
+import { RouteProp } from '@react-navigation/native';
+import moment from 'moment';
 import React from 'react';
 import { View, ScrollView, Platform } from 'react-native';
 import {
@@ -10,11 +12,11 @@ import {
   Paragraph,
   Chip,
 } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import moment from 'moment';
+import { connect } from 'react-redux';
 
+import { TagList } from '@components/index';
+import getStyles from '@styles/Styles';
 import {
   Petition,
   PetitionPreload,
@@ -23,12 +25,10 @@ import {
   State,
   Theme,
 } from '@ts/types';
-import getStyles from '@styles/Styles';
-import { TagList } from '@components/index';
 import { useTheme } from '@utils/index';
 
-import type { PetitionDisplayStackParams } from '../index';
 import PetitionChart from '../components/Charts';
+import type { PetitionDisplayScreenNavigationProp, PetitionDisplayStackParams } from '../index';
 
 type StatusChipProps = {
   mode: 'contained' | 'text' | 'outlined';
@@ -147,7 +147,9 @@ const PetitionTime: React.FC<PetitionTimeProps> = ({
   );
 };
 
-type PetitionDisplayProps = StackScreenProps<PetitionDisplayStackParams, 'Display'> & {
+type PetitionDisplayProps = {
+  navigation: PetitionDisplayScreenNavigationProp<'Display'>;
+  route: RouteProp<PetitionDisplayStackParams, 'Display'>;
   petitions: (PetitionPreload | Petition)[];
   reqState: PetitionRequestState;
 };
@@ -177,20 +179,20 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
           />
         </View>
         <View style={{ paddingBottom: 5, paddingTop: 2 }}>
-          <TagList item={petition} />
+          <TagList item={petition} scrollable />
         </View>
         <View
           style={
-            (petition.voteData.type === 'goal' || petition.voteData.type === 'sign') && {
+            (petition.type === 'goal' || petition.type === 'sign') && {
               paddingHorizontal: 20,
               paddingTop: 5,
             }
           }
         >
-          <PetitionChart voteData={petition.voteData} />
+          <PetitionChart type={petition.type} voteData={petition.cache} />
         </View>
         <View style={styles.contentContainer}>
-          <Text>{petition.description}</Text>
+          <Text>{petition.summary}</Text>
         </View>
         <Divider />
         <View style={styles.contentContainer}>
@@ -198,7 +200,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             title="Espace lecture"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="green" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="green" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -207,7 +209,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             title="Aide aux devoirs"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="yellow" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="yellow" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -216,7 +218,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             title="FabLab"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="checked" color="#962626" onPress={() => {}} />
+                <RadioButton value="" status="checked" color="#962626" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -225,7 +227,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             title="Matériel informatique"
             left={() =>
               Platform.OS !== 'ios' ? (
-                <RadioButton status="unchecked" color="blue" onPress={() => {}} />
+                <RadioButton value="" status="unchecked" color="blue" onPress={() => {}} />
               ) : null
             }
             onPress={() => {}}
@@ -293,8 +295,8 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
           </View>
           <View style={styles.contentContainer}>
             <Paragraph>
-              Merci pour votre soutien ! En tant que membre de la CVL je fais le plus possible pour
-              mener à l&apos;aboutissement de ce projet.
+              Merci pour votre soutien! En tant que membre de la CVL je fais le plus possible pour
+              mener à l&apos;aboutissement de ce projet
             </Paragraph>
           </View>
         </View>

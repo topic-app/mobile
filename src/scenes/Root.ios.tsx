@@ -1,14 +1,21 @@
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {
+  CompositeNavigationProp,
+  NavigationProp,
+  NavigatorScreenParams,
+  useNavigationState,
+} from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { NavigationProp, useNavigationState } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useTheme } from '@utils/index';
 
-import MainStackNavigator from './Main';
+import { AppScreenNavigationProp } from '..';
+import { NativeStackNavigationProp } from '../utils/stack';
+import MainStackNavigator, { MainStackParams } from './Main';
 
 // Can't use BlurView with expo :(
 // import { BlurView, VibrancyView } from '@react-native-community/blur';
@@ -36,7 +43,7 @@ const TabItem: React.FC<TabItemProps> = ({ label, onPress, icon, active }) => {
 };
 
 type BottomTabProps = {
-  navigation: NavigationProp<any, any>;
+  navigation: any;
 };
 
 enum RouteName {
@@ -60,7 +67,7 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
   let active = RouteName.MORE;
   let translucent = false;
 
-  const traverseState = (state) => {
+  const traverseState = (state: any) => {
     if (state?.name === 'Article' || state?.screen === 'Article') {
       active = RouteName.ARTICLE;
     } else if (state?.name === 'Event' || state?.screen === 'Event') {
@@ -94,7 +101,10 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
 
   traverseState(navigationState);
 
-  // HACK: I was hoping to be able to fetch screenOptions from here, but havent found any way yet. Currently, any screen that has Article in the name gives a focused article tab, same for events etc. Display and Home pages both have a translucent tab bar, others not
+  // HACK: I was hoping to be able to fetch screenOptions from here,
+  // but havent found any way yet. Currently, any screen that has
+  // Article in the name gives a focused article tab, same for events etc.
+  // Display and Home pages both have a translucent tab bar, others not
 
   const isActive = (name: RouteName) => active === name;
 
@@ -108,7 +118,7 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
   const { bottom } = useSafeAreaInsets(); // get bottom inset
 
   return (
-    <View style={{ color: colors.surface }}>
+    <View style={{ backgroundColor: colors.surface }}>
       <View
         style={{
           flexDirection: 'row',
@@ -193,8 +203,13 @@ const BottomTabs: React.FC<BottomTabProps> = ({ navigation }) => {
 };
 
 export type RootNavParams = {
-  Main: undefined;
+  Main: NavigatorScreenParams<MainStackParams>;
 };
+
+export type RootScreenNavigationProp<K extends keyof RootNavParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<RootNavParams, K>,
+  AppScreenNavigationProp<'Root'>
+>;
 
 const Tab = createBottomTabNavigator<RootNavParams>();
 

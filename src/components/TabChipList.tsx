@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, SectionList } from 'react-native';
+import { View, SectionList, Platform } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 import { useTheme } from '@utils/index';
@@ -33,11 +33,10 @@ const TabChipList = <T extends ListItem>({
   return (
     <View>
       <SectionList
-        style={{ paddingTop: 13, paddingBottom: 8 }}
         horizontal
         stickySectionHeadersEnabled={false}
         keyboardShouldPersistTaps="handled"
-        showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={Platform.OS === 'web'}
         sections={sections}
         keyExtractor={(cat) => cat.key}
         renderItem={({ item, index }) => (
@@ -49,6 +48,8 @@ const TabChipList = <T extends ListItem>({
             containerStyle={{
               marginLeft: index === 0 ? 15 : 5,
               marginRight: index === sections.length - 1 ? 15 : 5,
+              marginTop: 13,
+              marginBottom: 9,
             }}
           />
         )}

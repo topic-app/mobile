@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextStyle, ViewStyle, TextProps, StyleProp } from 'react-native';
+import { View, ViewStyle, TextProps, StyleProp, TextStyle } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -7,7 +7,7 @@ import { useTheme } from '@utils/index';
 
 type CategoryTitleProps = TextProps & {
   icon?: string;
-  iconStyle?: StyleProp<any>;
+  iconStyle?: StyleProp<TextStyle>;
   containerStyle?: StyleProp<ViewStyle>;
 };
 
@@ -48,5 +48,4 @@ const CategoryTitle: React.FC<CategoryTitleProps> = ({
   );
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { CategoryTitle };

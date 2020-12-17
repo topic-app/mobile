@@ -3,12 +3,12 @@ import { View, FlatList, Platform, Appearance, TouchableWithoutFeedback } from '
 import { List, RadioButton, Divider, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Preferences, State } from '@ts/types';
 import { Illustration, CustomHeaderBar } from '@components/index';
-import { useTheme } from '@utils/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
+import { Preferences, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getSettingsStyles from '../styles/Styles';
 
@@ -71,6 +71,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
               left={() =>
                 Platform.OS !== 'ios' && (
                   <RadioButton
+                    value=""
                     color={colors.primary}
                     status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
                     onPress={() => updatePrefs({ useSystemTheme: true })}
@@ -80,6 +81,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
               right={() =>
                 Platform.OS === 'ios' && (
                   <RadioButton
+                    value=""
                     color={colors.primary}
                     status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
                     onPress={() => updatePrefs({ useSystemTheme: true })}
@@ -97,6 +99,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
             left={() =>
               Platform.OS !== 'ios' && (
                 <RadioButton
+                  value=""
                   color={colors.primary}
                   status={
                     item.value === preferences.theme && !preferences.useSystemTheme
@@ -110,6 +113,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
             right={() =>
               Platform.OS === 'ios' && (
                 <RadioButton
+                  value=""
                   color={colors.primary}
                   status={
                     item.value === preferences.theme && !preferences.useSystemTheme

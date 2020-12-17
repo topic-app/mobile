@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="fr.topicapp.topic">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="fr.topicapp.topic">
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <!-- OPTIONAL PERMISSIONS, REMOVE WHATEVER YOU DO NOT NEED -->
@@ -11,6 +11,7 @@
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission tools:node="remove" android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
   <!-- END OPTIONAL PERMISSIONS -->
   <application
     android:name=".MainApplication"
@@ -46,6 +47,8 @@
         <data android:scheme="http" android:host="topicapp.fr"/>
         <data android:scheme="https" android:host="go.topicapp.fr"/>
         <data android:scheme="http" android:host="go.topicapp.fr"/>
+        <data android:scheme="https" android:host="www.topicapp.fr"/>
+        <data android:scheme="http" android:host="www.topicapp.fr"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>

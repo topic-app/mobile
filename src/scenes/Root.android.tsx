@@ -1,12 +1,19 @@
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import React from 'react';
 
-import { createNativeStackNavigator } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import MainStackNavigator from './Main';
+import { AppScreenNavigationProp } from '../index';
+import MainStackNavigator, { MainStackParams } from './Main';
 
 export type RootNavParams = {
-  Main: undefined;
+  Main: NavigatorScreenParams<MainStackParams>;
 };
+
+export type RootScreenNavigationProp<K extends keyof RootNavParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<RootNavParams, K>,
+  AppScreenNavigationProp<'Root'>
+>;
 
 const Stack = createNativeStackNavigator<RootNavParams>();
 

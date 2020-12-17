@@ -14,8 +14,6 @@
  * Note: Don't import this file through `common/`, use `import { ... } from '@ts/types'` instead.
  */
 
-import { AccountRequestState } from './requestState'; // Account stuff should probably go in redux.ts but too much risk of breakage
-
 // Common types
 export type Content = {
   parser: 'plaintext' | 'markdown';
@@ -57,28 +55,37 @@ export type Duration = {
   end: string;
 };
 
-type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
+export type SchoolType = 'lycee' | 'college' | 'prepa' | 'other';
 
-export type SchoolPreload = {
+type SchoolBase = {
   _id: string;
   name: string;
   shortName?: string;
-  displayName: string;
-  address?: Address;
   types: SchoolType[];
+  cache?: {
+    events?: number;
+  };
 };
 
-export type School = {
-  _id: string;
-  shortName?: string;
-  name: string;
-  types: SchoolType[];
+export type SchoolPreload = SchoolBase & {
+  preload: true;
+  displayName?: string;
+  address?: Address;
+  image?: Image;
+  departments?: DepartmentPreload[];
+};
+
+export type School = SchoolBase & {
+  preload?: false;
+  displayName?: string;
   address: Address;
   adminGroups?: GroupPreload[];
   image: Image;
   description: Content;
   departments: DepartmentPreload[]; // Also one in address but this one is for the admin group(s)
 };
+
+export type AnySchool = SchoolPreload | School;
 
 export type DepartmentPreload = {
   _id: string;
@@ -101,18 +108,18 @@ export type Department = {
 };
 
 export type Image = {
-  _id: string; // Note: Not really useful
-  image: string;
+  _id?: string; // Note: Not really useful
+  image: string | null;
   thumbnails: {
-    small: boolean;
-    medium: boolean;
-    large: boolean;
+    small?: boolean;
+    medium?: boolean;
+    large?: boolean;
   };
 };
 
 // Location types
 export type Location = {
-  _id: string; // Note: Not really useful
+  _id?: string; // Note: Not really useful
   global: boolean;
   schools: SchoolPreload[];
   departments: DepartmentPreload[];
@@ -121,9 +128,13 @@ export type Location = {
 export type Address = {
   _id: string;
   shortName?: string;
-  coordinates: {
-    lat: number;
-    lon: number;
+  // coordinates: {
+  //   lat: number;
+  //   lon: number;
+  // };
+  geo: {
+    type: 'Point';
+    coordinates: number[];
   };
   address: {
     number: string;
@@ -135,28 +146,42 @@ export type Address = {
   departments: DepartmentPreload[];
 };
 
-export type Avatar = {
-  type: 'color' | 'gradient' | 'image';
-  color: string;
-  gradient: {
-    start: string;
-    end: string;
-    angle: number;
-  };
-  text: string;
-  image: Image;
-};
+export type Avatar =
+  | {
+      type: 'color';
+      color: string;
+      text: string;
+    }
+  | {
+      type: 'gradient';
+      gradient: {
+        start: string;
+        end: string;
+        angle: number;
+      };
+      text: string;
+    }
+  | {
+      type: 'image';
+      image: Image;
+    };
 
 export type UserPreload = {
+  preload: true;
   _id: string;
   displayName: string;
   info: {
     username: string;
     avatar?: Avatar;
+    official?: boolean;
+  };
+  data?: {
+    public?: boolean;
   };
 };
 
 export type User = {
+  preload?: false;
   _id: string;
   name: string;
   displayName: string;
@@ -164,6 +189,7 @@ export type User = {
     username: string;
     avatar: Avatar;
     joinDate: string;
+    official?: boolean;
   };
   data: {
     public: boolean;
@@ -181,54 +207,9 @@ export type User = {
   };
 };
 
-export type AccountCreationData = {
-  avatar?: Avatar;
-  username?: string;
-  email?: string;
-  password?: string;
-  global?: boolean;
-  schools?: string[];
-  departments?: string[];
-  accountType?: 'public' | 'private';
-  firstName?: string;
-  lastName?: string;
-};
-
-export type AccountPermission = GroupRolePermission & { group: string };
-
-export type AccountUser = User & {
-  sensitiveData: {
-    email: string;
-  };
-};
-
-export type AccountInfo = {
-  accountId: string;
-  accountToken: string;
-  accountTokenExpiry: string;
-  user: AccountUser;
-};
-
 export type WaitingGroup = Group & {
   waitingMembership: { role: string; permanent: boolean; expiry: Date };
 };
-
-export type Account =
-  | {
-      loggedIn: true;
-      accountInfo: AccountInfo;
-      creationData: AccountCreationData;
-      state: AccountRequestState;
-      groups: GroupWithMembership[];
-      permissions: AccountPermission[];
-      waitingGroups: WaitingGroup[];
-    }
-  | {
-      loggedIn: false;
-      accountInfo: null;
-      creationData: AccountCreationData;
-      state: AccountRequestState;
-    };
 
 export type AuthorPreload = UserPreload;
 
@@ -236,15 +217,15 @@ export type MemberPreload = UserPreload;
 
 // Group Types
 export type GroupRolePermission = {
-  _id: string;
+  _id?: string;
   permission: string; // might be an enum in the future
   scope: {
-    self: boolean;
-    everywhere: boolean;
-    global: boolean;
-    groups: string[];
-    schools: SchoolPreload[];
-    departments: DepartmentPreload[];
+    self?: boolean;
+    everywhere?: boolean;
+    global?: boolean;
+    groups?: string[];
+    schools?: string[];
+    departments?: string[];
   };
 };
 
@@ -269,7 +250,7 @@ export type GroupMember = {
   };
 };
 
-export type GroupPreload = {
+type GroupBase = {
   _id: string;
   displayName: string;
   name: string;
@@ -277,13 +258,22 @@ export type GroupPreload = {
   type: string;
   avatar?: Avatar;
   summary?: string;
+  shortName?: string;
   cache: {
     followers?: number | null;
     members?: number | null;
   };
 };
 
-export type Group = GroupPreload & {
+// Any group takes any valid group and ignores value of preload
+export type AnyGroup = GroupBase;
+
+export type GroupPreload = GroupBase & {
+  preload: true;
+};
+
+export type Group = GroupBase & {
+  preload?: false;
   shortName?: string;
   handle: string;
   aliases: string;
@@ -296,6 +286,10 @@ export type Group = GroupPreload & {
   roles: GroupRole[];
   members: GroupMember[];
   tags: TagPreload[];
+};
+
+export type GroupVerification = Group & {
+  verification: Verification;
 };
 
 export type GroupWithMembership = Group & {
@@ -312,28 +306,34 @@ export type GroupTemplate = {
 };
 
 // Article Types
-export type ArticlePreload = {
+type ArticleBase = {
   _id: string;
   title: string;
   date: string;
   summary: string;
   image?: Image;
-  preload?: boolean;
   authors: AuthorPreload[];
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];
 };
+export type ArticlePreload = ArticleBase & {
+  preload: true; // So we can check if article.preload to change type
+};
 export type ArticleVerificationPreload = ArticlePreload & {
   verification: Verification;
 };
 
-export type Article = ArticlePreload & {
+export type Article = ArticleBase & {
+  preload?: false;
   content: Content;
   preferences: {
     comments: boolean;
   };
 };
+
+export type Article2 = Article;
+
 export type ArticleVerification = Article & {
   verification: Verification;
 };
@@ -342,39 +342,73 @@ export type ArticleVerification = Article & {
 export type ProgramEntry = {
   _id: string;
   title: string;
-  duration: Duration;
+  duration: {
+    start: string | Date;
+    end: string | Date;
+  };
+  description?: Content;
   image?: Image;
-  address: Address;
+  address?: Address | undefined;
 };
 
-export type EventPlace = {
+export type EventPlace =
+  | { _id: string; type: 'place'; associatedPlace: PlacePreload }
+  | { _id: string; type: 'school'; associatedSchool: SchoolPreload }
+  | { _id: string; type: 'standalone'; address: Address };
+
+type EventMessageBase = {
+  date: string;
+  content: {
+    parser: 'plaintext' | 'markdown';
+    data: string;
+  };
+  important: boolean;
   _id: string;
-  type: 'place' | 'school' | 'standalone';
-  associatedSchool?: SchoolPreload;
-  associatedPlace?: DepartmentPreload;
-  address?: Address;
 };
 
-export type EventPreload = {
+export type EventMessage = EventMessageBase &
+  (
+    | {
+        type: 'system';
+        group: null;
+      }
+    | {
+        type: 'high' | 'medium' | 'low';
+        group: GroupPreload;
+      }
+  );
+
+type EventBase = {
   _id: string;
   title: string;
   summary: string;
   image: Image;
   group: GroupPreload;
-  author: AuthorPreload;
+  authors: AuthorPreload[];
   tags: TagPreload[];
   duration: Duration;
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
 };
+
+// AnyEvent means anything that implements EventBase can match it
+// meaning you won't get any { preload: ... } errors if you give
+// an Event to a component that accepts AnyEvent
+export type AnyEvent = EventBase;
+
+export type EventPreload = EventBase & {
+  preload: true;
+};
 export type EventVerificationPreload = EventPreload & {
   verification: Verification;
 };
 
-export type Event = EventPreload & {
+export type Event = EventBase & {
+  preload?: false;
   description: Content;
   members: MemberPreload[];
   program: ProgramEntry[];
+  messages: EventMessage[];
   contact: {
     email: string;
     phone: string;
@@ -392,33 +426,51 @@ export type EventVerification = Event & {
 };
 
 // Place Types (used for Explorer)
-type PlaceType = 'cultural' | 'education' | 'history' | 'tourism' | 'club' | 'other';
+export type PlaceType = 'cultural' | 'history' | 'tourism' | 'club' | 'other';
 
 export type PlacePreload = {
   _id: string;
   name: string;
+  displayName: string;
   types: PlaceType[];
   summary: string;
   address: Address;
 };
 
-export type Place = {
-  _id: string;
-  name: string;
+export type Place = PlacePreload & {
   shortName?: string;
-  types: PlaceType[];
-  summary: string;
   description: Content;
   group: GroupPreload;
   tags: TagPreload[];
   image: Image;
-  address: Address;
   location: Location;
 };
 
+export namespace ExplorerLocation {
+  export type LocationTypes = 'place' | 'school' | 'event' | 'secret' | 'collection';
+  export type Place = { type: 'place'; data: PlacePreload };
+  export type School = { type: 'school'; data: SchoolPreload & { address: Address } };
+  export type Event = { type: 'event'; data: EventPreload };
+  export type Secret = { type: 'secret'; data: PlacePreload };
+  export type Collection = {
+    type: 'collection';
+    data: {
+      number: number;
+      geo: { type: 'Point'; coordinates: [number, number] };
+    };
+  };
+
+  export type Location =
+    | ExplorerLocation.Place
+    | ExplorerLocation.School
+    | ExplorerLocation.Event
+    | ExplorerLocation.Secret
+    | ExplorerLocation.Collection;
+}
+
 // Petition Types
 export type Publisher = {
-  _id: string; // Note: Not really useful
+  _id?: string; // Note: Not really useful
   type: 'user' | 'group';
   user?: UserPreload;
   group?: GroupPreload;
@@ -509,15 +561,3 @@ export type Error = {
     };
   };
 };
-
-export type Item =
-  | Article
-  | Comment
-  | Event
-  | Petition
-  | Group
-  | User
-  | Place
-  | Tag
-  | Department
-  | School;

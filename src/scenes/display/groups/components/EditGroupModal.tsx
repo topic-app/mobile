@@ -3,21 +3,21 @@ import { View, Platform } from 'react-native';
 import { Divider, Button, HelperText, TextInput as PaperTextInput } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ModalProps, State, Group } from '@ts/types';
 import { Modal } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { groupModify } from '@redux/actions/apiActions/groups';
 import { fetchGroup } from '@redux/actions/api/groups';
+import { groupModify } from '@redux/actions/apiActions/groups';
+import getStyles from '@styles/Styles';
+import { ModalProps, State, Group, GroupPreload } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
 type EditGroupModalProps = ModalProps & {
-  group: Group | null;
+  group: Group | GroupPreload | null;
   editingGroup: {
-    shortName: string;
-    summary: string;
-    description: string;
+    shortName?: string;
+    summary?: string;
+    description?: string;
   } | null;
   setEditingGroup: ({
     shortName,

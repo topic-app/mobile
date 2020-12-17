@@ -1,38 +1,9 @@
 import Store from '@redux/store';
+import { AppThunk, EventCreationData, UPDATE_EVENTS_STATE } from '@ts/redux';
+import { Content } from '@ts/types';
 import { request } from '@utils/index';
-import { UPDATE_EVENTS_STATE } from '@ts/redux';
-import { State } from '@ts/types';
-import { reportCreator, approveCreator } from './ActionCreator';
 
-type EventAddProps = {
-  title: string;
-  summary: string;
-  data: string;
-  phone: string;
-  email: string;
-  contact?: {
-    key: string;
-    value: string;
-    link: string;
-  }[];
-  organizers: string[];
-  start: Date;
-  end: Date;
-  date: Date;
-  location: {
-    schools: string[];
-    departments: string[];
-    global: boolean;
-  };
-  group: string;
-  places: string[];
-  parser: 'markdown' | 'plaintext';
-  preferences?: {
-    comments?: boolean;
-  };
-  tags: string[];
-  program: string[];
-};
+import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
 
 function eventAddCreator({
   title,
@@ -41,7 +12,7 @@ function eventAddCreator({
   phone,
   email,
   contact,
-  organizers,
+  members,
   start,
   end,
   date,
@@ -51,9 +22,10 @@ function eventAddCreator({
   parser,
   preferences,
   tags,
+  image,
   program,
-}: EventAddProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: EventCreationData): AppThunk<Promise<{ _id: string }>> {
+  return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_EVENTS_STATE,
@@ -80,9 +52,9 @@ function eventAddCreator({
             contact: {
               phone,
               email,
-              organizers,
               other: contact,
             },
+            members,
             duration: {
               start,
               end,
@@ -90,6 +62,7 @@ function eventAddCreator({
             date,
             location,
             group,
+            image,
             preferences,
             tags,
             program,
@@ -109,7 +82,7 @@ function eventAddCreator({
               },
             },
           });
-          resolve(result.data);
+          resolve(result.data as { _id: string });
         })
         .catch((error) => {
           dispatch({
@@ -128,12 +101,87 @@ function eventAddCreator({
   };
 }
 
-async function eventAdd(data: EventAddProps) {
-  return await Store.dispatch(eventAddCreator(data));
+type eventMessagesAddProps = {
+  content: Content;
+  group: string;
+  type?: 'high' | 'medium' | 'low';
+  event: string;
+};
+
+function eventMessagesAddCreator({
+  content,
+  group,
+  type = 'medium',
+  event,
+}: eventMessagesAddProps): AppThunk<Promise<{ _id: string }>> {
+  return (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_EVENTS_STATE,
+        data: {
+          messages_add: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        'events/messages/add',
+        'post',
+        {
+          content,
+          type,
+          group,
+          eventId: event,
+        },
+        true,
+      )
+        .then((result) => {
+          dispatch({
+            type: UPDATE_EVENTS_STATE,
+            data: {
+              messages_add: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve(result.data as { _id: string });
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_EVENTS_STATE,
+            data: {
+              messages_add: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
+async function eventAdd(data: EventCreationData) {
+  return Store.dispatch(eventAddCreator(data));
+}
+
+async function eventMessagesAdd(
+  event: string,
+  group: string,
+  content: Content,
+  type: 'high' | 'medium' | 'low',
+) {
+  return Store.dispatch(eventMessagesAddCreator({ event, group, content, type }));
 }
 
 async function eventVerificationApprove(id: string) {
-  return await Store.dispatch(
+  await Store.dispatch(
     approveCreator({
       url: 'events/verification/approve',
       stateUpdate: UPDATE_EVENTS_STATE,
@@ -155,4 +203,15 @@ async function eventReport(eventId: string, reason: string) {
   );
 }
 
-export { eventAdd, eventReport, eventVerificationApprove };
+async function eventDelete(id: string) {
+  await Store.dispatch(
+    deleteCreator({
+      id,
+      paramName: 'eventId',
+      url: 'events/delete',
+      stateUpdate: UPDATE_EVENTS_STATE,
+    }),
+  );
+}
+
+export { eventAdd, eventReport, eventVerificationApprove, eventDelete, eventMessagesAdd };

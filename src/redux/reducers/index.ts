@@ -1,30 +1,28 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import localForage from 'localforage';
 import { Platform } from 'react-native';
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
-import localForage from 'localforage';
-import AsyncStorage from '@react-native-community/async-storage';
 
 import articleReducer from './api/articles';
 import commentReducer from './api/comments';
 import departmentReducer from './api/departments';
 import eventReducer from './api/events';
 import groupReducer from './api/groups';
+import legalReducer from './api/legal';
+import linkingReducer from './api/linking';
 import petitionReducer from './api/petitions';
 import placeReducer from './api/places';
 import schoolReducer from './api/schools';
 import tagReducer from './api/tags';
+import uploadReducer from './api/upload';
 import userReducer from './api/users';
-import legalReducer from './api/legal';
-
-import linkingReducer from './api/linking';
-
 import articleDataReducer from './contentData/articles';
 import eventDataReducer from './contentData/events';
 import groupDataReducer from './contentData/groups';
-
-import prefReducer from './data/prefs';
 import accountReducer from './data/account';
 import locationReducer from './data/location';
+import prefReducer from './data/prefs';
 
 const accountPersistConfig = {
   key: 'auth',
@@ -61,6 +59,8 @@ const rootReducer = combineReducers({
   location: persistReducer(locationPersistConfig, locationReducer),
   // linking
   linking: linkingReducer,
+  // upload
+  upload: uploadReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

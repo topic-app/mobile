@@ -1,3 +1,5 @@
+import { AnyAction } from 'redux';
+
 import Store from '@redux/store';
 import { Preferences, SET_PREFS } from '@ts/types';
 
@@ -7,7 +9,7 @@ import { Preferences, SET_PREFS } from '@ts/types';
  * @param pref Les paramètres à mettre à jour
  * @awaits Action
  */
-function updatePrefsCreator(prefs: Partial<Preferences>) {
+function updatePrefsCreator(prefs: Partial<Preferences>): AnyAction {
   return {
     type: SET_PREFS,
     data: prefs,
@@ -20,7 +22,7 @@ function updatePrefsCreator(prefs: Partial<Preferences>) {
  * @param prefs les paramètres à mettre à jour
  */
 async function updatePrefs(prefs: Partial<Preferences>) {
-  await Store.dispatch(updatePrefsCreator(prefs));
+  Store.dispatch(updatePrefsCreator(prefs));
 }
 
 export { updatePrefs };

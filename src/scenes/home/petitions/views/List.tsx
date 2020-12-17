@@ -1,27 +1,26 @@
 import React from 'react';
 import { View, Animated } from 'react-native';
 import { Button, FAB } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { Petition, PetitionPreload, State } from '@ts/types';
-import { PetitionCard, AnimatingHeader } from '@components/index';
 import UnauthorizedBeta from '@components/UnauthorizedBeta';
-import { useTheme } from '@utils/index';
+import { PetitionCard, AnimatingHeader } from '@components/index';
 import getStyles from '@styles/Styles';
+import { Petition, PetitionPreload, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { HomeTwoNavParams } from '../../HomeTwo';
+import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 
 type PetitionListProps = {
-  navigation: StackNavigationProp<HomeTwoNavParams, 'Petition'>;
+  navigation: HomeTwoScreenNavigationProp<'Petition'>;
   petitions: (PetitionPreload | Petition)[];
 };
 
 const PetitionList: React.FC<PetitionListProps> = ({ navigation, petitions }) => {
-  return <UnauthorizedBeta />;
+  return <UnauthorizedBeta back={navigation.goBack} />;
 
+  // eslint-disable-next-line no-unreachable
   const theme = useTheme();
-  const { colors } = theme;
 
   const scrollY = new Animated.Value(0);
   const styles = getStyles(theme);
@@ -57,7 +56,7 @@ const PetitionList: React.FC<PetitionListProps> = ({ navigation, petitions }) =>
         keyExtractor={(petition) => petition._id}
         ListFooterComponent={
           <View style={styles.container}>
-            <Button style={styles.text}>Retour en haut</Button>
+            <Button>Retour en haut</Button>
           </View>
         }
         renderItem={(petition) => (

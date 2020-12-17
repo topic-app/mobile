@@ -1,31 +1,64 @@
+import { NavigatorScreenParams } from '@react-navigation/native';
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
+import { Platform } from 'react-native';
+import { connect } from 'react-redux';
 
-import Store from '@redux/store';
+import { Config } from '@constants';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import RootNavigator from './scenes/Root';
-import AuthStackNavigator from './scenes/auth/index';
-import LandingStackNavigator from './scenes/landing/index';
+import RootNavigator, { RootNavParams } from './scenes/Root';
+import AuthStackNavigator, { AuthStackParams } from './scenes/auth/index';
+import LandingStackNavigator, { LandingStackParams } from './scenes/landing/index';
+import LinkingStackNavigator, { LinkingStackParams } from './scenes/linking/index';
+import { State } from './ts/types';
 
 export type AppStackParams = {
-  Auth: undefined;
-  Root: undefined;
-  Landing: undefined;
+  Auth: NavigatorScreenParams<AuthStackParams>;
+  Root: NavigatorScreenParams<RootNavParams>;
+  Linking: NavigatorScreenParams<LinkingStackParams>;
+  Landing: NavigatorScreenParams<LandingStackParams>;
 };
+
+export type AppScreenNavigationProp<K extends keyof AppStackParams> = NativeStackNavigationProp<
+  AppStackParams,
+  K
+>;
 
 const Stack = createNativeStackNavigator<AppStackParams>();
 
-function AppStackNavigator() {
+type AppStackNavigatorProps = {
+  locationSelected: boolean;
+  loggedIn: boolean;
+};
+
+const AppStackNavigator: React.FC<AppStackNavigatorProps> = ({ locationSelected, loggedIn }) => {
   return (
     <Stack.Navigator
-      initialRouteName={Store.getState().location.selected ? 'Root' : 'Landing'}
+      initialRouteName={
+        Platform.OS === 'web' && !loggedIn && !Config.dev.webAllowAnonymous
+          ? 'Auth'
+          : locationSelected
+          ? 'Root'
+          : 'Landing'
+      }
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
-      <Stack.Screen name="Root" component={RootNavigator} />
-      <Stack.Screen name="Landing" component={LandingStackNavigator} />
+      {(Platform.OS !== 'web' || loggedIn || Config.dev.webAllowAnonymous) && (
+        <Stack.Screen name="Root" component={RootNavigator} />
+      )}
+      {(Platform.OS !== 'web' || loggedIn || Config.dev.webAllowAnonymous) && (
+        <Stack.Screen name="Landing" component={LandingStackNavigator} />
+      )}
+      <Stack.Screen name="Linking" component={LinkingStackNavigator} />
     </Stack.Navigator>
   );
-}
+};
 
-export default AppStackNavigator;
+const mapStateToProps = (state: State) => {
+  const { selected } = state.location;
+  const { loggedIn } = state.account;
+  return { locationSelected: selected, loggedIn };
+};
+
+export default connect(mapStateToProps)(AppStackNavigator);

@@ -1,33 +1,21 @@
 import React from 'react';
-import {
-  ModalProps,
-  State,
-  UsersState,
-  User,
-  UserRequestState,
-  Account,
-} from '@ts/types';
-import {
-  Divider,
-  ProgressBar,
-  Text,
-  List,
-  useTheme,
-} from 'react-native-paper';
-import { View, Platform, FlatList } from 'react-native';
-import Illustration from '@components/Illustration';
-import Avatar from '@components/Avatar';
+import { View, FlatList } from 'react-native';
+import { Divider, ProgressBar, Text, List } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { searchUsers} from '@redux/actions/api/users';
+
+import Avatar from '@components/Avatar';
+import Illustration from '@components/Illustration';
 import { Modal, ErrorMessage, Searchbar } from '@components/index';
+import { searchUsers } from '@redux/actions/api/users';
 import getStyles from '@styles/Styles';
-import getEventStyles from '../styles/Styles';
+import { ModalProps, State, UsersState, UserRequestState, Account, UserPreload } from '@ts/types';
+import { useTheme } from '@utils';
 
 type UserSelectModalProps = ModalProps & {
   users: UsersState;
   state: UserRequestState;
   account: Account;
-  next: (user: User) => any;
+  next: (user: UserPreload) => any;
 };
 
 function UserSelectModal({
@@ -74,7 +62,7 @@ function UserSelectModal({
               contentSingular: "La liste d'utilisateurs",
             }}
             error={state.add?.error}
-            retry={() => update()}
+            retry={update}
           />
         ) : null}
 

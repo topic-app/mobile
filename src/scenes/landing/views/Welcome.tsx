@@ -1,14 +1,13 @@
 import React from 'react';
 import { View, Platform, ScrollView } from 'react-native';
 import { Text, Button, List, Divider, DarkTheme } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import shortid from 'shortid';
 
 import { Illustration, TranslucentStatusBar, PlatformTouchable } from '@components/index';
-import { useTheme } from '@utils/index';
 import { updateDepartments } from '@redux/actions/api/departments';
+import { useTheme } from '@utils/index';
 
-import type { LandingStackParams } from '../index';
+import type { LandingScreenNavigationProp } from '../index';
 import getLandingStyles from '../styles/Styles';
 
 const items = [
@@ -54,7 +53,7 @@ const items = [
 ];
 
 type LandingWelcomeProps = {
-  navigation: StackNavigationProp<LandingStackParams, 'Welcome'>;
+  navigation: LandingScreenNavigationProp<'Welcome'>;
 };
 
 const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
@@ -121,7 +120,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             color="white"
             uppercase={Platform.OS !== 'ios'}
             onPress={() => {
-              navigation.navigate('SelectLocation');
+              navigation.navigate('Beta');
             }}
             style={{ flex: 1 }}
           >

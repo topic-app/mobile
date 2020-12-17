@@ -2,8 +2,8 @@ import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import shortid from 'shortid';
 
-import { UserPreload, Event } from '@ts/types';
 import { InlineCard } from '@components/Cards';
+import { UserPreload, Event } from '@ts/types';
 import { useTheme, handleUrl } from '@utils/index';
 
 type EventDisplayContactProps = {
@@ -21,7 +21,7 @@ const EventDisplayContact: React.FC<EventDisplayContactProps> = ({ event, naviga
 
   const { email, phone, other } = event?.contact || {};
 
-  const icons = {
+  const icons: { [key: string]: string } = {
     twitter: 'twitter',
     instagram: 'instagram',
     facebook: 'facebook',

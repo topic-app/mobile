@@ -1,20 +1,20 @@
 import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
 import { TextInput, HelperText, Button, ProgressBar, Checkbox, List } from 'react-native-paper';
-import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from 'react-native-picker-select';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
-import { State, GroupRequestState } from '@ts/types';
 import { StepperViewPageProps, ErrorMessage } from '@components/index';
-import { useTheme } from '@utils/index';
-import { clearGroupCreationData } from '@redux/actions/contentData/groups';
 import { groupAdd } from '@redux/actions/apiActions/groups';
+import { clearGroupCreationData } from '@redux/actions/contentData/groups';
+import { State, GroupRequestState, GroupCreationData } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps & {
-  creationData: object;
+  creationData: GroupCreationData;
   state: GroupRequestState;
   navigation: any;
 };
@@ -313,10 +313,10 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
           }}
         />
         <HelperText type="info" visible={descriptionInput.current?.isFocused()}>
-          Si vous avez d&apos;autres éléments qui nous permettraient de confirmer votre identité, ajoutez
-          les ici (par exemple : lien vers une publication au Journal Officiel, lien vers les
-          mentions légales de votre organisation...) Ces informations ne seront pas publiques. En
-          cas de doute, nous pourrons aussi vous demander plus d&apos;informations par mail.
+          Si vous avez d&apos;autres éléments qui nous permettraient de confirmer votre identité,
+          ajoutez les ici (par exemple : lien vers une publication au Journal Officiel, lien vers
+          les mentions légales de votre organisation...) Ces informations ne seront pas publiques.
+          En cas de doute, nous pourrons aussi vous demander plus d&apos;informations par mail.
         </HelperText>
       </View>
       <View style={articleStyles.textInputContainer}>

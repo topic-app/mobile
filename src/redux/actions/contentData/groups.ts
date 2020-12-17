@@ -1,12 +1,10 @@
 import Store from '@redux/store';
 import { UPDATE_GROUPS_CREATION_DATA, GroupCreationData } from '@ts/types';
+
 import { updateCreationDataCreator, clearCreationDataCreator } from './ActionCreator';
 
-
-import { clearCreator } from '../api/ActionCreator';
-
 async function updateGroupCreationData(fields: GroupCreationData) {
-  await Store.dispatch(
+  Store.dispatch(
     updateCreationDataCreator({
       updateCreationData: UPDATE_GROUPS_CREATION_DATA,
       dataType: 'groupData',
@@ -16,8 +14,9 @@ async function updateGroupCreationData(fields: GroupCreationData) {
 }
 
 async function clearGroupCreationData() {
-  await Store.dispatch(
+  Store.dispatch(
     clearCreationDataCreator({
+      dataType: 'groupData',
       updateCreationData: UPDATE_GROUPS_CREATION_DATA,
     }),
   );

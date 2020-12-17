@@ -30,6 +30,7 @@ DerivedData
 *.xcuserstate
 project.xcworkspace
 google-services.json
+GoogleService-Info.plist
 
 # Android/IntelliJ
 #
@@ -38,6 +39,12 @@ build/
 .gradle
 local.properties
 *.iml
+
+# Java/Eclipse
+#
+android/**/.project
+android/**/.settings
+android/**/.classpath
 
 # node.js
 #

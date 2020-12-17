@@ -1,10 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Text } from 'react-native-paper';
+// @ts-nocheck
+
 import _ from 'lodash';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import shortid from 'shortid';
 
 import populateEvents from './packer';
@@ -50,7 +52,7 @@ function DayView({
 
   React.useEffect(() => {
     if (scrollToFirst) {
-      if (initPosition && scrollViewRef) {
+      if (initPosition && scrollViewRef && scrollViewRef.current) {
         scrollViewRef.current.scrollTo({
           x: 0,
           y: initPosition,
@@ -156,12 +158,19 @@ function DayView({
                 {event.title || 'Évènement'}
               </Text>
               {numberOfLines > 2 && (
-                <Text style={styles.eventTimes} numberOfLines={1}>
-                  <Icon name="clock" />
-                  {moment(event.start).format(formatTime)}
-                  <Icon name="chevron-right" />
-                  {moment(event.end).format(formatTime)}
-                </Text>
+                <View>
+                  <Text style={styles.eventTimes} numberOfLines={1}>
+                    <Icon name="clock" />
+                    {moment(event.start).format(formatTime)}
+                    <Icon name="chevron-right" />
+                    {moment(event.end).format(formatTime)}
+                  </Text>
+                  {event.address?.shortName ? (
+                    <Text style={styles.eventTimes} numberOfLines={1}>
+                      {event.address?.shortName}
+                    </Text>
+                  ) : null}
+                </View>
               )}
               {numberOfLines > 1 && (
                 <Text numberOfLines={numberOfLines - 1} style={[styles.eventSummary]}>

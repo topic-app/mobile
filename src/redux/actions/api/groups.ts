@@ -1,5 +1,4 @@
 import Store from '@redux/store';
-import { Group, Item } from '@ts/types';
 import {
   UPDATE_GROUPS_DATA,
   UPDATE_GROUPS_TEMPLATES,
@@ -8,12 +7,14 @@ import {
   UPDATE_GROUPS_VERIFICATION,
   UPDATE_GROUPS_STATE,
   CLEAR_GROUPS,
+  AppThunk,
 } from '@ts/redux';
+import { Group, GroupTemplate } from '@ts/types';
+import { request, logger } from '@utils/index';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const nameAscSort = (data: Item[]) =>
-  (data as Group[]).sort((a, b) => a.name.localeCompare(b.name));
+const nameAscSort = (data: Group[]) => data.sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * @docs actions
@@ -30,6 +31,7 @@ async function updateGroups(
       update: UPDATE_GROUPS_DATA,
       stateUpdate: UPDATE_GROUPS_STATE,
       url: 'groups/list',
+      listName: 'data',
       sort: nameAscSort,
       dataType: 'groups',
       type,
@@ -76,6 +78,7 @@ async function fetchGroup(groupId: string) {
     fetchCreator({
       update: UPDATE_GROUPS_ITEM,
       stateUpdate: UPDATE_GROUPS_STATE,
+      stateName: 'info',
       url: 'groups/info',
       dataType: 'groups',
       params: { groupId },
@@ -112,6 +115,7 @@ async function fetchGroupVerification(groupId: string) {
     fetchCreator({
       update: UPDATE_GROUPS_ITEM,
       stateUpdate: UPDATE_GROUPS_STATE,
+      stateName: 'info',
       url: 'groups/verification/info',
       dataType: 'groups',
       params: { groupId },
@@ -124,8 +128,8 @@ async function fetchGroupVerification(groupId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearGroups(data = true, search = true, templates = true) {
-  await Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
+function clearGroups(data = true, search = true, templates = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
 }
 
 /**
@@ -133,20 +137,62 @@ async function clearGroups(data = true, search = true, templates = true) {
  * Récupère les templates de création de groupe
  * @param next Si il faut récupérer les groupes après le dernier
  */
+function updateGroupTemplatesCreator(): AppThunk {
+  return (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        templates: {
+          loading: { initial: true },
+          success: null,
+          error: null,
+        },
+      },
+    });
+    request('groups/templates/list', 'get', {}, true)
+      .then((result) => {
+        const data: GroupTemplate[] = result.data?.templates;
+        dispatch({
+          type: UPDATE_GROUPS_TEMPLATES,
+          data,
+        });
+        return dispatch({
+          type: UPDATE_GROUPS_STATE,
+          data: {
+            templates: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: true,
+              error: null,
+            },
+          },
+        });
+      })
+      .catch((error) => {
+        logger.error(error);
+        return dispatch({
+          type: UPDATE_GROUPS_STATE,
+          data: {
+            templates: {
+              loading: {
+                initial: false,
+                refresh: false,
+                next: false,
+              },
+              success: false,
+              error,
+            },
+          },
+        });
+      });
+  };
+}
+
 async function updateGroupTemplates() {
-  await Store.dispatch(
-    updateCreator({
-      update: UPDATE_GROUPS_TEMPLATES,
-      stateUpdate: UPDATE_GROUPS_STATE,
-      url: 'groups/templates/list',
-      sort: nameAscSort,
-      stateName: 'templates',
-      dataType: 'groups', // This is useless but typescript
-      type: 'initial',
-      params: {},
-      clear: true,
-    }),
-  );
+  await Store.dispatch(updateGroupTemplatesCreator());
 }
 
 export {

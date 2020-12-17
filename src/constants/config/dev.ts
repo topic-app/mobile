@@ -9,7 +9,7 @@ import { DevAppConfig } from './types';
 
 const config: DevAppConfig = {
   logger: {
-    level: 'debug',
+    level: 'verbose',
     exclude: [],
   },
   api: {
@@ -17,6 +17,9 @@ const config: DevAppConfig = {
   },
   cdn: {
     timeout: 3000,
+  },
+  dev: {
+    webAllowAnonymous: true,
   },
 };
 

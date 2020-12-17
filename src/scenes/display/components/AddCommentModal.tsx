@@ -1,12 +1,13 @@
 import React from 'react';
-import { ModalProps, State, Account, CommentRequestState } from '@ts/types';
-import { Divider, Text } from 'react-native-paper';
 import { View, TextInput, ActivityIndicator } from 'react-native';
+import { Divider, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
+import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components/index';
 import { Config } from '@constants/index';
-import { CategoriesList, PlatformIconButton, Modal } from '@components/index';
+import { ModalProps, State, Account, CommentRequestState, Publisher, Content } from '@ts/types';
 import { useTheme, logger } from '@utils/index';
+
 import getArticleStyles from './styles/Styles';
 
 type CommentPublisher = {
@@ -23,7 +24,12 @@ type CommentPublisher = {
 type AddCommentModalProps = ModalProps & {
   id: string;
   account: Account;
-  reqState: CommentRequestState;
+  reqState: { comments: CommentRequestState };
+  add: (
+    publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
+    content: Content,
+    parent: string,
+  ) => any;
 };
 
 const AddCommentModal: React.FC<AddCommentModalProps> = ({
@@ -80,73 +86,78 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
         publishers.find((p) => p.key === publisher)!.publisher,
         { parser: 'plaintext', data: commentText },
         id,
-        'article',
       )
         .then(() => {
           setCommentText('');
           setVisible(false);
         })
-        .catch((e) => logger.warn('Failed to add comment to article', e));
+        .catch((e: any) => logger.warn('Failed to add comment to article', e));
     }
   };
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      {reqState.comments.add.error && (
-        <ErrorMessage
-          type="axios"
-          strings={{
-            what: "l'ajout du commentaire",
-            contentSingular: 'Le commentaire',
-          }}
-          error={reqState.comments.add.error}
-          retry={submitComment}
-        />
-      )}
-      <View style={articleStyles.activeCommentContainer}>
-        <TextInput
-          // TODO: Hook up comments to drafts in redux, so the user sees his comment when he leaves and comes back.
-          // Could possibly also hook it up to drafts with the server in the future.
-          autoFocus
-          placeholder="Écrire un commentaire..."
-          placeholderTextColor={colors.disabled}
-          style={articleStyles.commentInput}
-          multiline
-          value={commentText}
-          onChangeText={setCommentText}
-        />
-      </View>
-      <Divider style={articleStyles.divider} />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{ flex: 1, flexGrow: 1 }}>
-          <CategoriesList categories={publishers} selected={publisher} setSelected={setPublisher} />
+      <View>
+        {reqState.comments.add.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: "l'ajout du commentaire",
+              contentSingular: 'Le commentaire',
+            }}
+            error={reqState.comments.add.error}
+            retry={submitComment}
+          />
+        )}
+        <View style={articleStyles.activeCommentContainer}>
+          <TextInput
+            // TODO: Hook up comments to drafts in redux, so the user sees his comment when he leaves and comes back.
+            // Could possibly also hook it up to drafts with the server in the future.
+            autoFocus
+            placeholder="Écrire un commentaire..."
+            placeholderTextColor={colors.disabled}
+            style={articleStyles.commentInput}
+            multiline
+            value={commentText}
+            onChangeText={setCommentText}
+          />
         </View>
-        <View
-          style={{
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            flexDirection: 'row',
-            marginLeft: 20,
-          }}
-        >
-          <Text style={{ color: commentCharCountColor }}>
-            {commentText.length}/{Config.content.comments.maxCharacters}
-          </Text>
+        <Divider style={articleStyles.divider} />
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flex: 1, flexGrow: 1 }}>
+            <CategoriesList
+              categories={publishers}
+              selected={publisher}
+              setSelected={setPublisher}
+            />
+          </View>
+          <View
+            style={{
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              flexDirection: 'row',
+              marginLeft: 20,
+            }}
+          >
+            <Text style={{ color: commentCharCountColor }}>
+              {commentText.length}/{Config.content.comments.maxCharacters}
+            </Text>
 
-          {reqState.comments.add.loading ? (
-            <ActivityIndicator
-              size="large"
-              color={colors.primary}
-              style={{ marginHorizontal: 7 }}
-            />
-          ) : (
-            <PlatformIconButton
-              color={tooManyChars || commentText.length < 1 ? colors.disabled : colors.primary}
-              icon="send"
-              onPress={tooManyChars || commentText.length < 1 ? undefined : submitComment}
-              style={{ padding: 0 }}
-            />
-          )}
+            {reqState.comments.add.loading ? (
+              <ActivityIndicator
+                size="large"
+                color={colors.primary}
+                style={{ marginHorizontal: 7 }}
+              />
+            ) : (
+              <PlatformIconButton
+                color={tooManyChars || commentText.length < 1 ? colors.disabled : colors.primary}
+                icon="send"
+                onPress={tooManyChars || commentText.length < 1 ? undefined : submitComment}
+                style={{ padding: 0 }}
+              />
+            )}
+          </View>
         </View>
       </View>
     </Modal>

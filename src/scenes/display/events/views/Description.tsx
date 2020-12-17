@@ -1,21 +1,43 @@
-import React from 'react';
-import { View } from 'react-native';
-import { Text, Divider } from 'react-native-paper';
-import { connect } from 'react-redux';
 import moment from 'moment';
+import React from 'react';
+import { View, FlatList, ActivityIndicator, Platform } from 'react-native';
+import { Text, Divider, List, Button } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { State, Account } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
-import { CategoryTitle, Content, InlineCard } from '@components/index';
+import {
+  CategoryTitle,
+  Content,
+  InlineCard,
+  Illustration,
+  ErrorMessage,
+  CollapsibleView,
+  PlatformTouchable,
+} from '@components/index';
+import { Permissions } from '@constants';
+import { updateComments } from '@redux/actions/api/comments';
 import getStyles from '@styles/Styles';
+import {
+  State,
+  Account,
+  Event,
+  EventPlace,
+  Duration,
+  EventRequestState,
+  CommentRequestState,
+  Comment,
+} from '@ts/types';
+import { useTheme, logger, checkPermission } from '@utils/index';
 
+import CommentInlineCard from '../../components/Comment';
+import MessageInlineCard from '../components/Message';
 import getEventStyles from '../styles/Styles';
 
-function getPlaceLabels(place) {
-  const { type, address, associatedSchool, associatedPlace } = place;
-  switch (type) {
+function getPlaceLabels(place: EventPlace) {
+  switch (place.type) {
     case 'standalone': {
+      const { address } = place;
       if (!address?.address) {
         return { title: '', description: '' };
       }
@@ -26,18 +48,20 @@ function getPlaceLabels(place) {
       };
     }
     case 'school': {
+      const { associatedSchool } = place;
       if (!associatedSchool?.address?.address) {
         return { title: '', description: '' };
       }
       const { number, street, extra, city } = associatedSchool.address.address;
       return {
-        title: associatedSchool.displayName,
+        title: associatedSchool.name,
         description: `${
           associatedSchool.address.shortName || `${number}, ${street} ${extra}`
         }, ${city}`,
       };
     }
     case 'place': {
+      const { associatedPlace } = place;
       if (!associatedPlace?.address?.address) {
         return { title: '', description: '' };
       }
@@ -57,7 +81,7 @@ function getPlaceLabels(place) {
   }
 }
 
-function getTimeLabels(timeData, startTime, endTime) {
+function getTimeLabels(timeData: Duration, startTime: number | null, endTime: number | null) {
   if (timeData?.start && timeData?.end) {
     return {
       dateString: `Du ${moment(timeData.start).format('DD/MM/YYYY')} au ${moment(
@@ -75,19 +99,38 @@ function getTimeLabels(timeData, startTime, endTime) {
   };
 }
 
-const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+type CombinedReqState = {
+  events: EventRequestState;
+  comments: CommentRequestState;
+};
 
-type EventDisplayProps = {
+type EventDisplayHeaderProps = {
   event: Event;
   navigation: any;
   account: Account;
+  verification: boolean;
+  commentsDisplayed: boolean;
+  setCommentModalVisible: (state: boolean) => any;
+  reqState: CombinedReqState;
+  setMessageModalVisible: (state: boolean) => any;
 };
 
-function EventDisplayDescription({ event, navigation, account }: EventDisplayProps) {
+function EventDisplayDescriptionHeader({
+  event,
+  navigation,
+  account,
+  verification,
+  reqState,
+  setCommentModalVisible,
+  setMessageModalVisible,
+  commentsDisplayed,
+}: EventDisplayHeaderProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
   const { colors } = theme;
+
+  const [messagesShown, setMessagesShown] = React.useState(false);
 
   if (!event) {
     // Render placeholder
@@ -98,7 +141,7 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
     );
   }
 
-  if (!(Array.isArray(event?.program) && event?.program?.length > 0)) {
+  if (!Array.isArray(event?.program)) {
     logger.warn('Invalid Program for event');
     // Handle invalid program
   }
@@ -137,13 +180,58 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
         onPress={() => logger.warn('time pressed, switch to program')}
       />
       <Divider />
-      <View style={eventStyles.description}>
+      <View style={[eventStyles.description, { marginBottom: 20 }]}>
         <Content
           parser={event?.description?.parser || 'plaintext'}
           data={event?.description?.data}
         />
       </View>
       <Divider />
+      {Array.isArray(event?.messages) && event.messages.length > 0 && (
+        <View>
+          <View style={styles.container}>
+            <CategoryTitle>Messages</CategoryTitle>
+          </View>
+          {(!messagesShown ? event.messages.slice(0, 3) : event.messages).map((m) => (
+            <View key={m._id}>
+              <MessageInlineCard message={m} isPublisher={m?.group?._id === event.group?._id} />
+            </View>
+          ))}
+          {event.messages.length > 3 && (
+            <View>
+              <PlatformTouchable onPress={() => setMessagesShown(!messagesShown)}>
+                <View style={{ flexDirection: 'row', margin: 10, alignSelf: 'center' }}>
+                  <Text style={{ color: colors.disabled, alignSelf: 'center' }}>
+                    Voir {messagesShown ? 'moins' : 'plus'} de messages
+                  </Text>
+                  <Icon
+                    name={!messagesShown ? 'chevron-down' : 'chevron-up'}
+                    color={colors.disabled}
+                    size={23}
+                  />
+                </View>
+              </PlatformTouchable>
+            </View>
+          )}
+        </View>
+      )}
+      {checkPermission(account, {
+        permission: Permissions.EVENT_MESSAGES_ADD,
+        scope: { groups: [event?.group?._id] },
+      }) && (
+        <View style={styles.container}>
+          <Button
+            icon="message-processing"
+            mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
+            uppercase={Platform.OS !== 'ios'}
+            onPress={() => setMessageModalVisible(true)}
+          >
+            Envoyer un message
+          </Button>
+        </View>
+      )}
+      <Divider />
+
       <View style={styles.container}>
         <CategoryTitle>Auteur{event.authors?.length > 1 ? 's' : ''}</CategoryTitle>
       </View>
@@ -165,7 +253,7 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
           }
           badge={
             account.loggedIn &&
-            account.accountInfo?.user?.data?.following?.users.includes(author._id)
+            account.accountInfo?.user?.data?.following?.users?.some((u) => u?._id === author?._id)
               ? 'account-heart'
               : undefined
           }
@@ -196,19 +284,189 @@ function EventDisplayDescription({ event, navigation, account }: EventDisplayPro
         }
         badge={
           account.loggedIn &&
-          account.accountInfo?.user?.data?.following?.groups?.includes(event.group?._id)
+          account.accountInfo?.user?.data?.following?.groups?.some(
+            (g) => g?._id === event.group?._id,
+          )
             ? 'account-heart'
-            : null
+            : undefined
         }
         badgeColor={colors.valid}
       />
+      {!verification && commentsDisplayed && (
+        <View>
+          <View style={styles.container}>
+            <CategoryTitle>Commentaires</CategoryTitle>
+          </View>
+          <Divider />
+          {account.loggedIn ? (
+            <View>
+              <List.Item
+                title="Écrire un commentaire"
+                titleStyle={eventStyles.placeholder}
+                right={() => <List.Icon icon="comment-plus" color={colors.icon} />}
+                onPress={() => setCommentModalVisible(true)}
+              />
+            </View>
+          ) : (
+            <View style={styles.contentContainer}>
+              <Text style={eventStyles.disabledText}>
+                Connectez vous pour écrire un commentaire
+              </Text>
+              <Text>
+                <Text
+                  onPress={() =>
+                    navigation.navigate('Auth', {
+                      screen: 'Login',
+                    })
+                  }
+                  style={[styles.link, styles.primaryText]}
+                >
+                  Se connecter
+                </Text>
+                <Text style={eventStyles.disabledText}> ou </Text>
+                <Text
+                  onPress={() =>
+                    navigation.navigate('Auth', {
+                      screen: 'Create',
+                    })
+                  }
+                  style={[styles.link, styles.primaryText]}
+                >
+                  créér un compte
+                </Text>
+              </Text>
+            </View>
+          )}
+          <Divider />
+          <View>
+            {reqState.comments.list.error && (
+              <ErrorMessage
+                type="axios"
+                strings={{
+                  what: 'la récupération des commentaires',
+                  contentPlural: 'des commentaires',
+                }}
+                error={reqState.comments.list.error}
+                retry={() => updateComments('initial', { parentId: event._id })}
+              />
+            )}
+          </View>
+        </View>
+      )}
     </View>
   );
 }
 
+type EventDisplayDescriptionProps = {
+  event: Event;
+  navigation: any;
+  account: Account;
+  verification: boolean;
+  reqState: { events: EventRequestState; comments: CommentRequestState };
+  commentsDisplayed: boolean;
+  setCommentModalVisible: (state: boolean) => any;
+  setFocusedComment: (id: string) => any;
+  setCommentReportModalVisible: (state: boolean) => any;
+  setMessageModalVisible: (state: boolean) => any;
+  comments: Comment[];
+  id: string;
+};
+
+function EventDisplayDescription({
+  event,
+  verification,
+  account,
+  navigation,
+  comments,
+  commentsDisplayed,
+  reqState,
+  setFocusedComment,
+  setCommentReportModalVisible,
+  setMessageModalVisible,
+  setCommentModalVisible,
+  id,
+}: EventDisplayDescriptionProps) {
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
+
+  const articleComments = comments.filter((c) => c.parent === event?._id);
+
+  React.useEffect(() => {
+    updateComments('initial', { parentId: id });
+  }, [null]);
+
+  return (
+    <FlatList
+      ListHeaderComponent={() =>
+        event ? (
+          <EventDisplayDescriptionHeader
+            setMessageModalVisible={setMessageModalVisible}
+            event={event}
+            account={account}
+            navigation={navigation}
+            verification={verification}
+            setCommentModalVisible={setCommentModalVisible}
+            reqState={reqState}
+            commentsDisplayed={commentsDisplayed}
+          />
+        ) : null
+      }
+      data={reqState.events.info.success && !verification ? articleComments : []}
+      // onEndReached={() => {
+      //   console.log('comment end reached');
+      //   updateComments('next', { parentId: id });
+      // }}
+      // onEndReachedThreshold={0.5}
+      keyExtractor={(comment: Comment) => comment._id}
+      ItemSeparatorComponent={Divider}
+      ListFooterComponent={
+        reqState.events.info.success ? (
+          <View>
+            <Divider />
+            <View style={[styles.container, { height: 50 }]}>
+              {reqState.comments.list.loading.next ?? (
+                <ActivityIndicator size="large" color={colors.primary} />
+              )}
+            </View>
+          </View>
+        ) : undefined
+      }
+      ListEmptyComponent={() =>
+        reqState.comments.list.success &&
+        reqState.events.info.success &&
+        !verification &&
+        commentsDisplayed ? (
+          <View style={styles.contentContainer}>
+            <View style={styles.centerIllustrationContainer}>
+              <Illustration name="comment-empty" height={200} width={200} />
+              <Text>Aucun commentaire</Text>
+            </View>
+          </View>
+        ) : null
+      }
+      renderItem={({ item: comment }: { item: Comment }) => (
+        <CommentInlineCard
+          comment={comment}
+          report={(commentId) => {
+            setFocusedComment(commentId);
+            setCommentReportModalVisible(true);
+          }}
+          loggedIn={account.loggedIn}
+          navigation={navigation}
+        />
+      )}
+    />
+  );
+}
+
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { account };
+  const { account, comments, events } = state;
+  return {
+    account,
+    comments: comments.data,
+    reqState: { events: events.state, comments: comments.state },
+  };
 };
 
 export default connect(mapStateToProps)(EventDisplayDescription);

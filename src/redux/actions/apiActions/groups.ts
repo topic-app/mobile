@@ -1,10 +1,11 @@
 import Store from '@redux/store';
+import { UPDATE_GROUPS_STATE, AppThunk, GroupCreationData } from '@ts/types';
 import { request } from '@utils/index';
-import { UPDATE_GROUPS_STATE, ActionType, ReduxLocation, State } from '@ts/types';
+
 import { reportCreator, approveCreator } from './ActionCreator';
 
-function groupFollowCreator({ id }: { id: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupFollowCreator({ id }: { id: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -36,7 +37,7 @@ function groupFollowCreator({ id }: { id: string }) {
               },
             },
           });
-          resolve();
+          resolve({ type: 'group', id });
         })
         .catch((error) => {
           dispatch({
@@ -55,8 +56,8 @@ function groupFollowCreator({ id }: { id: string }) {
   };
 }
 
-function groupUnfollowCreator({ id }: { id: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupUnfollowCreator({ id }: { id: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -88,7 +89,7 @@ function groupUnfollowCreator({ id }: { id: string }) {
               },
             },
           });
-          resolve();
+          resolve({ type: 'group', id });
         })
         .catch((error) => {
           dispatch({
@@ -107,20 +108,22 @@ function groupUnfollowCreator({ id }: { id: string }) {
   };
 }
 
+type GroupAddMemberCreatorParams = {
+  user: string;
+  group: string;
+  role: string;
+  secondaryRoles: string[];
+  expires?: Date | number;
+};
+
 function groupAddMemberCreator({
   group,
   user,
   role,
   secondaryRoles,
   expires,
-}: {
-  user: string;
-  group: string;
-  role: string;
-  secondaryRoles: string[];
-  expires: number;
-}) {
-  return (dispatch: (action: ActionType) => void) => {
+}: GroupAddMemberCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -156,7 +159,7 @@ function groupAddMemberCreator({
               },
             },
           });
-          resolve();
+          resolve({ user, group, role, secondaryRoles });
         })
         .catch((error) => {
           dispatch({
@@ -175,8 +178,73 @@ function groupAddMemberCreator({
   };
 }
 
-function groupDeleteMemberCreator({ group, user }: { user: string; group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+type GroupModifyMemberCreatorParams = {
+  user: string;
+  group: string;
+  role: string;
+  secondaryRoles: string[];
+};
+function groupModifyMemberCreator({
+  group,
+  user,
+  role,
+  secondaryRoles,
+}: GroupModifyMemberCreatorParams): AppThunk {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          member_modify: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        'groups/members/modify',
+        'post',
+        {
+          group,
+          user,
+          role,
+          secondaryRoles,
+        },
+        true,
+      )
+        .then(() => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              member_modify: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve({ user, group, role, secondaryRoles });
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              member_modify: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
+function groupDeleteMemberCreator({ group, user }: { user: string; group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -208,7 +276,7 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
               },
             },
           });
-          resolve();
+          resolve({ user, group });
         })
         .catch((error) => {
           dispatch({
@@ -227,8 +295,8 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
   };
 }
 
-function groupMemberAcceptCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberAcceptCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -259,7 +327,7 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
               },
             },
           });
-          resolve();
+          resolve({ group });
         })
         .catch((error) => {
           dispatch({
@@ -278,8 +346,8 @@ function groupMemberAcceptCreator({ group }: { group: string }) {
   };
 }
 
-function groupMemberRejectCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberRejectCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -310,7 +378,7 @@ function groupMemberRejectCreator({ group }: { group: string }) {
               },
             },
           });
-          resolve();
+          resolve({ group });
         })
         .catch((error) => {
           dispatch({
@@ -329,8 +397,8 @@ function groupMemberRejectCreator({ group }: { group: string }) {
   };
 }
 
-function groupMemberLeaveCreator({ group }: { group: string }) {
-  return (dispatch: (action: ActionType) => void) => {
+function groupMemberLeaveCreator({ group }: { group: string }): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -361,7 +429,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
               },
             },
           });
-          resolve();
+          resolve({ group });
         })
         .catch((error) => {
           dispatch({
@@ -380,13 +448,7 @@ function groupMemberLeaveCreator({ group }: { group: string }) {
   };
 }
 
-function groupModifyCreator({
-  group,
-  shortName,
-  aliases,
-  summary,
-  description,
-}: {
+type GroupModifyCreatorParams = {
   group: string;
   shortName?: string;
   aliases?: string[];
@@ -395,8 +457,16 @@ function groupModifyCreator({
     parser: 'markdown' | 'plaintext';
     data: string;
   };
-}) {
-  return (dispatch: (action: ActionType) => void) => {
+};
+
+function groupModifyCreator({
+  group,
+  shortName,
+  aliases,
+  summary,
+  description,
+}: GroupModifyCreatorParams): AppThunk {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -433,7 +503,7 @@ function groupModifyCreator({
               },
             },
           });
-          resolve();
+          resolve({ group });
         })
         .catch((error) => {
           dispatch({
@@ -452,21 +522,6 @@ function groupModifyCreator({
   };
 }
 
-type GroupAddProps = {
-  name: string;
-  shortName: string;
-  type: string;
-  location: ReduxLocation;
-  summary: string;
-  description: string;
-  parser: string;
-  verification: {
-    name: string;
-    id: string;
-    extra: string;
-  };
-};
-
 function groupAddCreator({
   name,
   shortName,
@@ -476,8 +531,8 @@ function groupAddCreator({
   parser,
   description,
   verification,
-}: GroupAddProps) {
-  return (dispatch: (action: any) => void, getState: () => State) => {
+}: GroupCreationData): AppThunk<Promise<{ _id: string }>> {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       dispatch({
         type: UPDATE_GROUPS_STATE,
@@ -519,7 +574,7 @@ function groupAddCreator({
               },
             },
           });
-          resolve(result.data);
+          resolve(result.data as { _id: string });
         })
         .catch((error) => {
           dispatch({
@@ -538,8 +593,8 @@ function groupAddCreator({
   };
 }
 
-async function groupAdd(data: GroupAddProps) {
-  return await Store.dispatch(groupAddCreator(data));
+async function groupAdd(data: GroupCreationData) {
+  return Store.dispatch(groupAddCreator(data));
 }
 
 async function groupFollow(id: string) {
@@ -563,7 +618,7 @@ async function groupMemberAdd(
   user: string,
   role: string,
   secondaryRoles: string[],
-  expires: number,
+  expires?: Date | number, // not sure about how this works exactly
 ) {
   await Store.dispatch(
     groupAddMemberCreator({
@@ -572,6 +627,22 @@ async function groupMemberAdd(
       group,
       secondaryRoles,
       expires,
+    }),
+  );
+}
+
+async function groupMemberModify(
+  group: string,
+  user: string,
+  role: string,
+  secondaryRoles: string[],
+) {
+  await Store.dispatch(
+    groupModifyMemberCreator({
+      user,
+      role,
+      group,
+      secondaryRoles,
     }),
   );
 }
@@ -622,7 +693,7 @@ async function groupReport(groupId: string, reason: string) {
 }
 
 async function groupVerificationApprove(id: string) {
-  return await Store.dispatch(
+  return Store.dispatch(
     approveCreator({
       url: 'groups/verification/approve',
       stateUpdate: UPDATE_GROUPS_STATE,
@@ -638,6 +709,7 @@ export {
   groupReport,
   groupMemberAdd,
   groupMemberDelete,
+  groupMemberModify,
   groupMemberAccept,
   groupMemberReject,
   groupMemberLeave,

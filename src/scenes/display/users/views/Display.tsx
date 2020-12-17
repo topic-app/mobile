@@ -1,27 +1,33 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import {
-  View,
-  ScrollView,
-  ActivityIndicator,
-  FlatList,
-  StatusBar,
-  Platform,
-  Share,
-} from 'react-native';
+import { View, ScrollView, ActivityIndicator, StatusBar, Platform, Share } from 'react-native';
 import { Text, Title, Subheading, Divider, Button, List, Appbar, Menu } from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 
+import {
+  Avatar,
+  ErrorMessage,
+  InlineCard,
+  TranslucentStatusBar,
+  PlatformBackButton,
+  ReportModal,
+  CustomTabView,
+  SafeAreaView,
+} from '@components/index';
+import { searchArticles } from '@redux/actions/api/articles';
+import { searchEvents } from '@redux/actions/api/events';
+import { searchGroups } from '@redux/actions/api/groups';
+import { fetchUser } from '@redux/actions/api/users';
+import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
+import { fetchAccount } from '@redux/actions/data/account';
+import getStyles from '@styles/Styles';
 import {
   Account,
   Address,
   State,
   UsersState,
-  Group,
   RequestState,
-  RequestStateComplex,
-  Article,
   UserPreload,
   User,
   ArticlePreload,
@@ -30,30 +36,13 @@ import {
   ArticleRequestState,
   EventRequestState,
   GroupPreload,
+  UserRequestState,
+  Group,
 } from '@ts/types';
-import {
-  Avatar,
-  ErrorMessage,
-  InlineCard,
-  ArticleCard,
-  TranslucentStatusBar,
-  PlatformBackButton,
-  ReportModal,
-  CustomTabView,
-  SafeAreaView,
-} from '@components/index';
-import { useTheme, logger } from '@utils/index';
-import getStyles from '@styles/Styles';
-import { fetchUser } from '@redux/actions/api/users';
-import { fetchAccount } from '@redux/actions/data/account';
-import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
-import { searchGroups } from '@redux/actions/api/groups';
-import { searchArticles } from '@redux/actions/api/articles';
-import { searchEvents } from '@redux/actions/api/events';
+import { useTheme, logger, Format } from '@utils/index';
 
-import type { UserDisplayStackParams } from '../index';
-import getUserStyles from '../styles/Styles';
 import ContentTabView from '../../components/ContentTabView';
+import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '../index';
 
 function getAddressString(address: Address['address']) {
   const { number, street, city, code } = address || {};
@@ -65,18 +54,19 @@ function getAddressString(address: Address['address']) {
 }
 
 function genName(user: User | UserPreload) {
-  const { firstName, lastName } = user.data || {};
-  if (firstName && lastName) {
-    return `${firstName} ${lastName}`;
+  if (user.preload) {
+    return user.displayName || null;
   }
-  return user.name || user.displayName || user.firstName || user.lastName || null;
+  return Format.fullUserName(user);
 }
 
-type UserDisplayProps = StackScreenProps<UserDisplayStackParams, 'Display'> & {
+type UserDisplayProps = {
+  route: RouteProp<UserDisplayStackParams, 'Display'>;
+  navigation: UserDisplayScreenNavigationProp<'Display'>;
   account: Account;
-  state: { info: RequestState };
+  state: UserRequestState;
   users: UsersState;
-  groups: GroupPreload[];
+  groups: (GroupPreload | Group)[];
   groupsState: GroupRequestState;
   articles: ArticlePreload[];
   events: EventPreload[];
@@ -99,7 +89,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 }) => {
   const { id } = route.params || {};
 
-  let user =
+  const user: User | UserPreload | null =
     users.item?._id === id
       ? users.item
       : users.data.find((u) => u._id === id) || users.search.find((u) => u._id === id) || null;
@@ -123,7 +113,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 
   const theme = useTheme();
   const styles = getStyles(theme);
-  const userStyles = getUserStyles(theme);
   const { colors } = theme;
 
   const [menuVisible, setMenuVisible] = React.useState(false);
@@ -222,10 +211,10 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
               <Avatar size={120} avatar={user.info.avatar} />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
-              {user.data.public ? (
+              {user.data?.public ? (
                 <View style={{ alignItems: 'center' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Title>{genName(user) || `@${user.info.username}`}</Title>
+                    <Title>{genName(user)}</Title>
                     <View style={{ marginLeft: 5 }}>
                       {user.info.official && (
                         <Icon name="check-decagram" color={colors.primary} size={20} />
@@ -248,7 +237,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
               <ActivityIndicator size="large" color={colors.primary} />
             </View>
           )}
-          {state.info.success && (
+          {state.info.success && !user.preload && (
             <View>
               <Divider style={{ marginVertical: 10 }} />
               <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
@@ -259,9 +248,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 40 }}>
                     {user.data?.public ? (
-                      user.data.following.groups.length +
-                      user.data.following.users.length +
-                      user.data.following.events.length
+                      user.data.following.groups.length + user.data.following.users.length
                     ) : (
                       <Icon name="lock-outline" size={52} color={colors.disabled} />
                     )}
@@ -405,9 +392,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                       <InlineCard
                         key={school._id}
                         icon="school"
-                        title={school.displayName}
+                        title={school.name}
                         subtitle={`${
-                          getAddressString(school.address?.address) || school.address?.shortName
+                          school.address?.address
+                            ? getAddressString(school.address?.address)
+                            : school.address?.shortName
                         }${
                           school.address?.departments[0]
                             ? `, ${
@@ -451,12 +440,12 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 <Text>Aucun abonnement à un groupe</Text>
                               </View>
                             )}
-                            {user.data?.following.groups?.map((group) => (
+                            {user.data?.following.groups?.map((g) => (
                               <InlineCard
-                                key={group._id}
-                                avatar={group.avatar}
-                                title={group.displayName}
-                                subtitle={`Groupe ${group.type}`}
+                                key={g._id}
+                                avatar={g.avatar}
+                                title={g.displayName}
+                                subtitle={`Groupe ${g.type}`}
                                 onPress={() =>
                                   navigation.push('Main', {
                                     screen: 'Display',
@@ -464,7 +453,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                       screen: 'Group',
                                       params: {
                                         screen: 'Display',
-                                        params: { id: group._id, title: group.displayName },
+                                        params: { id: g._id, title: g.displayName },
                                       },
                                     },
                                   })
@@ -484,11 +473,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 <Text>Aucun abonnement à un utilisateur</Text>
                               </View>
                             )}
-                            {user.data.following.users?.map((user) => (
+                            {user.data.following.users?.map((u) => (
                               <InlineCard
-                                key={user._id}
-                                avatar={user.info?.avatar}
-                                title={user.displayName}
+                                key={u._id}
+                                avatar={u.info?.avatar}
+                                title={u.displayName}
                                 onPress={() =>
                                   navigation.push('Main', {
                                     screen: 'Display',
@@ -496,7 +485,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                       screen: 'User',
                                       params: {
                                         screen: 'Display',
-                                        params: { id: user._id },
+                                        params: { id: u._id },
                                       },
                                     },
                                   })
@@ -528,6 +517,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
         contentId={id}
         report={userReport}
         state={state.report}
+        navigation={navigation}
       />
     </View>
   );

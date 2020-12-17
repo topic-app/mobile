@@ -1,29 +1,26 @@
 import React, { createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput, FlatList } from 'react-native';
+import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { TextInput, Button, IconButton, List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { useTheme } from '@utils/index';
-import { Account, State, EventCreationData, EventPlace, User } from '@ts/types';
-import { StepperViewPageProps, InlineCard } from '@components/index';
-import getStyles from '@styles/Styles';
-import { updateEventCreationData } from '@redux/actions/contentData/events';
 
-import UserSelectModal from './UserSelectModal';
-import ContactAddModal from './ContactAddModal';
+import { StepperViewPageProps, InlineCard } from '@components/index';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { Account, State, UserPreload } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
+import ContactAddModal from './ContactAddModal';
+import UserSelectModal from './UserSelectModal';
 
 type Props = StepperViewPageProps & {
   account: Account;
-  creationData: EventCreationData;
-  navigation: any;
 };
 
 const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
-  const [showError, setError] = React.useState(false);
   const [isAddUserModalVisible, setAddUserModalVisible] = React.useState(false);
   const [isContactAddModalVisible, setContactAddModalVisible] = React.useState(false);
-  const [eventOrganizers, setEventOrganizers] = React.useState<User[]>([]);
+  const [eventOrganizers, setEventOrganizers] = React.useState<UserPreload[]>([]);
   const [customContact, setCustomContact] = React.useState<CustomContactType[]>([]);
 
   const theme = useTheme();
@@ -31,8 +28,8 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
-  const phoneInput = createRef<RNTestInput>();
-  const emailInput = createRef<RNTestInput>();
+  const phoneInput = createRef<RNTextInput>();
+  const emailInput = createRef<RNTextInput>();
 
   type InputStateType = {
     value: string;
@@ -65,7 +62,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
     message: '',
   });
 
-  const addEventOrganizer = (user: User) => {
+  const addEventOrganizer = (user: UserPreload) => {
     const previousEventIds = eventOrganizers.map((p) => p._id);
     if (!previousEventIds.includes(user._id)) {
       setEventOrganizers([...eventOrganizers, user]);
@@ -125,7 +122,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
         phone: phoneVal,
         email: emailVal,
         contact: customContact,
-        organizers: eventOrganizers,
+        members: eventOrganizers.map((u) => u._id),
       });
       next();
     } else {
@@ -205,34 +202,34 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
       <View style={{ marginTop: 30 }}>
         <List.Subheader> Autres moyens de contact (réseaux sociaux, etc.)</List.Subheader>
         {customContact?.map((contact) => (
-                    <View
-                      key={contact._id}
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
-                      <InlineCard
-                        key={contact._id}
-                        icon="at"
-                        title={contact.value}
-                        subtitle={contact.key}
-                      />
-                      </View>
-                      <View style={{ flexGrow: 1 }}>
-                        <IconButton
-                          icon="delete"
-                          size={30}
-                          style={{ marginRight: 20, flexGrow: 1 }}
-                          onPress={() => {
-                            setCustomContact(customContact.filter((s) => s !== contact));
-                          }}
-                        />
-                      </View>
-                    </View>
-                  ))}
+          <View
+            key={contact._id}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
+              <InlineCard
+                key={contact._id}
+                icon="at"
+                title={contact.value}
+                subtitle={contact.key}
+              />
+            </View>
+            <View style={{ flexGrow: 1 }}>
+              <IconButton
+                icon="delete"
+                size={30}
+                style={{ marginRight: 20, flexGrow: 1 }}
+                onPress={() => {
+                  setCustomContact(customContact.filter((s) => s !== contact));
+                }}
+              />
+            </View>
+          </View>
+        ))}
       </View>
       <View style={styles.container}>
         <Button
@@ -256,25 +253,21 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
-           >
+          >
             <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
-              <InlineCard
-                key={user._id}
-                avatar={user.info.avatar}
-                title={user.info.username}
+              <InlineCard key={user._id} avatar={user.info.avatar} title={user.info.username} />
+            </View>
+            <View style={{ flexGrow: 1 }}>
+              <IconButton
+                icon="delete"
+                size={30}
+                style={{ marginRight: 20, flexGrow: 1 }}
+                onPress={() => {
+                  setEventOrganizers(eventOrganizers.filter((s) => s !== user));
+                }}
               />
             </View>
-              <View style={{ flexGrow: 1 }}>
-                <IconButton
-                  icon="delete"
-                  size={30}
-                  style={{ marginRight: 20, flexGrow: 1 }}
-                  onPress={() => {
-                    setEventOrganizers(eventOrganizers.filter((s) => s !== user));
-                    }}
-                />
-              </View>
-         </View>
+          </View>
         ))}
       </View>
       <View style={styles.container}>

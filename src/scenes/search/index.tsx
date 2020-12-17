@@ -1,15 +1,23 @@
+import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
-import { createNativeStackNavigator } from '@utils/stack';
 
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+
+import { MainScreenNavigationProp } from '../Main';
 import Search from './views/Search';
 import SearchTags from './views/Tags';
 
 export type SearchStackParams = {
   Search: {
-    initialCategory: 'articles' | 'events' | 'petitions' | 'locations' | 'groups' | 'users';
+    initialCategory: 'articles' | 'events' | 'groups' | 'users';
   };
   Tags: undefined;
 };
+
+export type SearchScreenNavigationProp<K extends keyof SearchStackParams> = CompositeNavigationProp<
+  NativeStackNavigationProp<SearchStackParams, K>,
+  MainScreenNavigationProp<'Search'>
+>;
 
 const Stack = createNativeStackNavigator<SearchStackParams>();
 

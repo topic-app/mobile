@@ -1,12 +1,14 @@
+import { Formik } from 'formik';
 import React from 'react';
-import { Button, HelperText, TextInput, Card, ThemeProvider, useTheme } from 'react-native-paper';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
-import { Modal, TabChipList } from '@components/index';
+import * as Yup from 'yup';
 
-import { ModalProps, State, EventPlace } from '@ts/types';
-import getStyles from '@styles/Styles';
+import { FormTextInput, Modal, TabChipList } from '@components/index';
+import { ModalProps, State } from '@ts/types';
+import { useTheme } from '@utils';
 
 import getEventStyles from '../styles/Styles';
 
@@ -53,51 +55,7 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
     },
   ];
 
-  type InputStateType = {
-    value: string;
-    error: boolean;
-    valid: boolean;
-    message: string;
-  };
-
-  let tempKey: InputStateType;
-  let tempValue: InputStateType;
-  let tempLink: InputStateType;
-
   const [predefinedType, setPredefinedType] = React.useState<string | null>(null);
-
-  const [currentKey, setCurrentKey] = React.useState({
-    value: '',
-    error: false,
-    valid: true,
-    message: '',
-  });
-  const [currentValue, setCurrentValue] = React.useState({
-    value: '',
-    error: false,
-    valid: true,
-    message: '',
-  });
-  const [currentLink, setCurrentLink] = React.useState({
-    value: '',
-    error: false,
-    valid: true,
-    message: '',
-  });
-
-  function setKey(data: Partial<InputStateType>) {
-    tempKey = { ...currentKey, ...(tempKey ?? {}), ...data };
-    setCurrentKey(tempKey);
-  }
-  function setLink(data: Partial<InputStateType>) {
-    // Because async setState
-    tempLink = { ...currentLink, ...(tempLink ?? {}), ...data };
-    setCurrentLink(tempLink);
-  }
-  function setValue(data: Partial<InputStateType>) {
-    tempValue = { ...currentValue, ...(tempValue ?? {}), ...data };
-    setCurrentValue(tempValue);
-  }
 
   function blurInputs() {
     keyInput.current?.blur();
@@ -105,110 +63,14 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
     linkInput.current?.blur();
   }
 
-  const validateLinkInput = (city: string) => {
-    let validation: Partial<InputStateType> = { valid: false, error: false };
-
-    if (currentLink.value) {
-      if (
-        !currentLink.value.match(
-          /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/,
-        )
-      ) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'Lien invalide',
-        };
-      } else {
-        validation = { valid: true, error: false };
-      }
-    }
-    setLink(validation);
-  };
-
-
-  const submit = () => {
-    const keyVal = currentKey.value;
-    const valueVal = currentValue.value;
-    const linkVal = currentLink.value;
-    if (!keyVal && !predefinedType) {
-      setKey({
-        valid: false,
-        error: true,
-        message: 'Titre requis',
-      });
-    } else if (!valueVal) {
-      setValue({
-        valid: false,
-        error: true,
-        message: 'Valeur requise',
-      });
-    } else {
-      if (predefinedType) {
-        add({
-          _id: shortid(),
-          key: predefinedSocials.find((p) => p.key === predefinedType)?.key || 'Inconnu',
-          value: valueVal,
-          link: predefinedSocials
-            .find((p) => p.key === predefinedType)
-            ?.link?.replace('%s', valueVal),
-        });
-      } else {
-        add({
-          _id: shortid(),
-          key: keyVal,
-          value: valueVal,
-          link: linkVal,
-        });
-      }
-      setVisible(false);
-      setCurrentKey({
-        value: '',
-        error: false,
-        valid: false,
-        message: '',
-      });
-      setCurrentValue({
-        value: '',
-        error: false,
-        valid: false,
-        message: '',
-      });
-      setCurrentLink({
-        value: '',
-        error: false,
-        valid: false,
-        message: '',
-      });
-    }
-  };
-
-  const cancel = () => {
-    setVisible(false);
-    setCurrentKey({
-      value: '',
-      error: false,
-      valid: false,
-      message: '',
-    });
-    setCurrentValue({
-      value: '',
-      error: false,
-      valid: false,
-      message: '',
-    });
-    setCurrentLink({
-      value: '',
-      error: false,
-      valid: false,
-      message: '',
-    });
-  };
-
   const theme = useTheme();
-  const { colors } = theme;
   const eventStyles = getEventStyles(theme);
-  const styles = getStyles(theme);
+
+  const ContactSchema = Yup.object().shape({
+    key: predefinedType ? Yup.string() : Yup.string().required('Titre requis'),
+    link: Yup.string().url('Lien invalide'),
+    value: Yup.string().required('Valeur requise'),
+  });
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
@@ -218,108 +80,107 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
         setSelected={(val) => (val !== 'none' ? setPredefinedType(val) : setPredefinedType(null))}
       />
       <View style={eventStyles.formContainer}>
-        {!predefinedType && (
-          <View style={eventStyles.textInputContainer}>
-            <TextInput
-              ref={keyInput}
-              label="Titre"
-              value={currentKey.value}
-              error={currentKey.error}
-              keyboardType="default"
-              disableFullscreenUI
-              onSubmitEditing={() => {
-                valueInput.current?.focus();
-              }}
-              autoFocus
-              theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-              mode="outlined"
-              style={eventStyles.textInput}
-              onChangeText={(text) => {
-                setKey({ value: text });
-              }}
-            />
-          </View>
-        )}
-        {currentKey.error && (
-          <HelperText type="error" style={{ marginBottom: 10, marginTop: -5 }}>
-            {currentKey.message}
-          </HelperText>
-        )}
-        <View style={eventStyles.textInputContainer}>
-          <TextInput
-            ref={valueInput}
-            label={predefinedType ? "Nom d'utilisateur" : 'Valeur'}
-            value={currentValue.value}
-            error={currentValue.error}
-            disableFullscreenUI
-            onSubmitEditing={() => {
-              linkInput.current?.focus();
-            }}
-            theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
-            mode="outlined"
-            style={eventStyles.textInput}
-            onChangeText={(text) => {
-              setValue({ value: text });
-            }}
-          />
-        </View>
-        {!predefinedType && (
-          <View style={eventStyles.textInputContainer}>
-            <TextInput
-              ref={linkInput}
-              label="Lien (facultatif)"
-              value={currentLink.value}
-              error={currentLink.error}
-              disableFullscreenUI
-              onSubmitEditing={({ nativeEvent }) => {
-                validateLinkInput(nativeEvent.text);
-                blurInputs();
-              }}
-              autoCorrect={false}
-              theme={
-                currentLink.valid
-                  ? { colors: { primary: colors.primary, placeholder: colors.valid } }
-                  : theme
-              }
-              mode="outlined"
-              style={eventStyles.textInput}
-              onEndEditing={({ nativeEvent }) => {
-                validateLinkInput(nativeEvent.text);
-              }}
-              onChangeText={(text) => {
-                setLink({ value: text });
-              }}
-            />
-            <HelperText type="error" visible={currentLink.error} style={{ marginTop: -5 }}>
-              {currentLink.message}
-            </HelperText>
-          </View>
-        )}
-        <View style={{ height: 20 }} />
-        <View style={eventStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-            uppercase={Platform.OS !== 'ios'}
-            style={{ flex: 1, marginRight: 5 }}
-            onPress={() => {
-              blurInputs();
-              cancel();
-            }}
-          >
-            Annuler
-          </Button>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              blurInputs();
-              submit();
-            }}
-            style={{ flex: 1, marginLeft: 5 }}
-          >
-            Ajouter
-          </Button>
-        </View>
+        <Formik
+          initialValues={{ key: '', value: '', link: '' }}
+          onSubmit={({ key, value, link }) => {
+            if (predefinedType) {
+              add({
+                _id: shortid(),
+                key: predefinedSocials.find((p) => p.key === predefinedType)?.key || 'Inconnu',
+                value,
+                link: predefinedSocials
+                  .find((p) => p.key === predefinedType)
+                  ?.link?.replace('%s', value),
+              });
+            } else {
+              add({
+                _id: shortid(),
+                key,
+                value,
+                link,
+              });
+            }
+            setVisible(false);
+          }}
+          validationSchema={ContactSchema}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
+            <View>
+              {!predefinedType ? (
+                <FormTextInput
+                  ref={keyInput}
+                  label="Titre"
+                  value={values.key}
+                  touched={touched.key}
+                  error={errors.key}
+                  onChangeText={handleChange('key')}
+                  onBlur={handleBlur('key')}
+                  onSubmitEditing={() => valueInput.current!.focus()}
+                  style={eventStyles.textInput}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  autoFocus
+                />
+              ) : null}
+              <FormTextInput
+                ref={valueInput}
+                label={predefinedType ? "Nom d'utilisateur" : 'Valeur'}
+                value={values.value}
+                touched={touched.value}
+                error={errors.value}
+                onChangeText={handleChange('value')}
+                onBlur={handleBlur('value')}
+                onSubmitEditing={() => {
+                  if (predefinedType) {
+                    handleSubmit();
+                  } else {
+                    linkInput.current?.focus();
+                  }
+                }}
+                style={eventStyles.textInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+              {!predefinedType && (
+                <FormTextInput
+                  ref={linkInput}
+                  label="Lien (facultatif)"
+                  value={values.link}
+                  touched={touched.link}
+                  error={errors.link}
+                  onChangeText={handleChange('link')}
+                  onBlur={handleBlur('link')}
+                  onSubmitEditing={() => handleSubmit()}
+                  style={eventStyles.textInput}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                />
+              )}
+              <View style={{ height: 20 }} />
+              <View style={eventStyles.buttonContainer}>
+                <Button
+                  mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+                  uppercase={Platform.OS !== 'ios'}
+                  style={{ flex: 1, marginRight: 5 }}
+                  onPress={() => {
+                    blurInputs();
+                    setVisible(false);
+                  }}
+                >
+                  Annuler
+                </Button>
+                <Button
+                  mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                  uppercase={Platform.OS !== 'ios'}
+                  onPress={handleSubmit}
+                  style={{ flex: 1, marginLeft: 5 }}
+                >
+                  Ajouter
+                </Button>
+              </View>
+            </View>
+          )}
+        </Formik>
       </View>
     </Modal>
   );

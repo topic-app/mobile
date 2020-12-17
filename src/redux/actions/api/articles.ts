@@ -7,12 +7,12 @@ import {
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
 } from '@ts/redux';
-import { Item, UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
+import { UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
-const dateDescSort = (data: Item[]) =>
-  (data as Article[]).sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
+const dateDescSort = (data: Article[]) =>
+  data.sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1));
 
 /**
  * @docs actions
@@ -30,6 +30,7 @@ async function updateArticles(
       update: UPDATE_ARTICLES_DATA,
       stateUpdate: UPDATE_ARTICLES_STATE,
       url: 'articles/list',
+      listName: 'data',
       sort: dateDescSort,
       dataType: 'articles',
       type,
@@ -43,13 +44,17 @@ async function updateArticlesFollowing(
   params = {},
   useDefaultParams = true,
 ) {
-  if (!Store.getState().account.loggedIn) {
+  if (
+    !Store.getState().account.loggedIn ||
+    !Store.getState().account?.accountInfo?.user?.data?.following?.groups?.every((g) => !g)
+  ) {
     return false;
   }
   await Store.dispatch(
     updateCreator({
       update: UPDATE_ARTICLES_FOLLOWING,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'following',
       url: 'articles/list',
       listName: 'following',
       sort: dateDescSort,
@@ -57,12 +62,12 @@ async function updateArticlesFollowing(
       type,
       params: useDefaultParams
         ? {
-            groups: Store.getState().account?.accountInfo?.user?.data?.following?.groups?.map(
-              (g) => g._id,
-            ),
-            users: Store.getState().account?.accountInfo?.user?.data?.following?.users?.map(
-              (u) => u._id,
-            ),
+            groups: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.groups?.map((g) => g._id)
+              .filter((g) => !!g),
+            users: Store.getState()
+              .account?.accountInfo?.user?.data?.following?.users?.map((u) => u._id)
+              .filter((g) => !!g),
             ...params,
           }
         : params,
@@ -74,10 +79,8 @@ async function updateArticlesFollowing(
  * @docs actions
  * Vide la database redux complètement
  */
-async function clearArticles(data = true, search = true, verification = true, following = true) {
-  await Store.dispatch(
-    clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }),
-  );
+function clearArticles(data = true, search = true, verification = true, following = true) {
+  Store.dispatch(clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }));
 }
 
 /**
@@ -145,6 +148,7 @@ async function fetchArticle(articleId: string) {
     fetchCreator({
       update: UPDATE_ARTICLES_ITEM,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'info',
       url: 'articles/info',
       dataType: 'articles',
       params: { articleId },
@@ -157,6 +161,7 @@ async function fetchArticleVerification(articleId: string) {
     fetchCreator({
       update: UPDATE_ARTICLES_ITEM,
       stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'info',
       url: 'articles/verification/info',
       dataType: 'articles',
       params: { articleId },

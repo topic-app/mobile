@@ -1,13 +1,13 @@
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp, Dimensions } from 'react-native';
 import { Appbar, Text, Menu } from 'react-native-paper';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import shortid from 'shortid';
 
-import { useTheme, useSafeAreaInsets } from '@utils/index';
 import { PlatformTouchable } from '@components/index';
 import getNavigatorStyles from '@styles/NavStyles';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
@@ -180,10 +180,4 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   );
 };
 
-const HeaderConfig = {
-  header: ({ scene, navigation }: CustomHeaderBarProps) => (
-    <CustomHeaderBar scene={scene} navigation={navigation} />
-  ),
-};
-
-export { TranslucentStatusBar, HeaderConfig, CustomHeaderBar };
+export { TranslucentStatusBar, CustomHeaderBar };
