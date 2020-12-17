@@ -39,7 +39,7 @@ const GroupAddSuccess: React.FC<GroupAddSuccessProps> = ({
             <Text style={{ marginTop: 40 }}>
               Votre groupe doit être approuvé par un administrateur.
             </Text>
-            <Text>Vous serez notifiés par email dès que le groupe est approuvé.</Text>
+            <Text>Vous serez notifié par email dès que le groupe sera approuvé.</Text>
           </View>
         </View>
       </ScrollView>

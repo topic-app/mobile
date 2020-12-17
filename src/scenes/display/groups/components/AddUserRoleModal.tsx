@@ -70,12 +70,12 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   const sections = [
     {
       key: 'primary',
-      title: 'Role principal',
+      title: 'Rôle principal',
       data: roles.filter((r) => r.primary),
     },
     {
       key: 'secondary',
-      title: 'Roles secondaires',
+      title: 'Rôles secondaires',
       data: roles.filter((r) => !r.primary),
     },
   ];
@@ -163,7 +163,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                 title={item.name}
                 description={
                   item.legalAdmin
-                    ? `Role${item.admin ? ' administrateur' : ''} légalement responsable`
+                    ? `Rôle${item.admin ? ' administrateur' : ''} légalement responsable`
                     : null
                 }
                 onPress={set}
@@ -211,7 +211,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
         renderSectionFooter={({ section: { key } }) => (
           <View>
             <List.Item
-              title="Créer un role"
+              title="Créer un rôle"
               titleStyle={{ color: colors.disabled }}
               descriptionStyle={{ color: colors.disabled }}
               description="Non disponible"
@@ -227,7 +227,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
             />
             {key === 'primary' && (
               <HelperText visible={errorVisible} type="error">
-                Vous devez spécifier un role principal
+                Vous devez spécifier un rôle principal
               </HelperText>
             )}
           </View>

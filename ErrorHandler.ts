@@ -84,7 +84,7 @@ Gen ErrorHandler
     'Rapport de plantage',
     `
 L'application Topic a eu un problème. Un rapport d'erreur a été créé (erreur ${error?.name})
-Le rapport généré peut contenir des données sensibles, telles que votre mot de passe, votre addresse email, l'historique etc.
+Le rapport généré peut contenir des données sensibles, telles que votre mot de passe, votre adresse email, l'historique, etc.
 Vous pouvez aussi choisir d'envoyer une version qui ne contient pas de données personnelles (mais qui est moins utile pour les développeurs).
 ${
   isFatal

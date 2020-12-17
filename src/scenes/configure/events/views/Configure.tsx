@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
-// @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -37,6 +36,8 @@ import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
 import { EventConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
+
+// @ts-expect-error Replace this when we find a better library
 
 type EventListsProps = {
   lists: EventListItem[];
@@ -210,18 +211,16 @@ function EventLists({
                                 disabled={item.disable}
                                 value={enabled && !item.disable}
                                 color={colors.primary}
-                                onTouchEnd={
-                                  enabled
-                                    ? () =>
-                                        updateEventPrefs({
-                                          categories: eventPrefs.categories?.filter(
-                                            (d) => d !== item.id,
-                                          ),
-                                        })
-                                    : () =>
-                                        updateEventPrefs({
-                                          categories: [...(eventPrefs.categories || []), item.id],
-                                        })
+                                onValueChange={(val) =>
+                                  val
+                                    ? updateEventPrefs({
+                                        categories: [...(eventPrefs.categories || []), item.id],
+                                      })
+                                    : updateEventPrefs({
+                                        categories: eventPrefs.categories?.filter(
+                                          (d) => d !== item.id,
+                                        ),
+                                      })
                                 }
                               />
                             </View>
@@ -274,8 +273,8 @@ function EventLists({
                         title={item.name}
                         description={`${
                           item.items.length
-                            ? `${item.items.length} événements${item.items.length === 1 ? '' : 's'}`
-                            : 'Aucun événement'
+                            ? `${item.items.length} évènements${item.items.length === 1 ? '' : 's'}`
+                            : 'Aucun évènement'
                         }${item.description ? `\n${item.description}` : ''}`}
                         descriptionNumberOfLines={100}
                         onPress={() =>
@@ -309,7 +308,7 @@ function EventLists({
                                 disabled={lists.length === 1 && eventPrefs.categories?.length === 0}
                                 onPress={() => {
                                   Alert.alert(
-                                    `Voulez vous vraiment supprimer la liste ${item.name}?`,
+                                    `Voulez-vous vraiment supprimer la liste ${item.name} ?`,
                                     'Cette action est irréversible',
                                     [
                                       {
@@ -391,7 +390,7 @@ function EventLists({
                       <View style={articleStyles.subheaderDescriptionContainer}>
                         <Text>
                           Choisissez des sujets et des groupes à afficher pour un accès rapide aux
-                          événements qui vous intéressent
+                          évènements qui vous intéressent
                         </Text>
                       </View>
                       <Divider />

@@ -83,7 +83,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
               color={colors.primary}
             />
             <Text style={{ color: colors.text, flex: 1 }}>
-              Vous pourrez publier des contenus dans ces localisations. Séléctionnez uniquement
+              Vous pourrez publier des contenus dans ces localisations. Sélectionnez uniquement
               celles qui correspondent à votre champ d&apos;action.
             </Text>
           </View>
@@ -239,7 +239,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
           />
         </View>
         <HelperText visible={showError} type="error">
-          Vous devez selectionner au moins une localisation
+          Vous devez sélectionner au moins une localisation
         </HelperText>
       </View>
       <View style={articleStyles.buttonContainer}>

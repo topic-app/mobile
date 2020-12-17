@@ -81,7 +81,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
         validation = {
           valid: false,
           error: true,
-          message: 'Votre nom doit contenir au moins 3 caractères',
+          message: 'Votre nom doit contenir au moins 3 caractères.',
         };
       } else {
         validation = { valid: true, error: false };
@@ -105,13 +105,13 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
         validation = {
           valid: false,
           error: true,
-          message: "L'acronyme doit contenir au moins 2 caractères",
+          message: "L'acronyme doit contenir au moins 2 caractères.",
         };
       } else if (name.length >= 15) {
         validation = {
           valid: false,
           error: true,
-          message: "L'acronyme doit contenir moins de 15 caractères",
+          message: "L'acronyme doit contenir moins de 15 caractères.",
         };
       } else {
         validation = { valid: true, error: false };
@@ -228,7 +228,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
         <HelperText type={currentName.error ? 'error' : 'info'} visible>
           {currentName.error
             ? currentName.message
-            : "Donnez votre prénom et votre nom en entier, tel qu'il apparaît sur les documents légaux. En cas de doute sur votre identité ou de contestation, nous pourrons vous demander une pièce d'identité. Ce nom ne sera pas public mais sera retenu jusqu'à la suppression du groupe et ne pourra être modifié."}
+            : "Donnez votre prénom et votre nom en entier, tel qu'il apparaît sur les documents légaux. En cas de contestation ou de doute sur votre identité, nous pourrons vous demander une pièce d'identité. Ce nom ne sera pas public mais sera retenu jusqu'à la suppression du groupe et ne pourra être modifié."}
         </HelperText>
       </View>
       <View style={articleStyles.textInputContainer}>
@@ -314,9 +314,9 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
         />
         <HelperText type="info" visible={descriptionInput.current?.isFocused()}>
           Si vous avez d&apos;autres éléments qui nous permettraient de confirmer votre identité,
-          ajoutez les ici (par exemple: lien vers une publication au Journal Officiel, lien vers les
-          mentions légales de votre organisation...). Ces informations ne seront pas publiques. En
-          cas de doute, nous pourrons aussi vous demander plus d&apos;informations par mail.
+          ajoutez les ici (par exemple : lien vers une publication au Journal Officiel, lien vers
+          les mentions légales de votre organisation...) Ces informations ne seront pas publiques.
+          En cas de doute, nous pourrons aussi vous demander plus d&apos;informations par mail.
         </HelperText>
       </View>
       <View style={articleStyles.textInputContainer}>
@@ -336,7 +336,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
           onPress={() => setTerms(!terms)}
         />
         <List.Item
-          title="Je confirme que j'ai bien l'autorité pour créer ce groupe au nom de l'organisation, et que toutes les informations données sont correctes"
+          title="Je confirme que j'ai bien l'autorité pour créer ce groupe au nom de l'organisation et que toutes les informations données sont correctes"
           titleNumberOfLines={10}
           left={() =>
             Platform.OS !== 'ios' ? (
@@ -351,7 +351,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
           onPress={() => setIdentity(!identity)}
         />
         <HelperText visible={termsError || identityError} type="error">
-          Vous devez accepter la charte et la déclaration d&apos;authorité pour continuer
+          Vous devez accepter la charte et la déclaration d&apos;autorité pour continuer
         </HelperText>
       </View>
       <View style={articleStyles.buttonContainer}>

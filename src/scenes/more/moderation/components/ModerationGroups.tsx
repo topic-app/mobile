@@ -56,7 +56,7 @@ const ModerationArticles: React.FC<Props> = ({
             state.verification_list?.loading?.initial ? null : (
               <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
                 <Text>
-                  Aucun groupe en attente de modération, donc voila un petit easter egg: &#129370;
+                  Aucun groupe en attente de modération, donc voilà un petit easter egg: &#129370;
                 </Text>
               </View>
             )

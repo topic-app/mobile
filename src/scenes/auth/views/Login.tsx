@@ -6,6 +6,7 @@ import {
   Platform,
   TextInput as RNTextInput,
   KeyboardAvoidingView,
+  Linking,
 } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, Card } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -104,14 +105,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                 if (didLogin) {
                   if (Platform.OS === 'web') {
                     await fetchAccount();
-                    setTimeout(
-                      () =>
-                        navigation.navigate('Main', {
-                          screen: 'Home1',
-                          params: { screen: 'Home2', params: { screen: 'Article' } },
-                        }),
-                      200,
-                    ); // HACK : Because otherwise it doesnt redirect properly
+                    setTimeout(() => window.location.replace('/'), 200); // HACK : Because otherwise it doesnt redirect properly
                   } else {
                     navigation.navigate('Main', {
                       screen: 'Home1',
@@ -187,25 +181,52 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
               </Text>
             </View>
             {Platform.OS === 'web' && (
-              <View style={[styles.container, { marginTop: 70 }]}>
-                <PlatformTouchable
-                  onPress={() => window.location.replace('https://beta.topicapp.fr/')}
-                >
-                  <Card
-                    elevation={0}
-                    style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+              <View>
+                <View style={[styles.container, { marginTop: 70 }]}>
+                  <PlatformTouchable
+                    onPress={() => window.location.replace('https://beta.topicapp.fr/')}
                   >
-                    <View style={[styles.container, { flexDirection: 'row' }]}>
-                      <Text style={{ color: colors.text, flex: 1 }}>
-                        Seuls les bêta-testeurs peuvent avoir accès au site. Utilisez les
-                        identifiants que vous avez créé dans l&apos;application pour vous connecter.
-                        {'\n\n'}
-                        Si vous n&apos;êtes pas inscrits à là bêta,{' '}
-                        <Text style={styles.link}>cliquez ici pour vous inscrire</Text>.
-                      </Text>
-                    </View>
-                  </Card>
-                </PlatformTouchable>
+                    <Card
+                      elevation={0}
+                      style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+                    >
+                      <View style={[styles.container, { flexDirection: 'row' }]}>
+                        <Text style={{ color: colors.text, flex: 1 }}>
+                          Seuls les bêta-testeurs peuvent avoir accès au site. Utilisez les
+                          identifiants que vous avez créé dans l&apos;application pour vous
+                          connecter.
+                          {'\n\n'}
+                          Si vous n&apos;êtes pas inscrits à là bêta,{' '}
+                          <Text style={styles.link}>cliquez ici pour vous inscrire</Text>.
+                        </Text>
+                      </View>
+                    </Card>
+                  </PlatformTouchable>
+                </View>
+                <View style={{ alignItems: 'center', marginTop: 20 }}>
+                  <Text>
+                    <Text
+                      style={styles.link}
+                      onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/mentions')}
+                    >
+                      Mentions légales
+                    </Text>
+                    {' - '}
+                    <Text
+                      style={styles.link}
+                      onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/terms')}
+                    >
+                      Conditions d&apos;utilisation
+                    </Text>
+                    {' - '}
+                    <Text
+                      style={styles.link}
+                      onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/privacy')}
+                    >
+                      Politique de vie privée
+                    </Text>
+                  </Text>
+                </View>
               </View>
             )}
           </View>

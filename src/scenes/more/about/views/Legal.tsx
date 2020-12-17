@@ -1,16 +1,16 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { StackScreenProps } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { State, LegalState, LegalRequestState } from '@ts/types';
 import { CustomTabView, TranslucentStatusBar, CustomHeaderBar } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { fetchDocument } from '@redux/actions/api/legal';
+import getStyles from '@styles/Styles';
+import { State, LegalState, LegalRequestState } from '@ts/types';
+import { useTheme } from '@utils/index';
 
-import type { AboutStackParams } from '../index';
 import LegalPage from '../components/LegalPage';
+import type { AboutStackParams } from '../index';
 
 type LegalProps = StackScreenProps<AboutStackParams, 'Legal'> & {
   legal: LegalState;
@@ -80,7 +80,7 @@ const Legal: React.FC<LegalProps> = ({ route, legal, state }) => {
             },
             {
               key: 'confidentialite',
-              title: 'Confidentialité',
+              title: 'Vie privée',
               component: (
                 <LegalPage
                   content={legal.confidentialite}

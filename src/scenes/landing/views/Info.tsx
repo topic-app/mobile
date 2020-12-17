@@ -120,8 +120,8 @@ const LandingInfo: React.FC<LandingInfoProps> = ({ navigation, route }) => {
                     </View>
                     <View style={landingStyles.contentContainer}>
                       <Text>
-                        Nous vous proposons une carte interactive des territoires français, où
-                        seront répertoriés, avec votre aide, les lieux culturels, les établissements
+                        Nous vous proposons une carte interactive des territoires français où seront
+                        répertoriés, avec votre aide, les lieux culturels et les établissements
                         scolaires et où apparaîtront vos évènements et ceux de la communauté.
                       </Text>
                       <Text>En avant la culture ! En avant l’engagement !</Text>

@@ -46,14 +46,14 @@ const MainHistory: React.FC<MainHistoryProps> = ({ navigation, preferences }) =>
           disabled={!preferences.history}
           onPress={() => navigation.navigate('Event')}
           right={() => <List.Icon icon="chevron-right" />}
-          title="Événements"
+          title="Évènements"
         />
         <View style={{ height: 20 }} />
         <List.Subheader>Centres d&apos;interêt</List.Subheader>
         <Divider />
         {!preferences.recommendations ? (
           <List.Item
-            title="Les recommendations sont desactivées"
+            title="Les recommendations sont désactivées"
             titleStyle={{ color: colors.disabled }}
           />
         ) : (

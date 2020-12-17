@@ -206,7 +206,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
             onPress={() => {}}
           />
           <List.Item
-            title="Aide au devoirs"
+            title="Aide aux devoirs"
             left={() =>
               Platform.OS !== 'ios' ? (
                 <RadioButton value="" status="unchecked" color="yellow" onPress={() => {}} />
@@ -259,7 +259,7 @@ const PetitionDisplay: React.FC<PetitionDisplayProps> = ({ route, petitions }) =
                   <Paragraph style={styles.text}>
                     Bonne nouvelle : la région finance la création de cet espace et nous pouvons
                     donc inclure plusieurs éléments. Nous attendrons que ce sondage soit fini pour
-                    prendre notre décision
+                    prendre notre décision.
                   </Paragraph>
                 </View>
               </View>
