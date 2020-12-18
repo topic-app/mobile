@@ -41,7 +41,7 @@ export function address({ shortName, address: addr, geo, departments }: Address)
       return `${number} ${street}, ${city}`;
     }
     if (street && city) {
-      return `${street}, ${city}`;
+      return _.capitalize(`${street}, ${city}`);
     }
   }
 

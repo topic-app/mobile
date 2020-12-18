@@ -22,6 +22,7 @@ import {
   EventVerificationPreload,
   ArticleVerificationPreload,
   GroupVerification,
+  MapLocation,
 } from '../api';
 import {
   ArticleRequestState,
@@ -382,12 +383,14 @@ export type PetitionsActionTypes =
 // Places
 export const UPDATE_PLACES_STATE = 'UPDATE_PLACES_STATE';
 export const UPDATE_PLACES_DATA = 'UPDATE_PLACES_DATA';
+export const UPDATE_PLACES_MAP_DATA = 'UPDATE_PLACES_MAP_DATA';
 export const UPDATE_PLACES_ITEM = 'UPDATE_PLACES_ITEM';
 export const UPDATE_PLACES_SEARCH = 'UPDATE_PLACES_SEARCH';
 export const CLEAR_PLACES = 'CLEAR_PLACES';
 
 export type PlacesState = {
   data: (Place | PlacePreload)[];
+  mapData: MapLocation.FullLocation[];
   search: PlacePreload[];
   item: Place | null;
   state: PlaceRequestState;
@@ -403,6 +406,11 @@ type UpdatePlacesDataAction = {
   data: (Place | PlacePreload)[];
 };
 
+type UpdatePlacesMapDataAction = {
+  type: typeof UPDATE_PLACES_MAP_DATA;
+  data: MapLocation.FullLocation[];
+};
+
 type UpdatePlacesItemAction = {
   type: typeof UPDATE_PLACES_ITEM;
   data: Place;
@@ -415,12 +423,13 @@ type UpdatePlacesSearchAction = {
 
 type ClearPlacesAction = {
   type: typeof CLEAR_PLACES;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; mapData?: boolean };
 };
 
 export type PlacesActionTypes =
   | UpdatePlacesStateAction
   | UpdatePlacesDataAction
+  | UpdatePlacesMapDataAction
   | UpdatePlacesItemAction
   | UpdatePlacesSearchAction
   | ClearPlacesAction

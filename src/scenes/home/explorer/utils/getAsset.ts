@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 
-import { ExplorerLocation } from '@root/src/ts/api';
+import { MapLocation } from '@root/src/ts/api';
 
 /*
 In React Native, Strings are statically analyzed at compile-time,
@@ -20,21 +20,11 @@ const markerImages = {
   secret: require('@assets/images/explorer/easter-egg.png'),
 };
 
-const markerColors = {
-  purple: '#4c3e8e',
-  green: '#0e6300',
-  red: '#d00000',
-  gold: '#e59500',
-  secret: '#b90007',
-};
-
-function getAssetName(placeType: ExplorerLocation.LocationTypes, markerType: 'circle' | 'pin') {
+function getAssetName(placeType: MapLocation.Element['dataType'], markerType: 'circle' | 'pin') {
   let color: string;
   switch (placeType) {
-    case 'collection':
+    case 'cluster':
       return 'circleRed';
-    case 'secret':
-      return 'secret';
     case 'event':
       color = 'Green';
       break;
@@ -50,4 +40,4 @@ function getAssetName(placeType: ExplorerLocation.LocationTypes, markerType: 'ci
   return `${markerType}${color}`;
 }
 
-export { markerImages, markerColors, getAssetName };
+export { markerImages, getAssetName };
