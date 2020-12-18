@@ -207,8 +207,8 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
       {/* Actual modal */}
       <BottomSheet
         ref={bottomSheetRef}
+        useInsets
         callbackNode={bottomSheetY}
-        enableInsets
         portraitSnapPoints={bottomSheetPortraitSnapPoints}
         landscapeSnapPoints={bottomSheetLandscapeSnapPoints}
         renderContent={renderContent}

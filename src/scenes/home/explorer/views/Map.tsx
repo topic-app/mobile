@@ -168,7 +168,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
             .catch((e) => logger.warn('Error while fetching new locations in explorer/Map', e));
         }}
         // Change this to set how soon onRegionDidChange is called
-        regionDidChangeDebounceTime={200}
+        regionDidChangeDebounceTime={500}
       >
         <MapboxGL.Camera
           ref={cameraRef}
@@ -192,36 +192,45 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
             style={{ iconImage: ['get', 'circleIcon'], iconSize: 1 }}
           />
         </MapboxGL.ShapeSource> */}
-        {(['event', 'place', 'school'] as const).map((placeType) => {
-          return (
-            <MapboxGL.ShapeSource
-              key={`${placeType}-shape`}
-              id={`${placeType}-shape`}
-              shape={featureCollections[placeType]}
-              onPress={onMarkerPress}
-            >
-              <MapboxGL.SymbolLayer
-                id={`${placeType}-zoom1`}
-                maxZoomLevel={9}
-                style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.3 }}
-              />
-              <MapboxGL.SymbolLayer
-                id={`${placeType}-zoom2`}
-                minZoomLevel={9}
-                style={{ iconImage: ['get', 'pinIcon'], iconSize: 1, iconAnchor: 'bottom' }}
-              />
-            </MapboxGL.ShapeSource>
-          );
-        })}
+        <MapboxGL.ShapeSource
+          id="place-shape"
+          shape={featureCollections.place}
+          onPress={onMarkerPress}
+        >
+          <MapboxGL.SymbolLayer
+            id="place-symbol"
+            style={{ iconImage: 'pinRed', iconSize: 1, iconAnchor: 'bottom' }}
+          />
+        </MapboxGL.ShapeSource>
+        <MapboxGL.ShapeSource
+          id="school-shape"
+          shape={featureCollections.school}
+          onPress={onMarkerPress}
+        >
+          <MapboxGL.SymbolLayer
+            id="school-symbol"
+            style={{ iconImage: 'pinPurple', iconSize: 1, iconAnchor: 'bottom' }}
+          />
+        </MapboxGL.ShapeSource>
+        <MapboxGL.ShapeSource
+          id="event-shape"
+          shape={featureCollections.event}
+          onPress={onMarkerPress}
+        >
+          <MapboxGL.SymbolLayer
+            id="event-symbol"
+            style={{ iconImage: 'pinGreen', iconSize: 1, iconAnchor: 'bottom' }}
+          />
+        </MapboxGL.ShapeSource>
         <MapboxGL.ShapeSource
           id="cluster-shape"
           shape={featureCollections.cluster}
           onPress={onMarkerPress}
         >
           <MapboxGL.SymbolLayer
-            id="cluster-zoom1"
+            id="cluster-symbol"
             style={{
-              iconImage: ['get', 'circleIcon'],
+              iconImage: 'circleRed',
               iconSize: 1,
               textField: ['get', 'point_count'],
               textFont: ['Noto Sans Regular'],

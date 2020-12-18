@@ -29,7 +29,7 @@ type BottomSheetProps = ReanimatedBottomSheetProps & {
   /**
    * Whether to use top and bottom insets or not.
    */
-  enableInsets?: boolean;
+  useInsets?: boolean;
 };
 
 const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
@@ -38,7 +38,7 @@ const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
       portraitSnapPoints: portraitSP,
       landscapeSnapPoints: landscapeSP,
       renderContent,
-      enableInsets,
+      useInsets,
       ...rest
     },
     ref,
@@ -58,7 +58,7 @@ const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
     const snapPoints = (height > width ? portraitSP : landscapeSP).map((snapPoint) => {
       if (typeof snapPoint === 'string') {
         let SP = parseFloat(snapPoint) * 0.01 * height;
-        if (enableInsets) {
+        if (useInsets) {
           SP += insets.top;
         }
         return SP;
