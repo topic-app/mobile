@@ -5,9 +5,9 @@ import { View, Linking, Platform } from 'react-native';
 import { Text, FAB, IconButton } from 'react-native-paper';
 
 import { BottomSheetRef } from '@components/index';
-import initialPlaces from '@src/data/explorerListData.json';
+import { fetchMapLocations } from '@redux/actions/api/places';
 import getStyles from '@styles/Styles';
-import { ExplorerLocation } from '@ts/types';
+import { MapLocation } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets, Location } from '@utils/index';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
@@ -20,8 +20,8 @@ MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 // MapboxGL.setTelemetryEnabled(false);
 
 export type MapMarkerDataType = {
-  id: string | number;
-  type: ExplorerLocation.LocationTypes;
+  id: string;
+  type: MapLocation.Point['dataType'];
   name: string;
   coordinates: [number, number];
 };
@@ -48,9 +48,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
     name: '',
     coordinates: [0, 0],
   });
-  const [places, setPlaces] = React.useState<ExplorerLocation.Marker[]>(
-    (initialPlaces as unknown) as ExplorerLocation.Marker[],
-  );
+  const [places, setPlaces] = React.useState<MapLocation.Element[]>([]);
   // Build appropriate FeatureCollections from places
   const featureCollections = buildFeatureCollections(places);
   const [userLocation, setUserLocation] = React.useState(false);
@@ -81,25 +79,31 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
     if (geometry.type === 'Point') {
       const coordinates = geometry.coordinates as [number, number];
       cameraRef.current!.moveTo(coordinates, 700);
-      if (id === selectedLocation.id) {
-        // User pressed on the already selected location
-        partialOpenBottomSheet();
+      if (properties?.cluster || typeof id === 'number') {
+        closeBottomSheet();
       } else {
-        setSelectedLocation({
-          id: id!,
-          type: properties?.type,
-          name: properties?.name,
-          coordinates,
-        });
-        // Note: below React.useEffect watches selectedLocation
-        // and displays the bottom sheet when selectedLocation changes
+        if (id === selectedLocation.id) {
+          // User pressed on the already selected location
+          partialOpenBottomSheet();
+        } else {
+          setSelectedLocation({
+            id: id!,
+            type: properties?.type,
+            name: properties?.name,
+            coordinates,
+          });
+          // Note: below React.useEffect watches selectedLocation
+          // and displays the bottom sheet when selectedLocation changes
+        }
       }
     }
   };
 
   // Open bottom sheet if selected location changes
   React.useEffect(() => {
-    partialOpenBottomSheet();
+    if (selectedLocation.id !== '') {
+      partialOpenBottomSheet();
+    }
   }, [selectedLocation.id]);
 
   const requestUserLocation = async () => {
@@ -128,8 +132,8 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
     });
   };
 
-  const partialOpenBottomSheet = () => bottomSheetRef.current!.snapTo(1);
-  const closeBottomSheet = () => bottomSheetRef.current!.snapTo(0);
+  const partialOpenBottomSheet = () => bottomSheetRef.current?.snapTo(1);
+  const closeBottomSheet = () => bottomSheetRef.current?.snapTo(0);
 
   const insets = useSafeAreaInsets();
 
@@ -154,24 +158,17 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           x: 10,
           y: insets.top * 1.5 + 10,
         }}
-        onRegionDidChange={({ geometry, properties }) => {
-          // Make request to server to update locations
-          console.log('======== REGION CHANGED ========');
-          // Can either use bounds
-          console.log('visibleBounds:', properties.visibleBounds);
-          // or coordinates
-          console.log('coordinates', geometry.coordinates);
-          console.log('zoomLevel:', properties.zoomLevel);
+        onRegionDidChange={({ properties }) => {
+          const { visibleBounds, zoomLevel } = properties;
 
-          // Then use that to update places like this
-          // please don't use redux state; redux is not meant for state that changes very frequently
-          // instead, use React state like below
-          // fetchPlaces(coordinates, zoomLevel)
-          //   .then((places) => setPlaces(places))
-          //   .catch(e => console.log('error fetching places'));
+          const bounds = visibleBounds.flat() as [number, number, number, number];
+
+          fetchMapLocations(...bounds, Math.floor(zoomLevel))
+            .then(setPlaces)
+            .catch((e) => logger.warn('Error while fetching new locations in explorer/Map', e));
         }}
         // Change this to set how soon onRegionDidChange is called
-        regionDidChangeDebounceTime={500}
+        regionDidChangeDebounceTime={200}
       >
         <MapboxGL.Camera
           ref={cameraRef}
@@ -184,7 +181,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           }}
         />
         <MapboxGL.Images images={markerImages} />
-        <MapboxGL.ShapeSource
+        {/* <MapboxGL.ShapeSource
           id="secret-shape"
           shape={featureCollections.secret}
           onPress={onMarkerPress}
@@ -194,7 +191,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
             minZoomLevel={19}
             style={{ iconImage: ['get', 'circleIcon'], iconSize: 1 }}
           />
-        </MapboxGL.ShapeSource>
+        </MapboxGL.ShapeSource> */}
         {(['event', 'place', 'school'] as const).map((placeType) => {
           return (
             <MapboxGL.ShapeSource
@@ -217,13 +214,19 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           );
         })}
         <MapboxGL.ShapeSource
-          id="collection-shape"
-          shape={featureCollections.collection}
+          id="cluster-shape"
+          shape={featureCollections.cluster}
           onPress={onMarkerPress}
         >
           <MapboxGL.SymbolLayer
-            id="collection-zoom1"
-            style={{ iconImage: ['get', 'circleIcon'], iconSize: 0.3 }}
+            id="cluster-zoom1"
+            style={{
+              iconImage: ['get', 'circleIcon'],
+              iconSize: 1,
+              textField: ['get', 'point_count'],
+              textFont: ['Noto Sans Regular'],
+              textColor: '#fff',
+            }}
           />
         </MapboxGL.ShapeSource>
         <MapboxGL.UserLocation visible={userLocation} animated />
