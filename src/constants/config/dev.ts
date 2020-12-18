@@ -10,7 +10,7 @@ import { DevAppConfig } from './types';
 const config: DevAppConfig = {
   logger: {
     level: 'verbose',
-    exclude: [],
+    exclude: ['http'],
   },
   api: {
     timeout: 3000,

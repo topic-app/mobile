@@ -19,17 +19,22 @@ function buildFeatureCollections(places: MapLocation.Element[]) {
       features: [] as MapLocation.Point<'school'>[],
     },
   };
-  places.forEach(({ dataType, ...place }) => {
-    const { features } = featureCollections[dataType];
-    // Typescript type inference is fairly limited when it comes to generics
+  places.forEach((place) => {
+    const { features } = featureCollections[place.dataType];
+
+    if (place.dataType === 'cluster') {
+      place.properties.point_count;
+    }
+
     const feature = {
       ...place,
       properties: {
         ...place.properties,
-        type: dataType,
+        type: place.dataType,
       },
     };
 
+    // Typescript type inference is fairly limited when it comes to generics
     features.push(feature as any);
   });
   return featureCollections;

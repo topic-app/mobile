@@ -13,8 +13,8 @@ import { useTheme, logger, useSafeAreaInsets, Location } from '@utils/index';
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import LocationBottomSheet from '../components/LocationBottomSheet';
 import getExplorerStyles from '../styles/Styles';
+import { markerImages } from '../utils/assets';
 import { buildFeatureCollections } from '../utils/featureCollection';
-import { markerImages } from '../utils/getAsset';
 
 MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 // MapboxGL.setTelemetryEnabled(false);
@@ -53,9 +53,10 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
   const featureCollections = buildFeatureCollections(places);
   const [userLocation, setUserLocation] = React.useState(false);
   const [fabVisible, setFabVisible] = React.useState(false);
+  const lastZoomLevel = React.useRef(mapConfig.minZoom);
 
   const theme = useTheme();
-  const { colors } = theme;
+  const { dark, colors } = theme;
   const explorerStyles = getExplorerStyles(theme);
 
   React.useEffect(() => {
@@ -78,10 +79,24 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
     const { id, geometry, properties } = event.features[0];
     if (geometry.type === 'Point') {
       const coordinates = geometry.coordinates as [number, number];
-      cameraRef.current!.moveTo(coordinates, 700);
       if (properties?.cluster || typeof id === 'number') {
         closeBottomSheet();
+        cameraRef.current!.setCamera({
+          centerCoordinate: coordinates,
+          zoomLevel: Math.min(lastZoomLevel.current + 2, mapConfig.maxZoom),
+          animationDuration: 700,
+        });
       } else {
+        if (lastZoomLevel.current < 15) {
+          cameraRef.current!.setCamera({
+            centerCoordinate: coordinates,
+            zoomLevel: 15,
+            animationDuration: 1500,
+            animationMode: 'flyTo',
+          });
+        } else {
+          cameraRef.current!.moveTo(coordinates, 700);
+        }
         if (id === selectedLocation.id) {
           // User pressed on the already selected location
           partialOpenBottomSheet();
@@ -158,6 +173,9 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           x: 10,
           y: insets.top * 1.5 + 10,
         }}
+        onRegionIsChanging={({ properties }) => {
+          lastZoomLevel.current = properties.zoomLevel;
+        }}
         onRegionDidChange={({ properties }) => {
           const { visibleBounds, zoomLevel } = properties;
 
@@ -230,11 +248,12 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           <MapboxGL.SymbolLayer
             id="cluster-symbol"
             style={{
-              iconImage: 'circleRed',
+              iconImage: dark ? 'circleGray' : 'circleWhite',
               iconSize: 1,
-              textField: ['get', 'point_count'],
+              textField: ['get', 'point_count_abbreviated'],
               textFont: ['Noto Sans Regular'],
-              textColor: '#fff',
+              textSize: 15,
+              textColor: colors.text,
             }}
           />
         </MapboxGL.ShapeSource>
