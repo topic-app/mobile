@@ -455,7 +455,52 @@ export type Place = PlacePreload & {
   location: Location;
 };
 
-export namespace ExplorerLocation {
+export namespace MapLocation {
+  type Base = {
+    type: 'Feature';
+    id: string;
+    geometry: {
+      type: 'Point';
+      coordinates: [number, number];
+    };
+  };
+
+  type PointDataType = 'school' | 'place' | 'event';
+
+  export type Point<T extends PointDataType = PointDataType> = Base & {
+    dataType: T;
+    properties: {
+      _id: string;
+      name: string;
+      associatedEvents: T extends 'school' ? number : never;
+    };
+  };
+
+  export type Cluster = Base & {
+    dataType: 'cluster';
+    properties: {
+      cluster: true;
+      cluster_id: number;
+      point_count: number;
+      point_count_abbreviated: number;
+    };
+  };
+
+  export type Element = Point | Cluster;
+
+  export type FullLocation = {
+    id: string;
+    name: string;
+    shortName?: string;
+    icon: string;
+    description: string;
+    detail: string;
+    type: PointDataType;
+    addresses: string[];
+  };
+}
+
+export namespace ExplorerLocationOldPleaseRemoveIfIForget {
   export type LocationTypes = 'place' | 'school' | 'event' | 'secret' | 'collection';
   export type Place = { type: 'place'; data: PlacePreload };
   export type School = { type: 'school'; data: SchoolPreload & { address: Address } };
@@ -469,13 +514,9 @@ export namespace ExplorerLocation {
     };
   };
 
-  export type Location =
-    | ExplorerLocation.Place
-    | ExplorerLocation.School
-    | ExplorerLocation.Event
-    | ExplorerLocation.Secret;
+  export type Location = Place | School | Event | Secret;
 
-  export type Marker = ExplorerLocation.Location | ExplorerLocation.Collection;
+  export type Marker = Location | Collection;
 }
 
 // Petition Types
