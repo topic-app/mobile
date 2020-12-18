@@ -24,13 +24,13 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   const MetaSchema = Yup.object().shape({
     name: Yup.string()
       .min(3, 'Le nom doit contenir au moins 3 charactères')
-      .max(50, 'Le nom doit contenir moins de 50 caractères.')
+      .max(100, 'Le nom doit contenir moins de 100 caractères.')
       .required('Nom requis'),
     shortName: Yup.string()
       .min(2, "L'acronyme doit contenir au moins 2 caractères")
       .max(10, "L'acronyme doit contenir moins de 10 caractères"),
     summary: Yup.string()
-      .max(500, 'Le résumé doit contenir moins de 500 caractères.')
+      .max(200, 'La description courte doit contenir moins de 200 caractères.')
       .required('Description courte requise'),
     description: Yup.string(),
   });
@@ -79,7 +79,6 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
                 onBlur={handleBlur('shortName')}
                 onSubmitEditing={() => summaryInput.current?.focus()}
                 style={articleStyles.textInput}
-                autoFocus
               />
             </View>
             <View style={{ marginBottom: 20 }}>
@@ -114,30 +113,27 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
                 style={articleStyles.textInput}
               />
             </View>
+            <View style={articleStyles.buttonContainer}>
+              <Button
+                mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() => prev()}
+                style={{ flex: 1, marginRight: 5 }}
+              >
+                Retour
+              </Button>
+              <Button
+                mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() => handleSubmit()}
+                style={{ flex: 1, marginLeft: 5 }}
+              >
+                Suivant
+              </Button>
+            </View>
           </View>
         )}
       </Formik>
-      <View style={articleStyles.buttonContainer}>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={() => prev()}
-          style={{ flex: 1, marginRight: 5 }}
-        >
-          Retour
-        </Button>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={() => {
-            blurInputs();
-            submit();
-          }}
-          style={{ flex: 1, marginLeft: 5 }}
-        >
-          Suivant
-        </Button>
-      </View>
     </View>
   );
 };
