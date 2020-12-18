@@ -1,7 +1,5 @@
 import { MapLocation } from '@ts/types';
 
-import { getAssetName } from './getAsset';
-
 function buildFeatureCollections(places: MapLocation.Element[]) {
   const featureCollections = {
     cluster: {
@@ -29,8 +27,6 @@ function buildFeatureCollections(places: MapLocation.Element[]) {
       properties: {
         ...place.properties,
         type: dataType,
-        pinIcon: getAssetName(dataType, 'pin'),
-        circleIcon: getAssetName(dataType, 'circle'),
       },
     };
 
