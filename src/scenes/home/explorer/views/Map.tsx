@@ -179,7 +179,20 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
         onRegionDidChange={({ properties }) => {
           const { visibleBounds, zoomLevel } = properties;
 
+          // [eastLng, northLat, westLng, southLat]
           const bounds = visibleBounds.flat() as [number, number, number, number];
+
+          // Get the "height" and "width" of bounds (in latitude and longitude)
+          const lngDiff = Math.abs(bounds[0] - bounds[2]);
+          const latDiff = Math.abs(bounds[1] - bounds[3]);
+
+          // Add those to the bounds to enlarge them
+          // console.log(bounds);
+          // console.log(lngDiff, latDiff);
+          bounds[0] += lngDiff;
+          bounds[2] -= lngDiff;
+          bounds[1] += latDiff / 2;
+          bounds[3] -= latDiff / 2;
 
           fetchMapLocations(...bounds, Math.floor(zoomLevel))
             .then(setPlaces)
