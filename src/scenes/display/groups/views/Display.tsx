@@ -28,6 +28,7 @@ import {
   ErrorMessage,
   SafeAreaView,
   Banner,
+  ContentTabView,
 } from '@components/index';
 import { Permissions } from '@constants/index';
 import { searchArticles } from '@redux/actions/api/articles';
@@ -63,7 +64,6 @@ import {
 } from '@ts/types';
 import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
 
-import ContentTabView from '../../components/ContentTabView';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
@@ -654,15 +654,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 </View>
               )}
               <View style={{ height: 40 }} />
-              {!verification && (
-                <ContentTabView
-                  articles={articles}
-                  events={events}
-                  eventsState={eventsState}
-                  articlesState={articlesState}
-                  params={{ groups: [id] }}
-                />
-              )}
+              {!verification && <ContentTabView searchParams={{ groups: [id] }} />}
               {verification && (
                 <View>
                   <Divider style={{ marginTop: 30 }} />

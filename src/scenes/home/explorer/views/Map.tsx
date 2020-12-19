@@ -4,7 +4,7 @@ import React from 'react';
 import { View, Linking, Platform } from 'react-native';
 import { Text, FAB, IconButton } from 'react-native-paper';
 
-import { BottomSheetRef } from '@components/index';
+import { BottomSheetRef, Illustration } from '@components/index';
 import { fetchMapLocations } from '@redux/actions/api/places';
 import getStyles from '@styles/Styles';
 import { MapLocation } from '@ts/types';
@@ -230,7 +230,11 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
         >
           <MapboxGL.SymbolLayer
             id="place-symbol"
-            style={{ iconImage: 'pinRed', iconSize: 1, iconAnchor: 'bottom' }}
+            style={{
+              iconImage: dark ? 'pinRedDark' : 'pinRedLight',
+              iconSize: 1,
+              iconAnchor: 'bottom',
+            }}
           />
         </MapboxGL.ShapeSource>
         <MapboxGL.ShapeSource
@@ -269,7 +273,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           <MapboxGL.SymbolLayer
             id="cluster-symbol"
             style={{
-              iconImage: dark ? 'circleGray' : 'circleWhite',
+              iconImage: dark ? 'circleDark' : 'circleLight',
               iconSize: 1,
               textField: ['get', 'point_count_abbreviated'],
               textFont: ['Noto Sans Regular'],
