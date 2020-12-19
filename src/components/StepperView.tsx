@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
-import { TabView, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 import StepIndicator from 'react-native-step-indicator';
+import { TabView, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Theme } from '@ts/types';
@@ -105,6 +105,7 @@ type Props = {
   swipeEnabled?: boolean;
   hideTabBar?: boolean;
   preloadDistance?: number;
+  onChange?: () => any;
 };
 
 const StepperView: React.FC<Props> = ({
@@ -114,14 +115,21 @@ const StepperView: React.FC<Props> = ({
   swipeEnabled = false,
   hideTabBar = false,
   preloadDistance = 0,
+  onChange = () => {},
 }) => {
   const theme = useTheme();
   const stepIndicatorStyles = getStepIndicatorStyles(theme);
 
   const [index, setIndex] = React.useState(0);
 
-  const next = (num = 1) => setIndex(index + num);
-  const prev = (num = 1) => setIndex(index - num);
+  const next = (num = 1) => {
+    setIndex(index + num);
+    onChange();
+  };
+  const prev = (num = 1) => {
+    setIndex(index - num);
+    onChange();
+  };
 
   const initialLayout = { width: Dimensions.get('window').width };
 

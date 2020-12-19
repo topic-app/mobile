@@ -211,18 +211,16 @@ function ArticleLists({
                                 disabled={item.disable}
                                 value={enabled && !item.disable}
                                 color={colors.primary}
-                                onTouchEnd={
-                                  enabled
-                                    ? () =>
-                                        updateArticlePrefs({
-                                          categories: articlePrefs.categories?.filter(
-                                            (d) => d !== item.id,
-                                          ),
-                                        })
-                                    : () =>
-                                        updateArticlePrefs({
-                                          categories: [...(articlePrefs.categories || []), item.id],
-                                        })
+                                onValueChange={(val) =>
+                                  val
+                                    ? updateArticlePrefs({
+                                        categories: [...(articlePrefs.categories || []), item.id],
+                                      })
+                                    : updateArticlePrefs({
+                                        categories: articlePrefs.categories?.filter(
+                                          (d) => d !== item.id,
+                                        ),
+                                      })
                                 }
                               />
                             </View>

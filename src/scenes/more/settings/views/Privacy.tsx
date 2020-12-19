@@ -25,8 +25,8 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
   const settingsStyles = getSettingsStyles(theme);
   const { colors } = theme;
 
-  const toggleHistory = () => {
-    if (!preferences.history) {
+  const toggleHistory = (val: boolean) => {
+    if (val) {
       updatePrefs({
         history: true,
       });
@@ -57,8 +57,8 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
     }
   };
 
-  const toggleRecommendations = () => {
-    if (!preferences.recommendations) {
+  const toggleRecommendations = (val: boolean) => {
+    if (val) {
       updatePrefs({
         recommendations: true,
       });
@@ -86,8 +86,8 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
     }
   };
 
-  const toggleSyncHistory = () => {
-    if (!preferences.syncHistory) {
+  const toggleSyncHistory = (val: boolean) => {
+    if (val) {
       updatePrefs({
         syncHistory: true,
       });
@@ -115,8 +115,8 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
     }
   };
 
-  const toggleSyncLists = () => {
-    if (!preferences.syncLists) {
+  const toggleSyncLists = (val: boolean) => {
+    if (val) {
       updatePrefs({
         syncLists: true,
       });
@@ -170,10 +170,10 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
               <Switch
                 value={preferences.history}
                 color={colors.primary}
-                onTouchEnd={toggleHistory}
+                onValueChange={toggleHistory}
               />
             )}
-            onPress={toggleHistory}
+            onPress={() => toggleHistory(!preferences.history)}
             style={settingsStyles.listItem}
           />
           <List.Item
@@ -191,10 +191,10 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                 disabled
                 color={colors.primary}
                 value={preferences.recommendations}
-                onTouchEnd={toggleRecommendations}
+                onValueChange={toggleRecommendations}
               />
             )}
-            onPress={toggleRecommendations}
+            onPress={() => toggleRecommendations(!preferences.recommendations)}
             style={settingsStyles.listItem}
           />
         </List.Section>
@@ -238,10 +238,10 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                 color={colors.primary}
                 disabled={!account.loggedIn || !preferences.history}
                 value={account.loggedIn && preferences.syncHistory}
-                onTouchEnd={toggleSyncHistory}
+                onValueChange={toggleSyncHistory}
               />
             )}
-            onPress={toggleSyncHistory}
+            onPress={() => toggleSyncHistory(!preferences.syncHistory)}
             style={settingsStyles.listItem}
           />
           <List.Item
@@ -259,10 +259,10 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                 color={colors.primary}
                 disabled={!account.loggedIn}
                 value={account.loggedIn && preferences.syncLists}
-                onTouchEnd={toggleSyncLists}
+                onValueChange={toggleSyncLists}
               />
             )}
-            onPress={toggleSyncLists}
+            onPress={() => toggleSyncLists(!preferences.syncLists)}
             style={settingsStyles.listItem}
           />
         </List.Section>

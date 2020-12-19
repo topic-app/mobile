@@ -108,7 +108,7 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
               <Switch
                 color={colors.primary}
                 value={preferences.useDevServer}
-                onTouchEnd={toggleDevServer}
+                onValueChange={toggleDevServer}
               />
             )}
             onPress={toggleDevServer}

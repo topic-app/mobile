@@ -34,6 +34,8 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
   const styles = getStyles(theme);
   const authStyles = getAuthStyles(theme);
 
+  const scrollViewRef = React.useRef<ScrollView>(null);
+
   const create = () => {
     const reqParams = {
       accountInfo: {
@@ -98,13 +100,14 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
             error={reqState.check.error}
           />
         )}
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef}>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
             <Illustration name="auth-register" height={200} width={200} />
             <Text style={authStyles.title}>Créer un compte</Text>
           </View>
           <StepperView
+            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
             pages={[
               {
                 key: 'general',
