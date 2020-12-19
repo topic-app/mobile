@@ -23,12 +23,15 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
   const [terms, setTerms] = React.useState(false);
   const [analytics, setAnalytics] = React.useState(false);
 
+  const scrollViewRef = React.useRef<ScrollView>(null);
+
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView>
+        <ScrollView ref={scrollViewRef}>
           <StepperView
+            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
             pages={[
               {
                 key: 'welcome',
@@ -237,9 +240,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
                         color={colors.primary}
                         uppercase={false}
-                        onPress={() =>
-                          Linking.openURL('https://chat.topicapp.fr/register/cYd2Rw3eaBfYnvoZy')
-                        }
+                        onPress={() => Linking.openURL('https://chat.topicapp.fr/register/')}
                         style={{ flex: 1, marginTop: 20 }}
                       >
                         Rejoindre chat.topicapp.fr
@@ -249,7 +250,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         color={colors.primary}
                         uppercase={false}
                         onPress={() =>
-                          Linking.openURL('https://t.me/joinchat/EweXREpNp7G6Uzl6nkMThQ')
+                          Linking.openURL('https://t.me/joinchat/AAAAAEfRz29dT2eYy9w_7A')
                         }
                         style={{ flex: 1, marginTop: 20 }}
                       >

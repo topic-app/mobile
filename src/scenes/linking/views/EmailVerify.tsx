@@ -10,12 +10,12 @@ import {
   TranslucentStatusBar,
   CustomHeaderBar,
 } from '@components/index';
+import { fetchAccount } from '@redux/actions/data/account';
 import { emailVerify } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LinkingRequestState } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import types from '../data/types.json';
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';
 import getLinkingStyles from '../styles/Styles';
 
@@ -34,7 +34,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
   const { id, token } = route.params;
 
   const fetch = () => {
-    emailVerify(id, token);
+    emailVerify(id, token).then(() => fetchAccount());
   };
 
   React.useEffect(fetch, []);

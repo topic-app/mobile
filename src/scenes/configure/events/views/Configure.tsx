@@ -210,18 +210,16 @@ function EventLists({
                                 disabled={item.disable}
                                 value={enabled && !item.disable}
                                 color={colors.primary}
-                                onTouchEnd={
-                                  enabled
-                                    ? () =>
-                                        updateEventPrefs({
-                                          categories: eventPrefs.categories?.filter(
-                                            (d) => d !== item.id,
-                                          ),
-                                        })
-                                    : () =>
-                                        updateEventPrefs({
-                                          categories: [...(eventPrefs.categories || []), item.id],
-                                        })
+                                onValueChange={(val) =>
+                                  val
+                                    ? updateEventPrefs({
+                                        categories: [...(eventPrefs.categories || []), item.id],
+                                      })
+                                    : updateEventPrefs({
+                                        categories: eventPrefs.categories?.filter(
+                                          (d) => d !== item.id,
+                                        ),
+                                      })
                                 }
                               />
                             </View>

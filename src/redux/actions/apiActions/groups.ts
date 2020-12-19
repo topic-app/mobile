@@ -531,6 +531,7 @@ function groupAddCreator({
   parser,
   description,
   verification,
+  legal,
 }: GroupCreationData): AppThunk<Promise<{ _id: string }>> {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
@@ -558,6 +559,7 @@ function groupAddCreator({
             },
             location,
             type,
+            legal,
           },
           verification,
         },

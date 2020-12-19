@@ -9,9 +9,9 @@ import { request, logger } from '@utils/index';
 
 function uploadCreator(
   groupId: string,
-  resizeMode: 'content-primary' = 'content-primary',
+  resizeMode: 'content-primary' | 'avatar' | 'content-inline' = 'content-primary',
   avatar: boolean = false,
-  camera: false | 'back' | 'front' = false,
+  camera: boolean | 'back' | 'front' = false,
 ): AppThunk<Promise<string>> {
   return async (dispatch) => {
     dispatch({
@@ -180,8 +180,13 @@ function uploadCreator(
   };
 }
 
-async function upload(groupId: string) {
-  return Store.dispatch(uploadCreator(groupId));
+async function upload(
+  groupId: string,
+  resizeMode?: 'content-primary' | 'content-inline' | 'avatar',
+  avatar?: boolean,
+  camera?: boolean | 'back' | 'front',
+) {
+  return Store.dispatch(uploadCreator(groupId, resizeMode, avatar, camera));
 }
 
 export default upload;

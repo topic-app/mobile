@@ -38,6 +38,8 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
 
+  const scrollViewRef = React.useRef<ScrollView>(null);
+
   const add = (program?: ProgramEntry[]) => {
     eventAdd({
       title: creationData.title,
@@ -82,12 +84,13 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
             retry={add}
           />
         )}
-        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
             <Text style={eventStyles.title}>Créer un évènement</Text>
           </View>
           <StepperView
+            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
             pages={[
               {
                 key: 'group',

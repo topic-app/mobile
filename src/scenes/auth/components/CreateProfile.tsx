@@ -63,8 +63,8 @@ const AuthCreatePageProfile: React.FC<Props> = ({
   const authStyles = getAuthStyles(theme);
 
   const ProfileSchema = Yup.object().shape({
-    firstname: Yup.string().matches(/^([0-9]|[a-z])+([0-9a-z]+)$/i, 'Prénom invalide'),
-    lastname: Yup.string().matches(/^([0-9]|[a-z])+([0-9a-z]+)$/i, 'Nom invalide'),
+    firstname: Yup.string().max(100, 'Le nom doit contenir moins de 100 caractères'),
+    lastname: Yup.string().max(100, 'Le nom doit contenir moins de 100 caractères'),
   });
 
   return (
@@ -162,7 +162,6 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                     textContentType="givenName"
                     autoCompleteType="name"
                     autoCorrect={false}
-                    autoCapitalize="none"
                     autoFocus
                   />
                   <FormTextInput
@@ -178,7 +177,6 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                     textContentType="givenName"
                     autoCompleteType="name"
                     autoCorrect={false}
-                    autoCapitalize="none"
                   />
                 </View>
               )}
