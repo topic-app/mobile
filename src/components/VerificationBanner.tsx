@@ -1,14 +1,12 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Subheading, Avatar, ProgressBar } from 'react-native-paper';
+import { Avatar, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Config } from '@constants/index';
-import { groupMemberAccept, groupMemberReject } from '@redux/actions/apiActions/groups';
-import { fetchWaitingGroups, fetchGroups } from '@redux/actions/data/account';
+import { fetchAccount } from '@redux/actions/data/account';
 import { resendVerification } from '@redux/actions/data/profile';
 import { State, Account, AccountRequestState } from '@ts/types';
-import { handleUrl, Alert, useTheme } from '@utils/index';
+import { Alert, useTheme } from '@utils/index';
 
 import Banner from './Banner';
 import ErrorMessage from './ErrorMessage';
@@ -43,6 +41,10 @@ const VerificationBanner: React.FC<Props> = ({ account, state }) => {
       <Banner
         visible={!account.accountInfo.user.verification?.verified || false}
         actions={[
+          {
+            label: 'Rafraichîr',
+            onPress: () => fetchAccount(),
+          },
           {
             label: 'Renvoyer',
             onPress: () =>
