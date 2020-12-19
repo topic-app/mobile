@@ -192,7 +192,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
               />
             ) : null}
             {place.type === 'school' ? (
-              <ContentTabView searchParams={{ schools: [place.id] }} initialTab={1} />
+              <ContentTabView searchParams={{ schools: [place.id] }} />
             ) : null}
           </ScrollView>
         ) : (
