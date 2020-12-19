@@ -255,7 +255,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onPress={() => handleSubmit()}
                 style={{ flex: 1, marginLeft: 5 }}
               >
-                Suivant
+                Créer
               </Button>
             </View>
           </View>
