@@ -1,6 +1,14 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { ScrollView, View, Platform, ActivityIndicator, StatusBar, Share } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Platform,
+  ActivityIndicator,
+  StatusBar,
+  Share,
+  TouchableOpacity,
+} from 'react-native';
 import {
   Button,
   Text,
@@ -159,6 +167,8 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [modifying, setModifying] = React.useState(false);
 
   const [isAddSnackbarVisible, setAddSnackbarVisible] = React.useState(false);
+
+  const [legalCollapsed, setLegalCollapsed] = React.useState(true);
 
   const [editingGroup, setEditingGroup] = React.useState<{
     shortName?: string;
@@ -653,7 +663,58 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </Button>
                 </View>
               )}
-              <View style={{ height: 40 }} />
+              <View>
+                <Divider style={{ marginBottom: 20 }} />
+                <View style={styles.contentContainer}>
+                  <TouchableOpacity onPress={() => setLegalCollapsed(!legalCollapsed)}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Title style={{ color: colors.subtext }}>Informations légales</Title>
+                      <Icon
+                        name={legalCollapsed ? 'chevron-down' : 'chevron-up'}
+                        size={24}
+                        color={colors.subtext}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <CollapsibleView collapsed={legalCollapsed && !verification}>
+                  <View style={styles.contentContainer}>
+                    <Divider style={{ marginBottom: 20 }} />
+                    <Subheading>Nom complet</Subheading>
+                    <Text>{group.legal?.name || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Identifiant</Subheading>
+                    <Text>{group.legal?.id || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Responsable légal</Subheading>
+                    <Text>{group.legal?.admin}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Siège social</Subheading>
+                    <Text>{group.legal?.address || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Adresse email</Subheading>
+                    <Text>{group.legal?.email}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Site web</Subheading>
+                    <Text>{group.legal?.website || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    {group.legal?.extra ? (
+                      <View>
+                        <Subheading>Données supplémentaires</Subheading>
+                        <Text>{group.legal?.extra}</Text>
+                        <Divider style={{ marginVertical: 20 }} />
+                      </View>
+                    ) : null}
+                  </View>
+                </CollapsibleView>
+              </View>
+              <View style={{ height: 20 }} />
               {!verification && (
                 <ContentTabView
                   articles={articles}
@@ -667,18 +728,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <View>
                   <Divider style={{ marginTop: 30 }} />
                   <View style={styles.contentContainer}>
-                    <Title>Informations de vérification</Title>
-                  </View>
-                  <View style={styles.contentContainer}>
-                    <Divider style={{ marginBottom: 20 }} />
-                    <Subheading>Nom du créateur</Subheading>
-                    <Text>{(group as GroupVerification).verification?.data?.name}</Text>
-                    <Divider style={{ marginVertical: 20 }} />
-                    <Subheading>Identifiant (RNA, SIRET etc)</Subheading>
-                    <Text>
-                      {(group as GroupVerification).verification?.data?.id || 'Non spécifié'}
-                    </Text>
-                    <Divider style={{ marginVertical: 20 }} />
                     <Subheading>Données de vérification supplémentaires</Subheading>
                     <Text>
                       {(group as GroupVerification).verification?.data?.extra || 'Non spécifié'}
