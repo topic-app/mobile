@@ -64,18 +64,6 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           Suivant
                         </Button>
                       </View>
-                      <View style={{ alignItems: 'flex-end', marginTop: 20 }}>
-                        <Button
-                          mode="text"
-                          color={colors.primary}
-                          uppercase={false}
-                          onPress={() =>
-                            navigation.navigate('Landing', { screen: 'SelectLocation' })
-                          }
-                        >
-                          Passer
-                        </Button>
-                      </View>
                     </View>
                   </View>
                 ),
