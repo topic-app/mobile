@@ -39,8 +39,6 @@ import {
   ContentTabView,
 } from '@components/index';
 import { Permissions } from '@constants/index';
-import { searchArticles } from '@redux/actions/api/articles';
-import { searchEvents } from '@redux/actions/api/events';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import {
   groupFollow,
@@ -59,11 +57,6 @@ import {
   GroupRequestState,
   GroupsState,
   State,
-  ArticleRequestState,
-  EventRequestState,
-  EventPreload,
-  ArticlePreload,
-  AccountRequestState,
   User,
   GroupMember,
   GroupRole,
@@ -84,11 +77,6 @@ type GroupDisplayProps = {
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
-  articles: ArticlePreload[];
-  accountState: AccountRequestState;
-  articlesState: ArticleRequestState;
-  events: EventPreload[];
-  eventsState: EventRequestState;
 };
 
 const GroupDisplay: React.FC<GroupDisplayProps> = ({
@@ -97,11 +85,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   groups,
   account,
   state,
-  accountState,
-  articles,
-  events,
-  articlesState,
-  eventsState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -114,8 +97,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   React.useEffect(() => {
     fetch();
-    searchArticles('initial', '', { groups: [id] }, false);
-    searchEvents('initial', '', { groups: [id] }, false);
   }, [null]);
 
   const group: Group | GroupPreload | GroupVerification | null =
@@ -821,16 +802,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups, account, articles, events } = state;
+  const { groups, account } = state;
   return {
     groups,
     account,
-    articles: articles.search,
-    events: events.search,
-    articlesState: articles.state,
-    eventsState: events.state,
     state: groups.state,
-    accountState: account.state,
   };
 };
 
