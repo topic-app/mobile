@@ -240,7 +240,11 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
         >
           <MapboxGL.SymbolLayer
             id="school-symbol"
-            style={{ iconImage: 'pinPurple', iconSize: 1, iconAnchor: 'bottom' }}
+            style={{
+              iconImage: dark ? 'pinPurpleDark' : 'pinPurpleLight',
+              iconSize: 1,
+              iconAnchor: 'bottom',
+            }}
           />
         </MapboxGL.ShapeSource>
         <MapboxGL.ShapeSource
@@ -250,7 +254,11 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
         >
           <MapboxGL.SymbolLayer
             id="event-symbol"
-            style={{ iconImage: 'pinGreen', iconSize: 1, iconAnchor: 'bottom' }}
+            style={{
+              iconImage: dark ? 'pinGreenDark' : 'pinGreenLight',
+              iconSize: 1,
+              iconAnchor: 'bottom',
+            }}
           />
         </MapboxGL.ShapeSource>
         <MapboxGL.ShapeSource
