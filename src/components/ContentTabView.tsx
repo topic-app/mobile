@@ -38,8 +38,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     const styles = getStyles(theme);
     const navigation = useNavigation();
 
-    console.log('rendering contenttabview', searchParams);
-
     React.useEffect(() => {
       searchArticles('initial', '', searchParams, false);
       searchEvents('initial', '', searchParams, false);
