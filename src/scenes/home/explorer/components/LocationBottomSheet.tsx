@@ -185,12 +185,14 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
                 <Divider />
               </View>
             ))}
-            <InlineCard
-              title={description}
-              onPress={() => logger.verbose('Pressed location description')}
-            />
+            {description ? (
+              <InlineCard
+                title={description}
+                onPress={() => logger.verbose('Pressed location description')}
+              />
+            ) : null}
             {place.type === 'school' ? (
-              <ContentTabView searchParams={{ schools: [place.id] }} />
+              <ContentTabView searchParams={{ schools: [place.id] }} initialTab={1} />
             ) : null}
           </ScrollView>
         ) : (
