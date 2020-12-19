@@ -7,7 +7,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { BottomSheet, BottomSheetRef, InlineCard, PlatformBackButton } from '@components/index';
+import {
+  BottomSheet,
+  BottomSheetRef,
+  ContentTabView,
+  InlineCard,
+  PlatformBackButton,
+} from '@components/index';
 import { updateMapLocations } from '@redux/actions/api/places';
 import { MapLocation, PlaceRequestState, State } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
@@ -182,6 +188,9 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
               title={description}
               onPress={() => logger.verbose('Pressed location description')}
             />
+            {place.type === 'school' ? (
+              <ContentTabView searchParams={{ schools: [place.id] }} />
+            ) : null}
           </View>
         ) : (
           <ActivityIndicator style={{ transform: [{ scale: 1.5 }] }} />

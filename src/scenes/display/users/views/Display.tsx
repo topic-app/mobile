@@ -14,6 +14,7 @@ import {
   ReportModal,
   CustomTabView,
   SafeAreaView,
+  ContentTabView,
 } from '@components/index';
 import { searchArticles } from '@redux/actions/api/articles';
 import { searchEvents } from '@redux/actions/api/events';
@@ -27,7 +28,6 @@ import {
   Address,
   State,
   UsersState,
-  RequestState,
   UserPreload,
   User,
   ArticlePreload,
@@ -41,7 +41,6 @@ import {
 } from '@ts/types';
 import { useTheme, logger, Format } from '@utils/index';
 
-import ContentTabView from '../../components/ContentTabView';
 import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '../index';
 
 function getAddressString(address: Address['address']) {
@@ -500,13 +499,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              <ContentTabView
-                articles={articles}
-                events={events}
-                eventsState={eventsState}
-                articlesState={articlesState}
-                params={{ authors: [id] }}
-              />
+              <ContentTabView searchParams={{ authors: [id] }} />
             </View>
           )}
         </ScrollView>
