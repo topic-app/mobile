@@ -315,12 +315,14 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         )}
         ListEmptyComponent={() => (
           <Animated.View>
-            <ArticleEmptyList
-              tab={chipTab}
-              sectionKey={section}
-              reqState={state}
-              changeTab={changeList}
-            />
+            {dataLoaded ? (
+              <ArticleEmptyList
+                tab={chipTab}
+                sectionKey={section}
+                reqState={state}
+                changeTab={changeList}
+              />
+            ) : null}
           </Animated.View>
         )}
         onEndReachedThreshold={0.5}
