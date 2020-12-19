@@ -39,16 +39,19 @@ const GroupAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
+  const scrollViewRef = React.useRef<ScrollView>(null);
+
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
             <Text style={articleStyles.title}>Créer un groupe</Text>
           </View>
           <StepperView
+            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
             pages={[
               {
                 key: 'group',

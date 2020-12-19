@@ -23,12 +23,15 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
   const [terms, setTerms] = React.useState(false);
   const [analytics, setAnalytics] = React.useState(false);
 
+  const scrollViewRef = React.useRef<ScrollView>(null);
+
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView>
+        <ScrollView ref={scrollViewRef}>
           <StepperView
+            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
             pages={[
               {
                 key: 'welcome',
