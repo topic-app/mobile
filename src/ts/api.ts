@@ -134,7 +134,7 @@ export type Address = {
   // };
   geo: {
     type: 'Point';
-    coordinates: number[];
+    coordinates: [number, number];
   };
   address: {
     number: string;
