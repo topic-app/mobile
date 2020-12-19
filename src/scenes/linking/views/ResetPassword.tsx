@@ -105,8 +105,8 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                     <ErrorMessage
                       type="axios"
                       strings={{
-                        what: "l'ouverture du lien",
-                        contentSingular: 'Le lien',
+                        what: 'la réinitialisation du mot de passe',
+                        contentSingular: 'La réinitialisation du mot de passe',
                       }}
                       error={state.resetPassword.error}
                       retry={() => handleSubmit()}

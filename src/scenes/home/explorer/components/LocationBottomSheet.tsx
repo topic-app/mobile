@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/core';
 import React from 'react';
-import { View, BackHandler, useWindowDimensions, Platform } from 'react-native';
+import { View, BackHandler, useWindowDimensions, Platform, ScrollView } from 'react-native';
 import { ActivityIndicator, Divider, Text } from 'react-native-paper';
 import Animated, { call, cond, greaterThan, lessThan, useCode } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -167,7 +167,8 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
           </View>
         </View>
         {place && !reqState.map.loading && !reqState.map.error ? (
-          <View>
+          <ScrollView>
+            {/* HACK but whatever */}
             <Divider />
             {addresses.map((address) => (
               <View key={shortid()}>
@@ -184,14 +185,16 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
                 <Divider />
               </View>
             ))}
-            <InlineCard
-              title={description}
-              onPress={() => logger.verbose('Pressed location description')}
-            />
+            {description ? (
+              <InlineCard
+                title={description}
+                onPress={() => logger.verbose('Pressed location description')}
+              />
+            ) : null}
             {place.type === 'school' ? (
               <ContentTabView searchParams={{ schools: [place.id] }} />
             ) : null}
-          </View>
+          </ScrollView>
         ) : (
           <ActivityIndicator style={{ transform: [{ scale: 1.5 }] }} />
         )}

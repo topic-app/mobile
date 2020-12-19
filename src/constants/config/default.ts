@@ -44,10 +44,7 @@ const defaultConfig: AppConfig = {
     },
   },
   content: {
-    allowedSites: [
-      { url: 'https://topicapp.fr/', allowSubdomains: true },
-      { url: 'https://gitlab.com/', allowSubdomains: true },
-    ],
+    allowedSites: [{ url: 'https://topicapp.fr/', allowSubdomains: true }],
     comments: {
       maxCharacters: 500,
     },
