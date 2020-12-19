@@ -100,10 +100,22 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
           scope: {},
         }) ? (
           <TextChip
-            title={`Créer "${searchText.toLowerCase()}"`}
+            title={`Créer "${searchText
+              .toLowerCase()
+              .replace(/[^a-zA-Z0-9ùúûüéèêëàáâä]/g, '')
+              .replace(/[éèêë]/g, 'e')
+              .replace(/[àáâä]/g, 'a')
+              .replace(/[ùúûü]/g, 'u')}"`}
             icon="plus"
             onPress={() => {
-              setTagName(searchText.toLowerCase());
+              setTagName(
+                searchText
+                  .toLowerCase()
+                  .replace(/[^a-zA-Z0-9ùúûüéèêëàáâä]/g, '')
+                  .replace(/[éèêë]/g, 'e')
+                  .replace(/[àáâä]/g, 'a')
+                  .replace(/[ùúûü]/g, 'u'),
+              );
               setTagAddModalVisible(true);
             }}
           />
