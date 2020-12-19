@@ -1,19 +1,29 @@
 import React from 'react';
-import { View, Platform } from 'react-native';
+import { View, Platform, ActivityIndicator } from 'react-native';
 import {
   Divider,
   Button,
   HelperText,
   TextInput as PaperTextInput,
   ProgressBar,
+  Title,
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, Modal } from '@components/index';
+import { ErrorMessage, Modal, Avatar } from '@components/index';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { groupModify } from '@redux/actions/apiActions/groups';
+import { upload } from '@redux/actions/apiActions/upload';
 import getStyles from '@styles/Styles';
-import { ModalProps, State, Group, GroupRequestState, GroupPreload } from '@ts/types';
+import {
+  ModalProps,
+  State,
+  Group,
+  GroupRequestState,
+  GroupPreload,
+  Avatar as AvatarType,
+  UploadRequestState,
+} from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
@@ -21,20 +31,27 @@ import getArticleStyles from '../styles/Styles';
 type EditGroupDescriptionModalProps = ModalProps & {
   group: Group | GroupPreload | null;
   editingGroup: {
-    shortName?: string;
+    id?: string;
+    name?: string;
     summary?: string;
     description?: string;
+    avatar?: AvatarType;
   } | null;
   setEditingGroup: ({
-    shortName,
+    id,
+    name,
     summary,
     description,
+    avatar,
   }: {
-    shortName?: string;
+    id?: string;
+    name?: string;
     summary?: string;
     description?: string;
+    avatar?: AvatarType;
   }) => any;
   state: GroupRequestState;
+  uploadState: UploadRequestState;
 };
 
 const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
@@ -44,6 +61,7 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
   editingGroup,
   setEditingGroup,
   state,
+  uploadState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -51,6 +69,8 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
   const { colors } = theme;
 
   const [errorVisible, setErrorVisible] = React.useState(false);
+
+  const uploadImage = () => upload(editingGroup?.id || '', 'avatar', true);
 
   const add = () => {
     if (group) {
@@ -80,6 +100,67 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
           />
         ) : null}
         <View>
+          <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 30 }]}>
+            <Title>{editingGroup?.name}</Title>
+          </View>
+          <View
+            style={[
+              styles.centerIllustrationContainer,
+              {
+                marginBottom: 120,
+                marginTop: 20,
+              },
+            ]}
+          >
+            {uploadState.upload?.error && (
+              <ErrorMessage
+                error={uploadState.upload?.error}
+                strings={{
+                  what: "l'upload de l'image",
+                  contentSingular: "L'image",
+                }}
+                type="axios"
+                retry={() =>
+                  uploadImage().then((id) =>
+                    setEditingGroup({
+                      ...editingGroup,
+                      avatar: {
+                        type: 'image',
+                        image: { image: id, thumbnails: { small: true, medium: true } },
+                      },
+                    }),
+                  )
+                }
+              />
+            )}
+            {uploadState.upload?.loading ? (
+              <View style={{ height: 120 }}>
+                <ActivityIndicator size="large" color={colors.primary} />
+              </View>
+            ) : (
+              <Avatar
+                size={120}
+                imageSize="large"
+                avatar={editingGroup?.avatar}
+                onPress={() =>
+                  uploadImage().then((id) => {
+                    console.log(id);
+                    setEditingGroup({
+                      ...editingGroup,
+                      avatar: {
+                        type: 'image',
+                        image: {
+                          image: id,
+                          thumbnails: { small: true, medium: false, large: true },
+                        },
+                      },
+                    });
+                  })
+                }
+                editing
+              />
+            )}
+          </View>
           <View style={articleStyles.activeCommentContainer}>
             <PaperTextInput
               mode="outlined"
@@ -125,9 +206,10 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups } = state;
+  const { groups, upload } = state;
   return {
     state: groups.state,
+    uploadState: upload.state,
   };
 };
 
