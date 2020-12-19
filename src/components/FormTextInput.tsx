@@ -7,6 +7,7 @@ import { useTheme } from '@utils/index';
 
 type Props = Omit<Omit<React.ComponentProps<typeof PaperTextInput>, 'error'>, 'render'> & {
   error?: string;
+  info?: string;
   touched?: boolean;
 };
 
@@ -15,6 +16,7 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
     error: errorString,
     touched,
     mode = 'outlined',
+    info: infoString,
     disableFullscreenUI = true,
     ...rest
   } = props;
@@ -61,8 +63,8 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
           ) : null}
         </View>
       </View>
-      <HelperText type="error" visible={error}>
-        {errorString}
+      <HelperText type={error ? 'error' : 'info'} visible={error || !!infoString}>
+        {error ? errorString : infoString}
       </HelperText>
     </View>
   );

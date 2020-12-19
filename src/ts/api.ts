@@ -286,6 +286,15 @@ export type Group = GroupBase & {
   roles: GroupRole[];
   members: GroupMember[];
   tags: TagPreload[];
+  legal?: {
+    name?: string;
+    id?: string;
+    admin?: string;
+    address?: string;
+    email?: string;
+    website?: string;
+    extra?: string;
+  };
 };
 
 export type GroupVerification = Group & {

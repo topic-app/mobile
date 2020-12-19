@@ -275,6 +275,16 @@ export type GroupCreationData = {
   };
   description?: string;
   summary?: string;
+  legal?: {
+    id?: string;
+    name?: string;
+    address?: string;
+    admin?: string;
+    email?: string;
+    website?: string;
+    extra?: string;
+    extraVerification?: string;
+  };
 };
 
 export type GroupsContentState = {
