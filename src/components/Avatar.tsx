@@ -1,8 +1,9 @@
 import color from 'color';
 import React from 'react';
-import { View, ViewStyle, TextStyle, ImageStyle, StyleProp } from 'react-native';
+import { View, ViewStyle, TextStyle, ImageStyle, StyleProp, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Avatar as PaperAvatar, Text } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Avatar as AvatarType } from '@ts/types';
 import { useTheme } from '@utils/index';
@@ -25,6 +26,8 @@ type AvatarProps = {
   onPress?: () => void;
   avatar?: AvatarType;
   large?: boolean;
+  editing?: boolean;
+  imageSize?: 'small' | 'medium' | 'large' | 'extralarge' | 'full';
 };
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -35,7 +38,9 @@ const Avatar: React.FC<AvatarProps> = ({
   size = 64,
   onPress,
   avatar,
+  imageSize = 'small',
   large = false,
+  editing = false,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -78,7 +83,7 @@ const Avatar: React.FC<AvatarProps> = ({
           width={size}
           style={{ borderRadius: size / 2 }}
           image={avatar.image}
-          imageSize={large ? 'large' : 'small'}
+          imageSize={imageSize}
         />
       );
     } else {
@@ -108,10 +113,34 @@ const Avatar: React.FC<AvatarProps> = ({
   } else {
     AvatarComponent = <Illustration name="topic-icon" height={size} width={size} style={style} />;
   }
+  if (editing) {
+    AvatarComponent = (
+      <View>
+        {AvatarComponent}
+        <View
+          style={{
+            borderRadius: 20,
+            backgroundColor: 'black',
+            width: 40,
+            height: 40,
+            opacity: 0.7,
+            marginTop: -50,
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Icon name="pencil" color="white" size={24} />
+        </View>
+      </View>
+    );
+  }
   if (onPress) {
     return (
-      <View style={{ borderRadius: size / 2, overflow: 'hidden' }}>
-        <PlatformTouchable onPress={onPress}>{AvatarComponent}</PlatformTouchable>
+      <View style={{ borderRadius: size / 2 }}>
+        <TouchableOpacity onPress={onPress} style={{ height: size, width: size }}>
+          {AvatarComponent}
+        </TouchableOpacity>
       </View>
     );
   }

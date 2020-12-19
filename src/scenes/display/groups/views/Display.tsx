@@ -68,6 +68,7 @@ import {
   GroupRole,
   UserPreload,
   GroupVerification,
+  Avatar as AvatarType,
 } from '@ts/types';
 import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
 
@@ -75,7 +76,6 @@ import ContentTabView from '../../components/ContentTabView';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
-import EditGroupModal from '../components/EditGroupModal';
 import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
 
 type GroupDisplayProps = {
@@ -171,11 +171,12 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [legalCollapsed, setLegalCollapsed] = React.useState(true);
 
   const [editingGroup, setEditingGroup] = React.useState<{
-    shortName?: string;
+    id?: string;
+    name?: string;
     summary?: string;
     description?: string;
+    avatar?: AvatarType;
   } | null>(null);
-  const [isEditGroupModalVisible, setEditGroupModalVisible] = React.useState(false);
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
     false,
   );
@@ -268,11 +269,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     icon="pencil"
                     onPress={() => {
                       setEditingGroup({
-                        shortName: group.shortName,
+                        id: group._id,
+                        name: group.name,
                         summary: group.summary,
                         description: group.description?.data,
+                        avatar: group.avatar,
                       });
-                      setEditGroupModalVisible(true);
+                      setEditGroupDescriptionModalVisible(true);
                     }}
                   />
                 )}
@@ -320,7 +323,27 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
           <View style={[styles.contentContainer, { marginTop: 20 }]}>
             <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-              <Avatar size={120} avatar={group.avatar} />
+              <Avatar
+                size={120}
+                avatar={group.avatar}
+                imageSize="large"
+                onPress={
+                  group.avatar?.type === 'image'
+                    ? () =>
+                        group.avatar?.type === 'image' &&
+                        navigation.push('Main', {
+                          screen: 'Display',
+                          params: {
+                            screen: 'Image',
+                            params: {
+                              screen: 'Display',
+                              params: { image: group.avatar?.image?.image },
+                            },
+                          },
+                        })
+                    : undefined
+                }
+              />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               <View style={{ alignItems: 'center' }}>
@@ -397,31 +420,19 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   )}
                 </View>
               )}
-              <PlatformTouchable onPress={() => setDescriptionVisible(!descriptionVisible)}>
+              <PlatformTouchable
+                onPress={
+                  group.description?.data
+                    ? () => setDescriptionVisible(!descriptionVisible)
+                    : undefined
+                }
+              >
                 <View style={styles.container}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flex: 1 }}>
                       <Paragraph style={{ color: colors.disabled }}>Groupe {group.type}</Paragraph>
                       <Paragraph numberOfLines={5}>{group.summary}</Paragraph>
                     </View>
-                    {checkPermission(account, {
-                      permission: Permissions.GROUP_MODIFY,
-                      scope: { groups: [id] },
-                    }) && (
-                      <View onResponderTerminationRequest={() => false}>
-                        <IconButton
-                          icon="pencil-outline"
-                          onPress={() => {
-                            setEditingGroup({
-                              shortName: group.shortName,
-                              summary: group.summary,
-                              description: group.description?.data,
-                            });
-                            setEditGroupDescriptionModalVisible(true);
-                          }}
-                        />
-                      </View>
-                    )}
                   </View>
                   {group.description?.data ? (
                     <View>
@@ -803,14 +814,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               setAddSnackbarVisible(true);
             }
           }}
-        />
-
-        <EditGroupModal
-          visible={isEditGroupModalVisible}
-          setVisible={setEditGroupModalVisible}
-          group={group}
-          editingGroup={editingGroup}
-          setEditingGroup={setEditingGroup}
         />
 
         <EditGroupDescriptionModal
