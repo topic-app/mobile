@@ -27,7 +27,7 @@ type AvatarProps = {
   avatar?: AvatarType;
   large?: boolean;
   editing?: boolean;
-  imageSize?: 'small' | 'medium' | 'large' | 'extraLarge' | 'full';
+  imageSize?: 'small' | 'medium' | 'large' | 'extralarge' | 'full';
 };
 
 const Avatar: React.FC<AvatarProps> = ({
