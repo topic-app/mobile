@@ -323,7 +323,27 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
           <View style={[styles.contentContainer, { marginTop: 20 }]}>
             <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-              <Avatar size={120} avatar={group.avatar} imageSize="large" />
+              <Avatar
+                size={120}
+                avatar={group.avatar}
+                imageSize="large"
+                onPress={
+                  group.avatar?.type === 'image'
+                    ? () =>
+                        group.avatar?.type === 'image' &&
+                        navigation.push('Main', {
+                          screen: 'Display',
+                          params: {
+                            screen: 'Image',
+                            params: {
+                              screen: 'Display',
+                              params: { image: group.avatar?.image?.image },
+                            },
+                          },
+                        })
+                    : undefined
+                }
+              />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               <View style={{ alignItems: 'center' }}>
