@@ -491,25 +491,6 @@ export namespace MapLocation {
   };
 }
 
-export namespace ExplorerLocationOldPleaseRemoveIfIForget {
-  export type LocationTypes = 'place' | 'school' | 'event' | 'secret' | 'collection';
-  export type Place = { type: 'place'; data: PlacePreload };
-  export type School = { type: 'school'; data: SchoolPreload & { address: Address } };
-  export type Event = { type: 'event'; data: EventPreload };
-  export type Secret = { type: 'secret'; data: PlacePreload };
-  export type Collection = {
-    type: 'collection';
-    data: {
-      number: number;
-      geo: { type: 'Point'; coordinates: [number, number] };
-    };
-  };
-
-  export type Location = Place | School | Event | Secret;
-
-  export type Marker = Location | Collection;
-}
-
 // Petition Types
 export type Publisher = {
   _id?: string; // Note: Not really useful
