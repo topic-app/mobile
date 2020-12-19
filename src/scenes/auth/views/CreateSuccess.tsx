@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, View, FlatList } from 'react-native';
+import { Platform, View, FlatList, Alert } from 'react-native';
 import { Text, Button, Divider, Snackbar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -47,7 +47,15 @@ const AuthCreateSuccess: React.FC<AuthCreateSuccessProps> = ({ navigation, locat
         theme={{ colors: { accent: colors.primaryLighter } }}
         visible
         onDismiss={() => null}
-        action={{ label: 'Renvoyer', onPress: () => resendVerification() }}
+        action={{
+          label: 'Renvoyer',
+          onPress: () =>
+            resendVerification().then(() =>
+              Alert.alert('Email de vérification renvoyé', undefined, [{ text: 'Fermer' }], {
+                cancelable: true,
+              }),
+            ),
+        }}
       >
         Email de vérification envoyé
       </Snackbar>
