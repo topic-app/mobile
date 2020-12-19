@@ -42,7 +42,7 @@ const VerificationBanner: React.FC<Props> = ({ account, state }) => {
         visible={!account.accountInfo.user.verification?.verified || false}
         actions={[
           {
-            label: 'Rafraichîr',
+            label: 'Rafraichir',
             onPress: () => fetchAccount(),
           },
           {
