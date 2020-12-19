@@ -43,6 +43,9 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     React.useEffect(() => {
       searchArticles('initial', '', searchParams, false);
       searchEvents('initial', '', searchParams, false);
+      // Use JSON.stringify sparingly with deep equality checks
+      // Make sure the data that you want to stringify is somewhat small
+      // otherwise it will be very bad for performance
     }, [JSON.stringify(searchParams)]);
 
     return (
