@@ -97,7 +97,6 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
               onSubmitEditing={() => emailInput.current?.focus()}
               style={authStyles.textInput}
               textContentType="username"
-              autoCompleteType="username"
               autoCorrect={false}
               autoCapitalize="none"
               autoFocus

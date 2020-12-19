@@ -162,7 +162,6 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                     textContentType="givenName"
                     autoCompleteType="name"
                     autoCorrect={false}
-                    autoCapitalize="none"
                     autoFocus
                   />
                   <FormTextInput
@@ -178,7 +177,6 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                     textContentType="givenName"
                     autoCompleteType="name"
                     autoCorrect={false}
-                    autoCapitalize="none"
                   />
                 </View>
               )}
