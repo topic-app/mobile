@@ -58,7 +58,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
   // Build appropriate FeatureCollections from places
   const featureCollections = buildFeatureCollections(places);
   const [userLocation, setUserLocation] = React.useState(false);
-  const [fabVisible, setFabVisible] = React.useState(false);
+  const [fabState, setFabState] = React.useState<'hidden' | 'school' | 'user'>('hidden');
 
   const lastRequestParams = React.useRef<{
     bounds: [[number, number], [number, number]];
@@ -77,11 +77,15 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     Location.getStatus().then(async (status) => {
       if (status === 'yes') {
         logger.verbose('Location previously granted, showing location FAB');
-        setFabVisible(true);
+        setFabState('user');
         setUserLocation(true);
       } else if (status === 'no') {
         logger.info('Location previously denied but can ask again, showing location FAB');
-        setFabVisible(true);
+        setFabState('user');
+      } else if (status === 'never') {
+        if (permanentPlaces.length !== 0) {
+          setFabState('school');
+        }
       }
     });
   }, []);
@@ -134,27 +138,34 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
   }, [selectedLocation.id]);
 
   const requestUserLocation = async () => {
-    Location.getStatus().then(async (status) => {
+    Location.request().then(async (status) => {
       if (status === 'yes') {
         const coords = await Location.getCoordinates();
         cameraRef.current?.setCamera({
           centerCoordinate: [coords.longitude, coords.latitude],
-          zoomLevel: 11,
-          animationDuration: 1500,
+          zoomLevel: 14,
+          animationDuration: 2000,
           animationMode: 'flyTo',
         });
+        setUserLocation(true);
       } else {
-        setFabVisible(false);
+        if (permanentPlaces.length !== 0) {
+          setFabState('school');
+        } else {
+          setFabState('hidden');
+        }
         logger.info('Location permission request prompt denied, hiding location FAB.');
       }
     });
   };
 
-  const zoomToLocation = (coordinates: [number, number]) => {
+  const zoomToUserSchool = () => zoomToLocation(mapConfig.centerCoordinate, mapConfig.defaultZoom);
+
+  const zoomToLocation = (coordinates: [number, number], zoomLevel: number = 16) => {
     cameraRef.current!.setCamera({
       centerCoordinate: coordinates,
       animationDuration: 2000,
-      zoomLevel: 16,
+      zoomLevel,
       animationMode: 'flyTo',
       heading: 0,
     });
@@ -370,7 +381,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
         </View>
       ) : null}
 
-      {fabVisible && (
+      {fabState !== 'hidden' ? (
         <View
           style={{
             zIndex: 0,
@@ -382,11 +393,12 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
           <FAB
             style={explorerStyles.fab}
             color={colors.primary}
-            icon="crosshairs-gps"
-            onPress={requestUserLocation}
+            icon={fabState === 'user' ? 'crosshairs-gps' : 'school'}
+            onPress={fabState === 'user' ? requestUserLocation : zoomToUserSchool}
+            onLongPress={fabState === 'user' ? zoomToUserSchool : undefined}
           />
         </View>
-      )}
+      ) : null}
 
       <ExplorerAttribution />
 
