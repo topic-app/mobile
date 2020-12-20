@@ -92,13 +92,17 @@ async function fetchMapLocations(
   });
 
   if (result.data) {
-    return result.data.points;
+    // Move dataType to properties
+    return result.data.points.map(({ dataType, ...point }: any) => ({
+      ...point,
+      properties: { ...point.properties, dataType },
+    }));
   }
 
   throw new Error('Data does not exist on result of maps/clusters');
 }
 
-async function updateMapLocations(type: MapLocation.Point['dataType'], id: string) {
+async function updateMapLocations(type: MapLocation.PointDataType, id: string) {
   await Store.dispatch(async (dispatch, getState) => {
     dispatch({
       type: UPDATE_PLACES_STATE,

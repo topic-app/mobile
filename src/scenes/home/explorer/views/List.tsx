@@ -45,12 +45,12 @@ const ExplorerList: React.FC<ExplorerListProps> = ({ navigation, location }) => 
         permanentPlaces.push({
           id: sch._id,
           type: 'Feature',
-          dataType: 'school',
           geometry: {
             type: 'Point',
             coordinates: sch.address.geo.coordinates,
           },
           properties: {
+            dataType: 'school',
             _id: sch._id,
             name: sch.name,
             associatedEvents: sch.cache?.events ?? 0,

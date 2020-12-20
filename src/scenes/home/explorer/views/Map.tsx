@@ -7,7 +7,7 @@ import { Text, FAB, IconButton } from 'react-native-paper';
 import { BottomSheetRef } from '@components/index';
 import { fetchMapLocations } from '@redux/actions/api/places';
 import getStyles from '@styles/Styles';
-import { LocationList, MapLocation } from '@ts/types';
+import { MapLocation } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets, Location } from '@utils/index';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
@@ -21,7 +21,7 @@ MapboxGL.setAccessToken('DO-NOT-REMOVE-ME');
 
 export type MapMarkerDataType = {
   id: string;
-  type: MapLocation.Point['dataType'];
+  type: MapLocation.PointDataType;
   name: string;
   coordinates: [number, number];
 };
@@ -54,7 +54,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     name: '',
     coordinates: [0, 0],
   });
-  const [places, setPlaces] = React.useState<MapLocation.Element[]>(permanentPlaces);
+  const [places, setPlaces] = React.useState<MapLocation.Element[]>([]);
   // Build appropriate FeatureCollections from places
   const featureCollections = buildFeatureCollections(places);
   const [userLocation, setUserLocation] = React.useState(false);
@@ -115,7 +115,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
         } else {
           setSelectedLocation({
             id: id!,
-            type: properties?.type,
+            type: properties?.dataType,
             name: properties?.name,
             coordinates,
           });
@@ -137,10 +137,11 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     Location.getStatus().then(async (status) => {
       if (status === 'yes') {
         const coords = await Location.getCoordinates();
-        cameraRef.current!.setCamera({
+        cameraRef.current?.setCamera({
           centerCoordinate: [coords.longitude, coords.latitude],
           zoomLevel: 11,
-          animationDuration: 700,
+          animationDuration: 1500,
+          animationMode: 'flyTo',
         });
       } else {
         setFabVisible(false);
@@ -233,7 +234,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             ];
 
             fetchMapLocations(...reqBounds, Math.floor(zoomLevel))
-              .then((newPlaces) => setPlaces([...permanentPlaces, ...newPlaces]))
+              .then(setPlaces)
               .catch((e) => logger.warn('Error while fetching new locations in explorer/Map', e));
           } else {
             logger.verbose('explorer/Map: Bounds changed very little, skipping request.');
@@ -326,6 +327,26 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
               textFont: ['Noto Sans Regular'],
               textSize: 15,
               textColor: colors.text,
+            }}
+          />
+        </MapboxGL.ShapeSource>
+        <MapboxGL.ShapeSource
+          id="permanent-school-shape"
+          shape={{ type: 'FeatureCollection', features: permanentPlaces }}
+          onPress={onMarkerPress}
+        >
+          <MapboxGL.SymbolLayer
+            id="permanent-school-symbol"
+            style={{
+              iconImage: [
+                'step',
+                ['get', 'associatedEvents'],
+                dark ? 'pinPurpleStarDark' : 'pinPurpleStarLight',
+                1,
+                dark ? 'pinPurpleStarDarkWithEvent' : 'pinPurpleStarLightWithEvent',
+              ],
+              iconSize: ['step', ['get', 'associatedEvents'], 1, 1, 1.15],
+              iconAnchor: 'bottom',
             }}
           />
         </MapboxGL.ShapeSource>

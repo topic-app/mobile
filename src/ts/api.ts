@@ -465,11 +465,11 @@ export namespace MapLocation {
     };
   };
 
-  type PointDataType = 'school' | 'place' | 'event';
+  export type PointDataType = 'school' | 'place' | 'event';
 
   export type Point<T extends PointDataType = PointDataType> = Base & {
-    dataType: T;
     properties: {
+      dataType: T;
       _id: string;
       name: string;
       associatedEvents: T extends 'school' ? number : never;
@@ -477,8 +477,8 @@ export namespace MapLocation {
   };
 
   export type Cluster = Base & {
-    dataType: 'cluster';
     properties: {
+      dataType: 'cluster';
       cluster: true;
       cluster_id: number;
       point_count: number;
