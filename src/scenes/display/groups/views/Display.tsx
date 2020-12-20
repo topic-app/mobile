@@ -75,6 +75,7 @@ import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
 import ContentTabView from '../../components/ContentTabView';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
+import ChangeGroupLocationModal from '../components/ChangeGroupLocationModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
 import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
 
@@ -178,6 +179,9 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
     avatar?: AvatarType;
   } | null>(null);
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
+    false,
+  );
+  const [isChangeGroupLocationModalVisible, setChangeGroupLocationModalVisible] = React.useState(
     false,
   );
   const [descriptionVisible, setDescriptionVisible] = React.useState(verification || false);
@@ -486,6 +490,25 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 />
               ))}
               <Divider />
+              {checkPermission(account, {
+                permission: Permissions.GROUP_MODIFY_LOCATION,
+                scope: { groups: [id] },
+              }) && (
+                <View>
+                  <View style={styles.container}>
+                    <Button
+                      mode="outlined"
+                      uppercase={Platform.OS !== 'ios'}
+                      onPress={() => {
+                        setChangeGroupLocationModalVisible(true);
+                      }}
+                    >
+                      Changer
+                    </Button>
+                  </View>
+                  <Divider />
+                </View>
+              )}
               <View style={styles.container}>
                 <CategoryTitle>Membres</CategoryTitle>
               </View>
@@ -761,23 +784,65 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       }
                     />
                   )}
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <View style={styles.container}>
-                      <Button
-                        mode="contained"
-                        loading={state.verification_approve?.loading}
-                        color={colors.valid}
-                        contentStyle={{
-                          height: 50,
-                          justifyContent: 'center',
-                        }}
-                        onPress={() =>
-                          groupVerificationApprove(group._id).then(() => navigation.goBack())
-                        }
-                      >
-                        Approuver
-                      </Button>
-                    </View>
+                  <View
+                    style={[
+                      styles.container,
+                      { flexDirection: 'row', justifyContent: 'space-evenly' },
+                    ]}
+                  >
+                    <Button
+                      mode="outlined"
+                      loading={state.verification_delete?.loading}
+                      color={colors.invalid}
+                      contentStyle={{
+                        height: 50,
+                        justifyContent: 'center',
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Supprimer ce groupe ?',
+                          '',
+                          [
+                            {
+                              text: 'Approuver',
+                              onPress: () => {
+                                // groupVerificationDelete(group._id).then(() => navigation.goBack()),
+                              },
+                            },
+                            { text: 'Annuler' },
+                          ],
+                          { cancelable: true },
+                        )
+                      }
+                    >
+                      Supprrimer
+                    </Button>
+                    <Button
+                      mode="contained"
+                      loading={state.verification_approve?.loading}
+                      color={colors.valid}
+                      contentStyle={{
+                        height: 50,
+                        justifyContent: 'center',
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Approuver ce groupe ?',
+                          '',
+                          [
+                            {
+                              text: 'Approuver',
+                              onPress: () =>
+                                groupVerificationApprove(group._id).then(() => navigation.goBack()),
+                            },
+                            { text: 'Annuler' },
+                          ],
+                          { cancelable: true },
+                        )
+                      }
+                    >
+                      Approuver
+                    </Button>
                   </View>
                 </View>
               )}
@@ -826,6 +891,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           group={group}
           editingGroup={editingGroup}
           setEditingGroup={setEditingGroup}
+        />
+
+        <ChangeGroupLocationModal
+          visible={isChangeGroupLocationModalVisible}
+          setVisible={setChangeGroupLocationModalVisible}
+          group={group}
+          navigation={navigation}
         />
       </SafeAreaView>
     </View>

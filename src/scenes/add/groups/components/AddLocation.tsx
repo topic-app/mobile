@@ -177,13 +177,20 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             style={{ marginBottom: -20 }}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'schools',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ schools: newSchools }: ReduxLocation) => {
-                  fetchMultiSchool(newSchools);
-                  setSchools(newSchools);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'schools',
+                    hideSearch: false,
+                    subtitle: 'Créer un groupe',
+                    initialData: { schools, departments, global },
+                    callback: ({ schools: newSchools }: ReduxLocation) => {
+                      fetchMultiSchool(newSchools);
+                      setSchools(newSchools);
+                    },
+                  },
                 },
               })
             }
@@ -218,13 +225,20 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             }
             style={{ marginBottom: -20 }}
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'departements',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ departments: newDepartments }: ReduxLocation) => {
-                  fetchMultiDepartment(newDepartments);
-                  setDepartments(newDepartments);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'departements',
+                    hideSearch: false,
+                    initialData: { schools, departments, global },
+                    subtitle: 'Créer un groupe',
+                    callback: ({ departments: newDepartments }: ReduxLocation) => {
+                      fetchMultiDepartment(newDepartments);
+                      setDepartments(newDepartments);
+                    },
+                  },
                 },
               })
             }
@@ -257,13 +271,20 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
                 : undefined
             }
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'regions',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ departments: newDepartments }: ReduxLocation) => {
-                  fetchMultiDepartment(newDepartments);
-                  setDepartments(newDepartments);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'regions',
+                    hideSearch: false,
+                    subtitle: 'Créer un groupe',
+                    initialData: { schools, departments, global },
+                    callback: ({ departments: newDepartments }: ReduxLocation) => {
+                      fetchMultiDepartment(newDepartments);
+                      setDepartments(newDepartments);
+                    },
+                  },
                 },
               })
             }
