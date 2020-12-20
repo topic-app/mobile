@@ -9,6 +9,11 @@ function getGroupStyles(_theme: Theme) {
       paddingBottom: 0,
       paddingTop: 15,
     },
+    textInput: {
+      width: '100%',
+      alignSelf: 'center',
+      paddingBottom: 3,
+    },
   });
 }
 

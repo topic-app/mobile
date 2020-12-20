@@ -1,7 +1,16 @@
 import { Formik } from 'formik';
 import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import { TextInput, HelperText, Button, ProgressBar, Checkbox, List } from 'react-native-paper';
+import {
+  TextInput,
+  HelperText,
+  Button,
+  ProgressBar,
+  Checkbox,
+  List,
+  Card,
+  Text,
+} from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -9,7 +18,8 @@ import * as Yup from 'yup';
 
 import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components/index';
 import { groupAdd } from '@redux/actions/apiActions/groups';
-import { clearGroupCreationData } from '@redux/actions/contentData/groups';
+import { clearGroupCreationData, updateGroupCreationData } from '@redux/actions/contentData/groups';
+import getStyles from '@styles/Styles';
 import { State, GroupRequestState, GroupCreationData } from '@ts/types';
 import { useTheme } from '@utils/index';
 
@@ -55,10 +65,13 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
       10000,
       'Les données supplémentaires ne doivent pas dépasser 10000 caractères',
     ),
+    terms: Yup.boolean().equals([true], 'Vous devez accepter les conditions'),
+    correct: Yup.boolean().equals([true], 'Vous devez confirmer'),
   });
 
   const theme = useTheme();
   const { colors } = theme;
+  const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
   return (
@@ -73,38 +86,23 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
           website: '',
           extra: '',
           extraVerification: '',
+          terms: false,
+          correct: false,
         }}
         validationSchema={MetaSchema}
-        onSubmit={({ name, id, admin, address, email, website, extra, extraVerification }) => {
-          groupAdd({
-            name: creationData.name,
-            shortName: creationData.shortName,
-            summary: creationData.summary,
-            location: creationData.location,
-            type: creationData.type,
-            parser: 'markdown',
-            description: creationData.description,
-            legal: {
-              name,
-              id,
-              admin,
-              address,
-              email,
-              website,
-              extra,
-            },
+        onSubmit={({ extraVerification, terms, correct, ...legal }) => {
+          updateGroupCreationData({
+            legal,
             verification: {
-              name,
-              id,
               extra: extraVerification,
+              id: legal.id,
+              name: legal.name,
             },
-          }).then(({ _id }) => {
-            navigation.replace('Success', { id: _id, creationData });
-            clearGroupCreationData();
           });
+          next();
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
           <View>
             {state.add?.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
             {state.add?.success === false && (
@@ -229,7 +227,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
               <FormTextInput
                 ref={extraInput}
                 label="Informations supplémentaires privées (facultatif)"
-                info="Donnez des informations supplémentaires sur la structure légale votre groupe. Ces informations seront visibles uniquement à Topic."
+                info="Donnez des informations supplémentaires sur la structure légale votre groupe. Ces informations seront visibles uniquement à Topic. Si vous souhaitez avoir l'autorisation d'écrire les articles à d'autres échelles que la localisation que vous avez choisi, spécifiez le ici."
                 multiline
                 numberOfLines={6}
                 value={values.extraVerification}
@@ -239,6 +237,74 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onBlur={handleBlur('extraVerification')}
                 style={articleStyles.textInput}
               />
+            </View>
+            <View style={[styles.container, { marginTop: 20 }]}>
+              <Card
+                elevation={0}
+                style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+              >
+                <View style={[styles.container, { flexDirection: 'row' }]}>
+                  <Icon
+                    name="shield-key-outline"
+                    style={{ alignSelf: 'center', marginRight: 10 }}
+                    size={24}
+                    color={colors.primary}
+                  />
+                  <Text style={{ color: colors.text, flex: 1 }}>
+                    Les informations que vous donnez sur cette page ne seront pas modifiables sans
+                    vérification. Vous devez vous assurer qu&apos;elles sont correctes. Nous pouvons
+                    refuser un groupe si vous n&apos;avez pas donné assez de détails sur la
+                    structure légale.
+                  </Text>
+                </View>
+              </Card>
+            </View>
+            <View style={styles.container}>
+              <List.Item
+                title="J'ai lu et j'accepte les conditions d'utilisation de Topic ainsi que la charte des administrateurs"
+                titleNumberOfLines={20}
+                left={() =>
+                  Platform.OS !== 'ios' ? (
+                    <Checkbox
+                      status={values.terms ? 'checked' : 'unchecked'}
+                      color={colors.primary}
+                    />
+                  ) : null
+                }
+                right={() =>
+                  Platform.OS === 'ios' ? (
+                    <Checkbox
+                      status={values.terms ? 'checked' : 'unchecked'}
+                      color={colors.primary}
+                    />
+                  ) : null
+                }
+                onPress={() => setFieldValue('terms', !values.terms, true)}
+              />
+              <List.Item
+                title="Je confirme que toutes les informations que j'ai donné sur ce groupe sont correctes, et que j'ai l'autorisation de créer ce groupe"
+                titleNumberOfLines={20}
+                left={() =>
+                  Platform.OS !== 'ios' ? (
+                    <Checkbox
+                      status={values.correct ? 'checked' : 'unchecked'}
+                      color={colors.primary}
+                    />
+                  ) : null
+                }
+                right={() =>
+                  Platform.OS === 'ios' ? (
+                    <Checkbox
+                      status={values.correct ? 'checked' : 'unchecked'}
+                      color={colors.primary}
+                    />
+                  ) : null
+                }
+                onPress={() => setFieldValue('correct', !values.correct, true)}
+              />
+              <HelperText type="error" visible={!!(errors.terms || errors.correct)}>
+                {errors.terms || errors.correct}
+              </HelperText>
             </View>
             <View style={articleStyles.buttonContainer}>
               <Button
@@ -255,7 +321,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onPress={() => handleSubmit()}
                 style={{ flex: 1, marginLeft: 5 }}
               >
-                Créer
+                Suivant
               </Button>
             </View>
           </View>

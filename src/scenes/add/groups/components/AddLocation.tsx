@@ -47,7 +47,33 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 
   const submit = () => {
     if (schools.length !== 0 || departments.length !== 0 || global) {
-      updateGroupCreationData({ location: { schools, departments, global } });
+      let locationName = global ? 'France entière' : '';
+      if (schools?.length) {
+        locationName += ', écoles : ';
+        locationName += schools
+          .map(
+            (s) =>
+              schoolItems?.find((t) => t._id === s)?.displayName ||
+              location.schoolData?.find((t) => t._id === s)?.displayName ||
+              schoolItems?.find((t) => t._id === s)?.name ||
+              location.schoolData?.find((t) => t._id === s)?.name,
+          )
+          .join(', ');
+      }
+      if (departments?.length) {
+        locationName += ', départements et régions : ';
+        locationName += departments
+          .map(
+            (d) =>
+              departmentItems?.find((e) => e._id === d)?.displayName ||
+              location.departmentData?.find((e) => e._id === d)?.displayName ||
+              departmentItems?.find((e) => e._id === d)?.name ||
+              location.departmentData?.find((e) => e._id === d)?.name,
+          )
+          .filter((d) => d)
+          .join(', ');
+      }
+      updateGroupCreationData({ location: { schools, departments, global }, locationName });
       next();
     } else {
       setError(true);
@@ -110,7 +136,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
         ))}
         <CheckboxListItem
           title="France entière"
-          description="Visible pour tous les utilisateurs"
+          description="Contenus visibles pour tous les utilisateurs"
           status={global ? 'checked' : 'unchecked'}
           onPress={() => setGlobal(!global)}
         />
@@ -217,8 +243,14 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
                       (d) =>
                         departmentItems.filter((e) => e.type === 'region')?.find((e) => e._id === d)
                           ?.displayName ||
+                        location.departmentData
+                          .filter((e) => e.type === 'region')
+                          ?.find((e) => e._id === d)?.displayName ||
                         departmentItems.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                          ?.name,
+                          ?.name ||
+                        location.departmentData
+                          .filter((e) => e.type === 'departement')
+                          ?.find((e) => e._id === d)?.name,
                     )
                     .filter((d) => d)
                     .join(', ')

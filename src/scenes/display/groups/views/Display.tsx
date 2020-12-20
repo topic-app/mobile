@@ -404,7 +404,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       )}
                       <View style={[styles.container, { flexGrow: 1 }]}>
                         <Button
-                          loading={state.follow?.loading}
+                          loading={state.follow?.loading || accountState.fetchAccount.loading}
                           mode={following ? 'outlined' : 'contained'}
                           uppercase={Platform.OS !== 'ios'}
                           style={{
@@ -502,38 +502,40 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         justifyContent: 'space-between',
                       }}
                     >
-                      <InlineCard
-                        title={`Moi (@${account.accountInfo?.user?.info?.username})`}
-                        subtitle={`Role ${
-                          group.roles?.find(
-                            (r) =>
-                              r._id ===
-                              group.members?.find(
-                                (m) => m.user?._id === account.accountInfo?.accountId,
-                              )?.role,
-                          )?.name
-                        }${group.roles
-                          ?.filter((r) =>
-                            group.members
-                              ?.find((m) => m.user?._id === account.accountInfo?.accountId)
-                              ?.secondaryRoles?.includes(r._id),
-                          )
-                          ?.map((r) => `, ${r?.name}`)
-                          .join('')}`}
-                        badge={
-                          group.roles?.find(
-                            (r) =>
-                              r._id ===
-                              group.members?.find(
-                                (m) => m.user?._id === account.accountInfo?.accountId,
-                              )?.role,
-                          )?.admin
-                            ? 'star'
-                            : undefined
-                        }
-                        badgeColor={colors.solid.gold}
-                        avatar={account.accountInfo?.user?.info?.avatar}
-                      />
+                      <View style={{ flex: 1 }}>
+                        <InlineCard
+                          title={`Moi (@${account.accountInfo?.user?.info?.username})`}
+                          subtitle={`Role ${
+                            group.roles?.find(
+                              (r) =>
+                                r._id ===
+                                group.members?.find(
+                                  (m) => m.user?._id === account.accountInfo?.accountId,
+                                )?.role,
+                            )?.name
+                          }${group.roles
+                            ?.filter((r) =>
+                              group.members
+                                ?.find((m) => m.user?._id === account.accountInfo?.accountId)
+                                ?.secondaryRoles?.includes(r._id),
+                            )
+                            ?.map((r) => `, ${r?.name}`)
+                            .join('')}`}
+                          badge={
+                            group.roles?.find(
+                              (r) =>
+                                r._id ===
+                                group.members?.find(
+                                  (m) => m.user?._id === account.accountInfo?.accountId,
+                                )?.role,
+                            )?.admin
+                              ? 'star'
+                              : undefined
+                          }
+                          badgeColor={colors.solid.gold}
+                          avatar={account.accountInfo?.user?.info?.avatar}
+                        />
+                      </View>
                       {checkPermission(account, {
                         permission: Permissions.GROUP_MEMBERS_MODIFY,
                         scope: { groups: [id] },
@@ -733,6 +735,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   eventsState={eventsState}
                   articlesState={articlesState}
                   params={{ groups: [id] }}
+                  key={id}
                 />
               )}
               {verification && (
@@ -744,6 +747,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       {(group as GroupVerification).verification?.data?.extra || 'Non spécifié'}
                     </Text>
                   </View>
+                  <View style={{ height: 30 }} />
                   {state.verification_approve?.error && (
                     <ErrorMessage
                       type="axios"

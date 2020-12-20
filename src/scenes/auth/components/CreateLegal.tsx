@@ -14,9 +14,16 @@ type Props = StepperViewPageProps & {
   create: () => void;
   userEmail?: string;
   navigation: any;
+  createLoading: boolean;
 };
 
-const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigation }) => {
+const AuthCreatePageLegal: React.FC<Props> = ({
+  prev,
+  userEmail,
+  create,
+  navigation,
+  createLoading,
+}) => {
   const theme = useTheme();
   const { colors } = theme;
   const authStyles = getAuthStyles(theme);
@@ -224,8 +231,9 @@ const AuthCreatePageLegal: React.FC<Props> = ({ prev, userEmail, create, navigat
                     uppercase={Platform.OS !== 'ios'}
                     onPress={handleSubmit}
                     style={{ flex: 1, marginLeft: 5 }}
+                    loading={createLoading}
                   >
-                    Créer mon compte
+                    Créer
                   </Button>
                 </View>
               </View>
