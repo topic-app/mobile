@@ -53,6 +53,12 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
   const featureCollections = buildFeatureCollections(places);
   const [userLocation, setUserLocation] = React.useState(false);
   const [fabVisible, setFabVisible] = React.useState(false);
+
+  const lastRequestParams = React.useRef<{
+    bounds: [[number, number], [number, number]];
+    zoom: number;
+  }>({ bounds: [mapConfig.bounds.ne, mapConfig.bounds.sw], zoom: mapConfig.defaultZoom });
+
   const lastZoomLevel = React.useRef(mapConfig.minZoom);
 
   const theme = useTheme();
@@ -83,7 +89,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
         closeBottomSheet();
         cameraRef.current!.setCamera({
           centerCoordinate: coordinates,
-          zoomLevel: Math.min(lastZoomLevel.current + 2, mapConfig.maxZoom),
+          zoomLevel: Math.min(lastZoomLevel.current + 1, mapConfig.maxZoom),
           animationDuration: 700,
         });
       } else {
@@ -179,28 +185,53 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
         onRegionDidChange={({ properties }) => {
           const { visibleBounds, zoomLevel } = properties;
 
-          // [eastLng, northLat, westLng, southLat]
-          let bounds = visibleBounds.flat() as [number, number, number, number];
+          // bounds = [[eastLng, northLat], [westLng, southLat]]
+          const { bounds: lastBounds, zoom: lastZoom } = lastRequestParams.current;
 
-          // Get the "height" and "width" of bounds (in latitude and longitude)
-          const lngDiff = Math.abs(bounds[0] - bounds[2]);
-          const latDiff = Math.abs(bounds[1] - bounds[3]);
+          // Each time the region changes, a request is made for the specific bounds
+          // that the user is looking at. At each request, these bounds are enlarged
+          // to allow for the user panning around with minimal loading.
+          // This next if statement checks if the user is still seeing points from
+          // the last enlarged bounds. If the user decides to pan out of the bounds
+          // or if the user decides to zoom in or out, then fetch new points
+          if (
+            !(visibleBounds[0][0] < lastBounds[0][0] && visibleBounds[1][0] > lastBounds[1][0]) ||
+            !(visibleBounds[0][1] < lastBounds[0][1] && visibleBounds[1][1] > lastBounds[1][1]) ||
+            Math.abs(lastZoom - zoomLevel) > 0.3
+          ) {
+            logger.verbose('explorer/Map: Bounds changed, requesting new points.');
+            const bounds = visibleBounds as [[number, number], [number, number]];
 
-          // Add those to the bounds to enlarge them
-          // console.log(bounds);
-          // console.log(lngDiff, latDiff);
-          bounds[0] += lngDiff;
-          bounds[2] -= lngDiff;
-          bounds[1] += latDiff / 2;
-          bounds[3] -= latDiff / 2;
+            // Get the "height" and "width" of bounds (in latitude and longitude)
+            const lngDiff = Math.abs(bounds[0][0] - bounds[1][0]);
+            const latDiff = Math.abs(bounds[0][1] - bounds[1][1]);
 
-          // Round bounds to 5 decimal places (accuracy of 1.1m)
-          // see https://en.wikipedia.org/wiki/Decimal_degrees for info on accuracy
-          bounds = bounds.map((b) => parseFloat(b.toFixed(5))) as [number, number, number, number];
+            // Add those to the bounds to enlarge them
+            // console.log(bounds);
+            // console.log(lngDiff, latDiff);
+            bounds[0][0] += lngDiff;
+            bounds[1][0] -= lngDiff;
+            bounds[0][1] += latDiff / 2;
+            bounds[1][1] -= latDiff / 2;
 
-          fetchMapLocations(...bounds, Math.floor(zoomLevel))
-            .then(setPlaces)
-            .catch((e) => logger.warn('Error while fetching new locations in explorer/Map', e));
+            lastRequestParams.current.bounds = bounds;
+            lastRequestParams.current.zoom = zoomLevel;
+
+            // Round bounds to 5 decimal places (accuracy of 1.1m)
+            // see https://en.wikipedia.org/wiki/Decimal_degrees for info on accuracy
+            const reqBounds = bounds.flat().map((b) => parseFloat(b.toFixed(5))) as [
+              number,
+              number,
+              number,
+              number,
+            ];
+
+            fetchMapLocations(...reqBounds, Math.floor(zoomLevel))
+              .then(setPlaces)
+              .catch((e) => logger.warn('Error while fetching new locations in explorer/Map', e));
+          } else {
+            logger.verbose('explorer/Map: Bounds changed very little, skipping request.');
+          }
         }}
         // Change this to set how soon onRegionDidChange is called
         regionDidChangeDebounceTime={500}
