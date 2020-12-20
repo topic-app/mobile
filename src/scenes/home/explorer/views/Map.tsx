@@ -4,7 +4,7 @@ import React from 'react';
 import { View, Linking, Platform } from 'react-native';
 import { Text, FAB, IconButton } from 'react-native-paper';
 
-import { BottomSheetRef, Illustration } from '@components/index';
+import { BottomSheetRef } from '@components/index';
 import { fetchMapLocations } from '@redux/actions/api/places';
 import getStyles from '@styles/Styles';
 import { MapLocation } from '@ts/types';
@@ -180,7 +180,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           const { visibleBounds, zoomLevel } = properties;
 
           // [eastLng, northLat, westLng, southLat]
-          const bounds = visibleBounds.flat() as [number, number, number, number];
+          let bounds = visibleBounds.flat() as [number, number, number, number];
 
           // Get the "height" and "width" of bounds (in latitude and longitude)
           const lngDiff = Math.abs(bounds[0] - bounds[2]);
@@ -193,6 +193,10 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           bounds[2] -= lngDiff;
           bounds[1] += latDiff / 2;
           bounds[3] -= latDiff / 2;
+
+          // Round bounds to 5 decimal places (accuracy of 1.1m)
+          // see https://en.wikipedia.org/wiki/Decimal_degrees for info on accuracy
+          bounds = bounds.map((b) => parseFloat(b.toFixed(5))) as [number, number, number, number];
 
           fetchMapLocations(...bounds, Math.floor(zoomLevel))
             .then(setPlaces)
@@ -245,8 +249,14 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
           <MapboxGL.SymbolLayer
             id="school-symbol"
             style={{
-              iconImage: dark ? 'pinPurpleDark' : 'pinPurpleLight',
-              iconSize: 1,
+              iconImage: [
+                'step',
+                ['get', 'associatedEvents'],
+                dark ? 'pinPurpleDark' : 'pinPurpleLight',
+                1,
+                dark ? 'pinPurpleDarkWithEvent' : 'pinPurpleLightWithEvent',
+              ],
+              iconSize: ['step', ['get', 'associatedEvents'], 1, 1, 1.15],
               iconAnchor: 'bottom',
             }}
           />
