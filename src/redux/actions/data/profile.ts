@@ -125,7 +125,7 @@ function emailChangeCreator({ id, token }: { id: string; token: string }): AppTh
       },
     });
     try {
-      request('profile/modify/email/confirm', 'post', { id, token }, false, 'auth');
+      await request('profile/modify/email/confirm', 'post', { id, token }, false, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_LINKING_STATE,
@@ -166,7 +166,7 @@ function emailVerifyCreator({ id, token }: { id: string; token: string }): AppTh
       },
     });
     try {
-      request('auth/email/verify', 'post', { id, token }, false, 'auth');
+      await request('auth/email/verify', 'post', { id, token }, false, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_LINKING_STATE,
@@ -223,7 +223,7 @@ function accountDeleteCreator({
       },
     });
     try {
-      request('profile/delete/verify', 'post', { id, token, extra }, false, 'auth');
+      await request('profile/delete/verify', 'post', { id, token, extra }, false, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_LINKING_STATE,
@@ -272,7 +272,7 @@ function passwordResetCreator({
       },
     });
     try {
-      request('auth/password/reset', 'post', { id, token, password }, false, 'auth');
+      await request('auth/password/reset', 'post', { id, token, password }, false, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_LINKING_STATE,
@@ -313,7 +313,7 @@ function resendVerificationCreator(): AppThunk {
       },
     });
     try {
-      request('auth/email/resend', 'post', {}, true, 'auth');
+      await request('auth/email/resend', 'post', {}, true, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
