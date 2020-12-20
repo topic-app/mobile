@@ -7,7 +7,7 @@ import { Text, FAB, IconButton } from 'react-native-paper';
 import { BottomSheetRef } from '@components/index';
 import { fetchMapLocations } from '@redux/actions/api/places';
 import getStyles from '@styles/Styles';
-import { MapLocation } from '@ts/types';
+import { LocationList, MapLocation } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets, Location } from '@utils/index';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
@@ -35,10 +35,16 @@ type ExplorerMapProps = {
     bounds: { ne: [number, number]; sw: [number, number] };
   };
   tileServerUrl: string;
+  permanentPlaces: MapLocation.Point[];
   navigation: HomeTwoScreenNavigationProp<'Explorer'>;
 };
 
-const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, navigation }) => {
+const ExplorerMap: React.FC<ExplorerMapProps> = ({
+  mapConfig,
+  tileServerUrl,
+  navigation,
+  permanentPlaces,
+}) => {
   const cameraRef = React.createRef<MapboxGL.Camera>();
   const bottomSheetRef = React.createRef<BottomSheetRef>();
 
@@ -48,7 +54,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
     name: '',
     coordinates: [0, 0],
   });
-  const [places, setPlaces] = React.useState<MapLocation.Element[]>([]);
+  const [places, setPlaces] = React.useState<MapLocation.Element[]>(permanentPlaces);
   // Build appropriate FeatureCollections from places
   const featureCollections = buildFeatureCollections(places);
   const [userLocation, setUserLocation] = React.useState(false);
@@ -227,7 +233,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({ mapConfig, tileServerUrl, nav
             ];
 
             fetchMapLocations(...reqBounds, Math.floor(zoomLevel))
-              .then(setPlaces)
+              .then((newPlaces) => setPlaces([...permanentPlaces, ...newPlaces]))
               .catch((e) => logger.warn('Error while fetching new locations in explorer/Map', e));
           } else {
             logger.verbose('explorer/Map: Bounds changed very little, skipping request.');

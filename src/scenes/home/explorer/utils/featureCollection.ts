@@ -19,18 +19,14 @@ function buildFeatureCollections(places: MapLocation.Element[]) {
       features: [] as MapLocation.Point<'school'>[],
     },
   };
-  places.forEach((place) => {
-    const { features } = featureCollections[place.dataType];
-
-    if (place.dataType === 'cluster') {
-      place.properties.point_count;
-    }
+  places.forEach(({ dataType, ...place }) => {
+    const { features } = featureCollections[dataType];
 
     const feature = {
       ...place,
       properties: {
         ...place.properties,
-        type: place.dataType,
+        type: dataType,
       },
     };
 

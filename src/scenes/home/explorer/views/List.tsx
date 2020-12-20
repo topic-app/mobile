@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 
 import { Config } from '@constants/index';
-import { LocationList, State } from '@ts/types';
+import { LocationList, MapLocation, State } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo.ios';
@@ -25,17 +25,39 @@ const ExplorerList: React.FC<ExplorerListProps> = ({ navigation, location }) => 
 
   const { dark } = useTheme();
 
-  // If the user has a selected location
-  // Use that as default location
+  const permanentPlaces: MapLocation.Point<'school'>[] = [];
+
   if (location.selected) {
     const { schools, schoolData } = location;
 
     const locations = schoolData.filter((sch) => schools.includes(sch._id));
 
+    // If the user has a selected location, then use that as default location
     if (locations.length > 0 && locations[0].address) {
       mapConfig.centerCoordinate = locations[0].address.geo.coordinates;
       mapConfig.defaultZoom = 14;
     }
+
+    // Add all the schools to permanentPoints, meaning they will always be
+    // visible on the map
+    locations.forEach((sch) => {
+      if (sch.address) {
+        permanentPlaces.push({
+          id: sch._id,
+          type: 'Feature',
+          dataType: 'school',
+          geometry: {
+            type: 'Point',
+            coordinates: sch.address.geo.coordinates,
+          },
+          properties: {
+            _id: sch._id,
+            name: sch.name,
+            associatedEvents: sch.cache?.events ?? 0,
+          },
+        });
+      }
+    });
   }
 
   return (
@@ -44,6 +66,7 @@ const ExplorerList: React.FC<ExplorerListProps> = ({ navigation, location }) => 
         tileServerUrl={`${Config.maps.baseUrl}styles/${dark ? 'dark' : 'light'}/style.json`}
         mapConfig={mapConfig}
         navigation={navigation}
+        permanentPlaces={permanentPlaces}
       />
     </View>
   );
