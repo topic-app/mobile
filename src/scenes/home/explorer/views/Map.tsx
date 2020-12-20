@@ -214,8 +214,6 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             const latDiff = Math.abs(bounds[0][1] - bounds[1][1]);
 
             // Add those to the bounds to enlarge them
-            // console.log(bounds);
-            // console.log(lngDiff, latDiff);
             bounds[0][0] += lngDiff;
             bounds[1][0] -= lngDiff;
             bounds[0][1] += latDiff / 2;
