@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
-// @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -37,6 +36,8 @@ import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
 import { EventConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
+
+// @ts-expect-error Replace this when we find a better library
 
 type EventListsProps = {
   lists: EventListItem[];
@@ -97,11 +98,14 @@ function EventLists({
       id: 'upcoming',
       name: 'Tous (dans le futur)',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Event', params: { initialList: 'upcoming' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Event', params: { initialList: 'upcoming' } },
+            },
           },
         }),
     },
@@ -109,11 +113,14 @@ function EventLists({
       id: 'passed',
       name: 'Finis (dans le passé)',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Event', params: { initialList: 'passed' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Event', params: { initialList: 'passed' } },
+            },
           },
         }),
     },
@@ -121,11 +128,14 @@ function EventLists({
       id: 'following',
       name: 'Suivis',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Article', params: { initialList: 'following' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Article', params: { initialList: 'following' } },
+            },
           },
         }),
       disable: !account.loggedIn,
@@ -277,13 +287,16 @@ function EventLists({
                         }${item.description ? `\n${item.description}` : ''}`}
                         descriptionNumberOfLines={100}
                         onPress={() =>
-                          navigation.push('Main', {
-                            screen: 'Home1',
+                          navigation.push('Root', {
+                            screen: 'Main',
                             params: {
-                              screen: 'Home2',
+                              screen: 'Home1',
                               params: {
-                                screen: 'Article',
-                                params: { initialList: item.id },
+                                screen: 'Home2',
+                                params: {
+                                  screen: 'Article',
+                                  params: { initialList: item.id },
+                                },
                               },
                             },
                           })

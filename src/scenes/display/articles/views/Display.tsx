@@ -104,13 +104,16 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
         >
           <PlatformTouchable
             onPress={() =>
-              navigation.push('Main', {
-                screen: 'Display',
+              navigation.push('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'Image',
+                  screen: 'Display',
                   params: {
-                    screen: 'Display',
-                    params: { image: article.image },
+                    screen: 'Image',
+                    params: {
+                      screen: 'Display',
+                      params: { image: article.image },
+                    },
                   },
                 },
               })
@@ -165,13 +168,16 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               avatar={author.info?.avatar}
               title={author?.displayName}
               onPress={() =>
-                navigation.push('Main', {
-                  screen: 'Display',
+                navigation.push('Root', {
+                  screen: 'Main',
                   params: {
-                    screen: 'User',
+                    screen: 'Display',
                     params: {
-                      screen: 'Display',
-                      params: { id: author?._id || '' /* title: author?.displayName */ },
+                      screen: 'User',
+                      params: {
+                        screen: 'Display',
+                        params: { id: author?._id || '' /* title: author?.displayName */ },
+                      },
                     },
                   },
                 })
@@ -196,13 +202,16 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
             title={article.group?.displayName}
             subtitle={`Groupe ${article.group?.type}`}
             onPress={() =>
-              navigation.push('Main', {
-                screen: 'Display',
+              navigation.push('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'Group',
+                  screen: 'Display',
                   params: {
-                    screen: 'Display',
-                    params: { id: article.group?._id, title: article.group?.displayName },
+                    screen: 'Group',
+                    params: {
+                      screen: 'Display',
+                      params: { id: article.group?._id, title: article.group?.displayName },
+                    },
                   },
                 },
               })

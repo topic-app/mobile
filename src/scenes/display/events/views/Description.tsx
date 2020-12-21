@@ -240,13 +240,16 @@ function EventDisplayDescriptionHeader({
           avatar={author.info?.avatar}
           title={author?.displayName}
           onPress={() =>
-            navigation.push('Main', {
-              screen: 'Display',
+            navigation.push('Root', {
+              screen: 'Main',
               params: {
-                screen: 'User',
+                screen: 'Display',
                 params: {
-                  screen: 'Display',
-                  params: { id: author?._id, title: author?.displayName },
+                  screen: 'User',
+                  params: {
+                    screen: 'Display',
+                    params: { id: author?._id, title: author?.displayName },
+                  },
                 },
               },
             })
@@ -271,13 +274,16 @@ function EventDisplayDescriptionHeader({
         title={event.group?.displayName}
         subtitle={`Groupe ${event.group?.type}`}
         onPress={() =>
-          navigation.push('Main', {
-            screen: 'Display',
+          navigation.push('Root', {
+            screen: 'Main',
             params: {
-              screen: 'Group',
+              screen: 'Display',
               params: {
-                screen: 'Display',
-                params: { id: event.group?._id, title: event.group?.displayName },
+                screen: 'Group',
+                params: {
+                  screen: 'Display',
+                  params: { id: event.group?._id, title: event.group?.displayName },
+                },
               },
             },
           })

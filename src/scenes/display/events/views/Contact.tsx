@@ -65,13 +65,16 @@ const EventDisplayContact: React.FC<EventDisplayContactProps> = ({ event, naviga
               title={mem.displayName}
               subtitle="Organisateur"
               onPress={() =>
-                navigation.push('Main', {
-                  screen: 'Display',
+                navigation.push('Root', {
+                  screen: 'Main',
                   params: {
-                    screen: 'User',
+                    screen: 'Display',
                     params: {
-                      screen: 'Display',
-                      params: { id: mem?._id, title: mem?.displayName },
+                      screen: 'User',
+                      params: {
+                        screen: 'Display',
+                        params: { id: mem?._id, title: mem?.displayName },
+                      },
                     },
                   },
                 })

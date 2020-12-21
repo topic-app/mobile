@@ -122,16 +122,19 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
                     title="Écoles"
                     description={group?.preload ? 'Chargement...' : l.data?.schools?.join(', ')}
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'More',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Location',
+                          screen: 'More',
                           params: {
-                            type: 'schools',
-                            subtitle: 'Modifier un groupe',
-                            showEverywhere: l.showEverywhere || true,
-                            initialData: { ...l.data },
-                            callback: l.callback,
+                            screen: 'Location',
+                            params: {
+                              type: 'schools',
+                              subtitle: 'Modifier un groupe',
+                              showEverywhere: l.showEverywhere || true,
+                              initialData: { ...l.data },
+                              callback: l.callback,
+                            },
                           },
                         },
                       })
@@ -141,15 +144,18 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
                     title="Départements"
                     description={group?.preload ? 'Chargement...' : l.data?.departments?.join(', ')}
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'More',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Location',
+                          screen: 'More',
                           params: {
-                            type: 'departements',
-                            subtitle: 'Modifier un groupe',
-                            initialData: { ...l.data },
-                            callback: l.callback,
+                            screen: 'Location',
+                            params: {
+                              type: 'departements',
+                              subtitle: 'Modifier un groupe',
+                              initialData: { ...l.data },
+                              callback: l.callback,
+                            },
                           },
                         },
                       })
@@ -159,16 +165,19 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
                     title="Régions"
                     description={group?.preload ? 'Chargement...' : l.data?.departments?.join(', ')}
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'More',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Location',
+                          screen: 'More',
                           params: {
-                            type: 'regions',
-                            subtitle: 'Modifier un groupe',
-                            showEverywhere: l.showEverywhere || true,
-                            initialData: { ...l.data },
-                            callback: l.callback,
+                            screen: 'Location',
+                            params: {
+                              type: 'regions',
+                              subtitle: 'Modifier un groupe',
+                              showEverywhere: l.showEverywhere || true,
+                              initialData: { ...l.data },
+                              callback: l.callback,
+                            },
                           },
                         },
                       })
@@ -178,16 +187,19 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
                     title="Autres"
                     description={group?.preload ? 'Chargement...' : l.data?.schools?.join(', ')}
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'More',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Location',
+                          screen: 'More',
                           params: {
-                            type: 'other',
-                            subtitle: 'Modifier un groupe',
-                            showEverywhere: l.showEverywhere || true,
-                            initialData: { ...l.data },
-                            callback: l.callback,
+                            screen: 'Location',
+                            params: {
+                              type: 'other',
+                              subtitle: 'Modifier un groupe',
+                              showEverywhere: l.showEverywhere || true,
+                              initialData: { ...l.data },
+                              callback: l.callback,
+                            },
                           },
                         },
                       })

@@ -185,17 +185,20 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
               style={{ marginBottom: -20 }}
               right={() => <List.Icon icon="chevron-right" />}
               onPress={() =>
-                navigation.push('Main', {
-                  screen: 'More',
+                navigation.push('Root', {
+                  screen: 'Main',
                   params: {
-                    screen: 'Location',
+                    screen: 'More',
                     params: {
-                      type: 'schools',
-                      subtitle: 'Écrire un article',
-                      initialData: { schools, departments, global },
-                      callback: ({ schools: newSchools }: ReduxLocation) => {
-                        fetchMultiSchool(newSchools);
-                        setSchools(newSchools);
+                      screen: 'Location',
+                      params: {
+                        type: 'schools',
+                        subtitle: 'Écrire un article',
+                        initialData: { schools, departments, global },
+                        callback: ({ schools: newSchools }: ReduxLocation) => {
+                          fetchMultiSchool(newSchools);
+                          setSchools(newSchools);
+                        },
                       },
                     },
                   },
@@ -228,17 +231,20 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
               }
               style={{ marginBottom: -20 }}
               onPress={() =>
-                navigation.push('Main', {
-                  screen: 'More',
+                navigation.push('Root', {
+                  screen: 'Main',
                   params: {
-                    screen: 'Location',
+                    screen: 'More',
                     params: {
-                      type: 'departements',
-                      subtitle: 'Écrire un article',
-                      initialData: { schools, departments, global },
-                      callback: ({ departments: newDepartments }: ReduxLocation) => {
-                        fetchMultiDepartment(newDepartments);
-                        setDepartments(newDepartments);
+                      screen: 'Location',
+                      params: {
+                        type: 'departements',
+                        subtitle: 'Écrire un article',
+                        initialData: { schools, departments, global },
+                        callback: ({ departments: newDepartments }: ReduxLocation) => {
+                          fetchMultiDepartment(newDepartments);
+                          setDepartments(newDepartments);
+                        },
                       },
                     },
                   },
@@ -269,17 +275,20 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
                   : undefined
               }
               onPress={() =>
-                navigation.push('Main', {
-                  screen: 'More',
+                navigation.push('Root', {
+                  screen: 'Main',
                   params: {
-                    screen: 'Location',
+                    screen: 'More',
                     params: {
-                      type: 'regions',
-                      subtitle: 'Écrire un article',
-                      initialData: { schools, departments, global },
-                      callback: ({ departments: newDepartments }: ReduxLocation) => {
-                        fetchMultiDepartment(newDepartments);
-                        setDepartments(newDepartments);
+                      screen: 'Location',
+                      params: {
+                        type: 'regions',
+                        subtitle: 'Écrire un article',
+                        initialData: { schools, departments, global },
+                        callback: ({ departments: newDepartments }: ReduxLocation) => {
+                          fetchMultiDepartment(newDepartments);
+                          setDepartments(newDepartments);
+                        },
                       },
                     },
                   },
