@@ -275,7 +275,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 (account.accountInfo.accountId !== user._id ? (
                   <View style={styles.container}>
                     <Button
-                      loading={state.follow?.loading || accountState.fetchAccount.loading}
+                      loading={state.follow?.loading || account.state.fetchAccount.loading}
                       mode={following ? 'outlined' : 'contained'}
                       style={{
                         backgroundColor: following ? colors.surface : colors.primary,

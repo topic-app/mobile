@@ -389,7 +389,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       )}
                       <View style={[styles.container, { flexGrow: 1 }]}>
                         <Button
-                          loading={state.follow?.loading || accountState.fetchAccount.loading}
+                          loading={state.follow?.loading || account.state.fetchAccount.loading}
                           mode={following ? 'outlined' : 'contained'}
                           uppercase={Platform.OS !== 'ios'}
                           style={{
