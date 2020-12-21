@@ -91,6 +91,11 @@ const initialState: GroupsState = {
       error: null,
       loading: false,
     },
+    verification_delete: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 

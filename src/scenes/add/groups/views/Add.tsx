@@ -83,7 +83,7 @@ const GroupAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
               {
                 key: 'review',
                 icon: 'check-bold',
-                title: 'Confirmation',
+                title: 'Vérif.',
                 component: (props) => <GroupAddPageReview navigation={navigation} {...props} />,
               },
             ]}
