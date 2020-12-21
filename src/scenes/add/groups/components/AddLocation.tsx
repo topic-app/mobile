@@ -47,7 +47,33 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 
   const submit = () => {
     if (schools.length !== 0 || departments.length !== 0 || global) {
-      updateGroupCreationData({ location: { schools, departments, global } });
+      let locationName = global ? 'France entière' : '';
+      if (schools?.length) {
+        locationName += ', écoles : ';
+        locationName += schools
+          .map(
+            (s) =>
+              schoolItems?.find((t) => t._id === s)?.displayName ||
+              location.schoolData?.find((t) => t._id === s)?.displayName ||
+              schoolItems?.find((t) => t._id === s)?.name ||
+              location.schoolData?.find((t) => t._id === s)?.name,
+          )
+          .join(', ');
+      }
+      if (departments?.length) {
+        locationName += ', départements et régions : ';
+        locationName += departments
+          .map(
+            (d) =>
+              departmentItems?.find((e) => e._id === d)?.displayName ||
+              location.departmentData?.find((e) => e._id === d)?.displayName ||
+              departmentItems?.find((e) => e._id === d)?.name ||
+              location.departmentData?.find((e) => e._id === d)?.name,
+          )
+          .filter((d) => d)
+          .join(', ');
+      }
+      updateGroupCreationData({ location: { schools, departments, global }, locationName });
       next();
     } else {
       setError(true);
@@ -110,7 +136,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
         ))}
         <CheckboxListItem
           title="France entière"
-          description="Visible pour tous les utilisateurs"
+          description="Contenus visibles pour tous les utilisateurs"
           status={global ? 'checked' : 'unchecked'}
           onPress={() => setGlobal(!global)}
         />
@@ -151,13 +177,20 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             style={{ marginBottom: -20 }}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'schools',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ schools: newSchools }: ReduxLocation) => {
-                  fetchMultiSchool(newSchools);
-                  setSchools(newSchools);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'schools',
+                    hideSearch: false,
+                    subtitle: 'Créer un groupe',
+                    initialData: { schools, departments, global },
+                    callback: ({ schools: newSchools }: ReduxLocation) => {
+                      fetchMultiSchool(newSchools);
+                      setSchools(newSchools);
+                    },
+                  },
                 },
               })
             }
@@ -192,13 +225,20 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             }
             style={{ marginBottom: -20 }}
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'departements',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ departments: newDepartments }: ReduxLocation) => {
-                  fetchMultiDepartment(newDepartments);
-                  setDepartments(newDepartments);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'departements',
+                    hideSearch: false,
+                    initialData: { schools, departments, global },
+                    subtitle: 'Créer un groupe',
+                    callback: ({ departments: newDepartments }: ReduxLocation) => {
+                      fetchMultiDepartment(newDepartments);
+                      setDepartments(newDepartments);
+                    },
+                  },
                 },
               })
             }
@@ -217,21 +257,34 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
                       (d) =>
                         departmentItems.filter((e) => e.type === 'region')?.find((e) => e._id === d)
                           ?.displayName ||
+                        location.departmentData
+                          .filter((e) => e.type === 'region')
+                          ?.find((e) => e._id === d)?.displayName ||
                         departmentItems.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                          ?.name,
+                          ?.name ||
+                        location.departmentData
+                          .filter((e) => e.type === 'departement')
+                          ?.find((e) => e._id === d)?.name,
                     )
                     .filter((d) => d)
                     .join(', ')
                 : undefined
             }
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'regions',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ departments: newDepartments }: ReduxLocation) => {
-                  fetchMultiDepartment(newDepartments);
-                  setDepartments(newDepartments);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'regions',
+                    hideSearch: false,
+                    subtitle: 'Créer un groupe',
+                    initialData: { schools, departments, global },
+                    callback: ({ departments: newDepartments }: ReduxLocation) => {
+                      fetchMultiDepartment(newDepartments);
+                      setDepartments(newDepartments);
+                    },
+                  },
                 },
               })
             }

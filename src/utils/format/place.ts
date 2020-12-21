@@ -2,6 +2,9 @@ import _ from 'lodash';
 
 import { Address, DepartmentPreload, PlaceType } from '@ts/types';
 
+// Renamed for less repetition
+const c = _.capitalize;
+
 /**
  * Get a long address string from an address object
  *
@@ -32,16 +35,16 @@ export function address({ shortName, address: addr, geo, departments }: Address)
   if (addr.street && addr.city) {
     const { number, street, city, extra, code } = addr;
     if (number && street && city && code && extra) {
-      return `${number} ${street}, ${code} ${city} (${extra})`;
+      return `${number} ${street}, ${code} ${c(city)} (${extra})`;
     }
     if (number && street && city && code) {
-      return `${number} ${street}, ${code} ${city}`;
+      return `${number} ${street}, ${code} ${c(city)}`;
     }
     if (number && street && city) {
-      return `${number} ${street}, ${city}`;
+      return `${number} ${street}, ${c(city)}`;
     }
     if (street && city) {
-      return `${street}, ${city}`;
+      return `${c(street)}, ${c(city)}`;
     }
   }
 

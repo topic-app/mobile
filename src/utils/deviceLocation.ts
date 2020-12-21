@@ -6,7 +6,7 @@ import logger from './logger';
 export namespace Location {
   /**
    * Get status on location permission
-   * @returns Boolean indicating if location permission can be requested or not
+   * @returns String indicating whether location can be requested or not
    */
   export async function getStatus(): Promise<'yes' | 'no' | 'never' | 'error'> {
     let result: Permissions.PermissionResponse;
@@ -29,7 +29,7 @@ export namespace Location {
 
   /**
    * Get status on location permission
-   * @returns Boolean indicating if location permission can be requested or not
+   * @returns String indicating whether location can be requested or not
    */
   export async function request(): Promise<'yes' | 'no' | 'never' | 'error'> {
     let result: Permissions.PermissionResponse;

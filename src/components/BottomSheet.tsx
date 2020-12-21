@@ -1,5 +1,6 @@
 import { useDimensions } from '@react-native-community/hooks';
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ReanimatedBottomSheet from 'reanimated-bottom-sheet';
 
 import { logger } from '@utils/index';
@@ -25,11 +26,21 @@ type BottomSheetProps = ReanimatedBottomSheetProps & {
    * e.g. [40, '55%']
    */
   landscapeSnapPoints: (string | number)[];
+  /**
+   * Whether to use top and bottom insets or not.
+   */
+  useInsets?: boolean;
 };
 
 const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
   (
-    { portraitSnapPoints: portraitSP, landscapeSnapPoints: landscapeSP, renderContent, ...rest },
+    {
+      portraitSnapPoints: portraitSP,
+      landscapeSnapPoints: landscapeSP,
+      renderContent,
+      useInsets,
+      ...rest
+    },
     ref,
   ) => {
     if (portraitSP.length === 0 || landscapeSP.length === 0) {
@@ -42,9 +53,15 @@ const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
     }
 
     const { height, width } = useDimensions().window;
+    const insets = useSafeAreaInsets();
+
     const snapPoints = (height > width ? portraitSP : landscapeSP).map((snapPoint) => {
       if (typeof snapPoint === 'string') {
-        return parseFloat(snapPoint) * 0.01 * height;
+        let SP = parseFloat(snapPoint) * 0.01 * height;
+        if (useInsets) {
+          SP += insets.top;
+        }
+        return SP;
       }
       return snapPoint;
     });

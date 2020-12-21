@@ -261,7 +261,7 @@ function fetchCreator<T extends ApiItemString>({
               },
             },
           });
-          resolve({});
+          resolve({ ...(result.data?.[dataType][0] || {}) });
         })
         .catch((err) => {
           dispatch({

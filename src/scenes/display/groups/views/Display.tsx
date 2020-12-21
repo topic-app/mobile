@@ -36,10 +36,9 @@ import {
   ErrorMessage,
   SafeAreaView,
   Banner,
+  ContentTabView,
 } from '@components/index';
 import { Permissions } from '@constants/index';
-import { searchArticles } from '@redux/actions/api/articles';
-import { searchEvents } from '@redux/actions/api/events';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import {
   groupFollow,
@@ -58,24 +57,19 @@ import {
   GroupRequestState,
   GroupsState,
   State,
-  ArticleRequestState,
-  EventRequestState,
-  EventPreload,
-  ArticlePreload,
-  AccountRequestState,
   User,
   GroupMember,
   GroupRole,
   UserPreload,
   GroupVerification,
+  Avatar as AvatarType,
 } from '@ts/types';
 import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
 
-import ContentTabView from '../../components/ContentTabView';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
+import ChangeGroupLocationModal from '../components/ChangeGroupLocationModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
-import EditGroupModal from '../components/EditGroupModal';
 import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
 
 type GroupDisplayProps = {
@@ -84,11 +78,6 @@ type GroupDisplayProps = {
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
-  articles: ArticlePreload[];
-  accountState: AccountRequestState;
-  articlesState: ArticleRequestState;
-  events: EventPreload[];
-  eventsState: EventRequestState;
 };
 
 const GroupDisplay: React.FC<GroupDisplayProps> = ({
@@ -97,11 +86,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   groups,
   account,
   state,
-  accountState,
-  articles,
-  events,
-  articlesState,
-  eventsState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -114,8 +98,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   React.useEffect(() => {
     fetch();
-    searchArticles('initial', '', { groups: [id] }, false);
-    searchEvents('initial', '', { groups: [id] }, false);
   }, [null]);
 
   const group: Group | GroupPreload | GroupVerification | null =
@@ -171,12 +153,16 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [legalCollapsed, setLegalCollapsed] = React.useState(true);
 
   const [editingGroup, setEditingGroup] = React.useState<{
-    shortName?: string;
+    id?: string;
+    name?: string;
     summary?: string;
     description?: string;
+    avatar?: AvatarType;
   } | null>(null);
-  const [isEditGroupModalVisible, setEditGroupModalVisible] = React.useState(false);
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
+    false,
+  );
+  const [isChangeGroupLocationModalVisible, setChangeGroupLocationModalVisible] = React.useState(
     false,
   );
   const [descriptionVisible, setDescriptionVisible] = React.useState(verification || false);
@@ -268,11 +254,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     icon="pencil"
                     onPress={() => {
                       setEditingGroup({
-                        shortName: group.shortName,
+                        id: group._id,
+                        name: group.name,
                         summary: group.summary,
                         description: group.description?.data,
+                        avatar: group.avatar,
                       });
-                      setEditGroupModalVisible(true);
+                      setEditGroupDescriptionModalVisible(true);
                     }}
                   />
                 )}
@@ -320,7 +308,27 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
           <View style={[styles.contentContainer, { marginTop: 20 }]}>
             <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-              <Avatar size={120} avatar={group.avatar} />
+              <Avatar
+                size={120}
+                avatar={group.avatar}
+                imageSize="large"
+                onPress={
+                  group.avatar?.type === 'image'
+                    ? () =>
+                        group.avatar?.type === 'image' &&
+                        navigation.push('Main', {
+                          screen: 'Display',
+                          params: {
+                            screen: 'Image',
+                            params: {
+                              screen: 'Display',
+                              params: { image: group.avatar?.image?.image },
+                            },
+                          },
+                        })
+                    : undefined
+                }
+              />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               <View style={{ alignItems: 'center' }}>
@@ -381,7 +389,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       )}
                       <View style={[styles.container, { flexGrow: 1 }]}>
                         <Button
-                          loading={state.follow?.loading}
+                          loading={state.follow?.loading || accountState.fetchAccount.loading}
                           mode={following ? 'outlined' : 'contained'}
                           uppercase={Platform.OS !== 'ios'}
                           style={{
@@ -397,31 +405,19 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   )}
                 </View>
               )}
-              <PlatformTouchable onPress={() => setDescriptionVisible(!descriptionVisible)}>
+              <PlatformTouchable
+                onPress={
+                  group.description?.data
+                    ? () => setDescriptionVisible(!descriptionVisible)
+                    : undefined
+                }
+              >
                 <View style={styles.container}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flex: 1 }}>
                       <Paragraph style={{ color: colors.disabled }}>Groupe {group.type}</Paragraph>
                       <Paragraph numberOfLines={5}>{group.summary}</Paragraph>
                     </View>
-                    {checkPermission(account, {
-                      permission: Permissions.GROUP_MODIFY,
-                      scope: { groups: [id] },
-                    }) && (
-                      <View onResponderTerminationRequest={() => false}>
-                        <IconButton
-                          icon="pencil-outline"
-                          onPress={() => {
-                            setEditingGroup({
-                              shortName: group.shortName,
-                              summary: group.summary,
-                              description: group.description?.data,
-                            });
-                            setEditGroupDescriptionModalVisible(true);
-                          }}
-                        />
-                      </View>
-                    )}
                   </View>
                   {group.description?.data ? (
                     <View>
@@ -475,6 +471,25 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 />
               ))}
               <Divider />
+              {checkPermission(account, {
+                permission: Permissions.GROUP_MODIFY_LOCATION,
+                scope: { groups: [id] },
+              }) && (
+                <View>
+                  <View style={styles.container}>
+                    <Button
+                      mode="outlined"
+                      uppercase={Platform.OS !== 'ios'}
+                      onPress={() => {
+                        setChangeGroupLocationModalVisible(true);
+                      }}
+                    >
+                      Changer
+                    </Button>
+                  </View>
+                  <Divider />
+                </View>
+              )}
               <View style={styles.container}>
                 <CategoryTitle>Membres</CategoryTitle>
               </View>
@@ -491,38 +506,40 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         justifyContent: 'space-between',
                       }}
                     >
-                      <InlineCard
-                        title={`Moi (@${account.accountInfo?.user?.info?.username})`}
-                        subtitle={`Role ${
-                          group.roles?.find(
-                            (r) =>
-                              r._id ===
-                              group.members?.find(
-                                (m) => m.user?._id === account.accountInfo?.accountId,
-                              )?.role,
-                          )?.name
-                        }${group.roles
-                          ?.filter((r) =>
-                            group.members
-                              ?.find((m) => m.user?._id === account.accountInfo?.accountId)
-                              ?.secondaryRoles?.includes(r._id),
-                          )
-                          ?.map((r) => `, ${r?.name}`)
-                          .join('')}`}
-                        badge={
-                          group.roles?.find(
-                            (r) =>
-                              r._id ===
-                              group.members?.find(
-                                (m) => m.user?._id === account.accountInfo?.accountId,
-                              )?.role,
-                          )?.admin
-                            ? 'star'
-                            : undefined
-                        }
-                        badgeColor={colors.solid.gold}
-                        avatar={account.accountInfo?.user?.info?.avatar}
-                      />
+                      <View style={{ flex: 1 }}>
+                        <InlineCard
+                          title={`Moi (@${account.accountInfo?.user?.info?.username})`}
+                          subtitle={`Role ${
+                            group.roles?.find(
+                              (r) =>
+                                r._id ===
+                                group.members?.find(
+                                  (m) => m.user?._id === account.accountInfo?.accountId,
+                                )?.role,
+                            )?.name
+                          }${group.roles
+                            ?.filter((r) =>
+                              group.members
+                                ?.find((m) => m.user?._id === account.accountInfo?.accountId)
+                                ?.secondaryRoles?.includes(r._id),
+                            )
+                            ?.map((r) => `, ${r?.name}`)
+                            .join('')}`}
+                          badge={
+                            group.roles?.find(
+                              (r) =>
+                                r._id ===
+                                group.members?.find(
+                                  (m) => m.user?._id === account.accountInfo?.accountId,
+                                )?.role,
+                            )?.admin
+                              ? 'star'
+                              : undefined
+                          }
+                          badgeColor={colors.solid.gold}
+                          avatar={account.accountInfo?.user?.info?.avatar}
+                        />
+                      </View>
                       {checkPermission(account, {
                         permission: Permissions.GROUP_MEMBERS_MODIFY,
                         scope: { groups: [id] },
@@ -715,15 +732,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 </CollapsibleView>
               </View>
               <View style={{ height: 20 }} />
-              {!verification && (
-                <ContentTabView
-                  articles={articles}
-                  events={events}
-                  eventsState={eventsState}
-                  articlesState={articlesState}
-                  params={{ groups: [id] }}
-                />
-              )}
+              {!verification && <ContentTabView searchParams={{ groups: [id] }} />}
               {verification && (
                 <View>
                   <Divider style={{ marginTop: 30 }} />
@@ -733,6 +742,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       {(group as GroupVerification).verification?.data?.extra || 'Non spécifié'}
                     </Text>
                   </View>
+                  <View style={{ height: 30 }} />
                   {state.verification_approve?.error && (
                     <ErrorMessage
                       type="axios"
@@ -746,23 +756,65 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       }
                     />
                   )}
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <View style={styles.container}>
-                      <Button
-                        mode="contained"
-                        loading={state.verification_approve?.loading}
-                        color={colors.valid}
-                        contentStyle={{
-                          height: 50,
-                          justifyContent: 'center',
-                        }}
-                        onPress={() =>
-                          groupVerificationApprove(group._id).then(() => navigation.goBack())
-                        }
-                      >
-                        Approuver
-                      </Button>
-                    </View>
+                  <View
+                    style={[
+                      styles.container,
+                      { flexDirection: 'row', justifyContent: 'space-evenly' },
+                    ]}
+                  >
+                    <Button
+                      mode="outlined"
+                      loading={state.verification_delete?.loading}
+                      color={colors.invalid}
+                      contentStyle={{
+                        height: 50,
+                        justifyContent: 'center',
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Supprimer ce groupe ?',
+                          '',
+                          [
+                            {
+                              text: 'Approuver',
+                              onPress: () => {
+                                // groupVerificationDelete(group._id).then(() => navigation.goBack()),
+                              },
+                            },
+                            { text: 'Annuler' },
+                          ],
+                          { cancelable: true },
+                        )
+                      }
+                    >
+                      Supprrimer
+                    </Button>
+                    <Button
+                      mode="contained"
+                      loading={state.verification_approve?.loading}
+                      color={colors.valid}
+                      contentStyle={{
+                        height: 50,
+                        justifyContent: 'center',
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Approuver ce groupe ?',
+                          '',
+                          [
+                            {
+                              text: 'Approuver',
+                              onPress: () =>
+                                groupVerificationApprove(group._id).then(() => navigation.goBack()),
+                            },
+                            { text: 'Annuler' },
+                          ],
+                          { cancelable: true },
+                        )
+                      }
+                    >
+                      Approuver
+                    </Button>
                   </View>
                 </View>
               )}
@@ -805,14 +857,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           }}
         />
 
-        <EditGroupModal
-          visible={isEditGroupModalVisible}
-          setVisible={setEditGroupModalVisible}
-          group={group}
-          editingGroup={editingGroup}
-          setEditingGroup={setEditingGroup}
-        />
-
         <EditGroupDescriptionModal
           visible={isEditGroupDescriptionModalVisible}
           setVisible={setEditGroupDescriptionModalVisible}
@@ -820,22 +864,24 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           editingGroup={editingGroup}
           setEditingGroup={setEditingGroup}
         />
+
+        <ChangeGroupLocationModal
+          visible={isChangeGroupLocationModalVisible}
+          setVisible={setChangeGroupLocationModalVisible}
+          group={group}
+          navigation={navigation}
+        />
       </SafeAreaView>
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups, account, articles, events } = state;
+  const { groups, account } = state;
   return {
     groups,
     account,
-    articles: articles.search,
-    events: events.search,
-    articlesState: articles.state,
-    eventsState: events.state,
     state: groups.state,
-    accountState: account.state,
   };
 };
 

@@ -148,7 +148,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
         )}
         renderItem={({ item, section: { key } }) => {
           const set = () => {
-            if (key === 'primary' && account.accountInfo?.accountId !== user?._id) {
+            if (key === 'primary' && (account.accountInfo?.accountId !== user?._id || !modifying)) {
               setErrorVisible(false);
               setPrimaryRole(item._id);
             } else if (secondaryRoles.includes(item._id)) {
@@ -167,13 +167,15 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                     : null
                 }
                 onPress={set}
-                disabled={key === 'primary' && account.accountInfo?.accountId === user?._id}
+                disabled={
+                  key === 'primary' && account.accountInfo?.accountId === user?._id && modifying
+                }
                 left={() =>
                   Platform.OS !== 'ios' &&
                   (key === 'primary' ? (
                     <RadioButton
                       value=""
-                      disabled={account.accountInfo?.accountId === user?._id}
+                      disabled={account.accountInfo?.accountId === user?._id && modifying}
                       color={colors.primary}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
@@ -192,7 +194,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                     <RadioButton
                       value=""
                       color={colors.primary}
-                      disabled={account.accountInfo?.accountId === user?._id}
+                      disabled={account.accountInfo?.accountId === user?._id && modifying}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
                     />
@@ -316,6 +318,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                   uppercase={Platform.OS !== 'ios'}
                   onPress={add}
                   style={{ flex: 1 }}
+                  loading={modifying ? state.member_modify?.loading : state.member_add?.loading}
                 >
                   {modifying ? 'Modifier' : 'Ajouter'}
                 </Button>

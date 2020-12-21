@@ -6,7 +6,6 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/st
 
 import { AddScreenNavigationProp } from '../index';
 import GroupAdd from './views/Add';
-import GroupAddLocation from './views/AddLocation';
 import GroupAddSuccess from './views/AddSuccess';
 
 // TODO: Define GroupCreationData
@@ -39,11 +38,6 @@ function GroupAddStackNavigator() {
         name="Success"
         component={GroupAddSuccess}
         options={{ title: 'Groupe ajouté' }}
-      />
-      <Stack.Screen
-        name="Location"
-        component={GroupAddLocation}
-        options={{ title: 'Localisation' }}
       />
     </Stack.Navigator>
   );

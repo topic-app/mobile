@@ -278,13 +278,14 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
           end: getEndDate(),
         },
         description: { parser: 'plaintext', data: descriptionVal },
+        // @ts-expect-error
         address: {
           _id: shortid(),
           shortName: addressVal,
-          geo: {
-            type: 'Point',
-            coordinates: [],
-          },
+          // geo: {
+          //   type: 'Point',
+          //   coordinates: [0, 0],
+          // },
           address: { number: '', street: '', code: '', city: '', extra: '' },
           departments: [],
         },

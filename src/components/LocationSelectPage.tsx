@@ -4,8 +4,12 @@ import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
 import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
-import { updateSchools, searchSchools } from '@redux/actions/api/schools';
+import {
+  updateDepartments,
+  searchDepartments,
+  fetchMultiDepartment,
+} from '@redux/actions/api/departments';
+import { updateSchools, searchSchools, fetchMultiSchool } from '@redux/actions/api/schools';
 import getStyles from '@styles/Styles';
 import {
   School,
@@ -19,6 +23,8 @@ import {
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
+import { ChipAddList } from './ChipLists';
+import CollapsibleView from './CollapsibleView';
 import ErrorMessage from './ErrorMessage';
 import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
 import Searchbar from './Searchbar';
@@ -102,6 +108,8 @@ type LocationSelectProps = {
   departments: (Department | DepartmentPreload)[];
   schoolsSearch: SchoolPreload[];
   departmentsSearch: DepartmentPreload[];
+  schoolItems: School[];
+  departmentItems: Department[];
   state: {
     schools: SchoolRequestState;
     departments: DepartmentRequestState;
@@ -118,6 +126,8 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   departments,
   schoolsSearch,
   departmentsSearch,
+  schoolItems,
+  departmentItems,
   state,
   initialData = {
     global: false,
@@ -144,11 +154,38 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   );
   const [selectedOthers, setSelectedOthers] = React.useState(initialData.global ? ['global'] : []);
 
+  let selectedLocations: {
+    id: string;
+    name: string;
+    type: 'school' | 'department' | 'other';
+  }[] = [];
+  if (type === 'schools')
+    selectedLocations = selectedSchools
+      .map((s) => schoolItems.find((i) => i._id === s))
+      .map((s) => ({ id: s?._id || '', name: s?.name || '', type: 'school' }));
+  if (type === 'departements' || type === 'regions')
+    selectedLocations = selectedDepartments
+      .map((d) => departmentItems.find((i) => i._id === d))
+      .filter((d) => d?.type === (type === 'departements' ? 'departement' : 'region'))
+      .map((d) => ({ id: d?._id || '', name: d?.name || '', type: 'department' }));
+
   useFocusEffect(
     React.useCallback(() => {
-      // setImmediate(() => searchbarRef.current?.focus());
+      if (type === 'schools') {
+        fetchMultiSchool(initialData.schools || []);
+      }
+      if (type === 'departements' || type === 'regions') {
+        fetchMultiDepartment(initialData.departments || []);
+        updateDepartments('initial');
+      }
     }, [null]),
   );
+
+  const removeLocation = (key: string) => {
+    setSelectedSchools(selectedSchools.filter((s) => s !== key));
+    setSelectedDepartments(selectedDepartments.filter((s) => s !== key));
+    setSelectedOthers(selectedOthers.filter((s) => s !== key));
+  };
 
   const searchChange = (text: string) => {
     if (text !== '') {
@@ -166,7 +203,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
         searchSchools('initial', searchText);
       } else if (type === 'departements' || type === 'regions') {
         searchDepartments('initial', searchText);
-      }
+      } // setImmediate(() => searchbarRef.current?.focus());
     } else {
       if (type === 'schools') {
         updateSchools('initial');
@@ -242,6 +279,11 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
             if (selected.includes(item.key)) {
               setSelected(selected.filter((s) => s !== item.key));
             } else {
+              if (item.type === 'school') {
+                fetchMultiSchool([item.key]);
+              } else if (item.type === 'departement' || item.type === 'region') {
+                fetchMultiDepartment([item.key]);
+              }
               setSelected([...selected, item.key]);
             }
           }}
@@ -372,6 +414,14 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
       />
       <Divider />
       <View>
+        <CollapsibleView collapsed={selectedLocations.length === 0}>
+          <ChipAddList
+            setList={({ key }) => removeLocation(key)}
+            data={selectedLocations.map((loc) => ({ title: loc.name, key: loc.id, ...loc }))}
+            chipProps={{ icon: 'close', rightAction: true }}
+            style={{ marginBottom: 0 }}
+          />
+        </CollapsibleView>
         <View style={locationStyles.buttonContainer}>
           <Button
             mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
@@ -401,6 +451,8 @@ const mapStateToProps = (state: State) => {
   return {
     schools: schools.data,
     departments: departments.data,
+    schoolItems: schools.items,
+    departmentItems: departments.items,
     schoolsSearch: schools.search,
     departmentsSearch: departments.search,
     state: { schools: schools.state, departments: departments.state },

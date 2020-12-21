@@ -1,5 +1,4 @@
 import Store from '@redux/store';
-import { User } from '@ts/types';
 import {
   UPDATE_USERS_DATA,
   UPDATE_USERS_SEARCH,
@@ -7,6 +6,7 @@ import {
   UPDATE_USERS_STATE,
   CLEAR_USERS,
 } from '@ts/redux';
+import { User } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -66,6 +66,19 @@ async function fetchUser(userId: string) {
   );
 }
 
+async function fetchUserByUsername(username: string) {
+  return Store.dispatch(
+    fetchCreator({
+      update: UPDATE_USERS_ITEM,
+      stateUpdate: UPDATE_USERS_STATE,
+      stateName: 'info',
+      url: 'users/username/info',
+      dataType: 'users',
+      params: { username },
+    }),
+  );
+}
+
 /**
  * @docs actions
  * Vide la database redux complètement
@@ -74,4 +87,4 @@ function clearUsers(data = true, search = true) {
   Store.dispatch(clearCreator({ clear: CLEAR_USERS, data, search }));
 }
 
-export { updateUsers, clearUsers, fetchUser, searchUsers };
+export { updateUsers, clearUsers, fetchUser, searchUsers, fetchUserByUsername };
