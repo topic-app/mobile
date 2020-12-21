@@ -55,7 +55,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
     address: Yup.string()
       .min(10, 'Le siège social doit contenir au moins 10 caratères')
       .max(200, 'Le siège social doit contenir moins de 200 caractères'),
-    email: Yup.string().email().required('Email requis'),
+    email: Yup.string().email("L'email doit être valide").required('Email requis'),
     website: Yup.string().url().max(200, 'Le site web doit contenir moins de 200 caractères'),
     extra: Yup.string().max(
       1000,
