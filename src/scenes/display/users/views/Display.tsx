@@ -14,9 +14,8 @@ import {
   ReportModal,
   CustomTabView,
   SafeAreaView,
+  ContentTabView,
 } from '@components/index';
-import { searchArticles } from '@redux/actions/api/articles';
-import { searchEvents } from '@redux/actions/api/events';
 import { searchGroups } from '@redux/actions/api/groups';
 import { fetchUser } from '@redux/actions/api/users';
 import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
@@ -27,21 +26,15 @@ import {
   Address,
   State,
   UsersState,
-  RequestState,
   UserPreload,
   User,
-  ArticlePreload,
   GroupRequestState,
-  EventPreload,
-  ArticleRequestState,
-  EventRequestState,
   GroupPreload,
   UserRequestState,
   Group,
 } from '@ts/types';
 import { useTheme, logger, Format } from '@utils/index';
 
-import ContentTabView from '../../components/ContentTabView';
 import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '../index';
 
 function getAddressString(address: Address['address']) {
@@ -68,10 +61,6 @@ type UserDisplayProps = {
   users: UsersState;
   groups: (GroupPreload | Group)[];
   groupsState: GroupRequestState;
-  articles: ArticlePreload[];
-  events: EventPreload[];
-  articlesState: ArticleRequestState;
-  eventsState: EventRequestState;
 };
 
 const UserDisplay: React.FC<UserDisplayProps> = ({
@@ -82,10 +71,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
   state,
   groups,
   groupsState,
-  articles,
-  events,
-  articlesState,
-  eventsState,
 }) => {
   const { id } = route.params || {};
 
@@ -107,8 +92,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
   React.useEffect(() => {
     fetchUser(id);
     searchGroups('initial', '', { members: [id], number: 0 }, false);
-    searchArticles('initial', '', { authors: [id] }, false);
-    searchEvents('initial', '', { authors: [id] }, false);
   }, [null]);
 
   const theme = useTheme();
@@ -500,13 +483,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              <ContentTabView
-                articles={articles}
-                events={events}
-                eventsState={eventsState}
-                articlesState={articlesState}
-                params={{ authors: [id] }}
-              />
+              <ContentTabView searchParams={{ authors: [id] }} />
             </View>
           )}
         </ScrollView>
@@ -524,17 +501,13 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { users, account, groups, articles, events } = state;
+  const { users, account, groups } = state;
   return {
     account,
     users,
     state: users.state,
     groups: groups.search,
     groupsState: groups.state,
-    articles: articles.search,
-    events: events.search,
-    articlesState: articles.state,
-    eventsState: events.state,
   };
 };
 

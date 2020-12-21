@@ -6,10 +6,12 @@ import {
   UPDATE_PLACES_ITEM,
   UPDATE_PLACES_SEARCH,
   CLEAR_PLACES,
+  UPDATE_PLACES_MAP_DATA,
 } from '@ts/redux';
 
 const initialState: PlacesState = {
   data: [],
+  mapData: [],
   search: [],
   item: null,
   state: {
@@ -44,6 +46,11 @@ const initialState: PlacesState = {
       error: null,
       loading: false,
     },
+    map: {
+      success: null,
+      error: null,
+      loading: false,
+    },
     report: {
       success: null,
       error: null,
@@ -73,6 +80,11 @@ function placeReducer(state = initialState, action: PlacesActionTypes): PlacesSt
         ...state,
         data: action.data,
       };
+    case UPDATE_PLACES_MAP_DATA:
+      return {
+        ...state,
+        mapData: action.data,
+      };
     case UPDATE_PLACES_ITEM:
       return {
         ...state,
@@ -86,6 +98,7 @@ function placeReducer(state = initialState, action: PlacesActionTypes): PlacesSt
     case CLEAR_PLACES:
       return {
         data: action.data.data ? [] : state.data,
+        mapData: action.data.mapData ? [] : state.mapData,
         search: action.data.search ? [] : state.search,
         item: null,
         state: state.state,

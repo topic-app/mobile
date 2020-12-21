@@ -65,13 +65,19 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
             add({
               id: shortid(),
               type: 'standalone',
+              // We cannot possibly add coordinates client-side
+              // This will surely result in the server skipping
+              // generation of coordinates from address, which we
+              // absolutely do not want
+
+              // @ts-expect-error
               address: {
                 _id: shortid(),
                 shortName: undefined,
-                geo: {
-                  type: 'Point',
-                  coordinates: [],
-                },
+                // geo: {
+                //   type: 'Point',
+                //   coordinates: [0, 0],
+                // },
                 address: { number, street, extra, city, code },
                 departments: [],
               },

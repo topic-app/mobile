@@ -126,7 +126,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
           />
         )}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', flex: 1 }}>
             <PlatformBackButton
               onPress={() => {
                 Alert.alert(

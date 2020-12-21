@@ -55,7 +55,25 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
       />
       <View style={{ flex: 1, flexGrow: 1 }}>
         <ScrollView>
-          {state.emailChange.success ? (
+          {state.emailChange.error ? (
+            <View>
+              <ErrorMessage
+                type="axios"
+                strings={{
+                  what: "l'ouverture du lien",
+                  contentSingular: 'Le lien',
+                }}
+                error={state.emailChange.error}
+                retry={fetch}
+              />
+            </View>
+          ) : state.emailChange.loading ? (
+            <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
+              <View style={styles.container}>
+                <ActivityIndicator size="large" color={colors.primary} />
+              </View>
+            </View>
+          ) : (
             <View
               style={[
                 styles.centerIllustrationContainer,
@@ -69,24 +87,6 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                 Vous ne pourrez plus vous connecter avec l&apos;ancienne adresse mail. Plus aucun
                 message ne sera envoyé à l&apos;adresse mail précédente.
               </Text>
-            </View>
-          ) : state.emailChange.error ? (
-            <View>
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: "l'ouverture du lien",
-                  contentSingular: 'Le lien',
-                }}
-                error={state.emailChange.error}
-                retry={fetch}
-              />
-            </View>
-          ) : (
-            <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
-              <View style={styles.container}>
-                <ActivityIndicator size="large" color={colors.primary} />
-              </View>
             </View>
           )}
         </ScrollView>
