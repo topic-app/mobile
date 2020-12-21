@@ -180,16 +180,13 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     <View
       style={{
         flex: 1,
-        marginBottom:
-          Platform.OS === 'ios'
-            ? insets.bottom + 50
-            : 0 /* 50 is the height of the tabBar on iOS */,
       }}
     >
       <MapboxGL.MapView
         style={{ flex: 1 }}
         onPress={closeBottomSheet}
         logoEnabled={false}
+        scrollEnabled
         attributionEnabled={false}
         pitchEnabled={false}
         styleURL={tileServerUrl}

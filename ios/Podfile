@@ -13,7 +13,7 @@ target 'Topic' do
   pod "Permission-LocationWhenInUse", :path => "#{permissions_path}/LocationWhenInUse.podspec"
   pod "Permission-MediaLibrary", :path => "#{permissions_path}/MediaLibrary.podspec"
   pod "Permission-Notifications", :path => "#{permissions_path}/Notifications.podspec"
-
+  
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and

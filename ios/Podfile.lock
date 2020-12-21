@@ -1,4 +1,5 @@
 PODS:
+  - "@react-native-mapbox-gl-mapbox-static (5.8.0)"
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
     - React
@@ -167,6 +168,9 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.1.1):
     - GoogleUtilities/Logger
+  - Mapbox-iOS-SDK (5.9.0):
+    - MapboxMobileEvents (= 0.10.2)
+  - MapboxMobileEvents (0.10.2)
   - nanopb (2.30906.0):
     - nanopb/decode (= 2.30906.0)
     - nanopb/encode (= 2.30906.0)
@@ -354,6 +358,20 @@ PODS:
   - react-native-blur (0.8.0):
     - React
   - react-native-geolocation-service (5.0.0):
+    - React
+  - react-native-mapbox-gl (8.1.0-rc.2):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
+    - Mapbox-iOS-SDK (~> 5.8)
+    - React
+    - react-native-mapbox-gl/DynamicLibrary (= 8.1.0-rc.2)
+    - react-native-mapbox-gl/StaticLibraryFixer (= 8.1.0-rc.2)
+  - react-native-mapbox-gl/DynamicLibrary (8.1.0-rc.2):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
+    - Mapbox-iOS-SDK (~> 5.8)
+    - React
+  - react-native-mapbox-gl/StaticLibraryFixer (8.1.0-rc.2):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
+    - Mapbox-iOS-SDK (~> 5.8)
     - React
   - react-native-netinfo (5.9.8):
     - React-Core
@@ -551,6 +569,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
+  - "react-native-mapbox-gl (from `../node_modules/@react-native-mapbox-gl/maps`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-crypto (from `../node_modules/react-native-simple-crypto`)
@@ -600,6 +619,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - "@react-native-mapbox-gl-mapbox-static"
     - boost-for-react-native
     - CocoaAsyncSocket
     - CocoaLibEvent
@@ -619,6 +639,8 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
+    - Mapbox-iOS-SDK
+    - MapboxMobileEvents
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
@@ -694,6 +716,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-geolocation-service:
     :path: "../node_modules/react-native-geolocation-service"
+  react-native-mapbox-gl:
+    :path: "../node_modules/@react-native-mapbox-gl/maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
@@ -788,6 +812,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  "@react-native-mapbox-gl-mapbox-static": e247172bc43f47757f47d6cec1b325b1ab3e9287
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
@@ -824,6 +849,8 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 89e1a64593f968713b0506ba1b53b38a154bf9a5
   GoogleDataTransport: e4085e6762f36a6141738f46b0153473ce57fb18
   GoogleUtilities: 3dc4ff0d5e4840e2fa8eef0889620e8c33d4218c
+  Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
+  MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
   nanopb: 1bf24dd71191072e120b83dd02d08f3da0d65e53
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   Permission-LocationWhenInUse: bed1bcdd4e98aa956e69f1e41281aa608930055e
@@ -843,6 +870,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-geolocation-service: 141e33bdb179bcba10b216ee13962611e21f2be4
+  react-native-mapbox-gl: 18785637738ca8b25c3633db431d6614ec7fc9bf
   react-native-netinfo: cee046b5bfbed3f2b5fe4999d6f03d47d95865f5
   react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
   react-native-simple-crypto: 0fec2ce7aa9441a6c8f90fcd20accc5d62710fec
@@ -894,6 +922,6 @@ SPEC CHECKSUMS:
   YoutubePlayer-in-WKWebView: af2f5929fc78882d94bfdfeea999b661b78d9717
   zxcvbn-ios: fef98b7c80f1512ff0eec47ac1fa399fc00f7e3c
 
-PODFILE CHECKSUM: 183b1fc8f562d073a5d8c7229851e06e2852b0f1
+PODFILE CHECKSUM: e972c809a6d1168356791fc643dca4f0c8028d5f
 
 COCOAPODS: 1.9.3

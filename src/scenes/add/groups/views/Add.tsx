@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -46,49 +46,51 @@ const GroupAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
-          <PlatformBackButton onPress={navigation.goBack} />
-          <View style={styles.centerIllustrationContainer}>
-            <Text style={articleStyles.title}>Créer un groupe</Text>
-          </View>
-          <StepperView
-            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
-            pages={[
-              {
-                key: 'group',
-                icon: 'account-group',
-                title: 'Type',
-                component: (props) => (
-                  <GroupAddPageTemplate templates={templates} state={groupState} {...props} />
-                ),
-              },
-              {
-                key: 'location',
-                icon: 'map-marker',
-                title: 'Localisation',
-                component: (props) => <GroupAddPageLocation navigation={navigation} {...props} />,
-              },
-              {
-                key: 'meta',
-                icon: 'information',
-                title: 'Info',
-                component: (props) => <GroupAddPageMeta {...props} />,
-              },
-              {
-                key: 'proof',
-                icon: 'script-text',
-                title: 'Légal',
-                component: (props) => <GroupAddPageProof navigation={navigation} {...props} />,
-              },
-              {
-                key: 'review',
-                icon: 'check-bold',
-                title: 'Confirmation',
-                component: (props) => <GroupAddPageReview navigation={navigation} {...props} />,
-              },
-            ]}
-          />
-        </ScrollView>
+        <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
+            <PlatformBackButton onPress={navigation.goBack} />
+            <View style={styles.centerIllustrationContainer}>
+              <Text style={articleStyles.title}>Créer un groupe</Text>
+            </View>
+            <StepperView
+              onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
+              pages={[
+                {
+                  key: 'group',
+                  icon: 'account-group',
+                  title: 'Type',
+                  component: (props) => (
+                    <GroupAddPageTemplate templates={templates} state={groupState} {...props} />
+                  ),
+                },
+                {
+                  key: 'location',
+                  icon: 'map-marker',
+                  title: 'Localisation',
+                  component: (props) => <GroupAddPageLocation navigation={navigation} {...props} />,
+                },
+                {
+                  key: 'meta',
+                  icon: 'information',
+                  title: 'Info',
+                  component: (props) => <GroupAddPageMeta {...props} />,
+                },
+                {
+                  key: 'proof',
+                  icon: 'script-text',
+                  title: 'Légal',
+                  component: (props) => <GroupAddPageProof navigation={navigation} {...props} />,
+                },
+                {
+                  key: 'review',
+                  icon: 'check-bold',
+                  title: 'Confirmation',
+                  component: (props) => <GroupAddPageReview navigation={navigation} {...props} />,
+                },
+              ]}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );

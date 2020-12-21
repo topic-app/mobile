@@ -10,8 +10,7 @@ import { HomeOneScreenNavigationProp } from './HomeOne';
 import ArticleList from './articles/views/List';
 import EventDualList from './events/views/Dual';
 import EventList from './events/views/List';
-
-// import ExplorerList from './explorer/views/List';
+import ExplorerList from './explorer/views/List';
 
 export type HomeTwoNavParams = {
   Article: { initialList: string } | undefined;
@@ -38,7 +37,7 @@ function HomeTwoNavigator() {
         component={deviceWidth > Config.layout.dualMinWidth ? EventDualList : EventList}
       />
       {/* <Stack.Screen name="Petition" component={PetitionList} /> */}
-      <Stack.Screen name="Explorer" component={UnauthorizedBeta} />
+      <Stack.Screen name="Explorer" component={ExplorerList} />
     </Stack.Navigator>
   );
 }
