@@ -116,7 +116,7 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
               title={s.name}
               description={`École · ${s.address?.shortName || s.address?.address?.city}`}
               status={schools.includes(s._id) ? 'checked' : 'unchecked'}
-              onPress={() => toggle(s, setDepartments, departments)}
+              onPress={() => toggle(s, setSchools, schools)}
             />
           );
         })}

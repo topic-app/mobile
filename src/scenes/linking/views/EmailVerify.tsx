@@ -55,7 +55,25 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
       />
       <View style={{ flex: 1, flexGrow: 1 }}>
         <ScrollView>
-          {state.emailVerify.success ? (
+          {state.emailVerify.error ? (
+            <View>
+              <ErrorMessage
+                type="axios"
+                strings={{
+                  what: "l'ouverture du lien",
+                  contentSingular: 'Le lien',
+                }}
+                error={state.emailVerify.error}
+                retry={fetch}
+              />
+            </View>
+          ) : state.emailVerify.loading ? (
+            <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
+              <View style={styles.container}>
+                <ActivityIndicator size="large" color={colors.primary} />
+              </View>
+            </View>
+          ) : (
             <View
               style={[
                 styles.centerIllustrationContainer,
@@ -68,24 +86,6 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
               <Text>
                 Vous pouvez maintenant rejoindre et créer des groupes, écrire des commentaires...
               </Text>
-            </View>
-          ) : state.emailVerify.error ? (
-            <View>
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: "l'ouverture du lien",
-                  contentSingular: 'Le lien',
-                }}
-                error={state.emailVerify.error}
-                retry={fetch}
-              />
-            </View>
-          ) : (
-            <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
-              <View style={styles.container}>
-                <ActivityIndicator size="large" color={colors.primary} />
-              </View>
             </View>
           )}
         </ScrollView>

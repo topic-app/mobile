@@ -36,7 +36,10 @@ export type StandardRequestState = {
 
 export type ArticleRequestState = StandardRequestState;
 export type PetitionRequestState = StandardRequestState;
-export type PlaceRequestState = StandardRequestState & { near: RequestStateComplex };
+export type PlaceRequestState = StandardRequestState & {
+  near: RequestStateComplex;
+  map: RequestState;
+};
 export type SchoolRequestState = StandardRequestState & { near: RequestStateComplex };
 export type TagRequestState = StandardRequestState;
 export type UserRequestState = StandardRequestState & { follow: RequestState };
