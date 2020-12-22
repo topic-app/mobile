@@ -1,25 +1,9 @@
-import { Formik } from 'formik';
-import React, { useState, createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import {
-  TextInput,
-  HelperText,
-  Button,
-  ProgressBar,
-  Checkbox,
-  List,
-  Card,
-  Text,
-  Divider,
-  Subheading,
-  Title,
-} from 'react-native-paper';
-import RNPickerSelect from 'react-native-picker-select';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React from 'react';
+import { View, Platform } from 'react-native';
+import { Button, Text, Divider, Subheading, Title } from 'react-native-paper';
 import { connect } from 'react-redux';
-import * as Yup from 'yup';
 
-import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components/index';
+import { StepperViewPageProps } from '@components/index';
 import { groupAdd } from '@redux/actions/apiActions/groups';
 import { clearGroupCreationData } from '@redux/actions/contentData/groups';
 import getStyles from '@styles/Styles';
@@ -36,7 +20,6 @@ type Props = StepperViewPageProps & {
 
 const ArticleAddPageReview: React.FC<Props> = ({ next, prev, creationData, state, navigation }) => {
   const theme = useTheme();
-  const { colors } = theme;
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 

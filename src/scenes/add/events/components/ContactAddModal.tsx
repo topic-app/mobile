@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
@@ -24,9 +24,9 @@ type CustomContactType = {
 };
 
 const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, add }) => {
-  const keyInput = React.createRef<RNTestInput>();
-  const valueInput = React.createRef<RNTestInput>();
-  const linkInput = React.createRef<RNTestInput>();
+  const keyInput = React.createRef<RNTextInput>();
+  const valueInput = React.createRef<RNTextInput>();
+  const linkInput = React.createRef<RNTextInput>();
 
   const predefinedSocials = [
     {

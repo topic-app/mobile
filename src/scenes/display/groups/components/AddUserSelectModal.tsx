@@ -1,41 +1,29 @@
 import { Formik } from 'formik';
 import React from 'react';
-import { View, FlatList, Platform } from 'react-native';
-import { Divider, ProgressBar, Button, Text, List, Subheading } from 'react-native-paper';
+import { View, Platform } from 'react-native';
+import { Divider, Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import {
-  Avatar,
-  Illustration,
-  ErrorMessage,
-  Searchbar,
-  Modal,
-  FormTextInput,
-} from '@components/index';
-import { fetchUserByUsername, searchUsers } from '@redux/actions/api/users';
+import { Illustration, ErrorMessage, Modal, FormTextInput } from '@components/index';
+import { fetchUserByUsername } from '@redux/actions/api/users';
 import { updateState } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import {
-  ModalProps,
   State,
-  UsersState,
-  User,
-  UserRequestState,
+  ModalProps,
   GroupMember,
-  Account,
   UserPreload,
+  UserRequestState,
   AccountRequestState,
 } from '@ts/types';
-import { request, useTheme } from '@utils/index';
+import { logger, request, useTheme } from '@utils/index';
 
 import getGroupStyles from '../styles/Styles';
 
 type AddUserSelectModalProps = ModalProps & {
-  users: UsersState;
   state: UserRequestState;
   members: GroupMember[];
-  account: Account;
   next: (user: UserPreload) => any;
   reqState: AccountRequestState;
 };
@@ -43,19 +31,14 @@ type AddUserSelectModalProps = ModalProps & {
 const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
   visible,
   setVisible,
-  users,
   state,
   members,
-  account,
   next,
   reqState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const groupStyles = getGroupStyles(theme);
-  const { colors } = theme;
-
-  const [isError, setError] = React.useState(false);
 
   const RegisterSchema = Yup.object().shape({
     username: Yup.string()
@@ -79,23 +62,28 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
       }),
   });
 
+  let user: UserPreload | null = null;
+
+  async function fetchUser(username: string) {
+    try {
+      user = await fetchUserByUsername(username);
+    } catch (e) {
+      logger.verbose('AddUserSelectModal: failed to fetch user by username, does the user exist?');
+    }
+  }
+
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
         <Formik
           initialValues={{ username: '', email: '', password: '' }}
           validationSchema={RegisterSchema}
-          onSubmit={async ({ username }) => {
-            setError(false);
-            const user = (await fetchUserByUsername(username)) as UserPreload;
-            if (members.some((m) => m.user._id === user._id)) {
-              return setError(true);
-            }
-            next(user);
+          onSubmit={() => {
+            if (user) next(user);
             setVisible(false);
           }}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldError }) => (
             <View>
               {reqState.check.success === false && (
                 <ErrorMessage
@@ -129,13 +117,16 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
                   label="Nom d'utilisateur"
                   value={values.username}
                   touched={touched.username}
-                  error={
-                    errors.username ||
-                    (isError ? 'Cet utilisateur est déjà dans le groupe' : undefined)
-                  }
+                  error={errors.username}
                   onChangeText={handleChange('username')}
                   onBlur={handleBlur('username')}
-                  onSubmitEditing={() => handleSubmit()}
+                  onSubmitEditing={async () => {
+                    await fetchUser(values.username);
+                    if (members.some((m) => m.user._id === user?._id)) {
+                      setFieldError('username', 'Cet utilisateur est déjà dans le groupe');
+                    }
+                    handleSubmit();
+                  }}
                   style={groupStyles.textInput}
                   textContentType="username"
                   autoCorrect={false}
@@ -145,7 +136,13 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
                 <Button
                   mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                   uppercase={Platform.OS !== 'ios'}
-                  onPress={() => handleSubmit()}
+                  onPress={async () => {
+                    await fetchUser(values.username);
+                    if (members.some((m) => m.user._id === user?._id)) {
+                      setFieldError('username', 'Cet utilisateur est déjà dans le groupe');
+                    }
+                    handleSubmit();
+                  }}
                   loading={state.info.loading}
                 >
                   Suivant

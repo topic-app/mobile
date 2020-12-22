@@ -155,27 +155,40 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   const [selectedOthers, setSelectedOthers] = React.useState(initialData.global ? ['global'] : []);
 
   let selectedLocations: {
+    type: 'school' | 'department' | 'other';
     id: string;
     name: string;
-    type: 'school' | 'department' | 'other';
   }[] = [];
-  if (type === 'schools')
+
+  if (type === 'schools') {
     selectedLocations = selectedSchools
-      .map((s) => schoolItems.find((i) => i._id === s))
-      .map((s) => ({ id: s?._id || '', name: s?.name || '', type: 'school' }));
-  if (type === 'departements' || type === 'regions')
+      .map((schId) => schoolItems.find((sch) => sch._id === schId))
+      .filter((sch) => sch !== undefined)
+      .map((s) => ({ type: 'school', id: s!._id, name: s!.name }));
+  }
+
+  if (type === 'departements' || type === 'regions') {
     selectedLocations = selectedDepartments
-      .map((d) => departmentItems.find((i) => i._id === d))
-      .filter((d) => d?.type === (type === 'departements' ? 'departement' : 'region'))
-      .map((d) => ({ id: d?._id || '', name: d?.name || '', type: 'department' }));
+      .map((depId) => departmentItems.find((dep) => dep._id === depId))
+      .filter((dep) => {
+        if (type === 'departements') {
+          return dep?.type === 'departement';
+        } else {
+          return dep?.type === 'region';
+        }
+      })
+      .map((d) => ({ type: 'department', id: d!._id, name: d!.name }));
+  }
 
   useFocusEffect(
     React.useCallback(() => {
-      if (type === 'schools') {
-        fetchMultiSchool(initialData.schools || []);
+      if (type === 'schools' && initialData.schools) {
+        fetchMultiSchool(initialData.schools);
       }
       if (type === 'departements' || type === 'regions') {
-        fetchMultiDepartment(initialData.departments || []);
+        if (initialData.departments) {
+          fetchMultiDepartment(initialData.departments);
+        }
         updateDepartments('initial');
       }
     }, [null]),
@@ -187,7 +200,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     setSelectedOthers(selectedOthers.filter((s) => s !== key));
   };
 
-  const searchChange = (text: string) => {
+  const onSearchChange = (text: string) => {
     if (text !== '') {
       if (type === 'schools') {
         searchSchools('initial', text);
@@ -322,7 +335,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
             placeholder="Rechercher"
             value={searchText}
             onChangeText={setSearchText}
-            onIdle={searchChange}
+            onIdle={onSearchChange}
           />
         )}
       </View>

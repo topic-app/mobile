@@ -6,7 +6,7 @@ import {
   UPDATE_USERS_STATE,
   CLEAR_USERS,
 } from '@ts/redux';
-import { User } from '@ts/types';
+import { User, UserPreload } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -66,7 +66,7 @@ async function fetchUser(userId: string) {
   );
 }
 
-async function fetchUserByUsername(username: string) {
+async function fetchUserByUsername(username: string): Promise<UserPreload> {
   return Store.dispatch(
     fetchCreator({
       update: UPDATE_USERS_ITEM,
@@ -76,7 +76,7 @@ async function fetchUserByUsername(username: string) {
       dataType: 'users',
       params: { username },
     }),
-  );
+  ) as Promise<UserPreload>;
 }
 
 /**

@@ -24,6 +24,7 @@ export type HomeTwoNavParams = {
   Event: { initialList?: string } | undefined;
   Petition: undefined;
   Explorer: undefined;
+  Tests: undefined;
 };
 
 export type HomeTwoScreenNavigationProp<K extends keyof HomeTwoNavParams> = CompositeNavigationProp<
