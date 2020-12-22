@@ -1,16 +1,15 @@
+import moment from 'moment';
 import React from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { View, Platform } from 'react-native';
 import { Button, HelperText, List, Text } from 'react-native-paper';
+import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
-import { Account, State } from '@ts/types';
 import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
+import getStyles from '@styles/Styles';
+import { Account, State } from '@ts/types';
+import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -19,12 +18,15 @@ type Props = StepperViewPageProps & { account: Account };
 const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   const [errorVisible, setErrorVisible] = React.useState(false);
   const [showError, setError] = React.useState(false);
-  const [startDate, setStartDate] = React.useState<Date>(new Date(0));
-  const [endDate, setEndDate] = React.useState<Date>(new Date(0));
+
+  const [startDate, setStartDate] = React.useState<moment.Moment | undefined>(undefined);
+  const [endDate, setEndDate] = React.useState<moment.Moment | undefined>(undefined);
+
   const [startDateShow, setStartDateShow] = React.useState(false);
   const [endDateShow, setEndDateShow] = React.useState(false);
   const [startTimeShow, setStartTimeShow] = React.useState(false);
   const [endTimeShow, setEndTimeShow] = React.useState(false);
+
   const dismissStartDateModal = React.useCallback(() => {
     setStartDateShow(false);
   }, [setStartDateShow]);
@@ -37,63 +39,75 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   const dismissEndTimeModal = React.useCallback(() => {
     setEndTimeShow(false);
   }, [setEndTimeShow]);
-  const showStartDateModal = () =>{
+  const showStartDateModal = () => {
     setStartDateShow(true);
   };
-  const showEndDateModal = () =>{
+  const showEndDateModal = () => {
     setEndDateShow(true);
   };
 
   const theme = useTheme();
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
-  const jan1970 = new Date(0);
 
-  const changeStartDate = React.useCallback(({ date }) => {
+  const changeStartDate = React.useCallback(({ date }: { date: Date | undefined }) => {
     setStartDateShow(false);
     setStartTimeShow(true);
-    setStartDate(date);
-    checkErrors();
-    if (date && endDate && date.valueOf() >= endDate.valueOf()) {
-        setEndDate(date);
+    if (date) {
+      const newDate = moment(date);
+      setStartDate(newDate);
+      if (newDate.isSameOrAfter(endDate)) {
+        setEndDate(newDate);
       }
+    }
+    checkErrors();
   }, []);
 
-  const changeStartTime = ({hours, minutes}:{hours: number; minutes:number}) => {
-    const currentDate = new Date(startDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
-    setStartTimeShow(false);
-    setStartDate(currentDate);
-    checkErrors();
-    if (currentDate && endDate && currentDate.valueOf() >= endDate.valueOf()) {
-        setEndDate(currentDate);
+  const changeStartTime = ({ hours, minutes }: { hours: number; minutes: number }) => {
+    if (startDate) {
+      const newDate = startDate.add(hours, 'hours').add(minutes, 'minutes');
+      setStartTimeShow(false);
+      setStartDate(newDate);
+      if (newDate.isSameOrAfter(endDate)) {
+        setEndDate(newDate);
       }
+    }
+    checkErrors();
   };
 
-  const changeEndDate = React.useCallback(({ date }) => {
-    setEndDateShow(false);
-    setEndTimeShow(true);
-    setEndDate(date);
+  const changeEndDate = React.useCallback(({ date }: { date: Date | undefined }) => {
+    if (date) {
+      setEndDateShow(false);
+      setEndTimeShow(true);
+      setEndDate(moment(date));
+    }
     checkErrors();
   }, []);
 
-  const changeEndTime = ({hours, minutes}:{hours: number; minutes:number}) => {
-    const currentDate = new Date(endDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
-    setEndTimeShow(false);
-    setEndDate(currentDate);
+  const changeEndTime = ({ hours, minutes }: { hours: number; minutes: number }) => {
+    if (endDate) {
+      const newDate = endDate.add(hours, 'hours').add(minutes, 'minutes');
+      setEndTimeShow(false);
+      setEndDate(newDate);
+    }
     checkErrors();
   };
 
   const checkErrors = () => {
-    if (startDate && endDate) setErrorVisible(false);
-    if (endDate && startDate && (endDate.valueOf() - startDate.valueOf()) >= 3.6) setError(false);
+    if (startDate && endDate) {
+      setErrorVisible(false);
+      if (startDate.add(1, 'hour').isBefore(endDate)) {
+        setError(false);
+      }
+    }
   };
 
   const submit = () => {
-    if (startDate && endDate && (endDate.valueOf() - startDate.valueOf()) >= 360000) {
-      updateEventCreationData({ start: startDate, end: endDate });
+    if (startDate && endDate && startDate.add(1, 'hour').isBefore(endDate)) {
+      updateEventCreationData({ start: startDate.toDate(), end: endDate.toDate() });
       next();
     } else {
-      if (startDate === null || endDate === null) {
+      if (!startDate || !endDate) {
         setErrorVisible(true);
       } else {
         setError(true);
@@ -110,6 +124,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
       </View>
     );
   }
+
   return (
     <View style={eventStyles.formContainer}>
       <View>
@@ -121,13 +136,13 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
             style={{ marginHorizontal: 5 }}
             uppercase={false}
           >
-            {startDate.valueOf() === jan1970.valueOf() ? 'Appuyez pour sélectionner' : moment(startDate).format('LLL')}
+            {startDate ? startDate.format('LLL') : 'Appuyez pour sélectionner'}
           </Button>
           <DatePickerModal
             mode="single"
             visible={startDateShow}
             onDismiss={dismissStartDateModal}
-            date={startDate}
+            date={moment(startDate).toDate()}
             onConfirm={changeStartDate}
             saveLabel="Enregistrer"
             label="Choisissez une date"
@@ -152,13 +167,13 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
             onPress={showEndDateModal}
             style={{ marginHorizontal: 5 }}
           >
-            {endDate.valueOf() === jan1970.valueOf() ? 'Appuyez pour sélectionner' : moment(endDate).format('LLL')}
+            {endDate ? endDate.format('LLL') : 'Appuyez pour sélectionner'}
           </Button>
           <DatePickerModal
             mode="single"
             visible={endDateShow}
             onDismiss={dismissEndDateModal}
-            date={endDate}
+            date={moment(endDate).toDate()}
             onConfirm={changeEndDate}
             saveLabel="Enregistrer"
             label="Choisissez une date"
