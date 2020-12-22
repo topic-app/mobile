@@ -1,45 +1,65 @@
 import { useFocusEffect } from '@react-navigation/core';
 import React from 'react';
-import { View, BackHandler, useWindowDimensions } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
+import { View, BackHandler, useWindowDimensions, Platform, ScrollView } from 'react-native';
+import { ActivityIndicator, Divider, Text } from 'react-native-paper';
 import Animated, { call, cond, greaterThan, lessThan, useCode } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { BottomSheet, BottomSheetRef, InlineCard, PlatformBackButton } from '@components/index';
-import places from '@src/data/explorerListData.json';
-import { ExplorerLocation } from '@ts/types';
+import {
+  BottomSheet,
+  BottomSheetRef,
+  ContentTabView,
+  InlineCard,
+  PlatformBackButton,
+} from '@components/index';
+import { updateMapLocations } from '@redux/actions/api/places';
+import { MapLocation, PlaceRequestState, State } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
 import getExplorerStyles from '../styles/Styles';
 import { getStrings } from '../utils/getStrings';
 import type { MapMarkerDataType } from '../views/Map';
 
-const bottomSheetPortraitSnapPoints = [0, 210, '103.5%'];
-const bottomSheetLandscapeSnapPoints = [0, 210, '103.5%'];
+const bottomSheetPortraitSnapPoints = [0, '21%', '100%'];
+const bottomSheetLandscapeSnapPoints = [0, '21%', '100%'];
 
 type LocationBottomSheetProps = {
-  bottomSheetRef?: React.RefObject<BottomSheetRef>;
+  bottomSheetRef: React.RefObject<BottomSheetRef>;
   mapMarkerData: MapMarkerDataType;
   zoomToLocation: (coordinates: [number, number]) => void;
+  places: MapLocation.FullLocation[];
+  reqState: PlaceRequestState;
 };
 
 const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
-  bottomSheetRef: propBottomSheetRef,
+  bottomSheetRef,
   mapMarkerData,
   zoomToLocation,
+  places,
+  reqState,
 }) => {
-  const bottomSheetRef = propBottomSheetRef ?? React.createRef<BottomSheetRef>();
   const theme = useTheme();
   const explorerStyles = getExplorerStyles(theme);
   const { colors } = theme;
 
   const insets = useSafeAreaInsets();
-  const minHeight = useWindowDimensions().height - 21;
+  // 54 is the height of the bottom Tabbar
+  const offset = Platform.OS !== 'web' ? 54 : 0;
+  const minHeight = useWindowDimensions().height + insets.top - offset;
 
-  const place = (places.find(
-    (t) => t.data._id === mapMarkerData.id,
-  ) as unknown) as ExplorerLocation.Location;
+  // Search for desired place in places
+  const place = places.find((loc) => loc.id === mapMarkerData.id);
+
+  React.useEffect(() => {
+    const { id, type } = mapMarkerData;
+    // Check that id is not a non-empty string
+    // and that we don't already have the place locally
+    if (id !== '' && !place) {
+      updateMapLocations(type, id);
+    }
+  }, [mapMarkerData.id]);
 
   // Value that goes from 0 to 1 (where 1 is the bottom sheet hidden)
   const bottomSheetY = new Animated.Value(1);
@@ -72,9 +92,15 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
 
   // extended keeps track of whether the Bottom Sheet is extended
   let extended = false;
-  // useCode is a hook to run code if a certain condition is met
+
+  // Since Animated runs on the native thread (if you use useNativeDriver)
+  // you have to use certain hooks to directly access and perform
+  // operations with this value
+  // - useCode is a hook to run code when a certain value is updated
+  // - cond is a equivalent to an if else
+  // - call is used to call a function
   // For example, here we check whether bottomSheetY is almost extended
-  // and if so, then toggle value of extended
+  // and if it is, then toggle value of extended
   useCode(() => {
     return cond(
       lessThan(bottomSheetY, 0.1),
@@ -103,9 +129,10 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
     }, [extended, minimizeBottomSheet]),
   );
 
-  if (!place) return null;
-
-  const { icon, title, subtitle, description, detail, addresses } = getStrings(place);
+  const { icon, name, shortName, description, detail, addresses } = getStrings(
+    mapMarkerData,
+    place,
+  );
 
   const renderContent = () => {
     return (
@@ -125,12 +152,12 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
                 ]}
                 numberOfLines={2}
               >
-                {title}
+                {name}
               </Animated.Text>
               <Animated.Text
                 style={[explorerStyles.modalSubtitle, { opacity: animatedSubtitleOpacity }]}
               >
-                {subtitle ? `${subtitle} · ` : null}
+                {shortName ? `${shortName} · ` : null}
                 {detail}
               </Animated.Text>
             </View>
@@ -139,34 +166,45 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
             </Animated.View>
           </View>
         </View>
-        <View>
-          <Divider />
-          {addresses.map((address) => (
-            <View key={shortid()}>
+        {place && !reqState.map.loading && !reqState.map.error ? (
+          <ScrollView>
+            {/* HACK but whatever */}
+            <Divider />
+            {addresses.map((address) => (
+              <View key={shortid()}>
+                <InlineCard
+                  icon="map-marker-outline"
+                  iconColor={colors.primary}
+                  title={address}
+                  onPress={() => {
+                    minimizeBottomSheet();
+                    zoomToLocation(mapMarkerData.coordinates);
+                  }}
+                  compact
+                />
+                <Divider />
+              </View>
+            ))}
+            {description ? (
               <InlineCard
-                icon="map-marker-outline"
-                iconColor={colors.primary}
-                title={address}
-                onPress={() => {
-                  minimizeBottomSheet();
-                  zoomToLocation(mapMarkerData.coordinates);
-                }}
-                compact
+                title={description}
+                onPress={() => logger.verbose('Pressed location description')}
               />
-              <Divider />
-            </View>
-          ))}
-          <InlineCard
-            title={description}
-            onPress={() => logger.verbose('Pressed location description')}
-          />
-        </View>
+            ) : null}
+            {place.type === 'school' ? (
+              <ContentTabView searchParams={{ schools: [place.id] }} />
+            ) : null}
+          </ScrollView>
+        ) : (
+          <ActivityIndicator style={{ transform: [{ scale: 1.5 }] }} />
+        )}
       </View>
     );
   };
 
   return (
     <>
+      {/* Background fade out view */}
       <Animated.View
         style={{
           position: 'absolute',
@@ -178,13 +216,16 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
         }}
         pointerEvents="none"
       />
+      {/* Actual modal */}
       <BottomSheet
         ref={bottomSheetRef}
+        useInsets
         callbackNode={bottomSheetY}
         portraitSnapPoints={bottomSheetPortraitSnapPoints}
         landscapeSnapPoints={bottomSheetLandscapeSnapPoints}
         renderContent={renderContent}
       />
+      {/* Header component for the modal */}
       <Animated.View
         style={{
           position: 'absolute',
@@ -204,11 +245,16 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
       >
         <PlatformBackButton onPress={minimizeBottomSheet} />
         <Text numberOfLines={1} style={[explorerStyles.modalTitle, { paddingLeft: 10 }]}>
-          {title}
+          {name}
         </Text>
       </Animated.View>
     </>
   );
 };
 
-export default LocationBottomSheet;
+const mapStateToProps = (state: State) => {
+  const { places } = state;
+  return { places: places.mapData, reqState: places.state };
+};
+
+export default connect(mapStateToProps)(LocationBottomSheet);

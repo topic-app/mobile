@@ -139,7 +139,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
               <Switch
                 color={colors.primary}
                 value={preferences.stripFormatting}
-                onTouchEnd={() => updatePrefs({ stripFormatting: !preferences.stripFormatting })}
+                onValueChange={(val) => updatePrefs({ stripFormatting: val })}
               />
             )}
             onPress={() => updatePrefs({ stripFormatting: !preferences.stripFormatting })}

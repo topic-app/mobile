@@ -15,12 +15,12 @@ import {
   StrengthMeter,
   FormTextInput,
 } from '@components/index';
+import { fetchAccount } from '@redux/actions/data/account';
 import { accountDelete, passwordReset } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LinkingRequestState } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-import types from '../data/types.json';
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';
 import getLinkingStyles from '../styles/Styles';
 
@@ -77,13 +77,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
             validationSchema={ResetPasswordSchema}
             onSubmit={(values) => {
               passwordReset(id, token, values.password).then(() => {
-                navigation.replace('Root', {
-                  screen: 'Main',
-                  params: {
-                    screen: 'Home1',
-                    params: { screen: 'Home2', params: { screen: 'Article' } },
-                  },
-                });
+                fetchAccount();
                 Alert.alert(
                   'Mot de passe changé',
                   'Utilisez votre nouveau mot de passe pour vous connecter.',
@@ -94,6 +88,13 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                   ],
                   { cancelable: true },
                 );
+                navigation.replace('Root', {
+                  screen: 'Main',
+                  params: {
+                    screen: 'Home1',
+                    params: { screen: 'Home2', params: { screen: 'Article' } },
+                  },
+                });
               });
             }}
           >
@@ -104,8 +105,8 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                     <ErrorMessage
                       type="axios"
                       strings={{
-                        what: "l'ouverture du lien",
-                        contentSingular: 'Le lien',
+                        what: 'la réinitialisation du mot de passe',
+                        contentSingular: 'La réinitialisation du mot de passe',
                       }}
                       error={state.resetPassword.error}
                       retry={() => handleSubmit()}

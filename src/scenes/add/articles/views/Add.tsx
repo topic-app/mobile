@@ -27,16 +27,19 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
 
+  const scrollViewRef = React.useRef<ScrollView>(null);
+
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>
             <Text style={articleStyles.title}>Écrire un article</Text>
           </View>
           <StepperView
+            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
             pages={[
               {
                 key: 'group',

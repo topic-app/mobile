@@ -188,7 +188,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
       tabGroups.lists[0]?.key ||
       tabGroups.quicks[0]?.key,
   );
-  const [dataLoaded, setDataLoaded] = React.useState(true);
 
   const getSection = (tabKey: string) => tabs.find((t) => t.key === tabKey)!.section;
   const getCategory = (tabKey: string) => tabs.find((t) => t.key === tabKey)!;
@@ -207,14 +206,11 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
 
     if (noAnimation) {
       setChipTab(tabKey);
-      setDataLoaded(false);
       if (newSection === 'quicks') {
         await searchArticles('initial', '', newCategory.params, false, false);
       }
-      setDataLoaded(true);
     } else {
       setChipTab(tabKey);
-      setDataLoaded(false);
       Animated.timing(fadeAnim, {
         useNativeDriver: true,
         toValue: 0,
@@ -223,7 +219,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         if (newSection === 'quicks') {
           await searchArticles('initial', '', newCategory.params, false, false);
         }
-        setDataLoaded(true);
         Animated.timing(fadeAnim, {
           useNativeDriver: true,
           toValue: 1,
@@ -235,7 +230,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
 
   const section = getSection(chipTab);
   const category = getCategory(chipTab);
-  const listData = dataLoaded ? category.data : [];
 
   const [cardWidth, setCardWidth] = React.useState(100);
   const imageSize = cardWidth / 3.5;
@@ -275,7 +269,7 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
-        data={listData}
+        data={category.data}
         refreshing={
           (section === 'categories' && state.list.loading.refresh) ||
           (section === 'quicks' && state.search?.loading.refresh)
@@ -314,7 +308,7 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
           </View>
         )}
         ListEmptyComponent={() => (
-          <Animated.View>
+          <Animated.View style={{ opacity: fadeAnim }}>
             <ArticleEmptyList
               tab={chipTab}
               sectionKey={section}

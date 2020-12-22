@@ -1,6 +1,14 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { ScrollView, View, Platform, ActivityIndicator, StatusBar, Share } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Platform,
+  ActivityIndicator,
+  StatusBar,
+  Share,
+  TouchableOpacity,
+} from 'react-native';
 import {
   Button,
   Text,
@@ -28,10 +36,9 @@ import {
   ErrorMessage,
   SafeAreaView,
   Banner,
+  ContentTabView,
 } from '@components/index';
 import { Permissions } from '@constants/index';
-import { searchArticles } from '@redux/actions/api/articles';
-import { searchEvents } from '@redux/actions/api/events';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import {
   groupFollow,
@@ -50,24 +57,18 @@ import {
   GroupRequestState,
   GroupsState,
   State,
-  ArticleRequestState,
-  EventRequestState,
-  EventPreload,
-  ArticlePreload,
-  AccountRequestState,
   User,
   GroupMember,
   GroupRole,
   UserPreload,
   GroupVerification,
+  Avatar as AvatarType,
 } from '@ts/types';
 import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
 
-import ContentTabView from '../../components/ContentTabView';
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
-import EditGroupModal from '../components/EditGroupModal';
 import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
 
 type GroupDisplayProps = {
@@ -76,11 +77,6 @@ type GroupDisplayProps = {
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
-  articles: ArticlePreload[];
-  accountState: AccountRequestState;
-  articlesState: ArticleRequestState;
-  events: EventPreload[];
-  eventsState: EventRequestState;
 };
 
 const GroupDisplay: React.FC<GroupDisplayProps> = ({
@@ -89,11 +85,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   groups,
   account,
   state,
-  accountState,
-  articles,
-  events,
-  articlesState,
-  eventsState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -106,8 +97,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   React.useEffect(() => {
     fetch();
-    searchArticles('initial', '', { groups: [id] }, false);
-    searchEvents('initial', '', { groups: [id] }, false);
   }, [null]);
 
   const group: Group | GroupPreload | GroupVerification | null =
@@ -160,12 +149,15 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   const [isAddSnackbarVisible, setAddSnackbarVisible] = React.useState(false);
 
+  const [legalCollapsed, setLegalCollapsed] = React.useState(true);
+
   const [editingGroup, setEditingGroup] = React.useState<{
-    shortName?: string;
+    id?: string;
+    name?: string;
     summary?: string;
     description?: string;
+    avatar?: AvatarType;
   } | null>(null);
-  const [isEditGroupModalVisible, setEditGroupModalVisible] = React.useState(false);
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
     false,
   );
@@ -258,11 +250,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     icon="pencil"
                     onPress={() => {
                       setEditingGroup({
-                        shortName: group.shortName,
+                        id: group._id,
+                        name: group.name,
                         summary: group.summary,
                         description: group.description?.data,
+                        avatar: group.avatar,
                       });
-                      setEditGroupModalVisible(true);
+                      setEditGroupDescriptionModalVisible(true);
                     }}
                   />
                 )}
@@ -310,7 +304,27 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
           <View style={[styles.contentContainer, { marginTop: 20 }]}>
             <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-              <Avatar size={120} avatar={group.avatar} />
+              <Avatar
+                size={120}
+                avatar={group.avatar}
+                imageSize="large"
+                onPress={
+                  group.avatar?.type === 'image'
+                    ? () =>
+                        group.avatar?.type === 'image' &&
+                        navigation.push('Main', {
+                          screen: 'Display',
+                          params: {
+                            screen: 'Image',
+                            params: {
+                              screen: 'Display',
+                              params: { image: group.avatar?.image?.image },
+                            },
+                          },
+                        })
+                    : undefined
+                }
+              />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               <View style={{ alignItems: 'center' }}>
@@ -387,31 +401,19 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   )}
                 </View>
               )}
-              <PlatformTouchable onPress={() => setDescriptionVisible(!descriptionVisible)}>
+              <PlatformTouchable
+                onPress={
+                  group.description?.data
+                    ? () => setDescriptionVisible(!descriptionVisible)
+                    : undefined
+                }
+              >
                 <View style={styles.container}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flex: 1 }}>
                       <Paragraph style={{ color: colors.disabled }}>Groupe {group.type}</Paragraph>
                       <Paragraph numberOfLines={5}>{group.summary}</Paragraph>
                     </View>
-                    {checkPermission(account, {
-                      permission: Permissions.GROUP_MODIFY,
-                      scope: { groups: [id] },
-                    }) && (
-                      <View onResponderTerminationRequest={() => false}>
-                        <IconButton
-                          icon="pencil-outline"
-                          onPress={() => {
-                            setEditingGroup({
-                              shortName: group.shortName,
-                              summary: group.summary,
-                              description: group.description?.data,
-                            });
-                            setEditGroupDescriptionModalVisible(true);
-                          }}
-                        />
-                      </View>
-                    )}
                   </View>
                   {group.description?.data ? (
                     <View>
@@ -653,32 +655,63 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </Button>
                 </View>
               )}
-              <View style={{ height: 40 }} />
-              {!verification && (
-                <ContentTabView
-                  articles={articles}
-                  events={events}
-                  eventsState={eventsState}
-                  articlesState={articlesState}
-                  params={{ groups: [id] }}
-                />
-              )}
+              <View>
+                <Divider style={{ marginBottom: 20 }} />
+                <View style={styles.contentContainer}>
+                  <TouchableOpacity onPress={() => setLegalCollapsed(!legalCollapsed)}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Title style={{ color: colors.subtext }}>Informations légales</Title>
+                      <Icon
+                        name={legalCollapsed ? 'chevron-down' : 'chevron-up'}
+                        size={24}
+                        color={colors.subtext}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <CollapsibleView collapsed={legalCollapsed && !verification}>
+                  <View style={styles.contentContainer}>
+                    <Divider style={{ marginBottom: 20 }} />
+                    <Subheading>Nom complet</Subheading>
+                    <Text>{group.legal?.name || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Identifiant</Subheading>
+                    <Text>{group.legal?.id || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Responsable légal</Subheading>
+                    <Text>{group.legal?.admin}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Siège social</Subheading>
+                    <Text>{group.legal?.address || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Adresse email</Subheading>
+                    <Text>{group.legal?.email}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    <Subheading>Site web</Subheading>
+                    <Text>{group.legal?.website || 'Non spécifié'}</Text>
+                    <Divider style={{ marginVertical: 20 }} />
+                    {group.legal?.extra ? (
+                      <View>
+                        <Subheading>Données supplémentaires</Subheading>
+                        <Text>{group.legal?.extra}</Text>
+                        <Divider style={{ marginVertical: 20 }} />
+                      </View>
+                    ) : null}
+                  </View>
+                </CollapsibleView>
+              </View>
+              <View style={{ height: 20 }} />
+              {!verification && <ContentTabView searchParams={{ groups: [id] }} />}
               {verification && (
                 <View>
                   <Divider style={{ marginTop: 30 }} />
                   <View style={styles.contentContainer}>
-                    <Title>Informations de vérification</Title>
-                  </View>
-                  <View style={styles.contentContainer}>
-                    <Divider style={{ marginBottom: 20 }} />
-                    <Subheading>Nom du créateur</Subheading>
-                    <Text>{(group as GroupVerification).verification?.data?.name}</Text>
-                    <Divider style={{ marginVertical: 20 }} />
-                    <Subheading>Identifiant (RNA, SIRET etc)</Subheading>
-                    <Text>
-                      {(group as GroupVerification).verification?.data?.id || 'Non spécifié'}
-                    </Text>
-                    <Divider style={{ marginVertical: 20 }} />
                     <Subheading>Données de vérification supplémentaires</Subheading>
                     <Text>
                       {(group as GroupVerification).verification?.data?.extra || 'Non spécifié'}
@@ -756,14 +789,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           }}
         />
 
-        <EditGroupModal
-          visible={isEditGroupModalVisible}
-          setVisible={setEditGroupModalVisible}
-          group={group}
-          editingGroup={editingGroup}
-          setEditingGroup={setEditingGroup}
-        />
-
         <EditGroupDescriptionModal
           visible={isEditGroupDescriptionModalVisible}
           setVisible={setEditGroupDescriptionModalVisible}
@@ -777,16 +802,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups, account, articles, events } = state;
+  const { groups, account } = state;
   return {
     groups,
     account,
-    articles: articles.search,
-    events: events.search,
-    articlesState: articles.state,
-    eventsState: events.state,
     state: groups.state,
-    accountState: account.state,
   };
 };
 

@@ -134,7 +134,7 @@ export type Address = {
   // };
   geo: {
     type: 'Point';
-    coordinates: number[];
+    coordinates: [number, number];
   };
   address: {
     number: string;
@@ -286,6 +286,15 @@ export type Group = GroupBase & {
   roles: GroupRole[];
   members: GroupMember[];
   tags: TagPreload[];
+  legal?: {
+    name?: string;
+    id?: string;
+    admin?: string;
+    address?: string;
+    email?: string;
+    website?: string;
+    extra?: string;
+  };
 };
 
 export type GroupVerification = Group & {
@@ -446,26 +455,49 @@ export type Place = PlacePreload & {
   location: Location;
 };
 
-export namespace ExplorerLocation {
-  export type LocationTypes = 'place' | 'school' | 'event' | 'secret' | 'collection';
-  export type Place = { type: 'place'; data: PlacePreload };
-  export type School = { type: 'school'; data: SchoolPreload & { address: Address } };
-  export type Event = { type: 'event'; data: EventPreload };
-  export type Secret = { type: 'secret'; data: PlacePreload };
-  export type Collection = {
-    type: 'collection';
-    data: {
-      number: number;
-      geo: { type: 'Point'; coordinates: [number, number] };
+export namespace MapLocation {
+  type Base = {
+    type: 'Feature';
+    id: string;
+    geometry: {
+      type: 'Point';
+      coordinates: [number, number];
     };
   };
 
-  export type Location =
-    | ExplorerLocation.Place
-    | ExplorerLocation.School
-    | ExplorerLocation.Event
-    | ExplorerLocation.Secret
-    | ExplorerLocation.Collection;
+  export type PointDataType = 'school' | 'place' | 'event';
+
+  export type Point<T extends PointDataType = PointDataType> = Base & {
+    properties: {
+      dataType: T;
+      _id: string;
+      name: string;
+      associatedEvents: T extends 'school' ? number : never;
+    };
+  };
+
+  export type Cluster = Base & {
+    properties: {
+      dataType: 'cluster';
+      cluster: true;
+      cluster_id: number;
+      point_count: number;
+      point_count_abbreviated: number;
+    };
+  };
+
+  export type Element = Point | Cluster;
+
+  export type FullLocation = {
+    id: string;
+    name: string;
+    shortName?: string;
+    icon: string;
+    description: string;
+    detail: string;
+    type: PointDataType;
+    addresses: string[];
+  };
 }
 
 // Petition Types

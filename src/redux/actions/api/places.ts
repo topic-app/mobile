@@ -1,12 +1,16 @@
+import { batch } from 'react-redux';
+
 import Store from '@redux/store';
-import { Place } from '@ts/types';
 import {
   UPDATE_PLACES_DATA,
   UPDATE_PLACES_SEARCH,
   UPDATE_PLACES_STATE,
   UPDATE_PLACES_ITEM,
   CLEAR_PLACES,
+  UPDATE_PLACES_MAP_DATA,
 } from '@ts/redux';
+import { MapLocation, Place, School, Event } from '@ts/types';
+import { Format, request } from '@utils';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -68,10 +72,171 @@ async function fetchPlace(placeId: string) {
 
 /**
  * @docs actions
+ * Cherche tout les lieux de la carte dans une certaine zone
+ * @param bounds Bornes dans lesquelles il faut chercher
+ * @param zoom Niveau de zoom (doit être un integer)
+ */
+async function fetchMapLocations(
+  eastLng: number,
+  northLat: number,
+  westLng: number,
+  southLat: number,
+  zoom: number,
+): Promise<MapLocation.Element[]> {
+  const result = await request('maps/clusters', 'get', {
+    westLng,
+    eastLng,
+    southLat,
+    northLat,
+    zoom,
+  });
+
+  if (result.data) {
+    // Move dataType to properties
+    return result.data.points.map(({ dataType, ...point }: any) => ({
+      ...point,
+      properties: { ...point.properties, dataType },
+    }));
+  }
+
+  throw new Error('Data does not exist on result of maps/clusters');
+}
+
+async function updateMapLocations(type: MapLocation.PointDataType, id: string) {
+  await Store.dispatch(async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_PLACES_STATE,
+      data: {
+        map: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+
+    let newLocation: MapLocation.FullLocation | null = null;
+
+    try {
+      if (type === 'school') {
+        const result = await request('schools/info', 'get', { schoolId: id });
+
+        const schools = result.data?.schools;
+        if (result.data && Array.isArray(schools) && schools.length > 0) {
+          const school = schools[0] as School;
+          newLocation = {
+            type: 'school',
+            id: school._id,
+            name: school.name,
+            shortName: school.shortName,
+            icon: 'school',
+            addresses: [Format.address(school.address)],
+            description: school.description.data,
+            detail: Format.schoolTypes(school.types),
+          };
+        }
+      }
+
+      if (type === 'event') {
+        const result = await request('events/info', 'get', { eventId: id });
+
+        const events = result.data?.events;
+        if (result.data && Array.isArray(events) && events.length > 0) {
+          const event = events[0] as Event;
+          newLocation = {
+            type: 'event',
+            id: event._id,
+            name: event.title,
+            icon: 'calendar-outline',
+            addresses: event.places.map((p) => {
+              if (p.type === 'standalone') {
+                return Format.address(p.address);
+              }
+              // Si le serveur envoie les bonnes données, on devrait jamais
+              // atteindre ce cas
+              return 'Évènement attaché à un lieu ou une école';
+            }),
+            description: event.summary,
+            detail: Format.shortEventDate(event.duration),
+          };
+        }
+      }
+
+      if (type === 'place') {
+        const result = await request('places/info', 'get', { placeId: id });
+
+        const places = result.data?.places;
+        if (result.data && Array.isArray(places) && places.length > 0) {
+          const place = places[0] as Place;
+          newLocation = {
+            type: 'place',
+            id: place._id,
+            name: place.name,
+            icon: 'map-marker-outline',
+            addresses: [Format.address(place.address)],
+            description: place.summary,
+            detail: Format.placeTypes(place.types),
+          };
+        }
+      }
+    } catch (e) {
+      dispatch({
+        type: UPDATE_PLACES_STATE,
+        data: {
+          map: {
+            loading: false,
+            success: false,
+            error: true,
+          },
+        },
+      });
+    }
+
+    if (newLocation) {
+      batch(() => {
+        dispatch({
+          type: UPDATE_PLACES_MAP_DATA,
+          data: [...getState().places.mapData, newLocation],
+        });
+        dispatch({
+          type: UPDATE_PLACES_STATE,
+          data: {
+            map: {
+              loading: false,
+              success: true,
+              error: false,
+            },
+          },
+        });
+      });
+    } else {
+      dispatch({
+        type: UPDATE_PLACES_STATE,
+        data: {
+          map: {
+            loading: false,
+            success: false,
+            error: true,
+          },
+        },
+      });
+    }
+  });
+}
+
+/**
+ * @docs actions
  * Vide la database redux complètement
  */
 function clearPlaces(data = true, search = true) {
   Store.dispatch(clearCreator({ clear: CLEAR_PLACES, data, search }));
 }
 
-export { updatePlaces, clearPlaces, fetchPlace, searchPlaces };
+export {
+  updatePlaces,
+  clearPlaces,
+  fetchPlace,
+  searchPlaces,
+  fetchMapLocations,
+  updateMapLocations,
+};
