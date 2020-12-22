@@ -495,7 +495,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 <CategoryTitle>Membres</CategoryTitle>
               </View>
               <Banner visible={isAddSnackbarVisible} actions={[]}>
-                Une invitation a été envoyée à @${userToAdd?.info?.username || ''}
+                Une invitation a été envoyée à @{userToAdd?.info?.username || ''}
               </Banner>
               {account.loggedIn &&
                 group.members?.some((m) => m.user?._id === account.accountInfo?.accountId) && (
@@ -623,6 +623,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                             setCurrentRoles(group.roles || []);
                             setUserToAdd(mem.user);
                             setModifying(true);
+                            setAddSnackbarVisible(false);
                             setAddUserRoleModalVisible(true);
                           }}
                           size={30}
@@ -650,6 +651,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                                   text: 'Retirer',
                                   onPress: () => {
                                     setUserToAdd(mem.user);
+                                    setAddSnackbarVisible(false);
                                     groupMemberDelete(id, mem.user?._id).then(fetch);
                                   },
                                 },
@@ -867,12 +869,12 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           setEditingGroup={setEditingGroup}
         />
 
-        {/*<ChangeGroupLocationModal
+        {/* <ChangeGroupLocationModal
           visible={isChangeGroupLocationModalVisible}
           setVisible={setChangeGroupLocationModalVisible}
           group={group}
           navigation={navigation}
-        />*/}
+        /> */}
       </SafeAreaView>
     </View>
   );
