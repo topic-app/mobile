@@ -1,10 +1,12 @@
 import { registerRootComponent } from 'expo';
 import { Platform } from 'react-native';
+
 import App from './App';
 
 /* eslint-disable global-require */
 if (Platform.OS === 'android' || global.HermesInternal) {
   require('@formatjs/intl-getcanonicallocales/polyfill');
+  require('@formatjs/intl-locale/polyfill');
 
   require('@formatjs/intl-pluralrules/polyfill');
   require('@formatjs/intl-pluralrules/locale-data/fr'); // use your language files
@@ -26,8 +28,6 @@ if (Platform.OS === 'android' || global.HermesInternal) {
 
   require('@formatjs/intl-datetimeformat/add-golden-tz');
 
-  require('@formatjs/intl-locale/polyfill');
-
   // https://formatjs.io/docs/polyfills/intl-datetimeformat/#default-timezone
 
   const RNLocalize = require('react-native-localize'); // eslint-disable-line import/order
@@ -36,8 +36,6 @@ if (Platform.OS === 'android' || global.HermesInternal) {
     Intl.DateTimeFormat.__setDefaultTimeZone(RNLocalize.getTimeZone());
   }
 }
-
-
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in the Expo client or in a native build,
