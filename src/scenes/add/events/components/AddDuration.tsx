@@ -19,8 +19,8 @@ type Props = StepperViewPageProps & { account: Account };
 const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   const [errorVisible, setErrorVisible] = React.useState(false);
   const [showError, setError] = React.useState(false);
-  const [startDate, setStartDate] = React.useState<Date|null>(null);
-  const [endDate, setEndDate] = React.useState<Date|null>(null);
+  const [startDate, setStartDate] = React.useState<Date>(new Date(0));
+  const [endDate, setEndDate] = React.useState<Date>(new Date(0));
   const [startDateShow, setStartDateShow] = React.useState(false);
   const [endDateShow, setEndDateShow] = React.useState(false);
   const [startTimeShow, setStartTimeShow] = React.useState(false);
@@ -47,20 +47,20 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   const theme = useTheme();
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
+  const jan1970 = new Date(0);
 
-  const changeStartDate = (event: unknown, selectedDate?: Date) => {
-    const currentDate = selectedDate || startDate;
+  const changeStartDate = React.useCallback(({ date }) => {
     setStartDateShow(false);
     setStartTimeShow(true);
-    setStartDate(currentDate);
+    setStartDate(date);
     checkErrors();
-    if (currentDate && endDate && currentDate.valueOf() >= endDate.valueOf()) {
-        setEndDate(currentDate);
+    if (date && endDate && date.valueOf() >= endDate.valueOf()) {
+        setEndDate(date);
       }
-  };
+  }, []);
 
-  const changeStartTime = (event: unknown, selectedDate?: Date) => {
-    const currentDate = selectedDate || startDate;
+  const changeStartTime = ({hours, minutes}:{hours: number; minutes:number}) => {
+    const currentDate = new Date(startDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
     setStartTimeShow(false);
     setStartDate(currentDate);
     checkErrors();
@@ -69,16 +69,15 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
       }
   };
 
-  const changeEndDate = (event: unknown, selectedDate?: Date) => {
-    const currentDate = selectedDate || endDate;
+  const changeEndDate = React.useCallback(({ date }) => {
     setEndDateShow(false);
     setEndTimeShow(true);
-    setEndDate(currentDate);
+    setEndDate(date);
     checkErrors();
-  };
+  }, []);
 
-  const changeEndTime = (event: unknown, selectedDate?: Date) => {
-    const currentDate = selectedDate || endDate;
+  const changeEndTime = ({hours, minutes}:{hours: number; minutes:number}) => {
+    const currentDate = new Date(endDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
     setEndTimeShow(false);
     setEndDate(currentDate);
     checkErrors();
@@ -122,7 +121,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
             style={{ marginHorizontal: 5 }}
             uppercase={false}
           >
-            {startDate === null ? 'Appuyez pour sélectionner' : moment(startDate).format('LLL')}
+            {startDate.valueOf() === jan1970.valueOf() ? 'Appuyez pour sélectionner' : moment(startDate).format('LLL')}
           </Button>
           <DatePickerModal
             mode="single"
@@ -144,7 +143,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
         </View>
         <List.Subheader> Fin de l&apos;évènement </List.Subheader>
         <HelperText type="error" visible={showError} style={{ marginVertical: -10 }}>
-          Votre évènement doit durer un heure au minimum.
+          Votre évènement doit durer une heure au minimum
         </HelperText>
         <View style={styles.container}>
           <Button
@@ -153,7 +152,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
             onPress={showEndDateModal}
             style={{ marginHorizontal: 5 }}
           >
-            {endDate === null ? 'Appuyez pour sélectionner' : moment(endDate).format('LLL')}
+            {endDate.valueOf() === jan1970.valueOf() ? 'Appuyez pour sélectionner' : moment(endDate).format('LLL')}
           </Button>
           <DatePickerModal
             mode="single"
@@ -176,7 +175,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
       </View>
       <View style={{ marginVertical: 5 }}>
         <HelperText type="error" visible={errorVisible}>
-          Vous devez sélectionner une date de début et de fin.
+          Vous devez sélectionner une date de début et de fin
         </HelperText>
       </View>
       <View style={eventStyles.buttonContainer}>

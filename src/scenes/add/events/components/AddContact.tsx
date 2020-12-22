@@ -91,7 +91,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
       validation = {
         valid: false,
         error: true,
-        message: 'Entrez un numéro de téléphone valide.',
+        message: 'Entrez un numéro de téléphone valide',
       };
     } else {
       validation = { valid: true, error: false };
@@ -130,7 +130,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
         setPhone({
           valid: false,
           error: true,
-          message: 'Entrez un numéro de téléphone valide.',
+          message: 'Entrez un numéro de téléphone valide',
         });
       }
     }
