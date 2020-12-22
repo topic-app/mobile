@@ -68,9 +68,10 @@ import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
 
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
-import ChangeGroupLocationModal from '../components/ChangeGroupLocationModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
 import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
+
+// import ChangeGroupLocationModal from '../components/ChangeGroupLocationModal';
 
 type GroupDisplayProps = {
   navigation: GroupDisplayScreenNavigationProp<'Display'>;
@@ -471,25 +472,25 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 />
               ))}
               <Divider />
-              {checkPermission(account, {
-                permission: Permissions.GROUP_MODIFY_LOCATION,
-                scope: { groups: [id] },
-              }) && (
-                <View>
-                  <View style={styles.container}>
-                    <Button
-                      mode="outlined"
-                      uppercase={Platform.OS !== 'ios'}
-                      onPress={() => {
-                        setChangeGroupLocationModalVisible(true);
-                      }}
-                    >
-                      Changer
-                    </Button>
+              {/* checkPermission(account, {
+                  permission: Permissions.GROUP_MODIFY_LOCATION,
+                  scope: { groups: [id] },
+                }) && (
+                  <View>
+                    <View style={styles.container}>
+                      <Button
+                        mode="outlined"
+                        uppercase={Platform.OS !== 'ios'}
+                        onPress={() => {
+                          setChangeGroupLocationModalVisible(true);
+                        }}
+                      >
+                        Changer
+                      </Button>
+                    </View>
+                    <Divider />
                   </View>
-                  <Divider />
-                </View>
-              )}
+                ) */}
               <View style={styles.container}>
                 <CategoryTitle>Membres</CategoryTitle>
               </View>
@@ -648,6 +649,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                                 {
                                   text: 'Retirer',
                                   onPress: () => {
+                                    setUserToAdd(mem.user);
                                     groupMemberDelete(id, mem.user?._id).then(fetch);
                                   },
                                 },
@@ -865,12 +867,12 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           setEditingGroup={setEditingGroup}
         />
 
-        <ChangeGroupLocationModal
+        {/*<ChangeGroupLocationModal
           visible={isChangeGroupLocationModalVisible}
           setVisible={setChangeGroupLocationModalVisible}
           group={group}
           navigation={navigation}
-        />
+        />*/}
       </SafeAreaView>
     </View>
   );
