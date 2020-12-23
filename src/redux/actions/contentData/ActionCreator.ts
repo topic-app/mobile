@@ -1,6 +1,7 @@
 import { AnyAction } from 'redux';
 import shortid from 'shortid';
 
+import { Config } from '@constants';
 import Store from '@redux/store';
 import {
   ApiItemString,
@@ -385,6 +386,69 @@ function clearCreationDataCreator<T extends ContentItemString>({
   };
 }
 
+type UpdateRecommendationsCreator<T extends ContentItemWithListsString> = {
+  dataType: T;
+  updateRecommendations: ContentAction.UpdateRecommendationsDataMap[T];
+  action: 'read' | 'mark' | 'list' | 'comment';
+  tags?: string[];
+  groups?: string[];
+  users?: string[];
+};
+function updateRecommendationsCreator<T extends ContentItemWithListsString>({
+  dataType,
+  updateRecommendations,
+  action,
+  tags,
+  groups,
+  users,
+}: UpdateRecommendationsCreator<T>) {
+  const { recommendations } = Store.getState()[dataType];
+  const values = Config.recommendations.values[action];
+  if (tags) {
+    tags.forEach((tagId) => {
+      const index = recommendations.tags.findIndex((t) => t.id === tagId);
+      if (index >= 0) {
+        recommendations.tags[index] = {
+          ...recommendations.tags[index],
+          value: recommendations.tags[index].value + values.tags,
+        };
+      } else {
+        recommendations.tags.push({ id: tagId, value: values.tags, frozen: false });
+      }
+    });
+  }
+  if (groups) {
+    groups.forEach((groupId) => {
+      const index = recommendations.groups.findIndex((t) => t.id === groupId);
+      if (index >= 0) {
+        recommendations.groups[index] = {
+          ...recommendations.groups[index],
+          value: recommendations.groups[index].value + values.groups,
+        };
+      } else {
+        recommendations.groups.push({ id: groupId, value: values.groups, frozen: false });
+      }
+    });
+  }
+  if (users) {
+    users.forEach((userId) => {
+      const index = recommendations.users.findIndex((t) => t.id === userId);
+      if (index >= 0) {
+        recommendations.users[index] = {
+          ...recommendations.users[index],
+          value: recommendations.users[index].value + values.users,
+        };
+      } else {
+        recommendations.users.push({ id: userId, value: values.users, frozen: false });
+      }
+    });
+  }
+  return {
+    type: updateRecommendations,
+    data: recommendations,
+  };
+}
+
 export {
   addToListCreator,
   removeFromListCreator,
@@ -400,4 +464,5 @@ export {
   deleteQuickCreator,
   updateCreationDataCreator,
   clearCreationDataCreator,
+  updateRecommendationsCreator,
 };

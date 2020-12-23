@@ -6,6 +6,7 @@ import {
   UPDATE_ARTICLES_READ,
   UPDATE_ARTICLES_PREFS,
   UPDATE_ARTICLES_QUICKS,
+  UPDATE_ARTICLES_RECOMMENDATIONS,
   UPDATE_ARTICLES_CREATION_DATA,
   FULL_CLEAR,
 } from '@ts/redux';
@@ -32,6 +33,11 @@ const initialState: ArticlesContentState = {
   prefs: {
     categories: ['unread', 'all', 'following'],
     hidden: [],
+  },
+  recommendations: {
+    tags: [],
+    users: [],
+    groups: [],
   },
 };
 
@@ -72,7 +78,15 @@ function articleDataReducer(
     case UPDATE_ARTICLES_PREFS:
       return {
         ...state,
-        prefs: action.data,
+        prefs: { ...state.prefs, ...action.data },
+      };
+    case UPDATE_ARTICLES_RECOMMENDATIONS:
+      return {
+        ...state,
+        recommendations: {
+          ...state.recommendations,
+          ...action.data,
+        },
       };
     case UPDATE_ARTICLES_CREATION_DATA:
       return {

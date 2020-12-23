@@ -71,6 +71,30 @@ export type AppConfig = {
     location: Partial<LocationList>;
     account: Omit<AccountState, 'state'> | {};
   };
+  recommendations: {
+    values: {
+      read: {
+        groups: number;
+        tags: number;
+        users: number;
+      };
+      mark: {
+        groups: number;
+        tags: number;
+        users: number;
+      };
+      comment: {
+        groups: number;
+        tags: number;
+        users: number;
+      };
+      list: {
+        groups: number;
+        tags: number;
+        users: number;
+      };
+    };
+  };
 };
 
 export type DevAppConfig = DeepPartial<AppConfig>;
