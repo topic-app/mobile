@@ -11,7 +11,6 @@
  *      - Pushing the account requires you to manually add it to git
  *      - The account won't be used in production builds
  */
-
 import { AppConfig } from './types';
 
 const defaultConfig: AppConfig = {
@@ -74,6 +73,30 @@ const defaultConfig: AppConfig = {
   logger: {
     level: 'warning',
     exclude: [],
+  },
+  recommendations: {
+    values: {
+      read: {
+        groups: 1,
+        users: 1,
+        tags: 1,
+      },
+      list: {
+        groups: 5,
+        users: 5,
+        tags: 5,
+      },
+      comment: {
+        groups: 2,
+        users: 2,
+        tags: 2,
+      },
+      mark: {
+        groups: -1,
+        users: -1,
+        tags: -1,
+      },
+    },
   },
   dev: {
     hideSvg: false,
