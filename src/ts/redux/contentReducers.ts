@@ -274,6 +274,7 @@ export type GroupCreationData = {
     extra?: string;
   };
   description?: string;
+  locationName?: string;
   summary?: string;
   legal?: {
     id?: string;

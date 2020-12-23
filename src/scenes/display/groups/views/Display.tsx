@@ -71,6 +71,8 @@ import AddUserSelectModal from '../components/AddUserSelectModal';
 import EditGroupDescriptionModal from '../components/EditGroupDescriptionModal';
 import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '../index';
 
+// import ChangeGroupLocationModal from '../components/ChangeGroupLocationModal';
+
 type GroupDisplayProps = {
   navigation: GroupDisplayScreenNavigationProp<'Display'>;
   route: RouteProp<GroupDisplayStackParams, 'Display'>;
@@ -159,6 +161,9 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
     avatar?: AvatarType;
   } | null>(null);
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
+    false,
+  );
+  const [isChangeGroupLocationModalVisible, setChangeGroupLocationModalVisible] = React.useState(
     false,
   );
   const [descriptionVisible, setDescriptionVisible] = React.useState(verification || false);
@@ -385,7 +390,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       )}
                       <View style={[styles.container, { flexGrow: 1 }]}>
                         <Button
-                          loading={state.follow?.loading}
+                          loading={state.follow?.loading || account.state.fetchAccount.loading}
                           mode={following ? 'outlined' : 'contained'}
                           uppercase={Platform.OS !== 'ios'}
                           style={{
@@ -467,11 +472,30 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 />
               ))}
               <Divider />
+              {/* checkPermission(account, {
+                  permission: Permissions.GROUP_MODIFY_LOCATION,
+                  scope: { groups: [id] },
+                }) && (
+                  <View>
+                    <View style={styles.container}>
+                      <Button
+                        mode="outlined"
+                        uppercase={Platform.OS !== 'ios'}
+                        onPress={() => {
+                          setChangeGroupLocationModalVisible(true);
+                        }}
+                      >
+                        Changer
+                      </Button>
+                    </View>
+                    <Divider />
+                  </View>
+                ) */}
               <View style={styles.container}>
                 <CategoryTitle>Membres</CategoryTitle>
               </View>
               <Banner visible={isAddSnackbarVisible} actions={[]}>
-                Une invitation a été envoyée à @${userToAdd?.info?.username || ''}
+                Une invitation a été envoyée à @{userToAdd?.info?.username || ''}
               </Banner>
               {account.loggedIn &&
                 group.members?.some((m) => m.user?._id === account.accountInfo?.accountId) && (
@@ -483,38 +507,40 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         justifyContent: 'space-between',
                       }}
                     >
-                      <InlineCard
-                        title={`Moi (@${account.accountInfo?.user?.info?.username})`}
-                        subtitle={`Role ${
-                          group.roles?.find(
-                            (r) =>
-                              r._id ===
-                              group.members?.find(
-                                (m) => m.user?._id === account.accountInfo?.accountId,
-                              )?.role,
-                          )?.name
-                        }${group.roles
-                          ?.filter((r) =>
-                            group.members
-                              ?.find((m) => m.user?._id === account.accountInfo?.accountId)
-                              ?.secondaryRoles?.includes(r._id),
-                          )
-                          ?.map((r) => `, ${r?.name}`)
-                          .join('')}`}
-                        badge={
-                          group.roles?.find(
-                            (r) =>
-                              r._id ===
-                              group.members?.find(
-                                (m) => m.user?._id === account.accountInfo?.accountId,
-                              )?.role,
-                          )?.admin
-                            ? 'star'
-                            : undefined
-                        }
-                        badgeColor={colors.solid.gold}
-                        avatar={account.accountInfo?.user?.info?.avatar}
-                      />
+                      <View style={{ flex: 1 }}>
+                        <InlineCard
+                          title={`Moi (@${account.accountInfo?.user?.info?.username})`}
+                          subtitle={`Role ${
+                            group.roles?.find(
+                              (r) =>
+                                r._id ===
+                                group.members?.find(
+                                  (m) => m.user?._id === account.accountInfo?.accountId,
+                                )?.role,
+                            )?.name
+                          }${group.roles
+                            ?.filter((r) =>
+                              group.members
+                                ?.find((m) => m.user?._id === account.accountInfo?.accountId)
+                                ?.secondaryRoles?.includes(r._id),
+                            )
+                            ?.map((r) => `, ${r?.name}`)
+                            .join('')}`}
+                          badge={
+                            group.roles?.find(
+                              (r) =>
+                                r._id ===
+                                group.members?.find(
+                                  (m) => m.user?._id === account.accountInfo?.accountId,
+                                )?.role,
+                            )?.admin
+                              ? 'star'
+                              : undefined
+                          }
+                          badgeColor={colors.solid.gold}
+                          avatar={account.accountInfo?.user?.info?.avatar}
+                        />
+                      </View>
                       {checkPermission(account, {
                         permission: Permissions.GROUP_MEMBERS_MODIFY,
                         scope: { groups: [id] },
@@ -597,6 +623,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                             setCurrentRoles(group.roles || []);
                             setUserToAdd(mem.user);
                             setModifying(true);
+                            setAddSnackbarVisible(false);
                             setAddUserRoleModalVisible(true);
                           }}
                           size={30}
@@ -623,6 +650,8 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                                 {
                                   text: 'Retirer',
                                   onPress: () => {
+                                    setUserToAdd(mem.user);
+                                    setAddSnackbarVisible(false);
                                     groupMemberDelete(id, mem.user?._id).then(fetch);
                                   },
                                 },
@@ -717,6 +746,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       {(group as GroupVerification).verification?.data?.extra || 'Non spécifié'}
                     </Text>
                   </View>
+                  <View style={{ height: 30 }} />
                   {state.verification_approve?.error && (
                     <ErrorMessage
                       type="axios"
@@ -730,23 +760,65 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       }
                     />
                   )}
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <View style={styles.container}>
-                      <Button
-                        mode="contained"
-                        loading={state.verification_approve?.loading}
-                        color={colors.valid}
-                        contentStyle={{
-                          height: 50,
-                          justifyContent: 'center',
-                        }}
-                        onPress={() =>
-                          groupVerificationApprove(group._id).then(() => navigation.goBack())
-                        }
-                      >
-                        Approuver
-                      </Button>
-                    </View>
+                  <View
+                    style={[
+                      styles.container,
+                      { flexDirection: 'row', justifyContent: 'space-evenly' },
+                    ]}
+                  >
+                    <Button
+                      mode="outlined"
+                      loading={state.verification_delete?.loading}
+                      color={colors.invalid}
+                      contentStyle={{
+                        height: 50,
+                        justifyContent: 'center',
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Supprimer ce groupe ?',
+                          '',
+                          [
+                            {
+                              text: 'Approuver',
+                              onPress: () => {
+                                // groupVerificationDelete(group._id).then(() => navigation.goBack()),
+                              },
+                            },
+                            { text: 'Annuler' },
+                          ],
+                          { cancelable: true },
+                        )
+                      }
+                    >
+                      Supprrimer
+                    </Button>
+                    <Button
+                      mode="contained"
+                      loading={state.verification_approve?.loading}
+                      color={colors.valid}
+                      contentStyle={{
+                        height: 50,
+                        justifyContent: 'center',
+                      }}
+                      onPress={() =>
+                        Alert.alert(
+                          'Approuver ce groupe ?',
+                          '',
+                          [
+                            {
+                              text: 'Approuver',
+                              onPress: () =>
+                                groupVerificationApprove(group._id).then(() => navigation.goBack()),
+                            },
+                            { text: 'Annuler' },
+                          ],
+                          { cancelable: true },
+                        )
+                      }
+                    >
+                      Approuver
+                    </Button>
                   </View>
                 </View>
               )}
@@ -796,6 +868,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           editingGroup={editingGroup}
           setEditingGroup={setEditingGroup}
         />
+
+        {/* <ChangeGroupLocationModal
+          visible={isChangeGroupLocationModalVisible}
+          setVisible={setChangeGroupLocationModalVisible}
+          group={group}
+          navigation={navigation}
+        /> */}
       </SafeAreaView>
     </View>
   );

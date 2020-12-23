@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform } from 'react-native';
+import { View, Platform, ActivityIndicator } from 'react-native';
 import { HelperText, Button, ProgressBar, RadioButton, Text, List, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -58,7 +58,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
         </Card>
       </View>
       {state.templates?.loading?.initial ? (
-        <ProgressBar indeterminate />
+        <ActivityIndicator size="large" color={colors.primary} />
       ) : (
         <View style={{ height: 4 }} />
       )}

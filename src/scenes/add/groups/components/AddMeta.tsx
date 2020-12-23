@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { useState, createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { TextInput, HelperText, Button } from 'react-native-paper';
 import * as Yup from 'yup';
 
@@ -13,10 +13,10 @@ import getArticleStyles from '../styles/Styles';
 type Props = StepperViewPageProps;
 
 const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
-  const nameInput = createRef<RNTestInput>();
-  const shortNameInput = createRef<RNTestInput>();
-  const summaryInput = createRef<RNTestInput>();
-  const descriptionInput = createRef<RNTestInput>();
+  const nameInput = createRef<RNTextInput>();
+  const shortNameInput = createRef<RNTextInput>();
+  const summaryInput = createRef<RNTextInput>();
+  const descriptionInput = createRef<RNTextInput>();
 
   const theme = useTheme();
   const articleStyles = getArticleStyles(theme);

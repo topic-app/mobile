@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { View, Platform } from 'react-native';
 import { Button, HelperText, List, Card, Text, Divider, ProgressBar } from 'react-native-paper';
@@ -9,8 +10,17 @@ import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import getStyles from '@styles/Styles';
-import { State, Department, School, RequestState, ReduxLocation, LocationList } from '@ts/types';
-import { useTheme } from '@utils/index';
+import {
+  State,
+  Department,
+  School,
+  RequestState,
+  ReduxLocation,
+  LocationList,
+  AnySchool,
+  AnyDepartment,
+} from '@ts/types';
+import { Format, useTheme } from '@utils/index';
 
 import { CheckboxListItem } from '../../components/ListItems';
 import type { GroupAddScreenNavigationProp } from '../index';
@@ -42,12 +52,47 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 }) => {
   const [schools, setSchools] = React.useState<string[]>([]);
   const [departments, setDepartments] = React.useState<string[]>([]);
-  const [global, setGlobal] = React.useState(false);
+  const [isGlobal, setGlobal] = React.useState(false);
   const [showError, setError] = React.useState(false);
 
+  // Merge schools and departments but remove all duplicate elements
+  const selectedSchools = _.uniqBy([...schoolItems, ...location.schoolData], '_id').filter((sch) =>
+    schools.includes(sch._id),
+  );
+
+  const selectedDepartmentsAndRegions = _.uniqBy(
+    [...departmentItems, ...location.departmentData],
+    '_id',
+  ).filter((dep) => departments.includes(dep._id));
+
+  const selectedDepartments = selectedDepartmentsAndRegions.filter(
+    (dep) => dep.type === 'departement',
+  );
+  const selectedRegions = selectedDepartmentsAndRegions.filter((dep) => dep.type === 'region');
+
   const submit = () => {
-    if (schools.length !== 0 || departments.length !== 0 || global) {
-      updateGroupCreationData({ location: { schools, departments, global } });
+    if (schools.length !== 0 || departments.length !== 0 || isGlobal) {
+      const locationName: string[] = [];
+
+      if (isGlobal) {
+        locationName.push('France entière');
+      }
+
+      if (selectedSchools.length !== 0) {
+        locationName.push(`écoles : ${Format.schoolNameList(selectedSchools)}`);
+      }
+
+      if (selectedDepartmentsAndRegions.length !== 0) {
+        locationName.push(
+          `départements et régions : ${Format.departmentNameList(selectedDepartmentsAndRegions)}`,
+        );
+      }
+
+      updateGroupCreationData({
+        location: { schools, departments, global: isGlobal },
+        locationName: locationName.join(', '),
+      });
+
       next();
     } else {
       setError(true);
@@ -59,12 +104,17 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   const articleStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
-  const toggle = (i: { _id: string }, data: string[], func: Function) => {
-    if (data.includes(i._id)) {
-      func(data.filter((j) => j !== i._id));
+  // Toggle location
+  const toggle = (
+    loc: AnySchool | AnyDepartment,
+    data: string[],
+    callback: (ids: string[]) => void,
+  ) => {
+    if (data.includes(loc._id)) {
+      callback(data.filter((j) => j !== loc._id));
     } else {
       setError(false);
-      func([...data, i._id]);
+      callback([...data, loc._id]);
     }
   };
 
@@ -90,7 +140,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
         </Card>
       </View>
       <View style={articleStyles.listContainer}>
-        {location.schoolData?.map((s) => (
+        {location.schoolData.map((s) => (
           <CheckboxListItem
             key={s._id}
             title={s.name}
@@ -99,7 +149,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             onPress={() => toggle(s, schools, setSchools)}
           />
         ))}
-        {location.departmentData?.map((d) => (
+        {location.departmentData.map((d) => (
           <CheckboxListItem
             key={d._id}
             title={d.name}
@@ -110,9 +160,9 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
         ))}
         <CheckboxListItem
           title="France entière"
-          description="Visible pour tous les utilisateurs"
-          status={global ? 'checked' : 'unchecked'}
-          onPress={() => setGlobal(!global)}
+          description="Contenus visibles pour tous les utilisateurs"
+          status={isGlobal ? 'checked' : 'unchecked'}
+          onPress={() => setGlobal(!isGlobal)}
         />
         <View>
           <Divider style={{ marginTop: 20 }} />
@@ -135,70 +185,47 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
           )}
           <List.Item
             title="Écoles"
-            description={
-              schools?.length
-                ? schools
-                    .map(
-                      (s) =>
-                        schoolItems?.find((t) => t._id === s)?.displayName ||
-                        location.schoolData?.find((t) => t._id === s)?.displayName ||
-                        schoolItems?.find((t) => t._id === s)?.name ||
-                        location.schoolData?.find((t) => t._id === s)?.name,
-                    )
-                    .join(', ')
-                : undefined
-            }
+            description={Format.schoolNameList(selectedSchools)}
             style={{ marginBottom: -20 }}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'schools',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ schools: newSchools }: ReduxLocation) => {
-                  fetchMultiSchool(newSchools);
-                  setSchools(newSchools);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'schools',
+                    hideSearch: false,
+                    subtitle: 'Créer un groupe',
+                    initialData: { schools, departments, global: isGlobal },
+                    callback: ({ schools: newSchools }: ReduxLocation) => {
+                      fetchMultiSchool(newSchools);
+                      setSchools(newSchools);
+                    },
+                  },
                 },
               })
             }
           />
           <List.Item
             title="Départements"
-            description={
-              departments
-                ?.map((d) =>
-                  departmentItems.filter((e) => e.type === 'departement')?.find((e) => e._id === d),
-                )
-                .filter((d) => d)?.length
-                ? departments
-                    .map(
-                      (d) =>
-                        departmentItems
-                          .filter((e) => e.type === 'departement')
-                          ?.find((e) => e._id === d)?.displayName ||
-                        location.departmentData
-                          .filter((e) => e.type === 'departement')
-                          ?.find((e) => e._id === d)?.displayName ||
-                        departmentItems
-                          .filter((e) => e.type === 'departement')
-                          ?.find((e) => e._id === d)?.name ||
-                        location.departmentData
-                          .filter((e) => e.type === 'departement')
-                          ?.find((e) => e._id === d)?.name,
-                    )
-                    .filter((d) => d)
-                    .join(', ')
-                : undefined
-            }
+            description={Format.departmentNameList(selectedDepartments)}
             style={{ marginBottom: -20 }}
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'departements',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ departments: newDepartments }: ReduxLocation) => {
-                  fetchMultiDepartment(newDepartments);
-                  setDepartments(newDepartments);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'departements',
+                    hideSearch: false,
+                    initialData: { schools, departments, global: isGlobal },
+                    subtitle: 'Créer un groupe',
+                    callback: ({ departments: newDepartments }: ReduxLocation) => {
+                      fetchMultiDepartment(newDepartments);
+                      setDepartments(newDepartments);
+                    },
+                  },
                 },
               })
             }
@@ -206,32 +233,22 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
           />
           <List.Item
             title="Régions"
-            description={
-              departments
-                ?.map((d) =>
-                  departmentItems.filter((e) => e.type === 'region')?.find((e) => e._id === d),
-                )
-                .filter((d) => d)?.length
-                ? departments
-                    .map(
-                      (d) =>
-                        departmentItems.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                          ?.displayName ||
-                        departmentItems.filter((e) => e.type === 'region')?.find((e) => e._id === d)
-                          ?.name,
-                    )
-                    .filter((d) => d)
-                    .join(', ')
-                : undefined
-            }
+            description={Format.departmentNameList(selectedRegions)}
             onPress={() =>
-              navigation.navigate('Location', {
-                type: 'regions',
-                hideSearch: false,
-                initialData: { schools, departments, global },
-                callback: ({ departments: newDepartments }: ReduxLocation) => {
-                  fetchMultiDepartment(newDepartments);
-                  setDepartments(newDepartments);
+              navigation.push('Main', {
+                screen: 'More',
+                params: {
+                  screen: 'Location',
+                  params: {
+                    type: 'regions',
+                    hideSearch: false,
+                    subtitle: 'Créer un groupe',
+                    initialData: { schools, departments, global: isGlobal },
+                    callback: ({ departments: newDepartments }: ReduxLocation) => {
+                      fetchMultiDepartment(newDepartments);
+                      setDepartments(newDepartments);
+                    },
+                  },
                 },
               })
             }

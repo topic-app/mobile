@@ -87,25 +87,25 @@ export type School = SchoolBase & {
 
 export type AnySchool = SchoolPreload | School;
 
-export type DepartmentPreload = {
+type DepartmentBase = {
   _id: string;
   name: string;
   code: string;
-  displayName: string;
   shortName?: string;
   type: 'region' | 'departement' | 'academie';
 };
 
-export type Department = {
-  _id: string;
-  name: string;
-  shortName?: string;
-  aliases: string[];
+export type DepartmentPreload = DepartmentBase & {
+  displayName: string;
+};
+
+export type Department = DepartmentBase & {
   displayName?: string;
-  code: string; // zipcode
-  type: 'region' | 'departement' | 'academie';
+  aliases: string[];
   adminGroups: GroupPreload[];
 };
+
+export type AnyDepartment = DepartmentPreload | Department;
 
 export type Image = {
   _id?: string; // Note: Not really useful

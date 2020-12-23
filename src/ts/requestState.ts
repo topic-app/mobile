@@ -58,6 +58,7 @@ export type GroupRequestState = StandardRequestState & {
   member_leave: RequestState;
   modify: RequestState;
   templates: RequestStateComplex;
+  verification_delete: RequestState;
 };
 
 export type LegalRequestState = {

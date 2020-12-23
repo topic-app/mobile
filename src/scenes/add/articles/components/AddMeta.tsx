@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput, Image } from 'react-native';
+import { View, Platform, TextInput as RNTextInput, Image } from 'react-native';
 import { Button, ProgressBar, Card, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -29,8 +29,8 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   state,
   account,
 }) => {
-  const titleInput = createRef<RNTestInput>();
-  const summaryInput = createRef<RNTestInput>();
+  const titleInput = createRef<RNTextInput>();
+  const summaryInput = createRef<RNTextInput>();
 
   const uploadImage = () => upload(creationData.group || '');
 

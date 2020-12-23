@@ -148,6 +148,7 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
                     userEmail={creationData.email}
                     create={create}
                     navigation={navigation}
+                    createLoading={reqState.login.loading}
                     {...props}
                   />
                 ),
