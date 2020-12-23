@@ -93,7 +93,7 @@ const EventList: React.FC<EventListProps> = ({
   const potentialCategories = [
     {
       key: 'upcoming',
-      title: 'Tous',
+      title: 'À venir',
       data: upcomingEvents,
       type: 'category',
     },
