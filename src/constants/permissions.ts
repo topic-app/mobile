@@ -10,6 +10,7 @@ export const COMMENT_MODIFY = 'comment.modify';
 export const COMMENT_DELETE = 'comment.delete';
 
 export const GROUP_MODIFY = 'group.modify';
+export const GROUP_MODIFY_LOCATION = 'group.modify.location';
 export const GROUP_MEMBERS_ADD = 'group.members.add';
 export const GROUP_MEMBERS_MODIFY = 'group.members.modify';
 export const GROUP_MEMBERS_DELETE = 'group.members.delete';

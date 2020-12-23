@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { View, Platform, ScrollView, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, ScrollView, TextInput as RNTextInput } from 'react-native';
 import { Button, Menu, HelperText, TextInput, List, Card, ThemeProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
@@ -36,10 +36,10 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   add,
   creationData,
 }) => {
-  const titleInput = React.createRef<RNTestInput>();
-  const descriptionInput = React.createRef<RNTestInput>();
-  const addressInput = React.createRef<RNTestInput>();
-  const durationInput = React.createRef<RNTestInput>();
+  const titleInput = React.createRef<RNTextInput>();
+  const descriptionInput = React.createRef<RNTextInput>();
+  const addressInput = React.createRef<RNTextInput>();
+  const durationInput = React.createRef<RNTextInput>();
 
   type InputStateType = {
     value: string;

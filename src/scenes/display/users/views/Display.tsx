@@ -32,6 +32,7 @@ import {
   GroupPreload,
   UserRequestState,
   Group,
+  AccountRequestState,
 } from '@ts/types';
 import { useTheme, logger, Format } from '@utils/index';
 
@@ -274,7 +275,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 (account.accountInfo.accountId !== user._id ? (
                   <View style={styles.container}>
                     <Button
-                      loading={state.follow?.loading}
+                      loading={state.follow?.loading || account.state.fetchAccount.loading}
                       mode={following ? 'outlined' : 'contained'}
                       style={{
                         backgroundColor: following ? colors.surface : colors.primary,
@@ -282,7 +283,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                       }}
                       onPress={toggleFollow}
                     >
-                      {state.follow?.loading ? '' : following ? 'Abonné' : "S'abonner"}
+                      {following ? 'Abonné' : "S'abonner"}
                     </Button>
                   </View>
                 ) : (

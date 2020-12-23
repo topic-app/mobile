@@ -22,6 +22,7 @@ import { useTheme } from '@utils/index';
 import GroupAddPageLocation from '../components/AddLocation';
 import GroupAddPageMeta from '../components/AddMeta';
 import GroupAddPageProof from '../components/AddProof';
+import GroupAddPageReview from '../components/AddReview';
 import GroupAddPageTemplate from '../components/AddTemplate';
 import type { GroupAddScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
@@ -78,6 +79,12 @@ const GroupAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
                 icon: 'script-text',
                 title: 'Légal',
                 component: (props) => <GroupAddPageProof navigation={navigation} {...props} />,
+              },
+              {
+                key: 'review',
+                icon: 'check-bold',
+                title: 'Vérif.',
+                component: (props) => <GroupAddPageReview navigation={navigation} {...props} />,
               },
             ]}
           />

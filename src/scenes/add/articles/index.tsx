@@ -7,7 +7,6 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/st
 import { AddScreenNavigationProp } from '..';
 import ArticleAdd from './views/Add';
 import ArticleAddContent from './views/AddContent';
-import ArticleAddLocation from './views/AddLocation';
 import ArticleAddSuccess from './views/AddSuccess';
 
 export type ArticleAddStackParams = {
@@ -40,7 +39,6 @@ function ArticleAddStackNavigator() {
       <Stack.Screen name="Add" component={ArticleAdd} />
       <Stack.Screen name="AddContent" component={ArticleAddContent} />
       <Stack.Screen name="Success" component={ArticleAddSuccess} />
-      <Stack.Screen name="Location" component={ArticleAddLocation} />
     </Stack.Navigator>
   );
 }

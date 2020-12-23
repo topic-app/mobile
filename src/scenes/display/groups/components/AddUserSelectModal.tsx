@@ -1,133 +1,156 @@
+import { Formik } from 'formik';
 import React from 'react';
-import { View, FlatList } from 'react-native';
-import { Divider, ProgressBar, Text, List } from 'react-native-paper';
+import { View, Platform } from 'react-native';
+import { Divider, Button } from 'react-native-paper';
 import { connect } from 'react-redux';
+import * as Yup from 'yup';
 
-import { Avatar, Illustration, ErrorMessage, Searchbar, Modal } from '@components/index';
-import { searchUsers } from '@redux/actions/api/users';
+import { Illustration, ErrorMessage, Modal, FormTextInput } from '@components/index';
+import { fetchUserByUsername } from '@redux/actions/api/users';
+import { updateState } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import {
-  ModalProps,
   State,
-  UsersState,
-  User,
-  UserRequestState,
+  ModalProps,
   GroupMember,
-  Account,
   UserPreload,
+  UserRequestState,
+  AccountRequestState,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { logger, request, useTheme } from '@utils/index';
 
 import getGroupStyles from '../styles/Styles';
 
 type AddUserSelectModalProps = ModalProps & {
-  users: UsersState;
   state: UserRequestState;
   members: GroupMember[];
-  account: Account;
   next: (user: UserPreload) => any;
+  reqState: AccountRequestState;
 };
 
 const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
   visible,
   setVisible,
-  users,
   state,
   members,
-  account,
   next,
+  reqState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const groupStyles = getGroupStyles(theme);
-  const { colors } = theme;
 
-  const [searchText, setSearchText] = React.useState('');
+  const RegisterSchema = Yup.object().shape({
+    username: Yup.string()
+      .min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères")
+      .max(25, "Le nom d'utilisateur doit contenir moins de 26 caractères")
+      .matches(
+        /^[a-zA-Z0-9_.]+$/i,
+        "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux sauf « _ » et « . ».",
+      )
+      .required("Nom d'utilisateur requis")
+      .test('checkUsernameExists', "Ce nom d'utilisateur n'existe pas", async (username) => {
+        if (!username) return true;
 
-  const update = (text = searchText) => {
-    if (text !== '') {
-      searchUsers('initial', text);
+        let result;
+        try {
+          result = await request('auth/check/local/username', 'get', { username }, false, 'auth');
+        } catch (err) {
+          updateState({ check: { success: false, error: err, loading: false } });
+        }
+        return result?.data ? result?.data?.usernameExists : false;
+      }),
+  });
+
+  let user: UserPreload | null = null;
+
+  async function fetchUser(username: string) {
+    try {
+      user = await fetchUserByUsername(username);
+    } catch (e) {
+      logger.verbose('AddUserSelectModal: failed to fetch user by username, does the user exist?');
     }
-  };
-
-  React.useEffect(() => {
-    update();
-  }, [null]);
-
-  const data = searchText === '' ? account.accountInfo?.user?.data?.following?.users : users.search;
+  }
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        <View style={{ height: 200 }}>
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name="user" height={200} width={200} />
-          </View>
-        </View>
-        <Divider />
-        {state.search?.loading.initial && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
-        {searchText !== '' && state.search?.error ? (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la récupération des utilisateurs',
-              contentPlural: 'des utilisateurs',
-              contentSingular: "La liste d'utilisateurs",
-            }}
-            error={state.search?.error}
-            retry={() => update()}
-          />
-        ) : null}
+        <Formik
+          initialValues={{ username: '', email: '', password: '' }}
+          validationSchema={RegisterSchema}
+          onSubmit={() => {
+            if (user) next(user);
+            setVisible(false);
+          }}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldError }) => (
+            <View>
+              {reqState.check.success === false && (
+                <ErrorMessage
+                  type="axios"
+                  strings={{
+                    what: "la vérification du nom d'utilisateur",
+                    contentSingular: "le nom d'utilisateur",
+                  }}
+                  error={reqState.check.error}
+                />
+              )}
+              {state.info.error && (
+                <ErrorMessage
+                  type="axios"
+                  strings={{
+                    what: "la récupération de l'utilisateur",
+                    contentSingular: "l'utilisateur",
+                  }}
+                  error={state.info.error}
+                />
+              )}
+              <View style={{ height: 160 }}>
+                <View style={styles.centerIllustrationContainer}>
+                  <Illustration name="user" height={200} width={200} />
+                </View>
+              </View>
+              <Divider />
 
-        <View style={styles.container}>
-          <Searchbar
-            autoFocus
-            placeholder="Rechercher"
-            value={searchText}
-            onChangeText={setSearchText}
-            onIdle={update}
-          />
-        </View>
-        <FlatList
-          data={data}
-          keyExtractor={(i) => i._id}
-          keyboardShouldPersistTaps="handled"
-          ListEmptyComponent={() => (
-            <View style={{ minHeight: 50 }}>
-              {(searchText === '' && state.list.success) ||
-                (searchText !== '' && state.search?.success && (
-                  <View style={styles.centerIllustrationContainer}>
-                    <Text>Aucun résultat</Text>
-                  </View>
-                ))}
+              <View style={styles.container}>
+                <FormTextInput
+                  label="Nom d'utilisateur"
+                  value={values.username}
+                  touched={touched.username}
+                  error={errors.username}
+                  onChangeText={handleChange('username')}
+                  onBlur={handleBlur('username')}
+                  onSubmitEditing={async () => {
+                    await fetchUser(values.username);
+                    if (members.some((m) => m.user._id === user?._id)) {
+                      setFieldError('username', 'Cet utilisateur est déjà dans le groupe');
+                    }
+                    handleSubmit();
+                  }}
+                  style={groupStyles.textInput}
+                  textContentType="username"
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  autoFocus
+                />
+                <Button
+                  mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                  uppercase={Platform.OS !== 'ios'}
+                  onPress={async () => {
+                    await fetchUser(values.username);
+                    if (members.some((m) => m.user._id === user?._id)) {
+                      setFieldError('username', 'Cet utilisateur est déjà dans le groupe');
+                    }
+                    handleSubmit();
+                  }}
+                  loading={state.info.loading}
+                >
+                  Suivant
+                </Button>
+              </View>
             </View>
           )}
-          renderItem={({ item }) => (
-            <List.Item
-              description={
-                members.some((m) => m.user?._id === item._id)
-                  ? 'Utilisateur déjà dans le groupe'
-                  : ''
-              }
-              titleStyle={
-                members.some((m) => m.user?._id === item._id) ? { color: colors.disabled } : {}
-              }
-              descriptionStyle={
-                members.some((m) => m.user?._id === item._id) ? { color: colors.disabled } : {}
-              }
-              title={`@${item.info?.username || item.displayName}`}
-              left={() => <Avatar avatar={item.info?.avatar} size={50} />}
-              onPress={
-                members.some((m) => m.user?._id === item._id)
-                  ? undefined
-                  : () => {
-                      next(item);
-                      setVisible(false);
-                    }
-              }
-            />
-          )}
-        />
+        </Formik>
       </View>
     </Modal>
   );
@@ -139,6 +162,7 @@ const mapStateToProps = (state: State) => {
     users,
     state: users.state,
     account,
+    reqState: account.state,
   };
 };
 

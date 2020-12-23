@@ -30,7 +30,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
   const contributors = [
     {
       name: 'Tom Ruchier-Berquet',
-      description: 'Président',
+      description: 'Président, fondateur, responsable communication',
       link: 'https://twitter.com/TomRB4',
       icon: 'twitter',
     },
