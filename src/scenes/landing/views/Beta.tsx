@@ -121,7 +121,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         right={() =>
                           Platform.OS === 'ios' ? (
                             <Checkbox
-                              status={terms ? 'checked' : 'unchecked'}
+                              status={terms ? 'checked' : 'indeterminate'}
                               color={colors.primary}
                             />
                           ) : null
@@ -142,7 +142,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         right={() =>
                           Platform.OS === 'ios' ? (
                             <Checkbox
-                              status={analytics ? 'checked' : 'unchecked'}
+                              status={analytics ? 'checked' : 'indeterminate'}
                               color={colors.primary}
                             />
                           ) : null
