@@ -8,6 +8,7 @@ export const UPDATE_ARTICLES_LISTS = 'UPDATE_ARTICLES_LISTS';
 export const UPDATE_ARTICLES_READ = 'UPDATE_ARTICLES_READ';
 export const UPDATE_ARTICLES_PREFS = 'UPDATE_ARTICLES_PREFS';
 export const UPDATE_ARTICLES_QUICKS = 'UPDATE_ARTICLES_QUICKS';
+export const UPDATE_ARTICLES_RECOMMENDATIONS = 'UPDATE_ARTICLES_RECOMMENDATIONS';
 export const UPDATE_ARTICLES_CREATION_DATA = 'UPDATE_ARTICLES_CREATION_DATA';
 
 export type ArticleListItem = {
@@ -42,6 +43,18 @@ export type ArticleReadItem = {
   marked: boolean;
 };
 
+export type ArticleRecommendationItem = {
+  id: string;
+  value: number;
+  frozen: boolean;
+};
+
+export type ArticleRecommendations = {
+  tags: ArticleRecommendationItem[];
+  groups: ArticleRecommendationItem[];
+  users: ArticleRecommendationItem[];
+};
+
 export type ArticleCreationData = {
   group?: string;
   location?: {
@@ -68,6 +81,7 @@ export type ArticlesContentState = {
   read: ArticleReadItem[];
   quicks: ArticleQuickItem[];
   creationData: ArticleCreationData;
+  recommendations: ArticleRecommendations;
 };
 
 type UpdateArticlesParamsAction = {
@@ -90,6 +104,11 @@ type UpdateArticlesPrefsAction = {
   data: Partial<ArticlePrefs>;
 };
 
+type UpdateArticlesRecommendationsAction = {
+  type: typeof UPDATE_ARTICLES_RECOMMENDATIONS;
+  data: Partial<ArticleRecommendations>;
+};
+
 type UpdateArticlesQuicksAction = {
   type: typeof UPDATE_ARTICLES_QUICKS;
   data: ArticleQuickItem[];
@@ -107,6 +126,7 @@ export type ArticlesContentActionTypes =
   | UpdateArticlesPrefsAction
   | UpdateArticlesQuicksAction
   | UpdateArticlesCreationDataAction
+  | UpdateArticlesRecommendationsAction
   | FullClearAction;
 
 // Events
@@ -115,6 +135,7 @@ export const UPDATE_EVENTS_LISTS = 'UPDATE_EVENTS_LISTS';
 export const UPDATE_EVENTS_READ = 'UPDATE_EVENTS_READ';
 export const UPDATE_EVENTS_PREFS = 'UPDATE_EVENTS_PREFS';
 export const UPDATE_EVENTS_QUICKS = 'UPDATE_EVENTS_QUICKS';
+export const UPDATE_EVENTS_RECOMMENDATIONS = 'UPDATE_EVENTS_RECOMMENDATIONS';
 export const UPDATE_EVENTS_CREATION_DATA = 'UPDATE_EVENTS_CREATION_DATA';
 
 export type EventListItem = {
@@ -140,6 +161,18 @@ export type EventQuickItem = {
 export type EventPrefs = {
   categories?: string[];
   hidden?: string[];
+};
+
+export type EventRecommendationItem = {
+  id: string;
+  value: number;
+  frozen: boolean;
+};
+
+export type EventRecommendations = {
+  tags: EventRecommendationItem[];
+  users: EventRecommendationItem[];
+  groups: EventRecommendationItem[];
 };
 
 export type EventReadItem = {
@@ -214,6 +247,7 @@ export type EventsContentState = {
   read: EventReadItem[];
   quicks: EventQuickItem[];
   creationData: EventCreationData;
+  recommendations: EventRecommendations;
 };
 
 type UpdateEventsParamsAction = {
@@ -241,6 +275,11 @@ type UpdateEventsQuicksAction = {
   data: EventQuickItem[];
 };
 
+type UpdateEventsRecommendationsAction = {
+  type: typeof UPDATE_EVENTS_RECOMMENDATIONS;
+  data: Partial<EventRecommendations>;
+};
+
 type UpdateEventsCreationDataAction = {
   type: typeof UPDATE_EVENTS_CREATION_DATA;
   data: Partial<EventCreationData>;
@@ -252,6 +291,7 @@ export type EventsContentActionTypes =
   | UpdateEventsReadAction
   | UpdateEventsPrefsAction
   | UpdateEventsQuicksAction
+  | UpdateEventsRecommendationsAction
   | UpdateEventsCreationDataAction
   | FullClearAction;
 
@@ -337,6 +377,17 @@ export namespace ContentAction {
   };
   export type UpdateParamsDataMap = {
     [K in keyof UpdateParamsActionMap]: UpdateParamsActionMap[K]['data'];
+  };
+
+  type UpdateRecommendationsActionMap = {
+    articleData: UpdateArticlesRecommendationsAction;
+    eventData: UpdateEventsRecommendationsAction;
+  };
+  export type UpdateRecommendationsTypeMap = {
+    [K in keyof UpdateRecommendationsActionMap]: UpdateRecommendationsActionMap[K]['type'];
+  };
+  export type UpdateRecommendationsDataMap = {
+    [K in keyof UpdateRecommendationsActionMap]: UpdateRecommendationsActionMap[K]['data'];
   };
 
   type UpdatePrefsActionMap = {
