@@ -27,6 +27,11 @@ const initialState: EventsContentState = {
     categories: ['upcoming', 'passed', 'following'],
     hidden: [],
   },
+  recommendations: {
+    tags: [],
+    groups: [],
+    users: [],
+  },
 };
 
 /**
