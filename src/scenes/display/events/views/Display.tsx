@@ -412,7 +412,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                           size={24}
                           color={colors.primary}
                         />
-                        <Text style={{ color: colors.text }}>
+                        <Text style={{ color: colors.text, flex: 1 }}>
                           Pour vérifier cet évènement:{'\n'}- Vérifiez que le contenu est bien
                           conforme aux conditions générales d&apos;utilisation{'\n'}- Vérifiez que
                           tous les médias sont conformes et que vous avez bien le droit
