@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { SchoolType } from '@ts/types';
+import { AnySchool, SchoolType } from '@ts/types';
 
 /**
  * Get a string representing the school's type(s).
@@ -38,4 +38,24 @@ export function schoolTypes(types: SchoolType[]): string {
   }
   const lastType = newTypes.pop();
   return _.capitalize(`${newTypes.join(', ')} et ${lastType}`);
+}
+
+/**
+ * Get a comma-separated string of school names from an array of schools.
+ *
+ * ## Usage
+ * ```js
+ * const schools = [
+ *   { name: 'Ecole des Arts', ... },
+ *   { name: 'Ecole des Ingénieurs', ... },
+ *   { name: 'Ecole des Agriculteurs', ... },
+ * ];
+ *
+ * const schoolNames = Format.schoolNameList(schools);
+ *
+ * console.log(schoolNames); // 'Ecole des Arts, Ecole des Ingénieurs, Ecole des Agriculteurs'
+ * ```
+ */
+export function schoolNameList(schools: AnySchool[]): string {
+  return schools.map((sch) => sch.name).join(', ');
 }

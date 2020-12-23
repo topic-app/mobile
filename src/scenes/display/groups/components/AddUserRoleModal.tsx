@@ -15,7 +15,13 @@ import {
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, CategoryTitle, ErrorMessage, Modal } from '@components/index';
+import {
+  CollapsibleView,
+  CategoryTitle,
+  ErrorMessage,
+  Modal,
+  FullscreenIllustration,
+} from '@components/index';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { groupMemberAdd, groupMemberModify } from '@redux/actions/apiActions/groups';
 import getStyles from '@styles/Styles';
@@ -109,6 +115,14 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
     }
   };
 
+  if (!account.loggedIn) {
+    return (
+      <FullscreenIllustration illustration="empty">
+        Vous n&apos;êtes pas connecté.
+      </FullscreenIllustration>
+    );
+  }
+
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <SectionList
@@ -148,7 +162,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
         )}
         renderItem={({ item, section: { key } }) => {
           const set = () => {
-            if (key === 'primary' && (account.accountInfo?.accountId !== user?._id || !modifying)) {
+            if (key === 'primary' && (account.accountInfo.accountId !== user?._id || !modifying)) {
               setErrorVisible(false);
               setPrimaryRole(item._id);
             } else if (secondaryRoles.includes(item._id)) {
@@ -168,14 +182,14 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                 }
                 onPress={set}
                 disabled={
-                  key === 'primary' && account.accountInfo?.accountId === user?._id && modifying
+                  key === 'primary' && account.accountInfo.accountId === user?._id && modifying
                 }
                 left={() =>
                   Platform.OS !== 'ios' &&
                   (key === 'primary' ? (
                     <RadioButton
                       value=""
-                      disabled={account.accountInfo?.accountId === user?._id && modifying}
+                      disabled={account.accountInfo.accountId === user?._id && modifying}
                       color={colors.primary}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
@@ -194,7 +208,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
                     <RadioButton
                       value=""
                       color={colors.primary}
-                      disabled={account.accountInfo?.accountId === user?._id && modifying}
+                      disabled={account.accountInfo.accountId === user?._id && modifying}
                       status={item._id === primaryRole ? 'checked' : 'unchecked'}
                       onPress={set}
                     />

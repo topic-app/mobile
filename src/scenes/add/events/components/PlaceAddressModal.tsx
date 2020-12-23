@@ -44,7 +44,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
         ),
         otherwise: Yup.string(),
       })
-      .max(100, 'Le nom de rue doit comporter moins de 100 caractères.'),
+      .max(100, 'Le nom de rue doit comporter moins de 100 caractères'),
     extra: Yup.string().max(100, 'Ce champ dois être moins de 100 caractères'),
     code: Yup.string().max(15, 'Code postal doit être moins de 15 caractères'),
     city: Yup.string()

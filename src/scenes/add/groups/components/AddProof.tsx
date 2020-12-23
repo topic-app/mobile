@@ -1,24 +1,13 @@
 import { Formik } from 'formik';
-import React, { useState, createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
-import {
-  TextInput,
-  HelperText,
-  Button,
-  ProgressBar,
-  Checkbox,
-  List,
-  Card,
-  Text,
-} from 'react-native-paper';
-import RNPickerSelect from 'react-native-picker-select';
+import React, { createRef } from 'react';
+import { View, Platform, TextInput as RNTextInput } from 'react-native';
+import { HelperText, Button, ProgressBar, Checkbox, List, Card, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
 import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components/index';
-import { groupAdd } from '@redux/actions/apiActions/groups';
-import { clearGroupCreationData, updateGroupCreationData } from '@redux/actions/contentData/groups';
+import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import getStyles from '@styles/Styles';
 import { State, GroupRequestState, GroupCreationData } from '@ts/types';
 import { useTheme } from '@utils/index';
@@ -32,14 +21,14 @@ type Props = StepperViewPageProps & {
 };
 
 const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state, navigation }) => {
-  const nameInput = createRef<RNTestInput>();
-  const idInput = createRef<RNTestInput>();
-  const adminInput = createRef<RNTestInput>();
-  const addressInput = createRef<RNTestInput>();
-  const emailInput = createRef<RNTestInput>();
-  const websiteInput = createRef<RNTestInput>();
-  const extraInput = createRef<RNTestInput>();
-  const extraVerificationInput = createRef<RNTestInput>();
+  const nameInput = createRef<RNTextInput>();
+  const idInput = createRef<RNTextInput>();
+  const adminInput = createRef<RNTextInput>();
+  const addressInput = createRef<RNTextInput>();
+  const emailInput = createRef<RNTextInput>();
+  const websiteInput = createRef<RNTextInput>();
+  const extraInput = createRef<RNTextInput>();
+  const extraVerificationInput = createRef<RNTextInput>();
 
   const MetaSchema = Yup.object().shape({
     name: Yup.string()
@@ -55,7 +44,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
     address: Yup.string()
       .min(10, 'Le siège social doit contenir au moins 10 caratères')
       .max(200, 'Le siège social doit contenir moins de 200 caractères'),
-    email: Yup.string().email("L'email doit être valide").required('Email requis'),
+    email: Yup.string().email("L'adresse email doit être valide").required('Adresse email requis'),
     website: Yup.string().url().max(200, 'Le site web doit contenir moins de 200 caractères'),
     extra: Yup.string().max(
       1000,

@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput, Image } from 'react-native';
+import { View, Platform, TextInput as RNTextInput, Image } from 'react-native';
 import { Button, ProgressBar, Card, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -29,9 +29,9 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
   state,
   account,
 }) => {
-  const titleInput = createRef<RNTestInput>();
-  const summaryInput = createRef<RNTestInput>();
-  const descriptionInput = createRef<RNTestInput>();
+  const titleInput = createRef<RNTextInput>();
+  const summaryInput = createRef<RNTextInput>();
+  const descriptionInput = createRef<RNTextInput>();
 
   const uploadImage = () => upload(creationData.group || '');
 
@@ -44,10 +44,10 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
 
   const MetaSchema = Yup.object().shape({
     title: Yup.string()
-      .min(10, 'Le titre doit contenir au moins 10 caractères.')
-      .max(100, 'Le titre doit contenir moins de 100 caractères.')
+      .min(10, 'Le titre doit contenir au moins 10 caractères')
+      .max(100, 'Le titre doit contenir moins de 100 caractères')
       .required('Titre requis'),
-    summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères.'),
+    summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères'),
     file: Yup.mixed(),
     description: Yup.string().required('Description requise'),
   });
@@ -85,7 +85,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
             <FormTextInput
               ref={summaryInput}
               label="Résumé"
-              placeholder="Laissez vide pour selectionner les premières lignes de la description"
+              placeholder="Laissez vide pour sélectionner les premières lignes de la description"
               multiline
               numberOfLines={4}
               value={values.summary}
@@ -98,7 +98,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
             />
             <FormTextInput
               ref={descriptionInput}
-              label="Décrivez votre évènement"
+              label="Décrivez votre évènement..."
               multiline
               numberOfLines={8}
               value={values.description}
@@ -162,7 +162,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
                         onPress={() => uploadImage().then((id) => setFieldValue('file', id))}
                         style={{ flex: 1, marginRight: 5 }}
                       >
-                        {values.file ? "Remplacer l'image" : 'Séléctionner une image'}
+                        {values.file ? "Remplacer l'image" : 'Sélectionner une image'}
                       </Button>
                       {values.file ? (
                         <Button

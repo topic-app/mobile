@@ -83,7 +83,7 @@ const EventAddPageLocation: React.FC<Props> = ({
         buttonLabel="Retour"
         buttonOnPress={() => prev()}
       >
-        Groupe Introuvable, essayez de reséléctionner un groupe dont vous appartenez
+        Groupe Introuvable, essayez de resélectionner un groupe dont vous appartenez
       </FullscreenIllustration>
     );
   }

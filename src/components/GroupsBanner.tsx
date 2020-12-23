@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Subheading } from 'react-native-paper';
+import { Text, Subheading, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Config } from '@constants/index';
@@ -51,6 +51,9 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
           error={state.member_reject?.error}
           retry={() => groupMemberReject(account.waitingGroups[0]?._id).then(refresh)}
         />
+      )}
+      {(state.member_accept?.loading || state.member_reject?.loading) && (
+        <ProgressBar indeterminate />
       )}
       <Banner
         visible={account.waitingGroups && account.waitingGroups.length > 0}

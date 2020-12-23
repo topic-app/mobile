@@ -1,4 +1,4 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import moment from 'moment';
 import React from 'react';
 import { View, Platform } from 'react-native';
@@ -25,10 +25,20 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const [isProgramAddModalVisible, setProgramAddModalVisible] = React.useState(false);
-  const [isDateTimePickerVisible, setDateTimePickerVisible] = React.useState(false);
-  const [startMode, setStartMode] = React.useState<'time' | 'date'>('time');
+  const [startDateShow, setStartDateShow] = React.useState(false);
+  const [startTimeShow, setStartTimeShow] = React.useState(false);
   const [eventProgram, setProgram] = React.useState<ProgramEntry[]>([]);
   const [startDate, setStartDate] = React.useState<Date>(new Date(0));
+
+  const dismissStartDateModal = React.useCallback(() => {
+    setStartDateShow(false);
+  }, [setStartDateShow]);
+  const dismissStartTimeModal = React.useCallback(() => {
+    setStartTimeShow(false);
+  }, [setStartTimeShow]);
+  const showStartDateModal = () =>{
+    setStartDateShow(true);
+  };
   const submit = () => {
     updateEventCreationData({ program: eventProgram });
     add(eventProgram);
@@ -38,23 +48,18 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
     setStartDate(new Date(0));
   };
 
-  const changeStartDate = (event: unknown, date?: Date) => {
-    const currentDate = date || startDate;
-    setDateTimePickerVisible(false);
+  const changeStartDate = React.useCallback(({ date }) => {
+    setStartDateShow(false);
+    setStartTimeShow(true);
+    setStartDate(date);
+  }, []);
+
+  const changeStartTime = ({hours, minutes}:{hours: number; minutes:number}) => {
+    const currentDate = new Date(startDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
+    setStartTimeShow(false);
     setStartDate(currentDate);
-    if (startMode === 'date') {
-      showStartMode();
-    } else {
-      setDateTimePickerVisible(false);
-      setProgramAddModalVisible(true);
-    }
   };
 
-  const showStartMode = () => {
-    startDate === null && setStartDate(new Date());
-    startMode === 'time' ? setStartMode('date') : setStartMode('time');
-    setDateTimePickerVisible(true);
-  };
 
   if (!account.loggedIn) {
     return (
@@ -113,22 +118,29 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
           Ajouter
         </Button>
       </View>
-      {isDateTimePickerVisible && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={startDate}
-          mode={startMode}
-          display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          minimumDate={creationData?.start ? new Date(creationData.start) : new Date()}
-          onChange={changeStartDate}
+      <DatePickerModal
+        mode="single"
+        visible={startDateShow}
+        onDismiss={dismissStartDateModal}
+        date={startDate}
+        onConfirm={changeStartDate}
+        saveLabel="Enregistrer"
+        label="Choisissez une date"
         />
-      )}
+      <TimePickerModal
+        visible={startTimeShow}
+        onDismiss={dismissStartTimeModal}
+        onConfirm={changeStartTime}
+        label="Choisissez l'heure de début"
+        cancelLabel="Annuler"
+        confirmLabel="Enregistrer"
+        />
       <ProgramAddModal
         visible={isProgramAddModalVisible}
         setVisible={setProgramAddModalVisible}
         date={startDate}
         resetDate={() => setStartDate(new Date(0))}
-        setDate={() => showStartMode()}
+        setDate={() => showStartDateModal()}
         add={(program) => {
           addProgram(program);
         }}

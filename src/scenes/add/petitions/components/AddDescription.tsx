@@ -1,19 +1,19 @@
 import React, { useState, createRef } from 'react';
-import { View, Platform, TextInput as RNTestInput } from 'react-native';
+import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { TextInput, HelperText, Button } from 'react-native-paper';
 
-import { useTheme, request } from '@utils/index';
 import { StepperViewPageProps } from '@components/index';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
+import { useTheme, request } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
 type Props = StepperViewPageProps;
 
 const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
-  const usernameInput = createRef<RNTestInput>();
-  const emailInput = createRef<RNTestInput>();
-  const passwordInput = createRef<RNTestInput>();
+  const usernameInput = createRef<RNTextInput>();
+  const emailInput = createRef<RNTextInput>();
+  const passwordInput = createRef<RNTextInput>();
 
   type InputStateType = {
     value: string;

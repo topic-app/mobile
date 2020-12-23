@@ -18,11 +18,12 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
     mode = 'outlined',
     info: infoString,
     disableFullscreenUI = true,
+    value,
     ...rest
   } = props;
   const { colors } = useTheme();
 
-  const valid = !errorString && touched;
+  const valid = !errorString && touched && value !== '';
   const error = !!(errorString && touched);
 
   const shouldShowIcon = valid || error;
@@ -34,6 +35,7 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
           error={error}
           mode={mode}
           disableFullscreenUI={disableFullscreenUI}
+          value={value}
           render={
             shouldShowIcon
               ? // add 30 px margin to inner TextInput
