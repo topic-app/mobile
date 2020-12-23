@@ -1,7 +1,8 @@
-import { DefaultTheme, DarkTheme } from 'react-native-paper';
 import { Platform } from 'react-native';
-import { paletteLight, paletteDark } from './Palette';
+import { DefaultTheme, DarkTheme } from 'react-native-paper';
+
 import fonts from './Fonts';
+import { paletteLight, paletteDark } from './Palette';
 
 type BaseThemeType = typeof DefaultTheme & {
   statusBarStyle: 'light-content' | 'dark-content';
@@ -145,6 +146,7 @@ const themes: {
       ...lightBase.colors,
       appBar: common.colors.primary,
       appBarText: '#ffffff',
+      activeDrawerItem: common.colors.primaryLighter,
       bottomBar: common.colors.primary,
       bottomBarActive: '#ffffff',
       bottomBarInactive: '#999999',
