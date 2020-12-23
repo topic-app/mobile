@@ -122,7 +122,6 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevSer
                   marginTop: insets.top,
                   paddingHorizontal: 2,
                   borderRadius: 3,
-                  // Mix red with current appBar color
                   backgroundColor: Color('#d11111').alpha(0.6).rgb().string(),
                   flexDirection: 'row',
                   alignItems: 'center',
