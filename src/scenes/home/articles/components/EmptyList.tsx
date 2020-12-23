@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
-import { useWindowDimensions } from 'react-native';
+import { ActivityIndicator, useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { FullscreenIllustration } from '@components/index';
 import { ArticleRequestState } from '@ts/types';
+import { useTheme } from '@utils';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 
@@ -23,6 +24,9 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
 }) => {
   const navigation = useNavigation<HomeTwoScreenNavigationProp<'Article'>>();
   const height = useWindowDimensions().height - 300;
+
+  const theme = useTheme();
+  const { colors } = theme;
 
   if (
     (sectionKey === 'categories' && reqState.list.success) ||
@@ -72,9 +76,18 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
         </FullscreenIllustration>
       );
     }
-  } else {
+  } else if (
+    (sectionKey === 'categories' && reqState.list.loading) ||
+    (sectionKey === 'quicks' && reqState.search?.loading)
+  ) {
+    return <ActivityIndicator color={colors.primary} size="large" />;
+  } else if (
+    (sectionKey === 'categories' && reqState.list.error) ||
+    (sectionKey === 'quicks' && reqState.search?.error)
+  ) {
     return <FullscreenIllustration illustration="article-greyed" style={{ height }} />;
   }
+  return null;
 };
 
 export default ArticleEmptyList;

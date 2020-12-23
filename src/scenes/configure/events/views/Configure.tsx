@@ -95,7 +95,7 @@ function EventLists({
   const categoryTypes: Category[] = [
     {
       id: 'upcoming',
-      name: 'Tous (dans le futur)',
+      name: 'À venir (dans le futur)',
       navigate: () =>
         navigation.push('Main', {
           screen: 'Home1',
