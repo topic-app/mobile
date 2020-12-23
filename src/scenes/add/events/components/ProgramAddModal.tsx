@@ -40,8 +40,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   const descriptionInput = React.createRef<RNTextInput>();
   const addressInput = React.createRef<RNTextInput>();
   const durationInput = React.createRef<RNTextInput>();
-  const [isMenuVisible, setMenuVisible] = React.useState(false);
-  const [durationType, setDurationType] = React.useState<'minutes' | 'hours' | 'days'>('hours');
 
   type InputStateType = {
     value: string;
@@ -155,13 +153,13 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
         validation = {
           valid: false,
           error: true,
-          message: 'Le titre doit contenir au moins 10 caractères.',
+          message: 'Le titre doit contenir au moins 10 caractères',
         };
       } else if (title.length >= 100) {
         validation = {
           valid: false,
           error: true,
-          message: 'Le titre doit contenir moins de 100 caractères.',
+          message: 'Le titre doit contenir moins de 100 caractères',
         };
       } else {
         validation = { valid: true, error: false };
@@ -170,7 +168,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
       validation = {
         valid: false,
         error: true,
-        message: 'Le titre est requis.',
+        message: 'Titre requis',
       };
     }
     setTitle(validation);
@@ -190,13 +188,13 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
         validation = {
           valid: false,
           error: true,
-          message: 'La description doit contenir moins de 500 caractères.',
+          message: 'La description doit contenir moins de 500 caractères',
         };
       } else if (description.length <= 10) {
         validation = {
           valid: false,
           error: true,
-          message: 'La description doit contenir au moins 10 caractères.',
+          message: 'La description doit contenir au moins 10 caractères',
         };
       } else {
         validation = { valid: true, error: false };
@@ -222,11 +220,11 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
         setDuration({
           valid: false,
           error: true,
-          message: "L'élément du programme ne doit pas dépasser la date de fin de l'évènement.",
+          message: "L'élément du programme ne doit pas dépasser la date de fin de l'évènement",
         });
       }
     } else {
-      setDuration({ valid: false, error: true, message: 'Entrez une durée.' });
+      setDuration({ valid: false, error: true, message: 'Entrez une durée' });
     }
   }
 
@@ -239,14 +237,14 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
           valid: false,
           error: true,
           message:
-            "L'horaire de début doit être compris entre les dates de début et de fin de l'évènement.",
+            "L'horaire de début doit être compris entre les dates de début et de fin de l'évènement",
         });
       }
     } else {
       setStartDate({
         valid: false,
         error: true,
-        message: 'Choisissez un horaire de début.',
+        message: 'Choisissez un horaire de début',
       });
     }
   }
@@ -446,7 +444,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
               uppercase={Platform.OS !== 'ios'}
               style={{ flex: 1, marginRight: 5 }}
               onPress={() => {
-                setVisible(false);
                 setStartDate({
                   error: false,
                   valid: true,
