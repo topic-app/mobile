@@ -28,6 +28,7 @@ export { default as StrengthMeter } from './StrengthMeter';
 export { default as Banner } from './Banner';
 export { default as VerificationBanner } from './VerificationBanner';
 export { default as ContentTabView } from './ContentTabView';
+export { default as ContentFlatList, ContentSection } from './ContentFlatList';
 
 export { default as BottomSheet } from './BottomSheet';
 export * from './BottomSheet';

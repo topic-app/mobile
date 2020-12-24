@@ -341,7 +341,7 @@ export type Article = ArticleBase & {
   };
 };
 
-export type Article2 = Article;
+export type AnyArticle = ArticlePreload | Article;
 
 export type ArticleVerification = Article & {
   verification: Verification;
