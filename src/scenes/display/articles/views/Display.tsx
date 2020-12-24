@@ -291,7 +291,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                       size={24}
                       color={colors.primary}
                     />
-                    <Text style={{ color: colors.text }}>
+                    <Text style={{ color: colors.text, flex: 1 }}>
                       Pour vérifier cet article:{'\n'}- Vérifiez que le contenu est bien conforme
                       aux conditions générales d&apos;utilisation{'\n'}- Vérifiez que tous les
                       médias sont conformes et que vous avez bien le droit d&apos;utiliser ceux-ci
@@ -550,65 +550,61 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                 },
               ]
         }
-        overflow={
-          verification
-            ? undefined
-            : [
+        overflow={[
+          {
+            title: 'Partager',
+            onPress:
+              Platform.OS === 'ios'
+                ? () =>
+                    Share.share({
+                      message: `${article?.title} par ${article?.group?.displayName}`,
+                      url: `https://go.topicapp.fr/articles/${article?._id}`,
+                    })
+                : () =>
+                    Share.share({
+                      message: `https://go.topicapp.fr/articles/${article?._id}`,
+                      title: `${article?.title} par ${article?.group?.displayName}`,
+                    }),
+          },
+          {
+            title: 'Signaler',
+            onPress: () => setArticleReportModalVisible(true),
+          },
+          ...(checkPermission(account, {
+            permission: Permissions.ARTICLE_DELETE,
+            scope: { groups: [article?.group?._id || ''] },
+          })
+            ? [
                 {
-                  title: 'Partager',
-                  onPress:
-                    Platform.OS === 'ios'
-                      ? () =>
-                          Share.share({
-                            message: `${article?.title} par ${article?.group?.displayName}`,
-                            url: `https://go.topicapp.fr/articles/${article?._id}`,
-                          })
-                      : () =>
-                          Share.share({
-                            message: `https://go.topicapp.fr/articles/${article?._id}`,
-                            title: `${article?.title} par ${article?.group?.displayName}`,
-                          }),
+                  title: 'Supprimer',
+                  onPress: () =>
+                    Alert.alert(
+                      'Supprimer cette article ?',
+                      'Les autres administrateurs du groupe seront notifiés.',
+                      [
+                        { text: 'Annuler' },
+                        {
+                          text: 'Supprimer',
+                          onPress: () =>
+                            articleDelete(id).then(() => {
+                              navigation.goBack();
+                              Alert.alert(
+                                'Article supprimé',
+                                "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
+                                [{ text: 'Fermer' }],
+                                {
+                                  cancelable: true,
+                                },
+                              );
+                            }),
+                        },
+                      ],
+                      { cancelable: true },
+                    ),
                 },
-                {
-                  title: 'Signaler',
-                  onPress: () => setArticleReportModalVisible(true),
-                },
-                ...(checkPermission(account, {
-                  permission: Permissions.ARTICLE_DELETE,
-                  scope: { groups: [article?.group?._id || ''] },
-                })
-                  ? [
-                      {
-                        title: 'Supprimer',
-                        onPress: () =>
-                          Alert.alert(
-                            'Supprimer cette article ?',
-                            'Les autres administrateurs du groupe seront notifiés.',
-                            [
-                              { text: 'Annuler' },
-                              {
-                                text: 'Supprimer',
-                                onPress: () =>
-                                  articleDelete(id).then(() => {
-                                    navigation.goBack();
-                                    Alert.alert(
-                                      'Article supprimé',
-                                      "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
-                                      [{ text: 'Fermer' }],
-                                      {
-                                        cancelable: true,
-                                      },
-                                    );
-                                  }),
-                              },
-                            ],
-                            { cancelable: true },
-                          ),
-                      },
-                    ]
-                  : []),
               ]
-        }
+            : []),
+        ]}
       >
         {reqState.articles.info.error && (
           <ErrorMessage
