@@ -10,15 +10,15 @@ import { useTheme } from '@utils';
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 
 type ArticleEmptyListProps = {
-  tab: string;
   sectionKey: string;
+  group?: string;
   reqState: ArticleRequestState;
-  changeTab: (tabKey: string) => void;
+  changeTab: (tabKey: string) => any;
 };
 
 const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
-  tab,
   sectionKey,
+  group,
   reqState,
   changeTab,
 }) => {
@@ -29,11 +29,11 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
   const { colors } = theme;
 
   if (
-    (sectionKey === 'categories' && reqState.list.success) ||
-    (sectionKey === 'quicks' && reqState.search?.success) ||
-    sectionKey === 'lists'
+    (group === 'categories' && reqState.list.success) ||
+    (group === 'quicks' && reqState.search?.success) ||
+    group === 'lists'
   ) {
-    if (tab === 'unread') {
+    if (sectionKey === 'unread') {
       return (
         <FullscreenIllustration
           style={{ height }}
@@ -44,7 +44,7 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
           Vous avez lu tous les articles !
         </FullscreenIllustration>
       );
-    } else if (tab === 'all') {
+    } else if (sectionKey === 'all') {
       return (
         <FullscreenIllustration
           style={{ height }}
@@ -62,7 +62,7 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
           Aucun article pour cette localisation
         </FullscreenIllustration>
       );
-    } else if (sectionKey === 'lists') {
+    } else if (group === 'lists') {
       return (
         <FullscreenIllustration illustration="article-lists" style={{ height }}>
           Aucun article dans cette liste{'\n'}Ajoutez les grâce à l&apos;icone{' '}
@@ -77,13 +77,13 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
       );
     }
   } else if (
-    (sectionKey === 'categories' && reqState.list.loading) ||
-    (sectionKey === 'quicks' && reqState.search?.loading)
+    (group === 'categories' && reqState.list.loading) ||
+    (group === 'quicks' && reqState.search?.loading)
   ) {
     return <ActivityIndicator color={colors.primary} size="large" />;
   } else if (
-    (sectionKey === 'categories' && reqState.list.error) ||
-    (sectionKey === 'quicks' && reqState.search?.error)
+    (group === 'categories' && reqState.list.error) ||
+    (group === 'quicks' && reqState.search?.error)
   ) {
     return <FullscreenIllustration illustration="article-greyed" style={{ height }} />;
   }
