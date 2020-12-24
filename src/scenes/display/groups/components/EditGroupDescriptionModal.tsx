@@ -77,6 +77,7 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
       groupModify(group?._id, {
         summary: editingGroup?.summary,
         description: { parser: 'markdown', data: editingGroup?.description || '' },
+        avatar: editingGroup?.avatar,
       }).then(() => {
         fetchGroup(group?._id);
         setVisible(false);

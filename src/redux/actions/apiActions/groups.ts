@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { UPDATE_GROUPS_STATE, AppThunk, GroupCreationData } from '@ts/types';
+import { UPDATE_GROUPS_STATE, AppThunk, GroupCreationData, Avatar } from '@ts/types';
 import { request } from '@utils/index';
 
 import { reportCreator, approveCreator } from './ActionCreator';
@@ -457,6 +457,7 @@ type GroupModifyCreatorParams = {
     parser: 'markdown' | 'plaintext';
     data: string;
   };
+  avatar?: Avatar;
 };
 
 function groupModifyCreator({
@@ -677,6 +678,7 @@ async function groupModify(
     aliases?: string[];
     summary?: string;
     description?: { parser: 'markdown' | 'plaintext'; data: string };
+    avatar?: Avatar;
   },
 ) {
   await Store.dispatch(groupModifyCreator({ group, ...fields }));
