@@ -62,15 +62,7 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
       }),
   });
 
-  let user: UserPreload | null = null;
-
-  async function fetchUser(username: string) {
-    try {
-      user = await fetchUserByUsername(username);
-    } catch (e) {
-      logger.verbose('AddUserSelectModal: failed to fetch user by username, does the user exist?');
-    }
-  }
+  const [user, setUser] = React.useState<UserPreload | null>(null);
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
@@ -79,8 +71,10 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
           initialValues={{ username: '', email: '', password: '' }}
           validationSchema={RegisterSchema}
           onSubmit={() => {
-            if (user) next(user);
-            setVisible(false);
+            if (user) {
+              next(user);
+              setVisible(false);
+            }
           }}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldError }) => (
@@ -121,7 +115,14 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
                   onChangeText={handleChange('username')}
                   onBlur={handleBlur('username')}
                   onSubmitEditing={async () => {
-                    await fetchUser(values.username);
+                    try {
+                      setUser(await fetchUserByUsername(values.username));
+                    } catch (err) {
+                      setFieldError(
+                        'username',
+                        "Un problème est survenu lors de la récupération de l'utilisateur",
+                      );
+                    }
                     if (members.some((m) => m.user._id === user?._id)) {
                       setFieldError('username', 'Cet utilisateur est déjà dans le groupe');
                     }
@@ -137,7 +138,14 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
                   mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                   uppercase={Platform.OS !== 'ios'}
                   onPress={async () => {
-                    await fetchUser(values.username);
+                    try {
+                      setUser(await fetchUserByUsername(values.username));
+                    } catch (err) {
+                      setFieldError(
+                        'username',
+                        "Un problème est survenu lors de la récupération de l'utilisateur",
+                      );
+                    }
                     if (members.some((m) => m.user._id === user?._id)) {
                       setFieldError('username', 'Cet utilisateur est déjà dans le groupe');
                     }
