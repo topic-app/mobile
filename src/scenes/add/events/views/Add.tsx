@@ -14,7 +14,7 @@ import { eventAdd } from '@redux/actions/apiActions/events';
 import { clearEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
 import { State, EventRequestState, EventCreationData, ProgramEntry } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Errors, useTheme } from '@utils/index';
 
 import EventAddPageContact from '../components/AddContact';
 import EventAddPageDuration from '../components/AddDuration';
@@ -62,28 +62,25 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       },
       tags: creationData.tags,
       program: program || creationData.program,
-    }).then(({ _id }) => {
-      navigation.replace('Success', { id: _id, creationData });
-      clearEventCreationData();
-    });
+    })
+      .then(({ _id }) => {
+        navigation.replace('Success', { id: _id, creationData });
+        clearEventCreationData();
+      })
+      .catch((error) => {
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la connexion',
+          error,
+          retry: () => add(program),
+        });
+      });
   };
 
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        {reqState.add?.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
-        {reqState.add?.success === false && (
-          <ErrorMessage
-            error={reqState.add?.error}
-            strings={{
-              what: "l'ajout de l'évènement",
-              contentSingular: "L'évènement",
-            }}
-            type="axios"
-            retry={add}
-          />
-        )}
         <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={styles.centerIllustrationContainer}>

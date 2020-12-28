@@ -64,7 +64,7 @@ import {
   GroupVerification,
   Avatar as AvatarType,
 } from '@ts/types';
-import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
+import { useTheme, logger, Format, checkPermission, Alert, Errors } from '@utils/index';
 
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
@@ -111,9 +111,27 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   const toggleFollow = () => {
     if (following) {
-      groupUnfollow(id).then(fetchAccount);
+      groupUnfollow(id)
+        .then(fetchAccount)
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: 'la modification du suivi du groupe',
+            error,
+            retry: toggleFollow,
+          }),
+        );
     } else {
-      groupFollow(id).then(fetchAccount);
+      groupFollow(id)
+        .then(fetchAccount)
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: 'la modification du suivi du groupe',
+            error,
+            retry: toggleFollow,
+          }),
+        );
     }
   };
 
@@ -128,10 +146,19 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
         {
           text: 'Quitter',
           onPress: () =>
-            groupMemberLeave(id).then(() => {
-              fetch();
-              fetchGroups();
-            }),
+            groupMemberLeave(id)
+              .then(() => {
+                fetch();
+                fetchGroups();
+              })
+              .catch((error) =>
+                Errors.showPopup({
+                  type: 'axios',
+                  what: 'la procédure pour quitter le groupe',
+                  error,
+                  retry: leave,
+                }),
+              ),
         },
       ],
       { cancelable: true },
@@ -209,37 +236,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
             }}
             error={state.info.error}
             retry={fetch}
-          />
-        )}
-        {state.follow.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du suivi',
-              contentSingular: 'le suivi',
-            }}
-            error={state.info.error}
-          />
-        )}
-        {state.member_delete?.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la suppression du membre',
-              contentSingular: "L'utilisateur",
-            }}
-            error={state.member_delete?.error}
-          />
-        )}
-        {state.member_leave?.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la procédure pour quitter le groupe',
-              contentSingular: 'La procédure pour quitter le groupe',
-            }}
-            error={state.member_leave?.error}
-            retry={leave}
           />
         )}
         <ScrollView>
@@ -652,7 +648,15 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                                   onPress: () => {
                                     setUserToAdd(mem.user);
                                     setAddSnackbarVisible(false);
-                                    groupMemberDelete(id, mem.user?._id).then(fetch);
+                                    groupMemberDelete(id, mem.user?._id)
+                                      .then(fetch)
+                                      .catch((error) =>
+                                        Errors.showPopup({
+                                          type: 'axios',
+                                          what: 'la suppression du membre',
+                                          error,
+                                        }),
+                                      );
                                   },
                                 },
                               ],

@@ -8,7 +8,7 @@ import { groupAdd } from '@redux/actions/apiActions/groups';
 import { clearGroupCreationData } from '@redux/actions/contentData/groups';
 import getStyles from '@styles/Styles';
 import { State, GroupRequestState, GroupCreationData } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Errors, useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -34,10 +34,19 @@ const ArticleAddPageReview: React.FC<Props> = ({ next, prev, creationData, state
       description: creationData.description,
       legal: creationData.legal,
       verification: creationData.verification,
-    }).then(({ _id }) => {
-      navigation.replace('Success', { id: _id, creationData });
-      clearGroupCreationData();
-    });
+    })
+      .then(({ _id }) => {
+        navigation.replace('Success', { id: _id, creationData });
+        clearGroupCreationData();
+      })
+      .catch((error) => {
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la création du groupe',
+          error,
+          retry: add,
+        });
+      });
   };
 
   return (
