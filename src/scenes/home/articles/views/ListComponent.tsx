@@ -186,11 +186,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
       style={styles.page}
       onLayout={({ nativeEvent }) => setCardWidth(nativeEvent.layout.width)}
     >
-      {(state.list.loading.initial ||
-        state.search?.loading.initial ||
-        state.following?.loading.initial) && (
-        <ProgressBar indeterminate style={{ marginTop: -4 }} />
-      )}
       <ContentFlatList
         scrollY={scrollY}
         sections={sections}
