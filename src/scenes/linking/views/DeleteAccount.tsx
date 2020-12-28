@@ -14,7 +14,7 @@ import { logout } from '@redux/actions/data/account';
 import { accountDelete } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LinkingRequestState } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Errors, useTheme } from '@utils/index';
 
 import types from '../data/types.json';
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';
@@ -69,26 +69,35 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
   });
 
   const submit = () => {
-    accountDelete(id, token, values).then(() => {
-      logout();
-      navigation.replace('Root', {
-        screen: 'Main',
-        params: {
-          screen: 'Home1',
-          params: { screen: 'Home2', params: { screen: 'Article' } },
-        },
-      });
-      Alert.alert(
-        'Compte supprimé',
-        'Adieu :(',
-        [
-          {
-            text: 'Fermer',
+    accountDelete(id, token, values)
+      .then(() => {
+        logout();
+        navigation.replace('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'Home1',
+            params: { screen: 'Home2', params: { screen: 'Article' } },
           },
-        ],
-        { cancelable: true },
+        });
+        Alert.alert(
+          'Compte supprimé',
+          'Adieu :(',
+          [
+            {
+              text: 'Fermer',
+            },
+          ],
+          { cancelable: true },
+        );
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la suppression du compte',
+          error,
+          retry: submit,
+        }),
       );
-    });
   };
 
   return (
@@ -107,19 +116,6 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
       />
       <View style={{ flex: 1, flexGrow: 1 }}>
         <ScrollView>
-          {state.accountDelete.error ? (
-            <View>
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: "l'ouverture du lien",
-                  contentSingular: 'Le lien',
-                }}
-                error={state.accountDelete.error}
-                retry={submit}
-              />
-            </View>
-          ) : null}
           <View
             style={[styles.centerIllustrationContainer, styles.contentContainer, { marginTop: 40 }]}
           >
