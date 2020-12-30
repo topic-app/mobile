@@ -23,7 +23,7 @@ import {
 import { fetchAccount, login } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { AccountRequestState, State } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, Errors } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -57,21 +57,46 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
     password: Yup.string().required('Mot de passe requis'),
   });
 
+  const handleLogin = async ({ username, password }: { username: string; password: string }) => {
+    const fields = {
+      accountInfo: {
+        username,
+        password,
+      },
+      device: {
+        type: 'app',
+        deviceId: null,
+        canNotify: true,
+      },
+    };
+    let didLogin;
+    try {
+      didLogin = await login(fields);
+    } catch (error) {
+      Errors.showPopup({
+        type: 'axios',
+        what: 'la connexion',
+        error,
+        retry: () => handleLogin({ username, password }),
+      });
+    }
+    if (didLogin) {
+      if (Platform.OS === 'web') {
+        await fetchAccount();
+        setTimeout(() => window.location.replace('/'), 200); // HACK : Because otherwise it doesnt redirect properly
+      } else {
+        navigation.navigate('Main', {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Article' } },
+        });
+      }
+    }
+  };
+
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        {reqState.login.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
-        {reqState.login.success === false && (
-          <ErrorMessage
-            error={reqState.login.error}
-            strings={{
-              what: 'la connexion',
-              contentSingular: 'Le compte',
-            }}
-            type="axios"
-          />
-        )}
         <ScrollView keyboardShouldPersistTaps="handled">
           <PlatformBackButton onPress={navigation.goBack} />
           <View style={authStyles.stepIndicatorContainer}>
@@ -84,36 +109,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
             <Formik
               initialValues={{ username: '', password: '' }}
               validationSchema={LoginSchema}
-              onSubmit={async ({ username, password }) => {
-                const fields = {
-                  accountInfo: {
-                    username,
-                    password,
-                  },
-                  device: {
-                    type: 'app',
-                    deviceId: null,
-                    canNotify: true,
-                  },
-                };
-                let didLogin;
-                try {
-                  didLogin = await login(fields);
-                } catch (e) {
-                  logger.warn('Login: error encountered while logging in', e);
-                }
-                if (didLogin) {
-                  if (Platform.OS === 'web') {
-                    await fetchAccount();
-                    setTimeout(() => window.location.replace('/'), 200); // HACK : Because otherwise it doesnt redirect properly
-                  } else {
-                    navigation.navigate('Main', {
-                      screen: 'Home1',
-                      params: { screen: 'Home2', params: { screen: 'Article' } },
-                    });
-                  }
-                }
-              }}
+              onSubmit={handleLogin}
             >
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <View>

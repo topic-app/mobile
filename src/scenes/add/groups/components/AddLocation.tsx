@@ -173,8 +173,9 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
             <ErrorMessage
               error={[locationStates.schools.info.error, locationStates.departments.info.error]}
               strings={{
-                what: "l'ajout de l'article",
-                contentSingular: "L'article",
+                what: 'la récupération des localisations',
+                contentPlural: 'Les localisations',
+                contentSingular: 'La liste de localisations',
               }}
               type="axios"
               retry={() => {

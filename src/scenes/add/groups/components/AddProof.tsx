@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components/index';
+import { StepperViewPageProps, FormTextInput } from '@components/index';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
 import getStyles from '@styles/Styles';
 import { State, GroupRequestState, GroupCreationData } from '@ts/types';
@@ -93,19 +93,6 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
           <View>
-            {state.add?.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
-            {state.add?.success === false && (
-              <ErrorMessage
-                error={state.add?.error}
-                strings={{
-                  what: "l'ajout du groupe",
-                  contentSingular: 'Le groupe',
-                  contentPlural: 'de groupes (5 maximum)',
-                }}
-                type="axios"
-                retry={() => handleSubmit()}
-              />
-            )}
             <View style={{ marginBottom: 20 }}>
               <FormTextInput
                 ref={nameInput}

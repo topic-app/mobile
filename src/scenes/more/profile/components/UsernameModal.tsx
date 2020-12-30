@@ -8,7 +8,7 @@ import { fetchAccount } from '@redux/actions/data/account';
 import { updateUsername } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme, request } from '@utils/index';
+import { useTheme, request, Errors } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -96,10 +96,19 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
   const update = async () => {
     const usernameValidation = await validateUsernameInput(username);
     if (usernameValidation.valid) {
-      updateUsername(username).then(() => {
-        setVisible(false);
-        fetchAccount();
-      });
+      updateUsername(username)
+        .then(() => {
+          setVisible(false);
+          fetchAccount();
+        })
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: "la modification du nom d'utilisateur",
+            error,
+            retry: update,
+          }),
+        );
     } else {
       usernameInput.current?.focus();
     }
@@ -108,18 +117,6 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        {state.updateProfile.loading && <ProgressBar indeterminate />}
-        {state.updateProfile.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du compte',
-              contentSingular: 'Le compte',
-            }}
-            error={state.updateProfile.error}
-            retry={update}
-          />
-        )}
         <View>
           <View style={profileStyles.inputContainer}>
             <TextInput
@@ -148,6 +145,7 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
               color={colors.primary}
               uppercase={Platform.OS !== 'ios'}
               onPress={update}
+              loading={state.updateProfile.loading}
             >
               Confirmer
             </Button>

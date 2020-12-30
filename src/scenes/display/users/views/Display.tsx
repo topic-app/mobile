@@ -34,7 +34,7 @@ import {
   Group,
   AccountRequestState,
 } from '@ts/types';
-import { useTheme, logger, Format } from '@utils/index';
+import { useTheme, logger, Format, Errors } from '@utils/index';
 
 import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '../index';
 
@@ -84,9 +84,27 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 
   const toggleFollow = () => {
     if (following) {
-      userUnfollow(id).then(fetchAccount);
+      userUnfollow(id)
+        .then(fetchAccount)
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: "la modification du suivi de l'utilisateur",
+            error,
+            retry: toggleFollow,
+          }),
+        );
     } else {
-      userFollow(id).then(fetchAccount);
+      userFollow(id)
+        .then(fetchAccount)
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: "la modification du suivi de l'utilisateur",
+            error,
+            retry: toggleFollow,
+          }),
+        );
     }
   };
 

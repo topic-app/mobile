@@ -1,14 +1,14 @@
-import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import moment from 'moment';
 import React from 'react';
 import { View, Platform } from 'react-native';
 import { Button, IconButton, List, Text } from 'react-native-paper';
+import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { connect } from 'react-redux';
 
 import { StepperViewPageProps, InlineCard } from '@components/index';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import { Account, State, EventCreationData, ProgramEntry } from '@ts/types';
+import { Account, State, EventCreationData, ProgramEntry, EventRequestState } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
@@ -18,9 +18,10 @@ type Props = StepperViewPageProps & {
   account: Account;
   creationData?: EventCreationData;
   add: (eventProgram: ProgramEntry[]) => void;
+  state: EventRequestState;
 };
 
-const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData }) => {
+const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData, state }) => {
   const theme = useTheme();
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
@@ -36,7 +37,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
   const dismissStartTimeModal = React.useCallback(() => {
     setStartTimeShow(false);
   }, [setStartTimeShow]);
-  const showStartDateModal = () =>{
+  const showStartDateModal = () => {
     setStartDateShow(true);
   };
   const submit = () => {
@@ -54,12 +55,11 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
     setStartDate(date);
   }, []);
 
-  const changeStartTime = ({hours, minutes}:{hours: number; minutes:number}) => {
+  const changeStartTime = ({ hours, minutes }: { hours: number; minutes: number }) => {
     const currentDate = new Date(startDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
     setStartTimeShow(false);
     setStartDate(currentDate);
   };
-
 
   if (!account.loggedIn) {
     return (
@@ -126,7 +126,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
         onConfirm={changeStartDate}
         saveLabel="Enregistrer"
         label="Choisissez une date"
-        />
+      />
       <TimePickerModal
         visible={startTimeShow}
         onDismiss={dismissStartTimeModal}
@@ -134,7 +134,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
         label="Choisissez l'heure de début"
         cancelLabel="Annuler"
         confirmLabel="Enregistrer"
-        />
+      />
       <ProgramAddModal
         visible={isProgramAddModalVisible}
         setVisible={setProgramAddModalVisible}
@@ -160,6 +160,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
           uppercase={Platform.OS !== 'ios'}
           onPress={() => submit()}
           style={{ flex: 1, marginLeft: 5 }}
+          loading={state.add?.loading}
         >
           Publier
         </Button>
@@ -169,8 +170,8 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
 };
 
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { account };
+  const { account, events } = state;
+  return { account, state: events.state };
 };
 
 export default connect(mapStateToProps)(EventAddPageProgram);

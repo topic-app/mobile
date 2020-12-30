@@ -35,7 +35,7 @@ import {
   GroupMember,
   AccountState,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Errors, useTheme } from '@utils/index';
 
 type AddUserRoleModalProps = ModalProps & {
   roles: GroupRole[];
@@ -92,11 +92,20 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
     } else {
       if (!user) return;
       if (modifying) {
-        groupMemberModify(group, user._id, primaryRole, secondaryRoles).then(() => {
-          setVisible(false);
-          fetchGroup(group);
-          next();
-        });
+        groupMemberModify(group, user._id, primaryRole, secondaryRoles)
+          .then(() => {
+            setVisible(false);
+            fetchGroup(group);
+            next();
+          })
+          .catch((error) =>
+            Errors.showPopup({
+              type: 'axios',
+              what: 'la modification du membre',
+              error,
+              retry: add,
+            }),
+          );
       } else {
         const date = new Date();
         const expiry = new Date(date.setMonth(date.getMonth() + expiryDate));
@@ -106,11 +115,20 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
           primaryRole,
           secondaryRoles,
           expiryDate ? expiry : undefined,
-        ).then(() => {
-          setVisible(false);
-          fetchGroup(group);
-          next();
-        });
+        )
+          .then(() => {
+            setVisible(false);
+            fetchGroup(group);
+            next();
+          })
+          .catch((error) =>
+            Errors.showPopup({
+              type: 'axios',
+              what: "l'ajout du membre",
+              error,
+              retry: add,
+            }),
+          );
       }
     }
   };
@@ -139,17 +157,6 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
             {(modifying ? state.member_modify?.loading : state.member_add?.loading) && (
               <ProgressBar indeterminate style={{ marginTop: -4 }} />
             )}
-            {(modifying ? state.member_modify?.error : state.member_add?.error) ? (
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: "l'ajout de l'utilisateur",
-                  contentSingular: "L'utilisateur",
-                }}
-                error={modifying ? state.member_modify?.error : state.member_add?.error}
-                retry={() => add()}
-              />
-            ) : null}
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
