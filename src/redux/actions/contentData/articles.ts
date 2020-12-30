@@ -30,6 +30,8 @@ import {
   deleteQuickCreator,
   updateCreationDataCreator,
   clearCreationDataCreator,
+  reorderQuickCreator,
+  reorderListCreator,
 } from './ActionCreator';
 
 /**
@@ -111,6 +113,17 @@ async function modifyArticleList(
       icon,
       description,
       items,
+    }),
+  );
+}
+
+async function reorderArticleList(from: string, to: string) {
+  Store.dispatch(
+    reorderListCreator({
+      update: UPDATE_ARTICLES_LISTS,
+      dataType: 'articleData',
+      from,
+      to,
     }),
   );
 }
@@ -209,6 +222,17 @@ async function deleteArticleQuick(id: string) {
   );
 }
 
+async function reorderArticleQuick(from: string, to: string) {
+  Store.dispatch(
+    reorderQuickCreator({
+      updateQuicks: UPDATE_ARTICLES_QUICKS,
+      dataType: 'articleData',
+      from,
+      to,
+    }),
+  );
+}
+
 async function updateArticleCreationData(fields: Partial<ArticleCreationData>) {
   Store.dispatch(
     updateCreationDataCreator({
@@ -233,6 +257,7 @@ export {
   removeArticleFromList,
   addArticleList,
   modifyArticleList,
+  reorderArticleList,
   deleteArticleList,
   addArticleRead,
   deleteArticleRead,
@@ -241,6 +266,7 @@ export {
   updateArticlePrefs,
   addArticleQuick,
   deleteArticleQuick,
+  reorderArticleQuick,
   updateArticleCreationData,
   clearArticleCreationData,
 };

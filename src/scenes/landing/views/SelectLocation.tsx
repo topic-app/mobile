@@ -41,7 +41,7 @@ import {
   LocationList,
   Account,
 } from '@ts/types';
-import { useTheme, logger, Location, Format, Alert } from '@utils/index';
+import { useTheme, logger, Location, Format, Alert, Errors } from '@utils/index';
 
 import LocationListItem from '../components/LocationListItem';
 import type { LandingScreenNavigationProp } from '../index';
@@ -253,20 +253,29 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       ...departmentIds.map((depId) =>
         addEventQuick('school', depId, selectedLocations.find((loc) => loc.id === depId)!.name),
       ),
-    ]).then(() => {
-      if (hasUserAlreadyBeenToLanding) {
-        navigation.goBack();
-      } else {
-        navigation.popToTop();
-        navigation.replace('Root', {
-          screen: 'Main',
-          params: {
-            screen: 'Home1',
-            params: { screen: 'Home2', params: { screen: 'Article' } },
-          },
-        });
-      }
-    });
+    ])
+      .then(() => {
+        if (hasUserAlreadyBeenToLanding) {
+          navigation.goBack();
+        } else {
+          navigation.popToTop();
+          navigation.replace('Root', {
+            screen: 'Main',
+            params: {
+              screen: 'Home1',
+              params: { screen: 'Home2', params: { screen: 'Article' } },
+            },
+          });
+        }
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la mise à jour de la localisation',
+          error,
+          retry: done,
+        }),
+      );
   }
 
   const schools = searchText === '' ? schoolsNear : schoolsSearch;

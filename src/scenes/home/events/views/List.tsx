@@ -93,7 +93,7 @@ const EventList: React.FC<EventListProps> = ({
   const potentialCategories = [
     {
       key: 'upcoming',
-      title: 'Tous',
+      title: 'À venir',
       data: upcomingEvents,
       type: 'category',
     },
@@ -324,11 +324,6 @@ const EventList: React.FC<EventListProps> = ({
             : []),
         ]}
       >
-        {(state.list.loading.initial ||
-          state.search?.loading.initial ||
-          state.following?.loading?.initial) && (
-          <ProgressBar indeterminate style={{ marginTop: -4 }} />
-        )}
         {(state.list.error && section.key === 'categories') ||
         (state.search?.error && section.key === 'quicks') ||
         (state.following?.error && section.key === 'categories' && category.key === 'following') ? (

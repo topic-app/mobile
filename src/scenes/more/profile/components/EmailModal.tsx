@@ -8,7 +8,7 @@ import { fetchEmail } from '@redux/actions/data/account';
 import { updateEmail } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme, request, Alert } from '@utils/index';
+import { useTheme, request, Alert, Errors } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -95,7 +95,7 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
     if (emailValidationUpdate.valid) {
       Alert.alert(
         "Changer l'adresse email ?",
-        `Vous ne pourrez plus écrire de contenus tant que vous n'aurez pas validé l'email ${email} .`,
+        'Vous recevrez un email de confirmations dans votre nouvelle boite mail.',
         [
           {
             text: 'Annuler',
@@ -106,12 +106,21 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
           },
           {
             text: 'Changer',
-            onPress: async () => {
-              updateEmail(email).then(() => {
-                setEmail('');
-                setVisible(false);
-                fetchEmail();
-              });
+            onPress: () => {
+              updateEmail(email)
+                .then(() => {
+                  setEmail('');
+                  setVisible(false);
+                  fetchEmail();
+                })
+                .catch((error) =>
+                  Errors.showPopup({
+                    type: 'axios',
+                    what: "la modification de l'adresse mail",
+                    error,
+                    retry: update,
+                  }),
+                );
             },
           },
         ],
@@ -126,18 +135,6 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        {state.updateProfile.loading && <ProgressBar indeterminate />}
-        {state.updateProfile.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du compte',
-              contentSingular: 'Le compte',
-            }}
-            error={state.updateProfile.error}
-            retry={update}
-          />
-        )}
         <View>
           <View style={profileStyles.inputContainer}>
             <TextInput
@@ -170,6 +167,7 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
             <Button
               mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
               color={colors.primary}
+              loading={state.updateProfile.loading}
               uppercase={Platform.OS !== 'ios'}
               onPress={update}
             >

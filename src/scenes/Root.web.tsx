@@ -209,12 +209,12 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
   const { colors } = theme;
 
   return (
-    <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: colors.surface }}>
+    <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: colors.appBar }}>
       <View>
         <View style={styles.centerIllustrationContainer}>
           <Illustration
             name={drawerExpanded ? 'topic-icon-text' : 'topic-icon'}
-            style={{ height: 40, marginTop: 10 }}
+            style={{ height: 36, marginTop: 10 }}
           />
         </View>
         <Divider style={{ marginVertical: 10 }} />
@@ -234,6 +234,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                     backgroundColor: isActive(item.key) ? colors.activeDrawerItem : undefined,
                     width: drawerExpanded ? 230 : 40,
                   }}
+                  theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
                   icon={item.icon}
                   label={drawerExpanded ? item.text || '' : ''}
                   onPress={() => {
@@ -268,6 +269,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
             <PaperDrawer.Item
               icon="account-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
+              theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
               label="Se connecter"
               onPress={() =>
                 navigation.navigate('Auth', {
@@ -278,6 +280,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
             <PaperDrawer.Item
               icon="account-plus-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
+              theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
               label="Créer un compte"
               onPress={() =>
                 navigation.navigate('Auth', {
@@ -290,6 +293,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
 
         <PaperDrawer.Item
           icon={drawerExpanded ? 'chevron-left' : 'chevron-right'}
+          theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
           style={drawerExpanded ? { width: 230 } : { width: 40 }}
           label=""
           onPress={() => setDrawerExpanded(!drawerExpanded)}

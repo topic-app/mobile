@@ -1,6 +1,7 @@
 import { AnyAction } from 'redux';
 import shortid from 'shortid';
 
+import { Config } from '@constants';
 import Store from '@redux/store';
 import {
   ApiItemString,
@@ -210,6 +211,38 @@ function modifyListCreator<T extends ContentItemWithListsString>({
   };
 }
 
+type ReorderListCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
+  from: string;
+  to: string;
+};
+function reorderListCreator<T extends ContentItemWithListsString>({
+  update,
+  dataType,
+  from,
+  to,
+}: ReorderListCreatorParams<T>): AnyAction {
+  const { lists } = Store.getState()[dataType] as { lists: (ArticleListItem | EventListItem)[] };
+  const fromLists = lists.find((q) => q.id === from);
+  const toLists = lists.find((q) => q.id === to);
+  if (!fromLists || !toLists) {
+    throw new Error('Non existent quick');
+  }
+  return {
+    type: update,
+    data: lists.map((q) => {
+      if (q.id === from) {
+        return toLists;
+      } else if (q.id === to) {
+        return fromLists;
+      } else {
+        return q;
+      }
+    }),
+  };
+}
+
 type DeleteListCreatorParams<T extends ContentItemWithListsString> = {
   dataType: T;
   update: ContentAction.TypeMap[T];
@@ -338,6 +371,38 @@ function addQuickCreator<T extends ContentItemWithListsString>({
   };
 }
 
+type ReorderQuickCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  updateQuicks: ContentAction.UpdateQuicksTypeMap[T];
+  from: string;
+  to: string;
+};
+function reorderQuickCreator<T extends ContentItemWithListsString>({
+  updateQuicks,
+  dataType,
+  from,
+  to,
+}: ReorderQuickCreatorParams<T>): AnyAction {
+  const { quicks } = Store.getState()[dataType];
+  const fromQuick = quicks.find((q) => q.id === from);
+  const toQuick = quicks.find((q) => q.id === to);
+  if (!fromQuick || !toQuick) {
+    throw new Error('Non existent quick');
+  }
+  return {
+    type: updateQuicks,
+    data: quicks.map((q) => {
+      if (q.id === from) {
+        return toQuick;
+      } else if (q.id === to) {
+        return fromQuick;
+      } else {
+        return q;
+      }
+    }),
+  };
+}
+
 type DeleteQuickCreatorParams<T extends ContentItemWithListsString> = {
   dataType: T;
   updateQuicks: ContentAction.UpdateQuicksTypeMap[T];
@@ -385,11 +450,75 @@ function clearCreationDataCreator<T extends ContentItemString>({
   };
 }
 
+type UpdateRecommendationsCreator<T extends ContentItemWithListsString> = {
+  dataType: T;
+  updateRecommendations: ContentAction.UpdateRecommendationsDataMap[T];
+  action: 'read' | 'mark' | 'list' | 'comment';
+  tags?: string[];
+  groups?: string[];
+  users?: string[];
+};
+function updateRecommendationsCreator<T extends ContentItemWithListsString>({
+  dataType,
+  updateRecommendations,
+  action,
+  tags,
+  groups,
+  users,
+}: UpdateRecommendationsCreator<T>) {
+  const { recommendations } = Store.getState()[dataType];
+  const values = Config.recommendations.values[action];
+  if (tags) {
+    tags.forEach((tagId) => {
+      const index = recommendations.tags.findIndex((t) => t.id === tagId);
+      if (index >= 0) {
+        recommendations.tags[index] = {
+          ...recommendations.tags[index],
+          value: recommendations.tags[index].value + values.tags,
+        };
+      } else {
+        recommendations.tags.push({ id: tagId, value: values.tags, frozen: false });
+      }
+    });
+  }
+  if (groups) {
+    groups.forEach((groupId) => {
+      const index = recommendations.groups.findIndex((t) => t.id === groupId);
+      if (index >= 0) {
+        recommendations.groups[index] = {
+          ...recommendations.groups[index],
+          value: recommendations.groups[index].value + values.groups,
+        };
+      } else {
+        recommendations.groups.push({ id: groupId, value: values.groups, frozen: false });
+      }
+    });
+  }
+  if (users) {
+    users.forEach((userId) => {
+      const index = recommendations.users.findIndex((t) => t.id === userId);
+      if (index >= 0) {
+        recommendations.users[index] = {
+          ...recommendations.users[index],
+          value: recommendations.users[index].value + values.users,
+        };
+      } else {
+        recommendations.users.push({ id: userId, value: values.users, frozen: false });
+      }
+    });
+  }
+  return {
+    type: updateRecommendations,
+    data: recommendations,
+  };
+}
+
 export {
   addToListCreator,
   removeFromListCreator,
   addListCreator,
   modifyListCreator,
+  reorderListCreator,
   deleteListCreator,
   addReadCreator,
   deleteReadCreator,
@@ -398,6 +527,8 @@ export {
   updatePrefsCreator,
   addQuickCreator,
   deleteQuickCreator,
+  reorderQuickCreator,
   updateCreationDataCreator,
   clearCreationDataCreator,
+  updateRecommendationsCreator,
 };

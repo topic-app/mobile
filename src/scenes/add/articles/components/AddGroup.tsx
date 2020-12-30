@@ -132,7 +132,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
                 size={24}
                 color={colors.primary}
               />
-              <Text style={{ color: colors.primary }}>
+              <Text style={{ color: colors.primary, flex: 1 }}>
                 Vous pouvez écrire un article depuis votre ordinateur en visitant topicapp.fr
               </Text>
             </View>

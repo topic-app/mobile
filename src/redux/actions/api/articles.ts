@@ -44,10 +44,7 @@ async function updateArticlesFollowing(
   params = {},
   useDefaultParams = true,
 ) {
-  if (
-    !Store.getState().account.loggedIn ||
-    !Store.getState().account?.accountInfo?.user?.data?.following?.groups?.every((g) => !g)
-  ) {
+  if (!Store.getState().account.loggedIn) {
     return false;
   }
   await Store.dispatch(

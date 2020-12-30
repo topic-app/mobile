@@ -30,6 +30,8 @@ import {
   deleteQuickCreator,
   updateCreationDataCreator,
   clearCreationDataCreator,
+  reorderQuickCreator,
+  reorderListCreator,
 } from './ActionCreator';
 
 /**
@@ -111,6 +113,17 @@ async function modifyEventList(
       icon,
       description,
       items,
+    }),
+  );
+}
+
+async function reorderEventList(from: string, to: string) {
+  Store.dispatch(
+    reorderListCreator({
+      update: UPDATE_EVENTS_LISTS,
+      dataType: 'eventData',
+      from,
+      to,
     }),
   );
 }
@@ -199,6 +212,17 @@ async function addEventQuick(type: string, id: string, title: string) {
   );
 }
 
+async function reorderEventQuick(from: string, to: string) {
+  Store.dispatch(
+    reorderQuickCreator({
+      updateQuicks: UPDATE_EVENTS_QUICKS,
+      dataType: 'eventData',
+      from,
+      to,
+    }),
+  );
+}
+
 async function deleteEventQuick(id: string) {
   Store.dispatch(
     deleteQuickCreator({
@@ -233,6 +257,7 @@ export {
   removeEventFromList,
   addEventList,
   modifyEventList,
+  reorderEventList,
   deleteEventList,
   addEventRead,
   deleteEventRead,
@@ -240,6 +265,7 @@ export {
   updateEventParams,
   updateEventPrefs,
   addEventQuick,
+  reorderEventQuick,
   deleteEventQuick,
   updateEventCreationData,
   clearEventCreationData,

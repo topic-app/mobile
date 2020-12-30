@@ -39,6 +39,7 @@ const TabChipList = <T extends ListItem>({
         showsHorizontalScrollIndicator={Platform.OS === 'web'}
         sections={sections}
         keyExtractor={(cat) => cat.key}
+        initialNumToRender={20}
         renderItem={({ item, index }) => (
           <TextChip
             icon={item.icon}

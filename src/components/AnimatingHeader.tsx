@@ -13,7 +13,7 @@ type AnimatingHeaderProps = CustomHeaderBarProps['scene']['descriptor']['options
 
 const AnimatingHeader: React.FC<AnimatingHeaderProps> = ({
   value,
-  maxElevation = 10,
+  maxElevation = 7,
   children,
   headerStyle,
   ...rest
@@ -25,7 +25,7 @@ const AnimatingHeader: React.FC<AnimatingHeaderProps> = ({
   });
 
   return Platform.OS !== 'ios' ? (
-    <Animated.View style={{ backgroundColor: 'white', elevation: headerElevation }}>
+    <Animated.View style={{ backgroundColor: 'white', elevation: headerElevation, zIndex: 10 }}>
       <CustomHeaderBar
         scene={{
           descriptor: {

@@ -214,8 +214,8 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
       <View style={{ marginTop: 20, height: 40 }}>
         <FlatList
           horizontal
-          onEndReached={fetchNext}
-          onEndReachedThreshold={0.1}
+          // onEndReached={fetchNext}
+          // onEndReachedThreshold={0.1}
           data={(searchText === '' ? tagsData : tagsSearch).filter(
             (t) => !selectedTags.includes(t._id),
           )}

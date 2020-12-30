@@ -14,7 +14,7 @@ import {
 import { register } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { State, AccountRequestState, AccountCreationData } from '@ts/types';
-import { logger, useTheme } from '@utils/index';
+import { Errors, logger, useTheme } from '@utils/index';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageLegal from '../components/CreateLegal';
@@ -60,9 +60,13 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
 
     register(reqParams)
       .then(() => navigation.replace('CreateSuccess'))
-      .catch((e) => {
-        logger.info(reqParams);
-        logger.warn('Failed to create account', e);
+      .catch((error) => {
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la création du compte',
+          error,
+          retry: create,
+        });
       });
   };
 
@@ -79,17 +83,6 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
             <ProgressBar indeterminate />
           ) : (
             <View style={{ height: 4 }} />
-          )}
-          {reqState.register.success === false && (
-            <ErrorMessage
-              error={reqState.register.error}
-              strings={{
-                what: 'la création du compte',
-                contentSingular: 'Le compte',
-              }}
-              type="axios"
-              retry={create}
-            />
           )}
           {reqState.check.success === false && (
             <ErrorMessage

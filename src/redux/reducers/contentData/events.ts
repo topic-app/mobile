@@ -27,6 +27,11 @@ const initialState: EventsContentState = {
     categories: ['upcoming', 'passed', 'following'],
     hidden: [],
   },
+  recommendations: {
+    tags: [],
+    groups: [],
+    users: [],
+  },
 };
 
 /**
@@ -66,7 +71,7 @@ function eventDataReducer(
     case UPDATE_EVENTS_PREFS:
       return {
         ...state,
-        prefs: action.data,
+        prefs: { ...state.prefs, ...action.data },
       };
     case UPDATE_EVENTS_CREATION_DATA:
       return {

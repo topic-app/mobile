@@ -193,7 +193,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({
                   right={() =>
                     Platform.OS === 'ios' ? (
                       <Checkbox
-                        status={values.terms ? 'checked' : 'unchecked'}
+                        status={values.terms ? 'checked' : 'indeterminate'}
                         color={colors.primary}
                       />
                     ) : null
@@ -214,7 +214,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({
                   right={() =>
                     Platform.OS === 'ios' ? (
                       <Checkbox
-                        status={values.email ? 'checked' : 'unchecked'}
+                        status={values.email ? 'checked' : 'indeterminate'}
                         color={colors.primary}
                       />
                     ) : null
