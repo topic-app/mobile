@@ -189,7 +189,7 @@ const ContentFlatList = <T extends any>({
         ) : null}
       </View>
     ),
-    [sections],
+    [sections, tabKey],
   );
 
   // Early return if nothing to render
