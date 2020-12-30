@@ -140,7 +140,7 @@ const ContentFlatList = <T extends any>({
       Animated.timing(fadeAnim, {
         useNativeDriver: true,
         toValue: 0,
-        duration: 200,
+        duration: 100,
       }).start(async () => {
         setTabKey(newTabKey);
         // If the function returns a promise, wait until it is resolved
@@ -148,7 +148,7 @@ const ContentFlatList = <T extends any>({
         Animated.timing(fadeAnim, {
           useNativeDriver: true,
           toValue: 1,
-          duration: 200,
+          duration: 100,
         }).start();
       });
     }
