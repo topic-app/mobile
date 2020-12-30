@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
-// @ts-expect-error Replace this when we find a better library
 import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -37,6 +36,8 @@ import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
 import { EventConfigureScreenNavigationProp } from '../index';
 import getArticleStyles from '../styles/Styles';
+
+// @ts-expect-error Replace this when we find a better library
 
 type EventListsProps = {
   lists: EventListItem[];
@@ -200,7 +201,6 @@ function EventLists({
                           title={item.name}
                           description={item.disable ? 'Indisponible' : null}
                           left={() => <View style={{ width: 56, height: 56 }} />}
-                          onPress={enabled && !item.disable ? item.navigate : () => null}
                           onLongPress={move}
                           titleStyle={!item.disable ? {} : { color: colors.disabled }}
                           descriptionStyle={!item.disable ? {} : { color: colors.disabled }}
@@ -276,18 +276,6 @@ function EventLists({
                             : 'Aucun évènement'
                         }${item.description ? `\n${item.description}` : ''}`}
                         descriptionNumberOfLines={100}
-                        onPress={() =>
-                          navigation.push('Main', {
-                            screen: 'Home1',
-                            params: {
-                              screen: 'Home2',
-                              params: {
-                                screen: 'Article',
-                                params: { initialList: item.id },
-                              },
-                            },
-                          })
-                        }
                         onLongPress={move}
                         left={() => <List.Icon icon={item.icon} />}
                         right={() => (

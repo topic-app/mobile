@@ -17,6 +17,8 @@ import {
   addArticleQuick,
   deleteArticleQuick,
   modifyArticleList,
+  reorderArticleQuick,
+  reorderArticleList,
 } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import {
@@ -201,7 +203,7 @@ function ArticleLists({
                           title={item.name}
                           description={item.disable ? 'Indisponible' : null}
                           left={() => <View style={{ width: 56, height: 56 }} />}
-                          onPress={enabled && !item.disable ? item.navigate : () => null}
+                          onPress={() => {}}
                           onLongPress={move}
                           titleStyle={!item.disable ? {} : { color: colors.disabled }}
                           descriptionStyle={!item.disable ? {} : { color: colors.disabled }}
@@ -255,12 +257,6 @@ function ArticleLists({
                         <Text>
                           Ajoutez vos articles à des listes afin de pouvoir y accéder rapidement.
                         </Text>
-                        <Text>
-                          Les articles ajoutés seront disponibles hors-ligne
-                          {account.loggedIn && preferences.syncLists
-                            ? ' et seront sauvegardés sur votre compte.'
-                            : '.'}
-                        </Text>
                       </View>
                       <Divider />
                     </View>
@@ -277,18 +273,7 @@ function ArticleLists({
                             : 'Aucun article'
                         }${item.description ? `\n${item.description}` : ''}`}
                         descriptionNumberOfLines={100}
-                        onPress={() =>
-                          navigation.push('Main', {
-                            screen: 'Home1',
-                            params: {
-                              screen: 'Home2',
-                              params: {
-                                screen: 'Article',
-                                params: { initialList: item.id },
-                              },
-                            },
-                          })
-                        }
+                        onPress={() => {}}
                         onLongPress={move}
                         left={() => <List.Icon icon={item.icon} />}
                         right={() => (
@@ -347,20 +332,7 @@ function ArticleLists({
                     const fromList = lists[from];
                     const toList = lists[to];
 
-                    modifyArticleList(
-                      fromList.id,
-                      toList.name,
-                      toList.icon,
-                      toList.description,
-                      toList.items,
-                    );
-                    modifyArticleList(
-                      toList.id,
-                      fromList.name,
-                      fromList.icon,
-                      fromList.description,
-                      fromList.items,
-                    );
+                    reorderArticleList(fromList.id, toList.id);
                   }}
                   ListFooterComponent={() => (
                     <View>
@@ -381,7 +353,7 @@ function ArticleLists({
 
             case 'tags':
               return (
-                <FlatList
+                <DraggableFlatList
                   data={quicks}
                   ListHeaderComponent={() => (
                     <View>
@@ -398,7 +370,7 @@ function ArticleLists({
                       <Divider />
                     </View>
                   )}
-                  renderItem={({ item }) => {
+                  renderItem={({ item, move }: { item: ArticleQuickItem; move: () => any }) => {
                     let content = { description: 'Erreur', icon: 'alert-decagram' };
                     if (item.type === 'tag') {
                       content = {
@@ -437,6 +409,8 @@ function ArticleLists({
                       <View>
                         <List.Item
                           title={item.title}
+                          onPress={() => {}}
+                          onLongPress={move}
                           description={content.description}
                           left={() => <List.Icon icon={content.icon} />}
                           right={() => (
@@ -454,6 +428,12 @@ function ArticleLists({
                         <Divider />
                       </View>
                     );
+                  }}
+                  onMoveEnd={({ from, to }: { from: number; to: number }) => {
+                    const fromQuick = quicks[from];
+                    const toQuick = quicks[to];
+
+                    reorderArticleQuick(fromQuick.id, toQuick.id);
                   }}
                   ListFooterComponent={() => (
                     <View style={styles.container}>

@@ -16,6 +16,7 @@ import {
   updateArticles,
   searchArticles,
   updateArticlesFollowing,
+  clearArticles,
 } from '@redux/actions/api/articles';
 import getStyles from '@styles/Styles';
 import {
@@ -105,6 +106,12 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
           title: 'Suivis',
           data: followingArticles,
           ...categCommon,
+          onLoad: (loadType) => {
+            if (loadType !== 'initial') {
+              updateArticlesFollowing(loadType);
+            }
+          },
+          loading: state.following?.loading,
         });
       }
     }
@@ -167,7 +174,13 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
       data: search,
       group: 'quicks',
       loading: state.search?.loading,
-      onLoad: (loadType) => searchArticles(loadType, '', params, false, false),
+      onLoad: async (loadType) => {
+        console.log(`LOADING QUICK ${loadType} ${JSON.stringify(params)}`);
+        if (loadType === 'initial') {
+          await clearArticles(false, true, false, false);
+        }
+        await searchArticles(loadType, '', params, false, false);
+      },
     });
   });
 

@@ -99,11 +99,6 @@ const ContentFlatList = <T extends any>({
     extrapolate: 'clamp',
   });
 
-  // Early return if nothing to render
-  if (sections.length === 0) {
-    return null;
-  }
-
   // Decides whether the flatlist should be Animated or not
   const FlatListComponent = scrollY ? Animated.FlatList : FlatList;
   const extraFlatListProps: Partial<FlatListProps<T>> = scrollY
@@ -137,13 +132,10 @@ const ContentFlatList = <T extends any>({
     const shouldSkipAnimation =
       Platform.OS !== 'web' ? await AccessibilityInfo.isReduceMotionEnabled() : false;
 
-    const nextSectionData = sections.find((sec) => sec.key === newTabKey)!.data;
     if (shouldSkipAnimation) {
       setTabKey(newTabKey);
       // If the function returns a promise, wait until it is resolved
-      if (nextSectionData.length === 0) {
-        await currentSection.onLoad?.('initial');
-      }
+      await sections.find((sec) => sec.key === newTabKey)!.onLoad?.('initial');
     } else {
       Animated.timing(fadeAnim, {
         useNativeDriver: true,
@@ -152,9 +144,7 @@ const ContentFlatList = <T extends any>({
       }).start(async () => {
         setTabKey(newTabKey);
         // If the function returns a promise, wait until it is resolved
-        if (nextSectionData.length === 0) {
-          await currentSection.onLoad?.('initial');
-        }
+        await sections.find((sec) => sec.key === newTabKey)!.onLoad?.('initial');
         Animated.timing(fadeAnim, {
           useNativeDriver: true,
           toValue: 1,
@@ -173,6 +163,40 @@ const ContentFlatList = <T extends any>({
 
   const shouldRenderTabChipList = sections.length > 1;
 
+  const ListHeaderComponentDefault = React.useMemo(
+    () => (
+      <View>
+        {ListHeaderComponent ? (
+          <ListHeaderComponent
+            sectionKey={tabKey}
+            group={currentSection.group}
+            retry={() => currentSection.onLoad?.('initial')}
+          />
+        ) : null}
+        {shouldRenderTabChipList ? (
+          <TabChipList
+            sections={Object.entries(tabs).map(([key, data]) => ({ key, data }))}
+            selected={tabKey}
+            setSelected={changeList}
+            configure={onConfigurePress}
+          />
+        ) : null}
+        {currentSection.description ? (
+          <Banner actions={[]} visible>
+            <Subheading>Description{'\n'}</Subheading>
+            <Text>{currentSection.description}</Text>
+          </Banner>
+        ) : null}
+      </View>
+    ),
+    [sections],
+  );
+
+  // Early return if nothing to render
+  if (sections.length === 0) {
+    return null;
+  }
+
   return (
     <View>
       <FlatListComponent<T>
@@ -189,31 +213,7 @@ const ContentFlatList = <T extends any>({
             />
           ) : undefined
         }
-        ListHeaderComponent={() => (
-          <View>
-            {ListHeaderComponent ? (
-              <ListHeaderComponent
-                sectionKey={tabKey}
-                group={currentSection.group}
-                retry={() => currentSection.onLoad?.('initial')}
-              />
-            ) : null}
-            {shouldRenderTabChipList ? (
-              <TabChipList
-                sections={Object.entries(tabs).map(([key, data]) => ({ key, data }))}
-                selected={tabKey}
-                setSelected={changeList}
-                configure={onConfigurePress}
-              />
-            ) : null}
-            {currentSection.description ? (
-              <Banner actions={[]} visible>
-                <Subheading>Description{'\n'}</Subheading>
-                <Text>{currentSection.description}</Text>
-              </Banner>
-            ) : null}
-          </View>
-        )}
+        ListHeaderComponent={ListHeaderComponentDefault}
         ListEmptyComponent={() => (
           <Animated.View style={{ opacity: fadeAnim }}>
             {ListEmptyComponent ? (

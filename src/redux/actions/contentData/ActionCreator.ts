@@ -211,6 +211,38 @@ function modifyListCreator<T extends ContentItemWithListsString>({
   };
 }
 
+type ReorderListCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
+  from: string;
+  to: string;
+};
+function reorderListCreator<T extends ContentItemWithListsString>({
+  update,
+  dataType,
+  from,
+  to,
+}: ReorderListCreatorParams<T>): AnyAction {
+  const { lists } = Store.getState()[dataType] as { lists: (ArticleListItem | EventListItem)[] };
+  const fromLists = lists.find((q) => q.id === from);
+  const toLists = lists.find((q) => q.id === to);
+  if (!fromLists || !toLists) {
+    throw new Error('Non existent quick');
+  }
+  return {
+    type: update,
+    data: lists.map((q) => {
+      if (q.id === from) {
+        return toLists;
+      } else if (q.id === to) {
+        return fromLists;
+      } else {
+        return q;
+      }
+    }),
+  };
+}
+
 type DeleteListCreatorParams<T extends ContentItemWithListsString> = {
   dataType: T;
   update: ContentAction.TypeMap[T];
@@ -339,6 +371,38 @@ function addQuickCreator<T extends ContentItemWithListsString>({
   };
 }
 
+type ReorderQuickCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  updateQuicks: ContentAction.UpdateQuicksTypeMap[T];
+  from: string;
+  to: string;
+};
+function reorderQuickCreator<T extends ContentItemWithListsString>({
+  updateQuicks,
+  dataType,
+  from,
+  to,
+}: ReorderQuickCreatorParams<T>): AnyAction {
+  const { quicks } = Store.getState()[dataType];
+  const fromQuick = quicks.find((q) => q.id === from);
+  const toQuick = quicks.find((q) => q.id === to);
+  if (!fromQuick || !toQuick) {
+    throw new Error('Non existent quick');
+  }
+  return {
+    type: updateQuicks,
+    data: quicks.map((q) => {
+      if (q.id === from) {
+        return toQuick;
+      } else if (q.id === to) {
+        return fromQuick;
+      } else {
+        return q;
+      }
+    }),
+  };
+}
+
 type DeleteQuickCreatorParams<T extends ContentItemWithListsString> = {
   dataType: T;
   updateQuicks: ContentAction.UpdateQuicksTypeMap[T];
@@ -454,6 +518,7 @@ export {
   removeFromListCreator,
   addListCreator,
   modifyListCreator,
+  reorderListCreator,
   deleteListCreator,
   addReadCreator,
   deleteReadCreator,
@@ -462,6 +527,7 @@ export {
   updatePrefsCreator,
   addQuickCreator,
   deleteQuickCreator,
+  reorderQuickCreator,
   updateCreationDataCreator,
   clearCreationDataCreator,
   updateRecommendationsCreator,
