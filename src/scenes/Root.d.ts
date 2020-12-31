@@ -4,10 +4,10 @@
 // This file exists for two purposes:
 // 1. Ensure that both ios and android files present identical types to importers.
 // 2. Allow consumers to import the module as if typescript understood react-native suffixes.
-import DefaultIos from './Root.ios';
-import * as ios from './Root.ios';
 import DefaultAndroid from './Root.android';
 import * as android from './Root.android';
+import DefaultIos from './Root.ios';
+import * as ios from './Root.ios';
 
 declare var _test: typeof ios;
 declare var _test: typeof android;
