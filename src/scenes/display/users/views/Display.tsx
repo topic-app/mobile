@@ -210,7 +210,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 
           <View style={[styles.contentContainer, { marginTop: 20 }]}>
             <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-              <Avatar size={120} avatar={user.info.avatar} />
+              <Avatar size={120} avatar={user.info.avatar} imageSize="large" />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               {user.data?.public ? (
