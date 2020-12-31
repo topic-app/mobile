@@ -36,7 +36,7 @@
     "@react-native-firebase/analytics": "^10.0.0",
     "@react-native-firebase/app": "^10.0.0",
     "@react-native-firebase/crashlytics": "^10.0.0",
-    "@react-native-mapbox-gl/maps": "^8.1.0-rc.2",
+    "@react-native-mapbox-gl/maps": "^8.1.0-rc10",
     "@react-navigation/bottom-tabs": "^5.11.2",
     "@react-navigation/core": "^5.14.4",
     "@react-navigation/drawer": "^5.11.4",

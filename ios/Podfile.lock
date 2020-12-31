@@ -1,5 +1,5 @@
 PODS:
-  - "@react-native-mapbox-gl-mapbox-static (5.8.0)"
+  - "@react-native-mapbox-gl-mapbox-static (5.9.0)"
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
     - React
@@ -359,20 +359,23 @@ PODS:
     - React
   - react-native-geolocation-service (5.0.0):
     - React
-  - react-native-mapbox-gl (8.1.0-rc.2):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
-    - Mapbox-iOS-SDK (~> 5.8)
+  - react-native-mapbox-gl (8.1.0-rc10):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.9.0)"
+    - Mapbox-iOS-SDK (~> 5.9.0)
     - React
-    - react-native-mapbox-gl/DynamicLibrary (= 8.1.0-rc.2)
-    - react-native-mapbox-gl/StaticLibraryFixer (= 8.1.0-rc.2)
-  - react-native-mapbox-gl/DynamicLibrary (8.1.0-rc.2):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
-    - Mapbox-iOS-SDK (~> 5.8)
+    - React-Core
+    - react-native-mapbox-gl/DynamicLibrary (= 8.1.0-rc10)
+    - react-native-mapbox-gl/StaticLibraryFixer (= 8.1.0-rc10)
+  - react-native-mapbox-gl/DynamicLibrary (8.1.0-rc10):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.9.0)"
+    - Mapbox-iOS-SDK (~> 5.9.0)
     - React
-  - react-native-mapbox-gl/StaticLibraryFixer (8.1.0-rc.2):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
-    - Mapbox-iOS-SDK (~> 5.8)
+    - React-Core
+  - react-native-mapbox-gl/StaticLibraryFixer (8.1.0-rc10):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.9.0)"
+    - Mapbox-iOS-SDK (~> 5.9.0)
     - React
+    - React-Core
   - react-native-netinfo (5.9.8):
     - React-Core
   - react-native-safe-area-context (3.1.9):
@@ -454,8 +457,6 @@ PODS:
     - React
   - RNCMaskedView (0.1.10):
     - React
-  - RNDateTimePicker (3.0.6):
-    - React-Core
   - RNDeviceInfo (7.1.0):
     - React-Core
   - RNFBAnalytics (10.0.0):
@@ -480,6 +481,8 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController
+  - RNLocalize (2.0.1):
+    - React-Core
   - RNPermissions (2.2.2):
     - React-Core
   - RNReanimated (1.13.2):
@@ -590,13 +593,13 @@ DEPENDENCIES:
   - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
-  - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - RNLocalize (from `../node_modules/react-native-localize`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -758,8 +761,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
-  RNDateTimePicker:
-    :path: "../node_modules/@react-native-community/datetimepicker"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFBAnalytics:
@@ -772,6 +773,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
+  RNLocalize:
+    :path: "../node_modules/react-native-localize"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -812,7 +815,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  "@react-native-mapbox-gl-mapbox-static": e247172bc43f47757f47d6cec1b325b1ab3e9287
+  "@react-native-mapbox-gl-mapbox-static": 83c0e0ba33597bb694735ffb136d3d96780af37d
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
@@ -870,7 +873,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-geolocation-service: 141e33bdb179bcba10b216ee13962611e21f2be4
-  react-native-mapbox-gl: 18785637738ca8b25c3633db431d6614ec7fc9bf
+  react-native-mapbox-gl: de3af5d5dea2882fcf8b5720cb1656eeecffd1fc
   react-native-netinfo: cee046b5bfbed3f2b5fe4999d6f03d47d95865f5
   react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
   react-native-simple-crypto: 0fec2ce7aa9441a6c8f90fcd20accc5d62710fec
@@ -891,13 +894,13 @@ SPEC CHECKSUMS:
   ReactNativeExceptionHandler: f1638ffd507ef1b1794af25884fa0eb30dd5c551
   RNCAsyncStorage: bc2f81cc1df90c267ce9ed30bb2dbc93b945a8ee
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
-  RNDateTimePicker: 54bc1830e4e8d99ed00e6b6735b8517e163b2a4a
   RNDeviceInfo: 2c198acf2cef2dc8e5bf2b502fdde0e7e5ef3520
   RNFBAnalytics: 56ceefdcff33238b7817d164ebabb4863a3fed92
   RNFBApp: dd793eec42bce8d09391bd95e42f2ed7511e7fef
   RNFBCrashlytics: 2ff8548152020b4eeba1963f60bb5e35c3dcfc44
   RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
   RNImageCropPicker: 16951bc02411f50c4d197488ed6406a23dc3b5f1
+  RNLocalize: dcf0fdb332b37b0d24178e876a7ce4dbbc9c838d
   RNPermissions: 067727df624665d4a6c8e2cffcc172ba608b96ed
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 2ad555d4d9fa10b91bb765ca07fe9b29d59573f0
@@ -922,6 +925,6 @@ SPEC CHECKSUMS:
   YoutubePlayer-in-WKWebView: af2f5929fc78882d94bfdfeea999b661b78d9717
   zxcvbn-ios: fef98b7c80f1512ff0eec47ac1fa399fc00f7e3c
 
-PODFILE CHECKSUM: e972c809a6d1168356791fc643dca4f0c8028d5f
+PODFILE CHECKSUM: 6e3321d231198299c228c7f2f6810ebab1f734f5
 
 COCOAPODS: 1.9.3
