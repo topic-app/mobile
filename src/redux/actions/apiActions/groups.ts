@@ -466,6 +466,7 @@ function groupModifyCreator({
   aliases,
   summary,
   description,
+  avatar,
 }: GroupModifyCreatorParams): AppThunk {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
@@ -489,6 +490,7 @@ function groupModifyCreator({
             aliases,
             summary,
             description,
+            avatar,
           },
         },
         true,
