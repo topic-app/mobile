@@ -239,6 +239,9 @@ function EventDisplayDescriptionHeader({
         <InlineCard
           avatar={author.info?.avatar}
           title={author?.displayName}
+          subtitle={
+            author.displayName === author.info?.username ? undefined : `@${author.info?.username}`
+          }
           onPress={() =>
             navigation.push('Main', {
               screen: 'Display',
@@ -268,8 +271,10 @@ function EventDisplayDescriptionHeader({
       </View>
       <InlineCard
         avatar={event.group?.avatar}
-        title={event.group?.displayName}
-        subtitle={`Groupe ${event.group?.type}`}
+        title={event.group?.name || event.group?.displayName}
+        subtitle={`${event.group?.shortName || ''}${event.group.shortName ? ' - ' : ''}Groupe ${
+          event.group?.type
+        }`}
         onPress={() =>
           navigation.push('Main', {
             screen: 'Display',

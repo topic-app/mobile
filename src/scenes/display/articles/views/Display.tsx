@@ -173,9 +173,14 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           </View>
           {article.authors?.map((author) => (
             <InlineCard
-              key={author?._id}
+              key={author._id}
               avatar={author.info?.avatar}
-              title={author?.displayName}
+              title={author.displayName}
+              subtitle={
+                author.displayName === author.info?.username
+                  ? undefined
+                  : `@${author.info?.username}`
+              }
               onPress={() =>
                 navigation.push('Main', {
                   screen: 'Display',
@@ -205,8 +210,10 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           </View>
           <InlineCard
             avatar={article.group?.avatar}
-            title={article.group?.displayName}
-            subtitle={`Groupe ${article.group?.type}`}
+            title={article.group?.name || article.group?.displayName}
+            subtitle={`${article.group?.shortName || ''}${
+              article.group.shortName ? ' - ' : ''
+            }Groupe ${article.group?.type}`}
             onPress={() =>
               navigation.push('Main', {
                 screen: 'Display',
