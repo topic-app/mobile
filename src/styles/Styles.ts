@@ -102,6 +102,7 @@ function getStyles(theme: Theme) {
       borderRadius: 0,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
+      maxHeight: '90%',
     },
   });
 }

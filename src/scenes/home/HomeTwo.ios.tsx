@@ -1,43 +1,93 @@
+import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Config } from '@constants/index';
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import getNavigatorStyles from '@styles/NavStyles';
+import { useTheme, useSafeAreaInsets } from '@utils/index';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
 import ArticleList from './articles/views/List';
 import EventDualList from './events/views/Dual';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
+import ListScreen from './list/views/List';
+
+// import PetitionList from './petitions/views/List';
 
 export type HomeTwoNavParams = {
-  Article: { initialList: string } | undefined;
+  Article: { initialList?: string } | undefined;
   Event: { initialList?: string } | undefined;
   Petition: undefined;
   Explorer: undefined;
+  Tests: undefined;
+  List: undefined;
 };
 
 export type HomeTwoScreenNavigationProp<K extends keyof HomeTwoNavParams> = CompositeNavigationProp<
-  NativeStackNavigationProp<HomeTwoNavParams, K>,
+  BottomTabNavigationProp<HomeTwoNavParams, K>,
   HomeOneScreenNavigationProp<'Home2'>
 >;
 
-const Stack = createNativeStackNavigator<HomeTwoNavParams>();
+const Tab = createBottomTabNavigator<HomeTwoNavParams>();
 
 function HomeTwoNavigator() {
+  const theme = useTheme();
+  const { colors } = theme;
+  const navigatorStyles = getNavigatorStyles(theme);
+
+  const insets = useSafeAreaInsets();
+
   const deviceWidth = useWindowDimensions().width;
 
   return (
-    <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Article" component={ArticleList} />
-      <Stack.Screen
+    <Tab.Navigator
+      initialRouteName="Article"
+      tabBarOptions={{
+        activeTintColor: colors.bottomBarActive,
+        inactiveTintColor: colors.bottomBarInactive,
+        activeBackgroundColor: colors.bottomBar,
+        inactiveBackgroundColor: colors.bottomBar,
+      }}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color }) => {
+          let iconName;
+          switch (route.name) {
+            case 'Article':
+              iconName = 'newspaper';
+              break;
+            case 'Event':
+              iconName = 'calendar';
+              break;
+            case 'Petition':
+              iconName = 'comment-check-outline';
+              break;
+            case 'Explorer':
+              iconName = 'compass-outline';
+              break;
+            case 'List':
+              iconName = 'dots-horizontal';
+              break;
+            default:
+              iconName = 'shape';
+          }
+
+          return <Icon name={iconName} size={26} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
+      <Tab.Screen
         name="Event"
         component={deviceWidth > Config.layout.dualMinWidth ? EventDualList : EventList}
+        options={{ title: 'Évènements' }}
       />
-      {/* <Stack.Screen name="Petition" component={PetitionList} /> */}
-      <Stack.Screen name="Explorer" component={ExplorerList} />
-    </Stack.Navigator>
+      {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
+      <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
+      <Tab.Screen name="List" component={ListScreen} options={{ title: 'Plus' }} />
+    </Tab.Navigator>
   );
 }
 

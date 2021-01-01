@@ -99,11 +99,14 @@ function EventConfigure({
       id: 'upcoming',
       name: 'À venir (dans le futur)',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Event', params: { initialList: 'upcoming' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Event', params: { initialList: 'upcoming' } },
+            },
           },
         }),
     },
@@ -111,11 +114,14 @@ function EventConfigure({
       id: 'passed',
       name: 'Finis (dans le passé)',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Event', params: { initialList: 'passed' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Event', params: { initialList: 'passed' } },
+            },
           },
         }),
     },
@@ -123,8 +129,8 @@ function EventConfigure({
       id: 'following',
       name: 'Suivis',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
             screen: 'Home2',
             params: { screen: 'Event', params: { initialList: 'following' } },

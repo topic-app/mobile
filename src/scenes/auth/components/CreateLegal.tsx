@@ -39,11 +39,14 @@ const AuthCreatePageLegal: React.FC<Props> = ({
         <View>
           <TouchableOpacity
             onPress={() =>
-              navigation.push('Main', {
-                screen: 'More',
+              navigation.push('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'About',
-                  params: { screen: 'Legal', params: { page: 'confidentialite' } },
+                  screen: 'More',
+                  params: {
+                    screen: 'About',
+                    params: { screen: 'Legal', params: { page: 'confidentialite' } },
+                  },
                 },
               })
             }
@@ -80,11 +83,14 @@ const AuthCreatePageLegal: React.FC<Props> = ({
               />
               <ListItemAnchor
                 onPress={() =>
-                  navigation.push('Main', {
-                    screen: 'More',
+                  navigation.push('Root', {
+                    screen: 'Main',
                     params: {
-                      screen: 'About',
-                      params: { screen: 'Legal', params: { page: 'confidentialite' } },
+                      screen: 'More',
+                      params: {
+                        screen: 'About',
+                        params: { screen: 'Legal', params: { page: 'confidentialite' } },
+                      },
                     },
                   })
                 }
@@ -96,11 +102,14 @@ const AuthCreatePageLegal: React.FC<Props> = ({
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              navigation.push('Main', {
-                screen: 'More',
+              navigation.push('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'About',
-                  params: { screen: 'Legal', params: { page: 'conditions' } },
+                  screen: 'More',
+                  params: {
+                    screen: 'About',
+                    params: { screen: 'Legal', params: { page: 'conditions' } },
+                  },
                 },
               })
             }
@@ -137,11 +146,14 @@ const AuthCreatePageLegal: React.FC<Props> = ({
               />
               <ListItemAnchor
                 onPress={() =>
-                  navigation.push('Main', {
-                    screen: 'More',
+                  navigation.push('Root', {
+                    screen: 'Main',
                     params: {
-                      screen: 'About',
-                      params: { screen: 'Legal', params: { page: 'conditions' } },
+                      screen: 'More',
+                      params: {
+                        screen: 'About',
+                        params: { screen: 'Legal', params: { page: 'conditions' } },
+                      },
                     },
                   })
                 }

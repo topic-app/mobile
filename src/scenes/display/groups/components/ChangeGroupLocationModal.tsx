@@ -1,11 +1,22 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { Button, Subheading, List, Text } from 'react-native-paper';
+import { View, Platform, ScrollView } from 'react-native';
+import {
+  Divider,
+  Button,
+  HelperText,
+  TextInput as PaperTextInput,
+  Subheading,
+  List,
+  Text,
+} from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Modal } from '@components/index';
 import { Permissions } from '@constants';
+import { fetchGroup } from '@redux/actions/api/groups';
+import { groupModify } from '@redux/actions/apiActions/groups';
 import getStyles from '@styles/Styles';
 import {
   ModalProps,
@@ -16,6 +27,8 @@ import {
   GroupRolePermission,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
+
+import getArticleStyles from '../styles/Styles';
 
 type ChangeGroupLocationModalProps = ModalProps & {
   group: Group | GroupPreload | null;
@@ -30,25 +43,25 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
+  const articleStyles = getArticleStyles(theme);
+  const { colors } = theme;
 
-  if (group === null) {
-    return null;
-  }
+  const [errorVisible, setErrorVisible] = React.useState(false);
 
-  const articlePermission = group.preload
+  const articlePermission = group?.preload
     ? null
-    : group.permissions.find((p) => p.permission === Permissions.ARTICLE_ADD)?.scope;
+    : group?.permissions?.find((p) => p.permission === Permissions.ARTICLE_ADD)?.scope;
   const eventPermission = group?.preload
     ? null
-    : group.permissions.find((p) => p.permission === Permissions.EVENT_ADD)?.scope;
-  const petitionPermission = group.preload
+    : group?.permissions?.find((p) => p.permission === Permissions.EVENT_ADD)?.scope;
+  const petitionPermission = group?.preload
     ? null
-    : group.permissions.find((p) => p.permission === Permissions.PETITION_ADD)?.scope;
-  const placePermission = group.preload
+    : group?.permissions?.find((p) => p.permission === Permissions.PETITION_ADD)?.scope;
+  const placePermission = group?.preload
     ? null
-    : group.permissions.find((p) => p.permission === Permissions.PLACE_ADD)?.scope;
+    : group?.permissions?.find((p) => p.permission === Permissions.PLACE_ADD)?.scope;
 
-  const locations: {
+  const locs: {
     key: string;
     name: string;
     showEverywhere?: boolean;
@@ -59,66 +72,69 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
       key: 'localisation',
       name: 'Localisation',
       showEverywhere: false,
-      data: group.preload
+      data: group?.preload
         ? null
         : {
-            schools: group.location.schools.map((s) => s._id),
-            departments: group.location.departments.map((d) => d._id),
-            global: group.location.global,
+            schools: group?.location?.schools?.map((s) => s._id),
+            departments: group?.location?.departments?.map((d) => d._id),
+            global: group?.location?.global,
           },
-      callback: () => {},
+      callback: (l) => {},
     },
     {
       key: 'articles',
       name: 'Articles',
       data: articlePermission,
-      callback: () => {},
+      callback: (l) => {},
     },
     {
       key: 'events',
       name: 'Évènements',
       data: eventPermission,
-      callback: () => {},
+      callback: (l) => {},
     },
     {
       key: 'petitions',
       name: 'Petition',
       data: petitionPermission,
-      callback: () => {},
+      callback: (l) => {},
     },
     {
       key: 'places',
       name: 'Places',
       data: placePermission,
-      callback: () => {},
+      callback: (l) => {},
     },
   ];
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      {group.preload ? (
+      {group?.preload ? (
         <Text>Chargement...</Text>
       ) : (
         <View>
           <ScrollView style={{ height: 600 }}>
             <View style={styles.container}>
-              {locations.map((loc) => (
+              {locs.map((l) => (
                 <View>
-                  <Subheading>{loc.name}</Subheading>
+                  <Subheading>{l.name}</Subheading>
                   <List.Item
                     title="Écoles"
-                    description={group.preload ? 'Chargement...' : loc.data?.schools?.join(', ')}
+                    description={group?.preload ? 'Chargement...' : l.data?.schools?.join(', ')}
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'More',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Location',
+                          screen: 'More',
                           params: {
-                            type: 'schools',
-                            subtitle: 'Modifier un groupe',
-                            showEverywhere: loc.showEverywhere || true,
-                            initialData: { ...loc.data },
-                            callback: loc.callback,
+                            screen: 'Location',
+                            params: {
+                              type: 'schools',
+                              subtitle: 'Modifier un groupe',
+                              showEverywhere: l.showEverywhere || true,
+                              initialData: { ...l.data },
+                              callback: l.callback,
+                            },
                           },
                         },
                       })
@@ -126,19 +142,20 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
                   />
                   <List.Item
                     title="Départements"
-                    description={
-                      group.preload ? 'Chargement...' : loc.data?.departments?.join(', ')
-                    }
+                    description={group?.preload ? 'Chargement...' : l.data?.departments?.join(', ')}
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'More',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Location',
+                          screen: 'More',
                           params: {
-                            type: 'departements',
-                            subtitle: 'Modifier un groupe',
-                            initialData: { ...loc.data },
-                            callback: loc.callback,
+                            screen: 'Location',
+                            params: {
+                              type: 'departements',
+                              subtitle: 'Modifier un groupe',
+                              initialData: { ...l.data },
+                              callback: l.callback,
+                            },
                           },
                         },
                       })
@@ -146,20 +163,21 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
                   />
                   <List.Item
                     title="Régions"
-                    description={
-                      group.preload ? 'Chargement...' : loc.data?.departments?.join(', ')
-                    }
+                    description={group?.preload ? 'Chargement...' : l.data?.departments?.join(', ')}
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'More',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Location',
+                          screen: 'More',
                           params: {
-                            type: 'regions',
-                            subtitle: 'Modifier un groupe',
-                            showEverywhere: loc.showEverywhere || true,
-                            initialData: { ...loc.data },
-                            callback: loc.callback,
+                            screen: 'Location',
+                            params: {
+                              type: 'regions',
+                              subtitle: 'Modifier un groupe',
+                              showEverywhere: l.showEverywhere || true,
+                              initialData: { ...l.data },
+                              callback: l.callback,
+                            },
                           },
                         },
                       })
@@ -167,18 +185,21 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
                   />
                   <List.Item
                     title="Autres"
-                    description={group.preload ? 'Chargement...' : loc.data?.schools?.join(', ')}
+                    description={group?.preload ? 'Chargement...' : l.data?.schools?.join(', ')}
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'More',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Location',
+                          screen: 'More',
                           params: {
-                            type: 'other',
-                            subtitle: 'Modifier un groupe',
-                            showEverywhere: loc.showEverywhere || true,
-                            initialData: { ...loc.data },
-                            callback: loc.callback,
+                            screen: 'Location',
+                            params: {
+                              type: 'other',
+                              subtitle: 'Modifier un groupe',
+                              showEverywhere: l.showEverywhere || true,
+                              initialData: { ...l.data },
+                              callback: l.callback,
+                            },
                           },
                         },
                       })

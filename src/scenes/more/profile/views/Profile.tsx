@@ -201,14 +201,17 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
             mode="outlined"
             style={{ borderRadius: 20 }}
             onPress={() =>
-              navigation.push('Main', {
-                screen: 'Display',
+              navigation.push('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'User',
+                  screen: 'Display',
                   params: {
-                    screen: 'Display',
+                    screen: 'User',
                     params: {
-                      id: account.accountInfo.accountId,
+                      screen: 'Display',
+                      params: {
+                        id: account.accountInfo.accountId,
+                      },
                     },
                   },
                 },

@@ -99,11 +99,14 @@ function ArticleLists({
       id: 'unread',
       name: 'Non lus',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Article', params: { initialList: 'unread' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Article', params: { initialList: 'unread' } },
+            },
           },
         }),
       disable: !preferences.history,
@@ -112,11 +115,14 @@ function ArticleLists({
       id: 'all',
       name: 'Tous',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Article', params: { initialList: 'all' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Article', params: { initialList: 'all' } },
+            },
           },
         }),
     },
@@ -124,11 +130,14 @@ function ArticleLists({
       id: 'following',
       name: 'Suivis',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Article', params: { initialList: 'following' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Article', params: { initialList: 'following' } },
+            },
           },
         }),
       disable: !account.loggedIn,

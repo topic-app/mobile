@@ -235,15 +235,17 @@ const ContentFlatList = <T extends any>({
         renderItem={(itemProps) => (
           <>
             <Item {...itemProps} sectionKey={tabKey} group={currentSection.group} />
-            <Animated.View
-              style={{
-                opacity: renderItemFadeAnim,
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                backgroundColor: colors.background,
-              }}
-            />
+            {Platform.OS === 'android' && (
+              <Animated.View
+                style={{
+                  opacity: renderItemFadeAnim,
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: colors.background,
+                }}
+              />
+            )}
           </>
         )}
         getItemLayout={getItemLayout}

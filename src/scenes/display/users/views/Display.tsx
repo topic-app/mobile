@@ -359,15 +359,18 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                         title={group.name}
                         subtitle={`Groupe ${group.type}`}
                         onPress={() =>
-                          navigation.push('Main', {
-                            screen: 'Display',
+                          navigation.push('Root', {
+                            screen: 'Main',
                             params: {
-                              screen: 'Group',
+                              screen: 'Display',
                               params: {
-                                screen: 'Display',
+                                screen: 'Group',
                                 params: {
-                                  id: group._id,
-                                  title: group.displayName || group.shortName || group.name,
+                                  screen: 'Display',
+                                  params: {
+                                    id: group._id,
+                                    title: group.displayName || group.shortName || group.name,
+                                  },
                                 },
                               },
                             },
@@ -449,13 +452,16 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 title={g.displayName}
                                 subtitle={`Groupe ${g.type}`}
                                 onPress={() =>
-                                  navigation.push('Main', {
-                                    screen: 'Display',
+                                  navigation.push('Root', {
+                                    screen: 'Main',
                                     params: {
-                                      screen: 'Group',
+                                      screen: 'Display',
                                       params: {
-                                        screen: 'Display',
-                                        params: { id: g._id, title: g.displayName },
+                                        screen: 'Group',
+                                        params: {
+                                          screen: 'Display',
+                                          params: { id: g._id, title: g.displayName },
+                                        },
                                       },
                                     },
                                   })
@@ -481,13 +487,16 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 avatar={u.info?.avatar}
                                 title={u.displayName}
                                 onPress={() =>
-                                  navigation.push('Main', {
-                                    screen: 'Display',
+                                  navigation.push('Root', {
+                                    screen: 'Main',
                                     params: {
-                                      screen: 'User',
+                                      screen: 'Display',
                                       params: {
-                                        screen: 'Display',
-                                        params: { id: u._id },
+                                        screen: 'User',
+                                        params: {
+                                          screen: 'Display',
+                                          params: { id: u._id },
+                                        },
                                       },
                                     },
                                   })

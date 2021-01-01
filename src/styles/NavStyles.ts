@@ -46,8 +46,6 @@ function getNavigatorStyles(theme: Theme) {
     profileBackground: {
       backgroundColor: colors.drawerBackground,
       paddingTop: StatusBar.currentHeight,
-      minHeight: 130,
-      marginBottom: -4,
     },
     drawerStyle: {
       backgroundColor: colors.surface,

@@ -67,13 +67,16 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                 <View style={[styles.image, { minHeight: 150 }]} key={node.key}>
                   <PlatformTouchable
                     onPress={() =>
-                      navigation.push('Main', {
-                        screen: 'Display',
+                      navigation.push('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Image',
+                          screen: 'Display',
                           params: {
-                            screen: 'Display',
-                            params: { image: src.substring(6) },
+                            screen: 'Image',
+                            params: {
+                              screen: 'Display',
+                              params: { image: src.substring(6) },
+                            },
                           },
                         },
                       })

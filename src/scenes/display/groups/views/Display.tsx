@@ -313,13 +313,16 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   group.avatar?.type === 'image'
                     ? () =>
                         group.avatar?.type === 'image' &&
-                        navigation.push('Main', {
-                          screen: 'Display',
+                        navigation.push('Root', {
+                          screen: 'Main',
                           params: {
-                            screen: 'Image',
+                            screen: 'Display',
                             params: {
-                              screen: 'Display',
-                              params: { image: group.avatar?.image?.image },
+                              screen: 'Image',
+                              params: {
+                                screen: 'Display',
+                                params: { image: group.avatar?.image?.image },
+                              },
                             },
                           },
                         })
@@ -590,14 +593,17 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         badgeColor={colors.solid.gold}
                         avatar={mem.user?.info?.avatar}
                         onPress={() =>
-                          navigation.navigate('Main', {
-                            screen: 'Display',
+                          navigation.push('Root', {
+                            screen: 'Main',
                             params: {
-                              screen: 'User',
+                              screen: 'Display',
                               params: {
-                                screen: 'Display',
+                                screen: 'User',
                                 params: {
-                                  id: mem.user?._id,
+                                  screen: 'Display',
+                                  params: {
+                                    id: mem.user?._id,
+                                  },
                                 },
                               },
                             },

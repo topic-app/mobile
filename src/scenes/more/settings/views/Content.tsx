@@ -41,7 +41,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
         scene={{
           descriptor: {
             options: {
-              title: 'Contenu et accessibilité',
+              title: 'Contenu',
               subtitle: 'Paramètres',
             },
           },
