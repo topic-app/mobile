@@ -40,6 +40,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           result = await request('auth/check/local/username', 'get', { username }, false, 'auth');
         } catch (err) {
           updateState({ check: { success: false, error: err, loading: false } });
+          return false;
         }
         return !result?.data?.usernameExists;
       }),
@@ -56,6 +57,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           result = await request('auth/check/local/email', 'get', { email }, false, 'auth');
         } catch (err) {
           updateState({ check: { success: false, error: err, loading: false } });
+          return false;
         }
         return !result?.data?.emailExists;
       }),
