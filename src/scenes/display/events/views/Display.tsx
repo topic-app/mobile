@@ -147,6 +147,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
   const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
 
+  const [replyingToComment, setReplyingToComment] = React.useState<string | null>(null);
+
   const scrollY = new Animated.Value(0);
 
   const deleteEvent = () =>
@@ -520,14 +522,17 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       <AddCommentModal
         visible={isCommentModalVisible}
         setVisible={setCommentModalVisible}
+        replyingToComment={replyingToComment}
+        setReplyingToComment={setReplyingToComment}
         id={id}
         reqState={reqState}
         add={(
           publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
           content: Content,
           parent: string,
+          isReplying: boolean,
         ) =>
-          commentAdd(publisher, content, parent, 'event').then(() =>
+          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'event').then(() =>
             updateComments('initial', { parentId: id }),
           )
         }
