@@ -205,10 +205,10 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 account.loggedIn &&
                 account.accountInfo?.user &&
                 following?.users.some((u) => u._id === author._id)
-                  ? 'account-heart'
+                  ? 'heart'
                   : undefined
               }
-              badgeColor={colors.valid}
+              badgeColor={colors.primary}
               // TODO: Add imageUrl: imageUrl={article.author.imageUrl}
               // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
             />
@@ -241,10 +241,12 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               account.loggedIn &&
               account.accountInfo?.user &&
               following?.groups.some((g) => g._id === article.group?._id)
-                ? 'account-heart'
+                ? 'heart'
+                : article.group?.official
+                ? 'check-decagram'
                 : undefined
             }
-            badgeColor={colors.valid}
+            badgeColor={colors.primary}
           />
           {!verification && commentsDisplayed && (
             <View>
@@ -714,9 +716,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             navigation={navigation}
             reply={(id: string | null) => {
               setReplyingToComment(id);
-              console.log('HELLO');
               setCommentModalVisible(true);
             }}
+            authors={[...(article?.authors?.map((a) => a._id) || []), article?.group?._id || '']}
           />
         )}
       />
@@ -731,6 +733,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             : replyingToPublisher?.user?.info?.username
         }
         id={id}
+        group={article?.group?._id}
         reqState={reqState}
         add={(
           publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },

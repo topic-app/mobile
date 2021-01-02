@@ -37,7 +37,7 @@ const GroupCard: React.FC<GroupCardProps> = ({
               <Avatar avatar={group.avatar} style={styles.avatar} />
               <View style={{ flex: 1, paddingLeft: 15 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Title numberOfLines={1}>{group?.name}</Title>
+                  <Title numberOfLines={1}>{group?.displayName || group?.name}</Title>
                   <View style={{ marginLeft: 5 }}>
                     {group?.official && (
                       <Icon name="check-decagram" color={colors.primary} size={20} />
@@ -50,7 +50,7 @@ const GroupCard: React.FC<GroupCardProps> = ({
                 </Paragraph>
               </View>
               <View>
-                {following && <Icon name="star-circle" color={colors.primary} size={32} />}
+                {following && <Icon name="heart" color={colors.primary} size={32} />}
                 {member && <Icon name="account-outline" color={colors.primary} size={32} />}
               </View>
             </View>

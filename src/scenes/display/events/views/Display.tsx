@@ -526,6 +526,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         replyingToComment={replyingToComment}
         setReplyingToComment={setReplyingToComment}
         id={id}
+        group={event?.group?._id}
         reqState={reqState}
         add={(
           publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },

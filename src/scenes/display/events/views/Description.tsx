@@ -260,10 +260,10 @@ function EventDisplayDescriptionHeader({
           badge={
             account.loggedIn &&
             account.accountInfo?.user?.data?.following?.users?.some((u) => u?._id === author?._id)
-              ? 'account-heart'
+              ? 'heart'
               : undefined
           }
-          badgeColor={colors.valid}
+          badgeColor={colors.primary}
           // TODO: Add imageUrl: imageUrl={article.author.imageUrl}
           // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
         />
@@ -298,10 +298,12 @@ function EventDisplayDescriptionHeader({
           account.accountInfo?.user?.data?.following?.groups?.some(
             (g) => g?._id === event.group?._id,
           )
-            ? 'account-heart'
+            ? 'heart'
+            : event.group?.official
+            ? 'check-decagram'
             : undefined
         }
-        badgeColor={colors.valid}
+        badgeColor={colors.primary}
       />
       {!verification && commentsDisplayed && (
         <View>
@@ -469,6 +471,7 @@ function EventDisplayDescription({
             setReplyingToComment(commentId);
             setCommentModalVisible(true);
           }}
+          authors={[...(event.authors?.map((a) => a._id) || []), event.group?._id || '']}
           loggedIn={account.loggedIn}
           navigation={navigation}
         />

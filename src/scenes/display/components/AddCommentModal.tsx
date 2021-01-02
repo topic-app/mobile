@@ -4,10 +4,10 @@ import { Divider, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components/index';
-import { Config } from '@constants/index';
+import { Config, Permissions } from '@constants/index';
 import getStyles from '@styles/Styles';
 import { ModalProps, State, Account, CommentRequestState, Publisher, Content } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, checkPermission } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
@@ -29,6 +29,7 @@ type AddCommentModalProps = ModalProps & {
   setReplyingToComment: (id: string | null) => any;
   replyingToUsername?: string;
   reqState: { comments: CommentRequestState };
+  group?: string;
   add: (
     publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
     content: Content,
@@ -47,6 +48,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
   replyingToComment,
   setReplyingToComment,
   replyingToUsername,
+  group,
 }) => {
   const theme = useTheme();
   const articleStyles = getArticleStyles(theme);
@@ -75,18 +77,29 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
       },
       type: 'category',
     });
-    account.groups?.forEach((g) =>
-      publishers.push({
-        key: g._id,
-        title: g.shortName || g.name,
-        icon: 'newspaper',
-        publisher: {
-          type: 'group',
-          group: g._id,
-        },
-        type: 'category',
-      }),
-    );
+    account.groups?.forEach((g) => {
+      if (
+        checkPermission(
+          account,
+          {
+            permission: Permissions.COMMENT_ADD,
+            scope: { groups: group ? [group] : [] },
+          },
+          g._id,
+        )
+      ) {
+        publishers.push({
+          key: g._id,
+          title: g.shortName || g.name,
+          icon: 'newspaper',
+          publisher: {
+            type: 'group',
+            group: g._id,
+          },
+          type: 'category',
+        });
+      }
+    });
   }
 
   const submitComment = () => {

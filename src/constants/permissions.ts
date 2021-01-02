@@ -5,7 +5,7 @@ export const ARTICLE_VERIFICATION_VIEW = 'article.verification.view';
 export const ARTICLE_VERIFICATION_APPROVE = 'article.verification.approve';
 export const ARTICLE_VERIFICATION_APPROVE_EXTRA = 'article.verification.approve.extra';
 
-export const COMMENT_ADD = 'commment.add';
+export const COMMENT_ADD = 'comment.add';
 export const COMMENT_MODIFY = 'comment.modify';
 export const COMMENT_DELETE = 'comment.delete';
 

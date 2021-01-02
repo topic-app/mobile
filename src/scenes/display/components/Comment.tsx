@@ -2,6 +2,7 @@ import moment from 'moment';
 import React from 'react';
 import { View, Platform, TouchableOpacity } from 'react-native';
 import { Text, IconButton, Menu } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Avatar, Content } from '@components/index';
 import getStyles from '@styles/Styles';
@@ -17,6 +18,7 @@ type CommentInlineCardProps = {
   loggedIn: boolean;
   navigation: NativeStackNavigationProp<any, any>;
   reply: (id: string | null) => any;
+  authors?: string[];
 };
 
 const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
@@ -25,6 +27,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
   loggedIn,
   navigation,
   reply,
+  authors,
 }) => {
   const { publisher, content, date, _id: id } = comment;
   const { displayName } = publisher[publisher.type] || {};
@@ -69,12 +72,21 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
               activeOpacity={Platform.OS === 'ios' ? 0.2 : 0.6}
               onPress={navigateToPublisher}
             >
-              <Text style={commentStyles.username}>{displayName}</Text>
+              <Text style={commentStyles.username}>
+                {displayName}{' '}
+                {publisher.group?.official && (
+                  <Icon name="check-decagram" color={colors.primary} size={12} />
+                )}
+                {authors &&
+                  (authors.includes(publisher.group?._id || '') ||
+                    authors.includes(publisher.user?._id || '')) && (
+                    <Icon name="account-edit" color={colors.primary} size={12} />
+                  )}
+              </Text>
             </TouchableOpacity>
             <Text style={commentStyles.username}> · {moment(date).fromNow()}</Text>
           </View>
           <Content data={content.data} parser={content.parser} />
-          {/* TODO: add a "View Replies" button if replies exist */}
         </View>
         {loggedIn && (
           <View style={{ alignItems: 'flex-end' }}>
@@ -89,7 +101,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
           </View>
         )}
       </View>
-      {comment.cache?.replies && comment.cache.replies.length && (
+      {!!comment.cache?.replies && !!comment.cache.replies.length && (
         <View style={{ marginLeft: 20 }}>
           {comment.cache.replies.map((c) => {
             const navigateToReplyPublisher = () =>
@@ -127,6 +139,14 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                     >
                       <Text style={commentStyles.username}>
                         Réponse de {c.publisher[c.publisher.type]?.displayName}
+                        {c.publisher.group?.official && (
+                          <Icon name="check-decagram" color={colors.primary} size={12} />
+                        )}
+                        {authors &&
+                          (authors.includes(c.publisher.group?._id || '') ||
+                            authors.includes(c.publisher.user?._id || '')) && (
+                            <Icon name="account-edit" color={colors.primary} size={12} />
+                          )}
                       </Text>
                     </TouchableOpacity>
                     <Text style={commentStyles.username}> · {moment(c.date).fromNow()}</Text>
