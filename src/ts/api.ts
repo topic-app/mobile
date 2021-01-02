@@ -584,8 +584,8 @@ export type Comment = {
   content: Content;
   parentType: 'article' | 'event' | 'petition' | 'place' | 'comment';
   parent: string;
-  cache: {
-    replies: CommentReply[];
+  cache?: {
+    replies?: CommentReply[];
   };
 };
 
