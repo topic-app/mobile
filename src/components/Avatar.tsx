@@ -111,7 +111,7 @@ const Avatar: React.FC<AvatarProps> = ({
       />
     );
   } else {
-    AvatarComponent = <Illustration name="topic-icon" height={size} width={size} style={style} />;
+    AvatarComponent = <PaperAvatar.Icon size={size} icon="account" style={style} />;
   }
   if (editing) {
     AvatarComponent = (

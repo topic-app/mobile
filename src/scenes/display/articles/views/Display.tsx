@@ -67,6 +67,7 @@ type ArticleDisplayHeaderProps = {
   account: Account;
   commentsDisplayed: boolean;
   verification: boolean;
+  setReplyingToComment: (id: string | null) => any;
   setCommentModalVisible: (visible: boolean) => void;
   setArticleReportModalVisible: (visible: boolean) => void;
 };
@@ -79,6 +80,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   commentsDisplayed,
   setCommentModalVisible,
   setArticleReportModalVisible,
+  setReplyingToComment,
   offline,
   verification,
 }) => {
@@ -203,10 +205,10 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 account.loggedIn &&
                 account.accountInfo?.user &&
                 following?.users.some((u) => u._id === author._id)
-                  ? 'account-heart'
+                  ? 'heart'
                   : undefined
               }
-              badgeColor={colors.valid}
+              badgeColor={colors.primary}
               // TODO: Add imageUrl: imageUrl={article.author.imageUrl}
               // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
             />
@@ -217,9 +219,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <InlineCard
             avatar={article.group?.avatar}
             title={article.group?.name || article.group?.displayName}
-            subtitle={`${article.group?.shortName || ''}${
-              article.group.shortName ? ' - ' : ''
-            }Groupe ${article.group?.type}`}
+            subtitle={`Groupe ${article.group?.type}`}
             onPress={() =>
               navigation.push('Root', {
                 screen: 'Main',
@@ -239,10 +239,12 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               account.loggedIn &&
               account.accountInfo?.user &&
               following?.groups.some((g) => g._id === article.group?._id)
-                ? 'account-heart'
+                ? 'heart'
+                : article.group?.official
+                ? 'check-decagram'
                 : undefined
             }
-            badgeColor={colors.valid}
+            badgeColor={colors.primary}
           />
           {!verification && commentsDisplayed && (
             <View>
@@ -256,7 +258,10 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     title="Écrire un commentaire"
                     titleStyle={articleStyles.placeholder}
                     right={() => <List.Icon icon="comment-plus" color={colors.icon} />}
-                    onPress={() => setCommentModalVisible(true)}
+                    onPress={() => {
+                      setReplyingToComment(null);
+                      setCommentModalVisible(true);
+                    }}
                   />
                 </View>
               ) : (
@@ -510,6 +515,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
   const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
 
+  const [replyingToComment, setReplyingToComment] = React.useState<string | null>(null);
+  const replyingToPublisher = articleComments.find((c) => c._id === replyingToComment)?.publisher;
+
   const scrollY = new Animated.Value(0);
 
   if (!article) {
@@ -656,6 +664,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               reqState={reqState}
               account={account}
               navigation={navigation}
+              setReplyingToComment={setReplyingToComment}
               setCommentModalVisible={setCommentModalVisible}
               setArticleReportModalVisible={setArticleReportModalVisible}
             />
@@ -703,20 +712,34 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             }}
             loggedIn={account.loggedIn}
             navigation={navigation}
+            reply={(id: string | null) => {
+              setReplyingToComment(id);
+              setCommentModalVisible(true);
+            }}
+            authors={[...(article?.authors?.map((a) => a._id) || []), article?.group?._id || '']}
           />
         )}
       />
       <AddCommentModal
         visible={isCommentModalVisible}
         setVisible={setCommentModalVisible}
+        replyingToComment={replyingToComment}
+        setReplyingToComment={setReplyingToComment}
+        replyingToUsername={
+          replyingToPublisher?.type === 'group'
+            ? replyingToPublisher?.group?.shortName || replyingToPublisher?.group?.name
+            : replyingToPublisher?.user?.info?.username
+        }
         id={id}
+        group={article?.group?._id}
         reqState={reqState}
         add={(
           publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
           content: ContentType,
           parent: string,
+          isReplying: boolean = false,
         ) =>
-          commentAdd(publisher, content, parent, 'article').then(() =>
+          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'article').then(() =>
             updateComments('initial', { parentId: id }),
           )
         }
