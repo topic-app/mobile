@@ -380,6 +380,7 @@ type EventDisplayDescriptionProps = {
   setCommentReportModalVisible: (state: boolean) => any;
   setMessageModalVisible: (state: boolean) => any;
   comments: Comment[];
+  setReplyingToComment: (id: string | null) => any;
   id: string;
 };
 
@@ -395,6 +396,7 @@ function EventDisplayDescription({
   setCommentReportModalVisible,
   setMessageModalVisible,
   setCommentModalVisible,
+  setReplyingToComment,
   id,
 }: EventDisplayDescriptionProps) {
   const theme = useTheme();
@@ -462,6 +464,10 @@ function EventDisplayDescription({
           report={(commentId) => {
             setFocusedComment(commentId);
             setCommentReportModalVisible(true);
+          }}
+          reply={(commentId) => {
+            setReplyingToComment(commentId);
+            setCommentModalVisible(true);
           }}
           loggedIn={account.loggedIn}
           navigation={navigation}

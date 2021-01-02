@@ -27,7 +27,7 @@ type AddCommentModalProps = ModalProps & {
   account: Account;
   replyingToComment: string | null;
   setReplyingToComment: (id: string | null) => any;
-  replyingToUsername: string | undefined;
+  replyingToUsername?: string;
   reqState: { comments: CommentRequestState };
   add: (
     publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
@@ -91,7 +91,6 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
 
   const submitComment = () => {
     if (account.loggedIn) {
-      console.log(`REPLYING TO ${replyingToComment}`);
       add(
         publishers.find((p) => p.key === publisher)!.publisher,
         { parser: 'plaintext', data: commentText },
@@ -124,7 +123,10 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
         {!!replyingToComment && (
           <View>
             <View style={styles.container}>
-              <Text>Réponse au commentaire de @{replyingToUsername}</Text>
+              <Text>
+                Réponse au commentaire{replyingToUsername ? ' de @' : ''}
+                {replyingToUsername}
+              </Text>
             </View>
             <Divider />
           </View>

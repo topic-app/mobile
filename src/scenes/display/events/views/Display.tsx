@@ -382,6 +382,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                         navigation={navigation}
                         setCommentModalVisible={setCommentModalVisible}
                         setMessageModalVisible={setMessageModalVisible}
+                        setReplyingToComment={setReplyingToComment}
                         setFocusedComment={setFocusedComment}
                         verification={verification}
                         commentsDisplayed={commentsDisplayed}
