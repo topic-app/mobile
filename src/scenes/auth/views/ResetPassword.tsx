@@ -87,6 +87,7 @@ const AuthResetPassword: React.FC<AuthResetPasswordProps> = ({
               <Formik
                 initialValues={{ username: '', password: '' }}
                 validationSchema={ResetPasswordSchema}
+                validateOnMount={false}
                 onSubmit={async ({ username }) => {
                   requestPasswordReset(username).then(() => {
                     navigation.goBack();

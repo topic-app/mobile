@@ -114,7 +114,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <Drawer.Section>
-        <View style={navigatorStyles.profileBackground}>
+        <View style={[navigatorStyles.profileBackground, { marginBottom: -4 }]}>
           {(location.state.fetch?.loading ||
             account.state.fetchAccount?.loading ||
             account.state.fetchGroups?.loading ||
