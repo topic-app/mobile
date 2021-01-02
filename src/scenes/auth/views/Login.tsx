@@ -102,7 +102,11 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
             <PlatformBackButton onPress={navigation.goBack} />
             <View style={authStyles.stepIndicatorContainer}>
               <View style={styles.centerIllustrationContainer}>
-                <Illustration name="auth-login" height={200} width={200} />
+                <Illustration
+                  name={Platform.OS === 'web' ? 'topic-icon-text' : 'auth-login'}
+                  height={200}
+                  width={200}
+                />
                 <Text style={authStyles.title}>Se connecter</Text>
               </View>
             </View>
