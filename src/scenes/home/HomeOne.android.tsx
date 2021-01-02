@@ -162,12 +162,9 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               </View>
             ) : (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Illustration
-                  name="topic-icon"
-                  height={60}
-                  width={60}
-                  style={[navigatorStyles.avatar, { borderRadius: 30 }]}
-                />
+                <View style={{ marginRight: 10 }}>
+                  <Illustration name="topic-icon" height={60} width={60} />
+                </View>
                 <Title style={navigatorStyles.topic}>Topic</Title>
               </View>
             )}
