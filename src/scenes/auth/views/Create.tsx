@@ -14,6 +14,7 @@ import {
 import { register } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { State, AccountRequestState, AccountCreationData } from '@ts/types';
+import { messaging } from '@utils/firebase';
 import { Errors, logger, useTheme } from '@utils/index';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';
@@ -36,7 +37,14 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
 
   const scrollViewRef = React.useRef<ScrollView>(null);
 
-  const create = () => {
+  const create = async () => {
+    const authorizationStatus = await messaging().requestPermission();
+    const token =
+      (await messaging()
+        .getToken()
+        .catch((err) => {
+          console.log(`Could not get FCM token, ${err}`);
+        })) || null;
     const reqParams = {
       accountInfo: {
         username: creationData.username,
@@ -53,8 +61,11 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
       },
       device: {
         type: 'app',
-        deviceId: null,
-        canNotify: true,
+        deviceId: token,
+        canNotify:
+          !!token &&
+          (authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authorizationStatus === messaging.AuthorizationStatus.PROVISIONAL),
       },
     };
 

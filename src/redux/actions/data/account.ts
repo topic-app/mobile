@@ -293,7 +293,7 @@ function updateStateCreator(state: Partial<AccountRequestState>): AnyAction {
 
 type LoginFields = {
   accountInfo: { username: string; password: string };
-  device: { type: string; deviceId: null; canNotify: boolean };
+  device: { type: string; deviceId: string | null; canNotify: boolean };
 };
 
 function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
@@ -383,7 +383,7 @@ function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
 
 type RegisterFields = {
   accountInfo: AccountCreationData;
-  device: { type: string; deviceId: null; canNotify: boolean };
+  device: { type: string; deviceId: string | null; canNotify: boolean };
 };
 
 function registerCreator(fields: RegisterFields): AppThunk {
