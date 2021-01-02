@@ -138,7 +138,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                       activeOpacity={Platform.OS === 'ios' ? 0.2 : 0.6}
                     >
                       <Text style={commentStyles.username}>
-                        Réponse de {c.publisher[c.publisher.type]?.displayName}
+                        Réponse de {c.publisher[c.publisher.type]?.displayName}{' '}
                         {c.publisher.group?.official && (
                           <Icon name="check-decagram" color={colors.primary} size={12} />
                         )}

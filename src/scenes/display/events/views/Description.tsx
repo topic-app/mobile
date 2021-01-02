@@ -275,9 +275,7 @@ function EventDisplayDescriptionHeader({
       <InlineCard
         avatar={event.group?.avatar}
         title={event.group?.name || event.group?.displayName}
-        subtitle={`${event.group?.shortName || ''}${event.group.shortName ? ' - ' : ''}Groupe ${
-          event.group?.type
-        }`}
+        subtitle={`Groupe ${event.group?.type}`}
         onPress={() =>
           navigation.push('Root', {
             screen: 'Main',

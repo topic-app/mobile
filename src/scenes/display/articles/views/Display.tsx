@@ -219,9 +219,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <InlineCard
             avatar={article.group?.avatar}
             title={article.group?.name || article.group?.displayName}
-            subtitle={`${article.group?.shortName || ''}${
-              article.group.shortName ? ' - ' : ''
-            }Groupe ${article.group?.type}`}
+            subtitle={`Groupe ${article.group?.type}`}
             onPress={() =>
               navigation.push('Root', {
                 screen: 'Main',
