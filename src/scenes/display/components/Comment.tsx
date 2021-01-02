@@ -92,6 +92,22 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
       {comment.cache?.replies && comment.cache.replies.length && (
         <View style={{ marginLeft: 20 }}>
           {comment.cache.replies.map((c) => {
+            const navigateToReplyPublisher = () =>
+              navigation.navigate('Main', {
+                screen: 'Display',
+                params: {
+                  screen: c.publisher.type === 'user' ? 'User' : 'Group',
+                  params: {
+                    screen: 'Display',
+                    params: {
+                      id:
+                        c.publisher.type === 'user'
+                          ? c.publisher.user?._id
+                          : c.publisher.group?._id,
+                    },
+                  },
+                },
+              });
             return (
               <View style={{ flexDirection: 'row', marginTop: 10 }} key={c._id}>
                 <Avatar
@@ -101,11 +117,14 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                       : c.publisher.group?.avatar
                   }
                   size={40}
-                  onPress={navigateToPublisher}
+                  onPress={navigateToReplyPublisher}
                 />
                 <View style={{ paddingLeft: 10, flex: 1 }}>
                   <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity activeOpacity={Platform.OS === 'ios' ? 0.2 : 0.6}>
+                    <TouchableOpacity
+                      onPress={navigateToReplyPublisher}
+                      activeOpacity={Platform.OS === 'ios' ? 0.2 : 0.6}
+                    >
                       <Text style={commentStyles.username}>
                         Réponse de {c.publisher[c.publisher.type]?.displayName}
                       </Text>
