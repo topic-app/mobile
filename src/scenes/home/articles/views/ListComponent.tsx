@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Animated } from 'react-native';
-import { ProgressBar, FAB } from 'react-native-paper';
+import { FAB } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import {
@@ -78,9 +78,9 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
     const categCommon: Partial<ContentSection<AnyArticle>> = {
       group: 'categories',
       loading: state.list.loading,
-      onLoad: (loadType) => {
+      onLoad: async (loadType) => {
         if (loadType !== 'initial') {
-          updateArticles(loadType);
+          await updateArticles(loadType);
         }
       },
     };
@@ -106,9 +106,9 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
           title: 'Suivis',
           data: followingArticles,
           ...categCommon,
-          onLoad: (loadType) => {
+          onLoad: async (loadType) => {
             if (loadType !== 'initial') {
-              updateArticlesFollowing(loadType);
+              await updateArticlesFollowing(loadType);
             }
           },
           loading: state.following?.loading,
@@ -175,9 +175,8 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
       group: 'quicks',
       loading: state.search?.loading,
       onLoad: async (loadType) => {
-        console.log(`LOADING QUICK ${loadType} ${JSON.stringify(params)}`);
         if (loadType === 'initial') {
-          await clearArticles(false, true, false, false);
+          clearArticles(false, true, false, false);
         }
         await searchArticles(loadType, '', params, false, false);
       },

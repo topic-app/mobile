@@ -89,6 +89,7 @@ const ContentFlatList = <T extends any>({
   const [tabKey, setTabKey] = React.useState(
     initialSection || sections[0]?.key || 'shouldNotRender',
   );
+  const [chipTab, setChipTab] = React.useState(tabKey);
   const currentSection = sections.find((sec) => sec.key === tabKey)!;
 
   // Logic for animation
@@ -132,6 +133,7 @@ const ContentFlatList = <T extends any>({
     const shouldSkipAnimation =
       Platform.OS !== 'web' ? await AccessibilityInfo.isReduceMotionEnabled() : false;
 
+    setChipTab(newTabKey);
     if (shouldSkipAnimation) {
       setTabKey(newTabKey);
       // If the function returns a promise, wait until it is resolved
@@ -176,7 +178,7 @@ const ContentFlatList = <T extends any>({
         {shouldRenderTabChipList ? (
           <TabChipList
             sections={Object.entries(tabs).map(([key, data]) => ({ key, data }))}
-            selected={tabKey}
+            selected={chipTab}
             setSelected={changeList}
             configure={onConfigurePress}
           />
@@ -189,7 +191,7 @@ const ContentFlatList = <T extends any>({
         ) : null}
       </View>
     ),
-    [sections, tabKey],
+    [tabs, tabKey, chipTab],
   );
 
   // Early return if nothing to render

@@ -84,8 +84,8 @@ type TabBarProps = SceneRendererProps & {
 };
 
 export type StepperViewPageProps = {
-  next: (num?: number) => void;
-  prev: (num?: number) => void;
+  next: () => void;
+  prev: () => void;
   index: number;
   setIndex: (newIndex: number) => void;
 };
@@ -122,26 +122,23 @@ const StepperView: React.FC<Props> = ({
 
   const [index, setIndex] = React.useState(0);
 
-  const next = (num = 1) => {
-    setIndex(index + num);
-    onChange();
-  };
-  const prev = (num = 1) => {
-    setIndex(index - num);
-    onChange();
-  };
-
   const initialLayout = { width: Dimensions.get('window').width };
 
   const renderScene = ({ route }: { route: PageType }) => {
-    return pages
-      .find((p) => p.key === route.key)!
-      .component({
-        next,
-        prev,
-        index,
-        setIndex,
-      });
+    const i = pages.findIndex((page) => page.key === route.key);
+
+    return pages[i].component({
+      next: () => {
+        setIndex(i + 1);
+        onChange();
+      },
+      prev: () => {
+        setIndex(i - 1);
+        onChange();
+      },
+      index,
+      setIndex,
+    });
   };
 
   pages[index]?.onVisible?.();
