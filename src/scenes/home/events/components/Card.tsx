@@ -12,15 +12,15 @@ import {
   removeEventFromList,
 } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
-import { Event, EventListItem } from '@ts/types';
+import { AnyEvent, EventListItem } from '@ts/types';
 import { useTheme, Alert } from '@utils/index';
 
 import getEventStyles from '../styles/Styles';
 
 type EventListCardProps = {
-  event: Event;
+  event: AnyEvent;
+  group?: string;
   sectionKey: string;
-  itemKey: string;
   isRead: boolean;
   historyActive: boolean;
   lists: EventListItem[];
@@ -30,8 +30,8 @@ type EventListCardProps = {
 
 const EventListCard: React.FC<EventListCardProps> = ({
   event,
+  group,
   sectionKey,
-  itemKey,
   isRead,
   historyActive,
   lists,
@@ -50,7 +50,7 @@ const EventListCard: React.FC<EventListCardProps> = ({
   const renderRightActions = (id: string) => {
     return (
       <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
-        {sectionKey !== 'lists' ? (
+        {group !== 'lists' ? (
           <View
             style={{
               flexDirection: 'row',
@@ -145,8 +145,8 @@ const EventListCard: React.FC<EventListCardProps> = ({
     swipePropRef: React.RefObject<Swipeable>,
   ) => {
     swipePropRef.current?.close();
-    if (sectionKey === 'lists') {
-      removeEventFromList(id, itemKey);
+    if (group === 'lists') {
+      removeEventFromList(id, sectionKey);
     } else {
       if (isRead) deleteEventRead(id);
       else addEventRead(id, title, true);
@@ -158,10 +158,10 @@ const EventListCard: React.FC<EventListCardProps> = ({
       ref={swipeRef}
       renderLeftActions={() => renderLeftActions(event._id, swipeRef)}
       renderRightActions={
-        historyActive || sectionKey !== 'lists' ? () => renderRightActions(event._id) : undefined
+        historyActive || group !== 'lists' ? () => renderRightActions(event._id) : undefined
       }
       onSwipeableRightOpen={
-        historyActive || sectionKey !== 'lists'
+        historyActive || group !== 'lists'
           ? () => swipeRightAction(event._id, event.title, swipeRef)
           : undefined
       }

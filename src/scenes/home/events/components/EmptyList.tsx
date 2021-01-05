@@ -1,39 +1,39 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { ActivityIndicator, useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { FullscreenIllustration } from '@components/index';
-import { ArticleRequestState } from '@ts/types';
+import { EventRequestState } from '@ts/types';
 import { useTheme } from '@utils';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 
 type EventEmptyListProps = {
-  tab: string;
   sectionKey: string;
-  reqState: ArticleRequestState;
-  navigation: HomeTwoScreenNavigationProp<'Event'>;
+  group?: string;
+  reqState: EventRequestState;
   changeTab: (tabKey: string) => void;
 };
 
 const EventEmptyList: React.FC<EventEmptyListProps> = ({
-  tab,
   sectionKey,
+  group,
   reqState,
-  navigation,
   changeTab,
 }) => {
   const height = useWindowDimensions().height - 300;
+  const navigation = useNavigation<HomeTwoScreenNavigationProp<'Event'>>();
 
   const theme = useTheme();
   const { colors } = theme;
 
   if (
-    (sectionKey === 'categories' && reqState.list.success) ||
-    (sectionKey === 'quicks' && reqState.search?.success) ||
-    sectionKey === 'lists'
+    (group === 'categories' && reqState.list.success) ||
+    (group === 'quicks' && reqState.search?.success) ||
+    group === 'lists'
   ) {
-    if (tab === 'upcoming' || tab === 'passed') {
+    if (sectionKey === 'upcoming' || sectionKey === 'passed') {
       return (
         <FullscreenIllustration
           style={{ height }}
@@ -48,10 +48,10 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
             })
           }
         >
-          Aucun évènement {tab === 'upcoming' && 'prévu '} pour cette localisation
+          Aucun évènement {sectionKey === 'upcoming' && 'prévu '} pour cette localisation
         </FullscreenIllustration>
       );
-    } else if (sectionKey === 'lists') {
+    } else if (group === 'lists') {
       return (
         <FullscreenIllustration illustration="article-lists" style={{ height }}>
           Aucun évènement dans cette liste{'\n'}Ajoutez les grâce à l&apos;icône{' '}
@@ -66,13 +66,13 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
       );
     }
   } else if (
-    (sectionKey === 'categories' && reqState.list.loading) ||
-    (sectionKey === 'quicks' && reqState.search?.loading)
+    (group === 'categories' && reqState.list.loading) ||
+    (group === 'quicks' && reqState.search?.loading)
   ) {
     return <ActivityIndicator color={colors.primary} size="large" />;
   } else if (
-    (sectionKey === 'categories' && reqState.list.error) ||
-    (sectionKey === 'quicks' && reqState.search?.error)
+    (group === 'categories' && reqState.list.error) ||
+    (group === 'quicks' && reqState.search?.error)
   ) {
     return <FullscreenIllustration illustration="event-greyed" style={{ height }} />;
   }

@@ -87,7 +87,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation, route, hist
                   screen: 'Search',
                   params: {
                     screen: 'Search',
-                    params: { initialCategory: 'articles', previous: 'Actus' },
+                    params: { initialCategory: 'articles' },
                   },
                 }),
             },

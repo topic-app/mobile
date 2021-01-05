@@ -6,97 +6,105 @@ import { connect } from 'react-redux';
 import {
   ErrorMessage,
   GroupsBanner,
-  ARTICLE_CARD_HEADER_HEIGHT,
   VerificationBanner,
   ContentFlatList,
   ContentSection,
+  EVENT_CARD_HEADER_HEIGHT,
 } from '@components/index';
 import { Permissions } from '@constants/index';
 import {
-  updateArticles,
-  searchArticles,
-  updateArticlesFollowing,
-  clearArticles,
-} from '@redux/actions/api/articles';
+  updateUpcomingEvents,
+  updatePassedEvents,
+  searchEvents,
+  updateEventsFollowing,
+  clearEvents,
+} from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
 import {
   State,
-  ArticleListItem,
-  ArticleReadItem,
-  ArticlePreload,
-  ArticlePrefs,
-  ArticleQuickItem,
-  ArticleRequestState,
+  EventListItem,
+  EventReadItem,
+  EventPreload,
+  EventPrefs,
+  EventQuickItem,
+  EventRequestState,
   Account,
-  AnyArticle,
+  AnyEvent,
 } from '@ts/types';
 import { checkPermission, useTheme } from '@utils/index';
 
-import ArticleListCard from '../components/Card';
-import ArticleEmptyList from '../components/EmptyList';
+import EventListCard from '../components/Card';
+import EventEmptyList from '../components/EmptyList';
 
-type ArticleListComponentProps = {
+type EventListComponentProps = {
   scrollY: Animated.Value;
-  onArticlePress: (article: { id: string; title: string; useLists: boolean }) => any;
+  onEventPress: (event: { id: string; title: string; useLists: boolean }) => any;
   onConfigurePressed?: () => void;
-  onArticleCreatePressed: () => void;
+  onEventCreatePressed: () => void;
   historyEnabled: boolean;
   initialTabKey?: string;
-  articles: ArticlePreload[];
-  followingArticles: ArticlePreload[];
-  search: ArticlePreload[];
-  lists: ArticleListItem[];
-  read: ArticleReadItem[];
-  quicks: ArticleQuickItem[];
-  articlePrefs: ArticlePrefs;
-  state: ArticleRequestState;
+  upcomingEvents: EventPreload[];
+  passedEvents: EventPreload[];
+  followingEvents: EventPreload[];
+  search: EventPreload[];
+  lists: EventListItem[];
+  read: EventReadItem[];
+  quicks: EventQuickItem[];
+  eventPrefs: EventPrefs;
+  state: EventRequestState;
   account: Account;
 };
 
-const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
+const EventListComponent: React.FC<EventListComponentProps> = ({
   scrollY,
-  articles,
-  followingArticles,
+  upcomingEvents,
+  passedEvents,
+  followingEvents,
   search,
   lists,
   read,
   quicks,
   state,
-  articlePrefs,
+  eventPrefs,
   historyEnabled,
   account,
-  onArticlePress,
+  onEventPress,
   onConfigurePressed,
-  onArticleCreatePressed,
+  onEventCreatePressed,
   initialTabKey,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const sections: ContentSection<AnyArticle>[] = [];
+  const sections: ContentSection<AnyEvent>[] = [];
 
-  articlePrefs.categories?.forEach((categKey) => {
-    const categCommon: Partial<ContentSection<AnyArticle>> = {
+  eventPrefs.categories?.forEach((categKey) => {
+    const categCommon: Partial<ContentSection<AnyEvent>> = {
       group: 'categories',
       loading: state.list.loading,
-      onLoad: async (loadType) => {
-        if (loadType !== 'initial') {
-          await updateArticles(loadType);
-        }
-      },
     };
-    if (categKey === 'all') {
+    if (categKey === 'upcoming') {
       sections.push({
-        key: 'all',
-        title: 'Tous',
-        data: articles,
+        key: 'upcoming',
+        title: 'À venir',
+        data: upcomingEvents,
+        onLoad: async (loadType) => {
+          if (loadType !== 'initial') {
+            await updateUpcomingEvents(loadType);
+          }
+        },
         ...categCommon,
       });
-    } else if (categKey === 'unread' && historyEnabled) {
+    } else if (categKey === 'passed') {
       sections.push({
-        key: 'unread',
-        title: 'Non lus',
-        data: articles.filter((a) => !read.some((r) => r.id === a._id)),
+        key: 'passed',
+        title: 'Finis',
+        data: passedEvents,
+        onLoad: async (loadType) => {
+          if (loadType !== 'initial') {
+            await updatePassedEvents(loadType);
+          }
+        },
         ...categCommon,
       });
     } else if (categKey === 'following' && account.loggedIn) {
@@ -105,13 +113,13 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         sections.push({
           key: 'following',
           title: 'Suivis',
-          data: followingArticles,
-          ...categCommon,
+          data: followingEvents,
           onLoad: async (loadType) => {
             if (loadType !== 'initial') {
-              await updateArticlesFollowing(loadType);
+              await updateEventsFollowing(loadType);
             }
           },
+          ...categCommon,
           loading: state.following?.loading,
         });
       }
@@ -177,22 +185,23 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
       loading: state.search?.loading,
       onLoad: async (loadType) => {
         if (loadType === 'initial') {
-          clearArticles(false, true, false, false);
+          clearEvents(false, true);
         }
-        await searchArticles(loadType, '', params, false, false);
+        await searchEvents(loadType, '', params, false, false);
       },
     });
   });
 
   React.useEffect(() => {
-    updateArticles('initial');
-    updateArticlesFollowing('initial');
+    updateUpcomingEvents('initial');
+    updatePassedEvents('initial');
+    updateEventsFollowing('initial');
   }, [null]);
 
   const [cardWidth, setCardWidth] = React.useState(100);
   const imageSize = cardWidth / 3.5;
 
-  const itemHeight = ARTICLE_CARD_HEADER_HEIGHT + imageSize;
+  const itemHeight = EVENT_CARD_HEADER_HEIGHT + imageSize;
 
   return (
     <View
@@ -203,20 +212,20 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         scrollY={scrollY}
         initialSection={initialTabKey}
         sections={sections}
-        keyExtractor={(article) => article._id}
-        renderItem={({ item: article, sectionKey, group }) => (
-          <ArticleListCard
-            article={article}
+        keyExtractor={(event) => event._id}
+        renderItem={({ item: event, sectionKey, group }) => (
+          <EventListCard
+            event={event}
             group={group}
             sectionKey={sectionKey}
-            isRead={read.some((r) => r.id === article._id)}
+            isRead={read.some((r) => r.id === event._id)}
             historyActive={historyEnabled}
             lists={lists}
             overrideImageWidth={imageSize}
             navigate={() =>
-              onArticlePress({
-                id: article._id,
-                title: article.title,
+              onEventPress({
+                id: event._id,
+                title: event.title,
                 useLists: group === 'lists',
               })
             }
@@ -233,9 +242,9 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
               <ErrorMessage
                 type="axios"
                 strings={{
-                  what: 'la récupération des articles',
-                  contentPlural: 'des articles',
-                  contentSingular: "La liste d'articles",
+                  what: 'la récupération des évènements',
+                  contentPlural: 'des évènements',
+                  contentSingular: "La liste d'évènements",
                 }}
                 error={[state.list.error, state.search?.error, state.following?.error]}
                 retry={retry}
@@ -243,31 +252,32 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
             ) : null}
           </View>
         )}
-        ListEmptyComponent={(props) => <ArticleEmptyList reqState={state} {...props} />}
+        ListEmptyComponent={(props) => <EventEmptyList reqState={state} {...props} />}
         onConfigurePress={onConfigurePressed}
       />
       {checkPermission(account, {
-        permission: Permissions.ARTICLE_ADD,
+        permission: Permissions.EVENT_ADD,
         scope: {},
-      }) && <FAB icon="pencil" onPress={onArticleCreatePressed} style={styles.bottomRightFab} />}
+      }) && <FAB icon="plus" onPress={onEventCreatePressed} style={styles.bottomRightFab} />}
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { articles, articleData, account, preferences } = state;
+  const { events, eventData, account, preferences } = state;
   return {
-    articles: articles.data,
-    followingArticles: articles.following,
-    search: articles.search,
-    articlePrefs: articleData.prefs,
-    lists: articleData.lists,
-    quicks: articleData.quicks,
-    read: articleData.read,
-    state: articles.state,
+    upcomingEvents: events.dataUpcoming,
+    passedEvents: events.dataPassed,
+    followingEvents: events.following,
+    search: events.search,
+    eventPrefs: eventData.prefs,
+    lists: eventData.lists,
+    quicks: eventData.quicks,
+    read: eventData.read,
+    state: events.state,
     account,
     historyEnabled: preferences.history,
   };
 };
 
-export default connect(mapStateToProps)(ArticleListComponent);
+export default connect(mapStateToProps)(EventListComponent);

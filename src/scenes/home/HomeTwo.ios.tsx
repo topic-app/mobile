@@ -1,16 +1,12 @@
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
-import { useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Config } from '@constants/index';
-import getNavigatorStyles from '@styles/NavStyles';
-import { useTheme, useSafeAreaInsets } from '@utils/index';
+import { useTheme } from '@utils/index';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
 import ArticleList from './articles/views/List';
-import EventDualList from './events/views/Dual';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
 import ListScreen from './list/views/List';
@@ -36,11 +32,6 @@ const Tab = createBottomTabNavigator<HomeTwoNavParams>();
 function HomeTwoNavigator() {
   const theme = useTheme();
   const { colors } = theme;
-  const navigatorStyles = getNavigatorStyles(theme);
-
-  const insets = useSafeAreaInsets();
-
-  const deviceWidth = useWindowDimensions().width;
 
   return (
     <Tab.Navigator
@@ -79,11 +70,7 @@ function HomeTwoNavigator() {
       })}
     >
       <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
-      <Tab.Screen
-        name="Event"
-        component={deviceWidth > Config.layout.dualMinWidth ? EventDualList : EventList}
-        options={{ title: 'Évènements' }}
-      />
+      <Tab.Screen name="Event" component={EventList} options={{ title: 'Évènements' }} />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
       <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
       <Tab.Screen name="List" component={ListScreen} options={{ title: 'Plus' }} />
