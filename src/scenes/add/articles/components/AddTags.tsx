@@ -177,6 +177,8 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
     [selectedTags],
   );
 
+  let onEndReachedCalledDuringMomentum = false;
+
   return (
     <View style={articleStyles.formContainer}>
       <View>
@@ -214,8 +216,18 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
       <View style={{ marginTop: 20, height: 40 }}>
         <FlatList
           horizontal
-          // onEndReached={fetchNext}
-          // onEndReachedThreshold={0.1}
+          onMomentumScrollBegin={() => {
+            onEndReachedCalledDuringMomentum = true;
+          }}
+          onMomentumScrollEnd={() => {
+            onEndReachedCalledDuringMomentum = false;
+          }}
+          onEndReached={() => {
+            if (onEndReachedCalledDuringMomentum) {
+              fetchNext();
+            }
+          }}
+          onEndReachedThreshold={0.1}
           data={(searchText === '' ? tagsData : tagsSearch).filter(
             (t) => !selectedTags.includes(t._id),
           )}

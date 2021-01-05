@@ -164,6 +164,7 @@ const ContentFlatList = <T extends any>({
     : undefined;
 
   const shouldRenderTabChipList = sections.length > 1;
+  let onEndReachedCalledDuringMomentum = false;
 
   const ListHeaderComponentDefault = React.useMemo(
     () => (
@@ -251,8 +252,18 @@ const ContentFlatList = <T extends any>({
           </>
         )}
         getItemLayout={getItemLayout}
+        onMomentumScrollBegin={() => {
+          onEndReachedCalledDuringMomentum = true;
+        }}
+        onMomentumScrollEnd={() => {
+          onEndReachedCalledDuringMomentum = false;
+        }}
         onEndReachedThreshold={0.5}
-        onEndReached={() => currentSection.onLoad?.('next')}
+        onEndReached={() => {
+          if (onEndReachedCalledDuringMomentum) {
+            currentSection.onLoad?.('next');
+          }
+        }}
         {...extraFlatListProps}
         {...props}
       />
