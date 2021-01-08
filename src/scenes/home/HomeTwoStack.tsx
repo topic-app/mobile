@@ -10,7 +10,6 @@ import { useTheme, useSafeAreaInsets } from '@utils/index';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
 import ArticleList from './articles/views/List';
-import EventDualList from './events/views/Dual';
 import EventList from './events/views/List';
 import ExplorerList from './explorer/views/List';
 import ListScreen from './list/views/List';
@@ -38,18 +37,10 @@ function HomeTwoNavigator() {
   const { colors } = theme;
   const navigatorStyles = getNavigatorStyles(theme);
 
-  const insets = useSafeAreaInsets();
-
-  const deviceWidth = useWindowDimensions().width;
-
   return (
     <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
-      <Stack.Screen
-        name="Event"
-        component={deviceWidth > Config.layout.dualMinWidth ? EventDualList : EventList}
-        options={{ title: 'Évènements' }}
-      />
+      <Stack.Screen name="Event" component={EventList} options={{ title: 'Évènements' }} />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
       <Stack.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
       <Stack.Screen name="List" component={ListScreen} options={{ title: 'Plus' }} />
