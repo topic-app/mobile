@@ -58,7 +58,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next(1)}
+                          onPress={() => next()}
                           style={{ flex: 1 }}
                         >
                           Suivant
@@ -163,7 +163,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                                 await firebase.analytics().setAnalyticsCollectionEnabled(true);
                               }
                             }
-                            next(1);
+                            next();
                           }}
                           style={{ flex: 1 }}
                         >
@@ -210,7 +210,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next(1)}
+                          onPress={() => next()}
                           style={{ flex: 1 }}
                         >
                           Suivant
@@ -267,7 +267,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next(1)}
+                          onPress={() => next()}
                           style={{ flex: 1 }}
                         >
                           Suivant
