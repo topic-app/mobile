@@ -16,6 +16,7 @@ type BaseThemeType = typeof DefaultTheme & {
     solid: typeof paletteLight;
     appBar: string;
     appBarText: string;
+    appBarButton: string;
     bottomBar: string;
     bottomBarActive: string;
     bottomBarInactive: string;
@@ -69,6 +70,7 @@ const lightBase: BaseThemeType = {
     solid: paletteLight,
     appBar: '#ffffff',
     appBarText: '#111111',
+    appBarButton: common.colors.primary,
     bottomBar: '#ffffff',
     bottomBarActive: common.colors.primary,
     bottomBarInactive: '#999999',
@@ -108,6 +110,7 @@ const darkBase: BaseThemeType = {
     bottomBarInactive: '#999999',
     appBar: '#242529',
     appBarText: '#ffffff',
+    appBarButton: common.colors.primaryLighter,
     tabBackground: '#242529',
     drawerBackground: '#242529',
     drawerContent: '#ffffff',
@@ -146,6 +149,7 @@ const themes: {
       ...lightBase.colors,
       appBar: common.colors.primary,
       appBarText: '#ffffff',
+      appBarButton: '#ffffff',
       activeDrawerItem: common.colors.primaryLighter,
       bottomBar: common.colors.primary,
       bottomBarActive: '#ffffff',
@@ -166,6 +170,7 @@ const themes: {
       primary: '#ffffff',
       appBar: common.colors.primaryDarker,
       appBarText: '#ffffff',
+      appBarButton: '#ffffff',
       bottomBar: common.colors.primaryDarker,
       bottomBarActive: '#ffffff',
       bottomBarInactive: '#999999',
