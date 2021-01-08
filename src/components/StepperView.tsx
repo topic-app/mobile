@@ -153,7 +153,7 @@ const StepperView: React.FC<Props> = ({
       <StepIndicator
         stepCount={pages.length}
         currentPosition={navigationState.index}
-        labels={pages.map((p) => p.title)}
+        labels={pages.map((p, i) => (index === i ? p.title : ''))}
         customStyles={stepIndicatorStyles}
         renderStepIndicator={(params) => (
           <Icon
