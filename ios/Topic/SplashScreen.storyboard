@@ -27,6 +27,8 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Jcu-wg-uL0"/>
+                        <color key="backgroundColor" red="0.32335203890000003" green="0.17189148069999999" blue="0.51767522099999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="EXPO-SplashScreen" firstAttribute="centerX" secondItem="EXPO-ContainerView" secondAttribute="centerX" id="JSt-ik-x2N"/>
                             <constraint firstItem="EXPO-SplashScreen" firstAttribute="centerY" secondItem="EXPO-ContainerView" secondAttribute="centerY" id="lKu-ng-G4c"/>
@@ -38,6 +40,7 @@
             <point key="canvasLocation" x="140.57971014492756" y="128.80434782608697"/>
         </scene>
     </scenes>
+    <color key="tintColor" red="0.34901960784313724" green="0.16078431372549018" blue="0.53725490196078429" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
         <image name="SplashScreen" width="682.66668701171875" height="682.66668701171875"/>
     </resources>

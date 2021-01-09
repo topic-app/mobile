@@ -25,7 +25,7 @@ type BackButtonProps = {
 
 const BackButton: React.FC<BackButtonProps> = ({ onPress, previous }) => {
   const theme = useTheme();
-  const backColor = theme.colors.primary;
+  const backColor = theme.colors.appBarButton;
   return (
     <View>
       <TranslucentStatusBar />
@@ -107,7 +107,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   } else if (home) {
     primaryAction = !iosLeftAction ? null : (
       <PlatformTouchable onPress={iosLeftAction.onPress}>
-        <Text style={{ fontSize: 20, paddingLeft: 16, color: colors.primary }}>
+        <Text style={{ fontSize: 20, paddingLeft: 16, color: colors.appBarButton }}>
           {iosLeftAction.title}
         </Text>
       </PlatformTouchable>
@@ -119,7 +119,12 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
 
   const secondaryActions = actions?.map((item) => (
-    <Appbar.Action key={shortid()} icon={item.icon} onPress={item.onPress} color={colors.primary} />
+    <Appbar.Action
+      key={shortid()}
+      icon={item.icon}
+      onPress={item.onPress}
+      color={colors.appBarButton}
+    />
   ));
 
   const overflowAction = overflow && (
@@ -130,7 +135,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
         <Appbar.Action
           icon="dots-vertical"
           onPress={() => setMenuVisible(true)}
-          color={colors.primary}
+          color={colors.appBarButton}
         />
       }
       statusBarHeight={StatusBar.currentHeight}
@@ -166,7 +171,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
           <View style={{ maxWidth: Math.floor(Dimensions.get('window').width * 0.6) }}>
             <Appbar.Content
               title={title}
-              titleStyle={{ fontFamily: 'Rubik-Medium', color: colors.text, fontSize: 24 }}
+              titleStyle={{ fontFamily: 'Rubik-Medium', color: colors.appBarText, fontSize: 24 }}
             />
           </View>
         </View>
