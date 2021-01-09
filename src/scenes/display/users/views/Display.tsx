@@ -246,7 +246,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
               <Divider style={{ marginVertical: 10 }} />
               <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                 <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{user.data?.cache?.followers || ''}</Text>
+                  <Text style={{ fontSize: 40 }}>
+                    {typeof user.data?.cache?.followers === 'number'
+                      ? user.data.cache.followers
+                      : ' '}
+                  </Text>
                   <Text>Abonnés </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
@@ -260,7 +264,9 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <Text>Abonnements </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{groups.length}</Text>
+                  <Text style={{ fontSize: 40 }}>
+                    {groupsState.search?.loading?.initial ? ' ' : groups.length}
+                  </Text>
                   <Text>Groupes</Text>
                 </View>
               </View>
