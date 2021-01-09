@@ -24,7 +24,7 @@ import {
   Avatar as AvatarType,
   UploadRequestState,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Errors, useTheme } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -78,28 +78,50 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
         summary: editingGroup?.summary,
         description: { parser: 'markdown', data: editingGroup?.description || '' },
         avatar: editingGroup?.avatar,
-      }).then(() => {
-        fetchGroup(group?._id);
-        setVisible(false);
-      });
+      })
+        .then(() => {
+          fetchGroup(group?._id);
+          setVisible(false);
+        })
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: 'la modification du groupe',
+            error,
+            retry: add,
+          }),
+        );
     }
   };
+
+  const editAvatar = () =>
+    uploadImage()
+      .then((id) => {
+        console.log(id);
+        setEditingGroup({
+          ...editingGroup,
+          avatar: {
+            type: 'image',
+            image: {
+              image: id,
+              thumbnails: { small: true, medium: false, large: true },
+            },
+          },
+        });
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: "l'upload de l'image",
+          error,
+          retry: editAvatar,
+        }),
+      );
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
         {state.modify?.loading && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
-        {state.modify?.error ? (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du groupe',
-              contentSingular: 'Le groupe',
-            }}
-            error={state.modify?.error}
-            retry={add}
-          />
-        ) : null}
         <View>
           <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 30 }]}>
             <Title>{editingGroup?.name}</Title>
@@ -113,29 +135,8 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
               },
             ]}
           >
-            {uploadState.upload?.error && (
-              <ErrorMessage
-                error={uploadState.upload?.error}
-                strings={{
-                  what: "l'upload de l'image",
-                  contentSingular: "L'image",
-                }}
-                type="axios"
-                retry={() =>
-                  uploadImage().then((id) =>
-                    setEditingGroup({
-                      ...editingGroup,
-                      avatar: {
-                        type: 'image',
-                        image: { image: id, thumbnails: { small: true, medium: true } },
-                      },
-                    }),
-                  )
-                }
-              />
-            )}
             {uploadState.upload?.loading ? (
-              <View style={{ height: 120 }}>
+              <View style={{ height: 120, alignContent: 'center', flex: 1 }}>
                 <ActivityIndicator size="large" color={colors.primary} />
               </View>
             ) : (
@@ -143,21 +144,7 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
                 size={120}
                 imageSize="large"
                 avatar={editingGroup?.avatar}
-                onPress={() =>
-                  uploadImage().then((id) => {
-                    console.log(id);
-                    setEditingGroup({
-                      ...editingGroup,
-                      avatar: {
-                        type: 'image',
-                        image: {
-                          image: id,
-                          thumbnails: { small: true, medium: false, large: true },
-                        },
-                      },
-                    });
-                  })
-                }
+                onPress={editAvatar}
                 editing
               />
             )}

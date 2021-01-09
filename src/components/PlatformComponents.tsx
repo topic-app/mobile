@@ -8,8 +8,8 @@ import {
   TouchableOpacityProps,
   TouchableNativeFeedbackProps,
 } from 'react-native';
-import { IconButton } from 'react-native-paper';
 import { TouchableHighlight, TouchableNativeFeedback } from 'react-native-gesture-handler';
+import { IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useTheme } from '@utils/index';
@@ -43,11 +43,11 @@ const PlatformIconButton: React.FC<PlatformIconButtonProps> = ({
   if (Platform.OS === 'ios') {
     const iconComponent = (
       <View style={style}>
-        <Icon name={iosIcon || icon} color={color ?? colors.icon} size={iosSize || size * 1.2} />
+        <Icon name={iosIcon || icon} color={color ?? colors.icon} size={iosSize || size * 1.4} />
       </View>
     );
     return onPress ? (
-      <TouchableHighlight onPress={onPress}>{iconComponent}</TouchableHighlight>
+      <TouchableOpacity onPress={onPress}>{iconComponent}</TouchableOpacity>
     ) : (
       iconComponent
     );

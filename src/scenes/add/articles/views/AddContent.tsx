@@ -33,7 +33,7 @@ import {
 } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
-import { useTheme, logger, checkPermission, Alert } from '@utils/index';
+import { useTheme, logger, checkPermission, Alert, Errors } from '@utils/index';
 
 import LinkAddModal from '../../components/LinkAddModal';
 import YoutubeAddModal from '../../components/YoutubeAddModal';
@@ -76,11 +76,20 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       preferences: {
         comments: true,
       },
-    }).then(({ _id }) => {
-      navigation.goBack();
-      navigation.replace('Success', { id: _id, creationData });
-      clearArticleCreationData();
-    });
+    })
+      .then(({ _id }) => {
+        navigation.goBack();
+        navigation.replace('Success', { id: _id, creationData });
+        clearArticleCreationData();
+      })
+      .catch((error) => {
+        Errors.showPopup({
+          type: 'axios',
+          what: "l'ajout de l'article",
+          error,
+          retry: () => add(parser, data),
+        });
+      });
   };
 
   const editorTypes: {
@@ -154,18 +163,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        {reqState.add?.loading ? <ProgressBar indeterminate /> : <View style={{ height: 4 }} />}
-        {reqState.add?.success === false && (
-          <ErrorMessage
-            error={reqState.add?.error}
-            strings={{
-              what: "l'ajout de l'article",
-              contentSingular: "L'article",
-            }}
-            type="axios"
-            retry={add}
-          />
-        )}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View style={{ flexDirection: 'row', flex: 1 }}>
             <PlatformBackButton

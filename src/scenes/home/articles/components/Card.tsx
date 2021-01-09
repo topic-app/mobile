@@ -19,8 +19,8 @@ import getArticleStyles from '../styles/Styles';
 
 type ArticleListCardProps = {
   article: ArticlePreload | Article;
+  group?: string;
   sectionKey: string;
-  itemKey: string;
   isRead: boolean;
   historyActive: boolean;
   lists: ArticleListItem[];
@@ -30,8 +30,8 @@ type ArticleListCardProps = {
 
 const ArticleListCard: React.FC<ArticleListCardProps> = ({
   article,
+  group,
   sectionKey,
-  itemKey,
   isRead,
   historyActive,
   lists,
@@ -50,7 +50,7 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
   const renderRightActions = (_id: string) => {
     return (
       <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
-        {sectionKey !== 'lists' ? (
+        {group !== 'lists' ? (
           <View
             style={{
               flexDirection: 'row',
@@ -145,8 +145,8 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
     swipePropRef: React.RefObject<Swipeable>,
   ) => {
     swipePropRef.current?.close();
-    if (sectionKey === 'lists') {
-      removeArticleFromList(id, itemKey);
+    if (group === 'lists') {
+      removeArticleFromList(id, sectionKey);
     } else {
       if (isRead) deleteArticleRead(id);
       else addArticleRead(id, title, true);
@@ -158,16 +158,16 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
       ref={swipeRef}
       renderLeftActions={() => renderLeftActions(article._id, swipeRef)}
       renderRightActions={
-        historyActive || sectionKey !== 'lists' ? () => renderRightActions(article._id) : undefined
+        historyActive || group !== 'lists' ? () => renderRightActions(article._id) : undefined
       }
       onSwipeableRightOpen={
-        historyActive || sectionKey !== 'lists'
+        historyActive || group !== 'lists'
           ? () => swipeRightAction(article._id, article.title, swipeRef)
           : undefined
       }
     >
       <ArticleCard
-        unread={!isRead || itemKey !== 'all'}
+        unread={!isRead || sectionKey !== 'all'}
         article={article}
         navigate={navigate}
         overrideImageWidth={overrideImageWidth}

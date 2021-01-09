@@ -19,7 +19,7 @@ import { fetchAccount } from '@redux/actions/data/account';
 import { accountDelete, passwordReset } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LinkingRequestState } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Errors, useTheme } from '@utils/index';
 
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';
 import getLinkingStyles from '../styles/Styles';
@@ -56,6 +56,38 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
       ),
   });
 
+  const submit = (values: { password: string }) => {
+    passwordReset(id, token, values.password)
+      .then(() => {
+        fetchAccount();
+        Alert.alert(
+          'Mot de passe changé',
+          'Utilisez votre nouveau mot de passe pour vous connecter.',
+          [
+            {
+              text: 'Fermer',
+            },
+          ],
+          { cancelable: true },
+        );
+        navigation.replace('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'Home1',
+            params: { screen: 'Home2', params: { screen: 'Article' } },
+          },
+        });
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la réinitialisation du mot de passe',
+          error,
+          retry: () => submit(values),
+        }),
+      );
+  };
+
   return (
     <View style={styles.page}>
       <TranslucentStatusBar />
@@ -73,30 +105,9 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
       <View style={{ flex: 1, flexGrow: 1 }}>
         <ScrollView>
           <Formik
-            initialValues={{ username: '', email: '', password: '' }}
+            initialValues={{ password: '' }}
             validationSchema={ResetPasswordSchema}
-            onSubmit={(values) => {
-              passwordReset(id, token, values.password).then(() => {
-                fetchAccount();
-                Alert.alert(
-                  'Mot de passe changé',
-                  'Utilisez votre nouveau mot de passe pour vous connecter.',
-                  [
-                    {
-                      text: 'Fermer',
-                    },
-                  ],
-                  { cancelable: true },
-                );
-                navigation.replace('Root', {
-                  screen: 'Main',
-                  params: {
-                    screen: 'Home1',
-                    params: { screen: 'Home2', params: { screen: 'Article' } },
-                  },
-                });
-              });
-            }}
+            onSubmit={submit}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <View style={styles.container}>

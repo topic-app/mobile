@@ -8,24 +8,26 @@ import { connect } from 'react-redux';
 import {
   PlatformTouchable,
   Illustration,
-  CustomHeaderBar,
   TranslucentStatusBar,
+  CustomHeaderBar,
 } from '@components/index';
 import {
   deleteEventList,
   updateEventPrefs,
+  addEventQuick,
   deleteEventQuick,
   modifyEventList,
-  addEventQuick,
+  reorderEventQuick,
+  reorderEventList,
 } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
 import {
   State,
+  Account,
+  Preferences,
   EventListItem,
   EventQuickItem,
   EventPrefs,
-  Account,
-  Preferences,
   ArticleListItem,
 } from '@ts/types';
 import { useTheme, Alert } from '@utils/index';
@@ -35,10 +37,10 @@ import EditModal from '../../components/EditModal';
 import QuickLocationTypeModal from '../../components/QuickLocationTypeModal';
 import QuickSelectModal from '../../components/QuickSelectModal';
 import QuickTypeModal from '../../components/QuickTypeModal';
-import { EventConfigureScreenNavigationProp } from '../index';
-import getArticleStyles from '../styles/Styles';
+import type { EventConfigureScreenNavigationProp } from '../index';
+import getLocalStyles from '../styles/Styles';
 
-type EventListsProps = {
+type EventConfigureProps = {
   lists: EventListItem[];
   quicks: EventQuickItem[];
   preferences: Preferences;
@@ -54,28 +56,28 @@ type Category = {
   disable?: boolean;
 };
 
-function EventLists({
+function EventConfigure({
   lists,
   quicks,
   preferences,
   eventPrefs,
   account,
   navigation,
-}: EventListsProps) {
+}: EventConfigureProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
+  const localStyles = getLocalStyles(theme);
   const { colors } = theme;
 
   const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
-  const [editingList, setEditingList] = React.useState<EventListItem | ArticleListItem | null>(
+  const [editingList, setEditingList] = React.useState<ArticleListItem | EventListItem | null>(
     null,
   );
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
-  const [quickType, setQuickType] = React.useState('');
   const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);
+  const [quickType, setQuickType] = React.useState('');
 
   const next = (data: string) => {
     if (data === 'location') {
@@ -97,11 +99,14 @@ function EventLists({
       id: 'upcoming',
       name: 'À venir (dans le futur)',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Event', params: { initialList: 'upcoming' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Event', params: { initialList: 'upcoming' } },
+            },
           },
         }),
     },
@@ -109,11 +114,14 @@ function EventLists({
       id: 'passed',
       name: 'Finis (dans le passé)',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
-            screen: 'Home2',
-            params: { screen: 'Event', params: { initialList: 'passed' } },
+            screen: 'Home1',
+            params: {
+              screen: 'Home2',
+              params: { screen: 'Event', params: { initialList: 'passed' } },
+            },
           },
         }),
     },
@@ -121,11 +129,11 @@ function EventLists({
       id: 'following',
       name: 'Suivis',
       navigate: () =>
-        navigation.push('Main', {
-          screen: 'Home1',
+        navigation.push('Root', {
+          screen: 'Main',
           params: {
             screen: 'Home2',
-            params: { screen: 'Article', params: { initialList: 'following' } },
+            params: { screen: 'Event', params: { initialList: 'following' } },
           },
         }),
       disable: !account.loggedIn,
@@ -200,7 +208,7 @@ function EventLists({
                           title={item.name}
                           description={item.disable ? 'Indisponible' : null}
                           left={() => <View style={{ width: 56, height: 56 }} />}
-                          onPress={enabled && !item.disable ? item.navigate : () => null}
+                          onPress={() => {}}
                           onLongPress={move}
                           titleStyle={!item.disable ? {} : { color: colors.disabled }}
                           descriptionStyle={!item.disable ? {} : { color: colors.disabled }}
@@ -248,46 +256,29 @@ function EventLists({
                   scrollPercent={5}
                   ListHeaderComponent={() => (
                     <View>
-                      <View style={articleStyles.listSpacer} />
+                      <View style={localStyles.listSpacer} />
                       <List.Subheader>Listes</List.Subheader>
-                      <View style={articleStyles.subheaderDescriptionContainer}>
+                      <View style={localStyles.subheaderDescriptionContainer}>
                         <Text>
                           Ajoutez vos évènements à des listes afin de pouvoir y accéder rapidement.
-                        </Text>
-                        <Text>
-                          Les évènements ajoutés seront disponibles hors-ligne
-                          {account.loggedIn && preferences.syncLists
-                            ? ' et seront sauvegardés sur votre compte.'
-                            : '.'}
                         </Text>
                       </View>
                       <Divider />
                     </View>
                   )}
                   ItemSeparatorComponent={() => <Divider />}
-                  keyExtractor={(item: Category) => item.id}
+                  keyExtractor={(item: EventListItem) => item.id}
                   renderItem={({ item, move }: { item: EventListItem; move: () => any }) => {
                     return (
                       <List.Item
                         title={item.name}
                         description={`${
                           item.items.length
-                            ? `${item.items.length} évènements${item.items.length === 1 ? '' : 's'}`
+                            ? `${item.items.length} évènement${item.items.length === 1 ? '' : 's'}`
                             : 'Aucun évènement'
                         }${item.description ? `\n${item.description}` : ''}`}
                         descriptionNumberOfLines={100}
-                        onPress={() =>
-                          navigation.push('Main', {
-                            screen: 'Home1',
-                            params: {
-                              screen: 'Home2',
-                              params: {
-                                screen: 'Article',
-                                params: { initialList: item.id },
-                              },
-                            },
-                          })
-                        }
+                        onPress={() => {}}
                         onLongPress={move}
                         left={() => <List.Icon icon={item.icon} />}
                         right={() => (
@@ -344,20 +335,7 @@ function EventLists({
                     const fromList = lists[from];
                     const toList = lists[to];
 
-                    modifyEventList(
-                      fromList.id,
-                      toList.name,
-                      toList.icon,
-                      toList.description,
-                      toList.items,
-                    );
-                    modifyEventList(
-                      toList.id,
-                      fromList.name,
-                      fromList.icon,
-                      fromList.description,
-                      fromList.items,
-                    );
+                    reorderEventList(fromList.id, toList.id);
                   }}
                   ListFooterComponent={() => (
                     <View>
@@ -378,15 +356,15 @@ function EventLists({
 
             case 'tags':
               return (
-                <FlatList
+                <DraggableFlatList
                   data={quicks}
                   ListHeaderComponent={() => (
                     <View>
-                      <View style={articleStyles.listSpacer} />
+                      <View style={localStyles.listSpacer} />
 
                       <List.Subheader>Tags et groupes</List.Subheader>
 
-                      <View style={articleStyles.subheaderDescriptionContainer}>
+                      <View style={localStyles.subheaderDescriptionContainer}>
                         <Text>
                           Choisissez des sujets et des groupes à afficher pour un accès rapide aux
                           évènements qui vous intéressent
@@ -395,8 +373,8 @@ function EventLists({
                       <Divider />
                     </View>
                   )}
-                  renderItem={({ item }) => {
-                    let content = { description: 'Unk', icon: 'error' };
+                  renderItem={({ item, move }: { item: EventQuickItem; move: () => any }) => {
+                    let content = { description: 'Erreur', icon: 'alert-decagram' };
                     if (item.type === 'tag') {
                       content = {
                         description: 'Tag',
@@ -412,11 +390,30 @@ function EventLists({
                         description: 'Utilisateur',
                         icon: 'account',
                       };
+                    } else if (item.type === 'school') {
+                      content = {
+                        description: 'École',
+                        icon: 'school',
+                      };
+                    } else if (item.type === 'departement') {
+                      content = {
+                        description: 'Département',
+                        icon: 'map-marker-radius',
+                      };
+                    } else if (item.type === 'region') {
+                      content = { description: 'Région', icon: 'map-marker-radius' };
+                    } else if (item.type === 'global') {
+                      content = {
+                        description: 'Localisation',
+                        icon: 'flag',
+                      };
                     }
                     return (
                       <View>
                         <List.Item
                           title={item.title}
+                          onPress={() => {}}
+                          onLongPress={move}
                           description={content.description}
                           left={() => <List.Icon icon={content.icon} />}
                           right={() => (
@@ -434,6 +431,12 @@ function EventLists({
                         <Divider />
                       </View>
                     );
+                  }}
+                  onMoveEnd={({ from, to }: { from: number; to: number }) => {
+                    const fromQuick = quicks[from];
+                    const toQuick = quicks[to];
+
+                    reorderEventQuick(fromQuick.id, toQuick.id);
                   }}
                   ListFooterComponent={() => (
                     <View style={styles.container}>
@@ -469,15 +472,15 @@ function EventLists({
         setEditingList={setEditingList}
         type="events"
       />
-      <QuickLocationTypeModal
-        visible={isQuickLocationTypeModalVisible}
-        setVisible={setQuickLocationTypeModalVisible}
-        next={next}
-      />
       <QuickTypeModal
         type="events"
         visible={isQuickTypeModalVisible}
         setVisible={setQuickTypeModalVisible}
+        next={next}
+      />
+      <QuickLocationTypeModal
+        visible={isQuickLocationTypeModalVisible}
+        setVisible={setQuickLocationTypeModalVisible}
         next={next}
       />
       <QuickSelectModal
@@ -501,4 +504,4 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export default connect(mapStateToProps)(EventLists);
+export default connect(mapStateToProps)(EventConfigure);

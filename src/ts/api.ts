@@ -341,7 +341,7 @@ export type Article = ArticleBase & {
   };
 };
 
-export type Article2 = Article;
+export type AnyArticle = ArticlePreload | Article;
 
 export type ArticleVerification = Article & {
   verification: Verification;
@@ -569,6 +569,13 @@ export type Petition = PetitionPreload & {
   };
 };
 
+export type CommentReply = {
+  _id: string;
+  date: string;
+  publisher: Publisher;
+  content: Content;
+};
+
 // Comment Types
 export type Comment = {
   _id: string;
@@ -577,6 +584,9 @@ export type Comment = {
   content: Content;
   parentType: 'article' | 'event' | 'petition' | 'place' | 'comment';
   parent: string;
+  cache?: {
+    replies?: CommentReply[];
+  };
 };
 
 // Misc Types

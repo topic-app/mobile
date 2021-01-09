@@ -1,6 +1,13 @@
 import Color from 'color';
 import React from 'react';
-import { View, Platform, FlatList, ActivityIndicator, Animated } from 'react-native';
+import {
+  View,
+  Platform,
+  FlatList,
+  ActivityIndicator,
+  Animated,
+  KeyboardAvoidingView,
+} from 'react-native';
 import { Text, Button, Divider, List, ProgressBar } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
@@ -34,7 +41,7 @@ import {
   LocationList,
   Account,
 } from '@ts/types';
-import { useTheme, logger, Location, Format, Alert } from '@utils/index';
+import { useTheme, logger, Location, Format, Alert, Errors } from '@utils/index';
 
 import LocationListItem from '../components/LocationListItem';
 import type { LandingScreenNavigationProp } from '../index';
@@ -246,20 +253,29 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       ...departmentIds.map((depId) =>
         addEventQuick('school', depId, selectedLocations.find((loc) => loc.id === depId)!.name),
       ),
-    ]).then(() => {
-      if (hasUserAlreadyBeenToLanding) {
-        navigation.goBack();
-      } else {
-        navigation.popToTop();
-        navigation.replace('Root', {
-          screen: 'Main',
-          params: {
-            screen: 'Home1',
-            params: { screen: 'Home2', params: { screen: 'Article' } },
-          },
-        });
-      }
-    });
+    ])
+      .then(() => {
+        if (hasUserAlreadyBeenToLanding) {
+          navigation.goBack();
+        } else {
+          navigation.popToTop();
+          navigation.replace('Root', {
+            screen: 'Main',
+            params: {
+              screen: 'Home1',
+              params: { screen: 'Home2', params: { screen: 'Article' } },
+            },
+          });
+        }
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la mise à jour de la localisation',
+          error,
+          retry: done,
+        }),
+      );
   }
 
   const schools = searchText === '' ? schoolsNear : schoolsSearch;
@@ -425,130 +441,134 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   return (
     <View style={styles.page}>
       <TranslucentStatusBar backgroundColor={colors.background} />
-      <View style={{ height: insets.top }} />
-      <Animated.View
-        style={{
-          elevation: headerElevation,
-          backgroundColor: colors.background,
-          justifyContent: 'flex-end',
-        }}
-      >
-        <CollapsibleView
-          collapsed={shouldCollapseHeader}
-          style={{ height: userLocation ? 50 : '40%' }}
+      <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'} style={{ flex: 1 }}>
+        <View style={{ height: insets.top }} />
+        <Animated.View
+          style={{
+            elevation: headerElevation,
+            backgroundColor: colors.background,
+            justifyContent: 'flex-end',
+          }}
         >
-          {hasUserAlreadyBeenToLanding ? <PlatformBackButton onPress={navigation.goBack} /> : null}
-          <View
-            style={[
-              landingStyles.headerContainer,
-              { marginBottom: 0, flex: 1, justifyContent: 'flex-end' },
-            ]}
+          <CollapsibleView
+            collapsed={shouldCollapseHeader}
+            style={{ height: userLocation ? 50 : '40%' }}
           >
-            <View style={landingStyles.centerIllustrationContainer}>
-              <CollapsibleView collapsed={userLocation}>
-                <Illustration name="location-select" height={200} width={200} />
-              </CollapsibleView>
-              <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 80 : 0 }]}>
-                Choisissez votre école
-              </Text>
+            {hasUserAlreadyBeenToLanding ? (
+              <PlatformBackButton onPress={() => navigation.goBack()} />
+            ) : null}
+            <View
+              style={[
+                landingStyles.headerContainer,
+                { marginBottom: 0, flex: 1, justifyContent: 'flex-end' },
+              ]}
+            >
+              <View style={landingStyles.centerIllustrationContainer}>
+                <CollapsibleView collapsed={userLocation}>
+                  <Illustration name="location-select" height={200} width={200} />
+                </CollapsibleView>
+                <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 80 : 0 }]}>
+                  Choisissez votre école
+                </Text>
+              </View>
             </View>
+          </CollapsibleView>
+          <View style={landingStyles.searchContainer}>
+            <Searchbar
+              ref={inputRef}
+              icon={shouldCollapseHeader && hasUserAlreadyBeenToLanding ? 'arrow-left' : undefined}
+              onIconPress={
+                shouldCollapseHeader && hasUserAlreadyBeenToLanding ? navigation.goBack : undefined
+              }
+              placeholder="Rechercher"
+              value={searchText}
+              onChangeText={setSearchText}
+              onIdle={onSearchChange}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+            />
           </View>
-        </CollapsibleView>
-        <View style={landingStyles.searchContainer}>
-          <Searchbar
-            ref={inputRef}
-            icon={shouldCollapseHeader && hasUserAlreadyBeenToLanding ? 'arrow-left' : undefined}
-            onIconPress={
-              shouldCollapseHeader && hasUserAlreadyBeenToLanding ? navigation.goBack : undefined
-            }
-            placeholder="Rechercher"
-            value={searchText}
-            onChangeText={setSearchText}
-            onIdle={onSearchChange}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-          />
-        </View>
-      </Animated.View>
-      <Animated.FlatList<LocationItem>
-        ref={scrollRef}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-          useNativeDriver: true,
-        })}
-        keyExtractor={(item) => item.id}
-        data={chiplistData[chipCategory].data}
-        ListHeaderComponent={ListHeaderComponent}
-        ListFooterComponent={ListFooterComponent}
-        ListEmptyComponent={ListEmptyComponent}
-        renderItem={({ item }) => (
-          <LocationListItem
-            {...item}
-            onAdd={addLocation}
-            onRemove={removeLocation}
-            selected={selectedIds.includes(item.id)}
+        </Animated.View>
+        <Animated.FlatList<LocationItem>
+          ref={scrollRef}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+            useNativeDriver: true,
+          })}
+          keyExtractor={(item) => item.id}
+          data={chiplistData[chipCategory].data}
+          ListHeaderComponent={ListHeaderComponent}
+          ListFooterComponent={ListFooterComponent}
+          ListEmptyComponent={ListEmptyComponent}
+          renderItem={({ item }) => (
+            <LocationListItem
+              {...item}
+              onAdd={addLocation}
+              onRemove={removeLocation}
+              selected={selectedIds.includes(item.id)}
+            />
+          )}
+          onEndReached={next}
+          onEndReachedThreshold={1}
+          getItemLayout={getItemLayout}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="none"
+        />
+        <Divider />
+        {state.location.update.loading && <ProgressBar indeterminate />}
+        {state.location.update.error && (
+          <ErrorMessage
+            type="axios"
+            error={state.location.update.error}
+            strings={{
+              what: 'la mise à jour de la localisation',
+              contentSingular: 'La localisation',
+            }}
+            retry={done}
           />
         )}
-        onEndReached={next}
-        onEndReachedThreshold={1}
-        getItemLayout={getItemLayout}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="none"
-      />
-      <Divider />
-      {state.location.update.loading && <ProgressBar indeterminate />}
-      {state.location.update.error && (
-        <ErrorMessage
-          type="axios"
-          error={state.location.update.error}
-          strings={{
-            what: 'la mise à jour de la localisation',
-            contentSingular: 'La localisation',
-          }}
-          retry={done}
-        />
-      )}
-      <CollapsibleView collapsed={selectedLocations.length === 0}>
-        <ChipAddList
-          setList={({ key }) => removeLocation(key)}
-          data={selectedLocations.map((loc) => ({ title: loc.name, key: loc.id, ...loc }))}
-          chipProps={{ icon: 'close', rightAction: true }}
-          style={{ marginBottom: 0 }}
-        />
-      </CollapsibleView>
-      <View
-        style={[
-          landingStyles.contentContainer,
-          {
-            paddingVertical: 15,
-          },
-        ]}
-      >
-        <View style={landingStyles.buttonContainer}>
-          <Button
-            mode={
-              Platform.OS === 'ios' || selectedLocations.length === 0 ? 'outlined' : 'contained'
-            }
-            color={colors.primary}
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              if (selectedLocations.length === 0 && Platform.OS !== 'web') {
-                logger.info('User has not specified a landing location. Showing alert.');
-                Alert.alert(
-                  'Ne pas spécifier de localisation?',
-                  'Vous verrez uniquement les articles destinés à la france entière',
-                  [{ text: 'Annuler' }, { text: 'Continuer', onPress: done }],
-                  { cancelable: true },
-                );
-              } else {
-                done();
+        <CollapsibleView collapsed={selectedLocations.length === 0}>
+          <ChipAddList
+            setList={({ key }) => removeLocation(key)}
+            data={selectedLocations.map((loc) => ({ title: loc.name, key: loc.id, ...loc }))}
+            chipProps={{ icon: 'close', rightAction: true }}
+            style={{ marginBottom: 0 }}
+          />
+        </CollapsibleView>
+        <View
+          style={[
+            landingStyles.contentContainer,
+            {
+              paddingVertical: 15,
+            },
+          ]}
+        >
+          <View style={landingStyles.buttonContainer}>
+            <Button
+              mode={
+                Platform.OS === 'ios' || selectedLocations.length === 0 ? 'outlined' : 'contained'
               }
-            }}
-            style={{ flex: 1 }}
-          >
-            {selectedLocations.length === 0 ? 'Passer' : 'Confirmer'}
-          </Button>
+              color={colors.primary}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={() => {
+                if (selectedLocations.length === 0 && Platform.OS !== 'web') {
+                  logger.info('User has not specified a landing location. Showing alert.');
+                  Alert.alert(
+                    'Ne pas spécifier de localisation?',
+                    'Vous verrez uniquement les articles destinés à la france entière',
+                    [{ text: 'Annuler' }, { text: 'Continuer', onPress: done }],
+                    { cancelable: true },
+                  );
+                } else {
+                  done();
+                }
+              }}
+              style={{ flex: 1 }}
+            >
+              {selectedLocations.length === 0 ? 'Passer' : 'Confirmer'}
+            </Button>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };

@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 
 import getStyles from '@styles/Styles';
 import { ModalProps, Account, State, RequestState } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Errors, useTheme } from '@utils/index';
 
 import ErrorMessage from './ErrorMessage';
 import Modal from './Modal';
@@ -77,6 +77,21 @@ const ReportModal: React.FC<ReportModalProps> = ({
   const [reportOption, setReportOption] = React.useState('OTHER');
   const [reportText, setReportText] = React.useState('');
 
+  const reportContent = () =>
+    report(contentId, `${reportOption}${reportText ? `- ${reportText}` : ''}`)
+      .then(() => {
+        setReportText('');
+        setVisible(false);
+      })
+      .catch((error: any) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'le signalement du contenu',
+          error,
+          retry: reportContent,
+        }),
+      );
+
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <FlatList
@@ -89,25 +104,6 @@ const ReportModal: React.FC<ReportModalProps> = ({
                 <Text>Nous vous contacterons si nécessaire pour avoir plus de détails</Text>
               </View>
             </View>
-            {state.error && (
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: 'le signalement du contenu',
-                  contentSingular: 'Le contenu',
-                }}
-                error={state.error}
-                retry={() =>
-                  report(contentId, `${reportOption}${reportText ? `- ${reportText}` : ''}`).then(
-                    () => {
-                      setReportText('');
-                      setVisible(false);
-                    },
-                  )
-                }
-              />
-            )}
-            {state.loading && <ProgressBar />}
             <Divider />
           </View>
         )}
@@ -169,15 +165,8 @@ const ReportModal: React.FC<ReportModalProps> = ({
                     mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                     color={colors.primary}
                     uppercase={Platform.OS !== 'ios'}
-                    onPress={() =>
-                      report(
-                        contentId,
-                        `${reportOption}${reportText ? `- ${reportText}` : ''}`,
-                      ).then(() => {
-                        setReportText('');
-                        setVisible(false);
-                      })
-                    }
+                    onPress={reportContent}
+                    loading={state.loading}
                     style={{ flex: 1 }}
                   >
                     Signaler

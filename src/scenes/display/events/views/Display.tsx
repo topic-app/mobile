@@ -46,7 +46,7 @@ import {
   Content,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl, checkPermission, Alert } from '@utils/index';
+import { useTheme, getImageUrl, handleUrl, checkPermission, Alert, Errors } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
@@ -147,7 +147,43 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
   const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
 
+  const [replyingToComment, setReplyingToComment] = React.useState<string | null>(null);
+
   const scrollY = new Animated.Value(0);
+
+  const deleteEvent = () =>
+    eventDelete(id)
+      .then(() => {
+        navigation.goBack();
+        Alert.alert(
+          'Évènement supprimé',
+          "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
+          [{ text: 'Fermer' }],
+          {
+            cancelable: true,
+          },
+        );
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: "la suppression de l'évènement",
+          error,
+          retry: deleteEvent,
+        }),
+      );
+
+  const approveEvent = () =>
+    eventVerificationApprove(event?._id || '')
+      .then(() => navigation.goBack())
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: "l'approbation de l'évènement",
+          error,
+          retry: approveEvent,
+        }),
+      );
 
   if (!event) {
     // This is when event has not been loaded in list, so we have absolutely no info
@@ -262,18 +298,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                               { text: 'Annuler' },
                               {
                                 text: 'Supprimer',
-                                onPress: () =>
-                                  eventDelete(id).then(() => {
-                                    navigation.goBack();
-                                    Alert.alert(
-                                      'Évènement supprimé',
-                                      "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
-                                      [{ text: 'Fermer' }],
-                                      {
-                                        cancelable: true,
-                                      },
-                                    );
-                                  }),
+                                onPress: deleteEvent,
                               },
                             ],
                             { cancelable: true },
@@ -293,16 +318,6 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
             }}
             error={reqState.events.info.error}
             retry={() => fetchEvent(id)}
-          />
-        )}
-        {reqState.events.delete?.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la suppression de cet évènement',
-              contentSingular: "La suppression de l'évènement",
-            }}
-            error={reqState.events.delete.error}
           />
         )}
       </AnimatingHeader>
@@ -367,6 +382,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                         navigation={navigation}
                         setCommentModalVisible={setCommentModalVisible}
                         setMessageModalVisible={setMessageModalVisible}
+                        setReplyingToComment={setReplyingToComment}
                         setFocusedComment={setFocusedComment}
                         verification={verification}
                         commentsDisplayed={commentsDisplayed}
@@ -468,19 +484,6 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                       </Card>
                     </View>
                   )}
-                  {reqState.events.verification_approve?.error && (
-                    <ErrorMessage
-                      type="axios"
-                      strings={{
-                        what: "l'approbation de l'évènement",
-                        contentSingular: "l'évènement",
-                      }}
-                      error={reqState.events.verification_approve?.error}
-                      retry={() =>
-                        eventVerificationApprove(event?._id || '').then(() => navigation.goBack())
-                      }
-                    />
-                  )}
                   <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                     <View style={[styles.container]}>
                       <Button
@@ -505,9 +508,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                           height: 50,
                           justifyContent: 'center',
                         }}
-                        onPress={() =>
-                          eventVerificationApprove(event?._id || '').then(() => navigation.goBack())
-                        }
+                        onPress={approveEvent}
                       >
                         Approuver
                       </Button>
@@ -522,14 +523,18 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       <AddCommentModal
         visible={isCommentModalVisible}
         setVisible={setCommentModalVisible}
+        replyingToComment={replyingToComment}
+        setReplyingToComment={setReplyingToComment}
         id={id}
+        group={event?.group?._id}
         reqState={reqState}
         add={(
           publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
           content: Content,
           parent: string,
+          isReplying: boolean,
         ) =>
-          commentAdd(publisher, content, parent, 'event').then(() =>
+          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'event').then(() =>
             updateComments('initial', { parentId: id }),
           )
         }

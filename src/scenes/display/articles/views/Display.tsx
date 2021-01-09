@@ -42,7 +42,7 @@ import {
   Content as ContentType,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl, checkPermission, Alert } from '@utils/index';
+import { useTheme, getImageUrl, handleUrl, checkPermission, Alert, Errors } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
@@ -67,6 +67,7 @@ type ArticleDisplayHeaderProps = {
   account: Account;
   commentsDisplayed: boolean;
   verification: boolean;
+  setReplyingToComment: (id: string | null) => any;
   setCommentModalVisible: (visible: boolean) => void;
   setArticleReportModalVisible: (visible: boolean) => void;
 };
@@ -79,6 +80,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   commentsDisplayed,
   setCommentModalVisible,
   setArticleReportModalVisible,
+  setReplyingToComment,
   offline,
   verification,
 }) => {
@@ -90,6 +92,18 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   const following = account.accountInfo?.user?.data.following;
 
   const [imageWidth, setImageWidth] = React.useState(0);
+
+  const approveArticle = () =>
+    articleVerificationApprove(article?._id)
+      .then(() => navigation.goBack())
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: "l'approbation de l'article",
+          error,
+          retry: approveArticle,
+        }),
+      );
 
   return (
     <View style={styles.page}>
@@ -104,13 +118,16 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
         >
           <PlatformTouchable
             onPress={() =>
-              navigation.push('Main', {
-                screen: 'Display',
+              navigation.push('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'Image',
+                  screen: 'Display',
                   params: {
-                    screen: 'Display',
-                    params: { image: article.image },
+                    screen: 'Image',
+                    params: {
+                      screen: 'Display',
+                      params: { image: article.image },
+                    },
                   },
                 },
               })
@@ -161,17 +178,25 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           </View>
           {article.authors?.map((author) => (
             <InlineCard
-              key={author?._id}
+              key={author._id}
               avatar={author.info?.avatar}
-              title={author?.displayName}
+              title={author.displayName}
+              subtitle={
+                author.displayName === author.info?.username
+                  ? undefined
+                  : `@${author.info?.username}`
+              }
               onPress={() =>
-                navigation.push('Main', {
-                  screen: 'Display',
+                navigation.push('Root', {
+                  screen: 'Main',
                   params: {
-                    screen: 'User',
+                    screen: 'Display',
                     params: {
-                      screen: 'Display',
-                      params: { id: author?._id || '' /* title: author?.displayName */ },
+                      screen: 'User',
+                      params: {
+                        screen: 'Display',
+                        params: { id: author?._id || '' /* title: author?.displayName */ },
+                      },
                     },
                   },
                 })
@@ -180,10 +205,10 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 account.loggedIn &&
                 account.accountInfo?.user &&
                 following?.users.some((u) => u._id === author._id)
-                  ? 'account-heart'
+                  ? 'heart'
                   : undefined
               }
-              badgeColor={colors.valid}
+              badgeColor={colors.primary}
               // TODO: Add imageUrl: imageUrl={article.author.imageUrl}
               // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
             />
@@ -193,16 +218,19 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           </View>
           <InlineCard
             avatar={article.group?.avatar}
-            title={article.group?.displayName}
+            title={article.group?.name || article.group?.displayName}
             subtitle={`Groupe ${article.group?.type}`}
             onPress={() =>
-              navigation.push('Main', {
-                screen: 'Display',
+              navigation.push('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'Group',
+                  screen: 'Display',
                   params: {
-                    screen: 'Display',
-                    params: { id: article.group?._id, title: article.group?.displayName },
+                    screen: 'Group',
+                    params: {
+                      screen: 'Display',
+                      params: { id: article.group?._id, title: article.group?.displayName },
+                    },
                   },
                 },
               })
@@ -211,10 +239,12 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               account.loggedIn &&
               account.accountInfo?.user &&
               following?.groups.some((g) => g._id === article.group?._id)
-                ? 'account-heart'
+                ? 'heart'
+                : article.group?.official
+                ? 'check-decagram'
                 : undefined
             }
-            badgeColor={colors.valid}
+            badgeColor={colors.primary}
           />
           {!verification && commentsDisplayed && (
             <View>
@@ -228,7 +258,10 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     title="Écrire un commentaire"
                     titleStyle={articleStyles.placeholder}
                     right={() => <List.Icon icon="comment-plus" color={colors.icon} />}
-                    onPress={() => setCommentModalVisible(true)}
+                    onPress={() => {
+                      setReplyingToComment(null);
+                      setCommentModalVisible(true);
+                    }}
                   />
                 </View>
               ) : (
@@ -346,19 +379,6 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                   </Card>
                 </View>
               )}
-              {reqState.articles.verification_approve?.error && (
-                <ErrorMessage
-                  type="axios"
-                  strings={{
-                    what: "l'approbation de l'article",
-                    contentSingular: "l'article",
-                  }}
-                  error={reqState.articles.verification_approve?.error}
-                  retry={() =>
-                    articleVerificationApprove(article?._id).then(() => navigation.goBack())
-                  }
-                />
-              )}
               <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <View style={[styles.container]}>
                   <Button
@@ -383,9 +403,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                       height: 50,
                       justifyContent: 'center',
                     }}
-                    onPress={() =>
-                      articleVerificationApprove(article?._id).then(() => navigation.goBack())
-                    }
+                    onPress={approveArticle}
                   >
                     Approuver
                   </Button>
@@ -463,6 +481,28 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     }
   };
 
+  const deleteArticle = () =>
+    articleDelete(id)
+      .then(() => {
+        navigation.goBack();
+        Alert.alert(
+          'Article supprimé',
+          "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
+          [{ text: 'Fermer' }],
+          {
+            cancelable: true,
+          },
+        );
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: "la suppression de l'article",
+          error,
+          retry: deleteArticle,
+        }),
+      );
+
   React.useEffect(() => {
     fetch();
     updateComments('initial', { parentId: id });
@@ -474,6 +514,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
   const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
+
+  const [replyingToComment, setReplyingToComment] = React.useState<string | null>(null);
+  const replyingToPublisher = articleComments.find((c) => c._id === replyingToComment)?.publisher;
 
   const scrollY = new Animated.Value(0);
 
@@ -585,18 +628,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                         { text: 'Annuler' },
                         {
                           text: 'Supprimer',
-                          onPress: () =>
-                            articleDelete(id).then(() => {
-                              navigation.goBack();
-                              Alert.alert(
-                                'Article supprimé',
-                                "Vous pouvez contacter l'équipe Topic au plus tard après deux semaines pour éviter la suppression définitive.",
-                                [{ text: 'Fermer' }],
-                                {
-                                  cancelable: true,
-                                },
-                              );
-                            }),
+                          onPress: deleteArticle,
                         },
                       ],
                       { cancelable: true },
@@ -617,16 +649,6 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             retry={() => fetch()}
           />
         )}
-        {reqState.articles.delete?.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la suppression de cet article',
-              contentSingular: "La suppression de l'article",
-            }}
-            error={reqState.articles.delete.error}
-          />
-        )}
       </AnimatingHeader>
       <Animated.FlatList
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
@@ -642,6 +664,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               reqState={reqState}
               account={account}
               navigation={navigation}
+              setReplyingToComment={setReplyingToComment}
               setCommentModalVisible={setCommentModalVisible}
               setArticleReportModalVisible={setArticleReportModalVisible}
             />
@@ -689,20 +712,34 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             }}
             loggedIn={account.loggedIn}
             navigation={navigation}
+            reply={(id: string | null) => {
+              setReplyingToComment(id);
+              setCommentModalVisible(true);
+            }}
+            authors={[...(article?.authors?.map((a) => a._id) || []), article?.group?._id || '']}
           />
         )}
       />
       <AddCommentModal
         visible={isCommentModalVisible}
         setVisible={setCommentModalVisible}
+        replyingToComment={replyingToComment}
+        setReplyingToComment={setReplyingToComment}
+        replyingToUsername={
+          replyingToPublisher?.type === 'group'
+            ? replyingToPublisher?.group?.shortName || replyingToPublisher?.group?.name
+            : replyingToPublisher?.user?.info?.username
+        }
         id={id}
+        group={article?.group?._id}
         reqState={reqState}
         add={(
           publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
           content: ContentType,
           parent: string,
+          isReplying: boolean = false,
         ) =>
-          commentAdd(publisher, content, parent, 'article').then(() =>
+          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'article').then(() =>
             updateComments('initial', { parentId: id }),
           )
         }

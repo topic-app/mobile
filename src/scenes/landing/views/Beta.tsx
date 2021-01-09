@@ -58,7 +58,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next(1)}
+                          onPress={() => next()}
                           style={{ flex: 1 }}
                         >
                           Suivant
@@ -163,7 +163,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                                 await firebase.analytics().setAnalyticsCollectionEnabled(true);
                               }
                             }
-                            next(1);
+                            next();
                           }}
                           style={{ flex: 1 }}
                         >
@@ -195,9 +195,13 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         Les plantages seront reportés automatiquement, toutefois si vous constatez
                         un bug d&apos;affichage, une fonctionnalité qui ne marche pas correctement,
                         ou un autre problème, nous vous demandons de bien vouloir nous donner les
-                        détails.{'\n'}Vous pouvez faire cela en recherchant l&apos;application Topic
-                        sur le Play Store ou en cliquant sur &quot;Feedback&quot; dans le menu, et
-                        en cliquant sur &quot;envoyer des commentaires aux développeurs&quot;.{'\n'}
+                        détails.{'\n'}
+                        {Platform.OS === 'ios'
+                          ? 'Vous pouvez faire cela en passant par l’application Testflight et en cliquant sur "Envoyer des commentaires" ou en prenant une screenshot et en cliquant sur "Partager du feedback" après l’avoir annoté.'
+                          : `Vous pouvez faire cela en recherchant l’application Topic
+                        sur le Play Store ou en cliquant sur \"Feedback\" dans le menu, et
+                        en cliquant sur \"envoyer des commentaires aux développeurs\".`}
+                        {'\n'}
                       </Text>
                     </View>
                     <View style={landingStyles.contentContainer}>
@@ -206,7 +210,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next(1)}
+                          onPress={() => next()}
                           style={{ flex: 1 }}
                         >
                           Suivant
@@ -263,7 +267,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next(1)}
+                          onPress={() => next()}
                           style={{ flex: 1 }}
                         >
                           Suivant
@@ -287,7 +291,8 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                     </View>
                     <View style={landingStyles.contentContainer}>
                       <Text>
-                        Nous publierons des mises à jour sur le Play Store toutes les semaines
+                        Nous publierons des mises à jour sur{' '}
+                        {Platform.OS === 'ios' ? 'Testflight' : 'le Play Store'} toutes les semaines
                         environ. N&apos;hésitez pas à regarder les notes de mise à jour pour voir
                         quelles fonctionnalités vous pouvez tester.{'\n'}
                       </Text>

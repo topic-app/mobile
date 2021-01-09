@@ -64,7 +64,7 @@ import {
   GroupVerification,
   Avatar as AvatarType,
 } from '@ts/types';
-import { useTheme, logger, Format, checkPermission, Alert } from '@utils/index';
+import { useTheme, logger, Format, checkPermission, Alert, Errors } from '@utils/index';
 
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
@@ -111,9 +111,27 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   const toggleFollow = () => {
     if (following) {
-      groupUnfollow(id).then(fetchAccount);
+      groupUnfollow(id)
+        .then(fetchAccount)
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: 'la modification du suivi du groupe',
+            error,
+            retry: toggleFollow,
+          }),
+        );
     } else {
-      groupFollow(id).then(fetchAccount);
+      groupFollow(id)
+        .then(fetchAccount)
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: 'la modification du suivi du groupe',
+            error,
+            retry: toggleFollow,
+          }),
+        );
     }
   };
 
@@ -128,10 +146,19 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
         {
           text: 'Quitter',
           onPress: () =>
-            groupMemberLeave(id).then(() => {
-              fetch();
-              fetchGroups();
-            }),
+            groupMemberLeave(id)
+              .then(() => {
+                fetch();
+                fetchGroups();
+              })
+              .catch((error) =>
+                Errors.showPopup({
+                  type: 'axios',
+                  what: 'la procédure pour quitter le groupe',
+                  error,
+                  retry: leave,
+                }),
+              ),
         },
       ],
       { cancelable: true },
@@ -211,37 +238,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
             retry={fetch}
           />
         )}
-        {state.follow.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du suivi',
-              contentSingular: 'le suivi',
-            }}
-            error={state.info.error}
-          />
-        )}
-        {state.member_delete?.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la suppression du membre',
-              contentSingular: "L'utilisateur",
-            }}
-            error={state.member_delete?.error}
-          />
-        )}
-        {state.member_leave?.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la procédure pour quitter le groupe',
-              contentSingular: 'La procédure pour quitter le groupe',
-            }}
-            error={state.member_leave?.error}
-            retry={leave}
-          />
-        )}
         <ScrollView>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <PlatformBackButton onPress={navigation.goBack} />
@@ -317,13 +313,16 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   group.avatar?.type === 'image'
                     ? () =>
                         group.avatar?.type === 'image' &&
-                        navigation.push('Main', {
-                          screen: 'Display',
+                        navigation.push('Root', {
+                          screen: 'Main',
                           params: {
-                            screen: 'Image',
+                            screen: 'Display',
                             params: {
-                              screen: 'Display',
-                              params: { image: group.avatar?.image?.image },
+                              screen: 'Image',
+                              params: {
+                                screen: 'Display',
+                                params: { image: group.avatar?.image?.image },
+                              },
                             },
                           },
                         })
@@ -594,14 +593,17 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         badgeColor={colors.solid.gold}
                         avatar={mem.user?.info?.avatar}
                         onPress={() =>
-                          navigation.navigate('Main', {
-                            screen: 'Display',
+                          navigation.push('Root', {
+                            screen: 'Main',
                             params: {
-                              screen: 'User',
+                              screen: 'Display',
                               params: {
-                                screen: 'Display',
+                                screen: 'User',
                                 params: {
-                                  id: mem.user?._id,
+                                  screen: 'Display',
+                                  params: {
+                                    id: mem.user?._id,
+                                  },
                                 },
                               },
                             },
@@ -652,7 +654,15 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                                   onPress: () => {
                                     setUserToAdd(mem.user);
                                     setAddSnackbarVisible(false);
-                                    groupMemberDelete(id, mem.user?._id).then(fetch);
+                                    groupMemberDelete(id, mem.user?._id)
+                                      .then(fetch)
+                                      .catch((error) =>
+                                        Errors.showPopup({
+                                          type: 'axios',
+                                          what: 'la suppression du membre',
+                                          error,
+                                        }),
+                                      );
                                   },
                                 },
                               ],

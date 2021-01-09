@@ -105,12 +105,21 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
             key: 'profile',
             type: 'button',
             icon: 'account-outline',
-            text: 'Profil',
+            text: 'Mon profil',
             path: '/profil',
             navigate: () =>
               navigation.navigate('Main', {
-                screen: 'More',
-                params: { screen: 'Profile', params: { screen: 'Profile' } },
+                screen: 'Display',
+                params: {
+                  screen: 'User',
+                  params: {
+                    screen: 'Display',
+                    params: {
+                      id: account.accountInfo?.accountId,
+                      title: account.accountInfo.user?.displayName,
+                    },
+                  },
+                },
               }),
           },
           {

@@ -7,7 +7,7 @@ function getNavigatorStyles(theme: Theme) {
   return StyleSheet.create({
     header: {
       backgroundColor: colors.appBar,
-      elevation: 1,
+      elevation: 2,
     },
     barStyle: {
       backgroundColor: colors.tabBackground,
@@ -46,8 +46,6 @@ function getNavigatorStyles(theme: Theme) {
     profileBackground: {
       backgroundColor: colors.drawerBackground,
       paddingTop: StatusBar.currentHeight,
-      minHeight: 130,
-      marginBottom: -4,
     },
     drawerStyle: {
       backgroundColor: colors.surface,

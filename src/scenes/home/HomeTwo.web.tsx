@@ -3,11 +3,11 @@ import React from 'react';
 import { useLayout } from '@utils/index';
 
 import AndroidNavigator from './HomeTwo.android';
-import IosNavigator from './HomeTwo.ios';
+import HomeTwoStack from './HomeTwoStack';
 
 const HomeTwoNavigator = () => {
   if (useLayout() === 'desktop') {
-    return <IosNavigator />;
+    return <HomeTwoStack />;
   } else {
     return <AndroidNavigator />;
   }

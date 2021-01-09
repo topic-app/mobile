@@ -1,3 +1,5 @@
+import * as Errors from './errors';
+
 export { default as handleUrl } from './handleUrl';
 export { default as request } from './request';
 export { default as logger } from './logger';
@@ -8,3 +10,4 @@ export * from './hooks';
 export * from './permissions';
 export { default as Alert } from './alert';
 export { Location } from './deviceLocation';
+export { Errors };

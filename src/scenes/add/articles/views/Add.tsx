@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import {
@@ -33,52 +33,56 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
-          <PlatformBackButton onPress={navigation.goBack} />
-          <View style={styles.centerIllustrationContainer}>
-            <Text style={articleStyles.title}>Écrire un article</Text>
-          </View>
-          <StepperView
-            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
-            pages={[
-              {
-                key: 'group',
-                icon: 'account-group',
-                title: 'Groupe',
-                component: (props) => <ArticleAddPageGroup {...props} />,
-              },
-              {
-                key: 'location',
-                icon: 'map-marker',
-                title: 'Localisation',
-                component: (props) => <ArticleAddPageLocation navigation={navigation} {...props} />,
-              },
-              {
-                key: 'meta',
-                icon: 'information',
-                title: 'Meta',
-                component: (props) => <ArticleAddPageMeta {...props} />,
-              },
-              {
-                key: 'tags',
-                icon: 'tag-multiple',
-                title: 'Tags',
-                component: (props) => (
-                  <ArticleAddPageTags
-                    navigate={() => navigation.navigate('AddContent')}
-                    {...props}
-                  />
-                ),
-              },
-              {
-                key: 'content',
-                icon: 'pencil',
-                title: 'Contenu',
-                component: () => <View />,
-              },
-            ]}
-          />
-        </ScrollView>
+        <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
+            <PlatformBackButton onPress={navigation.goBack} />
+            <View style={styles.centerIllustrationContainer}>
+              <Text style={articleStyles.title}>Écrire un article</Text>
+            </View>
+            <StepperView
+              onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
+              pages={[
+                {
+                  key: 'group',
+                  icon: 'account-group',
+                  title: 'Groupe',
+                  component: (props) => <ArticleAddPageGroup {...props} />,
+                },
+                {
+                  key: 'location',
+                  icon: 'map-marker',
+                  title: 'Localisation',
+                  component: (props) => (
+                    <ArticleAddPageLocation navigation={navigation} {...props} />
+                  ),
+                },
+                {
+                  key: 'meta',
+                  icon: 'information',
+                  title: 'Meta',
+                  component: (props) => <ArticleAddPageMeta {...props} />,
+                },
+                {
+                  key: 'tags',
+                  icon: 'tag-multiple',
+                  title: 'Tags',
+                  component: (props) => (
+                    <ArticleAddPageTags
+                      navigate={() => navigation.navigate('AddContent')}
+                      {...props}
+                    />
+                  ),
+                },
+                {
+                  key: 'content',
+                  icon: 'pencil',
+                  title: 'Contenu',
+                  component: () => <View />,
+                },
+              ]}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );

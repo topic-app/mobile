@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { Config } from '@constants/index';
 import {
   PrefActionTypes,
@@ -10,7 +12,7 @@ import {
 
 const initialState: PreferencesState = {
   theme: 'light',
-  useSystemTheme: true,
+  useSystemTheme: Platform.OS !== 'ios',
   history: true,
   recommendations: false,
   syncHistory: true,

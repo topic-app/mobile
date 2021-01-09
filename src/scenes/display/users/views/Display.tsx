@@ -34,7 +34,7 @@ import {
   Group,
   AccountRequestState,
 } from '@ts/types';
-import { useTheme, logger, Format } from '@utils/index';
+import { useTheme, logger, Format, Errors } from '@utils/index';
 
 import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '../index';
 
@@ -76,7 +76,9 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
   const { id } = route.params || {};
 
   const user: User | UserPreload | null =
-    users.item?._id === id
+    id === account.accountInfo?.accountId
+      ? account.accountInfo.user
+      : users.item?._id === id
       ? users.item
       : users.data.find((u) => u._id === id) || users.search.find((u) => u._id === id) || null;
 
@@ -84,9 +86,27 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 
   const toggleFollow = () => {
     if (following) {
-      userUnfollow(id).then(fetchAccount);
+      userUnfollow(id)
+        .then(fetchAccount)
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: "la modification du suivi de l'utilisateur",
+            error,
+            retry: toggleFollow,
+          }),
+        );
     } else {
-      userFollow(id).then(fetchAccount);
+      userFollow(id)
+        .then(fetchAccount)
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: "la modification du suivi de l'utilisateur",
+            error,
+            retry: toggleFollow,
+          }),
+        );
     }
   };
 
@@ -192,7 +212,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 
           <View style={[styles.contentContainer, { marginTop: 20 }]}>
             <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-              <Avatar size={120} avatar={user.info.avatar} />
+              <Avatar size={120} avatar={user.info.avatar} imageSize="large" />
             </View>
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               {user.data?.public ? (
@@ -226,12 +246,16 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
               <Divider style={{ marginVertical: 10 }} />
               <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                 <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{user.data?.cache?.followers || ''}</Text>
+                  <Text style={{ fontSize: 40 }}>
+                    {typeof user.data?.cache?.followers === 'number'
+                      ? user.data.cache.followers
+                      : ' '}
+                  </Text>
                   <Text>Abonnés </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 40 }}>
-                    {user.data?.public ? (
+                    {user.data?.public || id === account.accountInfo?.accountId ? (
                       user.data.following.groups.length + user.data.following.users.length
                     ) : (
                       <Icon name="lock-outline" size={52} color={colors.disabled} />
@@ -240,7 +264,9 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <Text>Abonnements </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>{groups.length}</Text>
+                  <Text style={{ fontSize: 40 }}>
+                    {groupsState.search?.loading?.initial ? ' ' : groups.length}
+                  </Text>
                   <Text>Groupes</Text>
                 </View>
               </View>
@@ -303,16 +329,19 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   </View>
                 ))}
               <View style={{ height: 10 }} />
-              {user.data?.public && !!user.data?.description && (
-                <View>
-                  <List.Subheader>Description</List.Subheader>
-                  <Divider />
-                  <View style={{ alignItems: 'stretch', marginVertical: 20, marginHorizontal: 10 }}>
-                    <Text>{user.data.description}</Text>
+              {(user.data?.public || id === account.accountInfo?.accountId) &&
+                !!user.data?.description && (
+                  <View>
+                    <List.Subheader>Description</List.Subheader>
+                    <Divider />
+                    <View
+                      style={{ alignItems: 'stretch', marginVertical: 20, marginHorizontal: 10 }}
+                    >
+                      <Text>{user.data.description}</Text>
+                    </View>
+                    <View style={{ height: 20 }} />
                   </View>
-                  <View style={{ height: 20 }} />
-                </View>
-              )}
+                )}
               {groups.length !== 0 && (
                 <View>
                   <List.Subheader>Groupes</List.Subheader>
@@ -338,18 +367,21 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                       <InlineCard
                         key={group._id}
                         avatar={group.avatar}
-                        title={group.name}
+                        title={group.displayName || group.name}
                         subtitle={`Groupe ${group.type}`}
                         onPress={() =>
-                          navigation.push('Main', {
-                            screen: 'Display',
+                          navigation.push('Root', {
+                            screen: 'Main',
                             params: {
-                              screen: 'Group',
+                              screen: 'Display',
                               params: {
-                                screen: 'Display',
+                                screen: 'Group',
                                 params: {
-                                  id: group._id,
-                                  title: group.displayName || group.shortName || group.name,
+                                  screen: 'Display',
+                                  params: {
+                                    id: group._id,
+                                    title: group.displayName || group.shortName || group.name,
+                                  },
                                 },
                               },
                             },
@@ -360,54 +392,55 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {user.data.public && (
-                <View>
-                  <List.Subheader>Localisation</List.Subheader>
-                  <Divider />
-                  <View style={{ marginVertical: 10 }}>
-                    {user.data.location.global && (
-                      <InlineCard
-                        icon="map-marker"
-                        title="France Entière"
-                        onPress={() => logger.warn('global pressed')}
-                      />
-                    )}
-                    {user.data.location.schools?.map((school) => (
-                      <InlineCard
-                        key={school._id}
-                        icon="school"
-                        title={school.name}
-                        subtitle={`${
-                          school.address?.address
-                            ? getAddressString(school.address?.address)
-                            : school.address?.shortName
-                        }${
-                          school.address?.departments[0]
-                            ? `, ${
-                                school.address?.departments[0].displayName ||
-                                school.address?.departments[0].name
-                              }`
-                            : ' '
-                        }`}
-                        onPress={() => logger.warn(`school ${school._id} pressed!`)}
-                      />
-                    ))}
-                    {user.data.location.departments?.map((dep) => (
-                      <InlineCard
-                        key={dep._id}
-                        icon="map-marker-radius"
-                        title={dep.name}
-                        subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
-                          dep.code
-                        }`}
-                        onPress={() => logger.warn(`department ${dep._id} pressed!`)}
-                      />
-                    ))}
+              {user.data.public ||
+                (id === account.accountInfo?.accountId && (
+                  <View>
+                    <List.Subheader>Localisation</List.Subheader>
+                    <Divider />
+                    <View style={{ marginVertical: 10 }}>
+                      {user.data.location.global && (
+                        <InlineCard
+                          icon="map-marker"
+                          title="France Entière"
+                          onPress={() => logger.warn('global pressed')}
+                        />
+                      )}
+                      {user.data.location.schools?.map((school) => (
+                        <InlineCard
+                          key={school._id}
+                          icon="school"
+                          title={school.name}
+                          subtitle={`${
+                            school.address?.address
+                              ? getAddressString(school.address?.address)
+                              : school.address?.shortName
+                          }${
+                            school.address?.departments[0]
+                              ? `, ${
+                                  school.address?.departments[0].displayName ||
+                                  school.address?.departments[0].name
+                                }`
+                              : ' '
+                          }`}
+                          onPress={() => logger.warn(`school ${school._id} pressed!`)}
+                        />
+                      ))}
+                      {user.data.location.departments?.map((dep) => (
+                        <InlineCard
+                          key={dep._id}
+                          icon="map-marker-radius"
+                          title={dep.name}
+                          subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
+                            dep.code
+                          }`}
+                          onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                        />
+                      ))}
+                    </View>
+                    <View style={{ height: 20 }} />
                   </View>
-                  <View style={{ height: 20 }} />
-                </View>
-              )}
-              {user.data.public && (
+                ))}
+              {(user.data.public || account.accountInfo?.accountId === id) && (
                 <View>
                   <List.Subheader>Abonnements</List.Subheader>
                   <Divider />
@@ -428,16 +461,19 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                               <InlineCard
                                 key={g._id}
                                 avatar={g.avatar}
-                                title={g.displayName}
+                                title={g.displayName || g.name}
                                 subtitle={`Groupe ${g.type}`}
                                 onPress={() =>
-                                  navigation.push('Main', {
-                                    screen: 'Display',
+                                  navigation.push('Root', {
+                                    screen: 'Main',
                                     params: {
-                                      screen: 'Group',
+                                      screen: 'Display',
                                       params: {
-                                        screen: 'Display',
-                                        params: { id: g._id, title: g.displayName },
+                                        screen: 'Group',
+                                        params: {
+                                          screen: 'Display',
+                                          params: { id: g._id, title: g.displayName },
+                                        },
                                       },
                                     },
                                   })
@@ -462,14 +498,22 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 key={u._id}
                                 avatar={u.info?.avatar}
                                 title={u.displayName}
+                                subtitle={
+                                  u.displayName === u.info?.username
+                                    ? undefined
+                                    : `@${u.info?.username}`
+                                }
                                 onPress={() =>
-                                  navigation.push('Main', {
-                                    screen: 'Display',
+                                  navigation.push('Root', {
+                                    screen: 'Main',
                                     params: {
-                                      screen: 'User',
+                                      screen: 'Display',
                                       params: {
-                                        screen: 'Display',
-                                        params: { id: u._id },
+                                        screen: 'User',
+                                        params: {
+                                          screen: 'Display',
+                                          params: { id: u._id },
+                                        },
                                       },
                                     },
                                   })

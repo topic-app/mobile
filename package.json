@@ -36,13 +36,14 @@
     "@react-native-firebase/analytics": "^10.0.0",
     "@react-native-firebase/app": "^10.0.0",
     "@react-native-firebase/crashlytics": "^10.0.0",
-    "@react-native-mapbox-gl/maps": "^8.1.0-rc.9",
+    "@react-native-mapbox-gl/maps": "^8.1.0-rc10",
     "@react-navigation/bottom-tabs": "^5.11.2",
     "@react-navigation/core": "^5.14.4",
     "@react-navigation/drawer": "^5.11.4",
     "@react-navigation/material-bottom-tabs": "^5.3.10",
     "@react-navigation/native": "^5.8.10",
     "@react-navigation/stack": "^5.12.8",
+    "@reduxjs/toolkit": "^1.4.0",
     "@types/redux-logger": "^3.0.8",
     "axios": "^0.21.0",
     "babel-plugin-inline-import": "^3.0.0",
@@ -144,6 +145,6 @@
     "nlf": "^2.1.1",
     "prompts": "^2.4.0",
     "react-test-renderer": "^17.0.1",
-    "typescript": "^4.1.2"
+    "typescript": "^4.1.3"
   }
 }

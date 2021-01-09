@@ -14,7 +14,7 @@ import {
 import { register } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { State, AccountRequestState, AccountCreationData } from '@ts/types';
-import { logger, useTheme } from '@utils/index';
+import { Errors, logger, useTheme } from '@utils/index';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageLegal from '../components/CreateLegal';
@@ -60,9 +60,13 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
 
     register(reqParams)
       .then(() => navigation.replace('CreateSuccess'))
-      .catch((e) => {
-        logger.info(reqParams);
-        logger.warn('Failed to create account', e);
+      .catch((error) => {
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la création du compte',
+          error,
+          retry: create,
+        });
       });
   };
 
@@ -74,88 +78,79 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        {reqState.register.loading || reqState.check.loading ? (
-          <ProgressBar indeterminate />
-        ) : (
-          <View style={{ height: 4 }} />
-        )}
-        {reqState.register.success === false && (
-          <ErrorMessage
-            error={reqState.register.error}
-            strings={{
-              what: 'la création du compte',
-              contentSingular: 'Le compte',
-            }}
-            type="axios"
-            retry={create}
-          />
-        )}
-        {reqState.check.success === false && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la vérification des informations',
-              contentPlural: 'des informations',
-            }}
-            error={reqState.check.error}
-          />
-        )}
-        <ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef}>
-          <PlatformBackButton onPress={navigation.goBack} />
-          <View style={styles.centerIllustrationContainer}>
-            <Illustration name="auth-register" height={200} width={200} />
-            <Text style={authStyles.title}>Créer un compte</Text>
-          </View>
-          <StepperView
-            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
-            pages={[
-              {
-                key: 'general',
-                icon: 'account',
-                title: 'General',
-                component: (props) => <AuthCreatePageGeneral {...props} />,
-              },
-              {
-                key: 'privacy',
-                icon: 'shield',
-                title: 'Vie privée',
-                component: (props) => <AuthCreatePagePrivacy {...props} />,
-              },
-              {
-                key: 'profile',
-                icon: 'comment-account',
-                title: 'Profil',
-                component: (props) => (
-                  <AuthCreatePageProfile
-                    landing={() =>
-                      navigation.push('Landing', {
-                        screen: 'SelectLocation',
-                        params: { goBack: true },
-                      })
-                    }
-                    username={creationData.username || ''}
-                    accountType={creationData.accountType || 'private'}
-                    {...props}
-                  />
-                ),
-              },
-              {
-                key: 'legal',
-                icon: 'script-text',
-                title: 'Conditions',
-                component: (props) => (
-                  <AuthCreatePageLegal
-                    userEmail={creationData.email}
-                    create={create}
-                    navigation={navigation}
-                    createLoading={reqState.login.loading}
-                    {...props}
-                  />
-                ),
-              },
-            ]}
-          />
-        </ScrollView>
+        <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+          {reqState.register.loading || reqState.check.loading ? (
+            <ProgressBar indeterminate />
+          ) : (
+            <View style={{ height: 4 }} />
+          )}
+          {reqState.check.success === false && (
+            <ErrorMessage
+              type="axios"
+              strings={{
+                what: 'la vérification des informations',
+                contentPlural: 'des informations',
+              }}
+              error={reqState.check.error}
+            />
+          )}
+          <ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef}>
+            <PlatformBackButton onPress={navigation.goBack} />
+            <View style={styles.centerIllustrationContainer}>
+              <Illustration name="auth-register" height={200} width={200} />
+              <Text style={authStyles.title}>Créer un compte</Text>
+            </View>
+            <StepperView
+              onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
+              pages={[
+                {
+                  key: 'general',
+                  icon: 'account',
+                  title: 'General',
+                  component: (props) => <AuthCreatePageGeneral {...props} />,
+                },
+                {
+                  key: 'privacy',
+                  icon: 'shield',
+                  title: 'Vie privée',
+                  component: (props) => <AuthCreatePagePrivacy {...props} />,
+                },
+                {
+                  key: 'profile',
+                  icon: 'comment-account',
+                  title: 'Profil',
+                  component: (props) => (
+                    <AuthCreatePageProfile
+                      landing={() =>
+                        navigation.push('Landing', {
+                          screen: 'SelectLocation',
+                          params: { goBack: true },
+                        })
+                      }
+                      username={creationData.username || ''}
+                      accountType={creationData.accountType || 'private'}
+                      {...props}
+                    />
+                  ),
+                },
+                {
+                  key: 'legal',
+                  icon: 'script-text',
+                  title: 'Conditions',
+                  component: (props) => (
+                    <AuthCreatePageLegal
+                      userEmail={creationData.email}
+                      create={create}
+                      navigation={navigation}
+                      createLoading={reqState.login.loading}
+                      {...props}
+                    />
+                  ),
+                },
+              ]}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );

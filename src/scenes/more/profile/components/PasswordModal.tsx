@@ -8,7 +8,7 @@ import { fetchAccount } from '@redux/actions/data/account';
 import { updatePassword } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme, Alert } from '@utils/index';
+import { useTheme, Alert, Errors } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -76,11 +76,20 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
   const update = async () => {
     const passwordValidation = validatePasswordInput(password);
     if (passwordValidation.valid) {
-      updatePassword(password).then(() => {
-        setPassword('');
-        setVisible(false);
-        fetchAccount();
-      });
+      updatePassword(password)
+        .then(() => {
+          setPassword('');
+          setVisible(false);
+          fetchAccount();
+        })
+        .catch((error) =>
+          Errors.showPopup({
+            type: 'axios',
+            what: 'le changement du mot de passe',
+            error,
+            retry: update,
+          }),
+        );
     } else {
       passwordInput.current?.focus();
     }
@@ -89,18 +98,6 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        {state.updateProfile.loading && <ProgressBar indeterminate />}
-        {state.updateProfile.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du compte',
-              contentSingular: 'Le compte',
-            }}
-            error={state.updateProfile.error}
-            retry={update}
-          />
-        )}
         <View>
           <View style={profileStyles.inputContainer}>
             <TextInput
@@ -134,6 +131,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
               color={colors.primary}
               uppercase={Platform.OS !== 'ios'}
               onPress={update}
+              loading={state.updateProfile.loading}
             >
               Confirmer
             </Button>

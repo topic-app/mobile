@@ -239,14 +239,20 @@ function EventDisplayDescriptionHeader({
         <InlineCard
           avatar={author.info?.avatar}
           title={author?.displayName}
+          subtitle={
+            author.displayName === author.info?.username ? undefined : `@${author.info?.username}`
+          }
           onPress={() =>
-            navigation.push('Main', {
-              screen: 'Display',
+            navigation.push('Root', {
+              screen: 'Main',
               params: {
-                screen: 'User',
+                screen: 'Display',
                 params: {
-                  screen: 'Display',
-                  params: { id: author?._id, title: author?.displayName },
+                  screen: 'User',
+                  params: {
+                    screen: 'Display',
+                    params: { id: author?._id, title: author?.displayName },
+                  },
                 },
               },
             })
@@ -254,10 +260,10 @@ function EventDisplayDescriptionHeader({
           badge={
             account.loggedIn &&
             account.accountInfo?.user?.data?.following?.users?.some((u) => u?._id === author?._id)
-              ? 'account-heart'
+              ? 'heart'
               : undefined
           }
-          badgeColor={colors.valid}
+          badgeColor={colors.primary}
           // TODO: Add imageUrl: imageUrl={article.author.imageUrl}
           // also need to add subtitle with username/handle: subtitle={article.author.username or .handle}
         />
@@ -268,16 +274,19 @@ function EventDisplayDescriptionHeader({
       </View>
       <InlineCard
         avatar={event.group?.avatar}
-        title={event.group?.displayName}
+        title={event.group?.name || event.group?.displayName}
         subtitle={`Groupe ${event.group?.type}`}
         onPress={() =>
-          navigation.push('Main', {
-            screen: 'Display',
+          navigation.push('Root', {
+            screen: 'Main',
             params: {
-              screen: 'Group',
+              screen: 'Display',
               params: {
-                screen: 'Display',
-                params: { id: event.group?._id, title: event.group?.displayName },
+                screen: 'Group',
+                params: {
+                  screen: 'Display',
+                  params: { id: event.group?._id, title: event.group?.displayName },
+                },
               },
             },
           })
@@ -287,10 +296,12 @@ function EventDisplayDescriptionHeader({
           account.accountInfo?.user?.data?.following?.groups?.some(
             (g) => g?._id === event.group?._id,
           )
-            ? 'account-heart'
+            ? 'heart'
+            : event.group?.official
+            ? 'check-decagram'
             : undefined
         }
-        badgeColor={colors.valid}
+        badgeColor={colors.primary}
       />
       {!verification && commentsDisplayed && (
         <View>
@@ -369,6 +380,7 @@ type EventDisplayDescriptionProps = {
   setCommentReportModalVisible: (state: boolean) => any;
   setMessageModalVisible: (state: boolean) => any;
   comments: Comment[];
+  setReplyingToComment: (id: string | null) => any;
   id: string;
 };
 
@@ -384,6 +396,7 @@ function EventDisplayDescription({
   setCommentReportModalVisible,
   setMessageModalVisible,
   setCommentModalVisible,
+  setReplyingToComment,
   id,
 }: EventDisplayDescriptionProps) {
   const theme = useTheme();
@@ -452,6 +465,11 @@ function EventDisplayDescription({
             setFocusedComment(commentId);
             setCommentReportModalVisible(true);
           }}
+          reply={(commentId) => {
+            setReplyingToComment(commentId);
+            setCommentModalVisible(true);
+          }}
+          authors={[...(event.authors?.map((a) => a._id) || []), event.group?._id || '']}
           loggedIn={account.loggedIn}
           navigation={navigation}
         />

@@ -4,9 +4,10 @@ import { Divider, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components/index';
-import { Config } from '@constants/index';
+import { Config, Permissions } from '@constants/index';
+import getStyles from '@styles/Styles';
 import { ModalProps, State, Account, CommentRequestState, Publisher, Content } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, checkPermission } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
@@ -24,11 +25,16 @@ type CommentPublisher = {
 type AddCommentModalProps = ModalProps & {
   id: string;
   account: Account;
+  replyingToComment: string | null;
+  setReplyingToComment: (id: string | null) => any;
+  replyingToUsername?: string;
   reqState: { comments: CommentRequestState };
+  group?: string;
   add: (
     publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
     content: Content,
     parent: string,
+    isReplying: boolean,
   ) => any;
 };
 
@@ -39,9 +45,14 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
   reqState,
   id,
   add,
+  replyingToComment,
+  setReplyingToComment,
+  replyingToUsername,
+  group,
 }) => {
   const theme = useTheme();
   const articleStyles = getArticleStyles(theme);
+  const styles = getStyles(theme);
   const { colors } = theme;
 
   const [commentText, setCommentText] = React.useState('');
@@ -66,18 +77,29 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
       },
       type: 'category',
     });
-    account.groups?.forEach((g) =>
-      publishers.push({
-        key: g._id,
-        title: g.shortName || g.name,
-        icon: 'newspaper',
-        publisher: {
-          type: 'group',
-          group: g._id,
-        },
-        type: 'category',
-      }),
-    );
+    account.groups?.forEach((g) => {
+      if (
+        checkPermission(
+          account,
+          {
+            permission: Permissions.COMMENT_ADD,
+            scope: { groups: group ? [group] : [] },
+          },
+          g._id,
+        )
+      ) {
+        publishers.push({
+          key: g._id,
+          title: g.shortName || g.name,
+          icon: 'newspaper',
+          publisher: {
+            type: 'group',
+            group: g._id,
+          },
+          type: 'category',
+        });
+      }
+    });
   }
 
   const submitComment = () => {
@@ -85,11 +107,13 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
       add(
         publishers.find((p) => p.key === publisher)!.publisher,
         { parser: 'plaintext', data: commentText },
-        id,
+        replyingToComment || id,
+        !!replyingToComment,
       )
         .then(() => {
           setCommentText('');
           setVisible(false);
+          setReplyingToComment(null);
         })
         .catch((e: any) => logger.warn('Failed to add comment to article', e));
     }
@@ -108,6 +132,17 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
             error={reqState.comments.add.error}
             retry={submitComment}
           />
+        )}
+        {!!replyingToComment && (
+          <View>
+            <View style={styles.container}>
+              <Text>
+                Réponse au commentaire{replyingToUsername ? ' de @' : ''}
+                {replyingToUsername}
+              </Text>
+            </View>
+            <Divider />
+          </View>
         )}
         <View style={articleStyles.activeCommentContainer}>
           <TextInput

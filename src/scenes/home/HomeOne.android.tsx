@@ -114,7 +114,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <Drawer.Section>
-        <View style={navigatorStyles.profileBackground}>
+        <View style={[navigatorStyles.profileBackground, { marginBottom: -4 }]}>
           {(location.state.fetch?.loading ||
             account.state.fetchAccount?.loading ||
             account.state.fetchGroups?.loading ||
@@ -162,12 +162,9 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               </View>
             ) : (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Illustration
-                  name="topic-icon"
-                  height={60}
-                  width={60}
-                  style={[navigatorStyles.avatar, { borderRadius: 30 }]}
-                />
+                <View style={{ marginRight: 10 }}>
+                  <Illustration name="topic-icon" height={60} width={60} />
+                </View>
                 <Title style={navigatorStyles.topic}>Topic</Title>
               </View>
             )}
@@ -193,8 +190,17 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
             onPress={() => {
               navigation.closeDrawer();
               navigation.navigate('Main', {
-                screen: 'More',
-                params: { screen: 'Profile', params: { screen: 'Profile' } },
+                screen: 'Display',
+                params: {
+                  screen: 'User',
+                  params: {
+                    screen: 'Display',
+                    params: {
+                      id: account.accountInfo?.accountId,
+                      title: account.accountInfo.user?.displayName,
+                    },
+                  },
+                },
               });
             }}
           />

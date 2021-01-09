@@ -8,7 +8,7 @@ import { fetchAccount } from '@redux/actions/data/account';
 import { updateData } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { ModalProps, State, Account } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Errors, useTheme } from '@utils/index';
 
 import getprofileStyles from '../styles/Styles';
 
@@ -30,27 +30,24 @@ const NameModal: React.FC<NameModalProps> = ({ visible, setVisible, account, sta
   const [lastName, setLastName] = React.useState(account.accountInfo?.user?.data?.lastName);
 
   const update = () => {
-    updateData({ firstName, lastName }).then(() => {
-      setVisible(false);
-      fetchAccount();
-    });
+    updateData({ firstName, lastName })
+      .then(() => {
+        setVisible(false);
+        fetchAccount();
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la modification du nom',
+          error,
+          retry: update,
+        }),
+      );
   };
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        {state.updateProfile.loading && <ProgressBar indeterminate />}
-        {state.updateProfile.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la modification du compte',
-              contentSingular: 'Le compte',
-            }}
-            error={state.updateProfile.error}
-            retry={update}
-          />
-        )}
         <View style={{ marginHorizontal: 5, marginBottom: 10 }}>
           <View style={profileStyles.inputContainer}>
             <TextInput
@@ -81,6 +78,7 @@ const NameModal: React.FC<NameModalProps> = ({ visible, setVisible, account, sta
             color={colors.primary}
             uppercase={Platform.OS !== 'ios'}
             onPress={update}
+            loading={state.updateProfile.loading}
           >
             Confirmer
           </Button>

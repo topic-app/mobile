@@ -62,25 +62,27 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
       }),
   });
 
-  let user: UserPreload | null = null;
-
-  async function fetchUser(username: string) {
-    try {
-      user = await fetchUserByUsername(username);
-    } catch (e) {
-      logger.verbose('AddUserSelectModal: failed to fetch user by username, does the user exist?');
-    }
-  }
+  const [error, setError] = React.useState<undefined | string>(undefined);
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
         <Formik
-          initialValues={{ username: '', email: '', password: '' }}
+          initialValues={{ username: '' }}
           validationSchema={RegisterSchema}
-          onSubmit={() => {
-            if (user) next(user);
-            setVisible(false);
+          validateOnChange={false}
+          onSubmit={async ({ username }) => {
+            const user = await fetchUserByUsername(username);
+            if (members.some((m) => m.user._id === user?._id)) {
+              setError('Cet utilisateur est déjà dans le groupe');
+              return;
+            }
+            console.log('USER');
+            console.log(user);
+            if (user) {
+              next(user);
+              setVisible(false);
+            }
           }}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldError }) => (
@@ -117,16 +119,10 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
                   label="Nom d'utilisateur"
                   value={values.username}
                   touched={touched.username}
-                  error={errors.username}
+                  error={errors.username || error}
                   onChangeText={handleChange('username')}
                   onBlur={handleBlur('username')}
-                  onSubmitEditing={async () => {
-                    await fetchUser(values.username);
-                    if (members.some((m) => m.user._id === user?._id)) {
-                      setFieldError('username', 'Cet utilisateur est déjà dans le groupe');
-                    }
-                    handleSubmit();
-                  }}
+                  onSubmitEditing={() => handleSubmit()}
                   style={groupStyles.textInput}
                   textContentType="username"
                   autoCorrect={false}
@@ -136,13 +132,7 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
                 <Button
                   mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                   uppercase={Platform.OS !== 'ios'}
-                  onPress={async () => {
-                    await fetchUser(values.username);
-                    if (members.some((m) => m.user._id === user?._id)) {
-                      setFieldError('username', 'Cet utilisateur est déjà dans le groupe');
-                    }
-                    handleSubmit();
-                  }}
+                  onPress={() => handleSubmit()}
                   loading={state.info.loading}
                 >
                   Suivant

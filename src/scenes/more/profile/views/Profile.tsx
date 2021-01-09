@@ -109,7 +109,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
         scene={{
           descriptor: {
             options: {
-              title: 'Profil',
+              title: 'Compte',
             },
           },
         }}
@@ -160,63 +160,6 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
               <Title>@{account.accountInfo?.user.info.username}</Title>
             )}
           </View>
-        </View>
-        <Divider style={{ marginVertical: 10 }} />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 40 }}>
-              {account.accountInfo?.user.data.cache.followers || ''}
-            </Text>
-            <Text>
-              Abonnés{' '}
-              <Icon
-                name={account.accountInfo?.user.data.public ? 'eye-outline' : 'lock-outline'}
-                color={colors.disabled}
-              />
-            </Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 40 }}>
-              {(account.accountInfo?.user.data.following.groups.length || 0) +
-                (account.accountInfo?.user.data.following.users.length || 0)}
-            </Text>
-            <Text>
-              Abonnements{' '}
-              <Icon
-                name={account.accountInfo?.user.data.public ? 'eye-outline' : 'lock-outline'}
-                color={colors.disabled}
-              />
-            </Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 40 }}>{account.groups?.length}</Text>
-            <Text>
-              Groupes <Icon name="eye-outline" color={colors.disabled} />
-            </Text>
-          </View>
-        </View>
-        <Divider style={{ marginTop: 15 }} />
-        <View style={styles.container}>
-          <Button
-            mode="outlined"
-            style={{ borderRadius: 20 }}
-            onPress={() =>
-              navigation.push('Main', {
-                screen: 'Display',
-                params: {
-                  screen: 'User',
-                  params: {
-                    screen: 'Display',
-                    params: {
-                      id: account.accountInfo.accountId,
-                    },
-                  },
-                },
-              })
-            }
-          >
-            Voir ma page
-          </Button>
         </View>
         <View>
           <View style={{ height: 40 }} />
