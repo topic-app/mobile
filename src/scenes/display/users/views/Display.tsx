@@ -76,7 +76,9 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
   const { id } = route.params || {};
 
   const user: User | UserPreload | null =
-    users.item?._id === id
+    id === account.accountInfo?.accountId
+      ? account.accountInfo.user
+      : users.item?._id === id
       ? users.item
       : users.data.find((u) => u._id === id) || users.search.find((u) => u._id === id) || null;
 
@@ -249,7 +251,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 </View>
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 40 }}>
-                    {user.data?.public ? (
+                    {user.data?.public || id === account.accountInfo?.accountId ? (
                       user.data.following.groups.length + user.data.following.users.length
                     ) : (
                       <Icon name="lock-outline" size={52} color={colors.disabled} />
@@ -321,16 +323,19 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   </View>
                 ))}
               <View style={{ height: 10 }} />
-              {user.data?.public && !!user.data?.description && (
-                <View>
-                  <List.Subheader>Description</List.Subheader>
-                  <Divider />
-                  <View style={{ alignItems: 'stretch', marginVertical: 20, marginHorizontal: 10 }}>
-                    <Text>{user.data.description}</Text>
+              {(user.data?.public || id === account.accountInfo?.accountId) &&
+                !!user.data?.description && (
+                  <View>
+                    <List.Subheader>Description</List.Subheader>
+                    <Divider />
+                    <View
+                      style={{ alignItems: 'stretch', marginVertical: 20, marginHorizontal: 10 }}
+                    >
+                      <Text>{user.data.description}</Text>
+                    </View>
+                    <View style={{ height: 20 }} />
                   </View>
-                  <View style={{ height: 20 }} />
-                </View>
-              )}
+                )}
               {groups.length !== 0 && (
                 <View>
                   <List.Subheader>Groupes</List.Subheader>
@@ -356,7 +361,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                       <InlineCard
                         key={group._id}
                         avatar={group.avatar}
-                        title={group.name}
+                        title={group.displayName || group.name}
                         subtitle={`Groupe ${group.type}`}
                         onPress={() =>
                           navigation.push('Root', {
@@ -381,54 +386,55 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {user.data.public && (
-                <View>
-                  <List.Subheader>Localisation</List.Subheader>
-                  <Divider />
-                  <View style={{ marginVertical: 10 }}>
-                    {user.data.location.global && (
-                      <InlineCard
-                        icon="map-marker"
-                        title="France Entière"
-                        onPress={() => logger.warn('global pressed')}
-                      />
-                    )}
-                    {user.data.location.schools?.map((school) => (
-                      <InlineCard
-                        key={school._id}
-                        icon="school"
-                        title={school.name}
-                        subtitle={`${
-                          school.address?.address
-                            ? getAddressString(school.address?.address)
-                            : school.address?.shortName
-                        }${
-                          school.address?.departments[0]
-                            ? `, ${
-                                school.address?.departments[0].displayName ||
-                                school.address?.departments[0].name
-                              }`
-                            : ' '
-                        }`}
-                        onPress={() => logger.warn(`school ${school._id} pressed!`)}
-                      />
-                    ))}
-                    {user.data.location.departments?.map((dep) => (
-                      <InlineCard
-                        key={dep._id}
-                        icon="map-marker-radius"
-                        title={dep.name}
-                        subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
-                          dep.code
-                        }`}
-                        onPress={() => logger.warn(`department ${dep._id} pressed!`)}
-                      />
-                    ))}
+              {user.data.public ||
+                (id === account.accountInfo?.accountId && (
+                  <View>
+                    <List.Subheader>Localisation</List.Subheader>
+                    <Divider />
+                    <View style={{ marginVertical: 10 }}>
+                      {user.data.location.global && (
+                        <InlineCard
+                          icon="map-marker"
+                          title="France Entière"
+                          onPress={() => logger.warn('global pressed')}
+                        />
+                      )}
+                      {user.data.location.schools?.map((school) => (
+                        <InlineCard
+                          key={school._id}
+                          icon="school"
+                          title={school.name}
+                          subtitle={`${
+                            school.address?.address
+                              ? getAddressString(school.address?.address)
+                              : school.address?.shortName
+                          }${
+                            school.address?.departments[0]
+                              ? `, ${
+                                  school.address?.departments[0].displayName ||
+                                  school.address?.departments[0].name
+                                }`
+                              : ' '
+                          }`}
+                          onPress={() => logger.warn(`school ${school._id} pressed!`)}
+                        />
+                      ))}
+                      {user.data.location.departments?.map((dep) => (
+                        <InlineCard
+                          key={dep._id}
+                          icon="map-marker-radius"
+                          title={dep.name}
+                          subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
+                            dep.code
+                          }`}
+                          onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                        />
+                      ))}
+                    </View>
+                    <View style={{ height: 20 }} />
                   </View>
-                  <View style={{ height: 20 }} />
-                </View>
-              )}
-              {user.data.public && (
+                ))}
+              {(user.data.public || account.accountInfo?.accountId === id) && (
                 <View>
                   <List.Subheader>Abonnements</List.Subheader>
                   <Divider />
@@ -449,7 +455,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                               <InlineCard
                                 key={g._id}
                                 avatar={g.avatar}
-                                title={g.displayName}
+                                title={g.displayName || g.name}
                                 subtitle={`Groupe ${g.type}`}
                                 onPress={() =>
                                   navigation.push('Root', {
@@ -486,6 +492,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 key={u._id}
                                 avatar={u.info?.avatar}
                                 title={u.displayName}
+                                subtitle={
+                                  u.displayName === u.info?.username
+                                    ? undefined
+                                    : `@${u.info?.username}`
+                                }
                                 onPress={() =>
                                   navigation.push('Root', {
                                     screen: 'Main',

@@ -118,8 +118,17 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
               left={() => <List.Icon icon="account-outline" />}
               onPress={() => {
                 navigation.navigate('Main', {
-                  screen: 'More',
-                  params: { screen: 'Profile', params: { screen: 'Profile' } },
+                  screen: 'Display',
+                  params: {
+                    screen: 'User',
+                    params: {
+                      screen: 'Display',
+                      params: {
+                        id: account.accountInfo?.accountId,
+                        title: account.accountInfo.user?.displayName,
+                      },
+                    },
+                  },
                 });
               }}
             />

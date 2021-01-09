@@ -78,7 +78,7 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, preferences, ac
         />
         {account.loggedIn && (
           <List.Item
-            title="Profil"
+            title="Compte et profil"
             description="Visibilité du compte, adresse email, suppression"
             left={() => <List.Icon icon="account" />}
             right={() => <List.Icon icon="chevron-right" />}

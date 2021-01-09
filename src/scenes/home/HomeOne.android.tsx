@@ -190,8 +190,17 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
             onPress={() => {
               navigation.closeDrawer();
               navigation.navigate('Main', {
-                screen: 'More',
-                params: { screen: 'Profile', params: { screen: 'Profile' } },
+                screen: 'Display',
+                params: {
+                  screen: 'User',
+                  params: {
+                    screen: 'Display',
+                    params: {
+                      id: account.accountInfo?.accountId,
+                      title: account.accountInfo.user?.displayName,
+                    },
+                  },
+                },
               });
             }}
           />
