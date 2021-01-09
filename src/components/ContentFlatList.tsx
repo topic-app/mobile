@@ -90,7 +90,12 @@ const ContentFlatList = <T extends any>({
     initialSection || sections[0]?.key || 'shouldNotRender',
   );
   const [chipTab, setChipTab] = React.useState(tabKey);
-  const currentSection = sections.find((sec) => sec.key === tabKey)!;
+  let currentSection = sections.find((sec) => sec.key === tabKey)!;
+
+  if (!currentSection?.key) {
+    setTabKey(sections[0]?.key);
+    [currentSection] = sections;
+  }
 
   // Logic for animation
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
