@@ -206,7 +206,7 @@ const ContentFlatList = <T extends any>({
   }
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <FlatListComponent<T>
         //        Note: ↑ this is a TypeScript Generic, not a React component
         ref={flatListRef}
