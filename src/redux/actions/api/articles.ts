@@ -4,6 +4,7 @@ import {
   UPDATE_ARTICLES_SEARCH,
   UPDATE_ARTICLES_FOLLOWING,
   UPDATE_ARTICLES_ITEM,
+  UPDATE_ARTICLES_MY_INFO,
   UPDATE_ARTICLES_STATE,
   CLEAR_ARTICLES,
 } from '@ts/redux';
@@ -153,6 +154,23 @@ async function fetchArticle(articleId: string) {
   );
 }
 
+async function fetchArticleMy(contentId: string) {
+  if (!Store.getState().account.loggedIn) {
+    return;
+  }
+  await Store.dispatch(
+    fetchCreator({
+      update: UPDATE_ARTICLES_MY_INFO,
+      stateUpdate: UPDATE_ARTICLES_STATE,
+      stateName: 'my',
+      url: 'profile/myContentInfo',
+      dataType: 'infos' as 'articles',
+      params: { contentId },
+      auth: true,
+    }),
+  );
+}
+
 async function fetchArticleVerification(articleId: string) {
   await Store.dispatch(
     fetchCreator({
@@ -172,6 +190,7 @@ export {
   updateArticlesFollowing,
   clearArticles,
   fetchArticle,
+  fetchArticleMy,
   searchArticles,
   updateArticlesVerification,
   fetchArticleVerification,

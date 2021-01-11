@@ -26,7 +26,7 @@ const EventHistory: React.FC<EventHistoryProps> = ({ navigation, read, preferenc
     return (
       <View style={styles.page}>
         <View style={styles.centerIllustrationContainer}>
-          <Text>L&amp;historique est désactivé</Text>
+          <Text>L&apos;historique est désactivé</Text>
         </View>
       </View>
     );
@@ -65,16 +65,19 @@ const EventHistory: React.FC<EventHistoryProps> = ({ navigation, read, preferenc
               </View>
             )}
             onPress={() =>
-              navigation.navigate('Main', {
-                screen: 'Display',
+              navigation.navigate('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'Event',
+                  screen: 'Display',
                   params: {
-                    screen: 'Display',
+                    screen: 'Event',
                     params: {
-                      id: item.id,
-                      title: item.title,
-                      useLists: false,
+                      screen: 'Display',
+                      params: {
+                        id: item.id,
+                        title: item.title,
+                        useLists: false,
+                      },
                     },
                   },
                 },

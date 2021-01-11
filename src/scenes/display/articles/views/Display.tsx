@@ -19,12 +19,17 @@ import {
   PlatformTouchable,
 } from '@components/index';
 import { Permissions } from '@constants/index';
-import { fetchArticle, fetchArticleVerification } from '@redux/actions/api/articles';
+import {
+  fetchArticle,
+  fetchArticleMy,
+  fetchArticleVerification,
+} from '@redux/actions/api/articles';
 import { updateComments } from '@redux/actions/api/comments';
 import {
   articleReport,
   articleVerificationApprove,
   articleDelete,
+  articleLike,
 } from '@redux/actions/apiActions/articles';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 import { addArticleRead } from '@redux/actions/contentData/articles';
@@ -40,6 +45,7 @@ import {
   ArticleListItem,
   Preferences,
   Content as ContentType,
+  ArticleMyInfo,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
 import { useTheme, getImageUrl, handleUrl, checkPermission, Alert, Errors } from '@utils/index';
@@ -61,6 +67,7 @@ type CombinedReqState = {
 
 type ArticleDisplayHeaderProps = {
   article: Article | ArticlePreload;
+  articleMy: ArticleMyInfo | null;
   offline: boolean;
   navigation: Navigation;
   reqState: CombinedReqState;
@@ -74,6 +81,7 @@ type ArticleDisplayHeaderProps = {
 
 const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   article,
+  articleMy,
   navigation,
   reqState,
   account,
@@ -104,6 +112,21 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           retry: approveArticle,
         }),
       );
+
+  const likeArticle = () => {
+    articleLike(article._id, !articleMy?.liked)
+      .then(() => {
+        fetchArticleMy(article._id);
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la prise en compte du like',
+          error,
+          retry: () => likeArticle(),
+        }),
+      );
+  };
 
   return (
     <View style={styles.page}>
@@ -172,6 +195,51 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <View style={styles.contentContainer}>
             <Content data={article.content?.data} parser={article.content?.parser} />
           </View>
+          {!verification && (
+            <View
+              style={{
+                flexDirection: 'row',
+                marginVertical: 10,
+                marginHorizontal: 10,
+                justifyContent: 'space-around',
+              }}
+            >
+              <Button
+                mode="text"
+                icon={articleMy?.liked ? 'thumb-up' : 'thumb-up-outline'}
+                loading={reqState.articles.my.loading || reqState.articles.like.loading}
+                style={{ flex: 1, marginRight: 5 }}
+                color={articleMy?.liked ? colors.primary : colors.muted}
+                onPress={account.loggedIn ? likeArticle : undefined}
+              >
+                {typeof article.cache?.likes === 'number'
+                  ? article.cache.likes + (articleMy?.liked ? 1 : 0)
+                  : ''}{' '}
+                Likes
+              </Button>
+              <Button
+                mode="text"
+                icon="share-variant"
+                style={{ flex: 1, marginLeft: 5 }}
+                color={colors.muted}
+                onPress={
+                  Platform.OS === 'ios'
+                    ? () =>
+                        Share.share({
+                          message: `${article?.title} par ${article?.group?.displayName}`,
+                          url: `https://go.topicapp.fr/articles/${article?._id}`,
+                        })
+                    : () =>
+                        Share.share({
+                          message: `https://go.topicapp.fr/articles/${article?._id}`,
+                          title: `${article?.title} par ${article?.group?.displayName}`,
+                        })
+                }
+              >
+                Partager
+              </Button>
+            </View>
+          )}
           <Divider />
           <View style={styles.container}>
             <CategoryTitle>Auteur{article.authors?.length > 1 ? 's' : ''}</CategoryTitle>
@@ -296,15 +364,18 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               )}
               <Divider />
               <View>
-                {reqState.comments.list.error && (
+                {(reqState.comments.list.error || reqState.articles.like.error) && (
                   <ErrorMessage
                     type="axios"
                     strings={{
-                      what: 'la récupération des commentaires',
-                      contentPlural: 'des commentaires',
+                      what: 'la récupération des commentaires et des likes',
+                      contentPlural: 'des commentaires et des likes',
                     }}
-                    error={reqState.comments.list.error}
-                    retry={() => updateComments('initial', { parentId: article._id })}
+                    error={[reqState.comments.list.error, reqState.articles.like.error]}
+                    retry={() => {
+                      updateComments('initial', { parentId: article._id });
+                      fetchArticleMy(article._id);
+                    }}
                   />
                 )}
               </View>
@@ -421,6 +492,7 @@ type ArticleDisplayProps = {
   route: Route;
   navigation: Navigation;
   item: Article | null;
+  my: ArticleMyInfo | null;
   data: ArticlePreload[];
   search: ArticlePreload[];
   comments: Comment[];
@@ -437,6 +509,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   data,
   search,
   item,
+  my,
   comments,
   reqState,
   account,
@@ -464,7 +537,13 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         ? item
         : data.find((a) => a._id === id) || search.find((a) => a._id === id) || null;
   }
-  const articleComments = comments.filter((c) => c.parent === article?._id);
+  const articleMy: ArticleMyInfo | null = my?._id === id ? my : null;
+
+  const articleComments = comments.filter(
+    (c) =>
+      c.parent === article?._id &&
+      (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
+  );
 
   const fetch = () => {
     if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
@@ -477,6 +556,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           }
           setCommentsDisplayed(true);
         });
+        if (account.loggedIn) {
+          fetchArticleMy(id);
+        }
       }
     }
   };
@@ -658,6 +740,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           article ? (
             <ArticleDisplayHeader
               article={article}
+              articleMy={articleMy}
               commentsDisplayed={commentsDisplayed}
               verification={verification}
               offline={useLists && lists?.some((l) => l.items?.some((i) => i._id === id))}
@@ -670,7 +753,11 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
             />
           ) : null
         }
-        data={reqState.articles.info.success && !verification ? articleComments : []}
+        data={
+          reqState.articles.info.success && !verification
+            ? [...articleComments, ...(articleMy?.comments || [])]
+            : []
+        }
         // onEndReached={() => {
         //   console.log('comment end reached');
         //   updateComments('next', { parentId: id });
@@ -776,6 +863,7 @@ const mapStateToProps = (state: State) => {
     data: articles.data,
     search: articles.search,
     item: articles.item,
+    my: articles.my,
     comments: comments.data,
     reqState: { articles: articles.state, comments: comments.state },
     preferences,

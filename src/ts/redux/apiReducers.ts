@@ -23,6 +23,7 @@ import {
   ArticleVerificationPreload,
   GroupVerification,
   MapLocation,
+  ArticleMyInfo,
 } from '../api';
 import {
   ArticleRequestState,
@@ -45,6 +46,7 @@ import { FullClearAction } from './actions';
 export const UPDATE_ARTICLES_STATE = 'UPDATE_ARTICLES_STATE';
 export const UPDATE_ARTICLES_DATA = 'UPDATE_ARTICLES_DATA';
 export const UPDATE_ARTICLES_ITEM = 'UPDATE_ARTICLES_ITEM';
+export const UPDATE_ARTICLES_MY_INFO = 'UPDATE_ARTICLES_MY_INFO';
 export const UPDATE_ARTICLES_FOLLOWING = 'UPDATE_ARTICLES_FOLLOWING';
 export const UPDATE_ARTICLES_VERIFICATION = 'UPDATE_ARTICLES_VERIFICATION';
 export const UPDATE_ARTICLES_SEARCH = 'UPDATE_ARTICLES_SEARCH';
@@ -54,6 +56,7 @@ export type ArticlesState = {
   data: ArticlePreload[];
   following: ArticlePreload[];
   item: Article | null;
+  my: ArticleMyInfo | null;
   search: ArticlePreload[];
   verification: ArticleVerificationPreload[];
   state: ArticleRequestState;
@@ -85,6 +88,11 @@ type UpdateArticlesSearchAction = {
   data: ArticlePreload[];
 };
 
+type UpdateArticlesMyInfoAction = {
+  type: typeof UPDATE_ARTICLES_MY_INFO;
+  data: ArticleMyInfo;
+};
+
 type UpdateArticlesVerificationAction = {
   type: typeof UPDATE_ARTICLES_VERIFICATION;
   data: ArticleVerificationPreload[];
@@ -101,6 +109,7 @@ export type ArticlesActionTypes =
   | UpdateArticlesItemAction
   | UpdateArticlesFollowingAction
   | UpdateArticlesSearchAction
+  | UpdateArticlesMyInfoAction
   | UpdateArticlesVerificationAction
   | ClearArticlesAction
   | FullClearAction;

@@ -339,6 +339,9 @@ export type Article = ArticleBase & {
   preferences: {
     comments: boolean;
   };
+  cache?: {
+    likes?: number;
+  };
 };
 
 export type AnyArticle = ArticlePreload | Article;
@@ -588,6 +591,14 @@ export type Comment = {
     replies?: CommentReply[];
   };
 };
+
+type MyInfo = {
+  _id: string;
+  comments: Comment[];
+  liked: boolean;
+};
+export type ArticleMyInfo = MyInfo;
+export type EventMyInfo = MyInfo;
 
 // Misc Types
 export type Error = {

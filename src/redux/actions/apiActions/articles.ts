@@ -2,7 +2,7 @@ import Store from '@redux/store';
 import { AppThunk, UPDATE_ARTICLES_STATE, ArticleCreationData } from '@ts/redux';
 import { request } from '@utils/index';
 
-import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
+import { reportCreator, approveCreator, deleteCreator, likeCreator } from './ActionCreator';
 
 function articleAddCreator({
   title,
@@ -118,4 +118,8 @@ async function articleDelete(id: string) {
   );
 }
 
-export { articleAdd, articleReport, articleVerificationApprove, articleDelete };
+async function articleLike(contentId: string, liking: boolean = true) {
+  await Store.dispatch(likeCreator({ contentId, liking, stateUpdate: UPDATE_ARTICLES_STATE }));
+}
+
+export { articleAdd, articleReport, articleVerificationApprove, articleDelete, articleLike };

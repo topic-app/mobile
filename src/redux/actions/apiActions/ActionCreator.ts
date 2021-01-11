@@ -183,4 +183,61 @@ function deleteCreator({ url, stateUpdate, id, paramName }: deleteCreatorParams)
   };
 }
 
-export { reportCreator, approveCreator, deleteCreator };
+type likeCreatorParams = {
+  contentId: string;
+  liking: boolean;
+  stateUpdate: ApiAction.UpdateStateType;
+};
+
+function likeCreator({ contentId, liking, stateUpdate }: likeCreatorParams): AppThunk {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: stateUpdate,
+        data: {
+          like: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        `likes/${liking ? 'like' : 'unlike'}`,
+        'post',
+        {
+          contentId,
+        },
+        true,
+      )
+        .then((result) => {
+          dispatch({
+            type: stateUpdate,
+            data: {
+              like: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve(result.data);
+        })
+        .catch((error) => {
+          dispatch({
+            type: stateUpdate,
+            data: {
+              like: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
+export { reportCreator, approveCreator, deleteCreator, likeCreator };

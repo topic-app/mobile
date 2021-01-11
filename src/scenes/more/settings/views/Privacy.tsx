@@ -199,7 +199,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
           />
         </List.Section>
         <Divider />
-        {account.loggedIn && (
+        {/* {account.loggedIn && (
           <View>
             <Banner
               visible
@@ -266,7 +266,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
             style={settingsStyles.listItem}
           />
         </List.Section>
-        <Divider />
+        <Divider /> */}
         <List.Section>
           <List.Item
             title="Voir l'historique et les centres d'intérêt"
