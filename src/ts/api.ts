@@ -325,6 +325,9 @@ type ArticleBase = {
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];
+  cache?: {
+    likes?: number;
+  };
 };
 export type ArticlePreload = ArticleBase & {
   preload: true; // So we can check if article.preload to change type
@@ -338,9 +341,6 @@ export type Article = ArticleBase & {
   content: Content;
   preferences: {
     comments: boolean;
-  };
-  cache?: {
-    likes?: number;
   };
 };
 
@@ -563,7 +563,7 @@ export type PetitionPreload = {
   location: Location;
   publisher: Publisher;
   tags: TagPreload[];
-  cache: PetitionVoteData & { followers: number };
+  cache: PetitionVoteData & { followers?: number; likes?: number };
 };
 
 export type Petition = PetitionPreload & {

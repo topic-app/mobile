@@ -756,7 +756,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         }
         data={
           reqState.articles.info.success && !verification
-            ? [...articleComments, ...(articleMy?.comments || [])]
+            ? [...(articleMy?.comments || []), ...articleComments]
             : []
         }
         // onEndReached={() => {

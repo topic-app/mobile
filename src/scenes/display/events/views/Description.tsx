@@ -482,6 +482,12 @@ function EventDisplayDescription({
     updateComments('initial', { parentId: id });
   }, [null]);
 
+  const eventComments = comments.filter(
+    (c) =>
+      c.parent === event?._id &&
+      (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
+  );
+
   return (
     <FlatList
       ListHeaderComponent={() =>
@@ -499,7 +505,11 @@ function EventDisplayDescription({
           />
         ) : null
       }
-      data={reqState.events.info.success && !verification ? articleComments : []}
+      data={
+        reqState.events.info.success && !verification
+          ? [...(eventMy?.comments || []), ...eventComments]
+          : []
+      }
       // onEndReached={() => {
       //   console.log('comment end reached');
       //   updateComments('next', { parentId: id });
