@@ -23,6 +23,7 @@ import {
 import { fetchAccount, login } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { AccountRequestState, State } from '@ts/types';
+import { getApiDevice, messaging } from '@utils/firebase';
 import { useTheme, logger, Errors } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
@@ -63,13 +64,9 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
         username,
         password,
       },
-      device: {
-        type: 'app',
-        deviceId: null,
-        canNotify: true,
-      },
+      device: await getApiDevice(),
     };
-    let didLogin;
+    let didLogin = false;
     try {
       didLogin = await login(fields);
     } catch (error) {

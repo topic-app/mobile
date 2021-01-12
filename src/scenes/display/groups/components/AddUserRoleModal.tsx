@@ -134,11 +134,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   };
 
   if (!account.loggedIn) {
-    return (
-      <FullscreenIllustration illustration="empty">
-        Vous n&apos;êtes pas connecté.
-      </FullscreenIllustration>
-    );
+    return null;
   }
 
   return (
