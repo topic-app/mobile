@@ -147,7 +147,7 @@ function EventDisplayDescriptionHeader({
     );
   }
 
-  if (!Array.isArray(event?.program)) {
+  if (!Array.isArray(event.program)) {
     logger.warn('Invalid Program for event');
     // Handle invalid program
   }
@@ -156,12 +156,12 @@ function EventDisplayDescriptionHeader({
   // equality becomes undefined and moment then refers to current time, which is not at all what we want
   let startTime = null;
   let endTime = null;
-  if (event?.duration?.start && event?.duration?.end) {
+  if (event.duration?.start && event.duration?.end) {
     startTime = moment(event.duration.start).hour();
     endTime = moment(event.duration.end).hour();
   }
 
-  const { timeString, dateString } = getTimeLabels(event?.duration, startTime, endTime);
+  const { timeString, dateString } = getTimeLabels(event.duration, startTime, endTime);
 
   const likeEvent = () => {
     eventLike(event._id, !eventMy?.liked)
@@ -180,7 +180,7 @@ function EventDisplayDescriptionHeader({
 
   return (
     <View>
-      {Array.isArray(event?.places) &&
+      {Array.isArray(event.places) &&
         event.places.map((place) => {
           const { title, description } = getPlaceLabels(place);
           return (
@@ -202,10 +202,7 @@ function EventDisplayDescriptionHeader({
       />
       <Divider />
       <View style={[eventStyles.description, { marginBottom: 20 }]}>
-        <Content
-          parser={event?.description?.parser || 'plaintext'}
-          data={event?.description?.data}
-        />
+        <Content parser={event.description?.parser || 'plaintext'} data={event.description?.data} />
       </View>
       {!verification && (
         <View
@@ -238,13 +235,13 @@ function EventDisplayDescriptionHeader({
               Platform.OS === 'ios'
                 ? () =>
                     Share.share({
-                      message: `Évènement ${event?.title} par ${event?.group?.displayName}`,
-                      url: `${config.links.share}/evenements/${event?._id}`,
+                      message: `Évènement ${event.title} par ${event.group?.displayName}`,
+                      url: `${config.links.share}/evenements/${event._id}`,
                     })
                 : () =>
                     Share.share({
-                      message: `${config.links.share}/evenements/${event?._id}`,
-                      title: `Évènement ${event?.title} par ${event?.group?.displayName}`,
+                      message: `${config.links.share}/evenements/${event._id}`,
+                      title: `Évènement ${event.title} par ${event.group?.displayName}`,
                     })
             }
           >
@@ -253,7 +250,7 @@ function EventDisplayDescriptionHeader({
         </View>
       )}
       <Divider />
-      {Array.isArray(event?.messages) && event.messages.length > 0 && (
+      {Array.isArray(event.messages) && event.messages.length > 0 && (
         <View>
           <View style={styles.container}>
             <CategoryTitle>Messages</CategoryTitle>
@@ -283,7 +280,7 @@ function EventDisplayDescriptionHeader({
       )}
       {checkPermission(account, {
         permission: Permissions.EVENT_MESSAGES_ADD,
-        scope: { groups: [event?.group?._id] },
+        scope: { groups: [event.group?._id] },
       }) && (
         <View style={styles.container}>
           <Button
@@ -474,8 +471,6 @@ function EventDisplayDescription({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const articleComments = comments.filter((c) => c.parent === event?._id);
-
   const eventMy: EventMyInfo | null = my?._id === id ? my : null;
 
   React.useEffect(() => {
@@ -484,7 +479,7 @@ function EventDisplayDescription({
 
   const eventComments = comments.filter(
     (c) =>
-      c.parent === event?._id &&
+      c.parent === id &&
       (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
   );
 

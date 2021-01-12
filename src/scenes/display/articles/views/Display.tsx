@@ -103,7 +103,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   const [imageWidth, setImageWidth] = React.useState(0);
 
   const approveArticle = () =>
-    articleVerificationApprove(article?._id)
+    articleVerificationApprove(article._id)
       .then(() => navigation.goBack())
       .catch((error) =>
         Errors.showPopup({
@@ -227,13 +227,13 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                   Platform.OS === 'ios'
                     ? () =>
                         Share.share({
-                          message: `${article?.title} par ${article?.group?.displayName}`,
-                          url: `${config.links.share}/articles/${article?._id}`,
+                          message: `${article.title} par ${article.group?.displayName}`,
+                          url: `${config.links.share}/articles/${article._id}`,
                         })
                     : () =>
                         Share.share({
-                          message: `${config.links.share}/articles/${article?._id}`,
-                          title: `${article?.title} par ${article?.group?.displayName}`,
+                          message: `${config.links.share}/articles/${article._id}`,
+                          title: `${article.title} par ${article.group?.displayName}`,
                         })
                 }
               >
@@ -418,7 +418,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                   </View>
                 </Card>
               </View>
-              {article?.content?.data?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
+              {article.content?.data?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
                 ?.length && (
                 <View style={[styles.container, { marginTop: 20 }]}>
                   <Card
@@ -434,7 +434,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                       />
                       <Text style={{ color: colors.text }}>
                         Liens contenus dans l&apos;article:{'\n'}
-                        {article?.content?.data
+                        {article.content?.data
                           ?.match(/(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/g)
                           ?.map((u: string) => (
                             <Text
@@ -542,7 +542,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   const articleComments = comments.filter(
     (c) =>
-      c.parent === article?._id &&
+      c.parent === id &&
       (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
   );
 
