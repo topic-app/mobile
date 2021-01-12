@@ -23,6 +23,8 @@ import {
   ArticleVerificationPreload,
   GroupVerification,
   MapLocation,
+  ArticleMyInfo,
+  EventMyInfo,
 } from '../api';
 import {
   ArticleRequestState,
@@ -45,6 +47,7 @@ import { FullClearAction } from './actions';
 export const UPDATE_ARTICLES_STATE = 'UPDATE_ARTICLES_STATE';
 export const UPDATE_ARTICLES_DATA = 'UPDATE_ARTICLES_DATA';
 export const UPDATE_ARTICLES_ITEM = 'UPDATE_ARTICLES_ITEM';
+export const UPDATE_ARTICLES_MY_INFO = 'UPDATE_ARTICLES_MY_INFO';
 export const UPDATE_ARTICLES_FOLLOWING = 'UPDATE_ARTICLES_FOLLOWING';
 export const UPDATE_ARTICLES_VERIFICATION = 'UPDATE_ARTICLES_VERIFICATION';
 export const UPDATE_ARTICLES_SEARCH = 'UPDATE_ARTICLES_SEARCH';
@@ -54,6 +57,7 @@ export type ArticlesState = {
   data: ArticlePreload[];
   following: ArticlePreload[];
   item: Article | null;
+  my: ArticleMyInfo | null;
   search: ArticlePreload[];
   verification: ArticleVerificationPreload[];
   state: ArticleRequestState;
@@ -85,6 +89,11 @@ type UpdateArticlesSearchAction = {
   data: ArticlePreload[];
 };
 
+type UpdateArticlesMyInfoAction = {
+  type: typeof UPDATE_ARTICLES_MY_INFO;
+  data: ArticleMyInfo;
+};
+
 type UpdateArticlesVerificationAction = {
   type: typeof UPDATE_ARTICLES_VERIFICATION;
   data: ArticleVerificationPreload[];
@@ -101,6 +110,7 @@ export type ArticlesActionTypes =
   | UpdateArticlesItemAction
   | UpdateArticlesFollowingAction
   | UpdateArticlesSearchAction
+  | UpdateArticlesMyInfoAction
   | UpdateArticlesVerificationAction
   | ClearArticlesAction
   | FullClearAction;
@@ -205,6 +215,7 @@ export const UPDATE_EVENTS_UPCOMING_DATA = 'UPDATE_EVENTS_UPCOMING_DATA';
 export const UPDATE_EVENTS_PASSED_DATA = 'UPDATE_EVENTS_PASSED_DATA';
 export const UPDATE_EVENTS_ITEM = 'UPDATE_EVENTS_ITEM';
 export const UPDATE_EVENTS_VERIFICATION = 'UPDATE_EVENTS_VERIFICATION';
+export const UPDATE_EVENTS_MY_INFO = 'UPDATE_EVENTS_MY_INFO';
 export const UPDATE_EVENTS_FOLLOWING = 'UPDATE_EVENTS_FOLLOWING';
 export const UPDATE_EVENTS_SEARCH = 'UPDATE_EVENTS_SEARCH';
 export const CLEAR_EVENTS = 'CLEAR_EVENTS';
@@ -214,6 +225,7 @@ export type EventsState = {
   dataPassed: EventPreload[];
   following: EventPreload[];
   item: Event | null;
+  my: EventMyInfo | null;
   search: EventPreload[];
   verification: EventVerificationPreload[];
   state: EventRequestState;
@@ -244,6 +256,11 @@ type UpdateEventsItemAction = {
   data: Event;
 };
 
+type UpdateEventsMyInfoAction = {
+  type: typeof UPDATE_EVENTS_MY_INFO;
+  data: EventMyInfo;
+};
+
 type UpdateEventsSearchAction = {
   type: typeof UPDATE_EVENTS_SEARCH;
   data: EventPreload[];
@@ -264,6 +281,7 @@ export type EventsActionTypes =
   | UpdateEventsUpcomingDataAction
   | UpdateEventsPassedDataAction
   | UpdateEventsItemAction
+  | UpdateEventsMyInfoAction
   | UpdateEventsSearchAction
   | UpdateEventsVerificationAction
   | UpdateEventsFollowingAction

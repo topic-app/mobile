@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { View, FlatList, ActivityIndicator, Platform } from 'react-native';
+import { View, FlatList, ActivityIndicator, Platform, Share } from 'react-native';
 import { Text, Divider, List, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -16,7 +16,10 @@ import {
   PlatformTouchable,
 } from '@components/index';
 import { Permissions } from '@constants';
+import config from '@constants/config';
 import { updateComments } from '@redux/actions/api/comments';
+import { fetchEventMy } from '@redux/actions/api/events';
+import { eventLike } from '@redux/actions/apiActions/events';
 import getStyles from '@styles/Styles';
 import {
   State,
@@ -27,8 +30,9 @@ import {
   EventRequestState,
   CommentRequestState,
   Comment,
+  EventMyInfo,
 } from '@ts/types';
-import { useTheme, logger, checkPermission } from '@utils/index';
+import { useTheme, logger, checkPermission, Errors } from '@utils/index';
 
 import CommentInlineCard from '../../components/Comment';
 import MessageInlineCard from '../components/Message';
@@ -106,6 +110,7 @@ type CombinedReqState = {
 
 type EventDisplayHeaderProps = {
   event: Event;
+  eventMy: EventMyInfo | null;
   navigation: any;
   account: Account;
   verification: boolean;
@@ -117,6 +122,7 @@ type EventDisplayHeaderProps = {
 
 function EventDisplayDescriptionHeader({
   event,
+  eventMy,
   navigation,
   account,
   verification,
@@ -141,7 +147,7 @@ function EventDisplayDescriptionHeader({
     );
   }
 
-  if (!Array.isArray(event?.program)) {
+  if (!Array.isArray(event.program)) {
     logger.warn('Invalid Program for event');
     // Handle invalid program
   }
@@ -150,16 +156,31 @@ function EventDisplayDescriptionHeader({
   // equality becomes undefined and moment then refers to current time, which is not at all what we want
   let startTime = null;
   let endTime = null;
-  if (event?.duration?.start && event?.duration?.end) {
+  if (event.duration?.start && event.duration?.end) {
     startTime = moment(event.duration.start).hour();
     endTime = moment(event.duration.end).hour();
   }
 
-  const { timeString, dateString } = getTimeLabels(event?.duration, startTime, endTime);
+  const { timeString, dateString } = getTimeLabels(event.duration, startTime, endTime);
+
+  const likeEvent = () => {
+    eventLike(event._id, !eventMy?.liked)
+      .then(() => {
+        fetchEventMy(event._id);
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la prise en compte du like',
+          error,
+          retry: () => likeEvent(),
+        }),
+      );
+  };
 
   return (
     <View>
-      {Array.isArray(event?.places) &&
+      {Array.isArray(event.places) &&
         event.places.map((place) => {
           const { title, description } = getPlaceLabels(place);
           return (
@@ -181,13 +202,55 @@ function EventDisplayDescriptionHeader({
       />
       <Divider />
       <View style={[eventStyles.description, { marginBottom: 20 }]}>
-        <Content
-          parser={event?.description?.parser || 'plaintext'}
-          data={event?.description?.data}
-        />
+        <Content parser={event.description?.parser || 'plaintext'} data={event.description?.data} />
       </View>
+      {!verification && (
+        <View
+          style={{
+            flexDirection: 'row',
+            marginVertical: 10,
+            marginHorizontal: 10,
+            justifyContent: 'space-around',
+          }}
+        >
+          <Button
+            mode="text"
+            icon={eventMy?.liked ? 'thumb-up' : 'thumb-up-outline'}
+            loading={reqState.events.my?.loading || reqState.events.like?.loading}
+            style={{ flex: 1, marginRight: 5 }}
+            color={eventMy?.liked ? colors.primary : colors.muted}
+            onPress={account.loggedIn ? likeEvent : undefined}
+          >
+            {typeof event.cache?.likes === 'number'
+              ? event.cache.likes + (eventMy?.liked ? 1 : 0)
+              : ''}{' '}
+            Likes
+          </Button>
+          <Button
+            mode="text"
+            icon="share-variant"
+            style={{ flex: 1, marginLeft: 5 }}
+            color={colors.muted}
+            onPress={
+              Platform.OS === 'ios'
+                ? () =>
+                    Share.share({
+                      message: `Évènement ${event.title} par ${event.group?.displayName}`,
+                      url: `${config.links.share}/evenements/${event._id}`,
+                    })
+                : () =>
+                    Share.share({
+                      message: `${config.links.share}/evenements/${event._id}`,
+                      title: `Évènement ${event.title} par ${event.group?.displayName}`,
+                    })
+            }
+          >
+            Partager
+          </Button>
+        </View>
+      )}
       <Divider />
-      {Array.isArray(event?.messages) && event.messages.length > 0 && (
+      {Array.isArray(event.messages) && event.messages.length > 0 && (
         <View>
           <View style={styles.container}>
             <CategoryTitle>Messages</CategoryTitle>
@@ -217,7 +280,7 @@ function EventDisplayDescriptionHeader({
       )}
       {checkPermission(account, {
         permission: Permissions.EVENT_MESSAGES_ADD,
-        scope: { groups: [event?.group?._id] },
+        scope: { groups: [event.group?._id] },
       }) && (
         <View style={styles.container}>
           <Button
@@ -350,15 +413,18 @@ function EventDisplayDescriptionHeader({
           )}
           <Divider />
           <View>
-            {reqState.comments.list.error && (
+            {(reqState.comments.list.error || reqState.events.my?.error) && (
               <ErrorMessage
                 type="axios"
                 strings={{
-                  what: 'la récupération des commentaires',
+                  what: 'la récupération des commentaires et des likes',
                   contentPlural: 'des commentaires',
                 }}
-                error={reqState.comments.list.error}
-                retry={() => updateComments('initial', { parentId: event._id })}
+                error={[reqState.comments.list.error, reqState.events.my?.error]}
+                retry={() => {
+                  updateComments('initial', { parentId: event._id });
+                  fetchEventMy(event._id);
+                }}
               />
             )}
           </View>
@@ -370,6 +436,7 @@ function EventDisplayDescriptionHeader({
 
 type EventDisplayDescriptionProps = {
   event: Event;
+  my: EventMyInfo | null;
   navigation: any;
   account: Account;
   verification: boolean;
@@ -386,6 +453,7 @@ type EventDisplayDescriptionProps = {
 
 function EventDisplayDescription({
   event,
+  my,
   verification,
   account,
   navigation,
@@ -403,11 +471,17 @@ function EventDisplayDescription({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const articleComments = comments.filter((c) => c.parent === event?._id);
+  const eventMy: EventMyInfo | null = my?._id === id ? my : null;
 
   React.useEffect(() => {
     updateComments('initial', { parentId: id });
   }, [null]);
+
+  const eventComments = comments.filter(
+    (c) =>
+      c.parent === id &&
+      (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
+  );
 
   return (
     <FlatList
@@ -416,6 +490,7 @@ function EventDisplayDescription({
           <EventDisplayDescriptionHeader
             setMessageModalVisible={setMessageModalVisible}
             event={event}
+            eventMy={eventMy}
             account={account}
             navigation={navigation}
             verification={verification}
@@ -425,7 +500,11 @@ function EventDisplayDescription({
           />
         ) : null
       }
-      data={reqState.events.info.success && !verification ? articleComments : []}
+      data={
+        reqState.events.info.success && !verification
+          ? [...(eventMy?.comments || []), ...eventComments]
+          : []
+      }
       // onEndReached={() => {
       //   console.log('comment end reached');
       //   updateComments('next', { parentId: id });
@@ -482,6 +561,7 @@ const mapStateToProps = (state: State) => {
   const { account, comments, events } = state;
   return {
     account,
+    my: events.my,
     comments: comments.data,
     reqState: { events: events.state, comments: comments.state },
   };

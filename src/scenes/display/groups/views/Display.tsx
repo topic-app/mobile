@@ -38,6 +38,7 @@ import {
   Banner,
   ContentTabView,
 } from '@components/index';
+import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import {
@@ -281,11 +282,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     if (Platform.OS === 'ios') {
                       Share.share({
                         message: `Groupe ${group.shortName || group.name}`,
-                        url: `https://go.topicapp.fr/groupes/${group._id}`,
+                        url: `${config.links.share}/groupes/${group._id}`,
                       });
                     } else {
                       Share.share({
-                        message: `https://go.topicapp.fr/groupes/${group._id}`,
+                        message: `${config.links.share}/groupes/${group._id}`,
                         title: `Groupe ${group.shortName || group.name}`,
                       });
                     }

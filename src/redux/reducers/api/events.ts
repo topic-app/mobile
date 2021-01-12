@@ -9,6 +9,7 @@ import {
   UPDATE_EVENTS_SEARCH,
   CLEAR_EVENTS,
   UPDATE_EVENTS_VERIFICATION,
+  UPDATE_EVENTS_MY_INFO,
 } from '@ts/redux';
 
 const initialState: EventsState = {
@@ -18,6 +19,7 @@ const initialState: EventsState = {
   following: [],
   search: [],
   item: null,
+  my: null,
   state: {
     list: {
       success: null,
@@ -46,6 +48,16 @@ const initialState: EventsState = {
       },
     },
     info: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    my: {
+      success: null,
+      error: null,
+      loading: false,
+    },
+    like: {
       success: null,
       error: null,
       loading: false,
@@ -114,6 +126,11 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
         ...state,
         search: action.data,
       };
+    case UPDATE_EVENTS_MY_INFO:
+      return {
+        ...state,
+        my: action.data,
+      };
     case CLEAR_EVENTS:
       return {
         dataUpcoming: action.data.data ? [] : state.dataUpcoming,
@@ -121,6 +138,7 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
         following: action.data.following ? [] : state.following,
         search: action.data.search ? [] : state.search,
         verification: action.data.verification ? [] : state.verification,
+        my: null,
         item: null,
         state: state.state,
       };

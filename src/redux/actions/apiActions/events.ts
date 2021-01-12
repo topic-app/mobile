@@ -3,7 +3,7 @@ import { AppThunk, EventCreationData, UPDATE_EVENTS_STATE } from '@ts/redux';
 import { Content } from '@ts/types';
 import { request } from '@utils/index';
 
-import { reportCreator, approveCreator, deleteCreator } from './ActionCreator';
+import { reportCreator, approveCreator, deleteCreator, likeCreator } from './ActionCreator';
 
 function eventAddCreator({
   title,
@@ -214,4 +214,15 @@ async function eventDelete(id: string) {
   );
 }
 
-export { eventAdd, eventReport, eventVerificationApprove, eventDelete, eventMessagesAdd };
+async function eventLike(contentId: string, liking: boolean = true) {
+  await Store.dispatch(likeCreator({ contentId, liking, stateUpdate: UPDATE_EVENTS_STATE }));
+}
+
+export {
+  eventAdd,
+  eventReport,
+  eventVerificationApprove,
+  eventDelete,
+  eventMessagesAdd,
+  eventLike,
+};

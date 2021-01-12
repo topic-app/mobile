@@ -26,7 +26,7 @@ const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, prefe
     return (
       <View style={styles.page}>
         <View style={styles.centerIllustrationContainer}>
-          <Text>L&amp;historique est désactivé</Text>
+          <Text>L&apos;historique est désactivé</Text>
         </View>
       </View>
     );
@@ -67,16 +67,19 @@ const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, prefe
               </View>
             )}
             onPress={() =>
-              navigation.navigate('Main', {
-                screen: 'Display',
+              navigation.navigate('Root', {
+                screen: 'Main',
                 params: {
-                  screen: 'Article',
+                  screen: 'Display',
                   params: {
-                    screen: 'Display',
+                    screen: 'Article',
                     params: {
-                      id: item.id,
-                      title: item.title,
-                      useLists: false,
+                      screen: 'Display',
+                      params: {
+                        id: item.id,
+                        title: item.title,
+                        useLists: false,
+                      },
                     },
                   },
                 },

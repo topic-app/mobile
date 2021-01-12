@@ -325,6 +325,9 @@ type ArticleBase = {
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];
+  cache?: {
+    likes?: number;
+  };
 };
 export type ArticlePreload = ArticleBase & {
   preload: true; // So we can check if article.preload to change type
@@ -398,6 +401,9 @@ type EventBase = {
   duration: Duration;
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
+  cache?: {
+    likes?: number;
+  };
 };
 
 // AnyEvent means anything that implements EventBase can match it
@@ -557,7 +563,7 @@ export type PetitionPreload = {
   location: Location;
   publisher: Publisher;
   tags: TagPreload[];
-  cache: PetitionVoteData & { followers: number };
+  cache: PetitionVoteData & { followers?: number; likes?: number };
 };
 
 export type Petition = PetitionPreload & {
@@ -588,6 +594,14 @@ export type Comment = {
     replies?: CommentReply[];
   };
 };
+
+type MyInfo = {
+  _id: string;
+  comments: Comment[];
+  liked: boolean;
+};
+export type ArticleMyInfo = MyInfo;
+export type EventMyInfo = MyInfo;
 
 // Misc Types
 export type Error = {
