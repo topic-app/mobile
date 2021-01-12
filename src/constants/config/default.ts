@@ -31,7 +31,7 @@ const defaultConfig: AppConfig = {
     privacy: 'https://topicapp.fr/legal/confidentialite',
     conditions: 'https://topicapp.fr/legal/conditions',
     mentions: 'https://topicapp.fr/legal/mentions',
-    share: 'https://go.topicapp.fr/',
+    share: 'https://go.topicapp.fr',
     administrator: 'https://topicapp.fr/legal/administrateurs',
   },
   cdn: {

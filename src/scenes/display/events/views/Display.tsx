@@ -21,9 +21,10 @@ import {
   ReportModal,
   CustomTabView,
 } from '@components/index';
+import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import { updateComments } from '@redux/actions/api/comments';
-import { fetchEvent, fetchEventVerification } from '@redux/actions/api/events';
+import { fetchEvent, fetchEventMy, fetchEventVerification } from '@redux/actions/api/events';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 import {
   eventReport,
@@ -128,6 +129,9 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           }
           setCommentsDisplayed(true);
         });
+        if (account.loggedIn) {
+          fetchEventMy(id);
+        }
       }
     }
   };
@@ -270,13 +274,13 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                     Platform.OS === 'ios'
                       ? () =>
                           Share.share({
-                            message: `${event?.title} par ${event?.group?.displayName}`,
-                            url: `https://go.topicapp.fr/evenements/${event?._id}`,
+                            message: `Évènement ${event?.title} par ${event?.group?.displayName}`,
+                            url: `${config.links.share}/evenements/${event?._id}`,
                           })
                       : () =>
                           Share.share({
-                            message: `https://go.topicapp.fr/evenements/${event?._id}`,
-                            title: `${event?.title} par ${event?.group?.displayName}`,
+                            message: `${config.links.share}/evenements/${event?._id}`,
+                            title: `Évènement ${event?.title} par ${event?.group?.displayName}`,
                           }),
                 },
                 {

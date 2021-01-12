@@ -18,6 +18,7 @@ import {
   ReportModal,
   PlatformTouchable,
 } from '@components/index';
+import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import {
   fetchArticle,
@@ -207,7 +208,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               <Button
                 mode="text"
                 icon={articleMy?.liked ? 'thumb-up' : 'thumb-up-outline'}
-                loading={reqState.articles.my.loading || reqState.articles.like.loading}
+                loading={reqState.articles.my?.loading || reqState.articles.like?.loading}
                 style={{ flex: 1, marginRight: 5 }}
                 color={articleMy?.liked ? colors.primary : colors.muted}
                 onPress={account.loggedIn ? likeArticle : undefined}
@@ -227,11 +228,11 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     ? () =>
                         Share.share({
                           message: `${article?.title} par ${article?.group?.displayName}`,
-                          url: `https://go.topicapp.fr/articles/${article?._id}`,
+                          url: `${config.links.share}/articles/${article?._id}`,
                         })
                     : () =>
                         Share.share({
-                          message: `https://go.topicapp.fr/articles/${article?._id}`,
+                          message: `${config.links.share}/articles/${article?._id}`,
                           title: `${article?.title} par ${article?.group?.displayName}`,
                         })
                 }
@@ -364,14 +365,14 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               )}
               <Divider />
               <View>
-                {(reqState.comments.list.error || reqState.articles.like.error) && (
+                {(reqState.comments.list.error || reqState.articles.my?.error) && (
                   <ErrorMessage
                     type="axios"
                     strings={{
                       what: 'la récupération des commentaires et des likes',
                       contentPlural: 'des commentaires et des likes',
                     }}
-                    error={[reqState.comments.list.error, reqState.articles.like.error]}
+                    error={[reqState.comments.list.error, reqState.articles.my?.error]}
                     retry={() => {
                       updateComments('initial', { parentId: article._id });
                       fetchArticleMy(article._id);
@@ -683,11 +684,11 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                 ? () =>
                     Share.share({
                       message: `${article?.title} par ${article?.group?.displayName}`,
-                      url: `https://go.topicapp.fr/articles/${article?._id}`,
+                      url: `${config.links.share}/articles/${article?._id}`,
                     })
                 : () =>
                     Share.share({
-                      message: `https://go.topicapp.fr/articles/${article?._id}`,
+                      message: `${config.links.share}/articles/${article?._id}`,
                       title: `${article?.title} par ${article?.group?.displayName}`,
                     }),
           },

@@ -24,6 +24,7 @@ import {
   GroupVerification,
   MapLocation,
   ArticleMyInfo,
+  EventMyInfo,
 } from '../api';
 import {
   ArticleRequestState,
@@ -214,6 +215,7 @@ export const UPDATE_EVENTS_UPCOMING_DATA = 'UPDATE_EVENTS_UPCOMING_DATA';
 export const UPDATE_EVENTS_PASSED_DATA = 'UPDATE_EVENTS_PASSED_DATA';
 export const UPDATE_EVENTS_ITEM = 'UPDATE_EVENTS_ITEM';
 export const UPDATE_EVENTS_VERIFICATION = 'UPDATE_EVENTS_VERIFICATION';
+export const UPDATE_EVENTS_MY_INFO = 'UPDATE_EVENTS_MY_INFO';
 export const UPDATE_EVENTS_FOLLOWING = 'UPDATE_EVENTS_FOLLOWING';
 export const UPDATE_EVENTS_SEARCH = 'UPDATE_EVENTS_SEARCH';
 export const CLEAR_EVENTS = 'CLEAR_EVENTS';
@@ -223,6 +225,7 @@ export type EventsState = {
   dataPassed: EventPreload[];
   following: EventPreload[];
   item: Event | null;
+  my: EventMyInfo | null;
   search: EventPreload[];
   verification: EventVerificationPreload[];
   state: EventRequestState;
@@ -253,6 +256,11 @@ type UpdateEventsItemAction = {
   data: Event;
 };
 
+type UpdateEventsMyInfoAction = {
+  type: typeof UPDATE_EVENTS_MY_INFO;
+  data: EventMyInfo;
+};
+
 type UpdateEventsSearchAction = {
   type: typeof UPDATE_EVENTS_SEARCH;
   data: EventPreload[];
@@ -273,6 +281,7 @@ export type EventsActionTypes =
   | UpdateEventsUpcomingDataAction
   | UpdateEventsPassedDataAction
   | UpdateEventsItemAction
+  | UpdateEventsMyInfoAction
   | UpdateEventsSearchAction
   | UpdateEventsVerificationAction
   | UpdateEventsFollowingAction

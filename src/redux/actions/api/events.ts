@@ -1,5 +1,4 @@
 import Store from '@redux/store';
-import { Event, ApiItem } from '@ts/types';
 import {
   UPDATE_EVENTS_UPCOMING_DATA,
   UPDATE_EVENTS_VERIFICATION,
@@ -9,7 +8,9 @@ import {
   UPDATE_EVENTS_STATE,
   CLEAR_EVENTS,
   UPDATE_EVENTS_FOLLOWING,
+  UPDATE_EVENTS_MY_INFO,
 } from '@ts/redux';
+import { Event, ApiItem } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -145,6 +146,23 @@ async function fetchEvent(eventId: string) {
   );
 }
 
+async function fetchEventMy(contentId: string) {
+  if (!Store.getState().account.loggedIn) {
+    return;
+  }
+  await Store.dispatch(
+    fetchCreator({
+      update: UPDATE_EVENTS_MY_INFO,
+      stateUpdate: UPDATE_EVENTS_STATE,
+      stateName: 'my',
+      url: 'profile/myContentInfo',
+      dataType: 'infos' as 'events',
+      params: { contentId },
+      auth: true,
+    }),
+  );
+}
+
 /** Event verification */
 async function fetchEventVerification(eventId: string) {
   await Store.dispatch(
@@ -190,6 +208,7 @@ export {
   updatePassedEvents,
   clearEvents,
   fetchEvent,
+  fetchEventMy,
   searchEvents,
   updateEventsFollowing,
   fetchEventVerification,

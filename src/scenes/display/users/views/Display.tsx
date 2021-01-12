@@ -16,6 +16,7 @@ import {
   SafeAreaView,
   ContentTabView,
 } from '@components/index';
+import config from '@constants/config';
 import { searchGroups } from '@redux/actions/api/groups';
 import { fetchUser } from '@redux/actions/api/users';
 import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
@@ -189,11 +190,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   if (Platform.OS === 'ios') {
                     Share.share({
                       message: `Utilisateur @${user?.info.username}`,
-                      url: `https://go.topicapp.fr/utilisateurs/${user?._id}`,
+                      url: `${config.links.share}/utilisateurs/${user?._id}`,
                     });
                   } else {
                     Share.share({
-                      message: `https://go.topicapp.fr/utilisateurs/${user?._id}`,
+                      message: `${config.links.share}/utilisateurs/${user?._id}`,
                       title: `Utilisateur @${user?.info.username}`,
                     });
                   }

@@ -401,6 +401,9 @@ type EventBase = {
   duration: Duration;
   places: EventPlace[];
   location: Location; // why exactly is there places AND locations?
+  cache?: {
+    likes?: number;
+  };
 };
 
 // AnyEvent means anything that implements EventBase can match it

@@ -8,11 +8,12 @@ export type ItemData = {
   group?: GroupPreload;
   tags?: TagPreload[];
   location?: Location;
+  cache?: { likes?: number };
 };
 
 type TagData = {
   key: string;
-  type: 'group' | 'author' | 'tag' | 'global' | 'school' | 'department';
+  type: 'group' | 'author' | 'tag' | 'likes' | 'global' | 'school' | 'department';
   label: string;
   avatar?: Avatar;
   image?: string;
@@ -20,7 +21,7 @@ type TagData = {
   color?: string;
 };
 
-function genTagListData({ publisher, authors, group, tags, location }: ItemData) {
+function genTagListData({ cache, publisher, authors, group, tags, location }: ItemData) {
   const data: TagData[] = [];
 
   if (publisher) {
@@ -79,6 +80,15 @@ function genTagListData({ publisher, authors, group, tags, location }: ItemData)
         icon: 'pound',
       }),
     );
+  }
+
+  if (cache && cache.likes) {
+    data.push({
+      key: 'likes',
+      type: 'likes',
+      label: cache.likes.toString(),
+      icon: 'thumb-up-outline',
+    });
   }
 
   if (location) {
