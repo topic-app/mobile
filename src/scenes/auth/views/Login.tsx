@@ -23,7 +23,7 @@ import {
 import { fetchAccount, login } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { AccountRequestState, State } from '@ts/types';
-import { messaging } from '@utils/firebase';
+import { getApiDevice, messaging } from '@utils/firebase';
 import { useTheme, logger, Errors } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
@@ -59,28 +59,14 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
   });
 
   const handleLogin = async ({ username, password }: { username: string; password: string }) => {
-    const authorizationStatus = await messaging().requestPermission();
-    const token =
-      (await messaging()
-        .getToken()
-        .catch((err) => {
-          logger.warn(`Could not get firebase token, ${err}`);
-        })) || null;
     const fields = {
       accountInfo: {
         username,
         password,
       },
-      device: {
-        type: 'app',
-        deviceId: token,
-        canNotify:
-          !!token &&
-          (authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-            authorizationStatus === messaging.AuthorizationStatus.PROVISIONAL),
-      },
+      device: await getApiDevice(),
     };
-    let didLogin;
+    let didLogin = false;
     try {
       didLogin = await login(fields);
     } catch (error) {
