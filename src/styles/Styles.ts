@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { Theme } from '@ts/types';
 
@@ -92,6 +92,11 @@ function getStyles(theme: Theme) {
     centerIllustrationContainer: {
       flex: 1,
       alignItems: 'center',
+      justifyContent: 'center',
+    },
+    centerImageContainer: {
+      flex: 1,
+      alignItems: Platform.OS === 'web' ? undefined : 'center',
       justifyContent: 'center',
     },
     bottomModal: {
