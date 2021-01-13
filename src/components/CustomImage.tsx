@@ -16,16 +16,14 @@ type CustomImageProps = {
 
 const CustomImage: React.FC<CustomImageProps> = ({ image, imageSize, height, width, style }) => {
   const styles = getStyles(useTheme());
-  if (image?.image) {
-    return (
-      <RNImage
-        source={{ uri: getImageUrl({ image, size: imageSize }) }}
-        style={[styles.thumbnail, { width, height }, style]}
-      />
-    );
-  } else {
-    return <View style={{ width, height, flex: 0 }} />;
-  }
+  return image?.image ? (
+    <RNImage
+      source={{ uri: getImageUrl({ image, size: imageSize }) }}
+      style={[styles.thumbnail, { width, height }, style]}
+    />
+  ) : (
+    <View style={{ width, height, flex: 0 }} />
+  );
 };
 
-export default CustomImage;
+export default React.memo(CustomImage);
