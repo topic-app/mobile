@@ -177,6 +177,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                   </View>
                   {contributors.map((c) => (
                     <List.Item
+                      key={c.name}
                       title={c.name}
                       description={c.description}
                       onPress={c.link ? () => handleUrl(c.link) : undefined}
@@ -209,10 +210,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                   <View style={styles.contentContainer}>
                     <Divider />
                     <View
-                      style={[
-                        styles.centerIllustrationContainer,
-                        { marginTop: 60, marginBottom: 10 },
-                      ]}
+                      style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
                     >
                       <Image style={{ height: 200 }} resizeMode="contain" source={image_mgen} />
                     </View>
@@ -224,10 +222,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                     </Text>
                     <Divider style={{ marginTop: 20 }} />
                     <View
-                      style={[
-                        styles.centerIllustrationContainer,
-                        { marginTop: 60, marginBottom: 10 },
-                      ]}
+                      style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
                     >
                       <Image style={{ height: 200 }} resizeMode="contain" source={image_jtac} />
                     </View>
@@ -240,10 +235,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
                     </Text>
                     <Divider style={{ marginTop: 20 }} />
                     <View
-                      style={[
-                        styles.centerIllustrationContainer,
-                        { marginTop: 60, marginBottom: 10 },
-                      ]}
+                      style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
                     >
                       <Image style={{ height: 200 }} resizeMode="contain" source={image_esper} />
                     </View>

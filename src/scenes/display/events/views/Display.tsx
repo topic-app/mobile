@@ -333,13 +333,12 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       >
         <View>
           {event.image?.image && (
-            <View style={[styles.image, { minHeight: 150 }]}>
-              <AutoHeightImage
-                source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
-                width={Dimensions.get('window').width}
-                maxHeight={400}
-              />
-            </View>
+            <AutoHeightImage
+              source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
+              width={Dimensions.get('window').width}
+              maxHeight={400}
+              style={[styles.image, { minHeight: 150 }]}
+            />
           )}
           <View style={styles.contentContainer}>
             <Title style={styles.title}>{event.title}</Title>

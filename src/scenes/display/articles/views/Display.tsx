@@ -132,14 +132,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   return (
     <View style={styles.page}>
       {article.image?.image && (
-        <View
-          style={[styles.image, { minHeight: 150 }]}
-          onLayout={({
-            nativeEvent: {
-              layout: { width },
-            },
-          }) => setImageWidth(width)}
-        >
+        <View onLayout={({ nativeEvent }) => setImageWidth(nativeEvent.layout.width)}>
           <PlatformTouchable
             onPress={() =>
               navigation.push('Root', {
@@ -161,6 +154,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               source={{ uri: getImageUrl({ image: article.image, size: 'full' }) || '' }}
               width={imageWidth}
               maxHeight={400}
+              style={[styles.image, { minHeight: 150 }]}
             />
           </PlatformTouchable>
         </View>

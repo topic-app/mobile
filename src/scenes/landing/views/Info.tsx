@@ -162,10 +162,7 @@ const LandingInfo: React.FC<LandingInfoProps> = ({ navigation, route }) => {
                     <View style={landingStyles.contentContainer}>
                       <Divider />
                       <View
-                        style={[
-                          landingStyles.centerIllustrationContainer,
-                          { marginTop: 60, marginBottom: 10 },
-                        ]}
+                        style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
                       >
                         <Image style={{ height: 200 }} resizeMode="contain" source={image_mgen} />
                       </View>
@@ -177,10 +174,7 @@ const LandingInfo: React.FC<LandingInfoProps> = ({ navigation, route }) => {
                       </Text>
                       <Divider style={{ marginTop: 20 }} />
                       <View
-                        style={[
-                          landingStyles.centerIllustrationContainer,
-                          { marginTop: 60, marginBottom: 10 },
-                        ]}
+                        style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
                       >
                         <Image style={{ height: 200 }} resizeMode="contain" source={image_jtac} />
                       </View>
@@ -193,10 +187,7 @@ const LandingInfo: React.FC<LandingInfoProps> = ({ navigation, route }) => {
                       </Text>
                       <Divider style={{ marginTop: 20 }} />
                       <View
-                        style={[
-                          landingStyles.centerIllustrationContainer,
-                          { marginTop: 60, marginBottom: 10 },
-                        ]}
+                        style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
                       >
                         <Image style={{ height: 200 }} resizeMode="contain" source={image_esper} />
                       </View>
