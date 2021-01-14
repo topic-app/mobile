@@ -364,7 +364,9 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   <Divider style={{ marginVertical: 10 }} />
                   <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                     <View style={{ alignItems: 'center' }}>
-                      <Text style={{ fontSize: 40 }}>{group.cache.followers || ''}</Text>
+                      <Text style={{ fontSize: 40 }}>
+                        {typeof group.cache?.followers === 'number' ? group.cache.followers : ''}
+                      </Text>
                       <Text>Abonnés </Text>
                     </View>
                     <View style={{ alignItems: 'center' }}>
