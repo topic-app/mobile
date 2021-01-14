@@ -537,7 +537,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const articleComments = comments.filter(
     (c) =>
       c.parent === id &&
-      (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
+      (c.publisher?.type !== 'user' || c.publisher?.user?._id !== account.accountInfo?.accountId),
   );
 
   const fetch = () => {

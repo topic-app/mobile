@@ -480,7 +480,7 @@ function EventDisplayDescription({
   const eventComments = comments.filter(
     (c) =>
       c.parent === id &&
-      (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
+      (c.publisher?.type !== 'user' || c.publisher?.user?._id !== account.accountInfo?.accountId),
   );
 
   return (
