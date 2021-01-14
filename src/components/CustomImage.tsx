@@ -36,4 +36,4 @@ const CustomImage: React.FC<CustomImageProps> = ({
   }
 };
 
-export default CustomImage;
+export default React.memo(CustomImage);
