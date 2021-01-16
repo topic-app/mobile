@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';
+import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import getStyles from '@styles/Styles';
@@ -154,18 +155,23 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
                         { text: 'Annuler' },
                         {
                           text: 'Partager',
-                          onPress:
-                            Platform.OS === 'ios'
-                              ? () =>
-                                  Share.share({
-                                    message: `${creationData?.title} par ${groupName}`,
-                                    url: `https://go.topicapp.fr/articles/${id}`,
-                                  })
-                              : () =>
-                                  Share.share({
-                                    message: `https://go.topicapp.fr/articles/${id}`,
-                                    title: `${creationData?.title} par ${groupName}`,
-                                  }),
+                          onPress: Platform.select({
+                            ios: () =>
+                              Share.share({
+                                message: `${creationData?.title} par ${groupName}`,
+                                url: `${config.links.share}/articles/${id}`,
+                              }),
+                            android: () =>
+                              Share.share({
+                                message: `${config.links.share}/articles/${id}`,
+                                title: `${creationData?.title} par ${groupName}`,
+                              }),
+                            default: () =>
+                              Share.share({
+                                message: '',
+                                title: `${creationData?.title} par ${groupName} ${config.links.share}/articles/${id}`,
+                              }),
+                          }),
                         },
                       ],
                       { cancelable: true },

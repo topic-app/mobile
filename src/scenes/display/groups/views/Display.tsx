@@ -279,17 +279,25 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   title="Partager"
                   onPress={() => {
                     setMenuVisible(false);
-                    if (Platform.OS === 'ios') {
-                      Share.share({
-                        message: `Groupe ${group.shortName || group.name}`,
-                        url: `${config.links.share}/groupes/${group._id}`,
-                      });
-                    } else {
-                      Share.share({
-                        message: `${config.links.share}/groupes/${group._id}`,
-                        title: `Groupe ${group.shortName || group.name}`,
-                      });
-                    }
+                    Platform.select({
+                      ios: () =>
+                        Share.share({
+                          message: `Groupe ${group.shortName || group.name}`,
+                          url: `${config.links.share}/groupes/${group._id}`,
+                        }),
+                      android: () =>
+                        Share.share({
+                          message: `${config.links.share}/groupes/${group._id}`,
+                          title: `Groupe ${group.shortName || group.name}`,
+                        }),
+                      default: () =>
+                        Share.share({
+                          message: '',
+                          title: `Groupe ${group.shortName || group.name} ${
+                            config.links.share
+                          }/groupes/${group._id}`,
+                        }),
+                    })();
                   }}
                 />
                 <Menu.Item

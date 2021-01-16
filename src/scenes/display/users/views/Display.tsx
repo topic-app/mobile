@@ -187,17 +187,23 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 title="Partager"
                 onPress={() => {
                   setMenuVisible(false);
-                  if (Platform.OS === 'ios') {
-                    Share.share({
-                      message: `Utilisateur @${user?.info.username}`,
-                      url: `${config.links.share}/utilisateurs/${user?._id}`,
-                    });
-                  } else {
-                    Share.share({
-                      message: `${config.links.share}/utilisateurs/${user?._id}`,
-                      title: `Utilisateur @${user?.info.username}`,
-                    });
-                  }
+                  Platform.select({
+                    ios: () =>
+                      Share.share({
+                        message: `@${user.info.username}`,
+                        url: `${config.links.share}/utilisateurs/${user._id}`,
+                      }),
+                    android: () =>
+                      Share.share({
+                        message: `${config.links.share}/utilisateurs/${user._id}`,
+                        title: `@${user.info.username}`,
+                      }),
+                    default: () =>
+                      Share.share({
+                        message: '',
+                        title: `@${user.info.username} ${config.links.share}/utilisateurs/${user._id}`,
+                      }),
+                  })();
                 }}
               />
               <Menu.Item

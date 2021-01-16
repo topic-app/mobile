@@ -217,19 +217,23 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 icon="share-variant"
                 style={{ flex: 1, marginLeft: 5 }}
                 color={colors.muted}
-                onPress={
-                  Platform.OS === 'ios'
-                    ? () =>
-                        Share.share({
-                          message: `${article.title} par ${article.group?.displayName}`,
-                          url: `${config.links.share}/articles/${article._id}`,
-                        })
-                    : () =>
-                        Share.share({
-                          message: `${config.links.share}/articles/${article._id}`,
-                          title: `${article.title} par ${article.group?.displayName}`,
-                        })
-                }
+                onPress={Platform.select({
+                  ios: () =>
+                    Share.share({
+                      message: `${article?.title} par ${article.group?.displayName}`,
+                      url: `${config.links.share}/articles/${article._id}`,
+                    }),
+                  android: () =>
+                    Share.share({
+                      message: `${config.links.share}/articles/${article._id}`,
+                      title: `${article?.title} par ${article.group?.displayName}`,
+                    }),
+                  default: () =>
+                    Share.share({
+                      message: '',
+                      title: `${article?.title} par ${article.group?.displayName} ${config.links.share}/articles/${article._id}`,
+                    }),
+                })}
               >
                 Partager
               </Button>
@@ -673,18 +677,23 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         overflow={[
           {
             title: 'Partager',
-            onPress:
-              Platform.OS === 'ios'
-                ? () =>
-                    Share.share({
-                      message: `${article?.title} par ${article?.group?.displayName}`,
-                      url: `${config.links.share}/articles/${article?._id}`,
-                    })
-                : () =>
-                    Share.share({
-                      message: `${config.links.share}/articles/${article?._id}`,
-                      title: `${article?.title} par ${article?.group?.displayName}`,
-                    }),
+            onPress: Platform.select({
+              ios: () =>
+                Share.share({
+                  message: `${article?.title} par ${article?.group?.displayName}`,
+                  url: `${config.links.share}/articles/${article?._id}`,
+                }),
+              android: () =>
+                Share.share({
+                  message: `${config.links.share}/articles/${article?._id}`,
+                  title: `${article?.title} par ${article?.group?.displayName}`,
+                }),
+              default: () =>
+                Share.share({
+                  message: '',
+                  title: `${article?.title} par ${article?.group?.displayName} ${config.links.share}/articles/${article?._id}`,
+                }),
+            }),
           },
           {
             title: 'Signaler',

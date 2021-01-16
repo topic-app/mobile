@@ -231,19 +231,23 @@ function EventDisplayDescriptionHeader({
             icon="share-variant"
             style={{ flex: 1, marginLeft: 5 }}
             color={colors.muted}
-            onPress={
-              Platform.OS === 'ios'
-                ? () =>
-                    Share.share({
-                      message: `Évènement ${event.title} par ${event.group?.displayName}`,
-                      url: `${config.links.share}/evenements/${event._id}`,
-                    })
-                : () =>
-                    Share.share({
-                      message: `${config.links.share}/evenements/${event._id}`,
-                      title: `Évènement ${event.title} par ${event.group?.displayName}`,
-                    })
-            }
+            onPress={Platform.select({
+              ios: () =>
+                Share.share({
+                  message: `Évènement ${event?.title} par ${event?.group?.displayName}`,
+                  url: `${config.links.share}/evenements/${event?._id}`,
+                }),
+              android: () =>
+                Share.share({
+                  message: `Évènement ${config.links.share}/evenements/${event?._id}`,
+                  title: `${event?.title} par ${event?.group?.displayName}`,
+                }),
+              default: () =>
+                Share.share({
+                  message: '',
+                  title: `Évènement ${event?.title} par ${event?.group?.displayName} ${config.links.share}/evenements/${event?._id}`,
+                }),
+            })}
           >
             Partager
           </Button>
