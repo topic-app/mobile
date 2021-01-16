@@ -544,6 +544,8 @@ function EventDisplayDescription({
       renderItem={({ item: comment }: { item: Comment }) => (
         <CommentInlineCard
           comment={comment}
+          fetch={() => updateComments('initial', { parentId: id })}
+          isReply={false}
           report={(commentId) => {
             setFocusedComment(commentId);
             setCommentReportModalVisible(true);

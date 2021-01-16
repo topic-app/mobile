@@ -801,6 +801,8 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               setFocusedComment(commentId);
               setCommentReportModalVisible(true);
             }}
+            fetch={() => updateComments('initial', { parentId: id })}
+            isReply={false}
             loggedIn={account.loggedIn}
             navigation={navigation}
             reply={(id: string | null) => {
