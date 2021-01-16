@@ -83,7 +83,7 @@ const EventAddPageLocation: React.FC<Props> = ({
         buttonLabel="Retour"
         buttonOnPress={() => prev()}
       >
-        Groupe Introuvable, essayez de resélectionner un groupe dont vous appartenez
+        Groupe Introuvable, essayez de resélectionner un groupe auquel vous appartenez
       </FullscreenIllustration>
     );
   }
@@ -126,15 +126,14 @@ const EventAddPageLocation: React.FC<Props> = ({
             />
           );
         })}
-        {selectedGroupLocation.global ||
-          (selectedGroupLocation.everywhere && (
-            <CheckboxListItem
-              title="France entière"
-              description="Visible pour tous les utilisateurs"
-              status={global ? 'checked' : 'unchecked'}
-              onPress={() => setGlobal(!global)}
-            />
-          ))}
+        {(selectedGroupLocation.global || selectedGroupLocation.everywhere) && (
+          <CheckboxListItem
+            title="France entière"
+            description="Visible pour tous les utilisateurs"
+            status={global ? 'checked' : 'unchecked'}
+            onPress={() => setGlobal(!global)}
+          />
+        )}
         {selectedGroupLocation.everywhere ? (
           <View>
             <Divider style={{ marginTop: 20 }} />
