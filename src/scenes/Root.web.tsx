@@ -1,14 +1,8 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import {
-  NavigationProp,
-  useLinkProps,
-  Link,
-  NavigatorScreenParams,
-  CompositeNavigationProp,
-} from '@react-navigation/native';
+import { NavigatorScreenParams, CompositeNavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { Text, Divider, Drawer as PaperDrawer, Provider, Menu } from 'react-native-paper';
+import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
@@ -332,13 +326,17 @@ const Drawer = createDrawerNavigator<RootNavParams>();
 
 function RootNavigator() {
   const [drawerExpanded, setDrawerExpanded] = React.useState(false);
+  const { colors } = useTheme();
 
   if (useLayout() === 'desktop') {
     return (
       <Drawer.Navigator
         initialRouteName="Main"
         drawerType="permanent"
-        drawerStyle={{ width: drawerExpanded ? 250 : 70 }}
+        drawerStyle={{
+          width: drawerExpanded ? 250 : 70,
+          borderRightColor: colors.disabled,
+        }}
         drawerContent={({ navigation }) => (
           <ReduxDrawerContent
             navigation={navigation}

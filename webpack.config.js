@@ -13,7 +13,7 @@ module.exports = async function (env, argv) {
     historyApiFallback: {
       index: 'index.html',
     },
-    allowedHosts: ['.topicapp.fr'],
+    disableHostCheck: true,
   };
 
   // if (config.mode === 'development') {
