@@ -4,7 +4,7 @@ import { Button, RadioButton, List } from 'react-native-paper';
 
 import { StepperViewPageProps } from '@components/index';
 import { updateCreationData } from '@redux/actions/data/account';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 import { ListHeading, ListItem } from './ListComponents';
@@ -16,6 +16,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
 
   const submit = () => {
     updateCreationData({ accountType });
+    trackEvent('auth:create-page-profile');
     next();
   };
 

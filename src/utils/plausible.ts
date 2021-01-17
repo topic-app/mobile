@@ -18,7 +18,7 @@ const trackPageview = (props: PlausibleOptions) => {
   }
 };
 
-const trackEvent = (name: string, props: EventOptions, data: PlausibleOptions) => {
+const trackEvent = (name: string, props?: EventOptions, data?: PlausibleOptions) => {
   if (Store.getState()?.preferences?.analytics) {
     initialTrackEvent(name, props, data);
   }

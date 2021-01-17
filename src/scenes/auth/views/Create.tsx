@@ -15,7 +15,7 @@ import { register } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { State, AccountRequestState, AccountCreationData } from '@ts/types';
 import { getApiDevice } from '@utils/firebase';
-import { Errors, logger, useTheme } from '@utils/index';
+import { Errors, logger, useTheme, trackEvent } from '@utils/index';
 
 import AuthCreatePageGeneral from '../components/CreateGeneral';
 import AuthCreatePageLegal from '../components/CreateLegal';
@@ -37,6 +37,8 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
 
   const scrollViewRef = React.useRef<ScrollView>(null);
 
+  React.useEffect(() => trackEvent('auth:create-page-general'), []);
+
   const create = async () => {
     const reqParams = {
       accountInfo: {
@@ -56,7 +58,10 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
     };
 
     register(reqParams)
-      .then(() => navigation.replace('CreateSuccess'))
+      .then(() => {
+        trackEvent('auth:create-success');
+        navigation.replace('CreateSuccess');
+      })
       .catch((error) => {
         Errors.showPopup({
           type: 'axios',

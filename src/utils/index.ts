@@ -8,6 +8,7 @@ export * from './getAssetUrl';
 export * from './tags';
 export * from './hooks';
 export * from './permissions';
+export * from './plausible';
 export { default as Alert } from './alert';
 export { Location } from './deviceLocation';
 export { Errors };
