@@ -95,6 +95,7 @@ export type AppConfig = {
       };
     };
   };
+  reduxVersion: number;
 };
 
 export type DevAppConfig = DeepPartial<AppConfig>;

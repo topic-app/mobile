@@ -191,6 +191,8 @@ export type Preferences = {
   themeEasterEggDiscovered: boolean;
   youtubeConsent: boolean;
   useDevServer: boolean;
+  analytics: boolean;
+  reduxVersion: number;
 };
 
 export type PreferencesState = Preferences;

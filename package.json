@@ -61,6 +61,7 @@
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
+    "plausible-tracker": "^0.3.1",
     "prop-types": "^15.7.2",
     "randomcolor": "^0.6.2",
     "react": "16.13.1",

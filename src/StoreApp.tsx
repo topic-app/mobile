@@ -8,12 +8,15 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
+import { Config } from '@constants';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
+import updatePrefs from '@redux/actions/data/prefs';
+import Store from '@redux/store';
 import themes from '@styles/Theme';
 import { Preferences, State } from '@ts/types';
-import { analytics } from '@utils/firebase';
 import { logger, useSafeAreaInsets } from '@utils/index';
+import { trackPageview } from '@utils/plausible';
 
 import AppNavigator from './index';
 import screens from './screens';
@@ -22,9 +25,15 @@ type Props = {
   useSystemTheme: boolean;
   theme: Preferences['theme'];
   useDevServer: boolean;
+  reduxVersion: number;
 };
 
-const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevServer }) => {
+const StoreApp: React.FC<Props> = ({
+  useSystemTheme,
+  theme: themeName,
+  useDevServer,
+  reduxVersion,
+}) => {
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
     (useSystemTheme && Appearance.getColorScheme()) || 'light',
   );
@@ -38,6 +47,21 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevSer
   };
 
   React.useEffect(() => {
+    // Redux db migration
+    let currentVersion = reduxVersion;
+    if (currentVersion < Config.reduxVersion || !currentVersion) {
+      logger.warn(`Migrating Redux DB from ${currentVersion} to ${Config.reduxVersion}`);
+      if (!currentVersion) {
+        logger.warn('No current version, assuming 0');
+        currentVersion = 0;
+      }
+      if (currentVersion < 1) {
+        updatePrefs({ analytics: true });
+      }
+      // Add all migration scripts here in descending order
+      updatePrefs({ reduxVersion: Config.reduxVersion });
+    }
+
     Appearance.addChangeListener(handleAppearanceChange);
     return () => {
       Appearance.removeChangeListener(handleAppearanceChange);
@@ -94,23 +118,20 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevSer
           linking={linking}
           fallback={<AppLoading />}
           theme={navTheme}
-          onStateChange={
-            Platform.OS !== 'web'
-              ? async () => {
-                  const previousRouteName = routeNameRef.current;
-                  const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
+          onStateChange={async () => {
+            const previousRouteName = routeNameRef.current;
+            const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
 
-                  if (previousRouteName !== currentRouteName) {
-                    await analytics().logScreenView({
-                      screen_name: currentRouteName,
-                      screen_class: currentRouteName,
-                    });
-                  }
+            if (previousRouteName !== currentRouteName) {
+              trackPageview({
+                url: `${
+                  Platform.OS === 'web' ? 'https://topicapp.fr' : 'https://app.topicapp.fr'
+                }/screens/${currentRouteName}`,
+              });
+            }
 
-                  routeNameRef.current = currentRouteName;
-                }
-              : undefined
-          }
+            routeNameRef.current = currentRouteName;
+          }}
         >
           {useDevServer ? (
             <View style={{ flex: 1 }}>
@@ -144,8 +165,8 @@ const StoreApp: React.FC<Props> = ({ useSystemTheme, theme: themeName, useDevSer
 };
 
 const mapStateToProps = (state: State) => {
-  const { useSystemTheme, theme, useDevServer } = state.preferences;
-  return { useSystemTheme, theme, useDevServer };
+  const { useSystemTheme, theme, useDevServer, reduxVersion } = state.preferences;
+  return { useSystemTheme, theme, useDevServer, reduxVersion };
 };
 
 export default connect(mapStateToProps)(StoreApp);
