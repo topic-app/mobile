@@ -123,10 +123,27 @@ const StoreApp: React.FC<Props> = ({
             const currentRouteName = navigationRef.current?.getCurrentRoute()?.name;
 
             if (previousRouteName !== currentRouteName) {
+              const state = navigationRef?.current?.getRootState();
+
+              const parseRootState = (navState: any, name?: string) => {
+                let url = '';
+                if (navState && navState.routes && navState.routes.length) {
+                  const next =
+                    navState.type === 'tab'
+                      ? navState.routes[navState.index]
+                      : navState.routes[navState.routes.length - 1];
+                  url = parseRootState(next.state, next.name);
+                }
+                url = `${name || navState?.name || ''}/${url}`;
+                return url;
+              };
+
+              const stateUrl = parseRootState(state);
+              logger.debug(`Navigating to ${stateUrl}`);
               trackPageview({
                 url: `${
                   Platform.OS === 'web' ? 'https://topicapp.fr' : 'https://app.topicapp.fr'
-                }/screens/${currentRouteName}`,
+                }${stateUrl}`,
               });
             }
 

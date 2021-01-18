@@ -40,10 +40,6 @@ export function sendEvent(
 ): void {
   const isLocalhost = __DEV__;
 
-  if (!data.trackLocalhost && isLocalhost) {
-    return logger.debug('[Plausible] Ignoring event because website is running locally');
-  }
-
   const payload: EventPayload = {
     n: eventName,
     u: data.url,
@@ -53,6 +49,12 @@ export function sendEvent(
     h: data.hashMode ? 1 : 0,
     p: options && options.props ? JSON.stringify(options.props) : undefined,
   };
+
+  if (!data.trackLocalhost && isLocalhost) {
+    logger.debug(
+      `[Plausible] Ignoring event because website is running locally : ${JSON.stringify(payload)}`,
+    );
+  }
 
   logger.debug(`[Plausible] sending event ${eventName}`);
   const req = new XMLHttpRequest();
