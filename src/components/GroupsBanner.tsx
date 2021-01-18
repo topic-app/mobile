@@ -107,7 +107,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
                   { cancelable: true },
                 );
               } else {
-                trackEvent('groups:acceptjoin');
+                trackEvent('groups:accept-join');
                 groupMemberAccept(account.waitingGroups[0]?._id).then(refresh);
               }
             },
