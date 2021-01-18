@@ -158,17 +158,17 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const requestUserLocation = () => {
     Location.request().then(async (status) => {
       if (status === 'yes') {
-        trackEvent('landing:locateacceptpermission');
+        trackEvent('landing:locate-accept-permission');
         setUserLocation(true);
         setButtonVisible(false);
         const coords = await Location.getCoordinates();
         updateNearSchools('initial', coords.latitude, coords.longitude);
       } else if (status === 'no') {
-        trackEvent('landing:locaterejectpermission');
+        trackEvent('landing:locate-reject-permission');
         setButtonVisible(false);
       } else if (status === 'error') {
         setLocationError(true);
-        trackEvent('error:landinglocate');
+        trackEvent('error:landing-locate');
       }
       // else can never use location :(
     });
