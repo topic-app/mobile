@@ -156,7 +156,7 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
                         {
                           text: 'Partager',
                           onPress: () => {
-                            if (!creationData) return;
+                            if (!creationData?.title || !id) return;
                             shareContent({
                               title: creationData.title,
                               group: groupName,

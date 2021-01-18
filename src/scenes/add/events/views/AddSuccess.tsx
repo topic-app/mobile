@@ -156,7 +156,7 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
                         {
                           text: 'Partager',
                           onPress: () => {
-                            if (!creationData) return;
+                            if (!creationData?.title || !id) return;
                             shareContent({
                               title: `Évènement ${creationData.title}`,
                               group: groupName,
