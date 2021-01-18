@@ -7,7 +7,7 @@ import { Config } from '@constants/index';
 import { groupMemberAccept, groupMemberReject } from '@redux/actions/apiActions/groups';
 import { fetchWaitingGroups, fetchGroups } from '@redux/actions/data/account';
 import { State, Account, GroupRequestState } from '@ts/types';
-import { handleUrl, Alert } from '@utils/index';
+import { handleUrl, Alert, trackEvent } from '@utils/index';
 
 import Avatar from './Avatar';
 import Banner from './Banner';
@@ -68,7 +68,10 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
                   { text: 'Annuler' },
                   {
                     text: 'Refuser',
-                    onPress: () => groupMemberReject(account.waitingGroups[0]?._id).then(refresh),
+                    onPress: () => {
+                      trackEvent('groups:refusejoin');
+                      groupMemberReject(account.waitingGroups[0]?._id).then(refresh);
+                    },
                   },
                 ],
                 { cancelable: true },
@@ -95,12 +98,16 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
                     },
                     {
                       text: 'Rejoindre',
-                      onPress: () => groupMemberAccept(account.waitingGroups[0]?._id).then(refresh),
+                      onPress: () => {
+                        trackEvent('groups:acceptjoinadmin');
+                        groupMemberAccept(account.waitingGroups[0]?._id).then(refresh);
+                      },
                     },
                   ],
                   { cancelable: true },
                 );
               } else {
+                trackEvent('groups:acceptjoin');
                 groupMemberAccept(account.waitingGroups[0]?._id).then(refresh);
               }
             },

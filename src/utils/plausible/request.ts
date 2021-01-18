@@ -1,3 +1,5 @@
+import { logger } from '@utils';
+
 import type { PlausibleOptions } from './tracker';
 
 /**
@@ -39,7 +41,7 @@ export function sendEvent(
   const isLocalhost = __DEV__;
 
   if (!data.trackLocalhost && isLocalhost) {
-    return console.warn('[Plausible] Ignoring event because website is running locally');
+    return logger.debug('[Plausible] Ignoring event because website is running locally');
   }
 
   const payload: EventPayload = {
@@ -52,7 +54,7 @@ export function sendEvent(
     p: options && options.props ? JSON.stringify(options.props) : undefined,
   };
 
-  console.log('PLAUSIBLE EVENT');
+  logger.debug(`[Plausible] sending event ${eventName}`);
   const req = new XMLHttpRequest();
   req.open('POST', `${data.apiHost}/api/event`, true);
   req.setRequestHeader('Content-Type', 'text/plain');

@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 
 import getStyles from '@styles/Styles';
 import { ModalProps, Account, State, RequestState } from '@ts/types';
-import { Errors, useTheme } from '@utils/index';
+import { Errors, trackEvent, useTheme } from '@utils/index';
 
 import ErrorMessage from './ErrorMessage';
 import Modal from './Modal';
@@ -77,7 +77,8 @@ const ReportModal: React.FC<ReportModalProps> = ({
   const [reportOption, setReportOption] = React.useState('OTHER');
   const [reportText, setReportText] = React.useState('');
 
-  const reportContent = () =>
+  const reportContent = () => {
+    trackEvent('report:reportcontent', { props: { reason: reportOption } });
     report(contentId, `${reportOption}${reportText ? `- ${reportText}` : ''}`)
       .then(() => {
         setReportText('');
@@ -91,6 +92,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
           retry: reportContent,
         }),
       );
+  };
 
   return (
     <Modal visible={visible} setVisible={setVisible}>

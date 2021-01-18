@@ -8,7 +8,7 @@ import { CustomHeaderBar, Content } from '@components/index';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import { Preferences, Account, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import type { SettingsScreenNavigationProp } from '../index';
 import getSettingsStyles from '../styles/Styles';
@@ -67,7 +67,10 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
             thumbTintColor={colors.primary}
             step={1}
             value={preferences.fontSize}
-            onValueChange={(data) => updatePrefs({ fontSize: data })}
+            onValueChange={(data) => {
+              trackEvent('prefs:updateFontSize', { props: { size: data.toString() } });
+              updatePrefs({ fontSize: data });
+            }}
           />
         </List.Section>
         <List.Section>
@@ -81,7 +84,10 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                   color: colors.text,
                   fontFamily: 'Roboto',
                 }}
-                onPress={() => updatePrefs({ fontFamily: 'Roboto' })}
+                onPress={() => {
+                  trackEvent('prefs:updateFont', { props: { font: 'Roboto' } });
+                  updatePrefs({ fontFamily: 'Roboto' });
+                }}
                 mode={preferences.fontFamily === 'Roboto' ? 'outlined' : 'text'}
               >
                 Sans serif
@@ -94,7 +100,10 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                   color: colors.text,
                   fontFamily: 'Roboto-Slab',
                 }}
-                onPress={() => updatePrefs({ fontFamily: 'Roboto-Slab' })}
+                onPress={() => {
+                  trackEvent('prefs:updateFont', { props: { font: 'Roboto-Slab' } });
+                  updatePrefs({ fontFamily: 'Roboto-Slab' });
+                }}
                 mode={preferences.fontFamily === 'Roboto-Slab' ? 'outlined' : 'text'}
               >
                 Serif
@@ -109,7 +118,10 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                   color: colors.text,
                   fontFamily: 'Roboto-Mono',
                 }}
-                onPress={() => updatePrefs({ fontFamily: 'Roboto-Mono' })}
+                onPress={() => {
+                  trackEvent('prefs:updateFont', { props: { font: 'Roboto-Mono ' } });
+                  updatePrefs({ fontFamily: 'Roboto-Mono' });
+                }}
                 mode={preferences.fontFamily === 'Roboto-Mono' ? 'outlined' : 'text'}
               >
                 Mono
@@ -122,7 +134,10 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                   color: colors.text,
                   fontFamily: 'OpenDyslexic',
                 }}
-                onPress={() => updatePrefs({ fontFamily: 'OpenDyslexic' })}
+                onPress={() => {
+                  trackEvent('prefs:updateFont', { props: { font: 'OpenDyslexic' } });
+                  updatePrefs({ fontFamily: 'OpenDyslexic' });
+                }}
                 mode={preferences.fontFamily === 'OpenDyslexic' ? 'outlined' : 'text'}
               >
                 Dyslexie
@@ -139,10 +154,20 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
               <Switch
                 color={colors.primary}
                 value={preferences.stripFormatting}
-                onValueChange={(val) => updatePrefs({ stripFormatting: val })}
+                onValueChange={(val) => {
+                  trackEvent('prefs:updateStripFormatting', {
+                    props: { value: val ? 'yes' : 'no' },
+                  });
+                  updatePrefs({ stripFormatting: val });
+                }}
               />
             )}
-            onPress={() => updatePrefs({ stripFormatting: !preferences.stripFormatting })}
+            onPress={() => {
+              trackEvent('prefs:updateStripFormatting', {
+                props: { value: !preferences.stripFormatting ? 'yes' : 'no' },
+              });
+              updatePrefs({ stripFormatting: !preferences.stripFormatting });
+            }}
             style={settingsStyles.listItem}
           />
         </List.Section>

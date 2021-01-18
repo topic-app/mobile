@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { fetchAccount } from '@redux/actions/data/account';
 import { resendVerification } from '@redux/actions/data/profile';
 import { State, Account, AccountRequestState } from '@ts/types';
-import { Alert, useTheme } from '@utils/index';
+import { Alert, trackEvent, useTheme } from '@utils/index';
 
 import Banner from './Banner';
 import ErrorMessage from './ErrorMessage';
@@ -47,7 +47,8 @@ const VerificationBanner: React.FC<Props> = ({ account, state }) => {
           },
           {
             label: 'Renvoyer',
-            onPress: () =>
+            onPress: () => {
+              trackEvent('account:resendverification', { props: { method: 'banner' } });
               resendVerification().then(() =>
                 Alert.alert(
                   'Email de vérification renvoyé',
@@ -55,7 +56,8 @@ const VerificationBanner: React.FC<Props> = ({ account, state }) => {
                   [{ text: 'Fermer' }],
                   { cancelable: true },
                 ),
-              ),
+              );
+            },
           },
         ]}
         icon={({ size }) => (

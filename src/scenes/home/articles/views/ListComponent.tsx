@@ -223,26 +223,28 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
           />
         )}
         itemHeight={itemHeight}
-        ListHeaderComponent={({ sectionKey, group, retry }) => (
-          <View>
-            <GroupsBanner />
-            <VerificationBanner />
-            {(state.list.error && group === 'categories') ||
-            (state.search?.error && group === 'quicks') ||
-            (state.following?.error && group === 'categories' && sectionKey === 'following') ? (
-              <ErrorMessage
-                type="axios"
-                strings={{
-                  what: 'la récupération des articles',
-                  contentPlural: 'des articles',
-                  contentSingular: "La liste d'articles",
-                }}
-                error={[state.list.error, state.search?.error, state.following?.error]}
-                retry={retry}
-              />
-            ) : null}
-          </View>
-        )}
+        ListHeaderComponent={({ sectionKey, group, retry }) => {
+          return (
+            <View>
+              <GroupsBanner />
+              <VerificationBanner />
+              {(state.list.error && group === 'categories') ||
+              (state.search?.error && group === 'quicks') ||
+              (state.following?.error && group === 'categories' && sectionKey === 'following') ? (
+                <ErrorMessage
+                  type="axios"
+                  strings={{
+                    what: 'la récupération des articles',
+                    contentPlural: 'des articles',
+                    contentSingular: "La liste d'articles",
+                  }}
+                  error={[state.list.error, state.search?.error, state.following?.error]}
+                  retry={retry}
+                />
+              ) : null}
+            </View>
+          );
+        }}
         ListEmptyComponent={(props) => <ArticleEmptyList reqState={state} {...props} />}
         onConfigurePress={onConfigurePressed}
       />

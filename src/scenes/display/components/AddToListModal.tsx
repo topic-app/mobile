@@ -16,7 +16,7 @@ import { addArticleToList, addArticleList } from '@redux/actions/contentData/art
 import { addEventToList, addEventList } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
 import { ModalProps, State, ArticleListItem, EventListItem, Article, Event } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
@@ -181,6 +181,7 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
                   uppercase={Platform.OS !== 'ios'}
                   onPress={() => {
                     if (!createList) {
+                      trackEvent('lists:additemtolist', { props: { method: 'modal' } });
                       setVisible(false);
                       if (type === 'article') {
                         addArticleToList(id, list || '');
@@ -192,6 +193,7 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
                     } else if (
                       !lists.some((l: EventListItem | ArticleListItem) => l.name === createListText)
                     ) {
+                      trackEvent('lists:createlist', { props: { method: 'modal' } });
                       // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                       if (type === 'article') {
                         addArticleList(createListText);

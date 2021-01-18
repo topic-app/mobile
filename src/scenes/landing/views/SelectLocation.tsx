@@ -41,7 +41,7 @@ import {
   LocationList,
   Account,
 } from '@ts/types';
-import { useTheme, logger, Location, Format, Alert, Errors } from '@utils/index';
+import { useTheme, logger, Location, Format, Alert, Errors, trackEvent } from '@utils/index';
 
 import LocationListItem from '../components/LocationListItem';
 import type { LandingScreenNavigationProp } from '../index';
@@ -158,14 +158,17 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const requestUserLocation = () => {
     Location.request().then(async (status) => {
       if (status === 'yes') {
+        trackEvent('landing:locateacceptpermission');
         setUserLocation(true);
         setButtonVisible(false);
         const coords = await Location.getCoordinates();
         updateNearSchools('initial', coords.latitude, coords.longitude);
       } else if (status === 'no') {
+        trackEvent('landing:locaterejectpermission');
         setButtonVisible(false);
       } else if (status === 'error') {
         setLocationError(true);
+        trackEvent('error:landinglocate');
       }
       // else can never use location :(
     });
@@ -391,7 +394,10 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                   <Text>Appuyez ci-dessous pour trouver les écoles autour de vous</Text>
                   <View style={styles.container}>
                     <Button
-                      onPress={requestUserLocation}
+                      onPress={() => {
+                        trackEvent('landing:locatebutton');
+                        requestUserLocation();
+                      }}
                       uppercase={Platform.OS !== 'ios'}
                       mode="outlined"
                       icon="map-marker"

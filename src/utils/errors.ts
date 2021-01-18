@@ -6,7 +6,7 @@ import { Error as ErrorType } from '@ts/types';
 import { trackEvent } from './plausible';
 
 type errorProps = {
-  type: 'axios' | 'other';
+  type: 'axios' | 'app' | 'other';
   error: any;
   retry?: () => any | null;
   back?: () => any | null;
@@ -334,11 +334,13 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
 
 const showPopup = async ({ what, type, error, retry, back, restart }: popupProps) => {
   const { message, actions, status } = await processError({ type, error, retry, back, restart });
-  trackEvent('error', { props: { what, error: message.id, status: (status || 0).toString() } });
+  trackEvent('error', {
+    props: { type: 'popup', what, error: message.id, status: (status || 0).toString() },
+  });
   Alert.alert(`Une erreur est survenue lors de ${what}`, message.text, [
     { text: 'Fermer' },
     ...actions,
   ]);
 };
 
-export { showPopup };
+export { showPopup, processError };
