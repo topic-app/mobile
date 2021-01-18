@@ -68,7 +68,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
             step={1}
             value={preferences.fontSize}
             onValueChange={(data) => {
-              trackEvent('prefs:updateFontSize', { props: { size: data.toString() } });
+              trackEvent('prefs:update-font-size', { props: { size: data.toString() } });
               updatePrefs({ fontSize: data });
             }}
           />
@@ -85,7 +85,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                   fontFamily: 'Roboto',
                 }}
                 onPress={() => {
-                  trackEvent('prefs:updateFont', { props: { font: 'Roboto' } });
+                  trackEvent('prefs:update-font', { props: { font: 'Roboto' } });
                   updatePrefs({ fontFamily: 'Roboto' });
                 }}
                 mode={preferences.fontFamily === 'Roboto' ? 'outlined' : 'text'}
@@ -101,7 +101,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                   fontFamily: 'Roboto-Slab',
                 }}
                 onPress={() => {
-                  trackEvent('prefs:updateFont', { props: { font: 'Roboto-Slab' } });
+                  trackEvent('prefs:update-font', { props: { font: 'Roboto-Slab' } });
                   updatePrefs({ fontFamily: 'Roboto-Slab' });
                 }}
                 mode={preferences.fontFamily === 'Roboto-Slab' ? 'outlined' : 'text'}
@@ -119,7 +119,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                   fontFamily: 'Roboto-Mono',
                 }}
                 onPress={() => {
-                  trackEvent('prefs:updateFont', { props: { font: 'Roboto-Mono ' } });
+                  trackEvent('prefs:update-font', { props: { font: 'Roboto-Mono ' } });
                   updatePrefs({ fontFamily: 'Roboto-Mono' });
                 }}
                 mode={preferences.fontFamily === 'Roboto-Mono' ? 'outlined' : 'text'}
@@ -135,7 +135,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                   fontFamily: 'OpenDyslexic',
                 }}
                 onPress={() => {
-                  trackEvent('prefs:updateFont', { props: { font: 'OpenDyslexic' } });
+                  trackEvent('prefs:update-font', { props: { font: 'OpenDyslexic' } });
                   updatePrefs({ fontFamily: 'OpenDyslexic' });
                 }}
                 mode={preferences.fontFamily === 'OpenDyslexic' ? 'outlined' : 'text'}
@@ -155,7 +155,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 color={colors.primary}
                 value={preferences.stripFormatting}
                 onValueChange={(val) => {
-                  trackEvent('prefs:updateStripFormatting', {
+                  trackEvent('prefs:update-strip-formatting', {
                     props: { value: val ? 'yes' : 'no' },
                   });
                   updatePrefs({ stripFormatting: val });
@@ -163,7 +163,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
               />
             )}
             onPress={() => {
-              trackEvent('prefs:updateStripFormatting', {
+              trackEvent('prefs:update-strip-formatting', {
                 props: { value: !preferences.stripFormatting ? 'yes' : 'no' },
               });
               updatePrefs({ stripFormatting: !preferences.stripFormatting });

@@ -181,7 +181,7 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
                   uppercase={Platform.OS !== 'ios'}
                   onPress={() => {
                     if (!createList) {
-                      trackEvent('lists:additemtolist', { props: { method: 'modal' } });
+                      trackEvent('lists:add-item-to-list', { props: { method: 'modal' } });
                       setVisible(false);
                       if (type === 'article') {
                         addArticleToList(id, list || '');
@@ -193,7 +193,7 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
                     } else if (
                       !lists.some((l: EventListItem | ArticleListItem) => l.name === createListText)
                     ) {
-                      trackEvent('lists:createlist', { props: { method: 'modal' } });
+                      trackEvent('lists:create-list', { props: { method: 'modal' } });
                       // TODO: Add icon picker, or just remove the icon parameter and use a material design list icon
                       if (type === 'article') {
                         addArticleList(createListText);

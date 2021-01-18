@@ -63,6 +63,7 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
         navigation.replace('CreateSuccess');
       })
       .catch((error) => {
+        trackEvent('auth:create-failure');
         Errors.showPopup({
           type: 'axios',
           what: 'la création du compte',

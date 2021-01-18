@@ -48,7 +48,7 @@ const VerificationBanner: React.FC<Props> = ({ account, state }) => {
           {
             label: 'Renvoyer',
             onPress: () => {
-              trackEvent('account:resendverification', { props: { method: 'banner' } });
+              trackEvent('account:resend-verification', { props: { method: 'banner' } });
               resendVerification().then(() =>
                 Alert.alert(
                   'Email de vérification renvoyé',

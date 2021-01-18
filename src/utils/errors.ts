@@ -121,7 +121,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
     } else if (err?.error?.response?.status === 451) {
       message = {
         icon: 'shield-alert-outline',
-        text: "L'élément est en attente de modération. ",
+        text: "L'élément est en attente de modération.",
         code: 'notvalidated',
       };
       if (retry) {

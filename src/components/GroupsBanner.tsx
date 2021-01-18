@@ -69,7 +69,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
                   {
                     text: 'Refuser',
                     onPress: () => {
-                      trackEvent('groups:refusejoin');
+                      trackEvent('groups:refuse-join');
                       groupMemberReject(account.waitingGroups[0]?._id).then(refresh);
                     },
                   },
@@ -99,7 +99,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
                     {
                       text: 'Rejoindre',
                       onPress: () => {
-                        trackEvent('groups:acceptjoinadmin');
+                        trackEvent('groups:accept-join-admin');
                         groupMemberAccept(account.waitingGroups[0]?._id).then(refresh);
                       },
                     },
@@ -107,7 +107,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
                   { cancelable: true },
                 );
               } else {
-                trackEvent('groups:acceptjoin');
+                trackEvent('groups:accept-join');
                 groupMemberAccept(account.waitingGroups[0]?._id).then(refresh);
               }
             },

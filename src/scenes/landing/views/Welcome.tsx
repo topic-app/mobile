@@ -90,7 +90,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                   left={({ color }) => <List.Icon color={color} icon={item.icon} />}
                   right={({ color }) => <List.Icon color={color} icon="chevron-right" />}
                   onPress={() => {
-                    trackEvent('landing:pressdiscover', { props: { element: item.title } });
+                    trackEvent('landing:press-discover-button', { props: { element: item.title } });
                     navigation.navigate('Info', { index: item.index });
                   }}
                 />
@@ -101,7 +101,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
           <View>
             <PlatformTouchable
               onPress={() => {
-                trackEvent('landing:clickSponsors');
+                trackEvent('landing:press-sponsors-button');
                 navigation.navigate('Info', { index: 4 });
               }}
             >
