@@ -69,7 +69,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
                   {
                     text: 'Refuser',
                     onPress: () => {
-                      trackEvent('groups:refusejoin');
+                      trackEvent('groups:refuse-join');
                       groupMemberReject(account.waitingGroups[0]?._id).then(refresh);
                     },
                   },
