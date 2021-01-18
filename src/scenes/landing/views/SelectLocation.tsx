@@ -395,7 +395,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                   <View style={styles.container}>
                     <Button
                       onPress={() => {
-                        trackEvent('landing:locatebutton');
+                        trackEvent('landing:press-locate-button');
                         requestUserLocation();
                       }}
                       uppercase={Platform.OS !== 'ios'}

@@ -52,7 +52,7 @@ export function sendEvent(
 
   if (!data.trackLocalhost && isLocalhost) {
     logger.debug(
-      `[Plausible] Ignoring event because website is running locally : ${JSON.stringify(payload)}`,
+      `[Plausible] Ignoring event because app is running locally : ${JSON.stringify(payload)}`,
     );
   }
 

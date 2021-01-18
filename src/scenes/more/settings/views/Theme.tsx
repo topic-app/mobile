@@ -48,7 +48,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
               <TouchableWithoutFeedback
                 onPress={() => {
                   if (presses > 5) {
-                    trackEvent('prefs:discoverEasterEgg');
+                    trackEvent('prefs:discover-easter-egg');
                     updatePrefs({ themeEasterEggDiscovered: true });
                   }
                   setPresses(presses + 1);
@@ -76,7 +76,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
                     color={colors.primary}
                     status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
                     onPress={() => {
-                      trackEvent('prefs:changeTheme', { props: { theme: 'system' } });
+                      trackEvent('prefs:change-theme', { props: { theme: 'system' } });
                       updatePrefs({ useSystemTheme: true });
                     }}
                   />
@@ -89,14 +89,14 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
                     color={colors.primary}
                     status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
                     onPress={() => {
-                      trackEvent('prefs:changeTheme', { props: { theme: 'system' } });
+                      trackEvent('prefs:change-theme', { props: { theme: 'system' } });
                       updatePrefs({ useSystemTheme: true });
                     }}
                   />
                 )
               }
               onPress={() => {
-                trackEvent('prefs:changeTheme', { props: { theme: 'system' } });
+                trackEvent('prefs:change-theme', { props: { theme: 'system' } });
                 updatePrefs({ useSystemTheme: true });
               }}
               style={settingsStyles.listItem}
@@ -117,7 +117,7 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
                       : 'unchecked'
                   }
                   onPress={() => {
-                    trackEvent('prefs:changeTheme', { props: { theme: item.value } });
+                    trackEvent('prefs:change-theme', { props: { theme: item.value } });
                     updatePrefs({ theme: item.value, useSystemTheme: false });
                   }}
                 />
@@ -134,14 +134,14 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
                       : 'unchecked'
                   }
                   onPress={() => {
-                    trackEvent('prefs:changeTheme', { props: { theme: item.value } });
+                    trackEvent('prefs:change-theme', { props: { theme: item.value } });
                     updatePrefs({ theme: item.value, useSystemTheme: false });
                   }}
                 />
               )
             }
             onPress={() => {
-              trackEvent('prefs:changeTheme', { props: { theme: item.value } });
+              trackEvent('prefs:change-theme', { props: { theme: item.value } });
               updatePrefs({ theme: item.value, useSystemTheme: false });
             }}
             style={settingsStyles.listItem}

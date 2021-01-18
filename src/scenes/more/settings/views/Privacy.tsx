@@ -27,7 +27,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
 
   const toggleHistory = (val: boolean) => {
     if (val) {
-      trackEvent('prefs:updateHistory', { props: { value: 'yes' } });
+      trackEvent('prefs:update-history', { props: { value: 'yes' } });
       updatePrefs({
         history: true,
       });
@@ -44,7 +44,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
           {
             text: 'Désactiver',
             onPress: () => {
-              trackEvent('prefs:updateHistory', { props: { value: 'no' } });
+              trackEvent('prefs:update-history', { props: { value: 'no' } });
               clearArticlesRead();
               updatePrefs({
                 history: false,
@@ -61,7 +61,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
 
   const toggleRecommendations = (val: boolean) => {
     if (val) {
-      trackEvent('prefs:updateRecommendations', { props: { value: 'yes' } });
+      trackEvent('prefs:update-recommendations', { props: { value: 'yes' } });
       updatePrefs({
         recommendations: true,
       });
@@ -78,7 +78,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
           {
             text: 'Désactiver',
             onPress: () => {
-              trackEvent('prefs:updateRecommendations', { props: { value: 'no' } });
+              trackEvent('prefs:update-recommendations', { props: { value: 'no' } });
               updatePrefs({
                 recommendations: false,
               });
@@ -309,7 +309,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                   {
                     text: 'Supprimer',
                     onPress: () => {
-                      trackEvent('prefs:clearHistory');
+                      trackEvent('prefs:clear-history');
                       clearArticlesRead();
                     },
                   },
@@ -339,7 +339,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                   },
                   /* {
                     text: 'Supprimer',
-                    onPress: () =>   trackEvent('prefs:deleteRecommendations'); console.log('Delete interests'),
+                    onPress: () =>   trackEvent('prefs:delete-recommendations'); console.log('Delete interests'),
                   }, */
                 ],
                 { cancelable: true },
