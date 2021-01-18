@@ -49,7 +49,16 @@ import {
   ArticleMyInfo,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl, checkPermission, Alert, Errors } from '@utils/index';
+import {
+  useTheme,
+  getImageUrl,
+  handleUrl,
+  checkPermission,
+  Alert,
+  Errors,
+  trackEvent,
+  shareContent,
+} from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
@@ -115,6 +124,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
       );
 
   const likeArticle = () => {
+    trackEvent(`articledisplay:${articleMy?.liked ? 'unlike' : 'like'}`, {
+      props: { button: 'bottom' },
+    });
     articleLike(article._id, !articleMy?.liked)
       .then(() => {
         fetchArticleMy(article._id);
@@ -217,23 +229,15 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 icon="share-variant"
                 style={{ flex: 1, marginLeft: 5 }}
                 color={colors.muted}
-                onPress={Platform.select({
-                  ios: () =>
-                    Share.share({
-                      message: `${article?.title} par ${article.group?.displayName}`,
-                      url: `${config.links.share}/articles/${article._id}`,
-                    }),
-                  android: () =>
-                    Share.share({
-                      message: `${config.links.share}/articles/${article._id}`,
-                      title: `${article?.title} par ${article.group?.displayName}`,
-                    }),
-                  default: () =>
-                    Share.share({
-                      message: '',
-                      title: `${article?.title} par ${article.group?.displayName} ${config.links.share}/articles/${article._id}`,
-                    }),
-                })}
+                onPress={() => {
+                  shareContent({
+                    title: article.title,
+                    group: article.group?.displayName,
+                    type: 'articles',
+                    id: article._id,
+                  });
+                  trackEvent('articledisplay:share', { props: { button: 'bottom' } });
+                }}
               >
                 Partager
               </Button>
@@ -677,27 +681,22 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         overflow={[
           {
             title: 'Partager',
-            onPress: Platform.select({
-              ios: () =>
-                Share.share({
-                  message: `${article?.title} par ${article?.group?.displayName}`,
-                  url: `${config.links.share}/articles/${article?._id}`,
-                }),
-              android: () =>
-                Share.share({
-                  message: `${config.links.share}/articles/${article?._id}`,
-                  title: `${article?.title} par ${article?.group?.displayName}`,
-                }),
-              default: () =>
-                Share.share({
-                  message: '',
-                  title: `${article?.title} par ${article?.group?.displayName} ${config.links.share}/articles/${article?._id}`,
-                }),
-            }),
+            onPress: () => {
+              if (!article) return;
+              shareContent({
+                title: article.title,
+                group: article.group?.displayName,
+                type: 'articles',
+                id: article._id,
+              });
+              trackEvent('articledisplay:share', { props: { button: 'header' } });
+            },
           },
           {
             title: 'Signaler',
-            onPress: () => setArticleReportModalVisible(true),
+            onPress: () => {
+              setArticleReportModalVisible(true);
+            },
           },
           ...(checkPermission(account, {
             permission: Permissions.ARTICLE_DELETE,
@@ -714,7 +713,10 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                         { text: 'Annuler' },
                         {
                           text: 'Supprimer',
-                          onPress: deleteArticle,
+                          onPress: () => {
+                            deleteArticle();
+                            trackEvent('articledisplay:delete', { props: { button: 'header' } });
+                          },
                         },
                       ],
                       { cancelable: true },

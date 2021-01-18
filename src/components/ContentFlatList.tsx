@@ -178,7 +178,9 @@ const ContentFlatList = <T extends any>({
           <ListHeaderComponent
             sectionKey={tabKey}
             group={currentSection.group}
-            retry={() => currentSection.onLoad?.('initial')}
+            retry={() => {
+              currentSection.onLoad?.('refresh');
+            }}
           />
         ) : null}
         {shouldRenderTabChipList ? (

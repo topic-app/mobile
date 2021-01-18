@@ -24,7 +24,7 @@ import { fetchAccount, login } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { AccountRequestState, State } from '@ts/types';
 import { getApiDevice, messaging } from '@utils/firebase';
-import { useTheme, logger, Errors } from '@utils/index';
+import { useTheme, logger, Errors, trackEvent } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -53,12 +53,15 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
   const styles = getStyles(theme);
   const { colors } = theme;
 
+  React.useEffect(() => trackEvent('auth:login-start'), []);
+
   const LoginSchema = Yup.object().shape({
     username: Yup.string().required("Nom d'utilisateur requis"),
     password: Yup.string().required('Mot de passe requis'),
   });
 
   const handleLogin = async ({ username, password }: { username: string; password: string }) => {
+    trackEvent('auth:login-request');
     const fields = {
       accountInfo: {
         username,
@@ -78,6 +81,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
       });
     }
     if (didLogin) {
+      trackEvent('auth:login-success');
       if (Platform.OS === 'web') {
         await fetchAccount();
         setTimeout(() => window.location.replace('/'), 200); // HACK : Because otherwise it doesnt redirect properly
@@ -87,6 +91,8 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
           params: { screen: 'Home2', params: { screen: 'Article' } },
         });
       }
+    } else {
+      trackEvent('auth:login-wrong');
     }
   };
 

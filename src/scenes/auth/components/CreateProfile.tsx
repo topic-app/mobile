@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import { Avatar, CollapsibleView, FormTextInput, StepperViewPageProps } from '@components/index';
 import { updateCreationData } from '@redux/actions/data/account';
 import { Avatar as AvatarType, State, LocationList } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -142,6 +142,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
               departments: location.departments,
               global: location.global,
             });
+            trackEvent('auth:create-page-legal');
             next();
           }}
         >
