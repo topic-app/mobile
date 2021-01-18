@@ -78,7 +78,7 @@ const ReportModal: React.FC<ReportModalProps> = ({
   const [reportText, setReportText] = React.useState('');
 
   const reportContent = () => {
-    trackEvent('report:reportcontent', { props: { reason: reportOption } });
+    trackEvent('report:report-content', { props: { reason: reportOption } });
     report(contentId, `${reportOption}${reportText ? `- ${reportText}` : ''}`)
       .then(() => {
         setReportText('');
