@@ -32,7 +32,7 @@ import {
   Comment,
   EventMyInfo,
 } from '@ts/types';
-import { useTheme, logger, checkPermission, Errors } from '@utils/index';
+import { useTheme, logger, checkPermission, Errors, shareContent } from '@utils/index';
 
 import CommentInlineCard from '../../components/Comment';
 import MessageInlineCard from '../components/Message';
@@ -231,23 +231,14 @@ function EventDisplayDescriptionHeader({
             icon="share-variant"
             style={{ flex: 1, marginLeft: 5 }}
             color={colors.muted}
-            onPress={Platform.select({
-              ios: () =>
-                Share.share({
-                  message: `Évènement ${event?.title} par ${event?.group?.displayName}`,
-                  url: `${config.links.share}/evenements/${event?._id}`,
-                }),
-              android: () =>
-                Share.share({
-                  message: `Évènement ${config.links.share}/evenements/${event?._id}`,
-                  title: `${event?.title} par ${event?.group?.displayName}`,
-                }),
-              default: () =>
-                Share.share({
-                  message: '',
-                  title: `Évènement ${event?.title} par ${event?.group?.displayName} ${config.links.share}/evenements/${event?._id}`,
-                }),
-            })}
+            onPress={() => {
+              shareContent({
+                title: `Évènement ${event.title}`,
+                group: event.group?.displayName,
+                type: 'evenements',
+                id: event._id,
+              });
+            }}
           >
             Partager
           </Button>

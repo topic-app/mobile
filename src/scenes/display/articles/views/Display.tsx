@@ -57,6 +57,7 @@ import {
   Alert,
   Errors,
   trackEvent,
+  shareContent,
 } from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
@@ -229,23 +230,12 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 style={{ flex: 1, marginLeft: 5 }}
                 color={colors.muted}
                 onPress={() => {
-                  Platform.select({
-                    ios: () =>
-                      Share.share({
-                        message: `${article?.title} par ${article.group?.displayName}`,
-                        url: `${config.links.share}/articles/${article._id}`,
-                      }),
-                    android: () =>
-                      Share.share({
-                        message: `${config.links.share}/articles/${article._id}`,
-                        title: `${article?.title} par ${article.group?.displayName}`,
-                      }),
-                    default: () =>
-                      Share.share({
-                        message: '',
-                        title: `${article?.title} par ${article.group?.displayName} ${config.links.share}/articles/${article._id}`,
-                      }),
-                  })();
+                  shareContent({
+                    title: article.title,
+                    group: article.group?.displayName,
+                    type: 'articles',
+                    id: article._id,
+                  });
                   trackEvent('articledisplay:share', { props: { button: 'bottom' } });
                 }}
               >
@@ -692,23 +682,13 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           {
             title: 'Partager',
             onPress: () => {
-              Platform.select({
-                ios: () =>
-                  Share.share({
-                    message: `${article?.title} par ${article?.group?.displayName}`,
-                    url: `${config.links.share}/articles/${article?._id}`,
-                  }),
-                android: () =>
-                  Share.share({
-                    message: `${config.links.share}/articles/${article?._id}`,
-                    title: `${article?.title} par ${article?.group?.displayName}`,
-                  }),
-                default: () =>
-                  Share.share({
-                    message: '',
-                    title: `${article?.title} par ${article?.group?.displayName} ${config.links.share}/articles/${article?._id}`,
-                  }),
-              })();
+              if (!article) return;
+              shareContent({
+                title: article.title,
+                group: article.group?.displayName,
+                type: 'articles',
+                id: article._id,
+              });
               trackEvent('articledisplay:share', { props: { button: 'header' } });
             },
           },

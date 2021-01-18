@@ -12,7 +12,7 @@ import { Permissions } from '@constants/index';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, Account } from '@ts/types';
-import { checkPermission, logger, useTheme, Alert } from '@utils/index';
+import { checkPermission, logger, useTheme, Alert, shareContent } from '@utils/index';
 
 import type { ArticleAddScreenNavigationProp, ArticleAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -155,23 +155,15 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
                         { text: 'Annuler' },
                         {
                           text: 'Partager',
-                          onPress: Platform.select({
-                            ios: () =>
-                              Share.share({
-                                message: `${creationData?.title} par ${groupName}`,
-                                url: `${config.links.share}/articles/${id}`,
-                              }),
-                            android: () =>
-                              Share.share({
-                                message: `${config.links.share}/articles/${id}`,
-                                title: `${creationData?.title} par ${groupName}`,
-                              }),
-                            default: () =>
-                              Share.share({
-                                message: '',
-                                title: `${creationData?.title} par ${groupName} ${config.links.share}/articles/${id}`,
-                              }),
-                          }),
+                          onPress: () => {
+                            if (!creationData) return;
+                            shareContent({
+                              title: creationData.title,
+                              group: groupName,
+                              type: 'articles',
+                              id,
+                            });
+                          },
                         },
                       ],
                       { cancelable: true },

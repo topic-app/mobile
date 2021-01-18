@@ -35,7 +35,7 @@ import {
   Group,
   AccountRequestState,
 } from '@ts/types';
-import { useTheme, logger, Format, Errors } from '@utils/index';
+import { useTheme, logger, Format, Errors, shareContent } from '@utils/index';
 
 import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '../index';
 
@@ -187,23 +187,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 title="Partager"
                 onPress={() => {
                   setMenuVisible(false);
-                  Platform.select({
-                    ios: () =>
-                      Share.share({
-                        message: `@${user.info.username}`,
-                        url: `${config.links.share}/utilisateurs/${user._id}`,
-                      }),
-                    android: () =>
-                      Share.share({
-                        message: `${config.links.share}/utilisateurs/${user._id}`,
-                        title: `@${user.info.username}`,
-                      }),
-                    default: () =>
-                      Share.share({
-                        message: '',
-                        title: `@${user.info.username} ${config.links.share}/utilisateurs/${user._id}`,
-                      }),
-                  })();
+                  shareContent({
+                    title: `@${user.info?.username}`,
+                    type: 'utilisateurs',
+                    id: user._id,
+                  });
                 }}
               />
               <Menu.Item
