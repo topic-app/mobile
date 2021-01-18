@@ -99,7 +99,7 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
                     {
                       text: 'Rejoindre',
                       onPress: () => {
-                        trackEvent('groups:acceptjoinadmin');
+                        trackEvent('groups:accept-join-admin');
                         groupMemberAccept(account.waitingGroups[0]?._id).then(refresh);
                       },
                     },
