@@ -20,10 +20,10 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
     : error) as ErrorType;
   const netInfo = await fetchNetInfo();
 
-  let message: { icon: string; text: string; id: string } = {
+  let message: { icon: string; text: string; code: string } = {
     icon: 'alert-decagram-outline',
     text: 'Erreur inconnue',
-    id: 'unknown',
+    code: 'unknown',
   };
   let actions: { text: string; onPress: () => any }[] = [];
 
@@ -33,7 +33,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'hammer-wrench',
         text: 'Le serveur est en maintenance. Merci de réessayer plus tard.',
-        id: 'server-maintenance',
+        code: 'server-maintenance',
       };
       if (retry) {
         actions = [
@@ -51,7 +51,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'alert-decagram-outline',
         text: 'Notre serveur a eu un problème. Merci de signaler ce bug ou de réessayer plus tard.',
-        id: 'server-error',
+        code: 'server-error',
       };
       if (retry) {
         actions.push({
@@ -64,7 +64,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'alert-decagram-outline',
         text: "L'application a envoyé des données malformées au serveur. Merci de signaler ce bug.",
-        id: 'malformed-data',
+        code: 'malformed-data',
       };
       if (back) {
         actions.push({
@@ -77,7 +77,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'file-alert-outline',
         text: "L'application a envoyé des données invalides au serveur. Merci de signaler ce bug.",
-        id: 'invalid-data',
+        code: 'invalid-data',
       };
       if (restart) {
         actions.push({
@@ -90,7 +90,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'file-alert-outline',
         text: "L'élément n'a pas été trouvé. Il n'existe pas ou n'a pas encore été publié.",
-        id: 'notfound',
+        code: 'notfound',
       };
       if (retry) {
         actions.push({
@@ -109,7 +109,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'delete-outline',
         text: "L'élément a été supprimé.",
-        id: 'deleted',
+        code: 'deleted',
       };
       if (back) {
         actions.push({
@@ -122,7 +122,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'shield-alert-outline',
         text: "L'élément est en attente de modération. ",
-        id: 'notvalidated',
+        code: 'notvalidated',
       };
       if (retry) {
         actions.push({
@@ -143,7 +143,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
           icon: 'account-alert-outline',
           text:
             "Cette action nécessite un compte, mais il semblerait que vous ne soyez pas connecté ou qu'il y a un problème avec votre compte.",
-          id: 'account-notloggedin',
+          code: 'account-notloggedin',
         };
         if (back) {
           actions.push({
@@ -156,7 +156,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
         message = {
           icon: 'account-alert-outline',
           text: 'La connexion à votre compte a expiré, merci de vous reconnecter.',
-          id: 'account-tokenexpired',
+          code: 'account-tokenexpired',
         };
         if (back) {
           actions.push({
@@ -170,7 +170,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
           icon: 'lock-alert',
           text:
             "Vous n'êtes pas autorisé à faire cette action, merci de vérifier que vous avez bien la permission.",
-          id: 'account-nopermission',
+          code: 'account-nopermission',
         };
         if (back) {
           actions.push({
@@ -184,7 +184,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
           icon: 'lock-alert',
           text:
             "Cette action ne peut être faite qu'une seule fois, et il semblerait que vous l'ayez déjà fait.",
-          id: 'already',
+          code: 'already',
         };
         if (back) {
           actions.push({
@@ -198,7 +198,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
           icon: 'reload-alert',
           text:
             "Seul l'auteur peut faire cette action, et il semblerait que vous n'êtes pas l&apos;auteur.",
-          id: 'account-notauthor',
+          code: 'account-notauthor',
         };
         if (back) {
           actions.push({
@@ -212,7 +212,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
           icon: 'reload',
           text:
             "Vous avez déjà créé trop d'éléments de ce type, merci d'en supprimer ou d'attendre la fermeture/suppression.",
-          id: 'limit-content',
+          code: 'limit-content',
         };
         if (back) {
           actions.push({
@@ -226,7 +226,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
           icon: 'account-alert-outline',
           text:
             "Vous n'avez pas la permission de faire cette action ou vous n'êtes pas connecté. Si vous pensez avoir cette permission, merci de signaler un bug.",
-          id: 'account-unknown',
+          code: 'account-unknown',
         };
         if (back) {
           actions.push({
@@ -241,7 +241,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
         icon: 'clock-alert-outline',
         text:
           'Votre appareil a été temporairement bloqué à cause d&apos;un nombre trop grand de requêtes.',
-        id: 'limit-ratelimited',
+        code: 'limit-ratelimited',
       };
       if (back) {
         actions.push({
@@ -260,7 +260,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'alert-decagram-outline',
         text: "Erreur de serveur lors de l'action. Merci de signaler ce bug",
-        id: 'server-unknown4xx',
+        code: 'server-unknown4xx',
       };
       if (back) {
         actions.push({
@@ -279,7 +279,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'wifi-strength-off-outline',
         text: "Vous n'êtes pas connecté à Internet.",
-        id: 'nointernet',
+        code: 'nointernet',
       };
       if (retry) {
         actions = [
@@ -294,7 +294,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
       message = {
         icon: 'wifi-strength-alert-outline',
         text: 'Veuillez vérifier votre connexion internet ou réessayer plus tard.',
-        id: 'unknown',
+        code: 'unknown',
       };
       if (retry) {
         actions.push({
@@ -308,7 +308,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
     message = {
       icon: 'alert-decagram-outline',
       text: 'Une erreur inconnue est survenue.',
-      id: 'unknown-notaxios',
+      code: 'unknown-notaxios',
     };
     if (back) {
       actions.push({
@@ -335,12 +335,13 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
 const showPopup = async ({ what, type, error, retry, back, restart }: popupProps) => {
   const { message, actions, status } = await processError({ type, error, retry, back, restart });
   trackEvent('error', {
-    props: { type: 'popup', what, error: message.id, status: (status || 0).toString() },
+    props: { type: 'popup', what, error: message.code, status: (status || 0).toString() },
   });
-  Alert.alert(`Une erreur est survenue lors de ${what}`, message.text, [
-    { text: 'Fermer' },
-    ...actions,
-  ]);
+  Alert.alert(
+    `Une erreur est survenue lors de ${what}`,
+    `${message.text} (${error?.error?.toString()})`,
+    [{ text: 'Fermer' }, ...actions],
+  );
 };
 
 export { showPopup, processError };

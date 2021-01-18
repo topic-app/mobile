@@ -45,7 +45,7 @@ const ErrorMessage: React.FC<Props> = ({
   const { colors } = theme;
 
   const [errorInfo, setErrorInfo] = React.useState<{
-    message: { icon: string; text: string; id: string };
+    message: { icon: string; text: string; code: string };
     actions: { text: string; onPress: () => void }[];
     status: number;
   } | null>(null);
@@ -64,7 +64,7 @@ const ErrorMessage: React.FC<Props> = ({
         props: {
           type: 'banner',
           what: strings.what,
-          error: message.id,
+          error: message.code,
           status: (status || 0).toString(),
         },
       });
