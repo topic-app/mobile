@@ -33,7 +33,6 @@
     "@react-native-community/netinfo": "^5.9.8",
     "@react-native-community/slider": "3.0.3",
     "@react-native-community/viewpager": "^4.2.1",
-    "@react-native-firebase/analytics": "^10.0.0",
     "@react-native-firebase/app": "^10.0.0",
     "@react-native-firebase/crashlytics": "^10.0.0",
     "@react-native-firebase/messaging": "^10.4.0",

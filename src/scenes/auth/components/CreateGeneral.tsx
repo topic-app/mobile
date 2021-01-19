@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 
 import { StepperViewPageProps, FormTextInput, StrengthMeter } from '@components';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import { useTheme, request } from '@utils/index';
+import { useTheme, request, trackEvent } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -83,6 +83,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
         validationSchema={RegisterSchema}
         onSubmit={(values) => {
           updateCreationData(values);
+          trackEvent('auth:create-page-privacy');
           next();
         }}
       >

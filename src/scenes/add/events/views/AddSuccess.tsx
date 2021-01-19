@@ -12,7 +12,7 @@ import { Permissions } from '@constants/index';
 import { eventVerificationApprove } from '@redux/actions/apiActions/events';
 import getStyles from '@styles/Styles';
 import { State, EventRequestState, Account } from '@ts/types';
-import { checkPermission, useTheme, Alert } from '@utils/index';
+import { checkPermission, useTheme, Alert, shareContent } from '@utils/index';
 
 import type { EventAddScreenNavigationProp, EventAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -155,23 +155,15 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
                         { text: 'Annuler' },
                         {
                           text: 'Partager',
-                          onPress: Platform.select({
-                            ios: () =>
-                              Share.share({
-                                message: `Évènement ${creationData?.title} par ${groupName}`,
-                                url: `${config.links.share}/evenements/${id}`,
-                              }),
-                            android: () =>
-                              Share.share({
-                                message: `${config.links.share}/evenements/${id}`,
-                                title: `Évènement ${creationData?.title} par ${groupName}`,
-                              }),
-                            default: () =>
-                              Share.share({
-                                message: '',
-                                title: `Évènement ${creationData?.title} par ${groupName} ${config.links.share}/evenements/${id}`,
-                              }),
-                          }),
+                          onPress: () => {
+                            if (!creationData?.title || !id) return;
+                            shareContent({
+                              title: `Évènement ${creationData.title}`,
+                              group: groupName,
+                              type: 'evenements',
+                              id,
+                            });
+                          },
                         },
                       ],
                       { cancelable: true },

@@ -47,7 +47,15 @@ import {
   Content,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl, checkPermission, Alert, Errors } from '@utils/index';
+import {
+  useTheme,
+  getImageUrl,
+  handleUrl,
+  checkPermission,
+  Alert,
+  Errors,
+  shareContent,
+} from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
@@ -270,23 +278,15 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
             : [
                 {
                   title: 'Partager',
-                  onPress: Platform.select({
-                    ios: () =>
-                      Share.share({
-                        message: `Évènement ${event?.title} par ${event?.group?.displayName}`,
-                        url: `${config.links.share}/evenements/${event?._id}`,
-                      }),
-                    android: () =>
-                      Share.share({
-                        message: `Évènement ${config.links.share}/evenements/${event?._id}`,
-                        title: `${event?.title} par ${event?.group?.displayName}`,
-                      }),
-                    default: () =>
-                      Share.share({
-                        message: '',
-                        title: `Évènement ${event?.title} par ${event?.group?.displayName} ${config.links.share}/evenements/${event?._id}`,
-                      }),
-                  }),
+                  onPress: () => {
+                    if (!event) return;
+                    shareContent({
+                      title: event.title,
+                      group: event.group?.displayName,
+                      type: 'evenements',
+                      id: event._id,
+                    });
+                  },
                 },
                 {
                   title: 'Signaler',

@@ -5,7 +5,7 @@ import shortid from 'shortid';
 
 import { Illustration, TranslucentStatusBar, PlatformTouchable } from '@components/index';
 import { updateDepartments } from '@redux/actions/api/departments';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import type { LandingScreenNavigationProp } from '../index';
 import getLandingStyles from '../styles/Styles';
@@ -89,14 +89,22 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                   description={item.description}
                   left={({ color }) => <List.Icon color={color} icon={item.icon} />}
                   right={({ color }) => <List.Icon color={color} icon="chevron-right" />}
-                  onPress={() => navigation.navigate('Info', { index: item.index })}
+                  onPress={() => {
+                    trackEvent('landing:press-discover-button', { props: { element: item.title } });
+                    navigation.navigate('Info', { index: item.index });
+                  }}
                 />
               </View>
             ))}
           </List.Section>
           <Divider theme={DarkTheme} />
           <View>
-            <PlatformTouchable onPress={() => navigation.navigate('Info', { index: 4 })}>
+            <PlatformTouchable
+              onPress={() => {
+                trackEvent('landing:press-sponsors-button');
+                navigation.navigate('Info', { index: 4 });
+              }}
+            >
               <View
                 style={{
                   marginVertical: 30,
