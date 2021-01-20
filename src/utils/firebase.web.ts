@@ -1,3 +1,12 @@
 const analytics = null;
 const crashlytics = null;
-export { analytics, crashlytics };
+
+const getApiDevice = async () => {
+  return {
+    type: 'web',
+    deviceId: null,
+    canNotify: false,
+  };
+};
+
+export { analytics, crashlytics, getApiDevice };
