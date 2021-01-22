@@ -251,7 +251,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
       >
         <MapboxGL.Camera
           ref={cameraRef}
-          maxBounds={mapConfig.bounds}
+          maxBounds={Platform.OS === 'ios' ? undefined : mapConfig.bounds}
           minZoomLevel={mapConfig.minZoom}
           maxZoomLevel={mapConfig.maxZoom}
           defaultSettings={{
