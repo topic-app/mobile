@@ -1,6 +1,6 @@
 import { useFocusEffect, RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { View, FlatList, TouchableOpacity } from 'react-native';
+import { View, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { Text, Button, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -377,7 +377,7 @@ const Search: React.FC<SearchProps> = ({
         <Searchbar
           ref={searchRef}
           delay={2000}
-          icon="arrow-left"
+          icon={Platform.OS === 'ios' ? 'chevron-left' : 'arrow-left'}
           onIconPress={navigation.goBack}
           placeholder="Rechercher"
           onChangeText={(props) => {

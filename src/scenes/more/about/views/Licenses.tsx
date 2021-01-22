@@ -42,6 +42,7 @@ const Licenses: React.FC<LicensesProps> = ({ route }) => {
           <SectionList
             sections={licenseData}
             keyExtractor={(item) => item.id}
+            stickySectionHeadersEnabled={false}
             renderItem={({ item }: { item: Package }) => (
               <View>
                 <List.Item title={item.id} />

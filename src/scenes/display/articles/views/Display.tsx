@@ -605,28 +605,29 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   const scrollY = new Animated.Value(0);
 
+  const title =
+    route.params.title ||
+    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+      ? 'Actus - Hors ligne'
+      : verification
+      ? 'Actus - modération'
+      : 'Actus');
+  const subtitle =
+    route.params.title &&
+    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+      ? 'Actus - Hors ligne'
+      : verification
+      ? 'Actus - modération'
+      : 'Actus');
+
   if (!article) {
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
         <AnimatingHeader
           value={scrollY}
-          title={
-            route.params.title ||
-            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-              ? 'Actus - Hors ligne'
-              : verification
-              ? 'Actus - modération'
-              : 'Actus')
-          }
-          subtitle={
-            route.params.title &&
-            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-              ? 'Actus - Hors ligne'
-              : verification
-              ? 'Actus - modération'
-              : 'Actus')
-          }
+          title={Platform.OS === 'ios' ? '' : title}
+          subtitle={Platform.OS === 'ios' ? 'Actus' : subtitle}
         />
         {reqState.articles.info.error && (
           <ErrorMessage
@@ -652,22 +653,8 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
       <AnimatingHeader
         hideBack={dual}
         value={scrollY}
-        title={
-          route.params.title ||
-          (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? 'Actus - Hors ligne'
-            : verification
-            ? 'Actus - modération'
-            : 'Actus')
-        }
-        subtitle={
-          route.params.title &&
-          (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? 'Actus - Hors ligne'
-            : verification
-            ? 'Actus - modération'
-            : 'Actus')
-        }
+        title={Platform.OS === 'ios' ? '' : title}
+        subtitle={Platform.OS === 'ios' ? 'Actus' : subtitle}
         actions={
           verification
             ? undefined

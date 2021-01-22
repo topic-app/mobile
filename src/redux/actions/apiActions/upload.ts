@@ -64,8 +64,10 @@ function uploadCreator(
         useFrontCamera: camera === 'front',
         cropperCircleOverlay: avatar,
         cropping: true,
-        compressImageMaxWidth: 2048,
-        compressImageMaxHeight: 2048,
+        width: Platform.OS === 'ios' ? 1024 : undefined,
+        height: Platform.OS === 'ios' ? 1024 : undefined,
+        compressImageMaxWidth: 1024,
+        compressImageMaxHeight: 1024,
         cropperToolbarTitle: "Rogner l'image",
         freeStyleCropEnabled: true,
         cropperActiveWidgetColor: '#592989',
@@ -76,12 +78,12 @@ function uploadCreator(
       file = await ImagePicker.openPicker({
         mediaType: 'photo',
         cropping: true,
-        width: 2048,
-        height: 2048,
+        width: Platform.OS === 'ios' ? 1024 : undefined,
+        height: Platform.OS === 'ios' ? 1024 : undefined,
         enableRotationGesture: true,
         hideBottomControls: true,
-        compressImageMaxWidth: 2048,
-        compressImageMaxHeight: 2048,
+        compressImageMaxWidth: 1024,
+        compressImageMaxHeight: 1024,
         showCropGuidelines: false,
         showCropFrame: false,
         cropperCircleOverlay: true,
@@ -94,8 +96,10 @@ function uploadCreator(
       file = await ImagePicker.openPicker({
         mediaType: 'photo',
         cropping: true,
-        compressImageMaxWidth: 2048,
-        compressImageMaxHeight: 2048,
+        width: Platform.OS === 'ios' ? 1024 : undefined,
+        height: Platform.OS === 'ios' ? 1024 : undefined,
+        compressImageMaxWidth: 1024,
+        compressImageMaxHeight: 1024,
         cropperToolbarTitle: "Rogner l'image",
         freeStyleCropEnabled: true,
         cropperActiveWidgetColor: '#592989',
@@ -146,10 +150,10 @@ function uploadCreator(
             },
           },
         });
-        logger.debug(`File ${responseJson.fileId} uploaded`);
+        logger.info(`File ${responseJson.fileId} uploaded`);
         return responseJson.fileId;
       } else {
-        logger.warn(`Error during upload`);
+        logger.warn('Error during upload');
         logger.warn(responseJson);
         dispatch({
           type: UPDATE_UPLOAD_STATE,
@@ -163,7 +167,7 @@ function uploadCreator(
         });
       }
     } catch (err) {
-      logger.warn(`Error during upload`);
+      logger.warn('Error during upload');
       logger.warn(err);
       dispatch({
         type: UPDATE_UPLOAD_STATE,
