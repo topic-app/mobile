@@ -55,7 +55,7 @@ const StoreApp: React.FC<Props> = ({
         logger.warn('No current version, assuming 0');
         currentVersion = 0;
       }
-      if (currentVersion < 1) {
+      if (currentVersion < 2) {
         updatePrefs({ analytics: true });
       }
       // Add all migration scripts here in descending order

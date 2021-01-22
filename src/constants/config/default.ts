@@ -106,7 +106,7 @@ const defaultConfig: AppConfig = {
   layout: {
     dualMinWidth: 1000,
   },
-  reduxVersion: 1,
+  reduxVersion: 2,
 };
 
 export default defaultConfig;
