@@ -387,54 +387,53 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {user.data.public ||
-                (id === account.accountInfo?.accountId && (
-                  <View>
-                    <List.Subheader>Localisation</List.Subheader>
-                    <Divider />
-                    <View style={{ marginVertical: 10 }}>
-                      {user.data.location.global && (
-                        <InlineCard
-                          icon="map-marker"
-                          title="France Entière"
-                          onPress={() => logger.warn('global pressed')}
-                        />
-                      )}
-                      {user.data.location.schools?.map((school) => (
-                        <InlineCard
-                          key={school._id}
-                          icon="school"
-                          title={school.name}
-                          subtitle={`${
-                            school.address?.address
-                              ? getAddressString(school.address?.address)
-                              : school.address?.shortName
-                          }${
-                            school.address?.departments[0]
-                              ? `, ${
-                                  school.address?.departments[0].displayName ||
-                                  school.address?.departments[0].name
-                                }`
-                              : ' '
-                          }`}
-                          onPress={() => logger.warn(`school ${school._id} pressed!`)}
-                        />
-                      ))}
-                      {user.data.location.departments?.map((dep) => (
-                        <InlineCard
-                          key={dep._id}
-                          icon="map-marker-radius"
-                          title={dep.name}
-                          subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
-                            dep.code
-                          }`}
-                          onPress={() => logger.warn(`department ${dep._id} pressed!`)}
-                        />
-                      ))}
-                    </View>
-                    <View style={{ height: 20 }} />
+              {(user.data.public || id === account.accountInfo?.accountId) && (
+                <View>
+                  <List.Subheader>Localisation</List.Subheader>
+                  <Divider />
+                  <View style={{ marginVertical: 10 }}>
+                    {user.data.location.global && (
+                      <InlineCard
+                        icon="map-marker"
+                        title="France Entière"
+                        onPress={() => logger.warn('global pressed')}
+                      />
+                    )}
+                    {user.data.location.schools?.map((school) => (
+                      <InlineCard
+                        key={school._id}
+                        icon="school"
+                        title={school.name}
+                        subtitle={`${
+                          school.address?.address
+                            ? getAddressString(school.address?.address)
+                            : school.address?.shortName
+                        }${
+                          school.address?.departments[0]
+                            ? `, ${
+                                school.address?.departments[0].displayName ||
+                                school.address?.departments[0].name
+                              }`
+                            : ' '
+                        }`}
+                        onPress={() => logger.warn(`school ${school._id} pressed!`)}
+                      />
+                    ))}
+                    {user.data.location.departments?.map((dep) => (
+                      <InlineCard
+                        key={dep._id}
+                        icon="map-marker-radius"
+                        title={dep.name}
+                        subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
+                          dep.code
+                        }`}
+                        onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                      />
+                    ))}
                   </View>
-                ))}
+                  <View style={{ height: 20 }} />
+                </View>
+              )}
               {(user.data.public || account.accountInfo?.accountId === id) && (
                 <View>
                   <List.Subheader>Abonnements</List.Subheader>
