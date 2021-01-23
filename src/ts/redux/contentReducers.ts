@@ -190,6 +190,7 @@ export type EventCreationDataPlace =
       address?: undefined;
       associatedSchool?: undefined;
       tempName?: string;
+      link?: undefined;
     }
   | {
       id?: string;
@@ -198,6 +199,7 @@ export type EventCreationDataPlace =
       address?: undefined;
       associatedPlace?: undefined;
       tempName?: string;
+      link?: undefined;
     }
   | {
       id?: string;
@@ -206,6 +208,16 @@ export type EventCreationDataPlace =
       tempName?: string;
       associatedPlace?: undefined;
       associatedSchool?: undefined;
+      link?: undefined;
+    }
+    | {
+      id?: string;
+      type: 'online';
+      address?: undefined;
+      tempName?: string;
+      associatedPlace?: undefined;
+      associatedSchool?: undefined;
+      link?: string;
     };
 
 export type EventCreationData = {
