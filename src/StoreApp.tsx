@@ -12,7 +12,6 @@ import { Config } from '@constants';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
-import Store from '@redux/store';
 import themes from '@styles/Theme';
 import { Preferences, State } from '@ts/types';
 import { logger, useSafeAreaInsets } from '@utils/index';

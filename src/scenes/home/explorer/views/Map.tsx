@@ -1,8 +1,12 @@
 import MapboxGL, { OnPressEvent } from '@react-native-mapbox-gl/maps';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import _ from 'lodash';
 import React from 'react';
 import { View, Linking, Platform } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Text, FAB, IconButton } from 'react-native-paper';
+import Animated, { Easing, cond, greaterThan } from 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { BottomSheetRef } from '@components/index';
 import { fetchMapLocations } from '@redux/actions/api/places';
@@ -171,7 +175,40 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     });
   };
 
-  const partialOpenBottomSheet = () => bottomSheetRef.current?.snapTo(1);
+  const zoom = (amt: number, duration = 200) => {
+    cameraRef.current?.zoomTo(
+      _.clamp(lastZoomLevel.current + amt, mapConfig.minZoom, mapConfig.maxZoom),
+      duration,
+    );
+  };
+
+  // Show/hide zoom buttons
+  const zoomVisible = React.useRef(false);
+  const zoomAnim = React.useRef(new Animated.Value(0)).current;
+  const hideZoomButtons = () => {
+    zoomVisible.current = false;
+    Animated.timing(zoomAnim, {
+      toValue: 0,
+      duration: 200,
+      easing: Easing.linear,
+    }).start();
+  };
+  const showZoomButtons = () => {
+    zoomVisible.current = true;
+    Animated.timing(zoomAnim, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.linear,
+    }).start();
+  };
+
+  const bottomSheetOpen = React.useRef(false);
+  const partialOpenBottomSheet = () => {
+    bottomSheetOpen.current = true;
+    bottomSheetRef.current?.snapTo(1);
+  };
+  // Note: bottomSheetOpen is changed by onCloseEnd in <LocationBottomSheet />
+  //       towards the bottom of this component
   const closeBottomSheet = () => bottomSheetRef.current?.snapTo(0);
 
   const insets = useSafeAreaInsets();
@@ -184,7 +221,18 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     >
       <MapboxGL.MapView
         style={{ flex: 1 }}
-        onPress={closeBottomSheet}
+        onPress={() => {
+          if (bottomSheetOpen.current) {
+            closeBottomSheet();
+          } else {
+            // Toggle zoom buttons if bottom sheet is not open
+            if (zoomVisible.current) {
+              hideZoomButtons();
+            } else {
+              showZoomButtons();
+            }
+          }
+        }}
         logoEnabled={false}
         scrollEnabled
         attributionEnabled={false}
@@ -192,7 +240,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
         styleURL={tileServerUrl}
         compassViewMargins={{
           x: 10,
-          y: insets.top * 1.5 + 10,
+          y: insets.top + 10,
         }}
         onRegionIsChanging={({ properties }) => {
           lastZoomLevel.current = properties.zoomLevel;
@@ -356,7 +404,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             }}
           />
         </MapboxGL.ShapeSource>
-        <MapboxGL.UserLocation visible={userLocation} animated />
+        <MapboxGL.UserLocation visible={userLocation} animated onPress={requestUserLocation} />
       </MapboxGL.MapView>
 
       {Platform.OS !== 'ios' ? (
@@ -397,18 +445,34 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
         </View>
       ) : null}
 
+      <ZoomButton
+        opacity={zoomAnim}
+        onPress={() => zoom(1)}
+        icon="plus"
+        top={insets.top + 10 + 40 + 5}
+      />
+      <ZoomButton
+        opacity={zoomAnim}
+        onPress={() => zoom(-1)}
+        icon="minus"
+        top={insets.top + 10 + 40 + 5 + 48 + 5}
+      />
+
       <ExplorerAttribution />
 
       <LocationBottomSheet
         bottomSheetRef={bottomSheetRef}
         mapMarkerData={selectedLocation}
         zoomToLocation={zoomToLocation}
+        onCloseEnd={() => {
+          bottomSheetOpen.current = false;
+        }}
       />
     </View>
   );
 };
 
-function ExplorerAttribution() {
+const ExplorerAttribution: React.FC = () => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const explorerStyles = getExplorerStyles(theme);
@@ -434,6 +498,43 @@ function ExplorerAttribution() {
       </Text>
     </View>
   );
-}
+};
+
+const ZoomButton: React.FC<{
+  top: number;
+  icon: string;
+  onPress: () => void;
+  opacity: Animated.Value<number>;
+}> = ({ top, icon, onPress, opacity }) => {
+  return (
+    <Animated.View
+      style={{
+        zIndex: 0,
+        position: 'absolute',
+        top,
+        right: 9,
+        opacity,
+      }}
+      pointerEvents={cond(greaterThan(opacity, 0), 'auto', 'none')}
+    >
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View
+          style={{
+            backgroundColor: 'black',
+            borderWidth: 2.5,
+            borderColor: '#ffffff50',
+            height: 48,
+            width: 48,
+            borderRadius: 24,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Icon name={icon} color="white" size={25} />
+        </View>
+      </TouchableWithoutFeedback>
+    </Animated.View>
+  );
+};
 
 export default ExplorerMap;
