@@ -59,6 +59,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
     const currentDate = new Date(startDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
     setStartTimeShow(false);
     setStartDate(currentDate);
+    setProgramAddModalVisible(true);
   };
 
   if (!account.loggedIn) {

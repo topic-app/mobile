@@ -89,15 +89,15 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   const durations = [
     {
       key: '0.25',
-      title: '15m',
+      title: '15 min',
     },
     {
       key: '0.5',
-      title: '30m',
+      title: '30 min',
     },
     {
       key: '0.74',
-      title: '45m',
+      title: '45 min',
     },
     {
       key: '1',
@@ -449,6 +449,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
                   valid: true,
                 });
                 setDate();
+                setVisible(false);
               }}
             >
               {date.valueOf() === jan1970.valueOf()
