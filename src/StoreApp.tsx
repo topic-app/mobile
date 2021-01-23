@@ -50,9 +50,9 @@ const StoreApp: React.FC<Props> = ({
     // Redux db migration
     let currentVersion = reduxVersion;
     if (currentVersion < Config.reduxVersion || !currentVersion) {
-      logger.warn(`Migrating Redux DB from ${currentVersion} to ${Config.reduxVersion}`);
+      logger.warn(`StoreApp: Migrating Redux DB from ${currentVersion} to ${Config.reduxVersion}`);
       if (!currentVersion) {
-        logger.warn('No current version, assuming 0');
+        logger.warn('StoreApp: No current redux version, assuming version 0');
         currentVersion = 0;
       }
       if (currentVersion < 2) {
