@@ -7,7 +7,7 @@ import getStyles from '@styles/Styles';
 import { ModalProps } from '@ts/types';
 import { useTheme } from '@utils/index';
 
-type PlaceType = 'school' | 'place' | 'standalone';
+type PlaceType = 'school' | 'place' | 'standalone'| 'online';
 
 type PlaceTypeModalProps = ModalProps & { next: (type: PlaceType) => void };
 
@@ -33,6 +33,11 @@ function PlaceTypeModal({ visible, setVisible, next }: PlaceTypeModalProps) {
       type: 'standalone' as 'standalone',
       title: 'Adresse',
       description: "L'évènement a lieu à une adresse spécifique",
+    },
+    {
+      type: 'online' as 'online',
+      title: 'En ligne',
+      description: "L'évènement a lieu en ligne",
     },
   ];
 
