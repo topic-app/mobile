@@ -109,6 +109,12 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
                   component: (props) => <EventAddPageMeta {...props} />,
                 },
                 {
+                  key: 'duration',
+                  icon: 'clock',
+                  title: 'Durée',
+                  component: (props) => <EventAddPageDuration {...props} />,
+                },
+                {
                   key: 'tags',
                   icon: 'tag-multiple',
                   title: 'Tags',
@@ -119,12 +125,6 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
                   icon: 'map',
                   title: 'Lieu',
                   component: (props) => <EventAddPagePlace {...props} />,
-                },
-                {
-                  key: 'duration',
-                  icon: 'clock',
-                  title: 'Durée',
-                  component: (props) => <EventAddPageDuration {...props} />,
                 },
                 {
                   key: 'contact',
