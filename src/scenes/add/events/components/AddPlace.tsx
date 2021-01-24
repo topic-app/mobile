@@ -75,8 +75,8 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
           data={eventPlaces}
           renderItem={({ item: place }) => {
             return (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
+              <View style={{ flexDirection: 'row', width: 270, marginRight: 20 }}>
+                <View style={{ flexGrow: 200 }}>
                   <InlineCard
                     icon={
                       place.type === 'school'
@@ -91,7 +91,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
                       place.type === 'standalone'
                         ? Format.address(place.address)
                         : place.type === 'online'
-                        ? place.link as string
+                        ? place.link.replace('http://','').replace('https://','').split(/[/?#]/)[0]
                         : place.tempName ?? 'Lieu inconnu'
                     }
                     onPress={() => {

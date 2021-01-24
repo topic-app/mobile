@@ -24,7 +24,7 @@ const PlaceOnlineModal: React.FC<PlaceOnlineModalProps> = ({ visible, setVisible
   const OnlineSchema = Yup.object().shape({
     link: Yup.string()
       .required('Entrer un lien')
-      .max(5000, 'Ce lien contient trop de caractères')
+      .max(2000, 'Ce lien contient trop de caractères')
       .url('Entrer un lien valide'),
   });
 

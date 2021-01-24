@@ -217,7 +217,7 @@ export type EventCreationDataPlace =
       tempName?: string;
       associatedPlace?: undefined;
       associatedSchool?: undefined;
-      link?: string;
+      link: string;
     };
 
 export type EventCreationData = {

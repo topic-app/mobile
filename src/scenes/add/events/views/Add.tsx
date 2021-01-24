@@ -91,12 +91,6 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
               onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
               pages={[
                 {
-                  key: 'place',
-                  icon: 'map',
-                  title: 'Lieu',
-                  component: (props) => <EventAddPagePlace {...props} />,
-                },
-                {
                   key: 'group',
                   icon: 'account-group',
                   title: 'Groupe',
