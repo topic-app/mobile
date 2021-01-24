@@ -64,7 +64,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
 
   const changeStartTime = ({ hours, minutes }: { hours: number; minutes: number }) => {
     if (startDate) {
-      const newDate = startDate.add(hours, 'hours').add(minutes, 'minutes');
+      const newDate = moment(startDate).add(hours, 'hours').add(minutes, 'minutes');
       setStartTimeShow(false);
       setStartDate(newDate);
       // if (newDate.isSameOrAfter(endDate)) {
@@ -85,7 +85,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
 
   const changeEndTime = ({ hours, minutes }: { hours: number; minutes: number }) => {
     if (endDate) {
-      const newDate = endDate.add(hours, 'hours').add(minutes, 'minutes');
+      const newDate = moment(endDate).add(hours, 'hours').add(minutes, 'minutes');
       setEndTimeShow(false);
       setEndDate(newDate);
     }
