@@ -38,7 +38,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
     // If user enters something in number, make street required
     street: Yup.string()
       .when('number', {
-        is: (number) => number !== '',
+        is: (number: string) => number !== '',
         then: Yup.string().required(
           'Il faut préciser le nom de rue si vous entrer un numéro de rue',
         ),
@@ -49,7 +49,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
     code: Yup.string().max(15, 'Code postal doit être moins de 15 caractères'),
     city: Yup.string()
       .when('code', {
-        is: (code) => code !== '',
+        is: (code: string) => code !== '',
         then: Yup.string().required('Entrer le nom de la ville'),
         otherwise: Yup.string(),
       })
