@@ -1,8 +1,12 @@
 import MapboxGL, { OnPressEvent } from '@react-native-mapbox-gl/maps';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import _ from 'lodash';
 import React from 'react';
-import { View, Linking, Platform } from 'react-native';
+import { View, Linking, Platform, Image } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Text, FAB, IconButton } from 'react-native-paper';
+import Animated, { Easing, cond, greaterThan } from 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { BottomSheetRef } from '@components/index';
 import { fetchMapLocations } from '@redux/actions/api/places';
@@ -66,6 +70,11 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
   }>({ bounds: [mapConfig.bounds.ne, mapConfig.bounds.sw], zoom: mapConfig.defaultZoom });
 
   const lastZoomLevel = React.useRef(mapConfig.minZoom);
+  const headingAnim = React.useRef(new Animated.Value<number>(0)).current;
+  const compassRotateAnim = headingAnim.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['360deg', '0deg'],
+  });
 
   const theme = useTheme();
   const { dark, colors } = theme;
@@ -171,7 +180,51 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     });
   };
 
-  const partialOpenBottomSheet = () => bottomSheetRef.current?.snapTo(1);
+  const zoom = (amt: number, duration = 200) => {
+    cameraRef.current?.zoomTo(
+      _.clamp(lastZoomLevel.current + amt, mapConfig.minZoom, mapConfig.maxZoom),
+      duration,
+    );
+  };
+
+  // Show/hide zoom buttons
+  const zoomVisible = React.useRef(false);
+  const zoomAnim = React.useRef(new Animated.Value(0)).current;
+  const hideZoomButtons = () => {
+    zoomVisible.current = false;
+    Animated.timing(zoomAnim, {
+      toValue: 0,
+      duration: 200,
+      easing: Easing.linear,
+    }).start();
+  };
+  const showZoomButtons = () => {
+    zoomVisible.current = true;
+    Animated.timing(zoomAnim, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.linear,
+    }).start();
+  };
+  const zoomElevationAnim = zoomAnim.interpolate({
+    inputRange: [0.7, 1],
+    outputRange: [0, 2],
+    extrapolate: Animated.Extrapolate.CLAMP,
+  });
+
+  const zoomOpacityAnim = zoomAnim.interpolate({
+    inputRange: [0, 0.9],
+    outputRange: [0, 1],
+    extrapolate: Animated.Extrapolate.CLAMP,
+  });
+
+  const bottomSheetOpen = React.useRef(false);
+  const partialOpenBottomSheet = () => {
+    bottomSheetOpen.current = true;
+    bottomSheetRef.current?.snapTo(1);
+  };
+  // Note: bottomSheetOpen is changed by onCloseEnd in <LocationBottomSheet />
+  //       towards the bottom of this component
   const closeBottomSheet = () => bottomSheetRef.current?.snapTo(0);
 
   const insets = useSafeAreaInsets();
@@ -184,18 +237,27 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     >
       <MapboxGL.MapView
         style={{ flex: 1 }}
-        onPress={closeBottomSheet}
+        onPress={() => {
+          if (bottomSheetOpen.current) {
+            closeBottomSheet();
+          } else {
+            // Toggle zoom buttons if bottom sheet is not open
+            if (zoomVisible.current) {
+              hideZoomButtons();
+            } else {
+              showZoomButtons();
+            }
+          }
+        }}
         logoEnabled={false}
         scrollEnabled
         attributionEnabled={false}
         pitchEnabled={false}
         styleURL={tileServerUrl}
-        compassViewMargins={{
-          x: 10,
-          y: insets.top * 1.5 + 10,
-        }}
+        compassEnabled={false}
         onRegionIsChanging={({ properties }) => {
           lastZoomLevel.current = properties.zoomLevel;
+          headingAnim.setValue(properties.heading);
         }}
         onRegionDidChange={({ properties }) => {
           const { visibleBounds, zoomLevel } = properties;
@@ -251,7 +313,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
       >
         <MapboxGL.Camera
           ref={cameraRef}
-          maxBounds={mapConfig.bounds}
+          maxBounds={Platform.OS === 'ios' ? undefined : mapConfig.bounds}
           minZoomLevel={mapConfig.minZoom}
           maxZoomLevel={mapConfig.maxZoom}
           defaultSettings={{
@@ -356,7 +418,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             }}
           />
         </MapboxGL.ShapeSource>
-        <MapboxGL.UserLocation visible={userLocation} animated />
+        <MapboxGL.UserLocation visible={userLocation} animated onPress={requestUserLocation} />
       </MapboxGL.MapView>
 
       {Platform.OS !== 'ios' ? (
@@ -397,18 +459,57 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
         </View>
       ) : null}
 
+      <Animated.View
+        style={{
+          zIndex: 0,
+          position: 'absolute',
+          top: insets.top + 8,
+          right: 15,
+          opacity: zoomOpacityAnim,
+        }}
+        // Disable touchables if zoom buttons are not visible
+        pointerEvents={cond(greaterThan(zoomOpacityAnim, 0), 'auto', 'none')}
+      >
+        <Animated.View style={[explorerStyles.zoomButton, { elevation: zoomElevationAnim }]}>
+          <TouchableWithoutFeedback
+            onPress={() => cameraRef.current?.setCamera({ heading: 0, animationDuration: 200 })}
+          >
+            <Animated.View style={{ transform: [{ rotate: compassRotateAnim }] }}>
+              <Image
+                source={require('@assets/images/explorer/compass-icon.png')}
+                style={{ height: 27 }}
+                resizeMode="contain"
+              />
+            </Animated.View>
+          </TouchableWithoutFeedback>
+        </Animated.View>
+        <Animated.View style={[explorerStyles.zoomButton, { elevation: zoomElevationAnim }]}>
+          <TouchableWithoutFeedback onPress={() => zoom(1)}>
+            <Icon name="plus" color={colors.text} size={23} />
+          </TouchableWithoutFeedback>
+        </Animated.View>
+        <Animated.View style={[explorerStyles.zoomButton, { elevation: zoomElevationAnim }]}>
+          <TouchableWithoutFeedback onPress={() => zoom(-1)}>
+            <Icon name="minus" color={colors.text} size={23} />
+          </TouchableWithoutFeedback>
+        </Animated.View>
+      </Animated.View>
+
       <ExplorerAttribution />
 
       <LocationBottomSheet
         bottomSheetRef={bottomSheetRef}
         mapMarkerData={selectedLocation}
         zoomToLocation={zoomToLocation}
+        onCloseEnd={() => {
+          bottomSheetOpen.current = false;
+        }}
       />
     </View>
   );
 };
 
-function ExplorerAttribution() {
+const ExplorerAttribution: React.FC = () => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const explorerStyles = getExplorerStyles(theme);
@@ -434,6 +535,6 @@ function ExplorerAttribution() {
       </Text>
     </View>
   );
-}
+};
 
 export default ExplorerMap;

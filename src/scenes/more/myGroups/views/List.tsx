@@ -123,6 +123,7 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
       <SectionList
         sections={data}
         refreshing={state.list.loading.refresh}
+        stickySectionHeadersEnabled={false}
         onRefresh={() => fetch(true)}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>

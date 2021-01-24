@@ -7,11 +7,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Illustration, ErrorMessage } from '@components/index';
+import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import { eventVerificationApprove } from '@redux/actions/apiActions/events';
 import getStyles from '@styles/Styles';
 import { State, EventRequestState, Account } from '@ts/types';
-import { checkPermission, useTheme, Alert } from '@utils/index';
+import { checkPermission, useTheme, Alert, shareContent } from '@utils/index';
 
 import type { EventAddScreenNavigationProp, EventAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -81,7 +82,9 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
               <Text>Évènement approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
             ) : (
               <View>
-                <Text style={{ marginTop: 30 }}>Vous pouvez approuver vous-même cet évènement.</Text>
+                <Text style={{ marginTop: 30 }}>
+                  Vous pouvez approuver vous-même cet évènement.
+                </Text>
                 <Button
                   uppercase={Platform.OS !== 'ios'}
                   loading={reqState.verification_approve?.loading}
@@ -152,18 +155,15 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
                         { text: 'Annuler' },
                         {
                           text: 'Partager',
-                          onPress:
-                            Platform.OS === 'ios'
-                              ? () =>
-                                  Share.share({
-                                    message: `${creationData?.title} par ${groupName}`,
-                                    url: `https://go.topicapp.fr/events/${id}`,
-                                  })
-                              : () =>
-                                  Share.share({
-                                    message: `https://go.topicapp.fr/events/${id}`,
-                                    title: `${creationData?.title} par ${groupName}`,
-                                  }),
+                          onPress: () => {
+                            if (!creationData?.title || !id) return;
+                            shareContent({
+                              title: `Évènement ${creationData.title}`,
+                              group: groupName,
+                              type: 'evenements',
+                              id,
+                            });
+                          },
                         },
                       ],
                       { cancelable: true },

@@ -1,4 +1,5 @@
 export default {
+  initialRouteName: 'Root',
   Auth: {
     screens: {
       Login: '/auth/connexion',
@@ -24,8 +25,10 @@ export default {
     },
   },
   Root: {
+    initialRouteName: 'Main',
     screens: {
       Main: {
+        initialRouteName: 'Home1',
         screens: {
           Add: {
             screens: {
@@ -143,8 +146,10 @@ export default {
             },
           },
           Home1: {
+            initialRouteName: 'Home2',
             screens: {
               Home2: {
+                initialRouteName: 'Article',
                 screens: {
                   Article: '/articles',
                   Event: '/evenements',

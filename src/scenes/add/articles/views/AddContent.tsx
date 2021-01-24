@@ -163,191 +163,193 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View style={{ flexDirection: 'row', flex: 1 }}>
-            <PlatformBackButton
-              onPress={() => {
-                Alert.alert(
-                  'Supprimer cet article?',
-                  'Vous ne pourrez plus y revenir.',
-                  [
-                    {
-                      text: 'Annuler',
-                    },
-                    {
-                      text: 'Quitter',
-                      onPress: navigation.goBack,
-                    },
-                  ],
-                  { cancelable: true },
-                );
-              }}
-            />
-            <View style={styles.container}>
-              <Title numberOfLines={1}>{creationData?.title}</Title>
-            </View>
-          </View>
-          <View style={[styles.container, { alignSelf: 'flex-end' }]}>
-            <Button
-              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-              uppercase={Platform.OS !== 'ios'}
-              loading={reqState.add?.loading}
-              onPress={() => {
-                textEditorRef.current?.blurContentEditor();
-                submit();
-              }}
-              style={{ flex: 1, marginLeft: 5 }}
-            >
-              Publier
-            </Button>
-          </View>
-        </View>
-        <Divider />
-        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
-          <View style={articleStyles.formContainer}>
-            <View style={articleStyles.textInputContainer}>
-              <View style={{ marginTop: 20 }}>
-                {editor === 'rich' && (
-                  <RichEditor
-                    onHeightChange={() => {}}
-                    ref={textEditorRef}
-                    onChangeMarkdown={(data: string) => setMarkdown(data)}
-                    editorStyle={{
-                      backgroundColor: colors.background,
-                      color: colors.text,
-                      placeholderColor: colors.disabled,
-                    }}
-                    placeholder="Écrivez votre article"
-                    editorInitializedCallback={() => {
-                      logger.debug('Editor toolbar initialized');
-                      setToolbarInitialized(true);
-                    }}
-                  />
-                )}
-                {(editor === 'source' || editor === 'plaintext') && (
-                  <TextInput
-                    placeholder="Écrivez votre article"
-                    multiline
-                    numberOfLines={20}
-                    mode="outlined"
-                    value={markdown}
-                    onChangeText={(data: string) => setMarkdown(data)}
-                    style={articleStyles.textInput}
-                  />
-                )}
+        <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} enabled={Platform.OS === 'ios'}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', flex: 1 }}>
+              <PlatformBackButton
+                onPress={() => {
+                  Alert.alert(
+                    'Supprimer cet article?',
+                    'Vous ne pourrez plus y revenir.',
+                    [
+                      {
+                        text: 'Annuler',
+                      },
+                      {
+                        text: 'Quitter',
+                        onPress: navigation.goBack,
+                      },
+                    ],
+                    { cancelable: true },
+                  );
+                }}
+              />
+              <View style={styles.container}>
+                <Title numberOfLines={1}>{creationData?.title}</Title>
               </View>
             </View>
+            <View style={[styles.container, { alignSelf: 'flex-end' }]}>
+              <Button
+                mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                uppercase={Platform.OS !== 'ios'}
+                loading={reqState.add?.loading}
+                onPress={() => {
+                  textEditorRef.current?.blurContentEditor();
+                  submit();
+                }}
+                style={{ flex: 1, marginLeft: 5 }}
+              >
+                Publier
+              </Button>
+            </View>
           </View>
-        </ScrollView>
-        <View style={{ backgroundColor: colors.surface }}>
-          <CollapsibleView collapsed={!menuVisible}>
-            <View>
-              {editorTypes.map((i) => (
-                <List.Item
-                  key={i.type}
-                  title={i.name}
-                  description={i.description}
-                  onPress={
-                    markdown
-                      ? () =>
-                          Alert.alert(
-                            "Voulez vous vraiment changer d'éditeur",
-                            'Vous pourrez perdre le formattage, les images etc.',
-                            [
-                              { text: 'Annuler', onPress: () => setMenuVisible(false) },
-                              {
-                                text: 'Changer',
-                                onPress: () => {
-                                  setEditor(i.type);
-                                  setMenuVisible(false);
-                                },
-                              },
-                            ],
-                            { cancelable: true },
-                          )
-                      : () => {
-                          setEditor(i.type);
-                          setMenuVisible(false);
-                        }
-                  }
-                  left={() => (
-                    <RadioButton
-                      color={colors.primary}
-                      value=""
-                      status={editor === i.type ? 'checked' : 'unchecked'}
+          <Divider />
+          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+            <View style={articleStyles.formContainer}>
+              <View style={articleStyles.textInputContainer}>
+                <View style={{ marginTop: 20 }}>
+                  {editor === 'rich' && (
+                    <RichEditor
+                      onHeightChange={() => {}}
+                      ref={textEditorRef}
+                      onChangeMarkdown={(data: string) => setMarkdown(data)}
+                      editorStyle={{
+                        backgroundColor: colors.background,
+                        color: colors.text,
+                        placeholderColor: colors.disabled,
+                      }}
+                      placeholder="Écrivez votre article"
+                      editorInitializedCallback={() => {
+                        logger.debug('Editor toolbar initialized');
+                        setToolbarInitialized(true);
+                      }}
                     />
                   )}
-                />
-              ))}
+                  {(editor === 'source' || editor === 'plaintext') && (
+                    <TextInput
+                      placeholder="Écrivez votre article"
+                      multiline
+                      numberOfLines={20}
+                      mode="outlined"
+                      value={markdown}
+                      onChangeText={(data: string) => setMarkdown(data)}
+                      style={articleStyles.textInput}
+                    />
+                  )}
+                </View>
+              </View>
             </View>
-          </CollapsibleView>
-          <View style={{ flexDirection: 'row' }}>
-            <IconButton
-              icon="settings"
-              color={colors.text}
-              onPress={() => setMenuVisible(!menuVisible)}
-            />
-            {toolbarInitialized && editor === 'rich' ? (
-              <RichToolbar
-                getEditor={() => textEditorRef.current!}
-                actions={[
-                  ...(checkPermission(
-                    account,
-                    {
-                      permission: Permissions.CONTENT_UPLOAD,
-                      scope: {},
-                    },
-                    creationData.group || '',
-                  )
-                    ? ['insertImage']
-                    : []),
-                  'insertLink',
-                  'insertYoutube',
-                  'bold',
-                  'italic',
-                  'strikeThrough',
-                  'orderedList',
-                  'unorderedList',
-                  'heading1',
-                  'heading2',
-                  'heading3',
-                  'SET_PARAGRAPH',
-                ]}
-                style={{ backgroundColor: colors.surface, marginHorizontal: 20 }}
-                iconMap={{
-                  heading1: icon('format-header-1'),
-                  heading2: icon('format-header-2'),
-                  heading3: icon('format-header-3'),
-                  bold: icon('format-bold'),
-                  italic: icon('format-italic'),
-                  strikeThrough: icon('format-strikethrough'),
-                  unorderedList: icon('format-list-bulleted'),
-                  orderedList: icon('format-list-numbered'),
-                  insertImage: icon('image-outline'),
-                  insertYoutube: icon('youtube'),
-                  insertLink: icon('link'),
-                  SET_PARAGRAPH: icon('format-clear'),
-                }}
-                // RichEditor accepts props for custom actions
-                // @ts-expect-error
-                insertLink={() => {
-                  setLinkAddModalVisible(true);
-                }}
-                insertImage={() =>
-                  upload(creationData.group || '').then((fileId: string) => {
-                    textEditorRef.current?.insertImage(`${Config.cdn.baseUrl}${fileId}`);
-                  })
-                }
-                insertYoutube={() => setYoutubeAddModalVisible(true)}
+          </ScrollView>
+          <View style={{ backgroundColor: colors.surface }}>
+            <CollapsibleView collapsed={!menuVisible}>
+              <View>
+                {editorTypes.map((i) => (
+                  <List.Item
+                    key={i.type}
+                    title={i.name}
+                    description={i.description}
+                    onPress={
+                      markdown
+                        ? () =>
+                            Alert.alert(
+                              "Voulez vous vraiment changer d'éditeur",
+                              'Vous pourrez perdre le formattage, les images etc.',
+                              [
+                                { text: 'Annuler', onPress: () => setMenuVisible(false) },
+                                {
+                                  text: 'Changer',
+                                  onPress: () => {
+                                    setEditor(i.type);
+                                    setMenuVisible(false);
+                                  },
+                                },
+                              ],
+                              { cancelable: true },
+                            )
+                        : () => {
+                            setEditor(i.type);
+                            setMenuVisible(false);
+                          }
+                    }
+                    left={() => (
+                      <RadioButton
+                        color={colors.primary}
+                        value=""
+                        status={editor === i.type ? 'checked' : 'unchecked'}
+                      />
+                    )}
+                  />
+                ))}
+              </View>
+            </CollapsibleView>
+            <View style={{ flexDirection: 'row' }}>
+              <IconButton
+                icon="settings"
+                color={colors.text}
+                onPress={() => setMenuVisible(!menuVisible)}
               />
-            ) : null}
+              {toolbarInitialized && editor === 'rich' ? (
+                <RichToolbar
+                  getEditor={() => textEditorRef.current!}
+                  actions={[
+                    ...(checkPermission(
+                      account,
+                      {
+                        permission: Permissions.CONTENT_UPLOAD,
+                        scope: {},
+                      },
+                      creationData.group || '',
+                    )
+                      ? ['insertImage']
+                      : []),
+                    'insertLink',
+                    'insertYoutube',
+                    'bold',
+                    'italic',
+                    'strikeThrough',
+                    'orderedList',
+                    'unorderedList',
+                    'heading1',
+                    'heading2',
+                    'heading3',
+                    'SET_PARAGRAPH',
+                  ]}
+                  style={{ backgroundColor: colors.surface, marginHorizontal: 20 }}
+                  iconMap={{
+                    heading1: icon('format-header-1'),
+                    heading2: icon('format-header-2'),
+                    heading3: icon('format-header-3'),
+                    bold: icon('format-bold'),
+                    italic: icon('format-italic'),
+                    strikeThrough: icon('format-strikethrough'),
+                    unorderedList: icon('format-list-bulleted'),
+                    orderedList: icon('format-list-numbered'),
+                    insertImage: icon('image-outline'),
+                    insertYoutube: icon('youtube'),
+                    insertLink: icon('link'),
+                    SET_PARAGRAPH: icon('format-clear'),
+                  }}
+                  // RichEditor accepts props for custom actions
+                  // @ts-expect-error
+                  insertLink={() => {
+                    setLinkAddModalVisible(true);
+                  }}
+                  insertImage={() =>
+                    upload(creationData.group || '').then((fileId: string) => {
+                      textEditorRef.current?.insertImage(`${Config.cdn.baseUrl}${fileId}`);
+                    })
+                  }
+                  insertYoutube={() => setYoutubeAddModalVisible(true)}
+                />
+              ) : null}
+            </View>
+            {!valid && (
+              <HelperText type="error" visible={!valid}>
+                Veuillez ajouter un contenu
+              </HelperText>
+            )}
           </View>
-          {!valid && (
-            <HelperText type="error" visible={!valid}>
-              Veuillez ajouter un contenu
-            </HelperText>
-          )}
-        </View>
+        </KeyboardAvoidingView>
       </SafeAreaView>
       <LinkAddModal
         visible={linkAddModalVisible}

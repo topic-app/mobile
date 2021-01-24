@@ -23,6 +23,8 @@ const initialState: PreferencesState = {
   themeEasterEggDiscovered: false,
   youtubeConsent: false,
   useDevServer: false,
+  analytics: true,
+  reduxVersion: Config.reduxVersion,
   ...Config.seedDb.preferences,
 };
 

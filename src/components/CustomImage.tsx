@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image as RNImage } from 'react-native';
+import { View, Image as RNImage, ImageProps, Platform } from 'react-native';
 
 import { Image as ImageType } from '@ts/types';
 import { useTheme, getImageUrl } from '@utils/index';
@@ -9,23 +9,31 @@ import getStyles from '../styles/Styles';
 type CustomImageProps = {
   image?: ImageType;
   imageSize: 'small' | 'medium' | 'large' | 'extralarge' | 'full';
-  height: number;
-  width: number;
-  style?: object;
-};
+} & Omit<ImageProps, 'source'>;
 
-const CustomImage: React.FC<CustomImageProps> = ({ image, imageSize, height, width, style }) => {
+const CustomImage: React.FC<CustomImageProps> = ({
+  image,
+  imageSize,
+  height,
+  width,
+  style,
+  ...props
+}) => {
   const styles = getStyles(useTheme());
+
   if (image?.image) {
     return (
-      <RNImage
-        source={{ uri: getImageUrl({ image, size: imageSize }) }}
-        style={[styles.thumbnail, { width, height }, style]}
-      />
+      <View style={Platform.OS === 'web' ? { width, height } : undefined}>
+        <RNImage
+          source={{ uri: getImageUrl({ image, size: imageSize }) }}
+          style={[styles.thumbnail, Platform.OS === 'web' ? { flex: 1 } : { width, height }, style]}
+          {...props}
+        />
+      </View>
     );
   } else {
     return <View style={{ width, height, flex: 0 }} />;
   }
 };
 
-export default CustomImage;
+export default React.memo(CustomImage);

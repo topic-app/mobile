@@ -32,7 +32,7 @@ import {
   Comment,
   EventMyInfo,
 } from '@ts/types';
-import { useTheme, logger, checkPermission, Errors } from '@utils/index';
+import { useTheme, logger, checkPermission, Errors, shareContent } from '@utils/index';
 
 import CommentInlineCard from '../../components/Comment';
 import MessageInlineCard from '../components/Message';
@@ -231,19 +231,14 @@ function EventDisplayDescriptionHeader({
             icon="share-variant"
             style={{ flex: 1, marginLeft: 5 }}
             color={colors.muted}
-            onPress={
-              Platform.OS === 'ios'
-                ? () =>
-                    Share.share({
-                      message: `Évènement ${event.title} par ${event.group?.displayName}`,
-                      url: `${config.links.share}/evenements/${event._id}`,
-                    })
-                : () =>
-                    Share.share({
-                      message: `${config.links.share}/evenements/${event._id}`,
-                      title: `Évènement ${event.title} par ${event.group?.displayName}`,
-                    })
-            }
+            onPress={() => {
+              shareContent({
+                title: `Évènement ${event.title}`,
+                group: event.group?.displayName,
+                type: 'evenements',
+                id: event._id,
+              });
+            }}
           >
             Partager
           </Button>
@@ -480,7 +475,7 @@ function EventDisplayDescription({
   const eventComments = comments.filter(
     (c) =>
       c.parent === id &&
-      (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
+      (c.publisher?.type !== 'user' || c.publisher?.user?._id !== account.accountInfo?.accountId),
   );
 
   return (
@@ -540,6 +535,8 @@ function EventDisplayDescription({
       renderItem={({ item: comment }: { item: Comment }) => (
         <CommentInlineCard
           comment={comment}
+          fetch={() => updateComments('initial', { parentId: id })}
+          isReply={false}
           report={(commentId) => {
             setFocusedComment(commentId);
             setCommentReportModalVisible(true);

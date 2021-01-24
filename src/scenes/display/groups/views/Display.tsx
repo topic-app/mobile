@@ -65,7 +65,15 @@ import {
   GroupVerification,
   Avatar as AvatarType,
 } from '@ts/types';
-import { useTheme, logger, Format, checkPermission, Alert, Errors } from '@utils/index';
+import {
+  useTheme,
+  logger,
+  Format,
+  checkPermission,
+  Alert,
+  Errors,
+  shareContent,
+} from '@utils/index';
 
 import AddUserRoleModal from '../components/AddUserRoleModal';
 import AddUserSelectModal from '../components/AddUserSelectModal';
@@ -279,17 +287,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   title="Partager"
                   onPress={() => {
                     setMenuVisible(false);
-                    if (Platform.OS === 'ios') {
-                      Share.share({
-                        message: `Groupe ${group.shortName || group.name}`,
-                        url: `${config.links.share}/groupes/${group._id}`,
-                      });
-                    } else {
-                      Share.share({
-                        message: `${config.links.share}/groupes/${group._id}`,
-                        title: `Groupe ${group.shortName || group.name}`,
-                      });
-                    }
+                    shareContent({
+                      title: `Groupe ${group.displayName}`,
+                      type: 'groupes',
+                      id: group._id,
+                    });
                   }}
                 />
                 <Menu.Item
@@ -364,7 +366,9 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   <Divider style={{ marginVertical: 10 }} />
                   <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                     <View style={{ alignItems: 'center' }}>
-                      <Text style={{ fontSize: 40 }}>{group.cache.followers || ''}</Text>
+                      <Text style={{ fontSize: 40 }}>
+                        {typeof group.cache?.followers === 'number' ? group.cache.followers : ''}
+                      </Text>
                       <Text>Abonnés </Text>
                     </View>
                     <View style={{ alignItems: 'center' }}>

@@ -152,7 +152,14 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
             }
           },
           textgroup: (node, children, parent, textStyles) => (
-            <Text selectable key={node.key} style={textStyles.textgroup}>
+            <Text
+              selectable
+              key={node.key}
+              style={[
+                textStyles.textgroup,
+                { textAlign: Platform.OS === 'android' ? 'left' : 'justify' },
+              ]}
+            >
               {children}
             </Text>
           ),

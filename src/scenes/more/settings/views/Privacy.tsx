@@ -8,7 +8,7 @@ import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import { Preferences, State, AccountState } from '@ts/types';
-import { useTheme, Alert } from '@utils/index';
+import { useTheme, Alert, trackEvent } from '@utils/index';
 
 import type { SettingsScreenNavigationProp } from '../index';
 import getSettingsStyles from '../styles/Styles';
@@ -27,6 +27,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
 
   const toggleHistory = (val: boolean) => {
     if (val) {
+      trackEvent('prefs:update-history', { props: { value: 'yes' } });
       updatePrefs({
         history: true,
       });
@@ -43,6 +44,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
           {
             text: 'Désactiver',
             onPress: () => {
+              trackEvent('prefs:update-history', { props: { value: 'no' } });
               clearArticlesRead();
               updatePrefs({
                 history: false,
@@ -59,6 +61,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
 
   const toggleRecommendations = (val: boolean) => {
     if (val) {
+      trackEvent('prefs:update-recommendations', { props: { value: 'yes' } });
       updatePrefs({
         recommendations: true,
       });
@@ -75,6 +78,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
           {
             text: 'Désactiver',
             onPress: () => {
+              trackEvent('prefs:update-recommendations', { props: { value: 'no' } });
               updatePrefs({
                 recommendations: false,
               });
@@ -304,7 +308,10 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                   },
                   {
                     text: 'Supprimer',
-                    onPress: clearArticlesRead,
+                    onPress: () => {
+                      trackEvent('prefs:clear-history');
+                      clearArticlesRead();
+                    },
                   },
                 ],
                 { cancelable: true },
@@ -323,7 +330,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
             onPress={() =>
               Alert.alert(
                 "Voulez-vous vraiment supprimer tous les centres d'intérêt ?",
-                'Cette action est irréversible NON IMPLEMENTÉ',
+                'Cette action est irréversible (non implémenté)',
                 [
                   {
                     text: 'Annuler',
@@ -332,8 +339,8 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
                   },
                   /* {
                     text: 'Supprimer',
-                    onPress: () => console.log('Delete interests'),
-                  }, j */
+                    onPress: () =>   trackEvent('prefs:delete-recommendations'); console.log('Delete interests'),
+                  }, */
                 ],
                 { cancelable: true },
               )

@@ -4,7 +4,6 @@ import { Text, Button, List, Checkbox } from 'react-native-paper';
 
 import { TranslucentStatusBar, Illustration, SafeAreaView, StepperView } from '@components/index';
 import getStyles from '@styles/Styles';
-import { firebase } from '@utils/firebase';
 import { useTheme } from '@utils/index';
 
 import type { LandingScreenNavigationProp } from '../index';
@@ -21,7 +20,6 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
   const landingStyles = getLandingStyles(theme);
 
   const [terms, setTerms] = React.useState(false);
-  const [analytics, setAnalytics] = React.useState(false);
 
   const scrollViewRef = React.useRef<ScrollView>(null);
 
@@ -102,10 +100,10 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         pour plus de détails.
                       </Text>
                       <Text>
-                        Vous pouvez choisir d&apos;activer l&apos;envoi de données analytiques (par
-                        le biais du service Google Firebase Analytics). Nous recevrons alors des
-                        informations sur les actions que vous faites sur l&apos;application (les
-                        contenus que vous visitez, vos paramètres, etc)
+                        Topic envoie automatiquement des informations sur votre interaction avec
+                        l&apos;application. Ces données sont anonymisées et ne contiennent aucune
+                        information personnelle. Vous pouvez désactiver l&apos;envoi de données
+                        analytiques depuis les paramètres.
                       </Text>
                       <List.Item
                         title="J'accepte les conditions d'utilisation et la politique de vie privée"
@@ -128,27 +126,6 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         }
                         onPress={() => setTerms(!terms)}
                       />
-                      <List.Item
-                        title="Je souhaite envoyer des données analytiques supplémentaires (facultatif)"
-                        titleNumberOfLines={10}
-                        left={() =>
-                          Platform.OS !== 'ios' ? (
-                            <Checkbox
-                              status={analytics ? 'checked' : 'unchecked'}
-                              color={colors.primary}
-                            />
-                          ) : null
-                        }
-                        right={() =>
-                          Platform.OS === 'ios' ? (
-                            <Checkbox
-                              status={analytics ? 'checked' : 'indeterminate'}
-                              color={colors.primary}
-                            />
-                          ) : null
-                        }
-                        onPress={() => setAnalytics(!analytics)}
-                      />
                     </View>
                     <View style={landingStyles.contentContainer}>
                       <View style={landingStyles.buttonContainer}>
@@ -158,11 +135,6 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                           color={colors.primary}
                           uppercase={Platform.OS !== 'ios'}
                           onPress={async () => {
-                            if (Platform.OS !== 'web') {
-                              if (analytics) {
-                                await firebase.analytics().setAnalyticsCollectionEnabled(true);
-                              }
-                            }
                             next();
                           }}
                           style={{ flex: 1 }}
@@ -198,9 +170,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         détails.{'\n'}
                         {Platform.OS === 'ios'
                           ? 'Vous pouvez faire cela en passant par l’application Testflight et en cliquant sur "Envoyer des commentaires" ou en prenant une screenshot et en cliquant sur "Partager du feedback" après l’avoir annoté.'
-                          : `Vous pouvez faire cela en recherchant l’application Topic
-                        sur le Play Store ou en cliquant sur \"Feedback\" dans le menu, et
-                        en cliquant sur \"envoyer des commentaires aux développeurs\".`}
+                          : 'Vous pouvez faire cela en recherchant l’application Topic sur le Play Store ou en cliquant sur "Feedback" dans le menu, et en cliquant sur "envoyer des commentaires aux développeurs".'}
                         {'\n'}
                       </Text>
                     </View>
@@ -235,20 +205,10 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                     <View style={landingStyles.contentContainer}>
                       <Text>
                         Si vous souhaitez discuter avec les développeurs et les autres
-                        bêta-testeurs, nous vous conseillons de rejoindre la plateforme
-                        chat.topicapp.fr ou le groupe Telegram. Ces plateformes sont entièrement
-                        facultatives, toutefois ils vous permettront de donner votre avis plus
-                        facilement.
+                        bêta-testeurs, nous vous conseillons de rejoindre le groupe Telegram. Cette
+                        plateforme est entièrement facultatives, toutefois elle vous permettront de
+                        donner votre avis plus facilement.
                       </Text>
-                      <Button
-                        mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
-                        color={colors.primary}
-                        uppercase={false}
-                        onPress={() => Linking.openURL('https://chat.topicapp.fr/register/')}
-                        style={{ flex: 1, marginTop: 20 }}
-                      >
-                        Rejoindre chat.topicapp.fr
-                      </Button>
                       <Button
                         mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
                         color={colors.primary}

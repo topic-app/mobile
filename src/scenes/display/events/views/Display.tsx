@@ -47,7 +47,15 @@ import {
   Content,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl, checkPermission, Alert, Errors } from '@utils/index';
+import {
+  useTheme,
+  getImageUrl,
+  handleUrl,
+  checkPermission,
+  Alert,
+  Errors,
+  shareContent,
+} from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
@@ -189,6 +197,21 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         }),
       );
 
+  const title =
+    route.params.title ||
+    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+      ? 'Évènements - Hors ligne'
+      : verification
+      ? 'Évènements - modération'
+      : 'Évènements');
+  const subtitle =
+    route.params.title &&
+    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+      ? 'Évènements - Hors ligne'
+      : verification
+      ? 'Évènements - modération'
+      : 'Évènements');
+
   if (!event) {
     // This is when event has not been loaded in list, so we have absolutely no info
     return (
@@ -196,22 +219,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         <AnimatingHeader
           hideBack={dual}
           value={scrollY}
-          title={
-            route.params.title ||
-            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-              ? 'Évènements - Hors ligne'
-              : verification
-              ? 'Évènements - modération'
-              : 'Évènements')
-          }
-          subtitle={
-            route.params.title &&
-            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-              ? 'Évènements - Hors ligne'
-              : verification
-              ? 'Évènements - modération'
-              : 'Évènements')
-          }
+          title={Platform.OS === 'ios' ? '' : title}
+          subtitle={Platform.OS === 'ios' ? 'Évènements' : subtitle}
         />
         {reqState.events.info.error && (
           <ErrorMessage
@@ -238,22 +247,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       <AnimatingHeader
         hideBack={dual}
         value={scrollY}
-        title={
-          route.params.title ||
-          (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? 'Évènement - Hors ligne'
-            : verification
-            ? 'Évènement - modération'
-            : 'Évènement')
-        }
-        subtitle={
-          route.params.title &&
-          (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? 'Évènement - Hors ligne'
-            : verification
-            ? 'Évènement - modération'
-            : 'Évènement')
-        }
+        title={Platform.OS === 'ios' ? '' : title}
+        subtitle={Platform.OS === 'ios' ? 'Évènements' : subtitle}
         actions={
           verification
             ? undefined
@@ -270,18 +265,15 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
             : [
                 {
                   title: 'Partager',
-                  onPress:
-                    Platform.OS === 'ios'
-                      ? () =>
-                          Share.share({
-                            message: `Évènement ${event?.title} par ${event?.group?.displayName}`,
-                            url: `${config.links.share}/evenements/${event?._id}`,
-                          })
-                      : () =>
-                          Share.share({
-                            message: `${config.links.share}/evenements/${event?._id}`,
-                            title: `Évènement ${event?.title} par ${event?.group?.displayName}`,
-                          }),
+                  onPress: () => {
+                    if (!event) return;
+                    shareContent({
+                      title: event.title,
+                      group: event.group?.displayName,
+                      type: 'evenements',
+                      id: event._id,
+                    });
+                  },
                 },
                 {
                   title: 'Signaler',
@@ -333,13 +325,12 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       >
         <View>
           {event.image?.image && (
-            <View style={[styles.image, { minHeight: 150 }]}>
-              <AutoHeightImage
-                source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
-                width={Dimensions.get('window').width}
-                maxHeight={400}
-              />
-            </View>
+            <AutoHeightImage
+              source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
+              width={Dimensions.get('window').width}
+              maxHeight={400}
+              style={[styles.image, { minHeight: 150 }]}
+            />
           )}
           <View style={styles.contentContainer}>
             <Title style={styles.title}>{event.title}</Title>

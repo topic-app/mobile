@@ -49,7 +49,16 @@ import {
   ArticleMyInfo,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl, checkPermission, Alert, Errors } from '@utils/index';
+import {
+  useTheme,
+  getImageUrl,
+  handleUrl,
+  checkPermission,
+  Alert,
+  Errors,
+  trackEvent,
+  shareContent,
+} from '@utils/index';
 
 import AddCommentModal from '../../components/AddCommentModal';
 import AddToListModal from '../../components/AddToListModal';
@@ -115,6 +124,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
       );
 
   const likeArticle = () => {
+    trackEvent(`articledisplay:${articleMy?.liked ? 'unlike' : 'like'}`, {
+      props: { button: 'bottom' },
+    });
     articleLike(article._id, !articleMy?.liked)
       .then(() => {
         fetchArticleMy(article._id);
@@ -132,14 +144,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   return (
     <View style={styles.page}>
       {article.image?.image && (
-        <View
-          style={[styles.image, { minHeight: 150 }]}
-          onLayout={({
-            nativeEvent: {
-              layout: { width },
-            },
-          }) => setImageWidth(width)}
-        >
+        <View onLayout={({ nativeEvent }) => setImageWidth(nativeEvent.layout.width)}>
           <PlatformTouchable
             onPress={() =>
               navigation.push('Root', {
@@ -161,6 +166,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               source={{ uri: getImageUrl({ image: article.image, size: 'full' }) || '' }}
               width={imageWidth}
               maxHeight={400}
+              style={[styles.image, { minHeight: 150 }]}
             />
           </PlatformTouchable>
         </View>
@@ -223,19 +229,15 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 icon="share-variant"
                 style={{ flex: 1, marginLeft: 5 }}
                 color={colors.muted}
-                onPress={
-                  Platform.OS === 'ios'
-                    ? () =>
-                        Share.share({
-                          message: `${article.title} par ${article.group?.displayName}`,
-                          url: `${config.links.share}/articles/${article._id}`,
-                        })
-                    : () =>
-                        Share.share({
-                          message: `${config.links.share}/articles/${article._id}`,
-                          title: `${article.title} par ${article.group?.displayName}`,
-                        })
-                }
+                onPress={() => {
+                  shareContent({
+                    title: article.title,
+                    group: article.group?.displayName,
+                    type: 'articles',
+                    id: article._id,
+                  });
+                  trackEvent('articledisplay:share', { props: { button: 'bottom' } });
+                }}
               >
                 Partager
               </Button>
@@ -543,7 +545,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const articleComments = comments.filter(
     (c) =>
       c.parent === id &&
-      (c.publisher.type !== 'user' || c.publisher.user !== account.accountInfo?.accountId),
+      (c.publisher?.type !== 'user' || c.publisher?.user?._id !== account.accountInfo?.accountId),
   );
 
   const fetch = () => {
@@ -603,28 +605,29 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   const scrollY = new Animated.Value(0);
 
+  const title =
+    route.params.title ||
+    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+      ? 'Actus - Hors ligne'
+      : verification
+      ? 'Actus - modération'
+      : 'Actus');
+  const subtitle =
+    route.params.title &&
+    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
+      ? 'Actus - Hors ligne'
+      : verification
+      ? 'Actus - modération'
+      : 'Actus');
+
   if (!article) {
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
         <AnimatingHeader
           value={scrollY}
-          title={
-            route.params.title ||
-            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-              ? 'Actus - Hors ligne'
-              : verification
-              ? 'Actus - modération'
-              : 'Actus')
-          }
-          subtitle={
-            route.params.title &&
-            (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-              ? 'Actus - Hors ligne'
-              : verification
-              ? 'Actus - modération'
-              : 'Actus')
-          }
+          title={Platform.OS === 'ios' ? '' : title}
+          subtitle={Platform.OS === 'ios' ? 'Actus' : subtitle}
         />
         {reqState.articles.info.error && (
           <ErrorMessage
@@ -650,22 +653,8 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
       <AnimatingHeader
         hideBack={dual}
         value={scrollY}
-        title={
-          route.params.title ||
-          (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? 'Actus - Hors ligne'
-            : verification
-            ? 'Actus - modération'
-            : 'Actus')
-        }
-        subtitle={
-          route.params.title &&
-          (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-            ? 'Actus - Hors ligne'
-            : verification
-            ? 'Actus - modération'
-            : 'Actus')
-        }
+        title={Platform.OS === 'ios' ? '' : title}
+        subtitle={Platform.OS === 'ios' ? 'Actus' : subtitle}
         actions={
           verification
             ? undefined
@@ -679,22 +668,22 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         overflow={[
           {
             title: 'Partager',
-            onPress:
-              Platform.OS === 'ios'
-                ? () =>
-                    Share.share({
-                      message: `${article?.title} par ${article?.group?.displayName}`,
-                      url: `${config.links.share}/articles/${article?._id}`,
-                    })
-                : () =>
-                    Share.share({
-                      message: `${config.links.share}/articles/${article?._id}`,
-                      title: `${article?.title} par ${article?.group?.displayName}`,
-                    }),
+            onPress: () => {
+              if (!article) return;
+              shareContent({
+                title: article.title,
+                group: article.group?.displayName,
+                type: 'articles',
+                id: article._id,
+              });
+              trackEvent('articledisplay:share', { props: { button: 'header' } });
+            },
           },
           {
             title: 'Signaler',
-            onPress: () => setArticleReportModalVisible(true),
+            onPress: () => {
+              setArticleReportModalVisible(true);
+            },
           },
           ...(checkPermission(account, {
             permission: Permissions.ARTICLE_DELETE,
@@ -711,7 +700,10 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                         { text: 'Annuler' },
                         {
                           text: 'Supprimer',
-                          onPress: deleteArticle,
+                          onPress: () => {
+                            deleteArticle();
+                            trackEvent('articledisplay:delete', { props: { button: 'header' } });
+                          },
                         },
                       ],
                       { cancelable: true },
@@ -798,6 +790,8 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               setFocusedComment(commentId);
               setCommentReportModalVisible(true);
             }}
+            fetch={() => updateComments('initial', { parentId: id })}
+            isReply={false}
             loggedIn={account.loggedIn}
             navigation={navigation}
             reply={(id: string | null) => {

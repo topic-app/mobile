@@ -1,4 +1,6 @@
 const createExpoWebpackConfigAsync = require('@expo/webpack-config');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
@@ -7,8 +9,20 @@ module.exports = async function (env, argv) {
     'react-native-linear-gradient': 'react-native-web-linear-gradient',
   };
   config.devServer = {
-    headers: { 'Access-Control-Allow-Origin': 'https://api-dev.topicapp.fr' },
+    headers: { 'Access-Control-Allow-Origin': 'https://api.topicapp.fr' },
+    historyApiFallback: {
+      index: 'index.html',
+    },
+    disableHostCheck: true,
   };
+
+  // if (config.mode === 'development') {
+  //   config.plugins.push(
+  //     new CopyWebpackPlugin({
+  //       patterns: [{ from: 'web', context: __dirname }],
+  //     }),
+  //   );
+  // }
 
   // Remove existing rules about svg and inject our own
   // From https://github.com/expo/expo/issues/6660#issuecomment-573506912

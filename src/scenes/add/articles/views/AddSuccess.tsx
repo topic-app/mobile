@@ -7,11 +7,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';
+import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, Account } from '@ts/types';
-import { checkPermission, logger, useTheme, Alert } from '@utils/index';
+import { checkPermission, logger, useTheme, Alert, shareContent } from '@utils/index';
 
 import type { ArticleAddScreenNavigationProp, ArticleAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -154,18 +155,15 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
                         { text: 'Annuler' },
                         {
                           text: 'Partager',
-                          onPress:
-                            Platform.OS === 'ios'
-                              ? () =>
-                                  Share.share({
-                                    message: `${creationData?.title} par ${groupName}`,
-                                    url: `https://go.topicapp.fr/articles/${id}`,
-                                  })
-                              : () =>
-                                  Share.share({
-                                    message: `https://go.topicapp.fr/articles/${id}`,
-                                    title: `${creationData?.title} par ${groupName}`,
-                                  }),
+                          onPress: () => {
+                            if (!creationData?.title || !id) return;
+                            shareContent({
+                              title: creationData.title,
+                              group: groupName,
+                              type: 'articles',
+                              id,
+                            });
+                          },
                         },
                       ],
                       { cancelable: true },

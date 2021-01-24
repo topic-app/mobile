@@ -31,6 +31,7 @@ type LocationBottomSheetProps = {
   zoomToLocation: (coordinates: [number, number]) => void;
   places: MapLocation.FullLocation[];
   reqState: PlaceRequestState;
+  onCloseEnd?: () => void;
 };
 
 const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
@@ -39,6 +40,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
   zoomToLocation,
   places,
   reqState,
+  onCloseEnd,
 }) => {
   const theme = useTheme();
   const explorerStyles = getExplorerStyles(theme);
@@ -224,6 +226,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
         portraitSnapPoints={bottomSheetPortraitSnapPoints}
         landscapeSnapPoints={bottomSheetLandscapeSnapPoints}
         renderContent={renderContent}
+        onCloseEnd={onCloseEnd}
       />
       {/* Header component for the modal */}
       <Animated.View

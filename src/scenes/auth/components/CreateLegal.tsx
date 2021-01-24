@@ -5,7 +5,7 @@ import { HelperText, Button, Checkbox, List } from 'react-native-paper';
 import * as Yup from 'yup';
 
 import { StepperViewPageProps } from '@components/index';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 import { ListHeading, ListItem, ListItemAnchor } from './ListComponents';
@@ -175,7 +175,10 @@ const AuthCreatePageLegal: React.FC<Props> = ({
           <Formik
             initialValues={{ terms: false, email: false }}
             validationSchema={LegalSchema}
-            onSubmit={create}
+            onSubmit={() => {
+              trackEvent('auth:create-request');
+              create();
+            }}
           >
             {({ setFieldValue, handleSubmit, values, errors, touched }) => (
               <View>

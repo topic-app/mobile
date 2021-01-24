@@ -7,7 +7,7 @@ import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@compon
 import { Config, Permissions } from '@constants/index';
 import getStyles from '@styles/Styles';
 import { ModalProps, State, Account, CommentRequestState, Publisher, Content } from '@ts/types';
-import { useTheme, logger, checkPermission } from '@utils/index';
+import { useTheme, logger, checkPermission, trackEvent } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
@@ -104,6 +104,13 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
 
   const submitComment = () => {
     if (account.loggedIn) {
+      trackEvent('comments:add', {
+        props: {
+          method: 'modal',
+          publishertype: publishers.find((p) => p.key === publisher)!.publisher?.type,
+          isReply: replyingToComment ? 'yes' : 'no',
+        },
+      });
       add(
         publishers.find((p) => p.key === publisher)!.publisher,
         { parser: 'plaintext', data: commentText },

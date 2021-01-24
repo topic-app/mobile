@@ -113,6 +113,71 @@ function commentAddCreator({
   };
 }
 
+type CommentDeleteCreatorParams = {
+  commentId: string;
+  publisher: Publisher;
+};
+
+function commentDeleteCreator({ commentId, publisher }: CommentDeleteCreatorParams): AppThunk {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_COMMENTS_STATE,
+        data: {
+          delete: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        `comments/delete/${publisher.type}`,
+        'post',
+        {
+          commentId,
+        },
+        true,
+      )
+        .then((result) => {
+          dispatch({
+            type: UPDATE_COMMENTS_STATE,
+            data: {
+              delete: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve({ _id: result.data?._id });
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_COMMENTS_STATE,
+            data: {
+              delete: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
+async function commentDelete(commentId: string, publisher: Publisher) {
+  await Store.dispatch(
+    commentDeleteCreator({
+      commentId,
+      publisher,
+    }),
+  );
+}
+
 async function commentAdd(
   publisher: { type: 'user' | 'group'; user?: string | null; group?: string | null },
   content: Content,
@@ -141,4 +206,4 @@ async function commentReport(commentId: string, reason: string) {
   );
 }
 
-export { commentAdd, commentReport };
+export { commentAdd, commentReport, commentDelete };

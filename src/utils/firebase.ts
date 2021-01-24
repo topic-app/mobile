@@ -1,17 +1,17 @@
-import analytics, { firebase } from '@react-native-firebase/analytics';
 import crashlytics from '@react-native-firebase/crashlytics';
 import messaging from '@react-native-firebase/messaging';
 
 import logger from './logger';
 
 async function getApiDevice() {
-  const authorizationStatus = await messaging().requestPermission();
-
-  const { AUTHORIZED, PROVISIONAL } = messaging.AuthorizationStatus;
-  const canMessage = authorizationStatus === AUTHORIZED || authorizationStatus === PROVISIONAL;
-
   let token: string | null = null;
+  let canMessage: boolean = false;
   try {
+    const authorizationStatus = await messaging().requestPermission();
+
+    const { AUTHORIZED, PROVISIONAL } = messaging.AuthorizationStatus;
+    canMessage = authorizationStatus === AUTHORIZED || authorizationStatus === PROVISIONAL;
+
     token = await messaging().getToken();
   } catch (err) {
     logger.warn('Could not get FCM token', err);
@@ -24,4 +24,4 @@ async function getApiDevice() {
   };
 }
 
-export { analytics, crashlytics, firebase, messaging, getApiDevice };
+export { crashlytics, messaging, getApiDevice };

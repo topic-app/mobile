@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, BackHandler } from 'react-native';
-import { List, Avatar, Divider, Switch } from 'react-native-paper';
+import { List, Avatar, Divider, Switch, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Illustration, CustomHeaderBar, Banner } from '@components/index';
@@ -8,7 +8,6 @@ import { updatePrefs } from '@redux/actions/data/prefs';
 import Store from '@redux/store';
 import getStyles from '@styles/Styles';
 import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
-import { firebase } from '@utils/firebase';
 import { useTheme, Alert } from '@utils/index';
 
 import type { SettingsScreenNavigationProp } from '../index';
@@ -52,10 +51,6 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
     );
   };
 
-  const toggleAnalytics = async (state: boolean) => {
-    await firebase.analytics().setAnalyticsCollectionEnabled(state);
-  };
-
   return (
     <View style={styles.page}>
       <CustomHeaderBar
@@ -76,15 +71,17 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
           <List.Subheader>Données Analytiques</List.Subheader>
           <Divider />
           <List.Item
-            title="Désactiver l'envoi des données analytiques"
-            description="Envoie des informations sur vos actions dans l'application et des informations sur l'appareil"
-            onPress={() => toggleAnalytics(false)}
-            style={settingsStyles.listItem}
-          />
-          <List.Item
-            title="Activer l'envoi des données analytiques"
-            description="Envoie des informations sur vos actions dans l'application et des informations sur l'appareil"
-            onPress={() => toggleAnalytics(true)}
+            title="Envoyer des données analytiques anonymes"
+            description="Envoie des informations sur vos actions dans l'application et des informations sur l'appareil, pour nous aider à résoudre des bugs et améliorer l'application. Ces données sont anonymisées et ne contienent pas d'informations sur l'historique de lecture ou sur votre compte."
+            onPress={() => updatePrefs({ analytics: !preferences.analytics })}
+            right={() => (
+              <Switch
+                color={colors.primary}
+                value={preferences.analytics}
+                onValueChange={(data) => updatePrefs({ analytics: data })}
+              />
+            )}
+            descriptionNumberOfLines={10}
             style={settingsStyles.listItem}
           />
         </List.Section>
@@ -115,6 +112,12 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
             style={settingsStyles.listItem}
           />
         </List.Section>
+        <Divider />
+        <View style={styles.container}>
+          <Text style={{ color: colors.disabled }}>
+            Version de la base de données : {preferences.reduxVersion}
+          </Text>
+        </View>
       </ScrollView>
     </View>
   );
