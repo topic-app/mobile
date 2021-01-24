@@ -78,8 +78,17 @@ function getExplorerStyles(theme: Theme) {
     fab: {
       marginBottom: 25,
       marginRight: 15,
-      backgroundColor: dark ? '#c5c5c5' : '#ffffff',
+      backgroundColor: colors.highlight,
       // color applied directly to FAB
+    },
+    zoomButton: {
+      height: 40,
+      width: 40,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.highlight,
+      marginTop: 7,
     },
   });
 }
