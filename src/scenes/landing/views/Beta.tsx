@@ -170,9 +170,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         détails.{'\n'}
                         {Platform.OS === 'ios'
                           ? 'Vous pouvez faire cela en passant par l’application Testflight et en cliquant sur "Envoyer des commentaires" ou en prenant une screenshot et en cliquant sur "Partager du feedback" après l’avoir annoté.'
-                          : `Vous pouvez faire cela en recherchant l’application Topic
-                        sur le Play Store ou en cliquant sur \"Feedback\" dans le menu, et
-                        en cliquant sur \"envoyer des commentaires aux développeurs\".`}
+                          : 'Vous pouvez faire cela en recherchant l’application Topic sur le Play Store ou en cliquant sur "Feedback" dans le menu, et en cliquant sur "envoyer des commentaires aux développeurs".'}
                         {'\n'}
                       </Text>
                     </View>
@@ -207,20 +205,10 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                     <View style={landingStyles.contentContainer}>
                       <Text>
                         Si vous souhaitez discuter avec les développeurs et les autres
-                        bêta-testeurs, nous vous conseillons de rejoindre la plateforme
-                        chat.topicapp.fr ou le groupe Telegram. Ces plateformes sont entièrement
-                        facultatives, toutefois ils vous permettront de donner votre avis plus
-                        facilement.
+                        bêta-testeurs, nous vous conseillons de rejoindre le groupe Telegram. Cette
+                        plateforme est entièrement facultatives, toutefois elle vous permettront de
+                        donner votre avis plus facilement.
                       </Text>
-                      <Button
-                        mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
-                        color={colors.primary}
-                        uppercase={false}
-                        onPress={() => Linking.openURL('https://chat.topicapp.fr/register/')}
-                        style={{ flex: 1, marginTop: 20 }}
-                      >
-                        Rejoindre chat.topicapp.fr
-                      </Button>
                       <Button
                         mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
                         color={colors.primary}
