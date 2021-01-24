@@ -16,8 +16,6 @@ import {
 import { AppLoading } from 'expo';
 import 'moment/locale/fr';
 import React from 'react';
-import { Platform } from 'react-native';
-import { setJSExceptionHandler } from 'react-native-exception-handler';
 import 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableScreens } from 'react-native-screens';
@@ -26,17 +24,12 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import Store, { Persistor } from '@redux/store';
 
-import errorHandler from './ErrorHandler';
 import StoreApp from './src/StoreApp';
 
 const OpenDyslexic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Regular.otf');
 const OpenDyslexic_Italic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Italic.otf');
 
 enableScreens();
-
-/* if (Platform.OS !== 'web') {
-  setJSExceptionHandler(errorHandler);
-} */
 
 function App() {
   const [fontsLoaded] = useFonts({
