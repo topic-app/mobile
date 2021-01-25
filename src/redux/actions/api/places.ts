@@ -100,7 +100,7 @@ async function fetchMapLocations(
         extraProperties.events = 0;
       }
       if (dataType === 'school' && typeof point.properties.active !== 'boolean') {
-        extraProperties.active = true;
+        extraProperties.active = false;
       }
       return {
         ...point,
