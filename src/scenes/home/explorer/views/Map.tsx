@@ -360,7 +360,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
               ],
               iconSize: ['step', ['get', 'events'], 1, 1, 1.15],
               iconAnchor: 'bottom',
-              iconOpacity: ['case', ['get', 'active'], 0.5, 1],
+              iconOpacity: ['case', ['get', 'active'], 1, 0.5],
             }}
           />
         </MapboxGL.ShapeSource>
