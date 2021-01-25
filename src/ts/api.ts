@@ -478,7 +478,7 @@ export namespace MapLocation {
       dataType: T;
       _id: string;
       name: string;
-      associatedEvents: T extends 'school' ? number : never;
+      events: T extends 'school' ? number : never;
     };
   };
 

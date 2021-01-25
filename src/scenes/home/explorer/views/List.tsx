@@ -53,7 +53,7 @@ const ExplorerList: React.FC<ExplorerListProps> = ({ navigation, location }) => 
             dataType: 'school',
             _id: sch._id,
             name: sch.name,
-            associatedEvents: sch.cache?.events ?? 0,
+            events: sch.cache?.events ?? 0,
           },
         });
       }

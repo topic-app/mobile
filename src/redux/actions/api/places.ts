@@ -93,10 +93,20 @@ async function fetchMapLocations(
 
   if (result.data) {
     // Move dataType to properties
-    return result.data.points.map(({ dataType, ...point }: any) => ({
-      ...point,
-      properties: { ...point.properties, dataType },
-    }));
+    return result.data.points.map(({ dataType, ...point }: any) => {
+      const extraProperties: { [key: string]: any } = {};
+      // Handle null cases
+      if (dataType === 'school' && typeof point.properties.events !== 'number') {
+        extraProperties.events = 0;
+      }
+      if (dataType === 'school' && typeof point.properties.active !== 'boolean') {
+        extraProperties.active = false;
+      }
+      return {
+        ...point,
+        properties: { ...point.properties, ...extraProperties, dataType },
+      };
+    });
   }
 
   throw new Error('Data does not exist on result of maps/clusters');

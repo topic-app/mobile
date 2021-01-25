@@ -230,11 +230,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
   const insets = useSafeAreaInsets();
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <MapboxGL.MapView
         style={{ flex: 1 }}
         onPress={() => {
@@ -357,13 +353,14 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             style={{
               iconImage: [
                 'step',
-                ['get', 'associatedEvents'],
+                ['get', 'events'],
                 dark ? 'pinPurpleDark' : 'pinPurpleLight',
                 1,
                 dark ? 'pinPurpleDarkWithEvent' : 'pinPurpleLightWithEvent',
               ],
-              iconSize: ['step', ['get', 'associatedEvents'], 1, 1, 1.15],
+              iconSize: ['step', ['get', 'events'], 1, 1, 1.15],
               iconAnchor: 'bottom',
+              iconOpacity: ['case', ['get', 'active'], 1, 0.5],
             }}
           />
         </MapboxGL.ShapeSource>
@@ -408,12 +405,12 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             style={{
               iconImage: [
                 'step',
-                ['get', 'associatedEvents'],
+                ['get', 'events'],
                 dark ? 'pinPurpleStarDark' : 'pinPurpleStarLight',
                 1,
                 dark ? 'pinPurpleStarDarkWithEvent' : 'pinPurpleStarLightWithEvent',
               ],
-              iconSize: ['step', ['get', 'associatedEvents'], 1, 1, 1.15],
+              iconSize: ['step', ['get', 'events'], 1, 1, 1.15],
               iconAnchor: 'bottom',
             }}
           />
