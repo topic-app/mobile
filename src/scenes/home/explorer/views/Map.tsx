@@ -405,12 +405,12 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             style={{
               iconImage: [
                 'step',
-                ['get', 'associatedEvents'],
+                ['get', 'events'],
                 dark ? 'pinPurpleStarDark' : 'pinPurpleStarLight',
                 1,
                 dark ? 'pinPurpleStarDarkWithEvent' : 'pinPurpleStarLightWithEvent',
               ],
-              iconSize: ['step', ['get', 'associatedEvents'], 1, 1, 1.15],
+              iconSize: ['step', ['get', 'events'], 1, 1, 1.15],
               iconAnchor: 'bottom',
             }}
           />
