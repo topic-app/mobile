@@ -22,6 +22,8 @@ export type Content = {
 
 export type Verification = {
   verified: boolean;
+  extraVerification?: boolean;
+  noDeverify?: boolean;
   users?: string[];
   bot: {
     score: number;
@@ -325,6 +327,7 @@ type ArticleBase = {
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];
+  opinion?: boolean;
   cache?: {
     likes?: number;
   };

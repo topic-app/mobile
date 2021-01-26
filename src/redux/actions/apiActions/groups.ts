@@ -2,7 +2,7 @@ import Store from '@redux/store';
 import { UPDATE_GROUPS_STATE, AppThunk, GroupCreationData, Avatar } from '@ts/types';
 import { request } from '@utils/index';
 
-import { reportCreator, approveCreator } from './ActionCreator';
+import { reportCreator, approveCreator, deverifyCreator } from './ActionCreator';
 
 function groupFollowCreator({ id }: { id: string }): AppThunk {
   return (dispatch) => {
@@ -448,6 +448,64 @@ function groupMemberLeaveCreator({ group }: { group: string }): AppThunk {
   };
 }
 
+function groupVerificationDeleteCreator({
+  groupId,
+  message,
+}: {
+  groupId: string;
+  message: string;
+}): AppThunk {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          verification_delete: {
+            loading: true,
+            success: null,
+            error: null,
+          },
+        },
+      });
+      request(
+        'groups/delete',
+        'post',
+        {
+          groupId,
+          message,
+        },
+        true,
+      )
+        .then(() => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              verification_delete: {
+                loading: false,
+                success: true,
+                error: null,
+              },
+            },
+          });
+          resolve({ _id: groupId });
+        })
+        .catch((error) => {
+          dispatch({
+            type: UPDATE_GROUPS_STATE,
+            data: {
+              verification_delete: {
+                loading: false,
+                success: false,
+                error,
+              },
+            },
+          });
+          reject();
+        });
+    });
+  };
+}
+
 type GroupModifyCreatorParams = {
   group: string;
   shortName?: string;
@@ -686,6 +744,15 @@ async function groupModify(
   await Store.dispatch(groupModifyCreator({ group, ...fields }));
 }
 
+async function groupVerificationDelete(groupId: string, message: string) {
+  await Store.dispatch(
+    groupVerificationDeleteCreator({
+      groupId,
+      message,
+    }),
+  );
+}
+
 async function groupReport(groupId: string, reason: string) {
   await Store.dispatch(
     reportCreator({
@@ -709,6 +776,17 @@ async function groupVerificationApprove(id: string) {
   );
 }
 
+async function groupDeverify(id: string) {
+  await Store.dispatch(
+    deverifyCreator({
+      contentId: id,
+      contentIdName: 'groupId',
+      url: 'groups/verification/deverify',
+      stateUpdate: UPDATE_GROUPS_STATE,
+    }),
+  );
+}
+
 export {
   groupFollow,
   groupUnfollow,
@@ -720,6 +798,8 @@ export {
   groupMemberReject,
   groupMemberLeave,
   groupVerificationApprove,
+  groupVerificationDelete,
   groupModify,
   groupAdd,
+  groupDeverify,
 };

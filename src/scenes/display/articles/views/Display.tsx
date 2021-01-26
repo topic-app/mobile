@@ -31,6 +31,7 @@ import {
   articleVerificationApprove,
   articleDelete,
   articleLike,
+  articleDeverify,
 } from '@redux/actions/apiActions/articles';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
 import { addArticleRead } from '@redux/actions/contentData/articles';
@@ -47,6 +48,7 @@ import {
   Preferences,
   Content as ContentType,
   ArticleMyInfo,
+  ArticleVerification,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
 import {
@@ -194,7 +196,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           <Title style={{ color: colors.disabled }}>Hors ligne</Title>
         </View>
       )}
-      {(reqState.articles.info.loading || reqState.articles.delete?.loading) && (
+      {(reqState.articles.info.loading ||
+        reqState.articles.delete?.loading ||
+        reqState.articles.verification_deverify?.loading) && (
         <ActivityIndicator size="large" color={colors.primary} />
       )}
       {!article.preload && reqState.articles.info.success && article.content && (
@@ -453,6 +457,57 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                   </Card>
                 </View>
               )}
+              <View style={[styles.container, { marginTop: 20 }]}>
+                {(article as ArticleVerification).verification?.bot?.flags?.length !== 0 && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Icon
+                      name="tag"
+                      color={colors.invalid}
+                      size={16}
+                      style={{ alignSelf: 'center', marginRight: 5 }}
+                    />
+                    <Text>
+                      Classifié comme{' '}
+                      {(article as ArticleVerification).verification?.bot?.flags?.join(', ')}
+                    </Text>
+                  </View>
+                )}
+                {(article as ArticleVerification).verification?.reports?.length !== 0 && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Icon
+                      name="message-alert"
+                      color={colors.invalid}
+                      size={16}
+                      style={{ alignSelf: 'center', marginRight: 5 }}
+                    />
+                    <Text>
+                      Reporté {(article as ArticleVerification).verification?.reports?.length} fois
+                    </Text>
+                  </View>
+                )}
+                {(article as ArticleVerification).verification?.users?.length !== 0 && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Icon
+                      name="shield"
+                      color={colors.invalid}
+                      size={16}
+                      style={{ alignSelf: 'center', marginRight: 5 }}
+                    />
+                    <Text>Remis en moderation</Text>
+                  </View>
+                )}
+                {(article as ArticleVerification).verification?.extraVerification && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Icon
+                      name="alert-decagram"
+                      color={colors.invalid}
+                      size={16}
+                      style={{ alignSelf: 'center', marginRight: 5 }}
+                    />
+                    <Text>Vérification d&apos;un administrateur Topic requise</Text>
+                  </View>
+                )}
+              </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <View style={[styles.container]}>
                   <Button
@@ -588,6 +643,28 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         }),
       );
 
+  const deverifyArticle = () =>
+    articleDeverify(id)
+      .then(() => {
+        navigation.goBack();
+        Alert.alert(
+          'Article remis en modération',
+          "Vous pouvez le voir dans l'onglet modération",
+          [{ text: 'Fermer' }],
+          {
+            cancelable: true,
+          },
+        );
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: "la dévérification de l'article",
+          error,
+          retry: deverifyArticle,
+        }),
+      );
+
   React.useEffect(() => {
     fetch();
     updateComments('initial', { parentId: id });
@@ -703,6 +780,32 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                           onPress: () => {
                             deleteArticle();
                             trackEvent('articledisplay:delete', { props: { button: 'header' } });
+                          },
+                        },
+                      ],
+                      { cancelable: true },
+                    ),
+                },
+              ]
+            : []),
+          ...(checkPermission(account, {
+            permission: Permissions.ARTICLE_VERIFICATION_DEVERIFY,
+            scope: { groups: [article?.group?._id || ''] },
+          })
+            ? [
+                {
+                  title: 'Dévérifier',
+                  onPress: () =>
+                    Alert.alert(
+                      'Remettre cet article en modération ?',
+                      'Les autres administrateurs du groupe seront notifiés.',
+                      [
+                        { text: 'Annuler' },
+                        {
+                          text: 'Dévérifier',
+                          onPress: () => {
+                            deverifyArticle();
+                            trackEvent('articledisplay:deverify', { props: { button: 'header' } });
                           },
                         },
                       ],

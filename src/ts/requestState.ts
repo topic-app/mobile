@@ -32,6 +32,7 @@ export type StandardRequestState = {
   add?: RequestState;
   verification_list?: RequestStateComplex;
   verification_approve?: RequestState;
+  verification_deverify?: RequestState;
   following?: RequestStateComplex;
   delete?: RequestState;
 };

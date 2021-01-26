@@ -3,6 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { View, Dimensions } from 'react-native';
 import { Card, Paragraph, Text, Title, Caption } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { ArticlePreload, ArticleVerificationPreload, State, Preferences, Article } from '@ts/types';
@@ -119,15 +120,50 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
         {verification && (
           <Card.Content>
             {articleVerification.verification?.bot?.flags?.length !== 0 && (
-              <Text>
-                Classifié comme {articleVerification.verification?.bot?.flags?.join(', ')}
-              </Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="tag"
+                  color={colors.invalid}
+                  size={16}
+                  style={{ alignSelf: 'center', marginRight: 5 }}
+                />
+                <Text>
+                  Classifié comme {articleVerification.verification?.bot?.flags?.join(', ')}
+                </Text>
+              </View>
             )}
             {articleVerification.verification?.reports?.length !== 0 && (
-              <Text>Reporté {articleVerification.verification?.reports?.length} fois </Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="message-alert"
+                  color={colors.invalid}
+                  size={16}
+                  style={{ alignSelf: 'center', marginRight: 5 }}
+                />
+                <Text>Reporté {articleVerification.verification?.reports?.length} fois</Text>
+              </View>
             )}
             {articleVerification.verification?.users?.length !== 0 && (
-              <Text>Approuvé par {articleVerification.verification?.users?.join(', ')}</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="shield"
+                  color={colors.invalid}
+                  size={16}
+                  style={{ alignSelf: 'center', marginRight: 5 }}
+                />
+                <Text>Remis en moderation</Text>
+              </View>
+            )}
+            {articleVerification.verification?.extraVerification && (
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="alert-decagram"
+                  color={colors.invalid}
+                  size={16}
+                  style={{ alignSelf: 'center', marginRight: 5 }}
+                />
+                <Text>Vérification d&apos;un administrateur Topic requise</Text>
+              </View>
             )}
           </Card.Content>
         )}

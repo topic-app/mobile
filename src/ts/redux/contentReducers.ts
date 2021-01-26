@@ -62,6 +62,7 @@ export type ArticleCreationData = {
     departments?: string[];
     global?: boolean;
   };
+  opinion?: boolean;
   image?: Image | null;
   preferences?: {
     comments: boolean;
