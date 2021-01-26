@@ -334,7 +334,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 {checkPermission(account, {
                   permission: Permissions.GROUP_VERIFICATION_DEVERIFY,
                   scope: { everywhere: true },
-                }) ? (
+                }) && group?.type !== 'administrateur' ? (
                   <Menu.Item
                     key="deverify"
                     title="Dévérifier"
