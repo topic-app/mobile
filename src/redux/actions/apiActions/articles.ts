@@ -2,7 +2,13 @@ import Store from '@redux/store';
 import { AppThunk, UPDATE_ARTICLES_STATE, ArticleCreationData } from '@ts/redux';
 import { request } from '@utils/index';
 
-import { reportCreator, approveCreator, deleteCreator, likeCreator } from './ActionCreator';
+import {
+  reportCreator,
+  approveCreator,
+  deleteCreator,
+  likeCreator,
+  deverifyCreator,
+} from './ActionCreator';
 
 function articleAddCreator({
   title,
@@ -118,8 +124,26 @@ async function articleDelete(id: string) {
   );
 }
 
+async function articleDeverify(id: string) {
+  await Store.dispatch(
+    deverifyCreator({
+      contentId: id,
+      contentIdName: 'articleId',
+      url: 'articles/verification/deverify',
+      stateUpdate: UPDATE_ARTICLES_STATE,
+    }),
+  );
+}
+
 async function articleLike(contentId: string, liking: boolean = true) {
   await Store.dispatch(likeCreator({ contentId, liking, stateUpdate: UPDATE_ARTICLES_STATE }));
 }
 
-export { articleAdd, articleReport, articleVerificationApprove, articleDelete, articleLike };
+export {
+  articleAdd,
+  articleReport,
+  articleVerificationApprove,
+  articleDelete,
+  articleLike,
+  articleDeverify,
+};

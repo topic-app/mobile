@@ -22,6 +22,8 @@ export type Content = {
 
 export type Verification = {
   verified: boolean;
+  extraVerification?: boolean;
+  noDeverify?: boolean;
   users?: string[];
   bot: {
     score: number;

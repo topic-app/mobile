@@ -19,6 +19,7 @@ import {
   Subheading,
   Title,
   IconButton,
+  TextInput,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -48,6 +49,8 @@ import {
   groupMemberDelete,
   groupMemberLeave,
   groupVerificationApprove,
+  groupVerificationDelete,
+  groupDeverify,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
@@ -73,6 +76,7 @@ import {
   Alert,
   Errors,
   shareContent,
+  trackEvent,
 } from '@utils/index';
 
 import AddUserRoleModal from '../components/AddUserRoleModal';
@@ -187,6 +191,8 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   const [isAddSnackbarVisible, setAddSnackbarVisible] = React.useState(false);
 
+  const [verificationMessage, setVerificationMessage] = React.useState('');
+
   const [legalCollapsed, setLegalCollapsed] = React.useState(true);
 
   const [editingGroup, setEditingGroup] = React.useState<{
@@ -203,6 +209,28 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
     false,
   );
   const [descriptionVisible, setDescriptionVisible] = React.useState(verification || false);
+
+  const deverifyGroup = () =>
+    groupDeverify(id)
+      .then(() => {
+        navigation.goBack();
+        Alert.alert(
+          'Groupe remis en modération',
+          "Vous pouvez le voir dans l'onglet modération",
+          [{ text: 'Fermer' }],
+          {
+            cancelable: true,
+          },
+        );
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: 'la dévérification du groupe',
+          error,
+          retry: deverifyGroup,
+        }),
+      );
 
   if (!group) {
     // This is when article has not been loaded in list, so we have absolutely no info
@@ -287,6 +315,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   title="Partager"
                   onPress={() => {
                     setMenuVisible(false);
+                    trackEvent('groupdisplay:share', { props: { button: 'header' } });
                     shareContent({
                       title: `Groupe ${group.displayName}`,
                       type: 'groupes',
@@ -302,6 +331,33 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     setGroupReportModalVisible(true);
                   }}
                 />
+                {checkPermission(account, {
+                  permission: Permissions.GROUP_VERIFICATION_DEVERIFY,
+                  scope: { everywhere: true },
+                }) ? (
+                  <Menu.Item
+                    key="deverify"
+                    title="Dévérifier"
+                    onPress={() => {
+                      setMenuVisible(false);
+                      Alert.alert(
+                        'Remettre ce groupe en modération ?',
+                        'Les administrateurs du groupe seront notifiés et les membres ne pourront plus publier de contenus.',
+                        [
+                          { text: 'Annuler' },
+                          {
+                            text: 'Dévérifier',
+                            onPress: () => {
+                              deverifyGroup();
+                              trackEvent('groupdisplay:deverify', { props: { button: 'header' } });
+                            },
+                          },
+                        ],
+                        { cancelable: true },
+                      );
+                    }}
+                  />
+                ) : null}
               </Menu>
             </View>
           </View>
@@ -775,6 +831,14 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       }
                     />
                   )}
+                  <View style={styles.container}>
+                    <TextInput
+                      mode="outlined"
+                      label="Informations à envoyer à l'administrateur"
+                      value={verificationMessage}
+                      onChangeText={setVerificationMessage}
+                    />
+                  </View>
                   <View
                     style={[
                       styles.container,
@@ -795,9 +859,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           '',
                           [
                             {
-                              text: 'Approuver',
+                              text: 'Supprimer',
                               onPress: () => {
-                                // groupVerificationDelete(group._id).then(() => navigation.goBack()),
+                                groupVerificationDelete(group._id, verificationMessage).then(() =>
+                                  navigation.goBack(),
+                                );
                               },
                             },
                             { text: 'Annuler' },
@@ -821,12 +887,12 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           'Approuver ce groupe ?',
                           '',
                           [
+                            { text: 'Annuler' },
                             {
                               text: 'Approuver',
                               onPress: () =>
                                 groupVerificationApprove(group._id).then(() => navigation.goBack()),
                             },
-                            { text: 'Annuler' },
                           ],
                           { cancelable: true },
                         )
