@@ -137,8 +137,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         /* DO NOT REMOVE - SCRIPT MARKER: androidVersion */
-        versionCode 72
-        versionName "0.14.3"
+        versionCode 73
+        versionName "0.15.0"
         setProperty("archivesBaseName", "Topic-$versionName")
     }
     splits {
