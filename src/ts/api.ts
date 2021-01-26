@@ -325,6 +325,7 @@ type ArticleBase = {
   group: GroupPreload;
   location: Location;
   tags: TagPreload[];
+  opinion?: boolean;
   cache?: {
     likes?: number;
   };

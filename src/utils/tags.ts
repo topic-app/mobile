@@ -9,11 +9,12 @@ export type ItemData = {
   tags?: TagPreload[];
   location?: Location;
   cache?: { likes?: number };
+  opinion?: boolean;
 };
 
 type TagData = {
   key: string;
-  type: 'group' | 'author' | 'tag' | 'likes' | 'global' | 'school' | 'department';
+  type: 'group' | 'author' | 'tag' | 'likes' | 'global' | 'school' | 'department' | 'opinion';
   label: string;
   avatar?: Avatar;
   image?: string;
@@ -21,7 +22,7 @@ type TagData = {
   color?: string;
 };
 
-function genTagListData({ cache, publisher, authors, group, tags, location }: ItemData) {
+function genTagListData({ cache, publisher, authors, group, tags, location, opinion }: ItemData) {
   const data: TagData[] = [];
 
   if (publisher) {
@@ -68,6 +69,15 @@ function genTagListData({ cache, publisher, authors, group, tags, location }: It
         icon: 'account',
       }),
     );
+  }
+
+  if (opinion) {
+    data.push({
+      key: 'opinion',
+      type: 'opinion',
+      label: 'Opinion',
+      icon: 'format-quote-open',
+    });
   }
 
   if (tags) {
