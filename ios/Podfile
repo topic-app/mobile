@@ -10,9 +10,9 @@ target 'Topic' do
   use_unimodules!
   
   permissions_path = "../node_modules/react-native-permissions/ios"
-  pod "Permission-LocationWhenInUse", :path => "#{permissions_path}/LocationWhenInUse.podspec"
-  pod "Permission-MediaLibrary", :path => "#{permissions_path}/MediaLibrary.podspec"
-  pod "Permission-Notifications", :path => "#{permissions_path}/Notifications.podspec"
+  pod "Permission-LocationWhenInUse", :path => "#{permissions_path}/LocationWhenInUse"
+  pod "Permission-MediaLibrary", :path => "#{permissions_path}/MediaLibrary"
+  pod "Permission-Notifications", :path => "#{permissions_path}/Notifications"
   
   $ReactNativeMapboxGLIOSVersion = "~> 5.9.0"
   
