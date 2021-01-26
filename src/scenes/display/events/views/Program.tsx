@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, Alert } from 'react-native';
 import { Text, Subheading } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -45,9 +45,10 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
         id: p._id,
         title: p.title,
         image: p.image,
-        address: p.address,
+        address: p.address?.shortName,
         start: p.duration.start,
         end: p.duration.end,
+        description: p.description?.data,
       };
     });
 
@@ -69,7 +70,20 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
       >
         <EventCalendar
           width={width}
-          eventTapped={(e) => logger.warn('Event program detail not implemented', e)}
+          eventTapped={(e) => {
+            console.log(e);
+            Alert.alert(
+              e?.title,
+              `De ${moment(e?.start).format('ddd DD MMMM hh:mm')} à ${moment(e?.end).format(
+                'ddd DD MMMM hh:mm',
+              )}
+              ${e?.address ? `Localisation: ${e.address}` : ''}${'\n'}${
+                e?.description ? `Description: ${e.description}` : ''
+              }`,
+              [{ text: 'Fermer' }],
+              { cancelable: true },
+            );
+          }}
           events={elements as any}
           initDate={duration?.start}
           start={startTime}

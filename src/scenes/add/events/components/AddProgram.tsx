@@ -38,7 +38,17 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
     setStartTimeShow(false);
   }, [setStartTimeShow]);
   const showStartDateModal = () => {
-    setStartDateShow(true);
+    console.log('Hello from show');
+    console.log(moment(creationData?.start).startOf('day'));
+    console.log(moment(creationData?.end).startOf('day'));
+    if (
+      moment(creationData?.start).startOf('day').valueOf() !==
+      moment(creationData?.end).startOf('day').valueOf()
+    ) {
+      setStartDateShow(true);
+    } else {
+      changeStartDate({ date: moment(creationData?.start).startOf('day') });
+    }
   };
   const submit = () => {
     updateEventCreationData({ program: eventProgram });
@@ -171,8 +181,8 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, events } = state;
-  return { account, state: events.state };
+  const { account, events, eventData } = state;
+  return { account, state: events.state, creationData: eventData.creationData };
 };
 
 export default connect(mapStateToProps)(EventAddPageProgram);

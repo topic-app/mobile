@@ -281,17 +281,6 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
           }}
         />
         <Drawer.Item
-          label="DEBUG pages groupes"
-          icon="settings-outline"
-          onPress={() => {
-            navigation.closeDrawer();
-            navigation.navigate('Main', {
-              screen: 'Pages',
-              params: { screen: 'Display' },
-            });
-          }}
-        />
-        <Drawer.Item
           label="Feedback"
           icon="comment-outline"
           onPress={() => {

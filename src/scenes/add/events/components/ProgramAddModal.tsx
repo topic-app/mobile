@@ -355,7 +355,15 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   const eventStyles = getEventStyles(theme);
 
   return (
-    <Modal visible={visible} setVisible={setVisible}>
+    <Modal
+      visible={visible}
+      setVisible={(val) => {
+        if (!val) {
+          cancel();
+        }
+        setVisible(val);
+      }}
+    >
       <View style={eventStyles.formContainer}>
         <ScrollView>
           <View style={eventStyles.textInputContainer}>
@@ -480,17 +488,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
         </ScrollView>
         <View style={{ height: 20 }} />
         <View style={eventStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-            uppercase={Platform.OS !== 'ios'}
-            style={{ flex: 1, marginRight: 5 }}
-            onPress={() => {
-              blurInputs();
-              cancel();
-            }}
-          >
-            Annuler
-          </Button>
           <Button
             mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
             uppercase={Platform.OS !== 'ios'}

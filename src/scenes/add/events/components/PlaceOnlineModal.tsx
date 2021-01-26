@@ -23,9 +23,9 @@ const PlaceOnlineModal: React.FC<PlaceOnlineModalProps> = ({ visible, setVisible
 
   const OnlineSchema = Yup.object().shape({
     link: Yup.string()
-      .required('Entrer un lien')
+      .required('Entrez un lien')
       .max(2000, 'Ce lien contient trop de caractères')
-      .url('Entrer un lien valide'),
+      .url('Entrez un lien valide'),
   });
 
   return (
@@ -60,17 +60,6 @@ const PlaceOnlineModal: React.FC<PlaceOnlineModalProps> = ({ visible, setVisible
               />
               <View style={eventStyles.buttonContainer}>
                 <Button
-                  mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-                  uppercase={Platform.OS !== 'ios'}
-                  style={{ flex: 1, marginRight: 5 }}
-                  onPress={() => {
-                    linkInput.current?.blur();
-                    setVisible(false);
-                  }}
-                >
-                  Annuler
-                </Button>
-                <Button
                   mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                   uppercase={Platform.OS !== 'ios'}
                   onPress={handleSubmit}
@@ -82,7 +71,6 @@ const PlaceOnlineModal: React.FC<PlaceOnlineModalProps> = ({ visible, setVisible
             </View>
           )}
         </Formik>
-        <View style={{ height: 20 }} />
       </View>
     </Modal>
   );

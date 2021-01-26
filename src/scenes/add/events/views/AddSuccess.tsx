@@ -61,7 +61,9 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
         </SafeAreaView>
       )}
       <ScrollView>
-        <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
+        <View
+          style={[styles.centerIllustrationContainer, styles.contentContainer, { marginTop: 40 }]}
+        >
           <Illustration name="auth-register-success" height={200} width={200} />
           <Text style={authStyles.title}>
             Évènement {approved ? 'publié' : 'en attente de modération'}
