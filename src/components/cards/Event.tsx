@@ -133,14 +133,51 @@ const EventCard: React.FC<EventCardProps> = ({
         </Card.Content>
         {verification && (
           <Card.Content>
-            {eventVerification?.verification?.bot?.flags?.length !== 0 && (
-              <Text>Classifié comme {eventVerification?.verification?.bot?.flags?.join(', ')}</Text>
+            {eventVerification.verification?.bot?.flags?.length !== 0 && (
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="tag"
+                  color={colors.invalid}
+                  size={16}
+                  style={{ alignSelf: 'center', marginRight: 5 }}
+                />
+                <Text>
+                  Classifié comme {eventVerification.verification?.bot?.flags?.join(', ')}
+                </Text>
+              </View>
             )}
-            {eventVerification?.verification?.reports?.length !== 0 && (
-              <Text>Reporté {eventVerification?.verification?.reports?.length} fois </Text>
+            {eventVerification.verification?.reports?.length !== 0 && (
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="message-alert"
+                  color={colors.invalid}
+                  size={16}
+                  style={{ alignSelf: 'center', marginRight: 5 }}
+                />
+                <Text>Reporté {eventVerification.verification?.reports?.length} fois</Text>
+              </View>
             )}
-            {eventVerification?.verification?.users?.length !== 0 && (
-              <Text>Approuvé par {eventVerification?.verification?.users?.join(', ')}</Text>
+            {eventVerification.verification?.users?.length !== 0 && (
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="shield"
+                  color={colors.invalid}
+                  size={16}
+                  style={{ alignSelf: 'center', marginRight: 5 }}
+                />
+                <Text>Remis en moderation</Text>
+              </View>
+            )}
+            {eventVerification.verification?.extraVerification && (
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="alert-decagram"
+                  color={colors.invalid}
+                  size={16}
+                  style={{ alignSelf: 'center', marginRight: 5 }}
+                />
+                <Text>Vérification d&apos;un administrateur Topic requise</Text>
+              </View>
             )}
           </Card.Content>
         )}

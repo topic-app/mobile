@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput, Image } from 'react-native';
-import { Button, ProgressBar, Card, Text } from 'react-native-paper';
+import { Button, ProgressBar, Card, Text, List, Switch } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
@@ -39,6 +39,8 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   const articleStyles = getArticleStyles(theme);
   const styles = getStyles(theme);
 
+  const [isOpinion, setOpinion] = React.useState(false);
+
   if (!account.loggedIn) return null;
 
   const MetaSchema = Yup.object().shape({
@@ -60,6 +62,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
             title,
             summary,
             image: { image: file, thumbnails: { small: false, medium: true, large: true } },
+            opinion: isOpinion,
           });
           next();
         }}
@@ -162,7 +165,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                 </View>
               </View>
             ) : (
-              <Card style={{ height: 50, flex: 1, marginBottom: 40 }}>
+              <Card style={{ height: 50, flex: 1, marginBottom: 30 }}>
                 <View style={{ flexDirection: 'row', margin: 10, alignItems: 'center' }}>
                   <View>
                     <Icon name="image" size={24} color={colors.disabled} />
@@ -176,6 +179,21 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                 </View>
               </Card>
             )}
+            <View style={[styles.container, { marginBottom: 40 }]}>
+              <List.Item
+                title="Article d'opinion"
+                description="Vous devez spécifier si votre article n'est pas factuel (articles d'opinion, d'analyse)"
+                onPress={() => setOpinion(!isOpinion)}
+                right={() => (
+                  <Switch
+                    color={colors.primary}
+                    value={isOpinion}
+                    onValueChange={(data) => setOpinion(data)}
+                  />
+                )}
+                descriptionNumberOfLines={10}
+              />
+            </View>
             <View style={articleStyles.buttonContainer}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}

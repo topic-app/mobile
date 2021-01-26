@@ -31,6 +31,7 @@ import {
   eventVerificationApprove,
   eventDelete,
   eventMessagesAdd,
+  eventDeverify,
 } from '@redux/actions/apiActions/events';
 import { addEventRead } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
@@ -45,6 +46,7 @@ import {
   EventListItem,
   Publisher,
   Content,
+  EventVerification,
 } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
 import {
@@ -185,6 +187,28 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         }),
       );
 
+  const deverifyEvent = () =>
+    eventDeverify(id)
+      .then(() => {
+        navigation.goBack();
+        Alert.alert(
+          'Évènement remis en modération',
+          "Vous pouvez le voir dans l'onglet modération",
+          [{ text: 'Fermer' }],
+          {
+            cancelable: true,
+          },
+        );
+      })
+      .catch((error) =>
+        Errors.showPopup({
+          type: 'axios',
+          what: "la dévérification de l'évènement",
+          error,
+          retry: deverifyEvent,
+        }),
+      );
+
   const approveEvent = () =>
     eventVerificationApprove(event?._id || '')
       .then(() => navigation.goBack())
@@ -302,6 +326,31 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                       },
                     ]
                   : []),
+                ...(checkPermission(account, {
+                  permission: Permissions.EVENT_VERIFICATION_DEVERIFY,
+                  scope: { groups: [event?.group?._id || ''] },
+                })
+                  ? [
+                      {
+                        title: 'Dévérifier',
+                        onPress: () =>
+                          Alert.alert(
+                            'Remettre cet article en modération ?',
+                            'Les autres administrateurs du groupe seront notifiés.',
+                            [
+                              { text: 'Annuler' },
+                              {
+                                text: 'Dévérifier',
+                                onPress: () => {
+                                  deverifyEvent();
+                                },
+                              },
+                            ],
+                            { cancelable: true },
+                          ),
+                      },
+                    ]
+                  : []),
               ]
         }
       >
@@ -359,7 +408,9 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
               <Title style={{ color: colors.disabled }}>Hors ligne</Title>
             </View>
           )}
-          {(reqState.events.info.loading || reqState.events.delete?.loading) && (
+          {(reqState.events.info.loading ||
+            reqState.events.delete?.loading ||
+            reqState.events.verification_deverify?.loading) && (
             <ActivityIndicator size="large" color={colors.primary} />
           )}
           {!event.preload && reqState.events.info.success && (
@@ -479,6 +530,57 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                       </Card>
                     </View>
                   )}
+                  <View style={[styles.container, { marginTop: 20 }]}>
+                    {(event as EventVerification).verification?.bot?.flags?.length !== 0 && (
+                      <View style={{ flexDirection: 'row' }}>
+                        <Icon
+                          name="tag"
+                          color={colors.invalid}
+                          size={16}
+                          style={{ alignSelf: 'center', marginRight: 5 }}
+                        />
+                        <Text>
+                          Classifié comme{' '}
+                          {(event as EventVerification).verification?.bot?.flags?.join(', ')}
+                        </Text>
+                      </View>
+                    )}
+                    {(event as EventVerification).verification?.reports?.length !== 0 && (
+                      <View style={{ flexDirection: 'row' }}>
+                        <Icon
+                          name="message-alert"
+                          color={colors.invalid}
+                          size={16}
+                          style={{ alignSelf: 'center', marginRight: 5 }}
+                        />
+                        <Text>
+                          Reporté {(event as EventVerification).verification?.reports?.length} fois
+                        </Text>
+                      </View>
+                    )}
+                    {(event as EventVerification).verification?.users?.length !== 0 && (
+                      <View style={{ flexDirection: 'row' }}>
+                        <Icon
+                          name="shield"
+                          color={colors.invalid}
+                          size={16}
+                          style={{ alignSelf: 'center', marginRight: 5 }}
+                        />
+                        <Text>Remis en moderation</Text>
+                      </View>
+                    )}
+                    {(event as EventVerification).verification?.extraVerification && (
+                      <View style={{ flexDirection: 'row' }}>
+                        <Icon
+                          name="alert-decagram"
+                          color={colors.invalid}
+                          size={16}
+                          style={{ alignSelf: 'center', marginRight: 5 }}
+                        />
+                        <Text>Vérification d&apos;un administrateur Topic requise</Text>
+                      </View>
+                    )}
+                  </View>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                     <View style={[styles.container]}>
                       <Button
