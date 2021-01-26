@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-
 /*
 In React Native, Strings are statically analyzed at compile-time,
 so require() statements have to be simple strings, not dynamic ones

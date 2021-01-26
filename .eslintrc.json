@@ -3,6 +3,8 @@
   "extends": ["airbnb", "@react-native-community"],
   "plugins": ["@typescript-eslint", "import"],
   "rules": {
+    // Ram bundles are recommended, see https://reactnative.dev/docs/ram-bundles-inline-requires
+    "global-require": "off",
     "prettier/prettier": "off",
     "linebreak-style": "off",
     "no-underscore-dangle": "off",

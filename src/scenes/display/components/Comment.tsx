@@ -46,7 +46,9 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
   authors,
 }) => {
   const { publisher, content, date, _id: id } = comment;
-  const { displayName } = publisher[publisher.type] || {};
+  const { displayName } = publisher
+    ? publisher[publisher.type] || {}
+    : { displayName: 'Auteur inconnu' };
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -57,14 +59,14 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
     navigation.navigate('Main', {
       screen: 'Display',
       params: {
-        screen: comment.publisher.type === 'user' ? 'User' : 'Group',
+        screen: comment.publisher?.type === 'user' ? 'User' : 'Group',
         params: {
           screen: 'Display',
           params: {
             id:
-              comment.publisher.type === 'user'
-                ? comment.publisher.user?._id
-                : comment.publisher.group?._id,
+              comment.publisher?.type === 'user'
+                ? comment.publisher?.user?._id
+                : comment.publisher?.group?._id,
           },
         },
       },
@@ -73,8 +75,8 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
   const [menuVisible, setMenuVisible] = React.useState<string | null>(null);
 
   const canDelete =
-    publisher.type === 'user'
-      ? publisher.user?._id === account.accountInfo?.accountId ||
+    publisher?.type === 'user'
+      ? (publisher?.user?._id === account.accountInfo?.accountId && account.loggedIn) ||
         checkPermission(account, {
           permission: Permissions.COMMENT_DELETE,
           scope: { everywhere: true },
@@ -96,13 +98,15 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
         }),
       );
 
+  if (!id || !content) return null;
+
   return (
     <View style={styles.container}>
       <View style={[{ flexDirection: 'row' }, isReply ? { marginLeft: 20 } : {}]}>
         {}
         <Avatar
           avatar={
-            publisher.type === 'user' ? publisher.user?.info?.avatar : publisher.group?.avatar
+            publisher?.type === 'user' ? publisher?.user?.info?.avatar : publisher?.group?.avatar
           }
           size={40}
           onPress={navigateToPublisher}
@@ -123,12 +127,12 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
               >
                 {isReply ? 'Réponse de ' : ''}
                 {displayName}{' '}
-                {publisher.group?.official && (
+                {publisher?.group?.official && (
                   <Icon name="check-decagram" color={colors.primary} size={12} />
                 )}
                 {authors &&
-                  (authors.includes(publisher.group?._id || '') ||
-                    authors.includes(publisher.user?._id || '')) && (
+                  (authors.includes(publisher?.group?._id || '') ||
+                    authors.includes(publisher?.user?._id || '')) && (
                     <Icon name="account-edit" color={colors.primary} size={12} />
                   )}
               </Text>

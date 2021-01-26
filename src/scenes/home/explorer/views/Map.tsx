@@ -2,7 +2,7 @@ import MapboxGL, { OnPressEvent } from '@react-native-mapbox-gl/maps';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import _ from 'lodash';
 import React from 'react';
-import { View, Linking, Platform } from 'react-native';
+import { View, Linking, Platform, Image } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Text, FAB, IconButton } from 'react-native-paper';
 import Animated, { Easing, cond, greaterThan } from 'react-native-reanimated';
@@ -70,6 +70,11 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
   }>({ bounds: [mapConfig.bounds.ne, mapConfig.bounds.sw], zoom: mapConfig.defaultZoom });
 
   const lastZoomLevel = React.useRef(mapConfig.minZoom);
+  const headingAnim = React.useRef(new Animated.Value<number>(0)).current;
+  const compassRotateAnim = headingAnim.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['360deg', '0deg'],
+  });
 
   const theme = useTheme();
   const { dark, colors } = theme;
@@ -201,6 +206,17 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
       easing: Easing.linear,
     }).start();
   };
+  const zoomElevationAnim = zoomAnim.interpolate({
+    inputRange: [0.7, 1],
+    outputRange: [0, 2],
+    extrapolate: Animated.Extrapolate.CLAMP,
+  });
+
+  const zoomOpacityAnim = zoomAnim.interpolate({
+    inputRange: [0, 0.9],
+    outputRange: [0, 1],
+    extrapolate: Animated.Extrapolate.CLAMP,
+  });
 
   const bottomSheetOpen = React.useRef(false);
   const partialOpenBottomSheet = () => {
@@ -214,11 +230,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
   const insets = useSafeAreaInsets();
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <MapboxGL.MapView
         style={{ flex: 1 }}
         onPress={() => {
@@ -238,12 +250,10 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
         attributionEnabled={false}
         pitchEnabled={false}
         styleURL={tileServerUrl}
-        compassViewMargins={{
-          x: 10,
-          y: insets.top + 10,
-        }}
+        compassEnabled={false}
         onRegionIsChanging={({ properties }) => {
           lastZoomLevel.current = properties.zoomLevel;
+          headingAnim.setValue(properties.heading);
         }}
         onRegionDidChange={({ properties }) => {
           const { visibleBounds, zoomLevel } = properties;
@@ -343,13 +353,14 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             style={{
               iconImage: [
                 'step',
-                ['get', 'associatedEvents'],
+                ['get', 'events'],
                 dark ? 'pinPurpleDark' : 'pinPurpleLight',
                 1,
                 dark ? 'pinPurpleDarkWithEvent' : 'pinPurpleLightWithEvent',
               ],
-              iconSize: ['step', ['get', 'associatedEvents'], 1, 1, 1.15],
+              iconSize: ['step', ['get', 'events'], 1, 1, 1.15],
               iconAnchor: 'bottom',
+              iconOpacity: ['case', ['get', 'active'], 1, 0.5],
             }}
           />
         </MapboxGL.ShapeSource>
@@ -394,12 +405,12 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
             style={{
               iconImage: [
                 'step',
-                ['get', 'associatedEvents'],
+                ['get', 'events'],
                 dark ? 'pinPurpleStarDark' : 'pinPurpleStarLight',
                 1,
                 dark ? 'pinPurpleStarDarkWithEvent' : 'pinPurpleStarLightWithEvent',
               ],
-              iconSize: ['step', ['get', 'associatedEvents'], 1, 1, 1.15],
+              iconSize: ['step', ['get', 'events'], 1, 1, 1.15],
               iconAnchor: 'bottom',
             }}
           />
@@ -445,18 +456,41 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
         </View>
       ) : null}
 
-      <ZoomButton
-        opacity={zoomAnim}
-        onPress={() => zoom(1)}
-        icon="plus"
-        top={insets.top + 10 + 40 + 5}
-      />
-      <ZoomButton
-        opacity={zoomAnim}
-        onPress={() => zoom(-1)}
-        icon="minus"
-        top={insets.top + 10 + 40 + 5 + 48 + 5}
-      />
+      <Animated.View
+        style={{
+          zIndex: 0,
+          position: 'absolute',
+          top: insets.top + 8,
+          right: 15,
+          opacity: zoomOpacityAnim,
+        }}
+        // Disable touchables if zoom buttons are not visible
+        pointerEvents={cond(greaterThan(zoomOpacityAnim, 0), 'auto', 'none')}
+      >
+        <Animated.View style={[explorerStyles.zoomButton, { elevation: zoomElevationAnim }]}>
+          <TouchableWithoutFeedback
+            onPress={() => cameraRef.current?.setCamera({ heading: 0, animationDuration: 200 })}
+          >
+            <Animated.View style={{ transform: [{ rotate: compassRotateAnim }] }}>
+              <Image
+                source={require('@assets/images/explorer/compass-icon.png')}
+                style={{ height: 27 }}
+                resizeMode="contain"
+              />
+            </Animated.View>
+          </TouchableWithoutFeedback>
+        </Animated.View>
+        <Animated.View style={[explorerStyles.zoomButton, { elevation: zoomElevationAnim }]}>
+          <TouchableWithoutFeedback onPress={() => zoom(1)}>
+            <Icon name="plus" color={colors.text} size={23} />
+          </TouchableWithoutFeedback>
+        </Animated.View>
+        <Animated.View style={[explorerStyles.zoomButton, { elevation: zoomElevationAnim }]}>
+          <TouchableWithoutFeedback onPress={() => zoom(-1)}>
+            <Icon name="minus" color={colors.text} size={23} />
+          </TouchableWithoutFeedback>
+        </Animated.View>
+      </Animated.View>
 
       <ExplorerAttribution />
 
@@ -497,43 +531,6 @@ const ExplorerAttribution: React.FC = () => {
         contributors{' '}
       </Text>
     </View>
-  );
-};
-
-const ZoomButton: React.FC<{
-  top: number;
-  icon: string;
-  onPress: () => void;
-  opacity: Animated.Value<number>;
-}> = ({ top, icon, onPress, opacity }) => {
-  return (
-    <Animated.View
-      style={{
-        zIndex: 0,
-        position: 'absolute',
-        top,
-        right: 9,
-        opacity,
-      }}
-      pointerEvents={cond(greaterThan(opacity, 0), 'auto', 'none')}
-    >
-      <TouchableWithoutFeedback onPress={onPress}>
-        <View
-          style={{
-            backgroundColor: 'black',
-            borderWidth: 2.5,
-            borderColor: '#ffffff50',
-            height: 48,
-            width: 48,
-            borderRadius: 24,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Icon name={icon} color="white" size={25} />
-        </View>
-      </TouchableWithoutFeedback>
-    </Animated.View>
   );
 };
 

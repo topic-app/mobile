@@ -4,7 +4,6 @@
  * Dev config is merged with default config with lodash's merge function
  * meaning objects and arrays are merged
  */
-
 import { DevAppConfig } from './types';
 
 const config: DevAppConfig = {
