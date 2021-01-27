@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, BackHandler } from 'react-native';
+import { View, ScrollView, BackHandler, Platform } from 'react-native';
 import { List, Avatar, Divider, Switch, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -8,6 +8,7 @@ import { updatePrefs } from '@redux/actions/data/prefs';
 import Store from '@redux/store';
 import getStyles from '@styles/Styles';
 import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
+import { crashlytics } from '@utils/firebase';
 import { useTheme, Alert } from '@utils/index';
 
 import type { SettingsScreenNavigationProp } from '../index';
@@ -51,6 +52,16 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
     );
   };
 
+  const [crashlyticsEnabled, setCrashlyticsEnabled] = React.useState(
+    Platform.OS !== 'web' ? crashlytics().isCrashlyticsCollectionEnabled : false,
+  );
+
+  async function toggleCrashlytics(val?: boolean) {
+    await crashlytics()
+      .setCrashlyticsCollectionEnabled(val || !crashlyticsEnabled)
+      .then(() => setCrashlyticsEnabled(crashlytics().isCrashlyticsCollectionEnabled));
+  }
+
   return (
     <View style={styles.page}>
       <CustomHeaderBar
@@ -84,6 +95,22 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
             descriptionNumberOfLines={10}
             style={settingsStyles.listItem}
           />
+          {Platform.OS !== 'web' && (
+            <List.Item
+              title="Envoyer des rapports de plantage"
+              description="Envoie des informations sur les plantages afin de nous aider à les résoudre"
+              onPress={() => toggleCrashlytics()}
+              right={() => (
+                <Switch
+                  color={colors.primary}
+                  value={crashlyticsEnabled}
+                  onValueChange={toggleCrashlytics}
+                />
+              )}
+              descriptionNumberOfLines={10}
+              style={settingsStyles.listItem}
+            />
+          )}
         </List.Section>
         <Divider />
         <View>
