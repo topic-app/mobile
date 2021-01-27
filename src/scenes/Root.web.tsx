@@ -77,7 +77,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           params: { screen: 'Home2', params: { screen: 'Event' } },
         }),
     },
-    {
+    /* {
       key: 'explore',
       type: 'button',
       icon: 'compass-outline',
@@ -88,7 +88,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           screen: 'Home1',
           params: { screen: 'Home2', params: { screen: 'Explore' } },
         }),
-    },
+    }, */
     {
       key: 'divider1',
       type: 'divider',
