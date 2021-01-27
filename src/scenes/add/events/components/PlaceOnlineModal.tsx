@@ -37,7 +37,7 @@ const PlaceOnlineModal: React.FC<PlaceOnlineModalProps> = ({ visible, setVisible
             add({
               id: shortid(),
               type: 'online',
-              link: link as string,
+              link,
             });
             setVisible(false);
           }}

@@ -1,29 +1,12 @@
 import moment from 'moment';
 import React from 'react';
 import { View, Dimensions, Alert } from 'react-native';
-import { Text, Subheading } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Subheading } from 'react-native-paper';
 
-import { Event } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { Event, Image } from '@ts/types';
+import { useTheme, Format } from '@utils/index';
 
 import EventCalendar from '../components/calendar/EventCalendar';
-
-const EventEntry: React.FC<{ event: Event }> = ({ event }) => {
-  const { colors } = useTheme();
-  return (
-    <View>
-      <Text>{event.title}</Text>
-      <Text>
-        <Icon name="clock" />
-        {moment(event.duration.start).format('HH:mm')}
-        <Icon name="chevron-right" />
-        {moment(event.duration.end).format('HH:mm')}
-      </Text>
-      {event.summary ? <Text style={{ color: colors.disabled }}>{event.summary}</Text> : null}
-    </View>
-  );
-};
 
 function getLayout() {
   const { height, width } = Dimensions.get('window');
@@ -40,15 +23,26 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
   const { colors } = theme;
 
   if (Array.isArray(program) && program.length > 0) {
-    const elements = program.map((p) => {
+    type CalendarElement = {
+      id: string;
+      title: string;
+      image?: Image;
+      address?: string;
+      start: string;
+      end: string;
+      summary?: string;
+    };
+
+    const elements: CalendarElement[] = program.map((p) => {
       return {
         id: p._id,
         title: p.title,
         image: p.image,
-        address: p.address?.shortName,
-        start: p.duration.start,
-        end: p.duration.end,
-        description: p.description?.data,
+        address: p.address ? Format.shortAddress(p.address) : undefined,
+        start:
+          typeof p.duration.start === 'string' ? p.duration.start : p.duration.start.toISOString(),
+        end: typeof p.duration.end === 'string' ? p.duration.end : p.duration.end.toISOString(),
+        summary: p.description?.data,
       };
     });
 
@@ -70,28 +64,28 @@ const EventDisplayProgram: React.FC<{ event: Event }> = ({ event }) => {
       >
         <EventCalendar
           width={width}
-          eventTapped={(e) => {
-            console.log(e);
-            Alert.alert(
-              e?.title,
-              `De ${moment(e?.start).format('ddd DD MMMM hh:mm')} à ${moment(e?.end).format(
-                'ddd DD MMMM hh:mm',
-              )}
-              ${e?.address ? `Localisation: ${e.address}` : ''}${'\n'}${
-                e?.description ? `Description: ${e.description}` : ''
-              }`,
-              [{ text: 'Fermer' }],
-              { cancelable: true },
-            );
+          eventTapped={(e: CalendarElement) => {
+            if (e) {
+              Alert.alert(
+                e.title,
+                `De ${moment(e.start).format('ddd DD MMMM hh:mm')} à ${moment(e?.end).format(
+                  'ddd DD MMMM hh:mm',
+                )}
+                ${e.address ? `Localisation: ${e.address}` : ''}\n${
+                  e.summary ? `Description: ${e.summary}` : ''
+                }`,
+                [{ text: 'Fermer' }],
+                { cancelable: true },
+              );
+            }
           }}
-          events={elements as any}
+          events={elements}
           initDate={duration?.start}
           start={startTime}
           end={endTime}
           colors={colors}
           startDay={startDay}
           endDay={endDay}
-          // renderEvent={(e) => <EventEntry event={e} />}
         />
       </View>
     );
