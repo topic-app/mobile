@@ -11,6 +11,7 @@ import DisplayStackNavigator, { DisplayStackParams } from './display/index';
 import HistoryStackNavigator, { HistoryStackParams } from './history/index';
 import HomeOneNavigator, { HomeOneNavParams } from './home/HomeOne';
 import MoreStackNavigator, { MoreStackParams } from './more/index';
+import PagesStackNavigator, { PagesStackParams } from './pages/index';
 import ParamsStackNavigator, { ParamsStackParams } from './params/index';
 import SearchStackNavigator, { SearchStackParams } from './search/index';
 
@@ -23,6 +24,7 @@ export type MainStackParams = {
   Home1: NavigatorScreenParams<HomeOneNavParams>;
   History: NavigatorScreenParams<HistoryStackParams>;
   Params: NavigatorScreenParams<ParamsStackParams>;
+  Pages: NavigatorScreenParams<PagesStackParams>;
   NotFound: undefined;
 };
 
@@ -47,6 +49,7 @@ function MainNavigator() {
       <Stack.Screen name="Add" component={AddStackNavigator} />
       <Stack.Screen name="More" component={MoreStackNavigator} />
       <Stack.Screen name="Search" component={SearchStackNavigator} />
+      <Stack.Screen name="Pages" component={PagesStackNavigator} />
       <Stack.Screen name="History" component={HistoryStackNavigator} />
       <Stack.Screen name="Home1" component={HomeOneNavigator} />
       <Stack.Screen name="NotFound" component={NotFound} />

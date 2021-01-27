@@ -48,5 +48,7 @@ export function eventPlaceName(eventPlace: EventPlace): string {
       return eventPlace.associatedSchool.name;
     case 'standalone':
       return 'Lieu';
+    case 'online':
+      return 'En ligne';
   }
 }

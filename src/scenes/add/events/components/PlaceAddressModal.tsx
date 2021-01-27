@@ -155,17 +155,6 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
               />
               <View style={eventStyles.buttonContainer}>
                 <Button
-                  mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-                  uppercase={Platform.OS !== 'ios'}
-                  style={{ flex: 1, marginRight: 5 }}
-                  onPress={() => {
-                    blurInputs();
-                    setVisible(false);
-                  }}
-                >
-                  Annuler
-                </Button>
-                <Button
                   mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                   uppercase={Platform.OS !== 'ios'}
                   onPress={handleSubmit}

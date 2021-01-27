@@ -21,7 +21,7 @@ type Props = StepperViewPageProps & {
   state: EventRequestState;
 };
 
-const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData, state }) => {
+const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData = {}, state }) => {
   const theme = useTheme();
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
@@ -38,7 +38,11 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
     setStartTimeShow(false);
   }, [setStartTimeShow]);
   const showStartDateModal = () => {
-    setStartDateShow(true);
+    if (moment(creationData.start).isSame(creationData.end, 'day')) {
+      setStartDateShow(true);
+    } else {
+      changeStartDate({ date: moment(creationData.start).toDate() });
+    }
   };
   const submit = () => {
     updateEventCreationData({ program: eventProgram });
@@ -49,16 +53,17 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
     setStartDate(new Date(0));
   };
 
-  const changeStartDate = React.useCallback(({ date }) => {
+  const changeStartDate = React.useCallback(({ date }: { date?: Date }) => {
     setStartDateShow(false);
     setStartTimeShow(true);
-    setStartDate(date);
+    if (date) setStartDate(date);
   }, []);
 
   const changeStartTime = ({ hours, minutes }: { hours: number; minutes: number }) => {
     const currentDate = new Date(startDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
     setStartTimeShow(false);
     setStartDate(currentDate);
+    setProgramAddModalVisible(true);
   };
 
   if (!account.loggedIn) {
@@ -170,8 +175,8 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, events } = state;
-  return { account, state: events.state };
+  const { account, events, eventData } = state;
+  return { account, state: events.state, creationData: eventData.creationData };
 };
 
 export default connect(mapStateToProps)(EventAddPageProgram);

@@ -89,15 +89,15 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   const durations = [
     {
       key: '0.25',
-      title: '15m',
+      title: '15 min',
     },
     {
       key: '0.5',
-      title: '30m',
+      title: '30 min',
     },
     {
       key: '0.74',
-      title: '45m',
+      title: '45 min',
     },
     {
       key: '1',
@@ -355,7 +355,15 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   const eventStyles = getEventStyles(theme);
 
   return (
-    <Modal visible={visible} setVisible={setVisible}>
+    <Modal
+      visible={visible}
+      setVisible={(val) => {
+        if (!val) {
+          cancel();
+        }
+        setVisible(val);
+      }}
+    >
       <View style={eventStyles.formContainer}>
         <ScrollView>
           <View style={eventStyles.textInputContainer}>
@@ -449,6 +457,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
                   valid: true,
                 });
                 setDate();
+                setVisible(false);
               }}
             >
               {date.valueOf() === jan1970.valueOf()
@@ -479,17 +488,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
         </ScrollView>
         <View style={{ height: 20 }} />
         <View style={eventStyles.buttonContainer}>
-          <Button
-            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-            uppercase={Platform.OS !== 'ios'}
-            style={{ flex: 1, marginRight: 5 }}
-            onPress={() => {
-              blurInputs();
-              cancel();
-            }}
-          >
-            Annuler
-          </Button>
           <Button
             mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
             uppercase={Platform.OS !== 'ios'}

@@ -19,7 +19,7 @@ import {
 import { Format, useTheme } from '@utils/index';
 
 type EventPlaceSelectModalProps = ModalProps & {
-  type: 'school' | 'place' | 'standalone';
+  type: 'school' | 'place' | 'standalone'|'online';
   schools: SchoolsState;
   places: PlacesState;
   add: (place: EventCreationDataPlace) => void;

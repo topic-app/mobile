@@ -13,6 +13,7 @@ import { Format, useTheme } from '@utils';
 import getAuthStyles from '../styles/Styles';
 import PlaceAddressModal from './PlaceAddressModal';
 import PlaceSelectModal from './PlaceSelectModal';
+import PlaceOnlineModal from './PlaceOnlineModal';
 import PlaceTypeModal from './PlaceTypeModal';
 
 type Props = StepperViewPageProps & {
@@ -23,17 +24,20 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
   const [isPlaceTypeModalVisible, setPlaceTypeModalVisible] = React.useState(false);
   const [isPlaceSelectModalVisible, setPlaceSelectModalVisible] = React.useState(false);
   const [isPlaceAddressModalVisible, setPlaceAddressModalVisible] = React.useState(false);
-  const [placeType, setPlaceType] = React.useState<'school' | 'place' | 'standalone'>('school');
+  const [isPlaceOnlineModalVisible, setPlaceOnlineModalVisible] = React.useState(false);
+  const [placeType, setPlaceType] = React.useState<'school' | 'place' | 'standalone' | 'online'>('school');
 
   const theme = useTheme();
   const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   const [eventPlaces, setEventPlaces] = React.useState<EventCreationDataPlace[]>([]);
-  const toSelectedType = (data: 'school' | 'place' | 'standalone') => {
+  const toSelectedType = (data: 'school' | 'place' | 'standalone' |'online') => {
     setPlaceTypeModalVisible(false);
     if (data === 'standalone') {
       setPlaceAddressModalVisible(true);
+    } else if (data === 'online'){
+      setPlaceOnlineModalVisible(true);
     } else {
       setPlaceType(data);
       setPlaceSelectModalVisible(true);
@@ -71,19 +75,23 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
           data={eventPlaces}
           renderItem={({ item: place }) => {
             return (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ flexGrow: 1, width: 250, marginRight: 20 }}>
+              <View style={{ flexDirection: 'row', width: 270, marginRight: 20 }}>
+                <View style={{ flexGrow: 200 }}>
                   <InlineCard
                     icon={
                       place.type === 'school'
                         ? 'school'
                         : place.type === 'place'
                         ? 'map'
+                        : place.type === 'online'
+                        ? 'link'
                         : 'map-marker'
                     }
                     title={
                       place.type === 'standalone'
                         ? Format.address(place.address)
+                        : place.type === 'online'
+                        ? place.link.replace('http://','').replace('https://','').split(/[/?#]/)[0]
                         : place.tempName ?? 'Lieu inconnu'
                     }
                     onPress={() => {
@@ -133,6 +141,11 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
       <PlaceAddressModal
         visible={isPlaceAddressModalVisible}
         setVisible={setPlaceAddressModalVisible}
+        add={addEventPlace}
+      />
+      <PlaceOnlineModal
+        visible={isPlaceOnlineModalVisible}
+        setVisible={setPlaceOnlineModalVisible}
         add={addEventPlace}
       />
 

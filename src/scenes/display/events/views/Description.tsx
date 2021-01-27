@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { View, FlatList, ActivityIndicator, Platform, Share } from 'react-native';
+import { View, FlatList, ActivityIndicator, Platform, Share, Clipboard } from 'react-native';
 import { Text, Divider, List, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -32,7 +32,7 @@ import {
   Comment,
   EventMyInfo,
 } from '@ts/types';
-import { useTheme, logger, checkPermission, Errors, shareContent } from '@utils/index';
+import { useTheme, logger, checkPermission, Errors, shareContent, handleUrl } from '@utils/index';
 
 import CommentInlineCard from '../../components/Comment';
 import MessageInlineCard from '../components/Message';
@@ -77,6 +77,17 @@ function getPlaceLabels(place: EventPlace) {
         }, ${city}`,
       };
     }
+    case 'online':
+      return {
+        title: 'Évènement en ligne',
+        description: place.link
+          ?.replace('http://', '')
+          ?.replace('https://', '')
+          ?.split(/[/?#]/)?.[0],
+        icon: 'link',
+        onPress: () => handleUrl(place.link),
+        onCopy: () => Clipboard.setString(place.link),
+      };
     default:
       return {
         title: 'Inconnu',
@@ -182,24 +193,38 @@ function EventDisplayDescriptionHeader({
     <View>
       {Array.isArray(event.places) &&
         event.places.map((place) => {
-          const { title, description } = getPlaceLabels(place);
+          const { title, description, icon = 'map-marker', onPress, onCopy } = getPlaceLabels(
+            place,
+          );
           return (
-            <InlineCard
-              key={shortid()}
-              icon="map-marker"
-              title={title}
-              subtitle={description}
-              onPress={() => logger.warn('location press not implemented', place._id)}
-            />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <InlineCard
+                  key={shortid()}
+                  icon={icon}
+                  title={title}
+                  subtitle={description}
+                  onPress={onPress}
+                />
+              </View>
+              {onCopy && (
+                <View style={{ alignSelf: 'center', marginRight: 20 }}>
+                  <PlatformTouchable onPress={onCopy}>
+                    <Icon name="content-copy" size={24} color={colors.text} />
+                  </PlatformTouchable>
+                </View>
+              )}
+            </View>
           );
         })}
 
-      <InlineCard
-        icon="calendar"
-        title={dateString}
-        subtitle={timeString}
-        onPress={() => logger.warn('time pressed, switch to program')}
-      />
+      <InlineCard icon="calendar" title={dateString} subtitle={timeString} />
       <Divider />
       <View style={[eventStyles.description, { marginBottom: 20 }]}>
         <Content parser={event.description?.parser || 'plaintext'} data={event.description?.data} />

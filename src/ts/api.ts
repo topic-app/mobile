@@ -369,7 +369,8 @@ export type ProgramEntry = {
 export type EventPlace =
   | { _id: string; type: 'place'; associatedPlace: PlacePreload }
   | { _id: string; type: 'school'; associatedSchool: SchoolPreload }
-  | { _id: string; type: 'standalone'; address: Address };
+  | { _id: string; type: 'standalone'; address: Address }
+  | { _id: string; type: 'online'; link: string };
 
 type EventMessageBase = {
   date: string;

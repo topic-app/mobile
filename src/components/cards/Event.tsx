@@ -115,7 +115,7 @@ const EventCard: React.FC<EventCardProps> = ({
                   >
                     <Icon
                       color={colors.icon}
-                      name="map-marker"
+                      name={p.type === 'online' ? 'link' : 'map-marker'}
                       style={cardStyles.cardDescription}
                     />
                     <Text
@@ -125,6 +125,11 @@ const EventCard: React.FC<EventCardProps> = ({
                       {p.type === 'standalone' && Format.address(p.address)}
                       {p.type === 'school' && p.associatedSchool?.displayName}
                       {p.type === 'place' && p.associatedPlace?.displayName}
+                      {p.type === 'online' &&
+                        p.link
+                          ?.replace('http://', '')
+                          ?.replace('https://', '')
+                          ?.split(/[/?#]/)?.[0]}
                     </Text>
                   </View>
                 ))}
