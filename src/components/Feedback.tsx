@@ -93,7 +93,7 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
                 uri,
               }}
               onNavigationStateChange={(navState) => {
-                if (navState.url === 'https://feedback.topicapp.fr/close') {
+                if (navState.url === 'https://go.topicapp.fr') {
                   setFeedbackModalVisible(false);
                   setCompleted(true);
                 }
