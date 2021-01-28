@@ -20,6 +20,7 @@ import {
   AnimatingHeader,
   ReportModal,
   CustomTabView,
+  PlatformTouchable,
 } from '@components/index';
 import config from '@constants/config';
 import { Permissions } from '@constants/index';
@@ -374,12 +375,30 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       >
         <View>
           {event.image?.image && (
-            <AutoHeightImage
-              source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
-              width={Dimensions.get('window').width}
-              maxHeight={400}
-              style={[styles.image, { minHeight: 150 }]}
-            />
+            <PlatformTouchable
+              onPress={() =>
+                navigation.push('Root', {
+                  screen: 'Main',
+                  params: {
+                    screen: 'Display',
+                    params: {
+                      screen: 'Image',
+                      params: {
+                        screen: 'Display',
+                        params: { image: event?.image?.image },
+                      },
+                    },
+                  },
+                })
+              }
+            >
+              <AutoHeightImage
+                source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
+                width={Dimensions.get('window').width}
+                maxHeight={400}
+                style={[styles.image, { minHeight: 150 }]}
+              />
+            </PlatformTouchable>
           )}
           <View style={styles.contentContainer}>
             <Title style={styles.title}>{event.title}</Title>
