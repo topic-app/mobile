@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React from 'react';
-import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp } from 'react-native';
+import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp, Platform } from 'react-native';
 import { Appbar, Menu } from 'react-native-paper';
 import shortid from 'shortid';
 
@@ -72,7 +72,8 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
     primaryAction =
       layout === 'desktop' ? null : <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
   } else {
-    primaryAction = hideBack ? null : <Appbar.BackAction onPress={navigation.goBack} />;
+    primaryAction =
+      hideBack || Platform.OS === 'web' ? null : <Appbar.BackAction onPress={navigation.goBack} />;
   }
 
   const secondaryActions = actions.map((item) => (

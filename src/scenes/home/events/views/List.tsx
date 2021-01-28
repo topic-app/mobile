@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/core';
+import { RouteProp, useFocusEffect } from '@react-navigation/core';
 import React from 'react';
 import { Animated, useWindowDimensions, View } from 'react-native';
 import { Subheading } from 'react-native-paper';
@@ -18,9 +18,15 @@ type EventListProps = {
   navigation: HomeTwoScreenNavigationProp<'Event'>;
   route: RouteProp<HomeTwoNavParams, 'Event'>;
   historyEnabled: boolean;
+  locationSelected: boolean;
 };
 
-const EventListScreen: React.FC<EventListProps> = ({ navigation, route, historyEnabled }) => {
+const EventListScreen: React.FC<EventListProps> = ({
+  navigation,
+  route,
+  historyEnabled,
+  locationSelected,
+}) => {
   const [event, setEvent] = React.useState<{
     id: string;
     title: string;
@@ -31,6 +37,15 @@ const EventListScreen: React.FC<EventListProps> = ({ navigation, route, historyE
   const deviceWidth = useWindowDimensions().width;
   const styles = getStyles(theme);
   const { colors } = theme;
+
+  useFocusEffect(() => {
+    if (!locationSelected) {
+      navigation.navigate('Landing', {
+        screen: 'SelectLocation',
+        params: { goBack: false },
+      });
+    }
+  });
 
   const scrollY = new Animated.Value(0);
 
@@ -154,9 +169,9 @@ const EventListScreen: React.FC<EventListProps> = ({ navigation, route, historyE
 };
 
 const mapStateToProps = (state: State) => {
-  const { history } = state.preferences;
+  const { preferences, location } = state;
 
-  return { historyEnabled: history };
+  return { historyEnabled: preferences.history, locationSelected: location.selected };
 };
 
 export default connect(mapStateToProps)(EventListScreen);

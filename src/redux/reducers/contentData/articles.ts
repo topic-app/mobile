@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import {
   ArticlesContentState,
   ArticlesContentActionTypes,
@@ -15,20 +17,23 @@ const initialState: ArticlesContentState = {
   params: {},
   read: [],
   creationData: {},
-  lists: [
-    {
-      id: '0',
-      name: 'Favoris',
-      icon: 'star-outline',
-      items: [],
-    },
-    {
-      id: '1',
-      name: 'A lire plus tard',
-      icon: 'history',
-      items: [],
-    },
-  ],
+  lists:
+    Platform.OS === 'web'
+      ? []
+      : [
+          {
+            id: '0',
+            name: 'Favoris',
+            icon: 'star-outline',
+            items: [],
+          },
+          {
+            id: '1',
+            name: 'A lire plus tard',
+            icon: 'history',
+            items: [],
+          },
+        ],
   quicks: [],
   prefs: {
     categories: ['unread', 'all', 'following'],

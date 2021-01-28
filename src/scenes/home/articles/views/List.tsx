@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/core';
+import { RouteProp, useFocusEffect } from '@react-navigation/core';
 import React from 'react';
 import { Animated, useWindowDimensions, View } from 'react-native';
 import { Subheading } from 'react-native-paper';
@@ -18,9 +18,15 @@ type ArticleListProps = {
   navigation: HomeTwoScreenNavigationProp<'Article'>;
   route: RouteProp<HomeTwoNavParams, 'Article'>;
   historyEnabled: boolean;
+  locationSelected: boolean;
 };
 
-const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation, route, historyEnabled }) => {
+const ArticleListScreen: React.FC<ArticleListProps> = ({
+  navigation,
+  route,
+  historyEnabled,
+  locationSelected,
+}) => {
   const [article, setArticle] = React.useState<{
     id: string;
     title: string;
@@ -31,6 +37,15 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation, route, hist
   const deviceWidth = useWindowDimensions().width;
   const styles = getStyles(theme);
   const { colors } = theme;
+
+  useFocusEffect(() => {
+    if (!locationSelected) {
+      navigation.navigate('Landing', {
+        screen: 'SelectLocation',
+        params: { goBack: false },
+      });
+    }
+  });
 
   const scrollY = new Animated.Value(0);
 
@@ -154,9 +169,9 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation, route, hist
 };
 
 const mapStateToProps = (state: State) => {
-  const { history } = state.preferences;
+  const { preferences, location } = state;
 
-  return { historyEnabled: history };
+  return { historyEnabled: preferences.history, locationSelected: location.selected };
 };
 
 export default connect(mapStateToProps)(ArticleListScreen);

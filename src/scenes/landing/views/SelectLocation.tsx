@@ -128,18 +128,20 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
 
   React.useEffect(() => {
     updateDepartments('initial');
-    Location.getStatus().then(async (status) => {
-      if (status === 'yes') {
-        setUserLocation(true);
-        const coords = await Location.getCoordinates();
-        updateNearSchools('initial', coords.latitude, coords.longitude);
-      } else if (status === 'no') {
-        setButtonVisible(true);
-      } else if (status === 'error') {
-        setLocationError(true);
-      }
-      // else can never use location :(
-    });
+    if (Platform.OS !== 'web') {
+      Location.getStatus().then(async (status) => {
+        if (status === 'yes') {
+          setUserLocation(true);
+          const coords = await Location.getCoordinates();
+          updateNearSchools('initial', coords.latitude, coords.longitude);
+        } else if (status === 'no') {
+          setButtonVisible(true);
+        } else if (status === 'error') {
+          setLocationError(true);
+        }
+        // else can never use location :(
+      });
+    }
   }, []);
 
   // Helper functions to add and remove locations,
@@ -156,6 +158,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   );
 
   const requestUserLocation = () => {
+    if (Platform.OS === 'web') return;
     Location.request().then(async (status) => {
       if (status === 'yes') {
         trackEvent('landing:locate-accept-permission');
@@ -389,7 +392,8 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                 </View>
               </View>
             ) : (
-              buttonVisible && (
+              buttonVisible &&
+              Platform.OS !== 'web' && (
                 <View>
                   <Text>Appuyez ci-dessous pour trouver les écoles autour de vous</Text>
                   <View style={styles.container}>
