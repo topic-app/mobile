@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Linking, Platform, View } from 'react-native';
 import { Text, Subheading, ProgressBar, Card, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import WebView from 'react-native-webview';
@@ -33,6 +33,10 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
   const [rating, setRating] = React.useState<number | null>(null);
   const [completed, setCompleted] = React.useState(false);
 
+  const uri = `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y${
+    rating ? `&main=${rating}` : ''
+  }`;
+
   return (
     <View style={[styles.container, { marginTop: 20 }]}>
       <Card
@@ -40,7 +44,11 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
         style={{ backgroundColor: colors.primary }}
         theme={themes.light}
         onPress={() => {
-          setFeedbackModalVisible(true);
+          if (Platform.OS === 'web') {
+            Linking.openURL(`https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y`);
+          } else {
+            setFeedbackModalVisible(true);
+          }
         }}
       >
         {completed ? (
@@ -63,7 +71,13 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
                   color={colors.text}
                   onPress={() => {
                     setRating(e);
-                    setFeedbackModalVisible(true);
+                    if (Platform.OS === 'web') {
+                      Linking.openURL(
+                        `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y&main=${e}`,
+                      );
+                    } else {
+                      setFeedbackModalVisible(true);
+                    }
                   }}
                 />
               ))}
@@ -71,23 +85,23 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
           </View>
         )}
       </Card>
-      <Modal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}>
-        <View style={{ height: 500, backgroundColor: colors.surface }}>
-          <WebView
-            source={{
-              uri: `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y${
-                rating ? `&main=${rating}` : ''
-              }`,
-            }}
-            onNavigationStateChange={(navState) => {
-              if (navState.url === 'https://feedback.topicapp.fr/close') {
-                setFeedbackModalVisible(false);
-                setCompleted(true);
-              }
-            }}
-          />
-        </View>
-      </Modal>
+      {Platform.OS !== 'web' && (
+        <Modal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}>
+          <View style={{ height: 500, backgroundColor: colors.surface }}>
+            <WebView
+              source={{
+                uri,
+              }}
+              onNavigationStateChange={(navState) => {
+                if (navState.url === 'https://feedback.topicapp.fr/close') {
+                  setFeedbackModalVisible(false);
+                  setCompleted(true);
+                }
+              }}
+            />
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };
