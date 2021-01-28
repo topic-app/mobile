@@ -37,4 +37,5 @@ export * from './BottomSheet';
 export { default as ArticleCard, ARTICLE_CARD_HEADER_HEIGHT } from './cards/Article';
 export { default as EventCard, EVENT_CARD_HEADER_HEIGHT } from './cards/Event';
 export { default as GroupCard } from './cards/Group';
+export { default as UserCard } from './cards/User';
 export { default as PetitionCard } from './cards/Petition';

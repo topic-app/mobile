@@ -251,7 +251,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 40 }}>
                     {user.data?.public || id === account.accountInfo?.accountId ? (
-                      user.data.following.groups.length + user.data.following.users.length
+                      user.data.following?.groups?.length + user.data.following?.users?.length
                     ) : (
                       <Icon name="lock-outline" size={52} color={colors.disabled} />
                     )}
@@ -266,7 +266,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 </View>
               </View>
               <Divider style={{ marginVertical: 10 }} />
-              {!user.data.public && (
+              {!user.data?.public && (
                 <View>
                   <Divider style={{ height: 2, backgroundColor: colors.primary }} />
                   <View
@@ -387,7 +387,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {(user.data.public || id === account.accountInfo?.accountId) && (
+              {(user.data?.public || id === account.accountInfo?.accountId) && (
                 <View>
                   <List.Subheader>Localisation</List.Subheader>
                   <Divider />
@@ -434,7 +434,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {(user.data.public || account.accountInfo?.accountId === id) && (
+              {(user.data?.public || account.accountInfo?.accountId === id) && (
                 <View>
                   <List.Subheader>Abonnements</List.Subheader>
                   <Divider />
