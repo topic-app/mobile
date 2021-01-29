@@ -2,7 +2,13 @@ import React from 'react';
 import { View, Platform, ScrollView, Linking } from 'react-native';
 import { Text, Button, List, Checkbox } from 'react-native-paper';
 
-import { TranslucentStatusBar, Illustration, SafeAreaView, StepperView } from '@components/index';
+import {
+  TranslucentStatusBar,
+  Illustration,
+  SafeAreaView,
+  StepperView,
+  FeedbackCard,
+} from '@components/index';
 import getStyles from '@styles/Styles';
 import { useTheme } from '@utils/index';
 
@@ -40,11 +46,11 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                     <View style={landingStyles.headerContainer}>
                       <View style={landingStyles.centerIllustrationContainer}>
                         <Illustration name="beta-welcome" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Topic · Bêta ouverte</Text>
+                        <Text style={landingStyles.sectionTitle}>Topic · Bêta publique</Text>
                       </View>
                     </View>
                     <View style={landingStyles.contentContainer}>
-                      <Text>Merci d&apos;avoir rejoint la bêta ouverte de Topic !{'\n'}</Text>
+                      <Text>Merci d&apos;avoir rejoint la bêta publique de Topic !{'\n'}</Text>
                       <Text>
                         Avant de commencer, nous aimerions vous donner quelques explications sur le
                         processus de rapport de bugs et de demandes de fonctionnalités.{'\n'}
@@ -160,18 +166,15 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                     </View>
                     <View style={landingStyles.contentContainer}>
                       <Text>
-                        Étant donné que l&apos;application est toujours en bêta, elle risque de
-                        planter assez fréquemment, et vous rencontrerez sûrement des bugs.{'\n'}
+                        Étant donné que l&apos;application est toujours en bêta, elle peut être
+                        instable, et vous rencontrerez sûrement des bugs.{'\n'}
                       </Text>
                       <Text>
                         Les plantages seront reportés automatiquement, toutefois si vous constatez
                         un bug d&apos;affichage, une fonctionnalité qui ne marche pas correctement,
                         ou un autre problème, nous vous demandons de bien vouloir nous donner les
-                        détails.{'\n'}
-                        {Platform.OS === 'ios'
-                          ? 'Vous pouvez faire cela en passant par l’application Testflight et en cliquant sur "Envoyer des commentaires" ou en prenant une screenshot et en cliquant sur "Partager du feedback" après l’avoir annoté.'
-                          : 'Vous pouvez faire cela en recherchant l’application Topic sur le Play Store ou en cliquant sur "Feedback" dans le menu, et en cliquant sur "envoyer des commentaires aux développeurs".'}
-                        {'\n'}
+                        détails. Vous pourrez le faire via l&apos;élément &quot;Feedback&quot; dans{' '}
+                        {Platform.OS === 'ios' ? 'la section Plus' : 'le menu'}.
                       </Text>
                     </View>
                     <View style={landingStyles.contentContainer}>
@@ -205,9 +208,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                     <View style={landingStyles.contentContainer}>
                       <Text>
                         Si vous souhaitez discuter avec les développeurs et les autres
-                        bêta-testeurs, nous vous conseillons de rejoindre le groupe Telegram. Cette
-                        plateforme est entièrement facultatives, toutefois elle vous permettront de
-                        donner votre avis plus facilement.
+                        bêta-testeurs, vous pouvez rejoindre le canal Telegram.
                       </Text>
                       <Button
                         mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
@@ -218,8 +219,17 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         }
                         style={{ flex: 1, marginTop: 20 }}
                       >
-                        Rejoindre le groupe Telegram
+                        Rejoindre le canal Telegram
                       </Button>
+                    </View>
+                    <View style={landingStyles.contentContainer}>
+                      <Text>
+                        Vous trouverez régulièrement des encarts vous permettant de donner votre
+                        avis sur différentes fonctionnalités dans l&apos;application. Ceux-ci
+                        redirigent vers de courts questionnaires ou vous pouvez donner plus de
+                        détails.
+                      </Text>
+                      <FeedbackCard type="welcome" />
                     </View>
                     <View style={landingStyles.contentContainer}>
                       <View style={landingStyles.buttonContainer}>

@@ -24,6 +24,8 @@ const initialState: PreferencesState = {
   youtubeConsent: false,
   useDevServer: false,
   analytics: true,
+  completedFeedback: [],
+  appOpens: 0,
   reduxVersion: Config.reduxVersion,
   ...Config.seedDb.preferences,
 };

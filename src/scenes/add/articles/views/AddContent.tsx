@@ -68,6 +68,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       summary: creationData.summary,
       date: new Date(),
       location: creationData.location,
+      opinion: creationData.opinion,
       group: creationData.group,
       image: creationData.image,
       parser: parser || creationData.parser,

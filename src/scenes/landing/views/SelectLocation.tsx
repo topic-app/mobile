@@ -389,7 +389,8 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                 </View>
               </View>
             ) : (
-              buttonVisible && (
+              buttonVisible &&
+              Platform.OS !== 'web' && (
                 <View>
                   <Text>Appuyez ci-dessous pour trouver les écoles autour de vous</Text>
                   <View style={styles.container}>

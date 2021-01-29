@@ -34,22 +34,12 @@ type AppStackNavigatorProps = {
 const AppStackNavigator: React.FC<AppStackNavigatorProps> = ({ locationSelected, loggedIn }) => {
   return (
     <Stack.Navigator
-      initialRouteName={
-        Platform.OS === 'web' && !loggedIn && !Config.dev.webAllowAnonymous
-          ? 'Auth'
-          : locationSelected
-          ? 'Root'
-          : 'Landing'
-      }
+      initialRouteName={locationSelected ? 'Root' : 'Landing'}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
-      {(Platform.OS !== 'web' || loggedIn || Config.dev.webAllowAnonymous) && (
-        <Stack.Screen name="Root" component={RootNavigator} />
-      )}
-      {(Platform.OS !== 'web' || loggedIn || Config.dev.webAllowAnonymous) && (
-        <Stack.Screen name="Landing" component={LandingStackNavigator} />
-      )}
+      <Stack.Screen name="Root" component={RootNavigator} />
+      <Stack.Screen name="Landing" component={LandingStackNavigator} />
       <Stack.Screen name="Linking" component={LinkingStackNavigator} />
     </Stack.Navigator>
   );

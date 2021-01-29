@@ -91,17 +91,6 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
     );
   };
 
-  const exportAccountFunc = () => {
-    deleteAccount().then(() =>
-      Alert.alert(
-        'Vérifiez vos emails',
-        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
-        [{ text: 'Fermer' }],
-        { cancelable: true },
-      ),
-    );
-  };
-
   return (
     <View style={styles.page}>
       <TranslucentStatusBar />
@@ -306,7 +295,6 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                 contentSingular: "La demande d'exportation de données",
               }}
               error={state.export?.error}
-              retry={exportAccountFunc}
             />
           )}
           <List.Item
@@ -314,14 +302,10 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
             onPress={() =>
               Alert.alert(
                 'Exporter les données ?',
-                'Vous recevrez un email avec un lien pour télécharger vos données.',
+                "Cette fonction n'est pas encore implémentées, veuillez contacter le DPO pour exporter vos données.",
                 [
                   {
                     text: 'Annuler',
-                  },
-                  {
-                    text: 'Exporter',
-                    onPress: deleteAccountFunc,
                   },
                 ],
                 { cancelable: true },
@@ -340,7 +324,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                   },
                   {
                     text: 'Supprimer',
-                    onPress: exportAccountFunc,
+                    onPress: deleteAccountFunc,
                   },
                 ],
                 { cancelable: true },

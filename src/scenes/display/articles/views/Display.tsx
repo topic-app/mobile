@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
 import React from 'react';
-import { View, ActivityIndicator, Animated, Platform, Share } from 'react-native';
+import { View, ActivityIndicator, Animated, Platform, useWindowDimensions } from 'react-native';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -18,7 +18,6 @@ import {
   ReportModal,
   PlatformTouchable,
 } from '@components/index';
-import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import {
   fetchArticle,
@@ -109,9 +108,9 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
-  const following = account.accountInfo?.user?.data.following;
+  const dimensions = useWindowDimensions();
 
-  const [imageWidth, setImageWidth] = React.useState(0);
+  const following = account.accountInfo?.user?.data.following;
 
   const approveArticle = () =>
     articleVerificationApprove(article._id)
@@ -146,7 +145,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   return (
     <View style={styles.page}>
       {article.image?.image && (
-        <View onLayout={({ nativeEvent }) => setImageWidth(nativeEvent.layout.width)}>
+        <View>
           <PlatformTouchable
             onPress={() =>
               navigation.push('Root', {
@@ -157,7 +156,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                     screen: 'Image',
                     params: {
                       screen: 'Display',
-                      params: { image: article.image },
+                      params: { image: article.image?.image },
                     },
                   },
                 },
@@ -166,7 +165,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           >
             <AutoHeightImage
               source={{ uri: getImageUrl({ image: article.image, size: 'full' }) || '' }}
-              width={imageWidth}
+              width={dimensions.width}
               maxHeight={400}
               style={[styles.image, { minHeight: 150 }]}
             />

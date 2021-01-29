@@ -251,7 +251,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 40 }}>
                     {user.data?.public || id === account.accountInfo?.accountId ? (
-                      user.data.following.groups.length + user.data.following.users.length
+                      user.data.following?.groups?.length + user.data.following?.users?.length
                     ) : (
                       <Icon name="lock-outline" size={52} color={colors.disabled} />
                     )}
@@ -266,7 +266,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 </View>
               </View>
               <Divider style={{ marginVertical: 10 }} />
-              {!user.data.public && (
+              {!user.data?.public && (
                 <View>
                   <Divider style={{ height: 2, backgroundColor: colors.primary }} />
                   <View
@@ -387,19 +387,19 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {(user.data.public || id === account.accountInfo?.accountId) && (
+              {(user.data?.public || id === account.accountInfo?.accountId) && (
                 <View>
                   <List.Subheader>Localisation</List.Subheader>
                   <Divider />
                   <View style={{ marginVertical: 10 }}>
-                    {user.data.location.global && (
+                    {user.data.location?.global && (
                       <InlineCard
                         icon="map-marker"
                         title="France Entière"
                         onPress={() => logger.warn('global pressed')}
                       />
                     )}
-                    {user.data.location.schools?.map((school) => (
+                    {user.data.location?.schools?.map((school) => (
                       <InlineCard
                         key={school._id}
                         icon="school"
@@ -419,7 +419,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                         onPress={() => logger.warn(`school ${school._id} pressed!`)}
                       />
                     ))}
-                    {user.data.location.departments?.map((dep) => (
+                    {user.data.location?.departments?.map((dep) => (
                       <InlineCard
                         key={dep._id}
                         icon="map-marker-radius"
@@ -434,7 +434,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                   <View style={{ height: 20 }} />
                 </View>
               )}
-              {(user.data.public || account.accountInfo?.accountId === id) && (
+              {(user.data?.public || account.accountInfo?.accountId === id) && (
                 <View>
                   <List.Subheader>Abonnements</List.Subheader>
                   <Divider />
@@ -446,12 +446,12 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                         title: 'Groupes',
                         component: (
                           <View>
-                            {!user.data?.following.groups?.length && (
+                            {!user.data?.following?.groups?.length && (
                               <View style={[styles.centerIllustrationContainer, styles.container]}>
                                 <Text>Aucun abonnement à un groupe</Text>
                               </View>
                             )}
-                            {user.data?.following.groups?.map((g) => (
+                            {user.data?.following?.groups?.map((g) => (
                               <InlineCard
                                 key={g._id}
                                 avatar={g.avatar}
@@ -482,12 +482,12 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                         title: 'Utilisateurs',
                         component: (
                           <View>
-                            {!user.data?.following.users?.length && (
+                            {!user.data?.following?.users?.length && (
                               <View style={[styles.centerIllustrationContainer, styles.container]}>
                                 <Text>Aucun abonnement à un utilisateur</Text>
                               </View>
                             )}
-                            {user.data.following.users?.map((u) => (
+                            {user.data.following?.users?.map((u) => (
                               <InlineCard
                                 key={u._id}
                                 avatar={u.info?.avatar}

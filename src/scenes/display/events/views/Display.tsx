@@ -9,6 +9,7 @@ import {
   Share,
   ScrollView,
   Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import { Text, Title, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,6 +21,7 @@ import {
   AnimatingHeader,
   ReportModal,
   CustomTabView,
+  PlatformTouchable,
 } from '@components/index';
 import config from '@constants/config';
 import { Permissions } from '@constants/index';
@@ -110,6 +112,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const styles = getStyles(theme);
   const eventStyles = getEventStyles(theme);
   const { colors } = theme;
+  const dimensions = useWindowDimensions();
 
   let event: Event | EventPreload | undefined | null;
   if (useLists && lists?.some((l: EventListItem) => l.items?.some((i) => i._id === id))) {
@@ -374,12 +377,30 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       >
         <View>
           {event.image?.image && (
-            <AutoHeightImage
-              source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
-              width={Dimensions.get('window').width}
-              maxHeight={400}
-              style={[styles.image, { minHeight: 150 }]}
-            />
+            <PlatformTouchable
+              onPress={() =>
+                navigation.push('Root', {
+                  screen: 'Main',
+                  params: {
+                    screen: 'Display',
+                    params: {
+                      screen: 'Image',
+                      params: {
+                        screen: 'Display',
+                        params: { image: event?.image?.image },
+                      },
+                    },
+                  },
+                })
+              }
+            >
+              <AutoHeightImage
+                source={{ uri: getImageUrl({ image: event.image, size: 'full' }) || '' }}
+                width={dimensions.width}
+                maxHeight={400}
+                style={[styles.image, { minHeight: 150 }]}
+              />
+            </PlatformTouchable>
           )}
           <View style={styles.contentContainer}>
             <Title style={styles.title}>{event.title}</Title>

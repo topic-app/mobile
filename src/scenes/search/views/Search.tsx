@@ -16,6 +16,7 @@ import {
   EventCard,
   ErrorMessage,
   GroupCard,
+  UserCard,
 } from '@components/index';
 import { searchArticles, clearArticles } from '@redux/actions/api/articles';
 import { searchEvents, clearEvents } from '@redux/actions/api/events';
@@ -209,7 +210,28 @@ const Search: React.FC<SearchProps> = ({
       data: users,
       func: searchUsers,
       clear: clearUsers,
-      component: (_user: UserPreload) => <View />,
+      component: (user: UserPreload) => (
+        <UserCard
+          user={user}
+          following={account.accountInfo?.user?.data?.following?.users?.some(
+            (u) => u._id === user._id,
+          )}
+          navigate={() =>
+            navigation.navigate('Main', {
+              screen: 'Display',
+              params: {
+                screen: 'User',
+                params: {
+                  screen: 'Display',
+                  params: {
+                    id: user._id,
+                  },
+                },
+              },
+            })
+          }
+        />
+      ),
       state: state.users.search,
     } as Category<'users'>,
   ];

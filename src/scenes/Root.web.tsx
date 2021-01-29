@@ -6,7 +6,7 @@ import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Avatar, Illustration } from '@components';
+import { Avatar, Illustration, MainFeedback } from '@components';
 import { Permissions } from '@constants/index';
 import getStyles from '@styles/Styles';
 import { State, Account } from '@ts/types';
@@ -77,7 +77,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           params: { screen: 'Home2', params: { screen: 'Event' } },
         }),
     },
-    {
+    /* {
       key: 'explore',
       type: 'button',
       icon: 'compass-outline',
@@ -88,7 +88,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           screen: 'Home1',
           params: { screen: 'Home2', params: { screen: 'Explore' } },
         }),
-    },
+    }, */
     {
       key: 'divider1',
       type: 'divider',
@@ -178,6 +178,14 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
         }),
     },
     {
+      key: 'feedback',
+      text: 'Feedback',
+      type: 'button',
+      icon: 'comment-outline',
+      path: '',
+      navigate: () => setFeedbackVisible(true),
+    },
+    {
       key: 'legal',
       text: 'Mentions légales',
       type: 'button',
@@ -204,6 +212,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
   ];
 
   const [active, setActive] = React.useState(items[0].key);
+  const [feedbackVisible, setFeedbackVisible] = React.useState(false);
 
   const isActive = (name: string) => active === name;
 
@@ -302,6 +311,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           onPress={() => setDrawerExpanded(!drawerExpanded)}
         />
       </View>
+      <MainFeedback visible={feedbackVisible} setVisible={setFeedbackVisible} />
     </View>
   );
 };

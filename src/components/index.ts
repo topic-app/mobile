@@ -29,6 +29,8 @@ export { default as Banner } from './Banner';
 export { default as VerificationBanner } from './VerificationBanner';
 export { default as ContentTabView } from './ContentTabView';
 export { default as ContentFlatList, ContentSection } from './ContentFlatList';
+export { default as FeedbackCard } from './Feedback';
+export { default as MainFeedback } from './MainFeedback';
 
 export { default as BottomSheet } from './BottomSheet';
 export * from './BottomSheet';
@@ -36,4 +38,5 @@ export * from './BottomSheet';
 export { default as ArticleCard, ARTICLE_CARD_HEADER_HEIGHT } from './cards/Article';
 export { default as EventCard, EVENT_CARD_HEADER_HEIGHT } from './cards/Event';
 export { default as GroupCard } from './cards/Group';
+export { default as UserCard } from './cards/User';
 export { default as PetitionCard } from './cards/Petition';

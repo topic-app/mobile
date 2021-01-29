@@ -1,4 +1,5 @@
 import * as Permissions from 'expo-permissions';
+import { Platform } from 'react-native';
 import LocationService from 'react-native-geolocation-service';
 
 import logger from './logger';
@@ -9,6 +10,7 @@ export namespace Location {
    * @returns String indicating whether location can be requested or not
    */
   export async function getStatus(): Promise<'yes' | 'no' | 'never' | 'error'> {
+    if (Platform.OS === 'web') return 'no';
     let result: Permissions.PermissionResponse;
     try {
       result = await Permissions.getAsync(Permissions.LOCATION);
@@ -32,6 +34,7 @@ export namespace Location {
    * @returns String indicating whether location can be requested or not
    */
   export async function request(): Promise<'yes' | 'no' | 'never' | 'error'> {
+    if (Platform.OS === 'web') return 'no';
     let result: Permissions.PermissionResponse;
     try {
       result = await Permissions.askAsync(Permissions.LOCATION);

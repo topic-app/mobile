@@ -119,7 +119,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
           Suivant
         </Button>
       </View>
-      {Platform.OS !== 'web' && (
+      {/* Platform.OS !== 'web' && (
         <View style={[styles.container, { marginTop: 40 }]}>
           <Card
             elevation={0}
@@ -138,7 +138,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
             </View>
           </Card>
         </View>
-      )}
+      ) */}
     </View>
   );
 };

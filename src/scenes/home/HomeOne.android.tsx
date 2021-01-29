@@ -12,7 +12,13 @@ import { Drawer, Title, ProgressBar, Subheading } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, Avatar, Illustration, CollapsibleView } from '@components/index';
+import {
+  ErrorMessage,
+  Avatar,
+  Illustration,
+  CollapsibleView,
+  MainFeedback,
+} from '@components/index';
 import { Permissions } from '@constants/index';
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
@@ -90,6 +96,8 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
     fetchGroups();
     fetchWaitingGroups();
   };
+
+  const [feedbackVisible, setFeedbackVisible] = React.useState(false);
 
   const locationAccordionItems: React.ReactElement[] = [];
   location.schoolData.forEach((school) => {
@@ -285,7 +293,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
           icon="comment-outline"
           onPress={() => {
             navigation.closeDrawer();
-            Linking.openURL('https://play.google.com/store/apps/details?id=fr.topicapp.topic');
+            setFeedbackVisible(true);
           }}
         />
         <Drawer.Item
@@ -300,6 +308,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
           }}
         />
       </Drawer.Section>
+      <MainFeedback visible={feedbackVisible} setVisible={setFeedbackVisible} />
     </DrawerContentScrollView>
   );
 };

@@ -1,10 +1,10 @@
-import { RouteProp } from '@react-navigation/core';
+import { RouteProp, useFocusEffect } from '@react-navigation/core';
 import React from 'react';
 import { Animated, useWindowDimensions, View } from 'react-native';
 import { Subheading } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { AnimatingHeader, Illustration } from '@components';
+import { AnimatingHeader, FeedbackCard, Illustration } from '@components';
 import { Config } from '@constants';
 import getStyles from '@styles/Styles';
 import { State } from '@ts/types';
@@ -18,9 +18,17 @@ type ArticleListProps = {
   navigation: HomeTwoScreenNavigationProp<'Article'>;
   route: RouteProp<HomeTwoNavParams, 'Article'>;
   historyEnabled: boolean;
+  locationSelected: boolean;
+  appOpens: number;
 };
 
-const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation, route, historyEnabled }) => {
+const ArticleListScreen: React.FC<ArticleListProps> = ({
+  navigation,
+  route,
+  historyEnabled,
+  locationSelected,
+  appOpens,
+}) => {
   const [article, setArticle] = React.useState<{
     id: string;
     title: string;
@@ -31,6 +39,15 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation, route, hist
   const deviceWidth = useWindowDimensions().width;
   const styles = getStyles(theme);
   const { colors } = theme;
+
+  useFocusEffect(() => {
+    if (!locationSelected) {
+      navigation.navigate('Landing', {
+        screen: 'SelectLocation',
+        params: { goBack: false },
+      });
+    }
+  });
 
   const scrollY = new Animated.Value(0);
 
@@ -149,14 +166,29 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation, route, hist
           </View>
         </>
       ) : null}
+      {appOpens > 2 && (
+        <View
+          style={{
+            position: 'absolute',
+            alignSelf: 'flex-end',
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
+          <FeedbackCard closable type="thirdopen" />
+        </View>
+      )}
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { history } = state.preferences;
-
-  return { historyEnabled: history };
+  const { preferences, location } = state;
+  return {
+    historyEnabled: preferences.history,
+    locationSelected: location.selected,
+    appOpens: preferences.appOpens,
+  };
 };
 
 export default connect(mapStateToProps)(ArticleListScreen);

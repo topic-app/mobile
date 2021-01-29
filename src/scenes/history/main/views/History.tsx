@@ -3,7 +3,7 @@ import { View, ScrollView } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { TranslucentStatusBar, CustomHeaderBar } from '@components/index';
+import { TranslucentStatusBar, CustomHeaderBar, FeedbackCard } from '@components/index';
 import getStyles from '@styles/Styles';
 import { ArticleReadItem, Preferences, State } from '@ts/types';
 import { useTheme } from '@utils/index';
@@ -59,6 +59,9 @@ const MainHistory: React.FC<MainHistoryProps> = ({ navigation, preferences }) =>
         ) : (
           <List.Item title="TODO" />
         )}
+        <View style={{ marginTop: 20 }}>
+          <FeedbackCard type="recommendations" />
+        </View>
       </ScrollView>
     </View>
   );

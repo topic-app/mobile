@@ -77,13 +77,14 @@ type PlatformBackButtonProps = {
   onPress: () => void;
 };
 
-const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) => (
-  <PlatformIconButton
-    icon="arrow-left"
-    androidIcon="arrow-left"
-    iosIcon="chevron-left"
-    onPress={onPress}
-  />
-);
+const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) =>
+  Platform.OS === 'web' ? null : (
+    <PlatformIconButton
+      icon="arrow-left"
+      androidIcon="arrow-left"
+      iosIcon="chevron-left"
+      onPress={onPress}
+    />
+  );
 
 export { PlatformBackButton, PlatformIconButton, PlatformTouchable };

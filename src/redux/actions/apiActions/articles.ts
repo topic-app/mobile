@@ -14,6 +14,7 @@ function articleAddCreator({
   title,
   date,
   location,
+  opinion,
   group,
   image,
   summary,
@@ -45,6 +46,7 @@ function articleAddCreator({
             author: getState().account.accountInfo?.accountId,
             group,
             image,
+            opinion,
             summary,
             tags,
             content: {

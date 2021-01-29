@@ -4,6 +4,7 @@ import {
   MaterialBottomTabNavigationProp,
 } from '@react-navigation/material-bottom-tabs';
 import React from 'react';
+import { Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import getNavigatorStyles from '@styles/NavStyles';
@@ -75,7 +76,9 @@ function HomeTwoNavigator() {
       <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
       <Tab.Screen name="Event" component={EventList} options={{ title: 'Évènements' }} />
       {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
-      <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
+      {Platform.OS !== 'web' && (
+        <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
+      )}
     </Tab.Navigator>
   );
 }

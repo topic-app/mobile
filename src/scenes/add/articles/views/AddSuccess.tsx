@@ -6,7 +6,13 @@ import { Text, Button, Divider, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Illustration, ArticleCard, ErrorMessage, SafeAreaView } from '@components/index';
+import {
+  Illustration,
+  ArticleCard,
+  ErrorMessage,
+  SafeAreaView,
+  FeedbackCard,
+} from '@components/index';
 import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
@@ -114,7 +120,7 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
               </View>
             ))}
         </View>
-        <View style={{ marginBottom: 30 }}>
+        <View style={{ marginBottom: 20 }}>
           <View style={[styles.container, { marginTop: 20 }]}>
             <Text style={{ color: colors.disabled, marginBottom: 5, marginLeft: 10 }}>
               Lien de partage
@@ -175,6 +181,9 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
               </View>
             </Card>
           </View>
+        </View>
+        <View style={{ marginBottom: 30 }}>
+          <FeedbackCard type="articleadd" />
         </View>
       </ScrollView>
       <Divider />
