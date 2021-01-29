@@ -9,8 +9,9 @@ Code source pour le projet d'application mobile écrit avec React-Native et Type
 
 [![S'inscrire à la bêta](https://img.shields.io/static/v1?label=&message=S'inscrire%20à%20la%20bêta&color=592989)](https://beta.topicapp.fr)
 [![Rejoindre chat.topicapp.fr](https://img.shields.io/static/v1?label=&message=Rejoindre%20chat.topicapp.fr&color=f5455c)](https://chat.topicapp.fr/register)
-[![Pipeline status](https://gitlab.com/topicapp/mobile/badges/master/pipeline.svg)](https://gitlab.com/topicapp/mobile/~/commits/master)
-[![Latest release](https://badgen.net/gitlab/release/topicapp/mobile)](https://gitlab.com/topicapp/mobile/~/releases)
+[![AGPL-3.0 License](https://img.shields.io/badge/license-AGPL--3.0-brightgreen)](/LICENSE.md)
+[![Pipeline status](https://gitlab.com/topicapp/mobile/badges/master/pipeline.svg)](https://gitlab.com/topicapp/mobile/-/commits/master)
+[![Latest release](https://badgen.net/gitlab/release/topicapp/mobile)](https://gitlab.com/topicapp/mobile/-/releases)
 [![Registry](https://badgen.net/badge/registry/gitlab/cyan)](https://gitlab.com/topicapp/mobile/container_registry)
 
 </div>
@@ -21,6 +22,7 @@ Code source pour le projet d'application mobile écrit avec React-Native et Type
 Il y a pleins de façons de contribuer au projet, même si vous n'avez pas de connaissances en programmation !
 
 Voila quelque exemples :
+
 - [S'inscrire à la bêta](https://beta.topicapp.fr) et trouver des bugs
 - Encourager votre lycée ou des associations à rejoindre Topic
 
@@ -33,6 +35,7 @@ Visitez le [wiki](https://gitlab.com/topicapp/mobile/~/wiki/Home) pour plus d'in
 ## Contributeurs
 
 ##### L'équipe
+
 - [Tom Ruchier-Berquet](https://gitlab.com/tomrb) : Président, Fondateur, Responsable Communication
 - [Alexander Nitters](https://gitlab.com/al340) : Trésorier, Développeur, Responsable Technique
 - [Benjamin Sengupta](https://gitlab.com/bensengupta) : Développeur, Responsable Frontend
@@ -43,6 +46,7 @@ Visitez le [wiki](https://gitlab.com/topicapp/mobile/~/wiki/Home) pour plus d'in
 - [Baptiste Zigmann](https://gitlab.com/bazig) : Développeur, Frontend
 
 ##### Autres
+
 - [Alan Gueite](https://gitlab.com/alangueite)
 - [Jérémy Hendrikse](https://gitlab.com/jeremy_i8)
 
