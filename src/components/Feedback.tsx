@@ -1,7 +1,6 @@
 import React from 'react';
-import { Linking, Platform, View } from 'react-native';
-import { Text, Subheading, ProgressBar, Card, IconButton } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Linking, Platform, View, ActivityIndicator } from 'react-native';
+import { Text, Card, IconButton } from 'react-native-paper';
 import WebView from 'react-native-webview';
 import { connect } from 'react-redux';
 
@@ -53,9 +52,11 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
   const [rating, setRating] = React.useState<number | null>(null);
   const [completed, setCompleted] = React.useState(false);
 
-  const uri = `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y${
-    rating ? `&main=${rating}` : ''
-  }`;
+  let uri = `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y`;
+
+  if (rating) {
+    uri += `&main=${rating}`;
+  }
 
   if (preferences.completedFeedback?.includes(type) && !completed) {
     return null;
@@ -92,7 +93,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
               { flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center' },
             ]}
           >
-            <Text style={{ color: colors.text, fontSize: 17 }}>Merci d&apos;avoir répondu !</Text>
+            <Text style={{ color: 'white', fontSize: 17 }}>Merci d&apos;avoir répondu !</Text>
             {closable && (
               <View
                 style={{
@@ -105,7 +106,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                 <IconButton
                   icon="close"
                   size={28}
-                  color={colors.disabled}
+                  color="lightgray"
                   onPress={() => {
                     setCompleted(false);
                   }}
@@ -125,7 +126,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                 <IconButton
                   icon="close"
                   size={28}
-                  color={colors.disabled}
+                  color="lightgray"
                   onPress={() => {
                     updatePrefs({
                       completedFeedback: [...(preferences.completedFeedback || []), type],
@@ -134,16 +135,18 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                 />
               </View>
             )}
-            <Text style={{ color: colors.text, flex: 1, fontSize: 17 }}>
+            <Text style={{ color: 'white', flex: 1, fontSize: 17 }}>
               Donnez votre avis sur {info.name}
             </Text>
             <View style={{ flexDirection: 'row', marginBottom: -5 }}>
-              {[1, 2, 3, 4, 5].map((e) => (
+              {[1, 2, 3, 4, 5].map((e, key) => (
                 <IconButton
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={key}
                   icon="star-outline"
                   style={{ alignSelf: 'center' }}
                   size={32}
-                  color={colors.text}
+                  color="white"
                   onPress={() => {
                     setRating(e);
                     if (Platform.OS === 'web') {
@@ -168,9 +171,22 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
         <Modal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}>
           <View style={{ height: 500, backgroundColor: colors.surface }}>
             <WebView
-              source={{
-                uri,
-              }}
+              source={{ uri }}
+              startInLoadingState
+              renderLoading={() => (
+                <View
+                  style={{
+                    flex: 1,
+                    position: 'absolute',
+                    height: '100%',
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ActivityIndicator size="large" color={colors.primary} />
+                </View>
+              )}
               onNavigationStateChange={(navState) => {
                 if (
                   navState.url.includes('go.topicapp.fr') ||
