@@ -1,7 +1,15 @@
 import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
 import React from 'react';
-import { View, ActivityIndicator, Animated, Platform, Share, Dimensions } from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  Animated,
+  Platform,
+  Share,
+  Dimensions,
+  useWindowDimensions,
+} from 'react-native';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -18,7 +26,6 @@ import {
   ReportModal,
   PlatformTouchable,
 } from '@components/index';
-import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import {
   fetchArticle,
@@ -109,6 +116,8 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
+  const dimensions = useWindowDimensions();
+
   const following = account.accountInfo?.user?.data.following;
 
   const approveArticle = () =>
@@ -164,7 +173,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           >
             <AutoHeightImage
               source={{ uri: getImageUrl({ image: article.image, size: 'full' }) || '' }}
-              width={Dimensions.get('window').width}
+              width={dimensions.width}
               maxHeight={400}
               style={[styles.image, { minHeight: 150 }]}
             />
