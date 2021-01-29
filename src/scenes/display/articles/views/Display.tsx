@@ -1,15 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
 import React from 'react';
-import {
-  View,
-  ActivityIndicator,
-  Animated,
-  Platform,
-  Share,
-  Dimensions,
-  useWindowDimensions,
-} from 'react-native';
+import { View, ActivityIndicator, Animated, Platform, useWindowDimensions } from 'react-native';
 import { Text, Title, Divider, List, Card, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
