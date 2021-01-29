@@ -27,9 +27,10 @@ const feedbackElements = {
 type Props = {
   type: keyof typeof feedbackElements;
   preferences: PreferencesState;
+  closable?: boolean;
 };
 
-const FeedbackCard: React.FC<Props> = ({ type, preferences }) => {
+const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) => {
   const info = feedbackElements[type];
 
   const theme = useTheme();
@@ -67,30 +68,44 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences }) => {
         }}
       >
         {completed ? (
-          <View style={[styles.centerIllustrationContainer, styles.container]}>
+          <View
+            style={[styles.centerIllustrationContainer, styles.container, { flexDirection: 'row' }]}
+          >
             <Text style={{ color: colors.text, flex: 1, fontSize: 17 }}>
               Merci d&apos;avoir répondu !
             </Text>
-          </View>
-        ) : (
-          <View style={[styles.centerIllustrationContainer, styles.container]}>
-            <View
-              style={{
-                position: 'absolute',
-                alignSelf: 'flex-end',
-              }}
-            >
+            {closable && (
               <IconButton
                 icon="close"
                 size={28}
                 color={colors.disabled}
                 onPress={() => {
-                  updatePrefs({
-                    completedFeedback: [...(preferences.completedFeedback || []), type],
-                  });
+                  setCompleted(false);
                 }}
               />
-            </View>
+            )}
+          </View>
+        ) : (
+          <View style={[styles.centerIllustrationContainer, styles.container]}>
+            {closable && (
+              <View
+                style={{
+                  position: 'absolute',
+                  alignSelf: 'flex-end',
+                }}
+              >
+                <IconButton
+                  icon="close"
+                  size={28}
+                  color={colors.disabled}
+                  onPress={() => {
+                    updatePrefs({
+                      completedFeedback: [...(preferences.completedFeedback || []), type],
+                    });
+                  }}
+                />
+              </View>
+            )}
             <Text style={{ color: colors.text, flex: 1, fontSize: 17 }}>
               Donnez votre avis sur {info.name}
             </Text>

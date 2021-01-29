@@ -175,7 +175,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
             width: '100%',
           }}
         >
-          <FeedbackCard type="thirdopen" />
+          <FeedbackCard closable type="thirdopen" />
         </View>
       )}
     </View>
