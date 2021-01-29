@@ -5,7 +5,7 @@
   La malette à outils de l'engagement citoyen.
 </h2>
 
-Code source pour le projet d'application mobile écrit en React-Native et TypeScript.
+Code source pour le projet d'application mobile écrit avec React-Native et TypeScript.
 
 [![S'inscrire à la bêta](https://img.shields.io/static/v1?label=&message=S'inscrire%20à%20la%20bêta&color=592989)](https://beta.topicapp.fr)
 [![Rejoindre chat.topicapp.fr](https://img.shields.io/static/v1?label=&message=Rejoindre%20chat.topicapp.fr&color=f5455c)](https://chat.topicapp.fr/register)
@@ -16,19 +16,19 @@ Code source pour le projet d'application mobile écrit en React-Native et TypeSc
 </div>
 <br><br>
 
-## Documentation
-
-Visitez le [wiki](https://gitlab.com/topicapp/mobile/~/wiki/Home) pour plus d'infos.
-
 ## Contribuer
 
 Il y a pleins de façons de contribuer au projet, même si vous n'avez pas de connaissances en programmation !
 
 Voila quelque exemples :
-- S'inscrire à la bêta et trouver des bugs
+- [S'inscrire à la bêta](https://beta.topicapp.fr) et trouver des bugs
 - Encourager votre lycée ou des associations à rejoindre Topic
 
 N'hésitez pas à créer un compte sur [chat.topicapp.fr](https://chat.topicapp.fr/register) pour communiquer avec les développeurs.
+
+## Documentation
+
+Visitez le [wiki](https://gitlab.com/topicapp/mobile/~/wiki/Home) pour plus d'infos.
 
 ## Contributeurs
 
