@@ -13,7 +13,7 @@ import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/da
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
 import themes from '@styles/Theme';
-import { Preferences, State } from '@ts/types';
+import { Preferences, PreferencesState, State } from '@ts/types';
 import { logger, useSafeAreaInsets } from '@utils/index';
 import { trackPageview } from '@utils/plausible';
 
@@ -26,6 +26,7 @@ type Props = {
   useDevServer: boolean;
   reduxVersion: number;
   appOpens: number;
+  preferences: PreferencesState;
 };
 
 const StoreApp: React.FC<Props> = ({
@@ -34,6 +35,7 @@ const StoreApp: React.FC<Props> = ({
   useDevServer,
   reduxVersion,
   appOpens,
+  preferences,
 }) => {
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
     (useSystemTheme && Appearance.getColorScheme()) || 'light',
@@ -60,7 +62,10 @@ const StoreApp: React.FC<Props> = ({
         updatePrefs({ analytics: true });
       }
       if (currentVersion < 3) {
-        updatePrefs({ completedFeedback: [], appOpens: 0 });
+        updatePrefs({
+          completedFeedback: preferences.completedFeedback || [],
+          appOpens: preferences.appOpens || 0,
+        });
       }
       // Add all migration scripts here in descending order
       updatePrefs({ reduxVersion: Config.reduxVersion });
@@ -190,8 +195,9 @@ const StoreApp: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { useSystemTheme, theme, useDevServer, reduxVersion, appOpens } = state.preferences;
-  return { useSystemTheme, theme, useDevServer, reduxVersion, appOpens };
+  const { preferences } = state;
+  const { useSystemTheme, theme, useDevServer, reduxVersion, appOpens } = preferences;
+  return { useSystemTheme, theme, useDevServer, reduxVersion, appOpens, preferences };
 };
 
 export default connect(mapStateToProps)(StoreApp);
