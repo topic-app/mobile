@@ -4,7 +4,7 @@ import { ProgressBar, Title, List, Divider, Subheading } from 'react-native-pape
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
-import { Avatar, ErrorMessage, Illustration } from '@components/index';
+import { Avatar, ErrorMessage, Illustration, MainFeedback } from '@components/index';
 import { Permissions } from '@constants/index';
 import { fetchLocationData } from '@redux/actions/data/location';
 import getNavigatorStyles from '@styles/NavStyles';
@@ -27,6 +27,8 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
   const { colors } = theme;
 
   const insets = useSafeAreaInsets();
+
+  const [feedbackVisible, setFeedbackVisible] = React.useState(false);
 
   return (
     <View style={styles.page}>
@@ -205,6 +207,13 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
             }}
           />
           <List.Item
+            title="Feedback"
+            left={() => <List.Icon icon="comment-outline" />}
+            onPress={() => {
+              setFeedbackVisible(true);
+            }}
+          />
+          <List.Item
             title="À propos"
             left={() => <List.Icon icon="information-outline" />}
             onPress={() => {
@@ -216,6 +225,7 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
           />
         </List.Section>
       </ScrollView>
+      <MainFeedback visible={feedbackVisible} setVisible={setFeedbackVisible} />
     </View>
   );
 };

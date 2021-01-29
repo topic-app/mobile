@@ -3,13 +3,15 @@ import { Linking, Platform, View } from 'react-native';
 import { Text, Subheading, ProgressBar, Card, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import WebView from 'react-native-webview';
+import { connect } from 'react-redux';
 
+import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
+import { PreferencesState, State } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import Modal from './Modal';
-import { PlatformTouchable } from './PlatformComponents';
 
 const feedbackElements = {
   welcome: {
@@ -20,9 +22,10 @@ const feedbackElements = {
 
 type Props = {
   type: keyof typeof feedbackElements;
+  preferences: PreferencesState;
 };
 
-const FeedbackCard: React.FC<Props> = ({ type }) => {
+const FeedbackCard: React.FC<Props> = ({ type, preferences }) => {
   const info = feedbackElements[type];
 
   const theme = useTheme();
@@ -37,6 +40,10 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
     rating ? `&main=${rating}` : ''
   }`;
 
+  if (preferences.completedFeedback?.includes(type) && !completed) {
+    return null;
+  }
+
   return (
     <View style={[styles.container, { marginTop: 20 }]}>
       <Card
@@ -46,6 +53,10 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
         onPress={() => {
           if (Platform.OS === 'web') {
             Linking.openURL(`https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y`);
+            setCompleted(true);
+            updatePrefs({
+              completedFeedback: [...(preferences.completedFeedback || []), type],
+            });
           } else {
             setFeedbackModalVisible(true);
           }
@@ -75,6 +86,10 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
                       Linking.openURL(
                         `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y&main=${e}`,
                       );
+                      setCompleted(true);
+                      updatePrefs({
+                        completedFeedback: [...(preferences.completedFeedback || []), type],
+                      });
                     } else {
                       setFeedbackModalVisible(true);
                     }
@@ -93,9 +108,15 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
                 uri,
               }}
               onNavigationStateChange={(navState) => {
-                if (navState.url === 'https://go.topicapp.fr') {
+                if (
+                  navState.url.includes('go.topicapp.fr') ||
+                  navState.url.includes('www.topicapp.fr')
+                ) {
                   setFeedbackModalVisible(false);
                   setCompleted(true);
+                  updatePrefs({
+                    completedFeedback: [...(preferences.completedFeedback || []), type],
+                  });
                 }
               }}
             />
@@ -106,4 +127,11 @@ const FeedbackCard: React.FC<Props> = ({ type }) => {
   );
 };
 
-export default FeedbackCard;
+const mapStateToProps = (state: State) => {
+  const { preferences } = state;
+  return {
+    preferences,
+  };
+};
+
+export default connect(mapStateToProps)(FeedbackCard);

@@ -173,11 +173,8 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         Les plantages seront reportés automatiquement, toutefois si vous constatez
                         un bug d&apos;affichage, une fonctionnalité qui ne marche pas correctement,
                         ou un autre problème, nous vous demandons de bien vouloir nous donner les
-                        détails.{'\n'}
-                        {Platform.OS === 'ios'
-                          ? 'Vous pouvez faire cela en passant par l’application Testflight et en cliquant sur "Envoyer des commentaires" ou en prenant une screenshot et en cliquant sur "Partager du feedback" après l’avoir annoté.'
-                          : 'Vous pouvez faire cela en recherchant l’application Topic sur le Play Store ou en cliquant sur "Feedback" dans le menu, et en cliquant sur "envoyer des commentaires aux développeurs".'}
-                        {'\n'}
+                        détails. Vous pourrez le faire via l&apos;élément &quot;Feedback&quot; dans{' '}
+                        {Platform.OS === 'ios' ? 'la section Plus' : 'le menu'}.
                       </Text>
                     </View>
                     <View style={landingStyles.contentContainer}>

@@ -192,6 +192,7 @@ export type Preferences = {
   youtubeConsent: boolean;
   useDevServer: boolean;
   analytics: boolean;
+  completedFeedback: string[];
   reduxVersion: number;
 };
 
