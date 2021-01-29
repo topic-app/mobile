@@ -22,6 +22,14 @@ const feedbackElements = {
     id: '798293',
     name: "l'application",
   },
+  accountcreate: {
+    id: '525442',
+    name: 'la création de compte',
+  },
+  articleadd: {
+    id: '368491',
+    name: "l'écriture d'article",
+  },
 };
 
 type Props = {
