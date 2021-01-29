@@ -59,6 +59,9 @@ const StoreApp: React.FC<Props> = ({
       if (currentVersion < 2) {
         updatePrefs({ analytics: true });
       }
+      if (currentVersion < 3) {
+        updatePrefs({ completedFeedback: [], appOpens: 0 });
+      }
       // Add all migration scripts here in descending order
       updatePrefs({ reduxVersion: Config.reduxVersion });
     }

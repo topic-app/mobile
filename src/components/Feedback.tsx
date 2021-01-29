@@ -77,7 +77,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                   );
                   setCompleted(true);
                   updatePrefs({
-                    completedFeedback: [...(preferences.completedFeedback || []), type],
+                    completedFeedback: [...preferences.completedFeedback, type],
                   });
                 } else {
                   setFeedbackModalVisible(true);
@@ -128,7 +128,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                   color={colors.disabled}
                   onPress={() => {
                     updatePrefs({
-                      completedFeedback: [...(preferences.completedFeedback || []), type],
+                      completedFeedback: [...preferences.completedFeedback, type],
                     });
                   }}
                 />
@@ -152,7 +152,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                       );
                       setCompleted(true);
                       updatePrefs({
-                        completedFeedback: [...(preferences.completedFeedback || []), type],
+                        completedFeedback: [...preferences.completedFeedback, type],
                       });
                     } else {
                       setFeedbackModalVisible(true);
@@ -179,7 +179,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                   setFeedbackModalVisible(false);
                   setCompleted(true);
                   updatePrefs({
-                    completedFeedback: [...(preferences.completedFeedback || []), type],
+                    completedFeedback: [...preferences.completedFeedback, type],
                   });
                 }
               }}
