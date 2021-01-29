@@ -17,7 +17,7 @@ Code source pour le projet d'application mobile écrit en React-Native et TypeSc
 - [Contribuer](#contribuer)
 - [Documentation](#documentation)
 - [FAQ](#faq)
-- [L'équipe](#lquipe)
+- [Contributeurs](#contributeurs)
 - [License](#license)
 
 ## Documentation
@@ -31,17 +31,28 @@ Il y a pleins de façons de contribuer au projet, même si vous n'avez pas de co
 Voila quelque exemples :
 - S'inscrire à la bêta et trouver des bugs
 - Encourager votre lycée ou des associations à rejoindre Topic
-- 
 
-Plus de détails dans le [wiki](https://gitlab.com/topicapp/mobile/~/wiki/Home).
+N'hésitez pas à créer un compte sur [chat.topicapp.fr](https://chat.topicapp.fr/register) pour communiquer avec les développeurs.
 
 ## FAQ
 
 A faire
 
-## L'équipe
+## Contributeurs
 
-A faire
+##### L'équipe
+- [Tom Ruchier-Berquet](https://gitlab.com/tomrb) : Président, Fondateur, Responsable Communication
+- [Alexander Nitters](https://gitlab.com/al340) : Trésorier, Développeur, Responsable Technique
+- [Benjamin Sengupta](https://gitlab.com/bensengupta) : Développeur, Responsable Frontend
+- [Axel Martin](https://gitlab.com/axel.dpo) : Secrétaire Général, DPO
+- [Ysée Laplanche](https://gitlab.com/ysee.laplanche) : Développeuse, Frontend
+- [Romain Chardiny](https://gitlab.com/romch007) : Développeur, Responsable Backend
+- [Paul Giroux](https://gitlab.com/paul.giroux97) : Secrétaire général adjoint, Communication
+- [Baptiste Zigmann](https://gitlab.com/bazig) : Développeur, Frontend
+
+##### Autres
+- [Alan Gueite](https://gitlab.com/alangueite)
+- [Jérémy Hendrikse](https://gitlab.com/jeremy_i8)
 
 ## License
 
