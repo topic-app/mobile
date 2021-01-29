@@ -3,7 +3,7 @@ import { Platform, View, FlatList, Alert } from 'react-native';
 import { Text, Button, Divider, Snackbar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Illustration } from '@components/index';
+import { FeedbackCard, Illustration } from '@components/index';
 import { updateGroups } from '@redux/actions/api/groups';
 import { fetchAccount } from '@redux/actions/data/account';
 import { resendVerification } from '@redux/actions/data/profile';
@@ -36,9 +36,14 @@ const AuthCreateSuccess: React.FC<AuthCreateSuccessProps> = ({ navigation, locat
         data={groups}
         renderItem={(item) => null /* <Text>{JSON.stringify(item)}</Text> */}
         ListHeaderComponent={() => (
-          <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
-            <Illustration name="auth-register-success" height={200} width={200} />
-            <Text style={authStyles.title}>Compte créé</Text>
+          <View>
+            <View style={[styles.centerIllustrationContainer, { marginTop: 40 }]}>
+              <Illustration name="auth-register-success" height={200} width={200} />
+              <Text style={authStyles.title}>Compte créé</Text>
+            </View>
+            <View style={{ marginTop: 30 }}>
+              <FeedbackCard type="accountcreate" />
+            </View>
           </View>
         )}
       />

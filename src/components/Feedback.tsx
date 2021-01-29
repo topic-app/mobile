@@ -30,6 +30,10 @@ const feedbackElements = {
     id: '368491',
     name: "l'écriture d'article",
   },
+  recommendations: {
+    id: '935254',
+    name: 'les recommendations',
+  },
 };
 
 type Props = {
@@ -63,34 +67,50 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
         elevation={0}
         style={{ backgroundColor: colors.primary }}
         theme={themes.light}
-        onPress={() => {
-          if (Platform.OS === 'web') {
-            Linking.openURL(`https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y`);
-            setCompleted(true);
-            updatePrefs({
-              completedFeedback: [...(preferences.completedFeedback || []), type],
-            });
-          } else {
-            setFeedbackModalVisible(true);
-          }
-        }}
+        onPress={
+          completed
+            ? undefined
+            : () => {
+                if (Platform.OS === 'web') {
+                  Linking.openURL(
+                    `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y`,
+                  );
+                  setCompleted(true);
+                  updatePrefs({
+                    completedFeedback: [...(preferences.completedFeedback || []), type],
+                  });
+                } else {
+                  setFeedbackModalVisible(true);
+                }
+              }
+        }
       >
         {completed ? (
           <View
-            style={[styles.centerIllustrationContainer, styles.container, { flexDirection: 'row' }]}
+            style={[
+              styles.container,
+              { flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center' },
+            ]}
           >
-            <Text style={{ color: colors.text, flex: 1, fontSize: 17 }}>
-              Merci d&apos;avoir répondu !
-            </Text>
+            <Text style={{ color: colors.text, fontSize: 17 }}>Merci d&apos;avoir répondu !</Text>
             {closable && (
-              <IconButton
-                icon="close"
-                size={28}
-                color={colors.disabled}
-                onPress={() => {
-                  setCompleted(false);
+              <View
+                style={{
+                  position: 'absolute',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                  width: '100%',
                 }}
-              />
+              >
+                <IconButton
+                  icon="close"
+                  size={28}
+                  color={colors.disabled}
+                  onPress={() => {
+                    setCompleted(false);
+                  }}
+                />
+              </View>
             )}
           </View>
         ) : (
