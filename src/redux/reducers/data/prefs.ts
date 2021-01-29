@@ -25,6 +25,7 @@ const initialState: PreferencesState = {
   useDevServer: false,
   analytics: true,
   completedFeedback: [],
+  appOpens: 0,
   reduxVersion: Config.reduxVersion,
   ...Config.seedDb.preferences,
 };

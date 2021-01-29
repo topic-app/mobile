@@ -25,6 +25,7 @@ type Props = {
   theme: Preferences['theme'];
   useDevServer: boolean;
   reduxVersion: number;
+  appOpens: number;
 };
 
 const StoreApp: React.FC<Props> = ({
@@ -32,6 +33,7 @@ const StoreApp: React.FC<Props> = ({
   theme: themeName,
   useDevServer,
   reduxVersion,
+  appOpens,
 }) => {
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
     (useSystemTheme && Appearance.getColorScheme()) || 'light',
@@ -61,6 +63,10 @@ const StoreApp: React.FC<Props> = ({
       updatePrefs({ reduxVersion: Config.reduxVersion });
     }
 
+    // Increase app opens
+    updatePrefs({ appOpens: appOpens + 1 });
+
+    // Theme
     Appearance.addChangeListener(handleAppearanceChange);
     return () => {
       Appearance.removeChangeListener(handleAppearanceChange);
@@ -181,8 +187,8 @@ const StoreApp: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { useSystemTheme, theme, useDevServer, reduxVersion } = state.preferences;
-  return { useSystemTheme, theme, useDevServer, reduxVersion };
+  const { useSystemTheme, theme, useDevServer, reduxVersion, appOpens } = state.preferences;
+  return { useSystemTheme, theme, useDevServer, reduxVersion, appOpens };
 };
 
 export default connect(mapStateToProps)(StoreApp);

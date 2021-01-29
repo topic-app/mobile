@@ -18,6 +18,10 @@ const feedbackElements = {
     id: '952675',
     name: "l'application (demo)",
   },
+  thirdopen: {
+    id: '798293',
+    name: "l'application",
+  },
 };
 
 type Props = {
@@ -70,6 +74,23 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences }) => {
           </View>
         ) : (
           <View style={[styles.centerIllustrationContainer, styles.container]}>
+            <View
+              style={{
+                position: 'absolute',
+                alignSelf: 'flex-end',
+              }}
+            >
+              <IconButton
+                icon="close"
+                size={28}
+                color={colors.disabled}
+                onPress={() => {
+                  updatePrefs({
+                    completedFeedback: [...(preferences.completedFeedback || []), type],
+                  });
+                }}
+              />
+            </View>
             <Text style={{ color: colors.text, flex: 1, fontSize: 17 }}>
               Donnez votre avis sur {info.name}
             </Text>
