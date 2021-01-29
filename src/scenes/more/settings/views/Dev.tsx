@@ -56,10 +56,10 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
     Platform.OS !== 'web' ? crashlytics().isCrashlyticsCollectionEnabled : false,
   );
 
-  async function toggleCrashlytics(val?: boolean) {
-    await crashlytics()
-      .setCrashlyticsCollectionEnabled(val || !crashlyticsEnabled)
-      .then(() => setCrashlyticsEnabled(crashlytics().isCrashlyticsCollectionEnabled));
+  function toggleCrashlytics(val = !crashlyticsEnabled) {
+    crashlytics()
+      .setCrashlyticsCollectionEnabled(val)
+      .then(() => setCrashlyticsEnabled(val));
   }
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linking, Platform, View } from 'react-native';
+import { Linking, Platform, View, ActivityIndicator } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import WebView from 'react-native-webview';
 
@@ -15,18 +15,30 @@ type Props = {
 };
 
 const FeedbackCard: React.FC<Props> = ({ visible, setVisible }) => {
-  const uri =
-    Platform.OS === 'web'
-      ? `https://feedback.topicapp.fr/index.php/679489?lang=fr&newtest=Y&device_os_answer=os-web_ua-${DeviceInfo.getUserAgentSync()}&device-app-answer=redux-${
-          Config.reduxVersion
-        }&device-other-answer=loggedin-${Store.getState().account?.loggedIn ? 'yes' : 'no'}`
-      : `https://feedback.topicapp.fr/index.php/679489?lang=fr&newtest=Y&device_model_answer=brand-${DeviceInfo.getBrand()}_id-${DeviceInfo.getDeviceId()}_product-${DeviceInfo.getProductSync()}&device_os_answer=os-${
-          Platform.OS
-        }_version-${DeviceInfo.getSystemVersion()}_api-${
-          Platform.OS === 'android' ? DeviceInfo.getApiLevelSync() : 'unk'
-        }_ua-${DeviceInfo.getUserAgentSync()}&device_app_answer=topic-${DeviceInfo.getReadableVersion()}_build-${DeviceInfo.getReadableVersion()}&device-other-answer=loggedin-${
-          Store.getState().account?.loggedIn ? 'yes' : 'no'
-        }`;
+  const { loggedIn } = Store.getState().account;
+  const { OS } = Platform;
+  const userAgent = DeviceInfo.getUserAgentSync();
+
+  let uri = 'https://feedback.topicapp.fr/index.php/679489?lang=fr&newtest=Y';
+
+  if (OS === 'web') {
+    uri += `&device_os_answer=os-web_ua-${userAgent}`;
+    uri += `&device-app-answer=redux-${Config.reduxVersion}`;
+    uri += `&device-other-answer=loggedin-${loggedIn ? 'yes' : 'no'}`;
+  } else {
+    const brand = DeviceInfo.getBrand();
+    const deviceId = DeviceInfo.getDeviceId();
+    const product = DeviceInfo.getProductSync();
+    const systemVersion = DeviceInfo.getSystemVersion();
+    const topicVersion = DeviceInfo.getReadableVersion();
+    const apiLevel = OS === 'android' ? DeviceInfo.getApiLevelSync() : 'unk';
+
+    uri += `&device_model_answer=brand-${brand}_id-${deviceId}_product-${product}`;
+    uri += `&device_os_answer=os-${OS}_version-${systemVersion}_api-${apiLevel}_ua-${userAgent}`;
+    uri += `&device_app_answer=topic-${topicVersion}_build-${topicVersion}`;
+    uri += `&device-other-answer=loggedin-${loggedIn ? 'yes' : 'no'}`;
+  }
+
   const theme = useTheme();
   const { colors } = theme;
 
@@ -39,9 +51,22 @@ const FeedbackCard: React.FC<Props> = ({ visible, setVisible }) => {
     <Modal visible={visible} setVisible={setVisible}>
       <View style={{ height: 500, backgroundColor: colors.surface }}>
         <WebView
-          source={{
-            uri,
-          }}
+          source={{ uri }}
+          startInLoadingState
+          renderLoading={() => (
+            <View
+              style={{
+                flex: 1,
+                position: 'absolute',
+                height: '100%',
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          )}
           onNavigationStateChange={(navState) => {
             if (
               navState.url.includes('go.topicapp.fr') ||
