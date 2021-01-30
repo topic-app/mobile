@@ -38,7 +38,7 @@ const StoreApp: React.FC<Props> = ({
   preferences,
 }) => {
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
-    (useSystemTheme && Appearance.getColorScheme()) || 'light',
+    useSystemTheme ? Appearance.getColorScheme() : 'light',
   );
 
   const handleAppearanceChange = (prefs: Appearance.AppearancePreferences) => {
