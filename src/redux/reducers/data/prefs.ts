@@ -12,7 +12,7 @@ import {
 
 const initialState: PreferencesState = {
   theme: 'light',
-  useSystemTheme: Platform.OS !== 'ios',
+  useSystemTheme: true,
   history: true,
   recommendations: false,
   syncHistory: true,

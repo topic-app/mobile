@@ -106,6 +106,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
               style={{
                 marginLeft: 15,
                 flex: 1,
+                maxHeight: overrideImageWidth || imageSize,
               }}
             >
               <Paragraph

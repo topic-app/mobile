@@ -38,11 +38,11 @@ const StoreApp: React.FC<Props> = ({
   preferences,
 }) => {
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
-    (useSystemTheme && Appearance.getColorScheme()) || 'light',
+    useSystemTheme ? Appearance.getColorScheme() : 'light',
   );
 
   const handleAppearanceChange = (prefs: Appearance.AppearancePreferences) => {
-    setColorScheme(prefs.colorScheme);
+    setColorScheme(Platform.OS === 'ios' ? Appearance.getColorScheme() : prefs.colorScheme);
     if (Platform.OS === 'android' && Platform.Version >= 28) {
       // This only works on android 9 and above
       changeNavigationBarColor(theme.colors.tabBackground, !theme.dark, true);

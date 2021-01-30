@@ -102,6 +102,7 @@ const EventCard: React.FC<EventCardProps> = ({
               style={{
                 marginLeft: 15,
                 flex: 1,
+                maxHeight: overrideImageWidth || imageSize,
               }}
             >
               <Paragraph numberOfLines={4} style={[{ fontFamily: preferences.fontFamily }]}>
