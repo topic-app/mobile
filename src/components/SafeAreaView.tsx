@@ -27,11 +27,6 @@ type SafeAreaViewProps = ViewProps & { mode?: 'padding' | 'margin'; edges?: Read
 const SafeAreaView: React.FC<SafeAreaViewProps> = ({ style = {}, mode, edges, ...rest }) => {
   const insets = useSafeAreaInsets();
 
-  // Short circuit if platform is web
-  if (Platform.OS === 'web') {
-    return <View style={[{ flex: 1 }, style]} {...rest} />;
-  }
-
   const edgeBitmask =
     edges != null ? edges.reduce((accum, edge) => accum | edgeBitmaskMap[edge], 0) : ALL;
 
@@ -83,6 +78,11 @@ const SafeAreaView: React.FC<SafeAreaViewProps> = ({ style = {}, mode, edges, ..
       return [style, paddingStyle];
     }
   }, [style, insets, mode, edgeBitmask]);
+
+  // Short circuit if platform is web
+  if (Platform.OS === 'web') {
+    return <View style={[{ flex: 1 }, style]} {...rest} />;
+  }
 
   return <View style={appliedStyle} {...rest} />;
 };
