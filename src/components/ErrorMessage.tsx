@@ -1,12 +1,9 @@
-import { useNetInfo } from '@react-native-community/netinfo';
 import React from 'react';
-import DeviceInfo from 'react-native-device-info';
 import { Banner, Avatar } from 'react-native-paper';
 
-import Store from '@redux/store';
 import { Error as ErrorType, RequestState } from '@ts/types';
 import { processError } from '@utils/errors';
-import { useTheme, request, logger, Alert, trackEvent } from '@utils/index';
+import { useTheme, trackEvent } from '@utils/index';
 
 type Props = {
   /* Please change me if 'app' is too vague! */
@@ -90,7 +87,10 @@ const ErrorMessage: React.FC<Props> = ({
     >
       {`${errorInfo.message.text} (${
         Array.isArray(error) && error.length > 0
-          ? error.map((e) => e?.error?.toString()).join(', ')
+          ? error
+              .map((e) => e?.error?.toString())
+              .filter((s) => !!s)
+              .join(', ')
           : err?.error?.toString()
       })`}
     </Banner>
