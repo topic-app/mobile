@@ -2,11 +2,12 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigatorScreenParams, CompositeNavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { Text, Divider, Drawer as PaperDrawer } from 'react-native-paper';
+import { Text, Divider, Drawer as PaperDrawer, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Avatar, Illustration, MainFeedback } from '@components';
+import DownloadBanner from '@components/DownloadBanner';
 import { Permissions } from '@constants/index';
 import getStyles from '@styles/Styles';
 import { State, Account } from '@ts/types';
@@ -336,30 +337,40 @@ const Drawer = createDrawerNavigator<RootNavParams>();
 
 function RootNavigator() {
   const [drawerExpanded, setDrawerExpanded] = React.useState(false);
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = getStyles(theme);
 
   if (useLayout() === 'desktop') {
     return (
-      <Drawer.Navigator
-        initialRouteName="Main"
-        drawerType="permanent"
-        drawerStyle={{
-          width: drawerExpanded ? 250 : 70,
-          borderRightColor: colors.disabled,
-        }}
-        drawerContent={({ navigation }) => (
-          <ReduxDrawerContent
-            navigation={navigation}
-            drawerExpanded={drawerExpanded}
-            setDrawerExpanded={setDrawerExpanded}
-          />
-        )}
-      >
-        <Drawer.Screen name="Main" component={MainStackNavigator} />
-      </Drawer.Navigator>
+      <View style={{ flex: 1 }}>
+        <Drawer.Navigator
+          initialRouteName="Main"
+          drawerType="permanent"
+          drawerStyle={{
+            width: drawerExpanded ? 250 : 70,
+            borderRightColor: colors.disabled,
+          }}
+          drawerContent={({ navigation }) => (
+            <ReduxDrawerContent
+              navigation={navigation}
+              drawerExpanded={drawerExpanded}
+              setDrawerExpanded={setDrawerExpanded}
+            />
+          )}
+        >
+          <Drawer.Screen name="Main" component={MainStackNavigator} />
+        </Drawer.Navigator>
+        <DownloadBanner />
+      </View>
     );
   } else {
-    return <AndroidNavigator />;
+    return (
+      <View style={{ flex: 1 }}>
+        <AndroidNavigator />
+        <DownloadBanner mobile />
+      </View>
+    );
   }
 }
 
