@@ -6,7 +6,6 @@ import {
   Platform,
   ActivityIndicator,
   StatusBar,
-  Share,
   TouchableOpacity,
 } from 'react-native';
 import {
@@ -39,7 +38,6 @@ import {
   Banner,
   ContentTabView,
 } from '@components/index';
-import config from '@constants/config';
 import { Permissions } from '@constants/index';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import {
@@ -247,7 +245,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 contentSingular: 'Le groupe',
               }}
               error={state.info.error}
-              retry={() => fetch()}
+              retry={fetch}
             />
           )}
           {!state.info.error && (

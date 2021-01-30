@@ -193,6 +193,7 @@ export type Preferences = {
   useDevServer: boolean;
   analytics: boolean;
   appOpens: number;
+  showDownloadBanner: boolean;
   completedFeedback: string[];
   reduxVersion: number;
 };

@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { View, TextInput as NativeTextInput } from 'react-native';
+import { View, TextInput as NativeTextInput, Platform } from 'react-native';
 import { HelperText, TextInput as PaperTextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -19,6 +19,7 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
     info: infoString,
     disableFullscreenUI = true,
     value,
+    autoFocus,
     ...rest
   } = props;
   const { colors } = useTheme();
@@ -44,6 +45,9 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
                 )
               : undefined
           }
+          // autoFocus does not work property when applied to FormTextInput inside
+          // of a StepperView on web, it is disabled for now
+          autoFocus={Platform.OS === 'web' ? false : autoFocus}
           {...rest}
         />
         <View

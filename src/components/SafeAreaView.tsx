@@ -1,8 +1,8 @@
 // File from https://github.com/th3rdwave/react-native-safe-area-context/blob/master/src/SafeAreaView.tsx
 // Changed `useSafeAreaInsets` import from `./SafeAreaContext` to `@utils/index`
-
 import * as React from 'react';
-import { View, StyleSheet, ViewProps } from 'react-native';
+import { View, StyleSheet, ViewProps, Platform } from 'react-native';
+
 import { useSafeAreaInsets } from '@utils/index';
 
 // prettier-ignore
@@ -78,6 +78,11 @@ const SafeAreaView: React.FC<SafeAreaViewProps> = ({ style = {}, mode, edges, ..
       return [style, paddingStyle];
     }
   }, [style, insets, mode, edgeBitmask]);
+
+  // Short circuit if platform is web
+  if (Platform.OS === 'web') {
+    return <View style={[{ flex: 1 }, style]} {...rest} />;
+  }
 
   return <View style={appliedStyle} {...rest} />;
 };

@@ -27,6 +27,7 @@ const initialState: PreferencesState = {
   completedFeedback: [],
   appOpens: 0,
   reduxVersion: Config.reduxVersion,
+  showDownloadBanner: true,
   ...Config.seedDb.preferences,
 };
 
