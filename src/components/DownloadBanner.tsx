@@ -50,12 +50,24 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile }) => {
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles.container}>
-              <Button mode="outlined" color={colors.primary} icon="android">
+              <Button
+                mode="outlined"
+                color={colors.primary}
+                icon="android"
+                onPress={() =>
+                  Linking.openURL('https://play.google.com/store/apps/details?id=fr.topicapp.topic')
+                }
+              >
                 Android
               </Button>
             </View>
             <View style={styles.container}>
-              <Button mode="outlined" color={colors.primary} icon="apple">
+              <Button
+                mode="outlined"
+                color={colors.primary}
+                icon="apple"
+                onPress={() => Linking.openURL('https://testflight.apple.com/join/87FfV2f8')}
+              >
                 iOS
               </Button>
             </View>
