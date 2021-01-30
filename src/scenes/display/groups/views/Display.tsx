@@ -245,7 +245,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 contentSingular: 'Le groupe',
               }}
               error={state.info.error}
-              retry={() => fetch()}
+              retry={fetch}
             />
           )}
           {!state.info.error && (
