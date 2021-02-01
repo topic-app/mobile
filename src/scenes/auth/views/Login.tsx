@@ -200,12 +200,10 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                       >
                         <View style={[styles.container, { flexDirection: 'row' }]}>
                           <Text style={{ color: colors.text, flex: 1 }}>
-                            Seuls les bêta-testeurs peuvent avoir accès au site. Utilisez les
-                            identifiants que vous avez créé dans l&apos;application pour vous
-                            connecter.
-                            {'\n\n'}
-                            Si vous n&apos;êtes pas inscrits à là bêta,{' '}
-                            <Text style={styles.link}>cliquez ici pour vous inscrire</Text>.
+                            La création de compte n&apos;est pas disponible sur le site web pour le
+                            moment. Rendez vous sur
+                            <Text style={styles.link}>beta.topicapp.fr</Text> pour télécharger
+                            l&apos;application et créer un compte.
                           </Text>
                         </View>
                       </Card>

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import { PreferencesState, State } from '@ts/types';
-import { useTheme } from '@utils';
+import { useLayout, useTheme } from '@utils';
 
 import Illustration from './Illustration';
 import { PlatformTouchable } from './PlatformComponents';
@@ -48,7 +48,19 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile }) => {
               </Text>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {useLayout() == 'desktop' ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={styles.container}>
+              <Button
+                mode="outlined"
+                color={colors.primary}
+                icon="download"
+                onPress={() =>
+                  Linking.openURL('https://beta.topicapp.fr')
+                }
+              >
+                Plus d&apos;infos
+              </Button>
+            </View></View> : <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles.container}>
               <Button
                 mode="outlined"
