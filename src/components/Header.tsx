@@ -73,7 +73,11 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
       layout === 'desktop' ? null : <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
   } else {
     primaryAction =
-      hideBack || Platform.OS === 'web' ? null : <Appbar.BackAction onPress={navigation.goBack} />;
+      hideBack || Platform.OS === 'web' ? (
+        <View />
+      ) : (
+        <Appbar.BackAction onPress={navigation.goBack} />
+      );
   }
 
   const secondaryActions = actions.map((item) => (
