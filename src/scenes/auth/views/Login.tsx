@@ -201,7 +201,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                         <View style={[styles.container, { flexDirection: 'row' }]}>
                           <Text style={{ color: colors.text, flex: 1 }}>
                             La création de compte n&apos;est pas disponible sur le site web pour le
-                            moment. Rendez vous sur
+                            moment. Rendez vous sur{' '}
                             <Text style={styles.link}>beta.topicapp.fr</Text> pour télécharger
                             l&apos;application et créer un compte.
                           </Text>
