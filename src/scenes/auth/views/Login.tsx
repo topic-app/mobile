@@ -213,21 +213,54 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                     <Text>
                       <Text
                         style={styles.link}
-                        onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/mentions')}
+                        onPress={() =>
+                          navigation.push('Root', {
+                            screen: 'Main',
+                            params: {
+                              screen: 'More',
+                              params: {
+                                screen: 'About',
+                                params: { screen: 'Legal', params: { page: 'mentions' } },
+                              },
+                            },
+                          })
+                        }
                       >
                         Mentions légales
                       </Text>
                       {' - '}
                       <Text
                         style={styles.link}
-                        onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/terms')}
+                        onPress={() =>
+                          navigation.push('Root', {
+                            screen: 'Main',
+                            params: {
+                              screen: 'More',
+                              params: {
+                                screen: 'About',
+                                params: { screen: 'Legal', params: { page: 'conditions' } },
+                              },
+                            },
+                          })
+                        }
                       >
                         Conditions d&apos;utilisation
                       </Text>
                       {' - '}
                       <Text
                         style={styles.link}
-                        onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/privacy')}
+                        onPress={() =>
+                          navigation.push('Root', {
+                            screen: 'Main',
+                            params: {
+                              screen: 'More',
+                              params: {
+                                screen: 'About',
+                                params: { screen: 'Legal', params: { page: 'confidentialite' } },
+                              },
+                            },
+                          })
+                        }
                       >
                         Politique de vie privée
                       </Text>
