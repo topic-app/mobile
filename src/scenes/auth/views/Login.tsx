@@ -200,12 +200,10 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                       >
                         <View style={[styles.container, { flexDirection: 'row' }]}>
                           <Text style={{ color: colors.text, flex: 1 }}>
-                            Seuls les bêta-testeurs peuvent avoir accès au site. Utilisez les
-                            identifiants que vous avez créé dans l&apos;application pour vous
-                            connecter.
-                            {'\n\n'}
-                            Si vous n&apos;êtes pas inscrits à là bêta,{' '}
-                            <Text style={styles.link}>cliquez ici pour vous inscrire</Text>.
+                            La création de compte n&apos;est pas disponible sur le site web pour le
+                            moment. Rendez vous sur{' '}
+                            <Text style={styles.link}>beta.topicapp.fr</Text> pour télécharger
+                            l&apos;application et créer un compte.
                           </Text>
                         </View>
                       </Card>
@@ -215,21 +213,54 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                     <Text>
                       <Text
                         style={styles.link}
-                        onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/mentions')}
+                        onPress={() =>
+                          navigation.push('Root', {
+                            screen: 'Main',
+                            params: {
+                              screen: 'More',
+                              params: {
+                                screen: 'About',
+                                params: { screen: 'Legal', params: { page: 'mentions' } },
+                              },
+                            },
+                          })
+                        }
                       >
                         Mentions légales
                       </Text>
                       {' - '}
                       <Text
                         style={styles.link}
-                        onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/terms')}
+                        onPress={() =>
+                          navigation.push('Root', {
+                            screen: 'Main',
+                            params: {
+                              screen: 'More',
+                              params: {
+                                screen: 'About',
+                                params: { screen: 'Legal', params: { page: 'conditions' } },
+                              },
+                            },
+                          })
+                        }
                       >
                         Conditions d&apos;utilisation
                       </Text>
                       {' - '}
                       <Text
                         style={styles.link}
-                        onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/privacy')}
+                        onPress={() =>
+                          navigation.push('Root', {
+                            screen: 'Main',
+                            params: {
+                              screen: 'More',
+                              params: {
+                                screen: 'About',
+                                params: { screen: 'Legal', params: { page: 'confidentialite' } },
+                              },
+                            },
+                          })
+                        }
                       >
                         Politique de vie privée
                       </Text>

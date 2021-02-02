@@ -78,7 +78,9 @@ type PlatformBackButtonProps = {
 };
 
 const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) =>
-  Platform.OS === 'web' ? null : (
+  Platform.OS === 'web' ? (
+    <View />
+  ) : (
     <PlatformIconButton
       icon="arrow-left"
       androidIcon="arrow-left"

@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/drawer';
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import React from 'react';
-import { View, Linking } from 'react-native';
+import { View, Linking, Platform } from 'react-native';
 import { Drawer, Title, ProgressBar, Subheading } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -264,16 +264,18 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               });
             }}
           />
-          <Drawer.Item
-            label="Créer un compte"
-            icon="account-plus-outline"
-            onPress={() => {
-              navigation.closeDrawer();
-              navigation.navigate('Auth', {
-                screen: 'Create',
-              });
-            }}
-          />
+          {Platform.OS !== 'web' && (
+            <Drawer.Item
+              label="Créer un compte"
+              icon="account-plus-outline"
+              onPress={() => {
+                navigation.closeDrawer();
+                navigation.navigate('Auth', {
+                  screen: 'Create',
+                });
+              }}
+            />
+          )}
         </Drawer.Section>
       )}
       <Drawer.Section>

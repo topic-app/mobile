@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import { PreferencesState, State } from '@ts/types';
-import { useTheme } from '@utils';
+import { useLayout, useTheme } from '@utils';
 
 import Illustration from './Illustration';
 import { PlatformTouchable } from './PlatformComponents';
@@ -20,6 +20,8 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
+
+  const layout = useLayout();
 
   if (!preferences.showDownloadBanner) {
     return null;
@@ -48,37 +50,61 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile }) => {
               </Text>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={styles.container}>
-              <Button
-                mode="outlined"
-                color={colors.primary}
-                icon="android"
-                onPress={() =>
-                  Linking.openURL('https://play.google.com/store/apps/details?id=fr.topicapp.topic')
-                }
-              >
-                Android
-              </Button>
+          {layout === 'desktop' ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={styles.container}>
+                <Button
+                  mode="outlined"
+                  color={colors.primary}
+                  icon="download"
+                  onPress={() => Linking.openURL('https://beta.topicapp.fr')}
+                >
+                  Plus d&apos;infos
+                </Button>
+              </View>
+              <View style={styles.container}>
+                <IconButton
+                  icon="close"
+                  color={colors.disabled}
+                  onPress={() => updatePrefs({ showDownloadBanner: false })}
+                />
+              </View>
             </View>
-            <View style={styles.container}>
-              <Button
-                mode="outlined"
-                color={colors.primary}
-                icon="apple"
-                onPress={() => Linking.openURL('https://testflight.apple.com/join/87FfV2f8')}
-              >
-                iOS
-              </Button>
+          ) : (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={styles.container}>
+                <Button
+                  mode="outlined"
+                  color={colors.primary}
+                  icon="android"
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://play.google.com/store/apps/details?id=fr.topicapp.topic',
+                    )
+                  }
+                >
+                  Android
+                </Button>
+              </View>
+              <View style={styles.container}>
+                <Button
+                  mode="outlined"
+                  color={colors.primary}
+                  icon="apple"
+                  onPress={() => Linking.openURL('https://testflight.apple.com/join/87FfV2f8')}
+                >
+                  iOS
+                </Button>
+              </View>
+              <View style={styles.container}>
+                <IconButton
+                  icon="close"
+                  color={colors.disabled}
+                  onPress={() => updatePrefs({ showDownloadBanner: false })}
+                />
+              </View>
             </View>
-            <View style={styles.container}>
-              <IconButton
-                icon="close"
-                color={colors.disabled}
-                onPress={() => updatePrefs({ showDownloadBanner: false })}
-              />
-            </View>
-          </View>
+          )}
         </View>
       </PlatformTouchable>
     </View>
