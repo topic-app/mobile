@@ -391,7 +391,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               <View style={{ alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Title>{group.name}</Title>
+                  <Title style={{ textAlign: 'center' }}>{group.name}</Title>
                   <View style={{ marginLeft: 5 }}>
                     {group.official && (
                       <Icon name="check-decagram" color={colors.primary} size={20} />
@@ -399,11 +399,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </View>
                 </View>
                 {!!group.shortName && (
-                  <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                  <Subheading
+                    style={{ textAlign: 'center', marginTop: -10, color: colors.disabled }}
+                  >
                     {group.shortName}
                   </Subheading>
                 )}
-                <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                <Subheading style={{ textAlign: 'center', marginTop: -10, color: colors.disabled }}>
                   Groupe {group.type}
                 </Subheading>
               </View>
