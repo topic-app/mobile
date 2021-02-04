@@ -4,11 +4,14 @@ import {
   View,
   ViewStyle,
   StyleProp,
-  TouchableOpacity,
   TouchableOpacityProps,
   TouchableNativeFeedbackProps,
 } from 'react-native';
-import { TouchableHighlight, TouchableNativeFeedback } from 'react-native-gesture-handler';
+import {
+  TouchableHighlight,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import { IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 

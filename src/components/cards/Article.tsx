@@ -93,7 +93,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             )}
           </View>
         </Card.Content>
-        <TagList item={article} scrollable={false} />
+        <TagList item={article} scrollable />
         <Card.Content>
           <View style={{ flexDirection: 'row', paddingTop: 6 }}>
             <CustomImage
