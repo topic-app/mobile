@@ -186,6 +186,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [currentRoles, setCurrentRoles] = React.useState<GroupRole[]>([]);
   const [userToAdd, setUserToAdd] = React.useState<User | UserPreload | null>(null);
   const [modifying, setModifying] = React.useState(false);
+  const [memberListExpanded, setMemberListExpanded] = React.useState(false);
 
   const [isAddSnackbarVisible, setAddSnackbarVisible] = React.useState(false);
 
@@ -625,7 +626,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </View>
                 )}
               {group.members
-                ?.filter((m) => m.user?._id !== account.accountInfo?.accountId)
+                ?.filter(
+                  (m) =>
+                    m.user?._id !== account.accountInfo?.accountId &&
+                    (memberListExpanded || group.roles?.find((r) => r._id === m.role)?.admin),
+                )
                 ?.map((mem) => (
                   <View
                     key={mem._id}
@@ -734,6 +739,19 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       ))}
                   </View>
                 ))}
+              <View style={styles.container}>
+                <Button
+                  mode="text"
+                  uppercase={false}
+                  color={colors.subtext}
+                  onPress={() => {
+                    setMemberListExpanded(!memberListExpanded);
+                  }}
+                  icon={memberListExpanded ? 'chevron-up' : 'chevron-down'}
+                >
+                  {memberListExpanded ? 'Voir moins' : 'Voir tous les membres'}
+                </Button>
+              </View>
               {checkPermission(account, {
                 permission: Permissions.GROUP_MEMBERS_ADD,
                 scope: { groups: [id] },
@@ -756,22 +774,17 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               <View>
                 <Divider style={{ marginBottom: 20 }} />
                 <View style={styles.contentContainer}>
-                  <TouchableOpacity onPress={() => setLegalCollapsed(!legalCollapsed)}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <Title style={{ color: colors.subtext }}>Informations légales</Title>
-                      <Icon
-                        name={legalCollapsed ? 'chevron-down' : 'chevron-up'}
-                        size={24}
-                        color={colors.subtext}
-                      />
-                    </View>
-                  </TouchableOpacity>
+                  <Button
+                    mode="text"
+                    uppercase={false}
+                    color={colors.subtext}
+                    onPress={() => {
+                      setLegalCollapsed(!legalCollapsed);
+                    }}
+                    icon={legalCollapsed ? 'chevron-down' : 'chevron-up'}
+                  >
+                    Informations légales
+                  </Button>
                 </View>
                 <CollapsibleView collapsed={legalCollapsed && !verification}>
                   <View style={styles.contentContainer}>
