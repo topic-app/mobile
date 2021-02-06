@@ -92,17 +92,17 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                 </View>
               );
             } else if (src.startsWith('youtube://')) {
-              if (!config.google.youtubeKey) {
-                return null;
-              } else if (preferences.youtubeConsent) {
+              if (preferences.youtubeConsent) {
                 if (Platform.OS === 'web') {
                   return (
                     <iframe
                       src={`https://www.youtube.com/embed/${src.substring(10)}`}
                       title="youtube"
-                      style={{ width: '100%' }}
+                      style={{ width: '100%', height: 480 }}
                     />
                   );
+                } else if (!config.google.youtubeKey) {
+                  return null;
                 } else {
                   return (
                     <View style={{ flex: 1 }}>

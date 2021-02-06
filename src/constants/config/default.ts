@@ -66,7 +66,7 @@ const defaultConfig: AppConfig = {
       ios: 'AIzaSyCgdAPkn7cA0PrFUr9bdvG-6il_orO-djs',
       default: '',
     }),
-    youtubePlaceholder: 'https://cdn.topicapp.fr/file/get/5fb3acd117cbef001862f725?key=',
+    youtubePlaceholder: 'https://cdn.topicapp.fr/file/get/5fb3acd117cbef001862f725#',
   },
   auth: {
     salt:

@@ -63,6 +63,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     const replacedData = (data || creationData.data)
       ?.replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
       .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://');
+
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
