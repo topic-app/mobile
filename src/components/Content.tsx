@@ -92,39 +92,31 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                 </View>
               );
             } else if (src.startsWith('youtube://')) {
-              if (Platform.OS === 'web') {
-                return (
-                  <Card style={{ flex: 1, minHeight: 200 }}>
-                    <View style={[styles.container, { alignItems: 'center' }]}>
-                      <Icon name="youtube" size={40} color={colors.disabled} />
-                      <Title>Vidéo youtube</Title>
-                      <Text>
-                        Le site web Topic ne supporte pas encore les vidéos Youtube. Veuillez
-                        cliquer sur le bouton ci-dessous pour la visionner.
-                      </Text>
-                      <Button
-                        mode="outlined"
-                        onPress={() => Linking.openURL(`https://youtu.be/${src.subString(10)}`)}
-                        style={{ marginTop: 20 }}
-                      >
-                        Voir
-                      </Button>
-                    </View>
-                  </Card>
-                );
+              if (!config.google.youtubeKey) {
+                return null;
               } else if (preferences.youtubeConsent) {
-                return (
-                  <View style={{ flex: 1 }}>
-                    <YouTube
-                      // apiKey an Android-specific but does not
-                      // appear in prop types but is required
-                      // @ts-expect-error
-                      apiKey={config.google.youtubeKey}
-                      videoId={src.substring(10)}
-                      style={{ alignSelf: 'stretch', height: 300 }}
+                if (Platform.OS === 'web') {
+                  return (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${src.substring(10)}`}
+                      title="youtube"
+                      style={{ width: '100%' }}
                     />
-                  </View>
-                );
+                  );
+                } else {
+                  return (
+                    <View style={{ flex: 1 }}>
+                      <YouTube
+                        // apiKey an Android-specific but does not
+                        // appear in prop types but is required
+                        // @ts-expect-error
+                        apiKey={config.google.youtubeKey}
+                        videoId={src.substring(10)}
+                        style={{ alignSelf: 'stretch', height: 300 }}
+                      />
+                    </View>
+                  );
+                }
               } else {
                 return (
                   <Card style={{ flex: 1, minHeight: 200 }}>
