@@ -95,6 +95,19 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
           descriptor: {
             options: {
               title: 'Mes groupes',
+              actions: [
+                {
+                  icon: 'magnify',
+                  onPress: () =>
+                    navigation.navigate('Main', {
+                      screen: 'Search',
+                      params: {
+                        screen: 'Search',
+                        params: { initialCategory: 'groups' },
+                      },
+                    }),
+                },
+              ],
             },
           },
         }}
