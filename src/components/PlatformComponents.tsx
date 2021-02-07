@@ -4,14 +4,11 @@ import {
   View,
   ViewStyle,
   StyleProp,
+  TouchableOpacity as ReactNativeTouchableOpacity,
   TouchableOpacityProps,
   TouchableNativeFeedbackProps,
 } from 'react-native';
-import {
-  TouchableHighlight,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import { IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -73,7 +70,7 @@ type PlatformTouchableType = React.ComponentClass<
 const PlatformTouchable = Platform.select<PlatformTouchableType>({
   ios: TouchableOpacity,
   android: TouchableNativeFeedback,
-  default: TouchableOpacity,
+  default: ReactNativeTouchableOpacity,
 });
 
 type PlatformBackButtonProps = {
