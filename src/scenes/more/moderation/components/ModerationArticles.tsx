@@ -13,6 +13,7 @@ import {
   ArticleRequestState,
   AccountPermission,
   ArticleVerificationPreload,
+  ModerationTypes,
 } from '@ts/types';
 import { checkPermission, getPermissionGroups, useTheme } from '@utils/index';
 
@@ -23,6 +24,7 @@ type Props = {
   articlesVerification: ArticleVerificationPreload[];
   account: Account;
   state: ArticleRequestState;
+  type: ModerationTypes;
 };
 
 const ModerationArticles: React.FC<Props> = ({
@@ -30,6 +32,7 @@ const ModerationArticles: React.FC<Props> = ({
   articlesVerification,
   account,
   state,
+  type,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -39,11 +42,15 @@ const ModerationArticles: React.FC<Props> = ({
     permission: Permissions.ARTICLE_VERIFICATION_VIEW,
     scope: { everywhere: true },
   });
-  const [selectedGroupsArticle, setSelectedGroupsArticle] = React.useState(allowedGroupsArticle);
-  const [everywhereArticle, setEverywhereArticle] = React.useState(false);
+  const [selectedGroupsArticle, setSelectedGroupsArticle] = React.useState(
+    type === 'unverified' || !allowedEverywhereArticle ? allowedGroupsArticle : [],
+  );
+  const [everywhereArticle, setEverywhereArticle] = React.useState(
+    type === 'unverified' ? false : allowedEverywhereArticle,
+  );
 
   const fetch = (groups = selectedGroupsArticle, everywhere = everywhereArticle) =>
-    updateArticlesVerification('initial', everywhere ? {} : { groups });
+    updateArticlesVerification('initial', { ...(everywhere ? {} : { groups }), type });
 
   React.useEffect(() => {
     if (account.loggedIn) fetch();

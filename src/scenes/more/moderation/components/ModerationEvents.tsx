@@ -7,7 +7,13 @@ import { ChipAddList, ErrorMessage, EventCard } from '@components/index';
 import { Permissions } from '@constants/index';
 import { updateEventsVerification } from '@redux/actions/api/events';
 import getStyles from '@styles/Styles';
-import { State, Account, EventRequestState, EventVerificationPreload } from '@ts/types';
+import {
+  State,
+  Account,
+  EventRequestState,
+  EventVerificationPreload,
+  ModerationTypes,
+} from '@ts/types';
 import { checkPermission, getPermissionGroups, useTheme } from '@utils/index';
 
 import type { ModerationScreenNavigationProp } from '../index';
@@ -17,9 +23,16 @@ type Props = {
   eventsVerification: EventVerificationPreload[];
   account: Account;
   state: EventRequestState;
+  type: ModerationTypes;
 };
 
-const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, account, state }) => {
+const ModerationEvents: React.FC<Props> = ({
+  navigation,
+  eventsVerification,
+  account,
+  state,
+  type,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -28,11 +41,15 @@ const ModerationEvents: React.FC<Props> = ({ navigation, eventsVerification, acc
     permission: Permissions.EVENT_VERIFICATION_VIEW,
     scope: { everywhere: true },
   });
-  const [selectedGroupsEvent, setSelectedGroupsEvent] = React.useState(allowedGroupsEvent);
-  const [everywhereEvent, setEverywhereEvent] = React.useState(false);
+  const [selectedGroupsEvent, setSelectedGroupsEvent] = React.useState(
+    type === 'unverified' || !allowedEverywhereEvent ? allowedGroupsEvent : [],
+  );
+  const [everywhereEvent, setEverywhereEvent] = React.useState(
+    type === 'unverified' ? false : allowedEverywhereEvent,
+  );
 
   const fetch = (groups = selectedGroupsEvent, everywhere = everywhereEvent) =>
-    updateEventsVerification('initial', everywhere ? {} : { groups });
+    updateEventsVerification('initial', { ...(everywhere ? {} : { groups }), type });
 
   React.useEffect(() => {
     if (account.loggedIn) fetch();

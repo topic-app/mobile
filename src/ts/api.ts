@@ -621,3 +621,5 @@ export type Error = {
     };
   };
 };
+
+export type ModerationTypes = 'unverified' | 'extra' | 'reported' | 'deverified';
