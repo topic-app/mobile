@@ -26,7 +26,7 @@ const ModerationList: React.FC<Props> = ({ navigation, account, route }) => {
   const { colors } = theme;
   const styles = getStyles(theme);
 
-  const { type = 'unverified' } = route.params || {};
+  const type = route.params?.type || 'unverified';
 
   if (!account.loggedIn) {
     return <Text>Non autorisé</Text>;
