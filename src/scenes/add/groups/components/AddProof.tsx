@@ -26,7 +26,6 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
   const adminInput = createRef<RNTextInput>();
   const addressInput = createRef<RNTextInput>();
   const emailInput = createRef<RNTextInput>();
-  const websiteInput = createRef<RNTextInput>();
   const extraInput = createRef<RNTextInput>();
   const extraVerificationInput = createRef<RNTextInput>();
 
@@ -45,7 +44,6 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
       .min(10, 'Le siège social doit contenir au moins 10 caratères')
       .max(200, 'Le siège social doit contenir moins de 200 caractères'),
     email: Yup.string().email("L'adresse email doit être valide").required('Adresse email requis'),
-    website: Yup.string().url().max(200, 'Le site web doit contenir moins de 200 caractères'),
     extra: Yup.string().max(
       1000,
       'Les données supplémentaires ne doivent pas dépasser 1000 caractères',
@@ -72,7 +70,6 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
           admin: '',
           address: '',
           email: '',
-          website: '',
           extra: '',
           extraVerification: '',
           terms: false,
@@ -163,23 +160,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 error={errors.email}
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
-                onSubmitEditing={() => websiteInput.current?.focus()}
-                style={articleStyles.textInput}
-              />
-            </View>
-            <View style={{ marginBottom: 20 }}>
-              <FormTextInput
-                ref={websiteInput}
-                label="Site web (facultatif)"
-                info="Donnez l'url du site web de votre structure, si vous en avez un. Ce site sera affiché publiquement."
-                textContentType="URL"
-                keyboardType="url"
-                value={values.website}
-                touched={touched.website}
-                error={errors.website}
-                onChangeText={handleChange('website')}
-                onBlur={handleBlur('website')}
-                onSubmitEditing={() => addressInput.current?.focus()}
+                onSubmitEditing={() => extraInput.current?.focus()}
                 style={articleStyles.textInput}
               />
             </View>

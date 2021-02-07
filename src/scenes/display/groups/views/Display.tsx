@@ -809,9 +809,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     <Subheading>Adresse email</Subheading>
                     <Text>{group.legal?.email}</Text>
                     <Divider style={{ marginVertical: 20 }} />
-                    <Subheading>Site web</Subheading>
-                    <Text>{group.legal?.website || 'Non spécifié'}</Text>
-                    <Divider style={{ marginVertical: 20 }} />
                     {group.legal?.extra ? (
                       <View>
                         <Subheading>Données supplémentaires</Subheading>
