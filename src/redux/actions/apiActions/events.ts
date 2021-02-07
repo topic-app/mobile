@@ -31,19 +31,20 @@ function eventAddCreator({
   image,
   program,
 }: EventCreationData): AppThunk<Promise<{ _id: string }>> {
-  return (dispatch, getState) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_EVENTS_STATE,
-        data: {
-          add: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_EVENTS_STATE,
+      data: {
+        add: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'events/add',
         'post',
         {
@@ -76,34 +77,31 @@ function eventAddCreator({
           },
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: UPDATE_EVENTS_STATE,
-            data: {
-              add: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data as { _id: string });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_EVENTS_STATE,
-            data: {
-              add: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_EVENTS_STATE,
+        data: {
+          add: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_EVENTS_STATE,
+      data: {
+        add: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data as { _id: string };
   };
 }
 
@@ -120,19 +118,20 @@ function eventMessagesAddCreator({
   type = 'medium',
   event,
 }: eventMessagesAddProps): AppThunk<Promise<{ _id: string }>> {
-  return (dispatch, getState) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_EVENTS_STATE,
-        data: {
-          messages_add: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_EVENTS_STATE,
+      data: {
+        messages_add: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'events/messages/add',
         'post',
         {
@@ -142,34 +141,31 @@ function eventMessagesAddCreator({
           eventId: event,
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: UPDATE_EVENTS_STATE,
-            data: {
-              messages_add: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data as { _id: string });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_EVENTS_STATE,
-            data: {
-              messages_add: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_EVENTS_STATE,
+        data: {
+          messages_add: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_EVENTS_STATE,
+      data: {
+        messages_add: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data as { _id: string };
   };
 }
 

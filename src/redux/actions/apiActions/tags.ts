@@ -15,19 +15,20 @@ function tagAddCreator({
   parser,
   data,
 }: TagAddProps): AppThunk<Promise<{ _id: string }>> {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_TAGS_STATE,
-        data: {
-          add: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_TAGS_STATE,
+      data: {
+        add: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'tags/add',
         'post',
         {
@@ -41,34 +42,31 @@ function tagAddCreator({
           },
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: UPDATE_TAGS_STATE,
-            data: {
-              add: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data as { _id: string });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_TAGS_STATE,
-            data: {
-              add: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_TAGS_STATE,
+        data: {
+          add: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_TAGS_STATE,
+      data: {
+        add: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data as { _id: string };
   };
 }
 

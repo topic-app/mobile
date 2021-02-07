@@ -23,19 +23,20 @@ function articleAddCreator({
   preferences,
   tags,
 }: ArticleCreationData): AppThunk<Promise<{ _id: string }>> {
-  return (dispatch, getState) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_ARTICLES_STATE,
-        data: {
-          add: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_ARTICLES_STATE,
+      data: {
+        add: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'articles/add',
         'post',
         {
@@ -57,34 +58,31 @@ function articleAddCreator({
           },
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: UPDATE_ARTICLES_STATE,
-            data: {
-              add: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data as { _id: string });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_ARTICLES_STATE,
-            data: {
-              add: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_ARTICLES_STATE,
+        data: {
+          add: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_ARTICLES_STATE,
+      data: {
+        add: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data as { _id: string };
   };
 }
 

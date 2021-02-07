@@ -138,7 +138,7 @@ function clearGroups(data = true, search = true, templates = true) {
  * @param next Si il faut récupérer les groupes après le dernier
  */
 function updateGroupTemplatesCreator(): AppThunk {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: UPDATE_GROUPS_STATE,
       data: {
@@ -149,45 +149,46 @@ function updateGroupTemplatesCreator(): AppThunk {
         },
       },
     });
-    request('groups/templates/list', 'get', {}, true)
-      .then((result) => {
-        const data: GroupTemplate[] = result.data?.templates;
-        dispatch({
-          type: UPDATE_GROUPS_TEMPLATES,
-          data,
-        });
-        return dispatch({
-          type: UPDATE_GROUPS_STATE,
-          data: {
-            templates: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: true,
-              error: null,
+    let result;
+    try {
+      result = await request('groups/templates/list', 'get', {}, true);
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          templates: {
+            loading: {
+              initial: false,
+              refresh: false,
+              next: false,
             },
+            success: false,
+            error,
           },
-        });
-      })
-      .catch((error) => {
-        logger.error(error);
-        return dispatch({
-          type: UPDATE_GROUPS_STATE,
-          data: {
-            templates: {
-              loading: {
-                initial: false,
-                refresh: false,
-                next: false,
-              },
-              success: false,
-              error,
-            },
-          },
-        });
+        },
       });
+      throw error;
+    }
+    const data: GroupTemplate[] = result.data?.templates;
+    dispatch({
+      type: UPDATE_GROUPS_TEMPLATES,
+      data,
+    });
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        templates: {
+          loading: {
+            initial: false,
+            refresh: false,
+            next: false,
+          },
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
   };
 }
 

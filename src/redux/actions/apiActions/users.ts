@@ -5,19 +5,20 @@ import { request } from '@utils/index';
 import { reportCreator } from './ActionCreator';
 
 function userFollowCreator({ id }: { id: string }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: 'UPDATE_USERS_STATE',
-        data: {
-          follow: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_USERS_STATE,
+      data: {
+        follow: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'profile/follow',
         'post',
         {
@@ -25,51 +26,49 @@ function userFollowCreator({ id }: { id: string }): AppThunk {
           id,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: 'UPDATE_USERS_STATE',
-            data: {
-              follow: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ type: 'user', id });
-        })
-        .catch((error) => {
-          dispatch({
-            type: 'UPDATE_USERS_STATE',
-            data: {
-              follow: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_USERS_STATE,
+        data: {
+          follow: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_USERS_STATE,
+      data: {
+        follow: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { type: 'user', id };
   };
 }
 
 function userUnfollowCreator({ id }: { id: string }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: 'UPDATE_USERS_STATE',
-        data: {
-          follow: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_USERS_STATE,
+      data: {
+        follow: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'profile/unfollow',
         'post',
         {
@@ -77,34 +76,31 @@ function userUnfollowCreator({ id }: { id: string }): AppThunk {
           type: 'user',
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: 'UPDATE_USERS_STATE',
-            data: {
-              follow: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ type: 'user', id });
-        })
-        .catch((error) => {
-          dispatch({
-            type: 'UPDATE_USERS_STATE',
-            data: {
-              follow: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_USERS_STATE,
+        data: {
+          follow: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_USERS_STATE,
+      data: {
+        follow: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { type: 'user', id };
   };
 }
 

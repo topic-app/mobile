@@ -17,99 +17,64 @@ function commentAddCreator({
   parent,
   parentType,
 }: CommentAddCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_COMMENTS_STATE,
+      data: {
+        add: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request(
+        publisher.type === 'group' ? 'comments/add/group' : 'comments/add/user',
+        'post',
+        publisher.type === 'group'
+          ? {
+              parentId: parent,
+              parentType,
+              group: publisher.group,
+              comment: {
+                content,
+              },
+            }
+          : {
+              parentId: parent,
+              parentType,
+              comment: {
+                content,
+              },
+            },
+        true,
+      );
+    } catch (error) {
       dispatch({
         type: UPDATE_COMMENTS_STATE,
         data: {
           add: {
-            loading: true,
-            success: null,
-            error: null,
+            loading: false,
+            success: false,
+            error,
           },
         },
       });
-      if (publisher.type === 'group') {
-        request(
-          'comments/add/group',
-          'post',
-          {
-            parentId: parent,
-            parentType,
-            group: publisher.group,
-            comment: {
-              content,
-            },
-          },
-          true,
-        )
-          .then((result) => {
-            dispatch({
-              type: UPDATE_COMMENTS_STATE,
-              data: {
-                add: {
-                  loading: false,
-                  success: true,
-                  error: null,
-                },
-              },
-            });
-            resolve({ parent, _id: result.data?._id });
-          })
-          .catch((error) => {
-            dispatch({
-              type: UPDATE_COMMENTS_STATE,
-              data: {
-                add: {
-                  loading: false,
-                  success: false,
-                  error,
-                },
-              },
-            });
-            reject();
-          });
-      } else {
-        request(
-          'comments/add/user',
-          'post',
-          {
-            parentId: parent,
-            parentType,
-            comment: {
-              content,
-            },
-          },
-          true,
-        )
-          .then((result) => {
-            dispatch({
-              type: UPDATE_COMMENTS_STATE,
-              data: {
-                add: {
-                  loading: false,
-                  success: true,
-                  error: null,
-                },
-              },
-            });
-            resolve({ parent, _id: result.data?._id });
-          })
-          .catch((error) => {
-            dispatch({
-              type: UPDATE_COMMENTS_STATE,
-              data: {
-                add: {
-                  loading: false,
-                  success: false,
-                  error,
-                },
-              },
-            });
-            reject();
-          });
-      }
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_COMMENTS_STATE,
+      data: {
+        add: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { parent, _id: result.data?._id };
   };
 }
 
@@ -119,53 +84,51 @@ type CommentDeleteCreatorParams = {
 };
 
 function commentDeleteCreator({ commentId, publisher }: CommentDeleteCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_COMMENTS_STATE,
-        data: {
-          delete: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_COMMENTS_STATE,
+      data: {
+        delete: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         `comments/delete/${publisher.type}`,
         'post',
         {
           commentId,
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: UPDATE_COMMENTS_STATE,
-            data: {
-              delete: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ _id: result.data?._id });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_COMMENTS_STATE,
-            data: {
-              delete: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_COMMENTS_STATE,
+        data: {
+          delete: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_COMMENTS_STATE,
+      data: {
+        delete: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { _id: result.data?._id };
   };
 }
 

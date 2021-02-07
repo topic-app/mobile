@@ -16,19 +16,20 @@ function reportCreator({
   url,
   stateUpdate,
 }: ReportCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: stateUpdate,
-        data: {
-          report: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: stateUpdate,
+      data: {
+        report: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         url,
         'post',
         {
@@ -36,34 +37,31 @@ function reportCreator({
           reason,
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              report: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data);
-        })
-        .catch((error) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              report: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: stateUpdate,
+        data: {
+          report: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: stateUpdate,
+      data: {
+        report: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data;
   };
 }
 
@@ -75,53 +73,51 @@ type ApproveCreatorParams = {
 };
 
 function approveCreator({ url, stateUpdate, id, paramName }: ApproveCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: stateUpdate,
-        data: {
-          verification_approve: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: stateUpdate,
+      data: {
+        verification_approve: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         url,
         'post',
         {
           [paramName]: id,
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              verification_approve: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data);
-        })
-        .catch((error) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              verification_approve: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: stateUpdate,
+        data: {
+          verification_approve: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: stateUpdate,
+      data: {
+        verification_approve: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data;
   };
 }
 
@@ -133,53 +129,51 @@ type deleteCreatorParams = {
 };
 
 function deleteCreator({ url, stateUpdate, id, paramName }: deleteCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: stateUpdate,
-        data: {
-          delete: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: stateUpdate,
+      data: {
+        delete: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         url,
         'post',
         {
           [paramName]: id,
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              delete: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data);
-        })
-        .catch((error) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              delete: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: stateUpdate,
+        data: {
+          delete: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: stateUpdate,
+      data: {
+        delete: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data;
   };
 }
 
@@ -190,53 +184,51 @@ type likeCreatorParams = {
 };
 
 function likeCreator({ contentId, liking, stateUpdate }: likeCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: stateUpdate,
-        data: {
-          like: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: stateUpdate,
+      data: {
+        like: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         `likes/${liking ? 'like' : 'unlike'}`,
         'post',
         {
           contentId,
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              like: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data);
-        })
-        .catch((error) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              like: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: stateUpdate,
+        data: {
+          like: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: stateUpdate,
+      data: {
+        like: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data;
   };
 }
 
@@ -253,53 +245,51 @@ function deverifyCreator({
   stateUpdate,
   url,
 }: deverifyCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: stateUpdate,
-        data: {
-          verification_deverify: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: stateUpdate,
+      data: {
+        verification_deverify: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         url,
         'post',
         {
           [contentIdName]: contentId,
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              verification_deverify: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data);
-        })
-        .catch((error) => {
-          dispatch({
-            type: stateUpdate,
-            data: {
-              verification_deverify: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: stateUpdate,
+        data: {
+          verification_deverify: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: stateUpdate,
+      data: {
+        verification_deverify: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data;
   };
 }
 

@@ -35,7 +35,7 @@ function updateDataCreator(fields: Partial<User['data']>): AppThunk {
           },
         },
       });
-      return Promise.reject();
+      throw error;
     }
 
     dispatch({
@@ -48,7 +48,7 @@ function updateDataCreator(fields: Partial<User['data']>): AppThunk {
         },
       },
     });
-    return Promise.resolve();
+    return true;
   };
 }
 
@@ -95,7 +95,7 @@ function updateProfileStringCreator({
           },
         },
       });
-      return Promise.reject();
+      throw error;
     }
 
     dispatch({
@@ -108,7 +108,7 @@ function updateProfileStringCreator({
         },
       },
     });
-    return Promise.resolve();
+    return true;
   };
 }
 

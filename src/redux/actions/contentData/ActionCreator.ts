@@ -53,7 +53,7 @@ function addToListCreator<T extends ContentItemWithListsString>({
   id,
   stateName = 'info',
 }: AddToListCreatorParams<T>): AppThunk {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: stateUpdate,
       data: {
@@ -64,55 +64,56 @@ function addToListCreator<T extends ContentItemWithListsString>({
         },
       },
     });
-    request(url, 'get', params)
-      .then((result) => {
-        const { lists } = getState()[dataType];
-
-        if (
-          (lists as (ArticleListItem | EventListItem)[])
-            .find((l: ArticleListItem | EventListItem) => l.id === id)
-            ?.items.some((i: ApiItem) => i._id === result.data?.[resType][0]?._id)
-        ) {
-          return;
-        }
-        dispatch({
-          type: update,
-          data: (lists as (ArticleListItem | EventListItem)[]).map(
-            (l: ArticleListItem | EventListItem) => {
-              if (l.id === id) {
-                return {
-                  ...l,
-                  items: [...l.items, result.data?.[resType][0]],
-                };
-              } else {
-                return l;
-              }
-            },
-          ),
-        });
-        return dispatch({
-          type: stateUpdate,
-          data: {
-            [stateName]: {
-              loading: false,
-              success: true,
-              error: null,
-            },
+    let result: any;
+    try {
+      result = await request(url, 'get', params);
+    } catch (err) {
+      dispatch({
+        type: stateUpdate,
+        data: {
+          [stateName]: {
+            loading: false,
+            success: false,
+            error: err,
           },
-        });
-      })
-      .catch((err) => {
-        return dispatch({
-          type: stateUpdate,
-          data: {
-            [stateName]: {
-              loading: false,
-              success: false,
-              error: err,
-            },
-          },
-        });
+        },
       });
+      throw err;
+    }
+    const { lists } = getState()[dataType];
+
+    if (
+      (lists as (ArticleListItem | EventListItem)[])
+        .find((l: ArticleListItem | EventListItem) => l.id === id)
+        ?.items.some((i: ApiItem) => i._id === result.data?.[resType][0]?._id)
+    ) {
+      return;
+    }
+    dispatch({
+      type: update,
+      data: (lists as (ArticleListItem | EventListItem)[]).map(
+        (l: ArticleListItem | EventListItem) => {
+          if (l.id === id) {
+            return {
+              ...l,
+              items: [...l.items, result.data?.[resType][0]],
+            };
+          } else {
+            return l;
+          }
+        },
+      ),
+    });
+    return dispatch({
+      type: stateUpdate,
+      data: {
+        [stateName]: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
   };
 }
 
