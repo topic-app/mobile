@@ -231,7 +231,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
         }),
       );
 
-  console.log(JSON.stringify(group, null, 2));
 
   if (!group) {
     // This is when article has not been loaded in list, so we have absolutely no info

@@ -107,7 +107,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                   return (
                     <View style={{ flex: 1 }}>
                       <YouTube
-                        // apiKey an Android-specific but does not
+                        // apiKey is an Android-specific prop but does not
                         // appear in prop types but is required
                         // @ts-expect-error
                         apiKey={config.google.youtubeKey}
