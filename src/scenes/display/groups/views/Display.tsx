@@ -741,19 +741,22 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       ))}
                   </View>
                 ))}
-              <View style={styles.container}>
-                <Button
-                  mode="text"
-                  uppercase={false}
-                  color={colors.subtext}
-                  onPress={() => {
-                    setMemberListExpanded(!memberListExpanded);
-                  }}
-                  icon={memberListExpanded ? 'chevron-up' : 'chevron-down'}
-                >
-                  {memberListExpanded ? 'Voir moins' : 'Voir tous les membres'}
-                </Button>
-              </View>
+              {group.members?.filter((m) => group.roles?.find((r) => r._id === m.role)?.admin)
+                ?.length !== group.members?.length && (
+                <View style={styles.container}>
+                  <Button
+                    mode="text"
+                    uppercase={false}
+                    color={colors.subtext}
+                    onPress={() => {
+                      setMemberListExpanded(!memberListExpanded);
+                    }}
+                    icon={memberListExpanded ? 'chevron-up' : 'chevron-down'}
+                  >
+                    {memberListExpanded ? 'Voir moins' : 'Voir tous les membres'}
+                  </Button>
+                </View>
+              )}
               {checkPermission(account, {
                 permission: Permissions.GROUP_MEMBERS_ADD,
                 scope: { groups: [id] },
