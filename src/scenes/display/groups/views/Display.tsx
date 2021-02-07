@@ -231,6 +231,8 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
         }),
       );
 
+  console.log(JSON.stringify(group, null, 2));
+
   if (!group) {
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
@@ -633,6 +635,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     m.user?._id !== account.accountInfo?.accountId &&
                     (memberListExpanded || group.roles?.find((r) => r._id === m.role)?.admin),
                 )
+                .sort((a, b) => {
+                  const hierarchyA =
+                    group.roles?.find((r) => r._id === a.role)?.hierarchy ?? Infinity;
+                  const hierarchyB =
+                    group.roles?.find((r) => r._id === b.role)?.hierarchy ?? Infinity;
+                  return hierarchyA > hierarchyB ? 1 : hierarchyB > hierarchyA ? -1 : 0;
+                })
                 ?.map((mem) => (
                   <View
                     key={mem._id}
