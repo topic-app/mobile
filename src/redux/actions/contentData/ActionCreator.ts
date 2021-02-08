@@ -104,7 +104,7 @@ function addToListCreator<T extends ContentItemWithListsString>({
         },
       ),
     });
-    return dispatch({
+    dispatch({
       type: stateUpdate,
       data: {
         [stateName]: {
@@ -114,6 +114,7 @@ function addToListCreator<T extends ContentItemWithListsString>({
         },
       },
     });
+    return true;
   };
 }
 
