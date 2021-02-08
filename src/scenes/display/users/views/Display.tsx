@@ -213,7 +213,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
               {user.data?.public ? (
                 <View style={{ alignItems: 'center' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Title>{genName(user)}</Title>
+                    <Title style={{ textAlign: 'center' }}>{genName(user)}</Title>
                     <View style={{ marginLeft: 5 }}>
                       {user.info.official && (
                         <Icon name="check-decagram" color={colors.primary} size={20} />
@@ -221,13 +221,15 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                     </View>
                   </View>
                   {genName(user) && (
-                    <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                    <Subheading
+                      style={{ textAlign: 'center', marginTop: -10, color: colors.disabled }}
+                    >
                       @{user.info.username}
                     </Subheading>
                   )}
                 </View>
               ) : (
-                <Title>@{user.info.username}</Title>
+                <Title style={{ textAlign: 'center' }}>@{user.info.username}</Title>
               )}
             </View>
           </View>

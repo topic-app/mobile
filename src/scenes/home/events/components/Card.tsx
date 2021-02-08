@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, Platform } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -152,6 +152,10 @@ const EventListCard: React.FC<EventListCardProps> = ({
       else addEventRead(id, title, true);
     }
   };
+
+  if (Platform.OS === 'web') {
+    return <EventCard event={event} navigate={navigate} overrideImageWidth={overrideImageWidth} />;
+  }
 
   return (
     <Swipeable

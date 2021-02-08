@@ -178,7 +178,19 @@ async function fetchEventVerification(eventId: string) {
   );
 }
 
-async function updateEventsVerification(type: 'initial' | 'refresh' | 'next', params = {}) {
+async function updateEventsVerification(
+  type: 'initial' | 'refresh' | 'next',
+  params = {},
+  clear = true,
+) {
+  if (clear) {
+    await Store.dispatch(
+      clearCreator({
+        clear: CLEAR_EVENTS,
+        verification: true,
+      }),
+    );
+  }
   await Store.dispatch(
     updateCreator({
       update: UPDATE_EVENTS_VERIFICATION,

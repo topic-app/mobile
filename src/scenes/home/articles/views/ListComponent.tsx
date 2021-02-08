@@ -32,6 +32,7 @@ import {
 } from '@ts/types';
 import { checkPermission, useTheme } from '@utils/index';
 
+import AddToListModal from '../../../display/components/AddToListModal';
 import ArticleListCard from '../components/Card';
 import ArticleEmptyList from '../components/EmptyList';
 
@@ -192,6 +193,9 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
   const [cardWidth, setCardWidth] = React.useState(100);
   const imageSize = cardWidth / 3.5;
 
+  const [addToListModalVisible, setAddToListModalVisible] = React.useState(false);
+  const [addToListModalArticle, setAddToListModalArticle] = React.useState('');
+
   const itemHeight = ARTICLE_CARD_HEADER_HEIGHT + imageSize;
 
   return (
@@ -212,6 +216,8 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
             isRead={read.some((r) => r.id === article._id)}
             historyActive={historyEnabled}
             lists={lists}
+            setAddToListModalArticle={setAddToListModalArticle}
+            setAddToListModalVisible={setAddToListModalVisible}
             overrideImageWidth={imageSize}
             navigate={() =>
               onArticlePress({
@@ -252,6 +258,13 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         permission: Permissions.ARTICLE_ADD,
         scope: {},
       }) && <FAB icon="pencil" onPress={onArticleCreatePressed} style={styles.bottomRightFab} />}
+
+      <AddToListModal
+        visible={addToListModalVisible}
+        setVisible={setAddToListModalVisible}
+        id={addToListModalArticle}
+        type="article"
+      />
     </View>
   );
 };

@@ -11,6 +11,8 @@
  *      - Pushing the account requires you to manually add it to git
  *      - The account won't be used in production builds
  */
+import { Platform } from 'react-native';
+
 import { AppConfig } from './types';
 
 const defaultConfig: AppConfig = {
@@ -59,8 +61,12 @@ const defaultConfig: AppConfig = {
     events: {},
   },
   google: {
-    youtubeKey: 'AIzaSyBBO3lF1vPmpCc61mU9liYQ3zGPup9MRFA',
-    youtubePlaceholder: 'https://cdn.topicapp.fr/file/get/5fb3acd117cbef001862f725?key=',
+    youtubeKey: Platform.select({
+      android: 'AIzaSyBBO3lF1vPmpCc61mU9liYQ3zGPup9MRFA',
+      ios: 'AIzaSyCgdAPkn7cA0PrFUr9bdvG-6il_orO-djs',
+      default: '',
+    }),
+    youtubePlaceholder: 'https://cdn.topicapp.fr/file/get/5fb3acd117cbef001862f725#',
   },
   auth: {
     salt:

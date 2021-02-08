@@ -93,7 +93,19 @@ async function fetchGroup(groupId: string) {
  * @param terms Le texte pour rechercher
  * @param params Les paramètres supplémentaires pour la requete (eg. tags, auteurs)
  */
-async function updateGroupsVerification(type: 'initial' | 'refresh' | 'next', params = {}) {
+async function updateGroupsVerification(
+  type: 'initial' | 'refresh' | 'next',
+  params = {},
+  clear = true,
+) {
+  if (clear) {
+    await Store.dispatch(
+      clearCreator({
+        clear: CLEAR_GROUPS,
+        verification: true,
+      }),
+    );
+  }
   await Store.dispatch(
     updateCreator({
       update: UPDATE_GROUPS_VERIFICATION,

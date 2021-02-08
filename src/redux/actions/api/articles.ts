@@ -119,7 +119,19 @@ async function searchArticles(
  * @param terms Le texte pour rechercher
  * @param params Les paramètres supplémentaires pour la requete (eg. tags, auteurs)
  */
-async function updateArticlesVerification(type: 'initial' | 'refresh' | 'next', params = {}) {
+async function updateArticlesVerification(
+  type: 'initial' | 'refresh' | 'next',
+  params = {},
+  clear = true,
+) {
+  if (clear) {
+    await Store.dispatch(
+      clearCreator({
+        clear: CLEAR_ARTICLES,
+        verification: true,
+      }),
+    );
+  }
   await Store.dispatch(
     updateCreator({
       update: UPDATE_ARTICLES_VERIFICATION,

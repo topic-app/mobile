@@ -33,6 +33,8 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
       const id = linkText
         .replace('https://', '')
         .replace('http://', '')
+        .replace('www.', '')
+        .replace(/&t=[0-9]*/g, '')
         .replace(
           /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/gi,
           '$1',

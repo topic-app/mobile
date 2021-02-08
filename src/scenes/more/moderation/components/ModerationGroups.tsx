@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ErrorMessage, GroupCard } from '@components/index';
 import { updateGroupsVerification } from '@redux/actions/api/groups';
 import getStyles from '@styles/Styles';
-import { State, Account, GroupRequestState, AnyGroup } from '@ts/types';
+import { State, Account, GroupRequestState, AnyGroup, ModerationTypes } from '@ts/types';
 import { useTheme } from '@utils/index';
 
 import type { ModerationScreenNavigationProp } from '../index';
@@ -16,6 +16,7 @@ type Props = {
   groupsVerification: AnyGroup[];
   account: Account;
   state: GroupRequestState;
+  type: ModerationTypes;
 };
 
 const ModerationArticles: React.FC<Props> = ({
@@ -23,11 +24,12 @@ const ModerationArticles: React.FC<Props> = ({
   groupsVerification,
   account,
   state,
+  type,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const fetch = () => updateGroupsVerification('initial', {});
+  const fetch = () => updateGroupsVerification('initial', { type });
 
   React.useEffect(() => {
     fetch();

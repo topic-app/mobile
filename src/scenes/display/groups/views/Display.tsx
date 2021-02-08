@@ -186,6 +186,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [currentRoles, setCurrentRoles] = React.useState<GroupRole[]>([]);
   const [userToAdd, setUserToAdd] = React.useState<User | UserPreload | null>(null);
   const [modifying, setModifying] = React.useState(false);
+  const [memberListExpanded, setMemberListExpanded] = React.useState(false);
 
   const [isAddSnackbarVisible, setAddSnackbarVisible] = React.useState(false);
 
@@ -229,6 +230,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           retry: deverifyGroup,
         }),
       );
+
 
   if (!group) {
     // This is when article has not been loaded in list, so we have absolutely no info
@@ -390,7 +392,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
             <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
               <View style={{ alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Title>{group.name}</Title>
+                  <Title style={{ textAlign: 'center' }}>{group.name}</Title>
                   <View style={{ marginLeft: 5 }}>
                     {group.official && (
                       <Icon name="check-decagram" color={colors.primary} size={20} />
@@ -398,11 +400,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </View>
                 </View>
                 {!!group.shortName && (
-                  <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                  <Subheading
+                    style={{ textAlign: 'center', marginTop: -10, color: colors.disabled }}
+                  >
                     {group.shortName}
                   </Subheading>
                 )}
-                <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                <Subheading style={{ textAlign: 'center', marginTop: -10, color: colors.disabled }}>
                   Groupe {group.type}
                 </Subheading>
               </View>
@@ -625,7 +629,18 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </View>
                 )}
               {group.members
-                ?.filter((m) => m.user?._id !== account.accountInfo?.accountId)
+                ?.filter(
+                  (m) =>
+                    m.user?._id !== account.accountInfo?.accountId &&
+                    (memberListExpanded || group.roles?.find((r) => r._id === m.role)?.admin),
+                )
+                .sort((a, b) => {
+                  const hierarchyA =
+                    group.roles?.find((r) => r._id === a.role)?.hierarchy ?? Infinity;
+                  const hierarchyB =
+                    group.roles?.find((r) => r._id === b.role)?.hierarchy ?? Infinity;
+                  return hierarchyA > hierarchyB ? 1 : hierarchyB > hierarchyA ? -1 : 0;
+                })
                 ?.map((mem) => (
                   <View
                     key={mem._id}
@@ -734,6 +749,22 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       ))}
                   </View>
                 ))}
+              {group.members?.filter((m) => group.roles?.find((r) => r._id === m.role)?.admin)
+                ?.length !== group.members?.length && (
+                <View style={styles.container}>
+                  <Button
+                    mode="text"
+                    uppercase={false}
+                    color={colors.subtext}
+                    onPress={() => {
+                      setMemberListExpanded(!memberListExpanded);
+                    }}
+                    icon={memberListExpanded ? 'chevron-up' : 'chevron-down'}
+                  >
+                    {memberListExpanded ? 'Voir moins' : 'Voir tous les membres'}
+                  </Button>
+                </View>
+              )}
               {checkPermission(account, {
                 permission: Permissions.GROUP_MEMBERS_ADD,
                 scope: { groups: [id] },
@@ -756,22 +787,17 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
               <View>
                 <Divider style={{ marginBottom: 20 }} />
                 <View style={styles.contentContainer}>
-                  <TouchableOpacity onPress={() => setLegalCollapsed(!legalCollapsed)}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <Title style={{ color: colors.subtext }}>Informations légales</Title>
-                      <Icon
-                        name={legalCollapsed ? 'chevron-down' : 'chevron-up'}
-                        size={24}
-                        color={colors.subtext}
-                      />
-                    </View>
-                  </TouchableOpacity>
+                  <Button
+                    mode="text"
+                    uppercase={false}
+                    color={colors.subtext}
+                    onPress={() => {
+                      setLegalCollapsed(!legalCollapsed);
+                    }}
+                    icon={legalCollapsed ? 'chevron-down' : 'chevron-up'}
+                  >
+                    Informations légales
+                  </Button>
                 </View>
                 <CollapsibleView collapsed={legalCollapsed && !verification}>
                   <View style={styles.contentContainer}>
@@ -790,9 +816,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     <Divider style={{ marginVertical: 20 }} />
                     <Subheading>Adresse email</Subheading>
                     <Text>{group.legal?.email}</Text>
-                    <Divider style={{ marginVertical: 20 }} />
-                    <Subheading>Site web</Subheading>
-                    <Text>{group.legal?.website || 'Non spécifié'}</Text>
                     <Divider style={{ marginVertical: 20 }} />
                     {group.legal?.extra ? (
                       <View>

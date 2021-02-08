@@ -123,19 +123,19 @@ function groupAddMemberCreator({
   secondaryRoles,
   expires,
 }: GroupAddMemberCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          member_add: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_add: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    try {
+      const result = await request(
         'groups/members/add',
         'post',
         {
@@ -147,34 +147,31 @@ function groupAddMemberCreator({
           permanent: !expires,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_add: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ user, group, role, secondaryRoles });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_add: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          member_add: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_add: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { user, group, role, secondaryRoles };
   };
 }
 

@@ -93,7 +93,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             )}
           </View>
         </Card.Content>
-        <TagList item={article} scrollable={false} />
+        <TagList item={article} scrollable />
         <Card.Content>
           <View style={{ flexDirection: 'row', paddingTop: 6 }}>
             <CustomImage
@@ -141,20 +141,21 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
                   size={16}
                   style={{ alignSelf: 'center', marginRight: 5 }}
                 />
-                <Text>Reporté {articleVerification.verification?.reports?.length} fois</Text>
+                <Text>Signalé {articleVerification.verification?.reports?.length} fois</Text>
               </View>
             )}
-            {articleVerification.verification?.users?.length !== 0 && (
-              <View style={{ flexDirection: 'row' }}>
-                <Icon
-                  name="shield"
-                  color={colors.invalid}
-                  size={16}
-                  style={{ alignSelf: 'center', marginRight: 5 }}
-                />
-                <Text>Remis en moderation</Text>
-              </View>
-            )}
+            {articleVerification.verification?.users?.length !== 0 &&
+              !articleVerification.verification?.verified && (
+                <View style={{ flexDirection: 'row' }}>
+                  <Icon
+                    name="shield"
+                    color={colors.invalid}
+                    size={16}
+                    style={{ alignSelf: 'center', marginRight: 5 }}
+                  />
+                  <Text>Remis en modération</Text>
+                </View>
+              )}
             {articleVerification.verification?.extraVerification && (
               <View style={{ flexDirection: 'row' }}>
                 <Icon

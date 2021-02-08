@@ -130,8 +130,8 @@ function handleUrl(targetUrl: string) {
   } else {
     // In the future, we could add a warning that this site is HTTP, or possibly trying to impersonate another site
     Alert.alert(
-      `Ce lien va vers ${truncate(targetUrl, 30)}. Voulez-vous l'ouvrir ?`,
-      "Topic n'endorse en aucun cas le contenu de ce site et ne peut garantir la sureté de celui-ci.",
+      `Ouvrir ${target.composed?.subdomain} ?`,
+      `Topic n'endorse pas le contenu de ce site - ${targetUrl}`,
       [
         {
           text: 'Annuler',

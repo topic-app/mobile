@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, Platform } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,6 +21,8 @@ type ArticleListCardProps = {
   article: ArticlePreload | Article;
   group?: string;
   sectionKey: string;
+  setAddToListModalArticle: (id: string) => void;
+  setAddToListModalVisible: (val: boolean) => void;
   isRead: boolean;
   historyActive: boolean;
   lists: ArticleListItem[];
@@ -34,6 +36,8 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
   sectionKey,
   isRead,
   historyActive,
+  setAddToListModalArticle,
+  setAddToListModalVisible,
   lists,
   navigate,
   overrideImageWidth,
@@ -45,49 +49,24 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
 
   const swipeRef = React.createRef<Swipeable>();
 
-  const maxLeftActions = (Dimensions.get('window').width - 100) / 120;
+  const maxLeftActions = (Dimensions.get('window').width - (100 + 120 * 2)) / 120;
 
-  const renderRightActions = (_id: string) => {
+  if (Platform.OS === 'web') {
     return (
-      <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
-        {group !== 'lists' ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginRight: 20,
-            }}
-          >
-            <Text style={articleStyles.captionText}>Marquer comme {isRead ? 'non lu' : 'lu'}</Text>
-            <Icon
-              name={isRead ? 'eye-off' : 'eye'}
-              size={32}
-              style={{ marginHorizontal: 10 }}
-              color={colors.disabled}
-            />
-          </View>
-        ) : (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginRight: 20,
-            }}
-          >
-            <Text style={articleStyles.captionText}>Retirer</Text>
-            <Icon
-              name="delete"
-              color={colors.disabled}
-              size={32}
-              style={{ marginHorizontal: 10 }}
-            />
-          </View>
-        )}
-      </View>
+      <ArticleCard
+        unread={!isRead || sectionKey !== 'all'}
+        article={article}
+        navigate={navigate}
+        overrideImageWidth={overrideImageWidth}
+      />
     );
-  };
+  }
 
-  const renderLeftActions = (id: string, swipePropRef: React.RefObject<Swipeable>) => {
+  const renderLeftActions = (
+    id: string,
+    title: string,
+    swipePropRef: React.RefObject<Swipeable>,
+  ) => {
     return (
       <View
         style={[
@@ -95,76 +74,65 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
           { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
         ]}
       >
-        {lists.slice(0, maxLeftActions).map((l) => (
-          <View key={l.id} style={{ width: 120 }}>
+        {group !== 'lists' ? (
+          <View key="read" style={{ width: 120 }}>
             <PlatformTouchable
               onPress={() => {
-                if (l.items.some((i) => i._id === id)) {
-                  Alert.alert(
-                    `Retirer l'article de la liste ${l.name} ?`,
-                    "L'article ne sera plus disponible hors-ligne",
-                    [
-                      { text: 'Annuler' },
-                      {
-                        text: 'Retirer',
-                        onPress: () => removeArticleFromList(id, l.id),
-                      },
-                    ],
-                    { cancelable: true },
-                  );
-                } else {
-                  addArticleToList(id, l.id);
-                }
-                swipePropRef.current?.close();
+                if (isRead) deleteArticleRead(id);
+                else addArticleRead(id, title, true);
               }}
             >
               <View style={{ alignItems: 'center', margin: 10 }}>
-                <Icon
-                  name={l.icon || 'playlist-plus'}
-                  size={32}
-                  color={l.items.some((i) => i._id === id) ? colors.primary : colors.disabled}
-                />
-                <Text
-                  style={{
-                    color: l.items.some((i) => i._id === id) ? colors.primary : colors.disabled,
-                  }}
-                >
-                  {l.name}
+                <Icon name={isRead ? 'eye-off' : 'eye'} color={colors.disabled} size={32} />
+                <Text style={{ color: colors.disabled, textAlign: 'center' }}>
+                  Marquer {isRead ? 'non lu' : 'lu'}
                 </Text>
               </View>
             </PlatformTouchable>
           </View>
-        ))}
+        ) : (
+          <View key="delete" style={{ width: 120 }}>
+            <PlatformTouchable
+              onPress={() => {
+                removeArticleFromList(id, sectionKey);
+              }}
+            >
+              <View style={{ alignItems: 'center', margin: 10 }}>
+                <Icon name="delete" color={colors.disabled} size={32} />
+                <Text style={{ color: colors.disabled, textAlign: 'center' }}>Retirer</Text>
+              </View>
+            </PlatformTouchable>
+          </View>
+        )}
+        <View key="add" style={{ width: 120 }}>
+          <PlatformTouchable
+            onPress={() => {
+              setAddToListModalArticle(id);
+              setAddToListModalVisible(true);
+            }}
+          >
+            <View style={{ alignItems: 'center', margin: 10 }}>
+              <Icon name="playlist-plus" color={colors.disabled} size={32} />
+              <Text style={{ color: colors.disabled, textAlign: 'center' }}>Sauvegarder</Text>
+            </View>
+          </PlatformTouchable>
+        </View>
       </View>
     );
-  };
-
-  const swipeRightAction = (
-    id: string,
-    title: string,
-    swipePropRef: React.RefObject<Swipeable>,
-  ) => {
-    swipePropRef.current?.close();
-    if (group === 'lists') {
-      removeArticleFromList(id, sectionKey);
-    } else {
-      if (isRead) deleteArticleRead(id);
-      else addArticleRead(id, title, true);
-    }
   };
 
   return (
     <Swipeable
       ref={swipeRef}
-      renderLeftActions={() => renderLeftActions(article._id, swipeRef)}
-      renderRightActions={
-        historyActive || group !== 'lists' ? () => renderRightActions(article._id) : undefined
-      }
-      onSwipeableRightOpen={
-        historyActive || group !== 'lists'
-          ? () => swipeRightAction(article._id, article.title, swipeRef)
-          : undefined
-      }
+      renderLeftActions={() => renderLeftActions(article._id, article.title, swipeRef)}
+      // renderRightActions={
+      //  historyActive || group !== 'lists' ? () => renderRightActions(article._id) : undefined
+      // }
+      // onSwipeableRightOpen={
+      //   historyActive || group !== 'lists'
+      //     ? () => swipeRightAction(article._id, article.title, swipeRef)
+      //     : undefined
+      // }
     >
       <ArticleCard
         unread={!isRead || sectionKey !== 'all'}
