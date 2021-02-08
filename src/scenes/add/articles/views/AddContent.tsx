@@ -169,7 +169,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
         <TranslucentStatusBar />
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} enabled={Platform.OS === 'ios'}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', flex: 1 }}>
+            <View style={{ flexDirection: 'row', flex: 1, alignContent: 'center' }}>
               <PlatformBackButton
                 onPress={() => {
                   Alert.alert(
