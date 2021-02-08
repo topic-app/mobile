@@ -18,7 +18,7 @@ import { Permissions } from '@constants/index';
 import { articleVerificationApprove } from '@redux/actions/apiActions/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, Account } from '@ts/types';
-import { checkPermission, logger, useTheme, Alert, shareContent } from '@utils/index';
+import { checkPermission, logger, useTheme, Alert, shareContent, trackEvent } from '@utils/index';
 
 import type { ArticleAddScreenNavigationProp, ArticleAddStackParams } from '../index';
 import getAuthStyles from '../styles/Styles';
@@ -48,6 +48,7 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
   const groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
 
   const approve = () => {
+    trackEvent('articledisplay:approve', { props: { method: 'add-success' } });
     if (id) articleVerificationApprove(id).then(() => setApproved(true));
   };
 
@@ -142,6 +143,7 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
                   color={colors.text}
                   onPress={() => {
                     Clipboard.setString(`https://go.topicapp.fr/articles/${id}`);
+                    trackEvent('articleadd:success-copylink');
                     Alert.alert(
                       'Lien copié',
                       "Vous ne pourrez pas utiliser ce lien tant que l'article n'aura pas été validé.",
@@ -165,6 +167,7 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
                           text: 'Partager',
                           onPress: () => {
                             if (!creationData?.title || !id) return;
+                            trackEvent('articleadd:success-share');
                             shareContent({
                               title: creationData.title,
                               group: groupName,

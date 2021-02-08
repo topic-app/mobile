@@ -5,7 +5,7 @@ import WebView from 'react-native-webview';
 
 import { Config } from '@constants';
 import Store from '@redux/store';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import Modal from './Modal';
 
@@ -42,9 +42,13 @@ const FeedbackCard: React.FC<Props> = ({ visible, setVisible }) => {
   const theme = useTheme();
   const { colors } = theme;
 
-  if (visible && Platform.OS === 'web') {
+  const [open, setOpen] = React.useState(false);
+
+  if (visible && Platform.OS === 'web' && !open) {
+    trackEvent('feedback:main-open');
     Linking.openURL(uri);
     setVisible(false);
+    setOpen(true);
   }
 
   return Platform.OS === 'web' ? null : (
@@ -72,6 +76,7 @@ const FeedbackCard: React.FC<Props> = ({ visible, setVisible }) => {
               navState.url.includes('go.topicapp.fr') ||
               navState.url.includes('www.topicapp.fr')
             ) {
+              trackEvent('feedback:main-close');
               setVisible(false);
             }
           }}

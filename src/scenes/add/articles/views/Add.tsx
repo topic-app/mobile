@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from '@components/index';
 import getStyles from '@styles/Styles';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import ArticleAddPageGroup from '../components/AddGroup';
 import ArticleAddPageLocation from '../components/AddLocation';
@@ -28,6 +28,8 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
   const articleStyles = getArticleStyles(theme);
 
   const scrollViewRef = React.useRef<ScrollView>(null);
+
+  React.useEffect(() => trackEvent('articleadd:page-group'), []);
 
   return (
     <View style={styles.page}>

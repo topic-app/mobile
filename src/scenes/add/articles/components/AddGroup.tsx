@@ -9,7 +9,7 @@ import { Permissions } from '@constants/index';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { Account, State } from '@ts/types';
-import { checkPermission, useTheme } from '@utils/index';
+import { checkPermission, trackEvent, useTheme } from '@utils/index';
 
 import getAuthStyles from '../styles/Styles';
 
@@ -22,6 +22,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
 
   const submit = () => {
     if (group !== null) {
+      trackEvent('articleadd:page-location');
       updateArticleCreationData({ group });
       next();
     } else {
