@@ -18,7 +18,7 @@ import {
   GroupRolePermission,
   GroupRole,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import { CheckboxListItem } from '../../components/ListItems';
 import getAuthStyles from '../styles/Styles';
@@ -74,6 +74,7 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
 
   const submit = () => {
     if (schools.length !== 0 || departments.length !== 0 || global) {
+      trackEvent('articleadd:page-meta');
       updateArticleCreationData({ location: { schools, departments, global } });
       next();
     } else {

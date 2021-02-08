@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { actions } from './const';
+import { trackEvent } from '@utils/index';
 
 export const defaultActions = [
   actions.insertImage,
@@ -117,6 +118,7 @@ export default class RichToolbar extends Component {
   }
 
   _onPress(action) {
+    trackEvent('editor:button', { props: { button: action}});
     const { onPressAddImage, onInsertLink } = this.props;
     switch (action) {
       case actions.insertLink:

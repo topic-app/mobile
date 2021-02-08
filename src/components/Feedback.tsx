@@ -8,7 +8,7 @@ import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
 import { PreferencesState, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import Modal from './Modal';
 
@@ -72,6 +72,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
           completed
             ? undefined
             : () => {
+                trackEvent('feedback:open', { props: { type, star: 'none' } });
                 if (Platform.OS === 'web') {
                   Linking.openURL(
                     `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y`,
@@ -128,6 +129,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                   size={28}
                   color="lightgray"
                   onPress={() => {
+                    trackEvent('feedback:dismiss', { props: { type } });
                     updatePrefs({
                       completedFeedback: [...preferences.completedFeedback, type],
                     });
@@ -149,6 +151,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                   color="white"
                   onPress={() => {
                     setRating(e);
+                    trackEvent('feedback:open', { props: { type, star: e.toString() } });
                     if (Platform.OS === 'web') {
                       Linking.openURL(
                         `https://feedback.topicapp.fr/index.php/${info.id}?lang=fr&newtest=Y&main=${e}`,
@@ -192,6 +195,7 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                   navState.url.includes('go.topicapp.fr') ||
                   navState.url.includes('www.topicapp.fr')
                 ) {
+                  trackEvent('feedback:submit', { props: { type } });
                   setFeedbackModalVisible(false);
                   setCompleted(true);
                   updatePrefs({

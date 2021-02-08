@@ -33,7 +33,7 @@ import {
 } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
-import { useTheme, logger, checkPermission, Alert, Errors } from '@utils/index';
+import { useTheme, logger, checkPermission, Alert, Errors, trackEvent } from '@utils/index';
 
 import LinkAddModal from '../../components/LinkAddModal';
 import YoutubeAddModal from '../../components/YoutubeAddModal';
@@ -64,6 +64,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       ?.replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
       .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://');
 
+    trackEvent('articleadd:add-request');
     articleAdd({
       title: creationData.title,
       summary: creationData.summary,
@@ -80,6 +81,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       },
     })
       .then(({ _id }) => {
+        trackEvent('articleadd:add-success');
         navigation.goBack();
         navigation.replace('Success', { id: _id, creationData });
         clearArticleCreationData();
@@ -167,7 +169,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
         <TranslucentStatusBar />
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} enabled={Platform.OS === 'ios'}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', flex: 1 }}>
+            <View style={{ flexDirection: 'row', flex: 1, alignContent: 'center' }}>
               <PlatformBackButton
                 onPress={() => {
                   Alert.alert(
@@ -223,6 +225,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                       placeholder="Écrivez votre article"
                       editorInitializedCallback={() => {
                         logger.debug('Editor toolbar initialized');
+                        trackEvent('articleadd:content-editor-loaded');
                         setToolbarInitialized(true);
                       }}
                     />
@@ -250,8 +253,9 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     key={i.type}
                     title={i.name}
                     description={i.description}
-                    onPress={
-                      markdown
+                    onPress={() => {
+                      trackEvent('editor:switch-editor', { props: { type: i.type } });
+                      (markdown
                         ? () =>
                             Alert.alert(
                               "Voulez vous vraiment changer d'éditeur",
@@ -271,8 +275,8 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                         : () => {
                             setEditor(i.type);
                             setMenuVisible(false);
-                          }
-                    }
+                          })();
+                    }}
                     left={() => (
                       <RadioButton
                         color={colors.primary}
@@ -336,11 +340,14 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                   insertLink={() => {
                     setLinkAddModalVisible(true);
                   }}
-                  insertImage={() =>
+                  insertImage={() => {
+                    trackEvent('articleadd:content-image-upload');
+                    trackEvent('editor:image-upload-start');
                     upload(creationData.group || '').then((fileId: string) => {
+                      trackEvent('editor:image-upload-end');
                       textEditorRef.current?.insertImage(`${Config.cdn.baseUrl}${fileId}`);
-                    })
-                  }
+                    });
+                  }}
                   insertYoutube={() => setYoutubeAddModalVisible(true)}
                 />
               ) : null}

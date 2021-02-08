@@ -18,7 +18,7 @@ import { updateTags, searchTags } from '@redux/actions/api/tags';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { Account, State, TagRequestState, TagPreload } from '@ts/types';
-import { checkPermission, useTheme } from '@utils/index';
+import { checkPermission, trackEvent, useTheme } from '@utils/index';
 
 import TagAddModal from '../../components/TagAddModal';
 import getAuthStyles from '../styles/Styles';
@@ -47,6 +47,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   const [tagName, setTagName] = React.useState<string>('');
 
   const submit = () => {
+    trackEvent('articleadd:page-content');
     updateArticleCreationData({ tags: selectedTags });
     navigate();
   };
@@ -108,6 +109,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
               .replace(/[ùúûü]/g, 'u')}"`}
             icon="plus"
             onPress={() => {
+              trackEvent('articleadd:tags-create-start');
               setTagName(
                 searchText
                   .toLowerCase()
@@ -162,8 +164,10 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
             containerStyle={{ borderColor: item.color }}
             onPress={() => {
               if (selectedTags.includes(item._id)) {
+                trackEvent('articleadd:tags-remove');
                 setSelectedTags(selectedTags.filter((s) => s !== item._id));
               } else {
+                trackEvent('articleadd:tags-add');
                 setSelectedTags([...selectedTags, item._id]);
                 setSelectedData([...selectedData, item]);
               }

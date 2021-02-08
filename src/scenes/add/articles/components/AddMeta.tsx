@@ -12,7 +12,7 @@ import { upload } from '@redux/actions/apiActions/upload';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { State, ArticleCreationData, UploadRequestState, Account } from '@ts/types';
-import { useTheme, getImageUrl, checkPermission } from '@utils/index';
+import { useTheme, getImageUrl, checkPermission, trackEvent } from '@utils/index';
 
 import getArticleStyles from '../styles/Styles';
 
@@ -58,6 +58,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
         initialValues={{ title: '', summary: '', file: null }}
         validationSchema={MetaSchema}
         onSubmit={({ title, summary, file }) => {
+          trackEvent('articleadd:page-tags');
           updateArticleCreationData({
             title,
             summary,
@@ -145,7 +146,14 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                       <Button
                         mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                         uppercase={false}
-                        onPress={() => uploadImage().then((id) => setFieldValue('file', id))}
+                        onPress={() => {
+                          trackEvent(
+                            values.file
+                              ? 'articleadd:meta-image-replace'
+                              : 'articleadd-meta-image-upload',
+                          );
+                          uploadImage().then((id) => setFieldValue('file', id));
+                        }}
                         style={{ flex: 1, marginRight: 5 }}
                       >
                         {values.file ? "Remplacer l'image" : 'Séléctionner une image'}
@@ -154,7 +162,10 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                         <Button
                           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                           uppercase={false}
-                          onPress={() => setFieldValue('file', null)}
+                          onPress={() => {
+                            trackEvent('articleadd:meta-image-remove');
+                            setFieldValue('file', null);
+                          }}
                           style={{ flex: 1, marginLeft: 5 }}
                         >
                           Supprimer l&apos;image

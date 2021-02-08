@@ -63,6 +63,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   React.useEffect(() => {
     // Preload écoles & departments pour utiliser après dans SelectLocation
     updateDepartments('initial');
+    trackEvent('firstopen');
   }, []);
 
   return (

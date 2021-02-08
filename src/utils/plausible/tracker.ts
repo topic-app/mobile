@@ -141,7 +141,7 @@ export default function Plausible(
   const getConfig = (): Required<PlausibleOptions> => ({
     hashMode: false,
     trackLocalhost: false,
-    url: '',
+    url: Platform.OS === 'web' ? 'https://topicapp.fr/' : 'https://app.topicapp.fr/',
     domain: Platform.OS === 'web' ? 'topicapp.fr' : 'app.topicapp.fr',
     referrer: (Platform.OS === 'web' ? document.referrer : null) || null,
     deviceWidth: Platform.OS === 'web' ? window.innerWidth : Dimensions.get('screen').width,

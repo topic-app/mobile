@@ -7,7 +7,7 @@ import { Modal } from '@components/index';
 import config from '@constants/config';
 import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
@@ -30,6 +30,7 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
         /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/gi,
       )
     ) {
+      trackEvent('articleadd:content-youtube-insert');
       const id = linkText
         .replace('https://', '')
         .replace('http://', '')

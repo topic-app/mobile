@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Modal } from '@components/index';
 import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
@@ -30,6 +30,7 @@ const LinkAddModal: React.FC<LinkAddModalProps> = ({ visible, setVisible, add })
         /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/,
       )
     ) {
+      trackEvent('articleadd:content-link-insert');
       add(linkText, nameText || linkText);
       setNameText('');
       setLinkText('');

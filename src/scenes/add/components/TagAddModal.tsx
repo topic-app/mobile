@@ -9,7 +9,7 @@ import { Illustration, PlatformTouchable, ErrorMessage, Modal } from '@component
 import { tagAdd } from '@redux/actions/apiActions/tags';
 import getStyles from '@styles/Styles';
 import { ModalProps, State, TagPreload, TagRequestState } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils/index';
 
 import getArticleStyles from './styles/Styles';
 
@@ -41,6 +41,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
   const [colorList, setColorList] = React.useState([initialColor, ...generateColors()]);
 
   const submit = () => {
+    trackEvent('articleadd:tags-create');
     tagAdd({
       name,
       color,

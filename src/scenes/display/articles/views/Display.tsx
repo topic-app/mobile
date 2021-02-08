@@ -112,7 +112,8 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
 
   const following = account.accountInfo?.user?.data.following;
 
-  const approveArticle = () =>
+  const approveArticle = () => {
+    trackEvent('articledisplay:approve', { props: { method: 'moderation' } });
     articleVerificationApprove(article._id)
       .then(() => navigation.goBack())
       .catch((error) =>
@@ -123,6 +124,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
           retry: approveArticle,
         }),
       );
+  };
 
   const likeArticle = () => {
     trackEvent(`articledisplay:${articleMy?.liked ? 'unlike' : 'like'}`, {
