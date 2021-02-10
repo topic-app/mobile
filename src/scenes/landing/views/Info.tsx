@@ -9,9 +9,11 @@ import {
   TranslucentStatusBar,
   Illustration,
   SafeAreaView,
+  PlatformTouchable,
 } from '@components/index';
+import SponsorsPage from '@src/scenes/more/about/components/SponsorsPage';
 import getStyles from '@styles/Styles';
-import { useTheme } from '@utils/index';
+import { handleUrl, useTheme } from '@utils/index';
 
 import type { LandingScreenNavigationProp, LandingStackParams } from '../index';
 import getLandingStyles from '../styles/Styles';
@@ -151,55 +153,8 @@ const LandingInfo: React.FC<LandingInfoProps> = ({ navigation, route }) => {
               },
               {
                 key: 'sponsors',
-                title: 'Sponsors',
-                component: (
-                  <View>
-                    <View style={landingStyles.headerContainer}>
-                      <View style={landingStyles.centerIllustrationContainer}>
-                        <Text style={landingStyles.sectionTitle}>Sponsors</Text>
-                      </View>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <Divider />
-                      <View
-                        style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
-                      >
-                        <Image style={{ height: 200 }} resizeMode="contain" source={image_mgen} />
-                      </View>
-                      <Text>
-                        La Mutuelle générale de l&apos;Éducation nationale (MGEN) est l’entreprise
-                        qui finance l’application, au niveau des frais de serveur, de publication et
-                        des frais associatifs. Nous les remercions sincèrement pour cette aide qui
-                        nous permet de proposer une application gratuite et sans publicité.
-                      </Text>
-                      <Divider style={{ marginTop: 20 }} />
-                      <View
-                        style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
-                      >
-                        <Image style={{ height: 200 }} resizeMode="contain" source={image_jtac} />
-                      </View>
-                      <Text>
-                        La Jeunesse des Territoires pour l’Action Culturelle (JTAC) est une
-                        association dont le but est de promouvoir l’accès à la culture et
-                        l’engagement lycéen. C’est une association qui s’aligne parfaitement avec
-                        les buts de notre application, et nous avons donc décidé de développer
-                        l’application en partenariat avec celle-ci.
-                      </Text>
-                      <Divider style={{ marginTop: 20 }} />
-                      <View
-                        style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}
-                      >
-                        <Image style={{ height: 200 }} resizeMode="contain" source={image_esper} />
-                      </View>
-                      <Text>
-                        L&apos;ESPER est un regroupement d&apos;organisations qui agissent dans les
-                        domaines de la santé, l&apos;assurance, la banque, le médico-social,
-                        l&apos;éducation populaire ou les activités de loisirs. L&apos;ESPER place
-                        l&apos;économie sociale au service de l&apos;éducation.
-                      </Text>
-                    </View>
-                  </View>
-                ),
+                title: 'Partenaires',
+                component: <SponsorsPage />,
               },
             ]}
           />
