@@ -14,7 +14,7 @@ type props = {
   navigation: AboutScreenNavigationProp<'Legal'>;
 };
 
-const SponsorsPage: React.FC<props> = ({ navigation }) => {
+const LicensesPage: React.FC<props> = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const localStyles = getLocalStyles(theme);
@@ -79,4 +79,4 @@ const SponsorsPage: React.FC<props> = ({ navigation }) => {
   );
 };
 
-export default SponsorsPage;
+export default LicensesPage;
