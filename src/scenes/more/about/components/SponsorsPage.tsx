@@ -5,7 +5,7 @@ import { Divider, Text } from 'react-native-paper';
 import { Content, ErrorMessage, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
 import { RequestState } from '@ts/types';
-import { handleUrl, useTheme } from '@utils/index';
+import { handleUrl, openUrl, useTheme } from '@utils/index';
 
 import getLocalStyles from '../styles/Styles';
 
@@ -39,9 +39,9 @@ const SponsorsPage: React.FC = () => {
         </Text>
         <Text>
           Plus d&apos;infos sur{' '}
-          <TouchableOpacity onPress={() => handleUrl('https://mgen.fr')}>
-            <Text style={styles.link}>mgen.fr</Text>
-          </TouchableOpacity>
+          <Text onPress={() => openUrl('https://mgen.fr')} style={styles.link}>
+            mgen.fr
+          </Text>
         </Text>
         <Divider style={{ marginTop: 20 }} />
         <View style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}>
@@ -54,9 +54,9 @@ const SponsorsPage: React.FC = () => {
         </Text>
         <Text>
           Plus d&apos;infos sur{' '}
-          <TouchableOpacity onPress={() => handleUrl('https://edtechfrance.fr')}>
-            <Text style={styles.link}>edtechfrance.fr</Text>
-          </TouchableOpacity>
+          <Text onPress={() => openUrl('https://edtechfrance.fr')} style={styles.link}>
+            edtechfrance.fr
+          </Text>
         </Text>
         <Divider style={{ marginTop: 20 }} />
         <View style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}>
@@ -69,23 +69,21 @@ const SponsorsPage: React.FC = () => {
           développer l’application en partenariat avec celle-ci.
         </Text>
         <Divider style={{ marginTop: 20 }} />
-        <PlatformTouchable onPress={() => handleUrl('https://lesper.fr')}>
-          <View style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}>
-            <Image style={{ height: 200 }} resizeMode="contain" source={image_esper} />
-          </View>
-          <Text>
-            L&apos;ESPER est un regroupement d&apos;organisations qui agissent dans les domaines de
-            la santé, l&apos;assurance, la banque, le médico-social, l&apos;éducation populaire ou
-            les activités de loisirs. L&apos;ESPER place l&apos;économie sociale au service de
-            l&apos;éducation.
+        <View style={[styles.centerImageContainer, { marginTop: 60, marginBottom: 10 }]}>
+          <Image style={{ height: 200 }} resizeMode="contain" source={image_esper} />
+        </View>
+        <Text>
+          L&apos;ESPER est un regroupement d&apos;organisations qui agissent dans les domaines de la
+          santé, l&apos;assurance, la banque, le médico-social, l&apos;éducation populaire ou les
+          activités de loisirs. L&apos;ESPER place l&apos;économie sociale au service de
+          l&apos;éducation.
+        </Text>
+        <Text>
+          Plus d&apos;infos sur{' '}
+          <Text style={styles.link} onPress={() => openUrl('https://lesper.fr')}>
+            lesper.fr
           </Text>
-          <Text>
-            Plus d&apos;infos sur{' '}
-            <TouchableOpacity onPress={() => handleUrl('https://lesper.fr')}>
-              <Text style={styles.link}>lesper.fr</Text>
-            </TouchableOpacity>
-          </Text>
-        </PlatformTouchable>
+        </Text>
       </View>
     </View>
   );
