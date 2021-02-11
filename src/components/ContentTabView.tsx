@@ -86,16 +86,19 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                     article={item}
                     unread
                     navigate={() =>
-                      navigation.navigate('Main', {
-                        screen: 'Display',
+                      navigation.navigate('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Article',
+                          screen: 'Display',
                           params: {
-                            screen: 'Display',
+                            screen: 'Article',
                             params: {
-                              id: item._id,
-                              title: item.title,
-                              useLists: false,
+                              screen: 'Display',
+                              params: {
+                                id: item._id,
+                                title: item.title,
+                                useLists: false,
+                              },
                             },
                           },
                         },
@@ -147,16 +150,19 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                   <EventCard
                     event={item}
                     navigate={() =>
-                      navigation.navigate('Main', {
-                        screen: 'Display',
+                      navigation.navigate('Root', {
+                        screen: 'Main',
                         params: {
-                          screen: 'Event',
+                          screen: 'Display',
                           params: {
-                            screen: 'Display',
+                            screen: 'Event',
                             params: {
-                              id: item._id,
-                              title: item.title,
-                              useLists: false,
+                              screen: 'Display',
+                              params: {
+                                id: item._id,
+                                title: item.title,
+                                useLists: false,
+                              },
                             },
                           },
                         },
