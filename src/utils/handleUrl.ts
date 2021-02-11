@@ -1,6 +1,8 @@
-import { Linking } from 'react-native';
+import { Appearance, Linking, Platform } from 'react-native';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn';
 
 import { Config } from '@constants/index';
+import themes from '@styles/Theme';
 
 import Alert from './alert';
 
@@ -116,7 +118,26 @@ function decomposeLink(url: string): DecomposedLink {
   return resultUrl;
 }
 
-function handleUrl(targetUrl: string) {
+async function openUrl(targetUrl: string, customTab = true) {
+  if (Platform.OS === 'android' && (await InAppBrowser.isAvailable()) && customTab) {
+    const systemTheme = Appearance.getColorScheme() || 'light';
+    const { colors } = themes[systemTheme];
+    const result = await InAppBrowser.open(targetUrl, {
+      // Android Properties
+      showTitle: true,
+      toolbarColor: colors.appBar,
+      secondaryToolbarColor: colors.appBarText,
+      enableUrlBarHiding: true,
+      enableDefaultShare: true,
+      forceCloseOnRedirection: false,
+      headers: {},
+    });
+  } else {
+    Linking.openURL(targetUrl);
+  }
+}
+
+function handleUrl(targetUrl: string, customTab = true) {
   const target = decomposeLink(targetUrl);
   const { allowedSites } = Config.content;
   if (
@@ -126,7 +147,7 @@ function handleUrl(targetUrl: string) {
       return protocol === target.protocol && subdomains === target.subdomains;
     })
   ) {
-    Linking.openURL(targetUrl);
+    openUrl(targetUrl, customTab);
   } else {
     // In the future, we could add a warning that this site is HTTP, or possibly trying to impersonate another site
     Alert.alert(
@@ -140,7 +161,7 @@ function handleUrl(targetUrl: string) {
         },
         {
           text: 'Ouvrir',
-          onPress: () => Linking.openURL(targetUrl),
+          onPress: () => openUrl(targetUrl, customTab),
         },
       ],
       { cancelable: false },
@@ -148,4 +169,5 @@ function handleUrl(targetUrl: string) {
   }
 }
 
+export { handleUrl, openUrl };
 export default handleUrl;

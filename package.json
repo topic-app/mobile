@@ -73,6 +73,7 @@
     "react-native-geolocation-service": "^5.1.1",
     "react-native-gesture-handler": "^1.9.0",
     "react-native-image-crop-picker": "^0.35.2",
+    "react-native-inappbrowser-reborn": "^3.5.1",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-localize": "^2.0.1",
     "react-native-markdown-display": "^6.1.6",
