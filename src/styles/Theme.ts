@@ -205,7 +205,6 @@ const themes: {
 };
 
 // Eslint needs a bit of help :)
-// eslint-disable-next-line no-undef
 export { ThemeType as Theme };
 
 export default themes;

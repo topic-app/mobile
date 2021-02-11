@@ -27,21 +27,47 @@ function getLandingStyles(theme: Theme) {
       alignSelf: 'center',
       flexDirection: 'row',
     },
-    title: {
-      fontSize: 60,
-      fontFamily: 'Rubik-Light',
-    },
     sectionTitle: {
       fontSize: 30,
     },
     sectionSubtitle: {
       fontSize: 24,
     },
-    headerContainer: {
-      margin: 10,
-      maxWidth: 600,
+    // Welcome page
+    title: {
+      fontSize: 40,
+      fontFamily: 'Rubik-Light',
+      textAlign: 'center',
+    },
+    welcomeContainer: {
+      height: '100%',
       width: '100%',
+      maxWidth: 600,
       alignSelf: 'center',
+    },
+    headerContainer: {
+      marginTop: 25,
+      alignItems: 'center',
+    },
+    bottomContainer: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    illustrationText: {
+      padding: 20,
+    },
+    illustrationContainer: {
+      position: 'absolute',
+      top: 0,
+      height: '70%',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    viewPage: {
+      alignItems: 'center',
+      alignSelf: 'flex-end',
+      paddingBottom: 100,
     },
     contentContainer: {
       padding: 20,
