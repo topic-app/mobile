@@ -1,6 +1,6 @@
 import * as Errors from './errors';
 
-export * from './handleUrl';
+export { default as handleUrl } from './handleUrl';
 export { default as request } from './request';
 export { default as logger } from './logger';
 export { default as Format } from './format';

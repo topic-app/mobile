@@ -5,7 +5,7 @@ import { Divider, Text } from 'react-native-paper';
 import { Content, ErrorMessage, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
 import { RequestState } from '@ts/types';
-import { handleUrl, openUrl, useTheme } from '@utils/index';
+import { handleUrl, useTheme } from '@utils/index';
 
 import getLocalStyles from '../styles/Styles';
 
@@ -39,7 +39,7 @@ const SponsorsPage: React.FC = () => {
         </Text>
         <Text>
           Plus d&apos;infos sur{' '}
-          <Text onPress={() => openUrl('https://mgen.fr')} style={styles.link}>
+          <Text onPress={() => handleUrl('https://mgen.fr', { trusted: true })} style={styles.link}>
             mgen.fr
           </Text>
         </Text>
@@ -54,7 +54,10 @@ const SponsorsPage: React.FC = () => {
         </Text>
         <Text>
           Plus d&apos;infos sur{' '}
-          <Text onPress={() => openUrl('https://edtechfrance.fr')} style={styles.link}>
+          <Text
+            onPress={() => handleUrl('https://edtechfrance.fr', { trusted: true })}
+            style={styles.link}
+          >
             edtechfrance.fr
           </Text>
         </Text>
@@ -80,7 +83,10 @@ const SponsorsPage: React.FC = () => {
         </Text>
         <Text>
           Plus d&apos;infos sur{' '}
-          <Text style={styles.link} onPress={() => openUrl('https://lesper.fr')}>
+          <Text
+            style={styles.link}
+            onPress={() => handleUrl('https://lesper.fr', { trusted: true })}
+          >
             lesper.fr
           </Text>
         </Text>

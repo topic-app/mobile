@@ -12,7 +12,7 @@ import { BottomSheetRef } from '@components/index';
 import { fetchMapLocations } from '@redux/actions/api/places';
 import getStyles from '@styles/Styles';
 import { MapLocation } from '@ts/types';
-import { useTheme, logger, useSafeAreaInsets, Location } from '@utils/index';
+import { useTheme, logger, useSafeAreaInsets, Location, handleUrl } from '@utils/index';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 import LocationBottomSheet from '../components/LocationBottomSheet';
@@ -514,14 +514,14 @@ const ExplorerAttribution: React.FC = () => {
     <View style={explorerStyles.attributionContainer}>
       <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
       <Text
-        onPress={() => Linking.openURL('https://openmaptiles.org/')}
+        onPress={() => handleUrl('https://openmaptiles.org/', { trusted: true })}
         style={[styles.link, explorerStyles.attribution]}
       >
         OpenMapTiles
       </Text>
       <Text style={[explorerStyles.attribution, explorerStyles.atributionMutedColor]}> © </Text>
       <Text
-        onPress={() => Linking.openURL('https://www.openstreetmap.org/copyright')}
+        onPress={() => handleUrl('https://www.openstreetmap.org/copyright', { trusted: true })}
         style={[styles.link, explorerStyles.attribution]}
       >
         OpenStreetMap
