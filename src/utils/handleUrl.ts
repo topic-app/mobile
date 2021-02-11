@@ -126,7 +126,7 @@ async function openUrl(targetUrl: string, customTab = true) {
       // Android Properties
       showTitle: true,
       toolbarColor: colors.appBar,
-      secondaryToolbarColor: colors.appBarText,
+      secondaryToolbarColor: colors.appBarButton,
       enableUrlBarHiding: true,
       enableDefaultShare: true,
       forceCloseOnRedirection: false,
