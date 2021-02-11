@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Platform, ScrollView, Linking } from 'react-native';
-import { Text, Button, List, Checkbox } from 'react-native-paper';
+import { View, Platform, ScrollView, Linking, Image, TouchableWithoutFeedback } from 'react-native';
+import { Text, Button, List, Checkbox, Divider } from 'react-native-paper';
 
 import {
   TranslucentStatusBar,
@@ -25,203 +25,145 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
   const styles = getStyles(theme);
   const landingStyles = getLandingStyles(theme);
 
-  const [terms, setTerms] = React.useState(false);
-
   const scrollViewRef = React.useRef<ScrollView>(null);
+
+  const [currentChouette, setCurrentChouette] = React.useState(0);
+
+  const chouettes = [
+    require('@assets/images/chouettes/article.png'),
+    require('@assets/images/chouettes/main.png'),
+    require('@assets/images/chouettes/party.png'),
+    require('@assets/images/chouettes/thinking.png'),
+    require('@assets/images/chouettes/crying.png'),
+    require('@assets/images/chouettes/phone.png'),
+  ];
+
+  const nextChouette = () => {
+    if (currentChouette < chouettes.length - 1) {
+      setCurrentChouette(currentChouette + 1);
+    } else {
+      setCurrentChouette(0);
+    }
+  };
 
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
         <ScrollView ref={scrollViewRef}>
-          <StepperView
-            onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
-            pages={[
-              {
-                key: 'welcome',
-                icon: 'beta',
-                title: 'Bêta',
-                component: ({ next }) => (
-                  <View>
-                    <View style={landingStyles.headerContainer}>
-                      <View style={landingStyles.centerIllustrationContainer}>
-                        <Illustration name="beta-welcome" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Topic · Bêta publique</Text>
-                      </View>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <Text>Merci d&apos;avoir rejoint la bêta publique de Topic !{'\n'}</Text>
-                      <Text>
-                        Avant de commencer, nous aimerions vous donner quelques explications sur le
-                        processus de rapport de bugs et de demandes de fonctionnalités.{'\n'}
-                      </Text>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <View style={landingStyles.buttonContainer}>
-                        <Button
-                          mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                          color={colors.primary}
-                          uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next()}
-                          style={{ flex: 1 }}
-                        >
-                          Suivant
-                        </Button>
-                      </View>
-                    </View>
-                  </View>
-                ),
-              },
-              {
-                key: 'bugs',
-                icon: 'bug',
-                title: 'Bugs',
-                component: ({ next }) => (
-                  <View>
-                    <View style={landingStyles.headerContainer}>
-                      <View style={landingStyles.centerIllustrationContainer}>
-                        <Illustration name="beta-bugs" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Bugs et plantages</Text>
-                      </View>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <Text>
-                        Étant donné que l&apos;application est toujours en bêta, elle peut être
-                        instable, et vous rencontrerez sûrement des bugs.{'\n'}
-                      </Text>
-                      <Text>
-                        Les plantages seront reportés automatiquement, toutefois si vous constatez
-                        un bug d&apos;affichage, une fonctionnalité qui ne marche pas correctement,
-                        ou un autre problème, nous vous demandons de bien vouloir nous donner les
-                        détails. Vous pourrez le faire via l&apos;élément &quot;Feedback&quot; dans{' '}
-                        {Platform.OS === 'ios' ? 'la section Plus' : 'le menu'}.
-                      </Text>
-                      <Text>
-                        Topic envoie automatiquement des informations sur votre interaction avec
-                        l&apos;application. Ces données sont anonymisées et ne contiennent aucune
-                        information personnelle. Vous pouvez désactiver l&apos;envoi de données
-                        analytiques depuis les paramètres.
-                      </Text>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <View style={landingStyles.buttonContainer}>
-                        <Button
-                          mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                          color={colors.primary}
-                          uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next()}
-                          style={{ flex: 1 }}
-                        >
-                          Suivant
-                        </Button>
-                      </View>
-                    </View>
-                  </View>
-                ),
-              },
-              {
-                key: 'messaging',
-                icon: 'message',
-                title: 'Comm',
-                component: ({ next }) => (
-                  <View>
-                    <View style={landingStyles.headerContainer}>
-                      <View style={landingStyles.centerIllustrationContainer}>
-                        <Illustration name="beta-messages" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Communication</Text>
-                      </View>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <Text>
-                        Si vous souhaitez discuter avec les développeurs et les autres
-                        bêta-testeurs, vous pouvez rejoindre le canal Telegram.
-                      </Text>
-                      <Button
-                        mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
-                        color={colors.primary}
-                        uppercase={false}
-                        onPress={() =>
-                          Linking.openURL('https://t.me/joinchat/AAAAAEfRz29dT2eYy9w_7A')
-                        }
-                        style={{ flex: 1, marginTop: 20 }}
-                      >
-                        Rejoindre le canal Telegram
-                      </Button>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <Text>
-                        Vous trouverez régulièrement des encarts vous permettant de donner votre
-                        avis sur différentes fonctionnalités dans l&apos;application. Ceux-ci
-                        redirigent vers de courts questionnaires ou vous pouvez donner plus de
-                        détails.
-                      </Text>
-                      <FeedbackCard type="welcome" />
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <View style={landingStyles.buttonContainer}>
-                        <Button
-                          mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                          color={colors.primary}
-                          uppercase={Platform.OS !== 'ios'}
-                          onPress={() => next()}
-                          style={{ flex: 1 }}
-                        >
-                          Suivant
-                        </Button>
-                      </View>
-                    </View>
-                  </View>
-                ),
-              },
-              {
-                key: 'updates',
-                icon: 'cellphone-arrow-down',
-                title: 'Mises à jour',
-                component: () => (
-                  <View>
-                    <View style={landingStyles.headerContainer}>
-                      <View style={landingStyles.centerIllustrationContainer}>
-                        <Illustration name="beta-updates" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Mises à jour et tests</Text>
-                      </View>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <Text>
-                        Nous publierons des mises à jour sur{' '}
-                        {Platform.OS === 'ios' ? 'Testflight' : 'le Play Store'} toutes les semaines
-                        environ. N&apos;hésitez pas à regarder les notes de mise à jour pour voir
-                        quelles fonctionnalités vous pouvez tester.{'\n'}
-                      </Text>
-                      <Text>
-                        Nous vous demandons de ne pas publier de &apos;contenus de test&apos; sur le
-                        serveur principal. En renvanche, vous pouvez activer l&apos;option
-                        &quot;utiliser le serveur de développement&quot; dans les paramètres bêta si
-                        vous voulez le faire. Assurez vous bien que la bannière &quot;Serveur de
-                        développement&quot; est affiché avant de publier un contenu de test.{'\n'}
-                      </Text>
-                      <Text>Bon bêta-testing !</Text>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <View style={landingStyles.buttonContainer}>
-                        <Button
-                          mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                          color={colors.primary}
-                          uppercase={Platform.OS !== 'ios'}
-                          onPress={() =>
-                            navigation.navigate('Landing', { screen: 'SelectLocation' })
-                          }
-                          style={{ flex: 1 }}
-                        >
-                          Commencer
-                        </Button>
-                      </View>
-                    </View>
-                  </View>
-                ),
-              },
-            ]}
-          />
+          <View>
+            <View style={landingStyles.headerContainer}>
+              <View style={landingStyles.centerIllustrationContainer}>
+                <View style={{ marginVertical: 10 }}>
+                  <Illustration name="topic-icon" height={80} width={80} />
+                </View>
+                <Text style={landingStyles.sectionTitle}>Topic · Bêta publique</Text>
+              </View>
+            </View>
+            <View style={landingStyles.contentContainer}>
+              <Text>Merci d&apos;avoir rejoint la bêta publique de Topic !{'\n'}</Text>
+              <Text>
+                Voila quelques informations sur le déroulement de la bêta et comment vous pouvez
+                nous aider à developper l&apos;application.{'\n'}
+              </Text>
+            </View>
+          </View>
+          <View>
+            <View style={landingStyles.centerIllustrationContainer}>
+              <Illustration name="beta-messages" height={200} width={200} />
+              <Text style={landingStyles.sectionSubtitle}>Feedback</Text>
+            </View>
+            <View style={landingStyles.contentContainer}>
+              <Text>
+                Vous trouverez régulièrement des encarts vous permettant de donner votre avis sur
+                différentes fonctionnalités dans l&apos;application, via de courts questionnaires.
+              </Text>
+              <Text style={{ fontWeight: 'bold', marginTop: 15 }}>
+                Vous pouvez aussi donner votre avis et signaler des bugs via l&apos;élément
+                &quot;Feedback&quot; dans {Platform.OS === 'ios' ? 'la section Plus' : 'le menu'}.
+              </Text>
+            </View>
+            <View style={[landingStyles.contentContainer, { paddingTop: 0, marginBottom: 30 }]}>
+              <Text>
+                Si vous souhaitez discuter avec les développeurs et les autres bêta-testeurs, vous
+                pouvez rejoindre le canal Telegram.
+              </Text>
+              <Button
+                mode="text"
+                color={colors.primary}
+                uppercase={false}
+                onPress={() => Linking.openURL('https://t.me/joinchat/AAAAAEfRz29dT2eYy9w_7A')}
+                style={{ flex: 1, marginTop: 10 }}
+              >
+                Rejoindre le canal Telegram
+              </Button>
+            </View>
+          </View>
+          <View style={{ marginBottom: 20 }}>
+            <View style={landingStyles.centerIllustrationContainer}>
+              <Illustration name="beta-bugs" height={200} width={200} />
+              <Text style={landingStyles.sectionSubtitle}>Bugs et plantages</Text>
+            </View>
+            <View style={landingStyles.contentContainer}>
+              <Text>
+                Étant donné que l&apos;application est toujours en bêta, elle peut être instable, et
+                vous rencontrerez sûrement des bugs.{'\n'}
+              </Text>
+              <Text>
+                Les rapports de plantage sont envoyés automatiquement, mais pour tout autre problème
+                nous vous demandons d&apos;utiliser la fonctionnalité &quot;Feedback&quot; pour nous
+                le signaler.
+              </Text>
+              <Text>
+                Topic envoie automatiquement des informations anonymes sur votre interaction avec
+                l&apos;application. Vous pouvez désactiver l&apos;envoi depuis les paramètres.
+              </Text>
+            </View>
+          </View>
+          <View>
+            <View style={landingStyles.centerIllustrationContainer}>
+              <Illustration name="beta-updates" height={200} width={200} />
+
+              <Text style={landingStyles.sectionSubtitle}>Mises à jour</Text>
+            </View>
+            <View style={landingStyles.contentContainer}>
+              <Text>
+                Nous publierons des mises à jour sur{' '}
+                {Platform.OS === 'ios' ? 'Testflight' : 'le Play Store'} toutes les semaines
+                environ. N&apos;hésitez pas à regarder les notes de mise à jour pour voir quelles
+                fonctionnalités vous pouvez tester.{'\n'}
+              </Text>
+              <Text>Bon bêta-testing !</Text>
+              <View style={landingStyles.centerIllustrationContainer}>
+                <View style={{ marginVertical: 10 }}>
+                  <TouchableWithoutFeedback onPress={nextChouette}>
+                    <Image
+                      style={{ height: 200 }}
+                      resizeMode="contain"
+                      source={chouettes[currentChouette]}
+                    />
+                  </TouchableWithoutFeedback>
+                </View>
+              </View>
+            </View>
+          </View>
         </ScrollView>
+        <View>
+          <Divider />
+          <View style={landingStyles.contentContainer}>
+            <View style={landingStyles.buttonContainer}>
+              <Button
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                color={colors.primary}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })}
+                style={{ flex: 1 }}
+              >
+                Suivant
+              </Button>
+            </View>
+          </View>
+        </View>
       </SafeAreaView>
     </View>
   );
