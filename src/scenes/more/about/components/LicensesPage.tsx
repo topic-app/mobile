@@ -5,7 +5,7 @@ import { Divider, List, Subheading, Text } from 'react-native-paper';
 import { Content, ErrorMessage, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
 import { RequestState } from '@ts/types';
-import { handleUrl, useTheme } from '@utils/index';
+import { handleUrl, openUrl, useTheme } from '@utils/index';
 
 import { AboutScreenNavigationProp } from '../index';
 import getLocalStyles from '../styles/Styles';
@@ -26,7 +26,7 @@ const LicensesPage: React.FC<props> = ({ navigation }) => {
         <Text>
           L&apos;application Topic est un logiciel libre, vous pouvez trouver le code source sur la
           page{' '}
-          <Text style={styles.link} onPress={() => handleUrl('https://gitlab.com/topicapp/mobile')}>
+          <Text style={styles.link} onPress={() => openUrl('https://gitlab.com/topicapp/mobile')}>
             https://gitlab.com/topicapp/mobile
           </Text>
           .{'\n'}N&apos;hésitez pas à regarder et à contribuer si vous en avez envie, nous pourrons
@@ -54,19 +54,19 @@ const LicensesPage: React.FC<props> = ({ navigation }) => {
       <List.Item
         title="Logo et ressources"
         description="© Ella Nitters (ellanitters.com)"
-        onPress={() => handleUrl('https://ellanitters.com')}
+        onPress={() => openUrl('https://ellanitters.com')}
         right={() => <List.Icon icon="open-in-new" />}
       />
       <List.Item
         title="Illustrations"
         description="© Katerina Limpitsouni (undraw.co)"
-        onPress={() => handleUrl('https://undraw.co')}
+        onPress={() => openUrl('https://undraw.co')}
         right={() => <List.Icon icon="open-in-new" />}
       />
       <List.Item
         title="Données cartographiques"
         description="© OpenMapTiles © OpenStreetMap Contributors"
-        onPress={() => handleUrl('https://openstreetmap.org/copyright')}
+        onPress={() => openUrl('https://openstreetmap.org/copyright')}
         right={() => <List.Icon icon="open-in-new" />}
       />
       <List.Item
