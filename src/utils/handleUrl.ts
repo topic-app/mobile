@@ -137,7 +137,13 @@ async function openUrl(targetUrl: string, customTab = true) {
   }
 }
 
-function handleUrl(targetUrl: string, customTab = true) {
+function handleUrl(
+  targetUrl: string,
+  { customTab = true, trusted = false }: { customTab?: boolean; trusted?: boolean } = {
+    customTab: true,
+    trusted: false,
+  },
+) {
   const target = decomposeLink(targetUrl);
   const { allowedSites } = Config.content;
   if (
@@ -145,7 +151,8 @@ function handleUrl(targetUrl: string, customTab = true) {
       const { protocol, domain, subdomains } = decomposeLink(url);
       if (allowSubdomains) return protocol === target.protocol && domain === target.domain;
       return protocol === target.protocol && subdomains === target.subdomains;
-    })
+    }) ||
+    trusted
   ) {
     openUrl(targetUrl, customTab);
   } else {
@@ -169,5 +176,4 @@ function handleUrl(targetUrl: string, customTab = true) {
   }
 }
 
-export { handleUrl, openUrl };
 export default handleUrl;

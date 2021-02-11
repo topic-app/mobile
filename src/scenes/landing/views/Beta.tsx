@@ -73,86 +73,6 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                 ),
               },
               {
-                key: 'privacy',
-                title: 'Données',
-                icon: 'shield',
-                component: ({ next }) => (
-                  <View>
-                    <View style={landingStyles.headerContainer}>
-                      <View style={landingStyles.centerIllustrationContainer}>
-                        <Illustration name="beta-privacy" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Vie privée et conditions</Text>
-                      </View>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <Text>
-                        La bêta de l&apos;application Topic est soumise à certaines conditions
-                        supplémentaires par rapport à la version finale. Nous collectons notamment
-                        plus de données sur votre appareil afin de faciliter la correction de bugs.
-                        Vous pouvez voir les{' '}
-                        <Text
-                          style={styles.link}
-                          onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/terms')}
-                        >
-                          Conditions d&apos;Utilisation
-                        </Text>{' '}
-                        et la{' '}
-                        <Text
-                          style={styles.link}
-                          onPress={() => Linking.openURL('https://beta.topicapp.fr/legal/privacy')}
-                        >
-                          Politique de Vie Privée
-                        </Text>{' '}
-                        pour plus de détails.
-                      </Text>
-                      <Text>
-                        Topic envoie automatiquement des informations sur votre interaction avec
-                        l&apos;application. Ces données sont anonymisées et ne contiennent aucune
-                        information personnelle. Vous pouvez désactiver l&apos;envoi de données
-                        analytiques depuis les paramètres.
-                      </Text>
-                      <List.Item
-                        title="J'accepte les conditions d'utilisation et la politique de vie privée"
-                        titleNumberOfLines={10}
-                        left={() =>
-                          Platform.OS !== 'ios' ? (
-                            <Checkbox
-                              status={terms ? 'checked' : 'unchecked'}
-                              color={colors.primary}
-                            />
-                          ) : null
-                        }
-                        right={() =>
-                          Platform.OS === 'ios' ? (
-                            <Checkbox
-                              status={terms ? 'checked' : 'indeterminate'}
-                              color={colors.primary}
-                            />
-                          ) : null
-                        }
-                        onPress={() => setTerms(!terms)}
-                      />
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <View style={landingStyles.buttonContainer}>
-                        <Button
-                          mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                          disabled={!terms}
-                          color={colors.primary}
-                          uppercase={Platform.OS !== 'ios'}
-                          onPress={async () => {
-                            next();
-                          }}
-                          style={{ flex: 1 }}
-                        >
-                          Suivant
-                        </Button>
-                      </View>
-                    </View>
-                  </View>
-                ),
-              },
-              {
                 key: 'bugs',
                 icon: 'bug',
                 title: 'Bugs',
@@ -175,6 +95,12 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                         ou un autre problème, nous vous demandons de bien vouloir nous donner les
                         détails. Vous pourrez le faire via l&apos;élément &quot;Feedback&quot; dans{' '}
                         {Platform.OS === 'ios' ? 'la section Plus' : 'le menu'}.
+                      </Text>
+                      <Text>
+                        Topic envoie automatiquement des informations sur votre interaction avec
+                        l&apos;application. Ces données sont anonymisées et ne contiennent aucune
+                        information personnelle. Vous pouvez désactiver l&apos;envoi de données
+                        analytiques depuis les paramètres.
                       </Text>
                     </View>
                     <View style={landingStyles.contentContainer}>
