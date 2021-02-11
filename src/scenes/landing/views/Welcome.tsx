@@ -1,7 +1,7 @@
 import ViewPager from '@react-native-community/viewpager';
-import React from 'react';
-import { View, Platform, StatusBar, Animated, useWindowDimensions, Easing } from 'react-native';
-import { Text, Button, Divider, DarkTheme } from 'react-native-paper';
+import React, { useRef } from 'react';
+import { View, Platform, Animated, useWindowDimensions, Easing } from 'react-native';
+import { Text, Button, DarkTheme } from 'react-native-paper';
 
 import { Illustration, TranslucentStatusBar } from '@components/index';
 import { updateDepartments } from '@redux/actions/api/departments';
@@ -10,48 +10,6 @@ import { trackEvent, useSafeAreaInsets, useTheme } from '@utils/index';
 
 import type { LandingScreenNavigationProp } from '../index';
 import getLandingStyles from '../styles/Styles';
-
-const items = [
-  {
-    index: 0,
-    title: 'Articles',
-    description:
-      "Découvrez l'actu lycéenne en suivant vos groupes favoris et écrivez vos propres articles",
-    text: "Une description un peu plus longue de ce qu'on peut faire",
-    icon: 'newspaper',
-  },
-  {
-    index: 1,
-    title: 'Évènements',
-    description: 'Découvrez les prochains évènements pour la jeunesse autour de vous',
-    text: "Une description un peu plus longue de ce qu'on peut faire",
-    icon: 'calendar',
-  },
-  /* {
-    index: 2,
-    title: 'Pétitions',
-    description:
-      'Faites entendre votre voix en signant ou créant des pétitions et en répondant aux votes',
-    text: "Une description un peu plus longue de ce qu'on peut faire",
-    icon: 'comment-check-outline',
-  }, */
-  {
-    index: 2,
-    title: 'Explorer',
-    description: 'Découvrez les évènements et les lieux proches de vous avec une carte interactive',
-    text: "Une description un peu plus longue de ce qu'on peut faire",
-    icon: 'compass-outline',
-  },
-  {
-    index: 3,
-    divider: true,
-    title: 'Groupes',
-    description:
-      'Rejoignez et créez des groupes et représentez vos associations, organisations et clubs favoris',
-    text: "Une description un peu plus longue de ce qu'on peut faire",
-    icon: 'account-group-outline',
-  },
-];
 
 type LandingWelcomeProps = {
   navigation: LandingScreenNavigationProp<'Welcome'>;
@@ -73,18 +31,22 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     trackEvent('firstopen');
   }, []);
 
+  const [lastPage, setLastPage] = React.useState(0);
+
   const backgroundFullHeight =
     Math.max(windowHeight + insets.top + insets.bottom, windowWidth + insets.left + insets.right) *
     1.5;
   const backgroundCollapsedScale = 50 / backgroundFullHeight;
 
-  const logoScaleAnim = new Animated.Value(1);
-  const logoTranslateAnim = new Animated.Value(0);
-  const backgroundScaleAnim = new Animated.Value(1);
-  const textColorAnim = new Animated.Value(0);
-  const animValues = [new Animated.Value(0), new Animated.Value(0), new Animated.Value(0)];
-
-  let lastPage = 0;
+  const logoScaleAnim = useRef(new Animated.Value(1)).current;
+  const logoTranslateAnim = useRef(new Animated.Value(0)).current;
+  const backgroundScaleAnim = useRef(new Animated.Value(1)).current;
+  const textColorAnim = useRef(new Animated.Value(0)).current;
+  const animValues = [
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+  ];
 
   const animate = (page: number) => {
     let lastPageAnimation: Animated.CompositeAnimation;
@@ -92,7 +54,6 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
 
     // Leaving start page
     if (lastPage === 0) {
-      StatusBar.setBarStyle(theme.statusBarStyle);
       lastPageAnimation = Animated.parallel([
         Animated.timing(logoScaleAnim, {
           toValue: 0.5,
@@ -126,7 +87,6 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
 
     // Going back to start page
     if (page === 0) {
-      StatusBar.setBarStyle('light-content');
       currentPageAnimation = Animated.parallel([
         Animated.timing(logoScaleAnim, {
           toValue: 1,
@@ -162,7 +122,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
       lastPageAnimation,
       Animated.sequence([Animated.delay(75), currentPageAnimation]),
     ]).start();
-    lastPage = page;
+    setLastPage(page);
   };
 
   const normalTextColor = theme.dark ? 'rgb(240,240,240)' : 'rgb(0, 0, 0)';
@@ -181,7 +141,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
 
   return (
     <View style={styles.page}>
-      <TranslucentStatusBar barStyle="light-content" />
+      <TranslucentStatusBar barStyle={lastPage === 0 ? 'light-content' : undefined} />
       <View style={landingStyles.welcomeContainer}>
         <View style={landingStyles.bottomContainer}>
           <ViewPager
@@ -192,7 +152,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             <View key="1" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
               <Text theme={DarkTheme} style={[landingStyles.title, landingStyles.illustrationText]}>
-                Bienvenue sur Topic
+                Topic
               </Text>
               <Text theme={DarkTheme} style={landingStyles.illustrationText}>
                 La malette à outils de l&apos;engagement citoyen
@@ -200,15 +160,25 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             </View>
             <View key="2" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
-              <Text style={landingStyles.illustrationText}>Lisez</Text>
+              <Text style={[landingStyles.title, landingStyles.illustrationText]}>Articles</Text>
+              <Text style={landingStyles.illustrationText}>
+                Découvrez l&apos;actu lycéenne en suivant vos groupes favoris et écrivez vos propres
+                articles
+              </Text>
             </View>
             <View key="3" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
-              <Text style={landingStyles.illustrationText}>Lisez</Text>
+              <Text style={[landingStyles.title, landingStyles.illustrationText]}>Évènements</Text>
+              <Text style={landingStyles.illustrationText}>
+                Découvrez les prochains évènements pour la jeunesse autour de vous
+              </Text>
             </View>
             <View key="4" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
-              <Text style={landingStyles.illustrationText}>Lisez</Text>
+              <Text style={[landingStyles.title, landingStyles.illustrationText]}>Explorer</Text>
+              <Text style={landingStyles.illustrationText}>
+                Découvrez les évènements et les lieux proches de vous avec une carte interactive
+              </Text>
             </View>
           </ViewPager>
           <Animated.View
@@ -252,9 +222,50 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
           >
             <Illustration name="explore" />
           </Animated.View>
+          <View
+            style={{
+              position: 'absolute',
+              height: '85%',
+              alignItems: 'flex-end',
+              flexDirection: 'row',
+            }}
+            pointerEvents="none"
+          >
+            <Animated.View
+              style={[
+                landingStyles.dot,
+                { backgroundColor: lastPage === 0 ? colors.primary : normalTextColor },
+              ]}
+            />
+            <Animated.View
+              style={[
+                landingStyles.dot,
+                { backgroundColor: lastPage === 1 ? colors.primary : normalTextColor },
+              ]}
+            />
+            <Animated.View
+              style={[
+                landingStyles.dot,
+                { backgroundColor: lastPage === 2 ? colors.primary : normalTextColor },
+              ]}
+            />
+            <Animated.View
+              style={[
+                landingStyles.dot,
+                { backgroundColor: lastPage === 3 ? colors.primary : normalTextColor },
+              ]}
+            />
+          </View>
           <Animated.Text style={{ fontSize: 12, color: normalTextColorAnim }}>
             Vous avez un compte?{' '}
-            <Animated.Text style={[styles.link, { color: purpleTextColorAnim }]}>
+            <Animated.Text
+              style={[styles.link, { color: purpleTextColorAnim }]}
+              onPress={() =>
+                navigation.navigate('Auth', {
+                  screen: 'Login',
+                })
+              }
+            >
               Connectez-vous
             </Animated.Text>
           </Animated.Text>
@@ -270,66 +281,6 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               Continuer
             </Button>
           </View>
-        </View>
-      </View>
-      {/* <ScrollView>
-        <View style={landingStyles.contentContainer}>
-          <List.Section>
-            <List.Subheader theme={DarkTheme}>Découvrez l&apos;application</List.Subheader>
-            {items.map((item) => (
-              <View key={shortid()}>
-                {item.divider && <Divider theme={DarkTheme} />}
-                <List.Item
-                  theme={DarkTheme}
-                  title={item.title}
-                  description={item.description}
-                  left={({ color }) => <List.Icon color={color} icon={item.icon} />}
-                  right={({ color }) => <List.Icon color={color} icon="chevron-right" />}
-                  onPress={() => {
-                    trackEvent('landing:press-discover-button', { props: { element: item.title } });
-                    navigation.navigate('Info', { index: item.index });
-                  }}
-                />
-              </View>
-            ))}
-          </List.Section>
-          <Divider theme={DarkTheme} />
-          <View>
-            <PlatformTouchable
-              onPress={() => {
-                trackEvent('landing:press-sponsors-button');
-                navigation.navigate('Info', { index: 4 });
-              }}
-            >
-              <View
-                style={{
-                  marginVertical: 30,
-                  marginHorizontal: 10,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text style={{ color: 'white', opacity: 0.5 }}>Association Topic App</Text>
-                <Text style={{ color: 'white', opacity: 0.5 }}>Partenaires</Text>
-              </View>
-            </PlatformTouchable>
-          </View>
-        </View>
-      </ScrollView> */}
-      <Divider theme={DarkTheme} />
-      <View style={landingStyles.contentContainer}>
-        <View style={landingStyles.buttonContainer}>
-          <Button
-            mode="contained"
-            color="white"
-            uppercase={Platform.OS !== 'ios'}
-            onPress={() => {
-              navigation.navigate('Beta');
-            }}
-            style={{ flex: 1 }}
-          >
-            Suivant
-          </Button>
         </View>
       </View>
     </View>

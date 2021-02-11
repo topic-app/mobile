@@ -37,7 +37,6 @@ function getLandingStyles(theme: Theme) {
     title: {
       fontSize: 40,
       fontFamily: 'Rubik-Light',
-      textAlign: 'center',
     },
     welcomeContainer: {
       height: '100%',
@@ -54,7 +53,10 @@ function getLandingStyles(theme: Theme) {
       alignItems: 'center',
     },
     illustrationText: {
-      padding: 20,
+      paddingTop: 20,
+      paddingBottom: 15,
+      paddingHorizontal: 40,
+      textAlign: 'center',
     },
     illustrationContainer: {
       position: 'absolute',
@@ -68,6 +70,12 @@ function getLandingStyles(theme: Theme) {
       alignItems: 'center',
       alignSelf: 'flex-end',
       paddingBottom: 100,
+    },
+    dot: {
+      height: 4.5,
+      width: 4.5,
+      borderRadius: 2.25,
+      margin: 2,
     },
     contentContainer: {
       padding: 20,
