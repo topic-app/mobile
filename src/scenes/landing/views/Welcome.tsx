@@ -115,7 +115,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                 }}
               >
                 <Text style={{ color: 'white', opacity: 0.5 }}>Association Topic App</Text>
-                <Text style={{ color: 'white', opacity: 0.5 }}>Sponsors</Text>
+                <Text style={{ color: 'white', opacity: 0.5 }}>Partenaires</Text>
               </View>
             </PlatformTouchable>
           </View>

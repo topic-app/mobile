@@ -33,11 +33,9 @@ function getLandingStyles(theme: Theme) {
     },
     sectionTitle: {
       fontSize: 30,
-      marginBottom: 30,
     },
     sectionSubtitle: {
       fontSize: 24,
-      marginBottom: 10,
     },
     headerContainer: {
       margin: 10,
