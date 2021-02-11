@@ -5,7 +5,7 @@ import { Divider, List, Subheading, Text } from 'react-native-paper';
 import { Content, ErrorMessage, Illustration, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
 import { RequestState } from '@ts/types';
-import { handleUrl, openUrl, useTheme } from '@utils/index';
+import { handleUrl, useTheme } from '@utils/index';
 
 import { AboutScreenNavigationProp } from '../index';
 import getLocalStyles from '../styles/Styles';
@@ -117,19 +117,19 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
       <List.Item
         title="Twitter"
         description="@topic_app"
-        onPress={() => openUrl('https://twitter.com/topic_app')}
+        onPress={() => handleUrl('https://twitter.com/topic_app', { trusted: true })}
         right={() => <List.Icon icon="twitter" />}
       />
       <List.Item
         title="Instagram"
         description="@topic_application"
-        onPress={() => openUrl('https://instagram.com/topic_application')}
+        onPress={() => handleUrl('https://instagram.com/topic_application', { trusted: true })}
         right={() => <List.Icon icon="instagram" />}
       />
       <List.Item
         title="Gitlab (code source)"
         description="topicapp"
-        onPress={() => openUrl('https://gitlab.com/topicapp')}
+        onPress={() => handleUrl('https://gitlab.com/topicapp', { trusted: true })}
         right={() => <List.Icon icon="gitlab" />}
       />
       <View style={{ height: 40 }} />
@@ -142,7 +142,7 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
           key={c.name}
           title={c.name}
           description={c.description}
-          onPress={c.link ? () => openUrl(c.link) : undefined}
+          onPress={c.link ? () => handleUrl(c.link, { trusted: true }) : undefined}
           right={c.icon ? () => <List.Icon icon={c.icon} /> : undefined}
         />
       ))}
