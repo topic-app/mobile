@@ -137,8 +137,13 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
                 />
               </View>
             )}
-            <Text style={{ color: 'white', flex: 1, fontSize: 17 }}>
+            <Text style={{ color: 'white', flex: 1, fontSize: 17, textAlign: 'center' }}>
               Donnez votre avis sur {info.name}
+            </Text>
+            <Text
+              style={{ color: '#DDD', flex: 1, fontSize: 14, textAlign: 'center', marginTop: 5 }}
+            >
+              Visible uniquement aux développeurs
             </Text>
             <View style={{ flexDirection: 'row', marginBottom: -5 }}>
               {[1, 2, 3, 4, 5].map((e, key) => (
