@@ -15,7 +15,7 @@ type ImageDisplayProps = {
 };
 
 const ImageDisplay: React.FC<ImageDisplayProps> = ({ navigation, route }) => {
-  const { image } = route.params;
+  const { image } = route.params || {};
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -33,12 +33,15 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ navigation, route }) => {
     >
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView>
-          <PlatformBackButton onPress={navigation.goBack} />
-          <AutoHeightImage
-            source={{ uri: getImageUrl({ image, size: 'full' }) || '' }}
-            width={dimensions.width}
-          />
+        <ScrollView style={{ flex: 1 }}>
+          <View style={{ flex: 1 }}>
+            <PlatformBackButton onPress={navigation.goBack} />
+            <AutoHeightImage
+              source={{ uri: getImageUrl({ image, size: 'full' }) || '' }}
+              width={dimensions.width}
+              style={{ flex: 1 }}
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
     </View>
