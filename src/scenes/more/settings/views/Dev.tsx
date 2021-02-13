@@ -138,6 +138,15 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
             onPress={toggleDevServer}
             style={settingsStyles.listItem}
           />
+          <List.Item
+            title="Montrer l'écran de bienvenue"
+            description="Cette option n'efface aucune donnée"
+            onPress={() => {
+              navigation.push('Landing', {
+                screen: 'Welcome',
+              });
+            }}
+          />
         </List.Section>
         <Divider />
         <View style={styles.container}>
