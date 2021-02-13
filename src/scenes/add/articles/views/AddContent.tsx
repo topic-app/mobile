@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, ScrollView, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 import {
   ProgressBar,
   Button,
@@ -12,6 +12,8 @@ import {
   RadioButton,
   List,
   TextInput,
+  Card,
+  Text,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -22,6 +24,7 @@ import {
   PlatformBackButton,
   SafeAreaView,
   CollapsibleView,
+  Content,
 } from '@components/index';
 import { RichToolbar, RichEditor } from '@components/richEditor/index';
 import { Config, Permissions } from '@constants/index';
@@ -131,6 +134,8 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const [menuVisible, setMenuVisible] = React.useState(false);
 
+  const [viewing, setViewing] = React.useState(false);
+
   const textEditorRef = React.createRef<RichEditor>();
 
   if (!account.loggedIn) return null;
@@ -192,6 +197,18 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 <Title numberOfLines={1}>{creationData?.title}</Title>
               </View>
             </View>
+            <View style={{ alignSelf: 'center' }}>
+              <IconButton
+                onPress={() => {
+                  if (!viewing) {
+                    Keyboard.dismiss();
+                  }
+                  setViewing(!viewing);
+                }}
+                icon={viewing ? 'pencil' : 'eye'}
+                style={{ marginLeft: 5 }}
+              />
+            </View>
             <View style={[styles.container, { alignSelf: 'flex-end' }]}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
@@ -201,7 +218,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                   textEditorRef.current?.blurContentEditor();
                   submit();
                 }}
-                style={{ flex: 1, marginLeft: 5 }}
+                style={{ flex: 1 }}
               >
                 Publier
               </Button>
@@ -211,7 +228,41 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
           <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
             <View style={articleStyles.formContainer}>
               <View style={articleStyles.textInputContainer}>
-                <View style={{ marginTop: 20 }}>
+                {viewing && (
+                  <View>
+                    <View style={{ marginBottom: 20 }}>
+                      <Card
+                        elevation={0}
+                        style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+                      >
+                        <View style={[styles.container, { flexDirection: 'row' }]}>
+                          <Icon
+                            name="information-outline"
+                            style={{ alignSelf: 'center', marginRight: 10 }}
+                            size={24}
+                            color={colors.primary}
+                          />
+                          <Text style={{ color: colors.text, alignSelf: 'center', flex: 1 }}>
+                            Ci-dessous, l&apos;article tel qu&apos;il s&apos;affichera après
+                            l&apos;avoir publié.
+                          </Text>
+                        </View>
+                      </Card>
+                    </View>
+                    <Content
+                      parser={editor === 'plaintext' ? 'plaintext' : 'markdown'}
+                      data={markdown}
+                    />
+                  </View>
+                )}
+                <View
+                  style={{
+                    marginTop: 20,
+                    // HACK: RichEditor does not play well with being unmounted
+                    height: viewing ? 0 : undefined,
+                    opacity: viewing ? 0 : 1,
+                  }}
+                >
                   {editor === 'rich' && (
                     <RichEditor
                       onHeightChange={() => {}}
@@ -255,27 +306,26 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     description={i.description}
                     onPress={() => {
                       trackEvent('editor:switch-editor', { props: { type: i.type } });
-                      (markdown
-                        ? () =>
-                            Alert.alert(
-                              "Voulez vous vraiment changer d'éditeur",
-                              'Vous pourrez perdre le formattage, les images etc.',
-                              [
-                                { text: 'Annuler', onPress: () => setMenuVisible(false) },
-                                {
-                                  text: 'Changer',
-                                  onPress: () => {
-                                    setEditor(i.type);
-                                    setMenuVisible(false);
-                                  },
-                                },
-                              ],
-                              { cancelable: true },
-                            )
-                        : () => {
-                            setEditor(i.type);
-                            setMenuVisible(false);
-                          })();
+                      if (markdown) {
+                        Alert.alert(
+                          "Voulez vous vraiment changer d'éditeur ?",
+                          'Vous pourrez perdre le formattage, les images etc.',
+                          [
+                            { text: 'Annuler', onPress: () => setMenuVisible(false) },
+                            {
+                              text: 'Changer',
+                              onPress: () => {
+                                setEditor(i.type);
+                                setMenuVisible(false);
+                              },
+                            },
+                          ],
+                          { cancelable: true },
+                        );
+                      } else {
+                        setEditor(i.type);
+                        setMenuVisible(false);
+                      }
                     }}
                     left={() => (
                       <RadioButton
@@ -288,7 +338,14 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 ))}
               </View>
             </CollapsibleView>
-            <View style={{ flexDirection: 'row' }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                // HACK: RichToolbar does not play well with being unmounted
+                height: viewing ? 0 : undefined,
+                opacity: viewing ? 0 : 1,
+              }}
+            >
               <IconButton
                 icon="settings"
                 color={colors.text}
@@ -312,12 +369,12 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     'insertYoutube',
                     'bold',
                     'italic',
-                    'strikeThrough',
-                    'orderedList',
-                    'unorderedList',
+                    // 'strikeThrough',
                     'heading1',
                     'heading2',
                     'heading3',
+                    'orderedList',
+                    'unorderedList',
                     'SET_PARAGRAPH',
                   ]}
                   style={{ backgroundColor: colors.surface, marginHorizontal: 20 }}
@@ -327,7 +384,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     heading3: icon('format-header-3'),
                     bold: icon('format-bold'),
                     italic: icon('format-italic'),
-                    strikeThrough: icon('format-strikethrough'),
+                    // strikeThrough: icon('format-strikethrough'),
                     unorderedList: icon('format-list-bulleted'),
                     orderedList: icon('format-list-numbered'),
                     insertImage: icon('image-outline'),

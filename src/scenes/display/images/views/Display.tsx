@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { View, Dimensions, ScrollView } from 'react-native';
+import { View, ScrollView, useWindowDimensions } from 'react-native';
 
 import { TranslucentStatusBar, PlatformBackButton, SafeAreaView } from '@components/index';
 import getStyles from '@styles/Styles';
@@ -15,14 +15,17 @@ type ImageDisplayProps = {
 };
 
 const ImageDisplay: React.FC<ImageDisplayProps> = ({ navigation, route }) => {
-  const { image } = route.params;
+  const { image } = route.params || {};
   const theme = useTheme();
   const styles = getStyles(theme);
+
+  const dimensions = useWindowDimensions();
+
   return (
     <View
       style={{
         backgroundColor: '#000000',
-        height: Dimensions.get('screen').height,
+        height: dimensions.height,
         flex: 1,
         flexGrow: 1,
         alignContent: 'center',
@@ -30,12 +33,15 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ navigation, route }) => {
     >
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <ScrollView>
-          <PlatformBackButton onPress={navigation.goBack} />
-          <AutoHeightImage
-            source={{ uri: getImageUrl({ image, size: 'full' }) || '' }}
-            width={Dimensions.get('window').width}
-          />
+        <ScrollView style={{ flex: 1 }}>
+          <View style={{ flex: 1 }}>
+            <PlatformBackButton onPress={navigation.goBack} />
+            <AutoHeightImage
+              source={{ uri: getImageUrl({ image, size: 'full' }) || '' }}
+              width={dimensions.width}
+              style={{ flex: 1 }}
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
     </View>

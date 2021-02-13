@@ -143,6 +143,11 @@ export default {
                   Display: '/groupes/:id',
                 },
               },
+              Image: {
+                screens: {
+                  Display: '/images/',
+                },
+              },
             },
           },
           Home1: {
