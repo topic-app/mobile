@@ -26,7 +26,7 @@ function updateLocationCreator(fields: Partial<LocationState>): AppThunk {
       data: fields,
     });
     if (!getState().account.loggedIn) {
-      return Promise.resolve();
+      return;
     }
     dispatch({
       type: UPDATE_LOCATION_STATE,
@@ -52,7 +52,7 @@ function updateLocationCreator(fields: Partial<LocationState>): AppThunk {
           },
         },
       });
-      return Promise.reject();
+      throw error;
     }
 
     dispatch({
@@ -65,7 +65,7 @@ function updateLocationCreator(fields: Partial<LocationState>): AppThunk {
         },
       },
     });
-    return Promise.resolve();
+    return true;
   };
 }
 
@@ -134,7 +134,7 @@ function fetchLocationDataCreator(): AppThunk {
           },
         },
       });
-      return Promise.reject();
+      throw error;
     }
 
     dispatch({
@@ -154,7 +154,7 @@ function fetchLocationDataCreator(): AppThunk {
         departmentData,
       },
     });
-    return Promise.resolve();
+    return true;
   };
 }
 

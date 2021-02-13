@@ -5,19 +5,20 @@ import { request } from '@utils/index';
 import { reportCreator, approveCreator, deverifyCreator } from './ActionCreator';
 
 function groupFollowCreator({ id }: { id: string }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          follow: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        follow: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'profile/follow',
         'post',
         {
@@ -25,51 +26,49 @@ function groupFollowCreator({ id }: { id: string }): AppThunk {
           id,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              follow: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ type: 'group', id });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              follow: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
-    });
-  };
-}
-
-function groupUnfollowCreator({ id }: { id: string }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+      );
+    } catch (error) {
       dispatch({
         type: UPDATE_GROUPS_STATE,
         data: {
           follow: {
-            loading: true,
-            success: null,
-            error: null,
+            loading: false,
+            success: false,
+            error,
           },
         },
       });
-      request(
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        follow: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return { type: 'group', id };
+  };
+}
+
+function groupUnfollowCreator({ id }: { id: string }): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        follow: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'profile/unfollow',
         'post',
         {
@@ -77,34 +76,31 @@ function groupUnfollowCreator({ id }: { id: string }): AppThunk {
           type: 'group',
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              follow: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ type: 'group', id });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              follow: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          follow: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        follow: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { type: 'group', id };
   };
 }
 
@@ -187,19 +183,20 @@ function groupModifyMemberCreator({
   role,
   secondaryRoles,
 }: GroupModifyMemberCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          member_modify: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_modify: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'groups/members/modify',
         'post',
         {
@@ -209,51 +206,49 @@ function groupModifyMemberCreator({
           secondaryRoles,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_modify: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ user, group, role, secondaryRoles });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_modify: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          member_modify: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_modify: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { user, group, role, secondaryRoles };
   };
 }
 
 function groupDeleteMemberCreator({ group, user }: { user: string; group: string }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          member_delete: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_delete: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'groups/members/delete',
         'post',
         {
@@ -261,187 +256,178 @@ function groupDeleteMemberCreator({ group, user }: { user: string; group: string
           user,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_delete: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ user, group });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_delete: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          member_delete: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_delete: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { user, group };
   };
 }
 
 function groupMemberAcceptCreator({ group }: { group: string }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          member_accept: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_accept: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'groups/members/accept',
         'post',
         {
           group,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_accept: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ group });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_accept: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          member_accept: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_accept: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { group };
   };
 }
 
 function groupMemberRejectCreator({ group }: { group: string }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          member_reject: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_reject: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'groups/members/reject',
         'post',
         {
           group,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_reject: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ group });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_reject: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          member_reject: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_reject: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { group };
   };
 }
 
 function groupMemberLeaveCreator({ group }: { group: string }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          member_leave: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_leave: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'groups/members/leave',
         'post',
         {
           group,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_leave: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ group });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              member_leave: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          member_leave: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        member_leave: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { group };
   };
 }
 
@@ -452,19 +438,20 @@ function groupVerificationDeleteCreator({
   groupId: string;
   message: string;
 }): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          verification_delete: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        verification_delete: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'groups/delete',
         'post',
         {
@@ -472,34 +459,31 @@ function groupVerificationDeleteCreator({
           message,
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              verification_delete: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ _id: groupId });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              verification_delete: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          verification_delete: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        verification_delete: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { _id: groupId };
   };
 }
 
@@ -523,19 +507,20 @@ function groupModifyCreator({
   description,
   avatar,
 }: GroupModifyCreatorParams): AppThunk {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          modify: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        modify: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'groups/modify',
         'post',
         {
@@ -549,34 +534,31 @@ function groupModifyCreator({
           },
         },
         true,
-      )
-        .then(() => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              modify: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve({ group });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              modify: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          modify: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        modify: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return { group };
   };
 }
 
@@ -591,19 +573,20 @@ function groupAddCreator({
   verification,
   legal,
 }: GroupCreationData): AppThunk<Promise<{ _id: string }>> {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: UPDATE_GROUPS_STATE,
-        data: {
-          add: {
-            loading: true,
-            success: null,
-            error: null,
-          },
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        add: {
+          loading: true,
+          success: null,
+          error: null,
         },
-      });
-      request(
+      },
+    });
+    let result;
+    try {
+      result = await request(
         'groups/templates/add',
         'post',
         {
@@ -622,34 +605,31 @@ function groupAddCreator({
           verification,
         },
         true,
-      )
-        .then((result) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              add: {
-                loading: false,
-                success: true,
-                error: null,
-              },
-            },
-          });
-          resolve(result.data as { _id: string });
-        })
-        .catch((error) => {
-          dispatch({
-            type: UPDATE_GROUPS_STATE,
-            data: {
-              add: {
-                loading: false,
-                success: false,
-                error,
-              },
-            },
-          });
-          reject();
-        });
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_GROUPS_STATE,
+        data: {
+          add: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_GROUPS_STATE,
+      data: {
+        add: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
     });
+    return result.data as { _id: string };
   };
 }
 

@@ -402,7 +402,7 @@ function registerCreator(fields: RegisterFields): AppThunk {
     try {
       newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password || '');
     } catch (err) {
-      return dispatch({
+      dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
           login: {
@@ -413,6 +413,7 @@ function registerCreator(fields: RegisterFields): AppThunk {
           },
         },
       });
+      throw err;
     }
     let result;
     try {

@@ -170,7 +170,6 @@ function updateCreator<T extends ApiItemString>({
         });
       })
       .catch((error) => {
-        logger.error(error);
         return dispatch({
           type: stateUpdate,
           data: {
