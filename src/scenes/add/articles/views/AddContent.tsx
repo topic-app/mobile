@@ -242,7 +242,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                             size={24}
                             color={colors.primary}
                           />
-                          <Text style={{ color: colors.text, alignSelf: 'center' }}>
+                          <Text style={{ color: colors.text, alignSelf: 'center', flex: 1 }}>
                             Ci-dessous, l&apos;article tel qu&apos;il s&apos;affichera après
                             l&apos;avoir publié.
                           </Text>
