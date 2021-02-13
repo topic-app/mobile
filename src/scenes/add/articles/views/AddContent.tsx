@@ -197,7 +197,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 <Title numberOfLines={1}>{creationData?.title}</Title>
               </View>
             </View>
-            <View style={[styles.container, { alignSelf: 'flex-end' }]}>
+            <View style={{ alignSelf: 'center' }}>
               <IconButton
                 onPress={() => {
                   if (!viewing) {
@@ -206,7 +206,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                   setViewing(!viewing);
                 }}
                 icon={viewing ? 'pencil' : 'eye'}
-                style={{ flex: 1, marginLeft: 5 }}
+                style={{ marginLeft: 5 }}
               />
             </View>
             <View style={[styles.container, { alignSelf: 'flex-end' }]}>
@@ -306,27 +306,26 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     description={i.description}
                     onPress={() => {
                       trackEvent('editor:switch-editor', { props: { type: i.type } });
-                      (markdown
-                        ? () =>
-                            Alert.alert(
-                              "Voulez vous vraiment changer d'éditeur ?",
-                              'Vous pourrez perdre le formattage, les images etc.',
-                              [
-                                { text: 'Annuler', onPress: () => setMenuVisible(false) },
-                                {
-                                  text: 'Changer',
-                                  onPress: () => {
-                                    setEditor(i.type);
-                                    setMenuVisible(false);
-                                  },
-                                },
-                              ],
-                              { cancelable: true },
-                            )
-                        : () => {
-                            setEditor(i.type);
-                            setMenuVisible(false);
-                          })();
+                      if (markdown) {
+                        Alert.alert(
+                          "Voulez vous vraiment changer d'éditeur ?",
+                          'Vous pourrez perdre le formattage, les images etc.',
+                          [
+                            { text: 'Annuler', onPress: () => setMenuVisible(false) },
+                            {
+                              text: 'Changer',
+                              onPress: () => {
+                                setEditor(i.type);
+                                setMenuVisible(false);
+                              },
+                            },
+                          ],
+                          { cancelable: true },
+                        );
+                      } else {
+                        setEditor(i.type);
+                        setMenuVisible(false);
+                      }
                     }}
                     left={() => (
                       <RadioButton
@@ -339,13 +338,20 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 ))}
               </View>
             </CollapsibleView>
-            <View style={{ flexDirection: 'row' }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                // HACK: RichToolbar does not play well with being unmounted
+                height: viewing ? 0 : undefined,
+                opacity: viewing ? 0 : 1,
+              }}
+            >
               <IconButton
                 icon="settings"
                 color={colors.text}
                 onPress={() => setMenuVisible(!menuVisible)}
               />
-              {toolbarInitialized && editor === 'rich' && !viewing ? (
+              {toolbarInitialized && editor === 'rich' ? (
                 <RichToolbar
                   getEditor={() => textEditorRef.current!}
                   actions={[
