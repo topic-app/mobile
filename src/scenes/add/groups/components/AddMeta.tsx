@@ -28,7 +28,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
       .required('Nom requis'),
     shortName: Yup.string()
       .min(2, "L'acronyme doit contenir au moins 2 caractères")
-      .max(10, "L'acronyme doit contenir moins de 10 caractères"),
+      .max(20, "L'acronyme doit contenir moins de 20 caractères"),
     summary: Yup.string()
       .max(200, 'La description courte doit contenir moins de 200 caractères.')
       .required('Description courte requise'),
