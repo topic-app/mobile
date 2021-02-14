@@ -301,6 +301,9 @@ export type Group = GroupBase & {
     website?: string;
     extra?: string;
   };
+  pages?: {
+    enabled?: boolean;
+  };
 };
 
 export type GroupVerification = Group & {

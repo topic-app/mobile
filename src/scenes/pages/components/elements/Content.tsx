@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Appearance, FlatList } from 'react-native';
-import { List, Text } from 'react-native-paper';
+import { List, Text, ThemeProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Content as ContentComponent, CustomHeaderBar } from '@components/index';
@@ -23,8 +23,12 @@ const Content: React.FC<PageProps> = ({ navigation, element }) => {
   const localStyles = getLocalStyles(theme);
 
   return (
-    <View>
-      <ContentComponent data={element.data.content.data} parser={element.data.content.parser} />
+    <View style={{ margin: 20 }}>
+      <ThemeProvider
+        theme={{ ...themes.light, colors: { ...themes.light.colors, text: element.data.color } }}
+      >
+        <ContentComponent data={element.data.content.data} parser={element.data.content.parser} />
+      </ThemeProvider>
     </View>
   );
 };

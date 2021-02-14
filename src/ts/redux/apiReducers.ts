@@ -26,6 +26,7 @@ import {
   ArticleMyInfo,
   EventMyInfo,
 } from '../api';
+import { Page } from '../groupPages';
 import {
   ArticleRequestState,
   CommentRequestState,
@@ -295,6 +296,7 @@ export const UPDATE_GROUPS_ITEM = 'UPDATE_GROUPS_ITEM';
 export const UPDATE_GROUPS_SEARCH = 'UPDATE_GROUPS_SEARCH';
 export const UPDATE_GROUPS_TEMPLATES = 'UPDATE_GROUPS_TEMPLATES';
 export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
+export const UPDATE_GROUPS_PAGES = 'UPDATE_GROUPS_PAGES';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
@@ -304,6 +306,7 @@ export type GroupsState = {
   verification: (Group | GroupPreload)[];
   state: GroupRequestState;
   templates: GroupTemplate[];
+  pages: Page[];
 };
 
 type UpdateGroupsStateAction = {
@@ -336,9 +339,20 @@ type UpdateGroupsSearchAction = {
   data: GroupPreload[];
 };
 
+type UpdateGroupsPagesAction = {
+  type: typeof UPDATE_GROUPS_PAGES;
+  data: Page[];
+};
+
 type ClearGroupsAction = {
   type: typeof CLEAR_GROUPS;
-  data: { data?: boolean; search?: boolean; templates?: boolean; verification?: boolean };
+  data: {
+    data?: boolean;
+    search?: boolean;
+    templates?: boolean;
+    verification?: boolean;
+    pages?: boolean;
+  };
 };
 
 export type GroupsActionTypes =
@@ -348,6 +362,7 @@ export type GroupsActionTypes =
   | UpdateGroupsSearchAction
   | UpdateGroupsTemplatesAction
   | UpdateGroupsVerificationAction
+  | UpdateGroupsPagesAction
   | ClearGroupsAction
   | FullClearAction;
 

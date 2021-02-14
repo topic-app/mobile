@@ -211,7 +211,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
         ) : (
           (articles.length !== 0 || events.length !== 0) && (
             <View>
-              <Divider />
               <CustomTabView hideTabBar={pages.length < 2} scrollEnabled={false} pages={pages} />
               <View style={{ height: 20 }} />
             </View>

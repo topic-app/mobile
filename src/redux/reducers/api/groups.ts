@@ -7,6 +7,7 @@ import {
   UPDATE_GROUPS_SEARCH,
   UPDATE_GROUPS_TEMPLATES,
   UPDATE_GROUPS_VERIFICATION,
+  UPDATE_GROUPS_PAGES,
   CLEAR_GROUPS,
 } from '@ts/redux';
 
@@ -16,6 +17,7 @@ const initialState: GroupsState = {
   verification: [],
   item: null,
   templates: [],
+  pages: [],
   state: {
     list: {
       success: null,
@@ -140,12 +142,18 @@ function groupReducer(state = initialState, action: GroupsActionTypes): GroupsSt
         ...state,
         templates: action.data,
       };
+    case UPDATE_GROUPS_PAGES:
+      return {
+        ...state,
+        pages: action.data,
+      };
     case CLEAR_GROUPS:
       return {
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
         templates: action.data.templates ? [] : state.templates,
         verification: action.data.verification ? [] : state.verification,
+        pages: action.data.pages ? [] : state.pages,
         item: null,
         state: state.state,
       };

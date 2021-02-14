@@ -40,7 +40,6 @@ const Block: React.FC<PageProps> = ({ navigation, columns }) => {
   return (
     <View
       style={[
-        styles.container,
         { flexDirection: dimensions.width / columns.length < MIN_COLUMN_WIDTH ? 'column' : 'row' },
       ]}
     >
@@ -61,7 +60,6 @@ const Block: React.FC<PageProps> = ({ navigation, columns }) => {
               return (
                 <View
                   style={[
-                    styles.container,
                     {
                       alignSelf: item.align,
                     },

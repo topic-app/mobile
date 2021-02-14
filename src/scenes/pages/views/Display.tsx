@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Appearance, FlatList } from 'react-native';
-import { List } from 'react-native-paper';
+import { List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CustomHeaderBar } from '@components/index';
+import { CustomHeaderBar, PlatformBackButton, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
 import { Account, Pages, Preferences, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useSafeAreaInsets, useTheme } from '@utils/index';
 
 import Page from '../components/Page';
 import type { PagesScreenNavigationProp } from '../index';
@@ -21,9 +21,13 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const localStyles = getSettingsStyles(theme);
+  const { colors } = theme;
+
+  const insets = useSafeAreaInsets();
 
   const page: Pages.Page = {
     page: 'main',
+    group: 'test',
     main: true,
     header: [
       {
@@ -39,7 +43,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                 id: '3',
                 type: 'image',
                 data: {
-                  image: { image: '5fee1a102a8c4700193964ad', thumbnails: { large: true } },
+                  image: { image: '60297548f44181001a19c8af', thumbnails: { large: true } },
                   mode: 'contain',
                   height: 100,
                 },
@@ -54,7 +58,6 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                       id: '4a',
                       type: 'external',
                       text: 'Présentation',
-                      icon: 'pencil',
                       url: 'https://example.org',
                     },
                     { id: '4b', type: 'internal', text: 'Membres', page: 'secondary' },
@@ -95,7 +98,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
       {
         id: '5',
         type: 'color',
-        data: { color: '#3480be' },
+        data: { color: '#FFFFFF' },
         columns: [
           {
             id: '6',
@@ -106,10 +109,10 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                 data: {
                   content: {
                     data:
-                      "# Titre\nDu contenu markdown avec du *gras* et de _l'italique_ en plus\nPuis une image parce que pourquoi pas\n[](cdn://5fda2aa2a1d6970019fdecd6)",
+                      "# CVL du Centre International de Valbonne\nVoila une description. Du contenu formatté (avec du **gras**, de *l'italique*, des [liens](https://example.org) etc)\n",
                     parser: 'markdown',
                   },
-                  color: '#3480be',
+                  color: '#000000',
                   size: 20,
                 },
               },
@@ -122,12 +125,39 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
               {
                 id: '9',
                 type: 'content',
+                align: 'center',
                 data: {
                   content: {
-                    data: '# Title',
+                    data: '## Titre centré',
                     parser: 'markdown',
                   },
-                  color: '#592989',
+                  color: '#000000',
+                  size: 20,
+                },
+              },
+              {
+                id: '9b',
+                type: 'content',
+                align: 'center',
+                data: {
+                  content: {
+                    data: '### Sous titre',
+                    parser: 'markdown',
+                  },
+                  color: '#2222BB',
+                  size: 20,
+                },
+              },
+              {
+                id: '9c',
+                type: 'content',
+                data: {
+                  content: {
+                    data:
+                      'Et du contenu en dessous.\n - Une liste\n - Avec plusieurs éléments\n - Par exemple',
+                    parser: 'markdown',
+                  },
+                  color: '#000000',
                   size: 20,
                 },
               },
@@ -138,10 +168,10 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
       {
         id: '10',
         type: 'image',
-        minHeight: 400,
+        minHeight: 350,
         data: {
           image: {
-            image: '601ea35ef44181001a19c8a7',
+            image: '60297662f44181001a19c8b1',
             thumbnails: {
               small: false,
             },
@@ -165,7 +195,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                       id: '12a',
                       text: 'Rejoindre',
                       dark: false,
-                      color: '#FF0000',
+                      color: '#4499FF',
                       type: 'internal',
                       page: 'join',
                       mode: 'contained',
@@ -176,7 +206,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                       text: 'Contacter',
                       type: 'internal',
                       page: 'contact',
-                      mode: 'outlined',
+                      mode: 'contained',
                     },
                   ],
                 },
@@ -188,7 +218,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
       {
         id: '13',
         type: 'color',
-        data: { color: '#3f51b5' },
+        data: { color: '#EEEEEE' },
         minHeight: 200,
         columns: [
           {
@@ -200,10 +230,11 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                 data: {
                   content: {
                     data:
-                      "### Découvrez nos articles !\nIls sont écrits par je sais pas qui et l'équipe de rédaction. Bon je sais pas trop quoi dire d'autre sur les articles, mais il faut quand meme que ce soit une description assez longue donc voila c'est du texte au hasard.",
+                      '### Découvrez nos articles et nos évènements !\nToutes les actualités du Centre International de Valbonne, directement sur notre site web.',
                     parser: 'markdown',
                   },
-                  color: '#FFFFFF',
+                  theme: 'light',
+                  color: '#000000',
                   size: 20,
                 },
               },
@@ -211,10 +242,9 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                 id: '16',
                 type: 'contentTabView',
                 data: {
-                  max: 1,
+                  max: 4,
                   types: ['articles', 'events'],
-                  theme: 'dark',
-                  title: 'Derniers articles de chez nous',
+                  theme: 'light',
                   params: { groups: ['5fe204169543ce00190c5624'] },
                 },
               },
@@ -228,15 +258,22 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
 
   return (
     <View style={styles.page}>
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              title: 'Test',
-            },
-          },
+      <View
+        style={{
+          position: 'absolute',
+          left: 5,
+          zIndex: 10000,
+          top: insets.top + 5,
+          backgroundColor: colors.surface,
+          height: 48,
+          borderRadius: 24,
+          opacity: 0.8,
         }}
-      />
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center', opacity: 1, borderRadius: 24 }}>
+          <PlatformBackButton onPress={() => navigation.goBack()} />
+        </View>
+      </View>
       <Page navigation={navigation} page={page} />
     </View>
   );

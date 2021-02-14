@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Appearance, FlatList, ScrollView } from 'react-native';
-import { Card, List, Text } from 'react-native-paper';
+import { Card, List, Text, ThemeProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import {
@@ -28,7 +28,7 @@ const ContentTabView: React.FC<PageProps> = ({ navigation, element }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Card theme={themes[element.data.theme]}>
+      <ThemeProvider theme={themes[element.data.theme] || themes.light}>
         <ScrollView
           style={{ flex: 1 }} // TODO: Figure out nested scroll
         >
@@ -40,7 +40,7 @@ const ContentTabView: React.FC<PageProps> = ({ navigation, element }) => {
             header={element.data.title}
           />
         </ScrollView>
-      </Card>
+      </ThemeProvider>
     </View>
   );
 };

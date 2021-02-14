@@ -87,6 +87,7 @@ export type Background<K extends BackgroundNames> = {
 
 export type Page = {
   page: string;
+  group: string;
   main: boolean;
   header: Background<BackgroundNames>[];
   content: Background<BackgroundNames>[];
