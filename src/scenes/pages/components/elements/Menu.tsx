@@ -25,12 +25,6 @@ const Menu: React.FC<PageProps> = ({ navigation, element }) => {
 
   const [menuVisible, setMenuVisible] = React.useState<string | null>(null);
 
-  const [visible, setVisible] = React.useState(false);
-
-  const openMenu = () => setVisible(true);
-
-  const closeMenu = () => setVisible(false);
-
   return (
     <View style={{ flexDirection: 'row' }}>
       {element.data.elements.map((e) => {

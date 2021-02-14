@@ -25,7 +25,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
   const page: Pages.Page = {
     page: 'main',
     main: true,
-    content: [
+    header: [
       {
         id: '1',
         type: 'gradient',
@@ -90,6 +90,8 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
           },
         ],
       },
+    ],
+    content: [
       {
         id: '5',
         type: 'color',
@@ -221,6 +223,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
         ],
       },
     ],
+    footer: [],
   };
 
   return (
