@@ -2,6 +2,16 @@ import themes from '@styles/Theme';
 
 import { Content, Image } from './api';
 
+export type MenuItem = {
+  id: string;
+  text: string;
+  mode?: 'outlined' | 'text' | 'contained';
+} & (
+  | { type: 'external'; url: string }
+  | { type: 'internal'; page: string }
+  | { type: 'menu'; items: MenuItem[] }
+);
+
 export type ElementNames = 'content' | 'image' | 'contentTabView' | 'menu';
 export type ElementTypes<K extends ElementNames> = {
   content: {
@@ -16,6 +26,8 @@ export type ElementTypes<K extends ElementNames> = {
   };
   contentTabView: {
     types: ('articles' | 'events')[];
+    title?: string;
+    max?: number;
     maxHeight?: number;
     params: {
       groups?: string[];
@@ -30,15 +42,14 @@ export type ElementTypes<K extends ElementNames> = {
   menu: {
     color: string;
     height?: number;
-    elements: ({
-      text: string;
-      mode?: 'outlined' | 'text' | 'contained';
-    } & ({ type: 'external'; url: string } | { type: 'internal'; page: string }))[];
+    elements: MenuItem[];
   };
 }[K];
 export type Element<K extends ElementNames> = {
+  id: string;
   type: K;
   data: ElementTypes<K>;
+  align?: 'center' | 'flex-start' | 'flex-end';
 };
 
 export type BackgroundNames = 'image' | 'color' | 'gradient';
@@ -57,11 +68,14 @@ export type BackgroundTypes<K extends BackgroundNames> = {
   };
 }[K];
 export type Background<K extends BackgroundNames> = {
+  id: string;
   type: K;
   data: BackgroundTypes<K>;
   minHeight?: number;
   columns: {
+    id: string;
     elements: Element<ElementNames>[];
+    size?: number;
     align?: 'center' | 'flex-start' | 'flex-end';
     alignVertical?: 'center' | 'flex-start' | 'flex-end';
   }[];

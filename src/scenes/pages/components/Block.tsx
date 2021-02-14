@@ -33,30 +33,39 @@ const Block: React.FC<PageProps> = ({ navigation, columns }) => {
     image: Image,
   };
 
+  // TODO: Make colums one underneath the other on mobile, depeding on number of colums and screen size (eg, screenSize / number of Columnts < 300)
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { flexDirection: 'row' }]}>
       {columns.map((c) => (
-        <FlatList
-          nestedScrollEnabled
-          data={c.elements}
-          renderItem={({ item }) => {
-            const E = Elements[item.type];
-            return (
-              <View
-                style={[
-                  styles.container,
-                  {
-                    alignItems: c.align,
-                    flex: 1,
-                    justifyContent: c.alignVertical, // TODO: doesnt work
-                  },
-                ]}
-              >
-                <E navigation={navigation} element={item} />
-              </View>
-            );
+        <View
+          style={{
+            flex: c.size || 1,
+            alignItems: c.align,
+            justifyContent: c.alignVertical,
           }}
-        />
+        >
+          <FlatList
+            listKey={c.id}
+            nestedScrollEnabled
+            data={c.elements}
+            renderItem={({ item }) => {
+              const E = Elements[item.type];
+              return (
+                <View
+                  style={[
+                    styles.container,
+                    {
+                      alignSelf: item.align,
+                    },
+                  ]}
+                >
+                  <E navigation={navigation} element={item} />
+                </View>
+              );
+            }}
+          />
+        </View>
       ))}
     </View>
   );

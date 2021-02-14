@@ -30,9 +30,15 @@ const ContentTabView: React.FC<PageProps> = ({ navigation, element }) => {
     <View style={{ flex: 1 }}>
       <Card theme={themes[element.data.theme]}>
         <ScrollView
-          style={{ flex: 1, maxHeight: element.data.maxHeight || 500 }} // TODO: Figure out nested scroll
+          style={{ flex: 1 }} // TODO: Figure out nested scroll
         >
-          <ContentTabViewComponent searchParams={element.data.params} />
+          <ContentTabViewComponent
+            searchParams={element.data.params}
+            types={element.data.types}
+            maxCards={element.data.max}
+            showHeader={!!element.data.title}
+            header={element.data.title}
+          />
         </ScrollView>
       </Card>
     </View>

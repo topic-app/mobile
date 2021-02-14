@@ -25,6 +25,10 @@ import EventCard from './cards/Event';
 
 type ContentTabViewProps = {
   searchParams: { authors?: string[]; groups?: string[]; tags?: string[]; schools?: string[] };
+  types?: ('articles' | 'events')[];
+  showHeader?: boolean;
+  header?: string;
+  maxCards?: number;
   articles: ArticlePreload[];
   events: EventPreload[];
   articlesState: ArticleRequestState;
@@ -32,15 +36,29 @@ type ContentTabViewProps = {
 };
 
 const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
-  ({ searchParams, articles, events, articlesState, eventsState }) => {
+  ({
+    searchParams,
+    articles,
+    events,
+    articlesState,
+    eventsState,
+    types = ['articles', 'events'],
+    showHeader = true,
+    header,
+    maxCards = 0,
+  }) => {
     const theme = useTheme();
     const { colors } = theme;
     const styles = getStyles(theme);
     const navigation = useNavigation();
 
     React.useEffect(() => {
-      searchArticles('initial', '', searchParams, false);
-      searchEvents('initial', '', searchParams, false);
+      if (types.includes('articles')) {
+        searchArticles('initial', '', searchParams, false);
+      }
+      if (types.includes('events')) {
+        searchEvents('initial', '', searchParams, false);
+      }
       // Use JSON.stringify sparingly with deep equality checks
       // Make sure the data that you want to stringify is somewhat small
       // otherwise it will hurt performance
@@ -48,7 +66,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
 
     const pages = [];
 
-    if (articles.length !== 0) {
+    if (articles.length !== 0 && types.includes('articles')) {
       pages.push({
         key: 'articles',
         title: 'Articles',
@@ -72,7 +90,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
             )}
             {articlesState.search?.success && (
               <FlatList
-                data={articles}
+                data={maxCards ? articles.slice(0, maxCards) : articles}
                 keyExtractor={(i) => i._id}
                 ListFooterComponent={
                   articlesState.search.loading.initial ? (
@@ -113,7 +131,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
       });
     }
 
-    if (events.length !== 0) {
+    if (events.length !== 0 && types.includes('events')) {
       pages.push({
         key: 'events',
         title: 'Évènements',
@@ -137,7 +155,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
             )}
             {eventsState.search?.success && (
               <FlatList
-                data={events}
+                data={maxCards ? events.slice(0, maxCards) : events}
                 keyExtractor={(i) => i._id}
                 ListFooterComponent={
                   eventsState.search.loading.initial ? (
@@ -179,15 +197,25 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
 
     return (
       <View>
-        {(articles.length !== 0 || events.length !== 0) && (
-          <View>
-            <View style={styles.container}>
-              <CategoryTitle>Derniers contenus</CategoryTitle>
-            </View>
-            <Divider />
-            <CustomTabView scrollEnabled={false} pages={pages} />
-            <View style={{ height: 20 }} />
+        {showHeader && (
+          <View style={styles.container}>
+            <CategoryTitle>
+              {header || (pages.length === 1 ? `Derniers ${pages[0].title}` : 'Derniers contenus')}
+            </CategoryTitle>
           </View>
+        )}
+        {articlesState.search?.loading?.initial || eventsState.search?.loading?.initial ? (
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        ) : (
+          (articles.length !== 0 || events.length !== 0) && (
+            <View>
+              <Divider />
+              <CustomTabView hideTabBar={pages.length < 2} scrollEnabled={false} pages={pages} />
+              <View style={{ height: 20 }} />
+            </View>
+          )
         )}
       </View>
     );

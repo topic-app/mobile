@@ -27,28 +27,61 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
     main: true,
     content: [
       {
+        id: '1',
         type: 'gradient',
         data: { start: '#592989', end: '#123456', angle: 45 },
         columns: [
           {
+            id: '2',
             align: 'center',
             elements: [
               {
+                id: '3',
                 type: 'image',
                 data: {
                   image: { image: '5fee1a102a8c4700193964ad', thumbnails: { large: true } },
-                  mode: 'center',
+                  mode: 'contain',
                   height: 100,
                 },
               },
               {
+                id: '4',
                 type: 'menu',
                 data: {
                   color: '#FFFFFF',
                   elements: [
-                    { type: 'external', text: 'Présentation', url: 'https://example.org' },
-                    { type: 'external', text: 'Membres', url: 'https://example.org' },
-                    { type: 'internal', text: 'Initiatives', page: 'secondary' }, // Links not starting with http just go to a page of the group
+                    {
+                      id: '4a',
+                      type: 'external',
+                      text: 'Présentation',
+                      url: 'https://example.org',
+                    },
+                    { id: '4b', type: 'internal', text: 'Membres', page: 'secondary' },
+                    {
+                      id: '4c',
+                      type: 'menu',
+                      text: 'Initiatives',
+                      items: [
+                        {
+                          id: '4ca',
+                          type: 'internal',
+                          text: 'Initiative 1',
+                          page: 'test',
+                        },
+                        {
+                          id: '4cb',
+                          type: 'internal',
+                          text: 'Initiative 2',
+                          page: 'test',
+                        },
+                        {
+                          id: '4cc',
+                          type: 'external',
+                          text: 'Initiative 3',
+                          url: 'https://example.org',
+                        },
+                      ],
+                    }, // Links not starting with http just go to a page of the group
                   ],
                 },
               },
@@ -57,17 +90,20 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
         ],
       },
       {
+        id: '5',
         type: 'color',
         data: { color: '#3480be' },
         columns: [
           {
+            id: '6',
             elements: [
               {
+                id: '7',
                 type: 'content',
                 data: {
                   content: {
                     data:
-                      "# Titre\nDu contenu markdown avec du *gras* et de _l'italique_ en plus\nPuis une image parce que pourquoi pas\n![](cdn://5fda2aa2a1d6970019fdecd6)",
+                      "# Titre\nDu contenu markdown avec du *gras* et de _l'italique_ en plus\nPuis une image parce que pourquoi pas\n[](cdn://5fda2aa2a1d6970019fdecd6)",
                     parser: 'markdown',
                   },
                   color: '#3480be',
@@ -76,9 +112,28 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
               },
             ],
           },
+          {
+            id: '8',
+            size: 2,
+            elements: [
+              {
+                id: '9',
+                type: 'content',
+                data: {
+                  content: {
+                    data: '# Title',
+                    parser: 'markdown',
+                  },
+                  color: '#592989',
+                  size: 20,
+                },
+              },
+            ],
+          },
         ],
       },
       {
+        id: '10',
         type: 'image',
         minHeight: 400,
         data: {
@@ -93,22 +148,26 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
 
         columns: [
           {
+            id: '11',
             align: 'center',
             alignVertical: 'center',
             elements: [
               {
+                id: '12',
                 type: 'menu',
                 data: {
                   color: '#FFFFFF',
                   height: 50,
                   elements: [
                     {
+                      id: '12a',
                       text: 'Rejoindre',
                       type: 'internal',
                       page: 'join',
                       mode: 'contained',
                     },
                     {
+                      id: '12b',
                       text: 'Contacter',
                       type: 'internal',
                       page: 'contact',
@@ -122,13 +181,16 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
         ],
       },
       {
+        id: '13',
         type: 'color',
         data: { color: '#3f51b5' },
         minHeight: 200,
         columns: [
           {
+            id: '14',
             elements: [
               {
+                id: '15',
                 type: 'content',
                 data: {
                   content: {
@@ -141,10 +203,13 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                 },
               },
               {
+                id: '16',
                 type: 'contentTabView',
                 data: {
+                  max: 1,
                   types: ['articles', 'events'],
                   theme: 'dark',
+                  title: 'Derniers articles de chez nous',
                   params: { groups: ['5fe204169543ce00190c5624'] },
                 },
               },
