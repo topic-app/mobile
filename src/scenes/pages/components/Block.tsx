@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Appearance, FlatList } from 'react-native';
+import { View, Appearance, FlatList, useWindowDimensions } from 'react-native';
 import { List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -26,6 +26,8 @@ const Block: React.FC<PageProps> = ({ navigation, columns }) => {
   const styles = getStyles(theme);
   const localStyles = getSettingsStyles(theme);
 
+  const dimensions = useWindowDimensions();
+
   const Elements = {
     menu: Menu,
     content: Content,
@@ -33,10 +35,15 @@ const Block: React.FC<PageProps> = ({ navigation, columns }) => {
     image: Image,
   };
 
-  // TODO: Make colums one underneath the other on mobile, depeding on number of colums and screen size (eg, screenSize / number of Columnts < 300)
+  const MIN_COLUMN_WIDTH = 400; // Will wrap columns if average column width is < 400
 
   return (
-    <View style={[styles.container, { flexDirection: 'row' }]}>
+    <View
+      style={[
+        styles.container,
+        { flexDirection: dimensions.width / columns.length < MIN_COLUMN_WIDTH ? 'column' : 'row' },
+      ]}
+    >
       {columns.map((c) => (
         <View
           style={{

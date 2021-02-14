@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Appearance, FlatList } from 'react-native';
 import { Button, List, Provider, Text, Menu as MenuComponent } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Content as ContentComponent, CustomHeaderBar } from '@components/index';
@@ -24,21 +25,45 @@ const Menu: React.FC<PageProps> = ({ navigation, element }) => {
 
   const [menuVisible, setMenuVisible] = React.useState<string | null>(null);
 
-  console.log(menuVisible);
+  const [visible, setVisible] = React.useState(false);
+
+  const openMenu = () => setVisible(true);
+
+  const closeMenu = () => setVisible(false);
 
   return (
     <View style={{ flexDirection: 'row' }}>
       {element.data.elements.map((e) => {
         if (e.type === 'menu') {
-          return null; // TODO, show menu <View style={{ marginHorizontal: 10 }}></View>;
+          return (
+            <View style={{ marginHorizontal: 10 }}>
+              <Button
+                theme={e.radius ? { roundness: e.radius } : undefined}
+                mode={e.mode || 'text'}
+                icon={e.icon}
+                uppercase={false}
+                color={e.color || element.data.color}
+                dark={e.dark}
+                style={{ justifyContent: 'center' }}
+                contentStyle={{ height: element.data.height }}
+                onPress={() => {}}
+              >
+                {e.text}
+              </Button>
+            </View>
+          ); // TODO, show menu <View style={{ marginHorizontal: 10 }}></View>;
         } else {
           return (
             <View style={{ marginHorizontal: 10 }}>
               <Button
+                theme={e.radius ? { roundness: e.radius } : undefined}
                 mode={e.mode || 'text'}
+                icon={e.icon}
                 uppercase={false}
-                color={element.data.color}
-                style={{ height: element.data.height, justifyContent: 'center' }}
+                color={e.color || element.data.color}
+                dark={e.dark}
+                style={{ justifyContent: 'center' }}
+                contentStyle={{ height: element.data.height }}
                 onPress={() => {
                   if (e.type === 'external') {
                     handleUrl(e.url, { trusted: true });

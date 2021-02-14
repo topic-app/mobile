@@ -54,6 +54,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                       id: '4a',
                       type: 'external',
                       text: 'Présentation',
+                      icon: 'pencil',
                       url: 'https://example.org',
                     },
                     { id: '4b', type: 'internal', text: 'Membres', page: 'secondary' },
@@ -156,18 +157,20 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
                 id: '12',
                 type: 'menu',
                 data: {
-                  color: '#FFFFFF',
                   height: 50,
                   elements: [
                     {
                       id: '12a',
                       text: 'Rejoindre',
+                      dark: false,
+                      color: '#FF0000',
                       type: 'internal',
                       page: 'join',
                       mode: 'contained',
                     },
                     {
                       id: '12b',
+                      color: '#FFFFFF',
                       text: 'Contacter',
                       type: 'internal',
                       page: 'contact',

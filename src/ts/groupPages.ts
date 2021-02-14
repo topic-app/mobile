@@ -5,6 +5,10 @@ import { Content, Image } from './api';
 export type MenuItem = {
   id: string;
   text: string;
+  radius?: number;
+  color?: string;
+  dark?: boolean;
+  icon?: string;
   mode?: 'outlined' | 'text' | 'contained';
 } & (
   | { type: 'external'; url: string }
@@ -40,7 +44,7 @@ export type ElementTypes<K extends ElementNames> = {
     theme: keyof typeof themes;
   };
   menu: {
-    color: string;
+    color?: string;
     height?: number;
     elements: MenuItem[];
   };
