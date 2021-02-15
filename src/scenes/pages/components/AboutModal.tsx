@@ -29,8 +29,8 @@ const AboutModal: React.FC<AboutModalProps> = ({ visible, setVisible, navigation
     <Modal visible={visible} setVisible={setVisible}>
       <View>
         <View style={[styles.container, styles.centerImageContainer]}>
-          <Illustration name="topic-icon-text" height={100} width={200} />
-          <Title>Crééz votre propre site web !</Title>
+          <Illustration name="topic-icon" height={100} width={200} />
+          <Title>Crééz votre propre site web avec Topic !</Title>
         </View>
         <View style={styles.container}>
           <Text style={{ fontSize: 16 }}>
