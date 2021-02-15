@@ -466,7 +466,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
             ) : null}
             <View
               style={[
-                landingStyles.headerContainer,
+                landingStyles.locationHeaderContainer,
                 { marginBottom: 0, flex: 1, justifyContent: 'flex-end' },
               ]}
             >
