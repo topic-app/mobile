@@ -49,11 +49,21 @@ const Menu: React.FC<PageProps> = ({ navigation, element, page }) => {
             </View>
           ); // TODO, show menu <View style={{ marginHorizontal: 10 }}></View>;
         } else {
+          let mode: 'outlined' | 'contained' | 'text';
+          if (e.type === 'internal' && e.page === page.page) {
+            if (e.mode === 'outlined') {
+              mode = 'contained';
+            } else {
+              mode = 'outlined';
+            }
+          } else {
+            mode = e.mode || 'text';
+          }
           return (
             <View style={{ marginHorizontal: 10 }}>
               <Button
                 theme={e.radius ? { roundness: e.radius } : undefined}
-                mode={e.mode || 'text'}
+                mode={mode}
                 icon={e.icon}
                 uppercase={false}
                 color={e.color || element.data.color}

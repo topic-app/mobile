@@ -289,26 +289,6 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
 
   return (
     <View style={styles.page}>
-      {Platform.OS !== 'web' && (
-        <View
-          style={{
-            position: 'absolute',
-            left: 5,
-            zIndex: 10000,
-            top: insets.top + 5,
-            backgroundColor: colors.surface,
-            height: 48,
-            borderRadius: 24,
-            opacity: 0.8,
-          }}
-        >
-          <View
-            style={{ flexDirection: 'row', alignItems: 'center', opacity: 1, borderRadius: 24 }}
-          >
-            <PlatformBackButton onPress={() => navigation.goBack()} />
-          </View>
-        </View>
-      )}
       {state.pages.error ? (
         <View style={{ marginTop: insets.top }}>
           <ErrorMessage
@@ -323,11 +303,34 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
           />
         </View>
       ) : null}
-      <Page
-        navigation={navigation}
-        page={fullPage}
-        loading={(state.pages.loading || !pageDoc) && !state.pages.error}
-      />
+      <View style={{ flex: 1 }}>
+        {Platform.OS !== 'web' && (
+          <View
+            style={{
+              position: 'absolute',
+              left: 5,
+              zIndex: 1000,
+              top: insets.top + 5,
+              backgroundColor: colors.surface,
+              height: 48,
+              borderRadius: 24,
+              opacity: 0.8,
+            }}
+          >
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', opacity: 1, borderRadius: 24 }}
+            >
+              <PlatformBackButton onPress={() => navigation.goBack()} />
+            </View>
+          </View>
+        )}
+
+        <Page
+          navigation={navigation}
+          page={fullPage}
+          loading={(state.pages.loading || !pageDoc) && !state.pages.error}
+        />
+      </View>
     </View>
   );
 };
