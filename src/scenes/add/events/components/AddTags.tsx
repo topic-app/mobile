@@ -218,7 +218,7 @@ const EventAddPageTags: React.FC<Props> = ({
         </View>
         <FlatList
           horizontal
-          data={selectedTags.map((t) => selectedData.find((u) => u._id === t)!)}
+          data={selectedTags.map((t) => selectedData.find((u) => u._id === t)!).filter((s) => !!s)}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(i) => i?._id}
