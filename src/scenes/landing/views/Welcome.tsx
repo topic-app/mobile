@@ -348,7 +348,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               },
               landingStyles.illustrationContainer,
             ]}
-            pointerEvents="box-none"
+            pointerEvents={lastPage === 5 ? 'box-none' : 'none'}
           >
             <View
               style={{
@@ -360,6 +360,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             >
               {sponsorsWithImages.map((sponsor, index) => (
                 <View
+                  key={sponsor.id}
                   style={{
                     marginRight: index % 2 === 0 ? 10 : 0,
                     marginBottom: index < 2 ? 10 : 0,
