@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { Theme } from '@ts/types';
 
-function getLandingStyles(_theme: Theme) {
+function getAboutStyles(_theme: Theme) {
   return StyleSheet.create({
     title: {
       fontSize: 60,
@@ -10,7 +10,6 @@ function getLandingStyles(_theme: Theme) {
     },
     sectionTitle: {
       fontSize: 30,
-      marginBottom: 10,
     },
     sectionSubtitle: {
       fontSize: 24,
@@ -31,4 +30,4 @@ function getLandingStyles(_theme: Theme) {
   });
 }
 
-export default getLandingStyles;
+export default getAboutStyles;

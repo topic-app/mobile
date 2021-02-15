@@ -1,6 +1,7 @@
+import sponsors from '@assets/json/sponsors.json';
 import ViewPager from '@react-native-community/viewpager';
 import React, { useRef } from 'react';
-import { View, Platform, Animated, useWindowDimensions, Easing } from 'react-native';
+import { View, Platform, Animated, useWindowDimensions, Easing, Image } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 
 import { Illustration, TranslucentStatusBar } from '@components/index';
@@ -14,6 +15,16 @@ import getLandingStyles from '../styles/Styles';
 type LandingWelcomeProps = {
   navigation: LandingScreenNavigationProp<'Welcome'>;
 };
+
+const sponsorsWithImages = sponsors.map((sponsor) => ({
+  ...sponsor,
+  image: {
+    mgen: require('@assets/images/sponsors/mgen.png'),
+    jtac: require('@assets/images/sponsors/jtac.png'),
+    lesper: require('@assets/images/sponsors/esper.jpg'),
+    edtech: require('@assets/images/sponsors/edtech.png'),
+  }[sponsor.id as 'mgen' | 'jtac' | 'edtech' | 'lesper'],
+}));
 
 const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   const theme = useTheme();
@@ -321,20 +332,63 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               pointerEvents="none"
             />
           </View>
-          {(['article', 'event', 'explore', 'group', 'beta-updates'] as const).map(
-            (name, index) => (
-              <Animated.View
-                key={name}
-                style={[
-                  { opacity: animValues.illustrations[index] },
-                  landingStyles.illustrationContainer,
-                ]}
-                pointerEvents="none"
-              >
-                <Illustration name={name} />
-              </Animated.View>
-            ),
-          )}
+          <Animated.View
+            style={[{ opacity: animValues.illustrations[0] }, landingStyles.illustrationContainer]}
+            pointerEvents="none"
+          >
+            <Illustration name="article" />
+          </Animated.View>
+          <Animated.View
+            style={[{ opacity: animValues.illustrations[1] }, landingStyles.illustrationContainer]}
+            pointerEvents="none"
+          >
+            <Illustration name="event" />
+          </Animated.View>
+          <Animated.View
+            style={[{ opacity: animValues.illustrations[2] }, landingStyles.illustrationContainer]}
+            pointerEvents="none"
+          >
+            <Illustration name="explore" />
+          </Animated.View>
+          <Animated.View
+            style={[{ opacity: animValues.illustrations[3] }, landingStyles.illustrationContainer]}
+            pointerEvents="none"
+          >
+            <Illustration name="group" />
+          </Animated.View>
+          <Animated.View
+            style={[
+              {
+                opacity: animValues.illustrations[4],
+              },
+              landingStyles.illustrationContainer,
+            ]}
+            pointerEvents="none"
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                height: 100 * 2 + 10,
+                width: 100 * 2 + 10,
+              }}
+            >
+              {sponsorsWithImages.map((sponsor, index) => (
+                <Image
+                  key={sponsor.id}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    marginRight: index % 2 === 0 ? 10 : 0,
+                    marginBottom: index < 2 ? 10 : 0,
+                  }}
+                  resizeMode="contain"
+                  source={sponsor.image}
+                />
+              ))}
+            </View>
+          </Animated.View>
+
           <View
             style={{
               position: 'absolute',
