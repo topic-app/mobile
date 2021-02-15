@@ -48,8 +48,10 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
       new Animated.Value(0),
       new Animated.Value(0),
       new Animated.Value(0),
+      new Animated.Value(0),
     ],
     dots: [
+      new Animated.Value(0),
       new Animated.Value(0),
       new Animated.Value(0),
       new Animated.Value(0),
@@ -251,6 +253,13 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             </View>
             <View key="5" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
+              <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>Groupes</Text>
+              <Text style={landingStyles.illustrationText}>
+                Rejoignez des groupes pour représenter vos clubs, associations et organisations
+              </Text>
+            </View>
+            <View key="6" style={landingStyles.viewPage}>
+              <View style={{ height: '70%', width: '70%' }} />
               <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>
                 Partenaires
               </Text>
@@ -309,30 +318,19 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               pointerEvents="none"
             />
           </View>
-          <Animated.View
-            style={[{ opacity: animValues.illustrations[0] }, landingStyles.illustrationContainer]}
-            pointerEvents="none"
-          >
-            <Illustration name="article" />
-          </Animated.View>
-          <Animated.View
-            style={[{ opacity: animValues.illustrations[1] }, landingStyles.illustrationContainer]}
-            pointerEvents="none"
-          >
-            <Illustration name="event" />
-          </Animated.View>
-          <Animated.View
-            style={[{ opacity: animValues.illustrations[2] }, landingStyles.illustrationContainer]}
-            pointerEvents="none"
-          >
-            <Illustration name="explore" />
-          </Animated.View>
-          <Animated.View
-            style={[{ opacity: animValues.illustrations[3] }, landingStyles.illustrationContainer]}
-            pointerEvents="none"
-          >
-            <Illustration name="group" />
-          </Animated.View>
+          {(['article', 'event', 'explore', 'group', 'beta-updates'] as const).map(
+            (name, index) => (
+              <Animated.View
+                style={[
+                  { opacity: animValues.illustrations[index] },
+                  landingStyles.illustrationContainer,
+                ]}
+                pointerEvents="none"
+              >
+                <Illustration name={name} />
+              </Animated.View>
+            ),
+          )}
           <View
             style={{
               position: 'absolute',
@@ -342,11 +340,9 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             }}
             pointerEvents="none"
           >
-            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[0] }]} />
-            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[1] }]} />
-            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[2] }]} />
-            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[3] }]} />
-            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[4] }]} />
+            {[0, 1, 2, 3, 4, 5].map((val) => (
+              <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[val] }]} />
+            ))}
           </View>
           <Animated.Text style={{ fontSize: 12, color: normalTextColorAnim }}>
             Vous avez un compte?{' '}
