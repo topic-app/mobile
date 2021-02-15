@@ -35,6 +35,10 @@ function getLandingStyles(theme: Theme) {
     },
     // Welcome page
     title: {
+      fontSize: 50,
+      fontFamily: 'Rubik-Light',
+    },
+    subtitle: {
       fontSize: 40,
       fontFamily: 'Rubik-Light',
     },
@@ -53,7 +57,7 @@ function getLandingStyles(theme: Theme) {
       alignItems: 'center',
     },
     illustrationText: {
-      paddingTop: 20,
+      paddingTop: 15,
       paddingBottom: 15,
       paddingHorizontal: 40,
       textAlign: 'center',
