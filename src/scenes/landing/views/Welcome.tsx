@@ -86,7 +86,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   React.useEffect(() => {
     arrowAnimation = Animated.sequence([
       // Wait a bit before starting the animation
-      Animated.delay(6000),
+      Animated.delay(2500),
       Animated.loop(
         Animated.timing(animValues.arrowAnim, {
           toValue: 1,
