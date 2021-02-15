@@ -108,6 +108,13 @@ function getLandingStyles(theme: Theme) {
     viewpager: {
       flex: 1,
     },
+    locationHeaderContainer: {
+      margin: 10,
+      paddingBottom: 40,
+      maxWidth: 600,
+      width: '100%',
+      alignSelf: 'center',
+    },
   });
 }
 

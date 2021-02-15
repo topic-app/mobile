@@ -49,3 +49,4 @@ export { default as TagLight } from '@assets/images/illustrations/tags/tags_ligh
 export { default as TopicIcon } from '@assets/images/topic-icon.svg';
 export { default as TopicIconTextLight } from '@assets/images/topic-icon-text-light.svg';
 export { default as TopicIconTextDark } from '@assets/images/topic-icon-text-dark.svg';
+export { default as Telegram } from '@assets/images/misc/telegram.svg';

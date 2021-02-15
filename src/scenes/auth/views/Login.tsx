@@ -86,9 +86,12 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
         await fetchAccount();
         setTimeout(() => window.location.replace('/'), 200); // HACK : Because otherwise it doesnt redirect properly
       } else {
-        navigation.navigate('Main', {
-          screen: 'Home1',
-          params: { screen: 'Home2', params: { screen: 'Article' } },
+        navigation.navigate('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'Home1',
+            params: { screen: 'Home2', params: { screen: 'Article' } },
+          },
         });
       }
     } else {

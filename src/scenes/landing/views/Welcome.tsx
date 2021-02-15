@@ -64,29 +64,32 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
 
     // Leaving start page
     if (lastPage === 0) {
-      lastPageAnimation = Animated.parallel([
-        Animated.timing(animValues.logoScale, {
-          toValue: 0.5,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(animValues.backgroundScale, {
-          toValue: backgroundCollapsedScale,
-          duration: 300,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(animValues.logoTranslate, {
-          toValue: -230,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(animValues.textColor, {
-          toValue: 1,
-          duration: 150,
-          useNativeDriver: false, // can't use native driver for color
-        }),
-      ]);
+      lastPageAnimation = Animated.parallel(
+        [
+          Animated.timing(animValues.logoScale, {
+            toValue: 0.5,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animValues.backgroundScale, {
+            toValue: backgroundCollapsedScale,
+            duration: 400,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(animValues.logoTranslate, {
+            toValue: -230,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animValues.textColor, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: false, // can't use native driver for color
+          }),
+        ],
+        { stopTogether: false },
+      );
     } else {
       lastPageAnimation = Animated.timing(animValues.illustrations[lastPage - 1], {
         toValue: 0,
@@ -97,29 +100,32 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
 
     // Going back to start page
     if (page === 0) {
-      currentPageAnimation = Animated.parallel([
-        Animated.timing(animValues.logoScale, {
-          toValue: 1,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(animValues.backgroundScale, {
-          toValue: 1,
-          duration: 300,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(animValues.logoTranslate, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(animValues.textColor, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: false, // can't use native driver for color
-        }),
-      ]);
+      currentPageAnimation = Animated.parallel(
+        [
+          Animated.timing(animValues.logoScale, {
+            toValue: 1,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animValues.backgroundScale, {
+            toValue: 1,
+            duration: 400,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(animValues.logoTranslate, {
+            toValue: 0,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animValues.textColor, {
+            toValue: 0,
+            duration: 150,
+            useNativeDriver: false, // can't use native driver for color
+          }),
+        ],
+        { stopTogether: false },
+      );
     } else {
       currentPageAnimation = Animated.timing(animValues.illustrations[page - 1], {
         toValue: 1,
@@ -140,12 +146,15 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
       useNativeDriver: false,
     });
 
-    Animated.parallel([
-      lastPageAnimation,
-      dotAnimOut,
-      dotAnimIn,
-      Animated.sequence([Animated.delay(75), currentPageAnimation]),
-    ]).start();
+    Animated.parallel(
+      [
+        lastPageAnimation,
+        dotAnimOut,
+        dotAnimIn,
+        Animated.sequence([Animated.delay(75), currentPageAnimation]),
+      ],
+      { stopTogether: false },
+    ).start();
     setLastPage(page);
   };
 
@@ -184,20 +193,38 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
           >
             <View key="1" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
-              <Text theme={DarkTheme} style={[landingStyles.title, landingStyles.illustrationText]}>
+              <Animated.Text
+                style={[
+                  landingStyles.title,
+                  landingStyles.illustrationText,
+                  { color: normalTextColorAnim },
+                ]}
+              >
                 Topic
-              </Text>
-              <Text theme={DarkTheme} style={landingStyles.illustrationText}>
+              </Animated.Text>
+              <Animated.Text
+                style={[landingStyles.illustrationText, { color: normalTextColorAnim }]}
+              >
                 La malette à outils de l&apos;engagement citoyen
-              </Text>
+              </Animated.Text>
             </View>
             <View key="2" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
-              <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>Articles</Text>
-              <Text style={landingStyles.illustrationText}>
+              <Animated.Text
+                style={[
+                  landingStyles.subtitle,
+                  landingStyles.illustrationText,
+                  { color: normalTextColorAnim },
+                ]}
+              >
+                Articles
+              </Animated.Text>
+              <Animated.Text
+                style={[landingStyles.illustrationText, { color: normalTextColorAnim }]}
+              >
                 Découvrez l&apos;actu lycéenne en suivant vos groupes favoris et écrivez vos propres
                 articles
-              </Text>
+              </Animated.Text>
             </View>
             <View key="3" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
