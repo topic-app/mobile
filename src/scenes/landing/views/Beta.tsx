@@ -46,7 +46,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
           <View>
             <List.Item
               title="Canal Telegram"
-              description="Discuter avec les développeurs et les autres bêta-testeurs"
+              description="Discutez avec les développeurs et les autres bêta-testeurs"
               left={() => (
                 <View
                   style={{
