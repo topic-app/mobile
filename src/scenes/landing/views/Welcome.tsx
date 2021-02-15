@@ -3,6 +3,7 @@ import ViewPager from '@react-native-community/viewpager';
 import React, { useRef } from 'react';
 import { View, Platform, Animated, useWindowDimensions, Easing, Image } from 'react-native';
 import { Text, Button } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Illustration, PlatformTouchable, TranslucentStatusBar } from '@components/index';
 import { updateDepartments } from '@redux/actions/api/departments';
@@ -68,14 +69,38 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
       new Animated.Value(0),
     ],
     dots: [
-      new Animated.Value(0),
+      new Animated.Value(1),
       new Animated.Value(0),
       new Animated.Value(0),
       new Animated.Value(0),
       new Animated.Value(0),
       new Animated.Value(0),
     ],
+    arrowAnim: new Animated.Value(0),
   }).current;
+
+  // Placeholder Animation
+  let arrowAnimation = Animated.delay(50);
+
+  // Arrow animation, start on component mount
+  React.useEffect(() => {
+    arrowAnimation = Animated.sequence([
+      // Wait a bit before starting the animation
+      Animated.delay(6000),
+      Animated.loop(
+        Animated.timing(animValues.arrowAnim, {
+          toValue: 1,
+          duration: 2500,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        { resetBeforeIteration: true },
+      ),
+    ]);
+
+    arrowAnimation.start();
+    return () => arrowAnimation.stop();
+  }, []);
 
   const animate = (page: number) => {
     // animate is triggered on initial screen load
@@ -84,6 +109,8 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     if (lastPage === 0 && page === 0) {
       return;
     }
+    arrowAnimation.stop();
+    animValues.arrowAnim.setValue(0);
 
     let lastPageAnimation: Animated.CompositeAnimation;
     let currentPageAnimation: Animated.CompositeAnimation;
@@ -206,6 +233,18 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
       extrapolate: 'clamp',
     }),
   );
+
+  const arrowTranslateX = animValues.arrowAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, 10, 20],
+    extrapolate: 'clamp',
+  });
+
+  const arrowOpacity = animValues.arrowAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, 1, 0],
+    extrapolate: 'clamp',
+  });
 
   return (
     <View style={styles.page}>
@@ -389,7 +428,9 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             style={{
               position: 'absolute',
               height: '85%',
+              width: '100%',
               alignItems: 'flex-end',
+              justifyContent: 'center',
               flexDirection: 'row',
             }}
             pointerEvents="none"
@@ -400,6 +441,17 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                 style={[landingStyles.dot, { backgroundColor: dotColors[val] }]}
               />
             ))}
+            <Animated.View
+              style={{
+                position: 'absolute',
+                bottom: -6.25,
+                right: '27%',
+                opacity: arrowOpacity,
+                transform: [{ translateX: arrowTranslateX }],
+              }}
+            >
+              <Icon name="chevron-right" size={20} color="white" />
+            </Animated.View>
           </View>
           <Animated.Text style={{ fontSize: 12, color: normalTextColorAnim }}>
             Vous avez déjà un compte?{' '}

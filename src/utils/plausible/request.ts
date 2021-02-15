@@ -1,5 +1,4 @@
-import { logger } from '@utils';
-
+import logger from '../logger';
 import type { PlausibleOptions } from './tracker';
 
 /**
