@@ -205,6 +205,8 @@ export type User = {
     description: string;
     cache: {
       followers: number;
+      following: number;
+      groups: GroupPreload[];
     };
   };
 };
@@ -255,6 +257,7 @@ export type GroupMember = {
 type GroupBase = {
   _id: string;
   displayName: string;
+  parent?: GroupPreload | null;
   name: string;
   official?: boolean;
   type: string;
@@ -264,6 +267,7 @@ type GroupBase = {
   cache: {
     followers?: number | null;
     members?: number | null;
+    subgroups?: GroupPreload[];
   };
 };
 

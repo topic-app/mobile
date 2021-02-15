@@ -61,19 +61,9 @@ type UserDisplayProps = {
   account: Account;
   state: UserRequestState;
   users: UsersState;
-  groups: (GroupPreload | Group)[];
-  groupsState: GroupRequestState;
 };
 
-const UserDisplay: React.FC<UserDisplayProps> = ({
-  account,
-  users,
-  navigation,
-  route,
-  state,
-  groups,
-  groupsState,
-}) => {
+const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, route, state }) => {
   const { id } = route.params || {};
 
   const user: User | UserPreload | null =
@@ -113,7 +103,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 
   React.useEffect(() => {
     fetchUser(id);
-    searchGroups('initial', '', { members: [id], number: 0 }, false);
   }, [null]);
 
   const theme = useTheme();
@@ -252,18 +241,14 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 </View>
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 40 }}>
-                    {user.data?.public || id === account.accountInfo?.accountId ? (
-                      user.data.following?.groups?.length + user.data.following?.users?.length
-                    ) : (
-                      <Icon name="lock-outline" size={52} color={colors.disabled} />
-                    )}
+                    {typeof user.data?.cache?.following === 'number'
+                      ? user.data.cache.following
+                      : ' '}
                   </Text>
                   <Text>Abonnements </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 40 }}>
-                    {groupsState.search?.loading?.initial ? ' ' : groups.length}
-                  </Text>
+                  <Text style={{ fontSize: 40 }}>{user.data?.cache?.groups?.length}</Text>
                   <Text>Groupes</Text>
                 </View>
               </View>
@@ -339,53 +324,36 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                     <View style={{ height: 20 }} />
                   </View>
                 )}
-              {groups.length !== 0 && (
+              {user.data?.cache?.groups?.length !== 0 && (
                 <View>
                   <List.Subheader>Groupes</List.Subheader>
                   <Divider />
-                  {groupsState.search?.error && (
-                    <ErrorMessage
-                      type="axios"
-                      strings={{
-                        what: 'le chargement des groupes',
-                        contentPlural: 'les groupes',
-                      }}
-                      error={groupsState.search?.error}
-                      retry={() => searchGroups('initial', '', { members: [id], number: 0 }, false)}
-                    />
-                  )}
-                  {groupsState.search?.loading.initial && (
-                    <View style={styles.container}>
-                      <ActivityIndicator size="large" color={colors.primary} />
-                    </View>
-                  )}
-                  {groupsState.search?.success &&
-                    groups?.map((group) => (
-                      <InlineCard
-                        key={group._id}
-                        avatar={group.avatar}
-                        title={group.displayName || group.name}
-                        subtitle={`Groupe ${group.type}`}
-                        onPress={() =>
-                          navigation.push('Root', {
-                            screen: 'Main',
+                  {user.data?.cache?.groups?.map((group) => (
+                    <InlineCard
+                      key={group._id}
+                      avatar={group.avatar}
+                      title={group.displayName || group.name}
+                      subtitle={`Groupe ${group.type}`}
+                      onPress={() =>
+                        navigation.push('Root', {
+                          screen: 'Main',
+                          params: {
+                            screen: 'Display',
                             params: {
-                              screen: 'Display',
+                              screen: 'Group',
                               params: {
-                                screen: 'Group',
+                                screen: 'Display',
                                 params: {
-                                  screen: 'Display',
-                                  params: {
-                                    id: group._id,
-                                    title: group.displayName || group.shortName || group.name,
-                                  },
+                                  id: group._id,
+                                  title: group.displayName || group.shortName || group.name,
                                 },
                               },
                             },
-                          })
-                        }
-                      />
-                    ))}
+                          },
+                        })
+                      }
+                    />
+                  ))}
                   <View style={{ height: 20 }} />
                 </View>
               )}
