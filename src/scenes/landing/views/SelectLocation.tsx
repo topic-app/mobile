@@ -474,7 +474,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                 <CollapsibleView collapsed={userLocation}>
                   <Illustration name="location-select" height={200} width={200} />
                 </CollapsibleView>
-                <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 80 : 0 }]}>
+                <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 40 : 0 }]}>
                   Choisissez votre école
                 </Text>
               </View>

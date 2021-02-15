@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { View, Platform, Animated, useWindowDimensions, Easing, Image } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 
-import { Illustration, TranslucentStatusBar } from '@components/index';
+import { Illustration, PlatformTouchable, TranslucentStatusBar } from '@components/index';
 import { updateDepartments } from '@redux/actions/api/departments';
 import getStyles from '@styles/Styles';
 import { trackEvent, useSafeAreaInsets, useTheme } from '@utils/index';
@@ -43,6 +43,12 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   }, []);
 
   const [lastPage, setLastPage] = React.useState(0);
+
+  const [sponsorContent, setSponsorContent] = React.useState({
+    title: 'Partenaires',
+    description:
+      "Un grand merci à nos partenaires sans qui cette application ne serait pas possible, ainsi qu'aux membres de l'équipe et à nos bêta - testeurs.",
+  });
 
   const backgroundFullHeight =
     Math.max(windowHeight + insets.top + insets.bottom, windowWidth + insets.left + insets.right) *
@@ -275,30 +281,9 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             <View key="6" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
               <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>
-                Partenaires
+                {sponsorContent.title}
               </Text>
-              <Text style={landingStyles.illustrationText}>
-                Un grand merci à nos partenaires sans qui cette application ne serait pas possible,
-                ainsi qu&apos;aux membres de l&apos;équipe et à nos bêta-testeurs.
-              </Text>
-              <Button
-                mode="outlined"
-                uppercase={Platform.OS !== 'ios'}
-                onPress={() =>
-                  navigation.push('Root', {
-                    screen: 'Main',
-                    params: {
-                      screen: 'More',
-                      params: {
-                        screen: 'About',
-                        params: { screen: 'List', params: { page: 'sponsors' } },
-                      },
-                    },
-                  })
-                }
-              >
-                Voir les Sponsors
-              </Button>
+              <Text style={landingStyles.illustrationText}>{sponsorContent.description}</Text>
             </View>
           </ViewPager>
           <Animated.View
@@ -363,7 +348,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               },
               landingStyles.illustrationContainer,
             ]}
-            pointerEvents="none"
+            pointerEvents="box-none"
           >
             <View
               style={{
@@ -374,17 +359,27 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               }}
             >
               {sponsorsWithImages.map((sponsor, index) => (
-                <Image
-                  key={sponsor.id}
+                <View
                   style={{
-                    width: 100,
-                    height: 100,
                     marginRight: index % 2 === 0 ? 10 : 0,
                     marginBottom: index < 2 ? 10 : 0,
                   }}
-                  resizeMode="contain"
-                  source={sponsor.image}
-                />
+                >
+                  <PlatformTouchable
+                    onPress={() => {
+                      setSponsorContent({ title: sponsor.name, description: sponsor.description });
+                    }}
+                  >
+                    <Image
+                      style={{
+                        width: 100,
+                        height: 100,
+                      }}
+                      resizeMode="contain"
+                      source={sponsor.image}
+                    />
+                  </PlatformTouchable>
+                </View>
               ))}
             </View>
           </Animated.View>
