@@ -231,8 +231,8 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               <Animated.Text
                 style={[landingStyles.illustrationText, { color: normalTextColorAnim }]}
               >
-                Découvrez l&apos;actu lycéenne en suivant vos groupes favoris et écrivez vos propres
-                articles
+                Découvrez l&apos;actu lycéenne et écrivez vos propres articles. Détaillez vos
+                projets, votre engagement, et partagez le avec toute la France !
               </Animated.Text>
             </View>
             <View key="3" style={landingStyles.viewPage}>
@@ -241,14 +241,17 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                 Évènements
               </Text>
               <Text style={landingStyles.illustrationText}>
-                Découvrez les prochains évènements pour la jeunesse autour de vous
+                Mettez en avant vos actions, vos évènements et vos rassemblements. Partez à la
+                recherche des évènements autour de vous avec un outil dédié et personnalisable.
               </Text>
             </View>
             <View key="4" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
               <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>Explorer</Text>
               <Text style={landingStyles.illustrationText}>
-                Découvrez les évènements et les lieux proches de vous avec une carte interactive
+                Nous vous proposons une carte interactive des territoires français, ou seront
+                repertoriés, avec votre aide, les lieux culturels, les évènements et les
+                établissements scolaires.
               </Text>
             </View>
             <View key="5" style={landingStyles.viewPage}>
@@ -264,8 +267,8 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                 Partenaires
               </Text>
               <Text style={landingStyles.illustrationText}>
-                Cette application ne serait pas possible sans le support de nos partenaires et
-                sponsors
+                Un grand merci à nos partenaires sans qui cette application ne serait pas possible,
+                ainsi qu&apos;aux membres de l&apos;équipe et à nos bêta-testeurs.
               </Text>
               <Button
                 mode="outlined"
@@ -345,7 +348,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             ))}
           </View>
           <Animated.Text style={{ fontSize: 12, color: normalTextColorAnim }}>
-            Vous avez un compte?{' '}
+            Vous avez déjà un compte?{' '}
             <Animated.Text
               style={[styles.link, { color: purpleTextColorAnim }]}
               onPress={() =>
