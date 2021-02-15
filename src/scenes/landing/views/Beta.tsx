@@ -1,14 +1,8 @@
 import React from 'react';
 import { View, Platform, ScrollView, Linking, Image, TouchableWithoutFeedback } from 'react-native';
-import { Text, Button, List, Checkbox, Divider } from 'react-native-paper';
+import { Text, Button, Divider } from 'react-native-paper';
 
-import {
-  TranslucentStatusBar,
-  Illustration,
-  SafeAreaView,
-  StepperView,
-  FeedbackCard,
-} from '@components/index';
+import { TranslucentStatusBar, Illustration, SafeAreaView } from '@components/index';
 import getStyles from '@styles/Styles';
 import { useTheme } from '@utils/index';
 
@@ -39,11 +33,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
   ];
 
   const nextChouette = () => {
-    if (currentChouette < chouettes.length - 1) {
-      setCurrentChouette(currentChouette + 1);
-    } else {
-      setCurrentChouette(0);
-    }
+    setCurrentChouette((currentChouette + 1) % chouettes.length);
   };
 
   return (

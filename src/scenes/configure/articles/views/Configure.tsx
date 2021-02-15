@@ -16,7 +16,6 @@ import {
   updateArticlePrefs,
   addArticleQuick,
   deleteArticleQuick,
-  modifyArticleList,
   reorderArticleQuick,
   reorderArticleList,
 } from '@redux/actions/contentData/articles';

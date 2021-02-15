@@ -38,15 +38,25 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     1.5;
   const backgroundCollapsedScale = 50 / backgroundFullHeight;
 
-  const logoScaleAnim = useRef(new Animated.Value(1)).current;
-  const logoTranslateAnim = useRef(new Animated.Value(0)).current;
-  const backgroundScaleAnim = useRef(new Animated.Value(1)).current;
-  const textColorAnim = useRef(new Animated.Value(0)).current;
-  const animValues = [
-    useRef(new Animated.Value(0)).current,
-    useRef(new Animated.Value(0)).current,
-    useRef(new Animated.Value(0)).current,
-  ];
+  const animValues = useRef({
+    logoScale: new Animated.Value(1),
+    logoTranslate: new Animated.Value(0),
+    backgroundScale: new Animated.Value(1),
+    textColor: new Animated.Value(0),
+    illustrations: [
+      new Animated.Value(0),
+      new Animated.Value(0),
+      new Animated.Value(0),
+      new Animated.Value(0),
+    ],
+    dots: [
+      new Animated.Value(0),
+      new Animated.Value(0),
+      new Animated.Value(0),
+      new Animated.Value(0),
+      new Animated.Value(0),
+    ],
+  }).current;
 
   const animate = (page: number) => {
     let lastPageAnimation: Animated.CompositeAnimation;
@@ -55,30 +65,30 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     // Leaving start page
     if (lastPage === 0) {
       lastPageAnimation = Animated.parallel([
-        Animated.timing(logoScaleAnim, {
+        Animated.timing(animValues.logoScale, {
           toValue: 0.5,
           duration: 150,
           useNativeDriver: true,
         }),
-        Animated.timing(backgroundScaleAnim, {
+        Animated.timing(animValues.backgroundScale, {
           toValue: backgroundCollapsedScale,
           duration: 300,
           easing: Easing.inOut(Easing.quad),
           useNativeDriver: true,
         }),
-        Animated.timing(logoTranslateAnim, {
+        Animated.timing(animValues.logoTranslate, {
           toValue: -230,
           duration: 150,
           useNativeDriver: true,
         }),
-        Animated.timing(textColorAnim, {
+        Animated.timing(animValues.textColor, {
           toValue: 1,
           duration: 150,
           useNativeDriver: false, // can't use native driver for color
         }),
       ]);
     } else {
-      lastPageAnimation = Animated.timing(animValues[lastPage - 1], {
+      lastPageAnimation = Animated.timing(animValues.illustrations[lastPage - 1], {
         toValue: 0,
         duration: 150,
         useNativeDriver: true,
@@ -88,56 +98,79 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     // Going back to start page
     if (page === 0) {
       currentPageAnimation = Animated.parallel([
-        Animated.timing(logoScaleAnim, {
+        Animated.timing(animValues.logoScale, {
           toValue: 1,
           duration: 150,
           useNativeDriver: true,
         }),
-        Animated.timing(backgroundScaleAnim, {
+        Animated.timing(animValues.backgroundScale, {
           toValue: 1,
           duration: 300,
           easing: Easing.inOut(Easing.quad),
           useNativeDriver: true,
         }),
-        Animated.timing(logoTranslateAnim, {
+        Animated.timing(animValues.logoTranslate, {
           toValue: 0,
           duration: 150,
           useNativeDriver: true,
         }),
-        Animated.timing(textColorAnim, {
+        Animated.timing(animValues.textColor, {
           toValue: 0,
           duration: 150,
           useNativeDriver: false, // can't use native driver for color
         }),
       ]);
     } else {
-      currentPageAnimation = Animated.timing(animValues[page - 1], {
+      currentPageAnimation = Animated.timing(animValues.illustrations[page - 1], {
         toValue: 1,
         duration: 150,
         useNativeDriver: true,
       });
     }
 
+    const dotAnimOut = Animated.timing(animValues.dots[lastPage], {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    });
+
+    const dotAnimIn = Animated.timing(animValues.dots[page], {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: false,
+    });
+
     Animated.parallel([
       lastPageAnimation,
+      dotAnimOut,
+      dotAnimIn,
       Animated.sequence([Animated.delay(75), currentPageAnimation]),
     ]).start();
     setLastPage(page);
   };
 
+  const topicPurple = 'rgb(89,41,147)';
   const normalTextColor = theme.dark ? 'rgb(240,240,240)' : 'rgb(0, 0, 0)';
 
-  const normalTextColorAnim = textColorAnim.interpolate({
+  const normalTextColorAnim = animValues.textColor.interpolate({
     inputRange: [0, 1],
     outputRange: ['rgb(230,230,230)', normalTextColor],
     extrapolate: 'clamp',
   });
 
-  const purpleTextColorAnim = textColorAnim.interpolate({
+  const purpleTextColorAnim = animValues.textColor.interpolate({
     inputRange: [0, 1],
-    outputRange: ['rgb(255, 255, 255)', 'rgb(89,41,137)'],
+    outputRange: ['rgb(255, 255, 255)', topicPurple],
     extrapolate: 'clamp',
   });
+
+  const dotColors = animValues.dots.map((anim) =>
+    anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['rgb(200, 200, 200)', lastPage === 0 ? 'rgb(255,255,255)' : topicPurple],
+      extrapolate: 'clamp',
+    }),
+  );
 
   return (
     <View style={styles.page}>
@@ -160,7 +193,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             </View>
             <View key="2" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
-              <Text style={[landingStyles.title, landingStyles.illustrationText]}>Articles</Text>
+              <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>Articles</Text>
               <Text style={landingStyles.illustrationText}>
                 Découvrez l&apos;actu lycéenne en suivant vos groupes favoris et écrivez vos propres
                 articles
@@ -168,22 +201,57 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             </View>
             <View key="3" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
-              <Text style={[landingStyles.title, landingStyles.illustrationText]}>Évènements</Text>
+              <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>
+                Évènements
+              </Text>
               <Text style={landingStyles.illustrationText}>
                 Découvrez les prochains évènements pour la jeunesse autour de vous
               </Text>
             </View>
             <View key="4" style={landingStyles.viewPage}>
               <View style={{ height: '70%', width: '70%' }} />
-              <Text style={[landingStyles.title, landingStyles.illustrationText]}>Explorer</Text>
+              <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>Explorer</Text>
               <Text style={landingStyles.illustrationText}>
                 Découvrez les évènements et les lieux proches de vous avec une carte interactive
               </Text>
             </View>
+            <View key="5" style={landingStyles.viewPage}>
+              <View style={{ height: '70%', width: '70%' }} />
+              <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>
+                Partenaires
+              </Text>
+              <Text style={landingStyles.illustrationText}>
+                Cette application ne serait pas possible sans le support de nos partenaires et
+                sponsors
+              </Text>
+              <Button
+                mode="outlined"
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() =>
+                  navigation.push('Root', {
+                    screen: 'Main',
+                    params: {
+                      screen: 'More',
+                      params: {
+                        screen: 'About',
+                        params: { screen: 'List', params: { page: 'sponsors' } },
+                      },
+                    },
+                  })
+                }
+              >
+                Voir les Sponsors
+              </Button>
+            </View>
           </ViewPager>
           <Animated.View
             style={[
-              { transform: [{ translateY: logoTranslateAnim }, { scale: logoScaleAnim }] },
+              {
+                transform: [
+                  { translateY: animValues.logoTranslate },
+                  { scale: animValues.logoScale },
+                ],
+              },
               landingStyles.illustrationContainer,
             ]}
             pointerEvents="none"
@@ -198,29 +266,38 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                 width: backgroundFullHeight,
                 borderRadius: backgroundFullHeight / 2,
                 backgroundColor: colors.primaryBackground,
-                transform: [{ translateY: logoTranslateAnim }, { scale: backgroundScaleAnim }],
+                transform: [
+                  { translateY: animValues.logoTranslate },
+                  { scale: animValues.backgroundScale },
+                ],
                 zIndex: -1,
               }}
               pointerEvents="none"
             />
           </View>
           <Animated.View
-            style={[{ opacity: animValues[0] }, landingStyles.illustrationContainer]}
+            style={[{ opacity: animValues.illustrations[0] }, landingStyles.illustrationContainer]}
             pointerEvents="none"
           >
             <Illustration name="article" />
           </Animated.View>
           <Animated.View
-            style={[{ opacity: animValues[1] }, landingStyles.illustrationContainer]}
+            style={[{ opacity: animValues.illustrations[1] }, landingStyles.illustrationContainer]}
             pointerEvents="none"
           >
             <Illustration name="event" />
           </Animated.View>
           <Animated.View
-            style={[{ opacity: animValues[2] }, landingStyles.illustrationContainer]}
+            style={[{ opacity: animValues.illustrations[2] }, landingStyles.illustrationContainer]}
             pointerEvents="none"
           >
             <Illustration name="explore" />
+          </Animated.View>
+          <Animated.View
+            style={[{ opacity: animValues.illustrations[3] }, landingStyles.illustrationContainer]}
+            pointerEvents="none"
+          >
+            <Illustration name="group" />
           </Animated.View>
           <View
             style={{
@@ -231,30 +308,11 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             }}
             pointerEvents="none"
           >
-            <Animated.View
-              style={[
-                landingStyles.dot,
-                { backgroundColor: lastPage === 0 ? colors.primary : normalTextColor },
-              ]}
-            />
-            <Animated.View
-              style={[
-                landingStyles.dot,
-                { backgroundColor: lastPage === 1 ? colors.primary : normalTextColor },
-              ]}
-            />
-            <Animated.View
-              style={[
-                landingStyles.dot,
-                { backgroundColor: lastPage === 2 ? colors.primary : normalTextColor },
-              ]}
-            />
-            <Animated.View
-              style={[
-                landingStyles.dot,
-                { backgroundColor: lastPage === 3 ? colors.primary : normalTextColor },
-              ]}
-            />
+            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[0] }]} />
+            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[1] }]} />
+            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[2] }]} />
+            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[3] }]} />
+            <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[4] }]} />
           </View>
           <Animated.Text style={{ fontSize: 12, color: normalTextColorAnim }}>
             Vous avez un compte?{' '}
@@ -272,7 +330,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
           <View style={landingStyles.contentContainer}>
             <Button
               mode="contained"
-              color="white"
+              color={lastPage === 0 ? 'white' : colors.primary}
               uppercase={Platform.OS !== 'ios'}
               onPress={() => {
                 navigation.navigate('Beta');

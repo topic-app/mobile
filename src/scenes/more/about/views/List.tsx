@@ -1,28 +1,19 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
-import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { Text, Divider, List, Subheading } from 'react-native-paper';
+import { View, ScrollView } from 'react-native';
 
-import {
-  CustomHeaderBar,
-  Illustration,
-  TranslucentStatusBar,
-  CustomTabView,
-  PlatformTouchable,
-} from '@components/index';
+import { CustomHeaderBar, TranslucentStatusBar, CustomTabView } from '@components/index';
 import getStyles from '@styles/Styles';
-import { useTheme, handleUrl } from '@utils/index';
+import { useTheme } from '@utils/index';
 
 import AboutPage from '../components/AboutPage';
 import LicensesPage from '../components/LicensesPage';
 import SponsorsPage from '../components/SponsorsPage';
-import { AboutScreenNavigationProp } from '../index';
-import getAboutStyles from '../styles/Styles';
+import { AboutStackParams } from '../index';
 
-type AboutProps = {
-  navigation: AboutScreenNavigationProp<'Legal'>;
-};
+type AboutProps = StackScreenProps<AboutStackParams, 'List'>;
 
-const About: React.FC<AboutProps> = ({ navigation }) => {
+const About: React.FC<AboutProps> = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -40,6 +31,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
       />
       <ScrollView>
         <CustomTabView
+          initialTab={{ about: 0, sponsors: 1, licenses: 2 }[route.params?.page || 'about']}
           scrollEnabled={false}
           pages={[
             {
@@ -53,7 +45,7 @@ const About: React.FC<AboutProps> = ({ navigation }) => {
               component: <SponsorsPage />,
             },
             {
-              key: 'Licenses',
+              key: 'licenses',
               title: 'Licenses',
               component: <LicensesPage navigation={navigation} />,
             },
