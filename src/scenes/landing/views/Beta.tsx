@@ -37,16 +37,35 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
               <Text>Merci d&apos;avoir rejoint la bêta publique de Topic !{'\n'}</Text>
               <Text>
                 Voila quelques informations sur le déroulement de la bêta et comment vous pouvez
-                nous aider à developper l&apos;application.{'\n\n'}
-                Étant donné que l&apos;application est toujours en bêta, elle peut être instable, et
-                vous rencontrerez sûrement des bugs.
+                nous aider à déveloper l&apos;application.{'\n\n'}
+                Comme l&apos;application est toujours en bêta, elle peut être instable, et vous
+                rencontrerez sûrement des bugs.
               </Text>
             </View>
           </View>
           <View>
             <List.Item
+              title="Feedback"
+              description={`Utilisez l'élément "Feedback" depuis ${
+                Platform.OS === 'ios' ? 'la section Plus' : 'le menu'
+              } pour donner votre avis sur l'application ou signaler un bug`}
+              left={() => (
+                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                  <List.Icon
+                    color={colors.background}
+                    style={{
+                      backgroundColor: colors.primary,
+                      borderRadius: 20,
+                    }}
+                    icon="bug"
+                  />
+                </View>
+              )}
+              descriptionNumberOfLines={3}
+            />
+            <List.Item
               title="Canal Telegram"
-              description="Discutez avec les développeurs et les autres bêta-testeurs"
+              description="Recevez les dernières infos et discutez avec les développeurs et les autres bêta-testeurs"
               left={() => (
                 <View
                   style={{
@@ -58,12 +77,13 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
                   <Illustration name="telegram" height={40} width={40} />
                 </View>
               )}
+              right={() => <List.Icon icon="open-in-new" color={colors.subtext} />}
               descriptionNumberOfLines={3}
               onPress={() => Linking.openURL('https://t.me/joinchat/AAAAAEfRz29dT2eYy9w_7A')}
             />
             <List.Item
-              title="Plantage"
-              description="Les rapports de plantage sont envoyés automatiquement"
+              title="Plantages"
+              description="Certains rapports de plantage sont envoyés automatiquement, mais nous vous conseillons de les signaler"
               left={() => (
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                   <List.Icon
@@ -79,7 +99,7 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
               descriptionNumberOfLines={3}
             />
             <List.Item
-              title="Interaction"
+              title="Statistiques"
               description="Topic envoie automatiquement des informations anonymes sur votre interaction avec l'application. Vous pouvez désactiver l'envoi depuis les paramètres"
               left={() => (
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -96,27 +116,8 @@ const LandingArticles: React.FC<LandingArticlesProps> = ({ navigation }) => {
               descriptionNumberOfLines={3}
             />
             <List.Item
-              title="Feedback"
-              description={`Utilisez l'élément "Feedback" depuis ${
-                Platform.OS === 'ios' ? 'la section Plus' : 'le menu'
-              } pour donner votre avis sur l'application ou signaler un bug`}
-              left={() => (
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <List.Icon
-                    color={colors.background}
-                    style={{
-                      backgroundColor: colors.disabled,
-                      borderRadius: 20,
-                    }}
-                    icon="bug"
-                  />
-                </View>
-              )}
-              descriptionNumberOfLines={3}
-            />
-            <List.Item
               title="Mises à jour"
-              description="Nous publions des mises à jour toute les semaines environ, vous pouvez regarder les notes de mise à jour pour voir quelles fonctionnalités vous pouvez tester"
+              description="Nous publions des mises à jour toutes les semaines environ. Vous pouvez regarder les notes de mise à jour pour voir les fonctionnalités à tester"
               left={() => (
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                   <List.Icon
