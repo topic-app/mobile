@@ -324,6 +324,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
           {(['article', 'event', 'explore', 'group', 'beta-updates'] as const).map(
             (name, index) => (
               <Animated.View
+                key={name}
                 style={[
                   { opacity: animValues.illustrations[index] },
                   landingStyles.illustrationContainer,
@@ -344,7 +345,10 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             pointerEvents="none"
           >
             {[0, 1, 2, 3, 4, 5].map((val) => (
-              <Animated.View style={[landingStyles.dot, { backgroundColor: dotColors[val] }]} />
+              <Animated.View
+                key={val}
+                style={[landingStyles.dot, { backgroundColor: dotColors[val] }]}
+              />
             ))}
           </View>
           <Animated.Text style={{ fontSize: 12, color: normalTextColorAnim }}>
