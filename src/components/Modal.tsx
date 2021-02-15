@@ -25,7 +25,7 @@ const Modal: React.FC<ModalProps> = ({ visible, setVisible, children }) => {
       style={styles.bottomModal}
     >
       <Card style={styles.modalCard}>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled" bounces={false}>
           <View style={{ marginBottom: insets.bottom }}>{children}</View>
         </ScrollView>
       </Card>

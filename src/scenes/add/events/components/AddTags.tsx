@@ -49,7 +49,7 @@ const EventAddPageTags: React.FC<Props> = ({
     next();
   };
 
-  const addNewTag = (tag: TagPreload) => {
+  const addNewTag = (tag: { _id: string; displayName: string; color: string }) => {
     setSelectedTags([...selectedTags, tag._id]);
     setSelectedData([...selectedData, tag]);
   };
@@ -218,10 +218,10 @@ const EventAddPageTags: React.FC<Props> = ({
         </View>
         <FlatList
           horizontal
-          data={selectedTags.map((t) => selectedData.find((u) => u._id === t)!)}
+          data={selectedTags.map((t) => selectedData.find((u) => u._id === t)!).filter((s) => !!s)}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
-          keyExtractor={(i) => i._id}
+          keyExtractor={(i) => i?._id}
         />
       </CollapsibleView>
       <View style={[styles.container, { marginTop: 40 }]}>

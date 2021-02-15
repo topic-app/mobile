@@ -156,7 +156,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                         }}
                         style={{ flex: 1, marginRight: 5 }}
                       >
-                        {values.file ? "Remplacer l'image" : 'Séléctionner une image'}
+                        {values.file ? 'Remplacer' : 'Séléctionner une image'}
                       </Button>
                       {values.file ? (
                         <Button
@@ -168,7 +168,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                           }}
                           style={{ flex: 1, marginLeft: 5 }}
                         >
-                          Supprimer l&apos;image
+                          Supprimer
                         </Button>
                       ) : null}
                     </View>
@@ -218,6 +218,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                 mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                 uppercase={Platform.OS !== 'ios'}
                 onPress={handleSubmit}
+                disabled={state.upload?.loading}
                 style={{ flex: 1, marginLeft: 5 }}
               >
                 Suivant

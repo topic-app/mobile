@@ -231,7 +231,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
         }),
       );
 
-
   if (!group) {
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
@@ -506,6 +505,32 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                 </View>
               </CollapsibleView>
               <Divider />
+              {group.parent && (
+                <View>
+                  <InlineCard
+                    key={group.parent._id}
+                    avatar={group.parent.avatar}
+                    title={`Affilié à ${group.parent.displayName || group.parent.name}`}
+                    subtitle={`Groupe ${group.parent.type}`}
+                    onPress={() =>
+                      navigation.push('Root', {
+                        screen: 'Main',
+                        params: {
+                          screen: 'Display',
+                          params: {
+                            screen: 'Group',
+                            params: {
+                              screen: 'Display',
+                              params: { id: group.parent?._id, title: group.parent?.displayName },
+                            },
+                          },
+                        },
+                      })
+                    }
+                  />
+                  <Divider />
+                </View>
+              )}
               {group.location.global && (
                 <InlineCard
                   icon="map-marker"
@@ -553,6 +578,37 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     <Divider />
                   </View>
                 ) */}
+              {!!group.cache?.subgroups?.length && (
+                <View>
+                  <View style={styles.container}>
+                    <CategoryTitle>Groupes membres</CategoryTitle>
+                  </View>
+                  {group.cache.subgroups.map((g) => (
+                    <InlineCard
+                      key={g._id}
+                      avatar={g.avatar}
+                      title={g.displayName || g.name}
+                      subtitle={`Groupe ${g.type}`}
+                      onPress={() =>
+                        navigation.push('Root', {
+                          screen: 'Main',
+                          params: {
+                            screen: 'Display',
+                            params: {
+                              screen: 'Group',
+                              params: {
+                                screen: 'Display',
+                                params: { id: g._id, title: g.displayName },
+                              },
+                            },
+                          },
+                        })
+                      }
+                    />
+                  ))}
+                  <Divider />
+                </View>
+              )}
               <View style={styles.container}>
                 <CategoryTitle>Membres</CategoryTitle>
               </View>

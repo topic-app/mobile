@@ -162,7 +162,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
                         onPress={() => uploadImage().then((id) => setFieldValue('file', id))}
                         style={{ flex: 1, marginRight: 5 }}
                       >
-                        {values.file ? "Remplacer l'image" : 'Sélectionner une image'}
+                        {values.file ? 'Remplacer' : 'Sélectionner une image'}
                       </Button>
                       {values.file ? (
                         <Button
@@ -171,7 +171,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
                           onPress={() => setFieldValue('file', null)}
                           style={{ flex: 1, marginLeft: 5 }}
                         >
-                          Supprimer l&apos;image
+                          Supprimer
                         </Button>
                       ) : null}
                     </View>
@@ -206,6 +206,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
                 mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                 uppercase={Platform.OS !== 'ios'}
                 onPress={handleSubmit}
+                disabled={state.upload?.loading}
                 style={{ flex: 1, marginLeft: 5 }}
               >
                 Suivant
