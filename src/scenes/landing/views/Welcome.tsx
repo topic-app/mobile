@@ -1,7 +1,7 @@
 import ViewPager from '@react-native-community/viewpager';
 import React, { useRef } from 'react';
 import { View, Platform, Animated, useWindowDimensions, Easing } from 'react-native';
-import { Text, Button, DarkTheme } from 'react-native-paper';
+import { Text, Button } from 'react-native-paper';
 
 import { Illustration, TranslucentStatusBar } from '@components/index';
 import { updateDepartments } from '@redux/actions/api/departments';
@@ -59,6 +59,13 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   }).current;
 
   const animate = (page: number) => {
+    // animate is triggered on initial screen load
+    // but we don't want to animate at that time,
+    // so return early
+    if (lastPage === 0 && page === 0) {
+      return;
+    }
+
     let lastPageAnimation: Animated.CompositeAnimation;
     let currentPageAnimation: Animated.CompositeAnimation;
 
