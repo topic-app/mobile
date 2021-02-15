@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { CustomHeaderBar } from '@components/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
-import { Page } from '@ts/groupPages';
+import { Page, ElementNames } from '@ts/groupPages';
 import { Account, Preferences, State, Pages } from '@ts/types';
 import { useTheme } from '@utils/index';
 
@@ -35,7 +35,14 @@ const Block: React.FC<PageProps> = ({ navigation, columns, page }) => {
     content: Content,
     contentTabView: ContentTabView,
     image: Image,
-  };
+  } as Record<
+    ElementNames,
+    React.FC<{
+      navigation: PagesScreenNavigationProp<any>;
+      element: Pages.Element<ElementNames>;
+      page: Page;
+    }>
+  >;
 
   const MIN_COLUMN_WIDTH = 400; // Will wrap columns if average column width is < 400
 

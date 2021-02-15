@@ -58,11 +58,11 @@ const AboutModal: React.FC<AboutModalProps> = ({ visible, setVisible, navigation
               initiatives à la France entière !
             </Text>
           </View>
-          <View style={[styles.container, { marginTop: 40 }]}>
+          {/* <View style={[styles.container, { marginTop: 40 }]}>
             <Button mode="contained" onPress={() => {}}>
               Commencer
             </Button>
-          </View>
+          </View> */}
         </View>
       </View>
     </Modal>

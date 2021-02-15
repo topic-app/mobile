@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { CustomHeaderBar, Illustration, PlatformTouchable } from '@components/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
+import { BackgroundNames, Page as PageType } from '@ts/groupPages';
 import { Account, Preferences, State, Pages } from '@ts/types';
 import { useSafeAreaInsets, useTheme } from '@utils/index';
 
@@ -32,7 +33,14 @@ const Page: React.FC<PageProps> = ({ navigation, page, loading }) => {
     image: Image,
     color: Color,
     gradient: Gradient,
-  };
+  } as Record<
+    BackgroundNames,
+    React.FC<{
+      navigation: PagesScreenNavigationProp<any>;
+      background: Pages.Background<BackgroundNames>;
+      page: PageType;
+    }>
+  >;
 
   const [aboutVisible, setAboutVisible] = React.useState(false);
 

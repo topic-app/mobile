@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { Content as ContentComponent, CustomHeaderBar } from '@components/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
+import { Page } from '@ts/groupPages';
 import { Account, Preferences, State, Pages } from '@ts/types';
 import AutoHeightImage from '@utils/autoHeightImage';
 import { getImageUrl, useTheme } from '@utils/index';
@@ -22,6 +23,7 @@ import getLocalStyles from '../../styles/Styles';
 type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
   element: Pages.Element<'image'>;
+  page: Page;
 };
 
 const Image: React.FC<PageProps> = ({ navigation, element }) => {
