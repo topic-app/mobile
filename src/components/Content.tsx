@@ -86,7 +86,6 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                       style={imageStyles._VIEW_SAFE_image}
                       source={{ uri: getImageUrl({ image: src.substring(6), size: 'full' }) || '' }}
                       width={Dimensions.get('window').width - 50}
-                      maxHeight={400}
                     />
                   </PlatformTouchable>
                 </View>
