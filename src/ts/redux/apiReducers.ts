@@ -26,7 +26,7 @@ import {
   ArticleMyInfo,
   EventMyInfo,
 } from '../api';
-import { Page } from '../groupPages';
+import { Footer, Header, Page } from '../groupPages';
 import {
   ArticleRequestState,
   CommentRequestState,
@@ -306,7 +306,11 @@ export type GroupsState = {
   verification: (Group | GroupPreload)[];
   state: GroupRequestState;
   templates: GroupTemplate[];
-  pages: Page[];
+  pages: {
+    headers: Header[];
+    footers: Footer[];
+    pages: Page[];
+  };
 };
 
 type UpdateGroupsStateAction = {
@@ -341,7 +345,11 @@ type UpdateGroupsSearchAction = {
 
 type UpdateGroupsPagesAction = {
   type: typeof UPDATE_GROUPS_PAGES;
-  data: Page[];
+  data: {
+    headers: Header[];
+    footers: Footer[];
+    pages: Page[];
+  };
 };
 
 type ClearGroupsAction = {

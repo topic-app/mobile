@@ -7,7 +7,7 @@ import { MainScreenNavigationProp } from '../Main';
 import PageDisplay from './views/Display';
 
 export type PagesStackParams = {
-  Display: undefined;
+  Display: { group: string; page?: string };
 };
 
 export type PagesScreenNavigationProp<K extends keyof PagesStackParams> = CompositeNavigationProp<

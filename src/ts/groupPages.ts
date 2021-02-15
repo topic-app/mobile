@@ -12,7 +12,7 @@ export type MenuItem = {
   mode?: 'outlined' | 'text' | 'contained';
 } & (
   | { type: 'external'; url: string }
-  | { type: 'internal'; page: string }
+  | { type: 'internal'; page: string; push?: boolean }
   | { type: 'menu'; items: MenuItem[] }
 );
 
@@ -89,7 +89,15 @@ export type Page = {
   page: string;
   group: string;
   main: boolean;
-  header: Background<BackgroundNames>[];
   content: Background<BackgroundNames>[];
-  footer: Background<BackgroundNames>[];
+};
+
+export type Header = {
+  group: string;
+  content: Background<BackgroundNames>[];
+};
+
+export type Footer = {
+  group: string;
+  content: Background<BackgroundNames>[];
 };

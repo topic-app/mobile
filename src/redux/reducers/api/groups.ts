@@ -17,7 +17,11 @@ const initialState: GroupsState = {
   verification: [],
   item: null,
   templates: [],
-  pages: [],
+  pages: {
+    headers: [],
+    footers: [],
+    pages: [],
+  },
   state: {
     list: {
       success: null,
@@ -98,6 +102,11 @@ const initialState: GroupsState = {
       error: null,
       loading: false,
     },
+    pages: {
+      success: null,
+      error: null,
+      loading: false,
+    },
   },
 };
 
@@ -153,7 +162,7 @@ function groupReducer(state = initialState, action: GroupsActionTypes): GroupsSt
         search: action.data.search ? [] : state.search,
         templates: action.data.templates ? [] : state.templates,
         verification: action.data.verification ? [] : state.verification,
-        pages: action.data.pages ? [] : state.pages,
+        pages: action.data.pages ? { headers: [], footers: [], pages: [] } : state.pages,
         item: null,
         state: state.state,
       };

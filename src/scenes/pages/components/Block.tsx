@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { CustomHeaderBar } from '@components/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
+import { Page } from '@ts/groupPages';
 import { Account, Preferences, State, Pages } from '@ts/types';
 import { useTheme } from '@utils/index';
 
@@ -19,9 +20,10 @@ import Menu from './elements/Menu';
 type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
   columns: Pages.Background<Pages.BackgroundNames>['columns'];
+  page: Page;
 };
 
-const Block: React.FC<PageProps> = ({ navigation, columns }) => {
+const Block: React.FC<PageProps> = ({ navigation, columns, page }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const localStyles = getSettingsStyles(theme);
@@ -65,7 +67,7 @@ const Block: React.FC<PageProps> = ({ navigation, columns }) => {
                     },
                   ]}
                 >
-                  <E navigation={navigation} element={item} />
+                  <E navigation={navigation} element={item} page={page} />
                 </View>
               );
             }}

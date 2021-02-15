@@ -297,7 +297,10 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
             navigation.closeDrawer();
             navigation.navigate('Main', {
               screen: 'Pages',
-              params: { screen: 'Display', params: {} },
+              params: {
+                screen: 'Display',
+                params: { group: '5f8ef4682fdedad194fc6464', page: 'main' },
+              },
             });
           }}
         />

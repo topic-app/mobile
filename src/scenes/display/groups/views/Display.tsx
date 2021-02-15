@@ -504,6 +504,27 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   <Content parser={group.description?.parser} data={group.description?.data} />
                 </View>
               </CollapsibleView>
+              {group.pages?.enabled ? (
+                <View style={styles.container}>
+                  <Button
+                    mode="outlined"
+                    onPress={() =>
+                      navigation.push('Root', {
+                        screen: 'Main',
+                        params: {
+                          screen: 'Pages',
+                          params: {
+                            screen: 'Display',
+                            params: { group: group._id },
+                          },
+                        },
+                      })
+                    }
+                  >
+                    Voir le site web
+                  </Button>
+                </View>
+              ) : null}
               <Divider />
               {group.parent && (
                 <View>

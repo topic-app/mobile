@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { CustomHeaderBar } from '@components/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
+import { Page } from '@ts/groupPages';
 import { Account, Preferences, State, Pages } from '@ts/types';
 import { useTheme } from '@utils/index';
 
@@ -17,9 +18,10 @@ import Block from '../Block';
 type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
   background: Pages.Background<'gradient'>;
+  page: Page;
 };
 
-const Gradient: React.FC<PageProps> = ({ navigation, background }) => {
+const Gradient: React.FC<PageProps> = ({ navigation, background, page }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const localStyles = getLocalStyles(theme);
@@ -35,7 +37,7 @@ const Gradient: React.FC<PageProps> = ({ navigation, background }) => {
         angle={background.data.angle || 0}
         angleCenter={{ x: 0.5, y: 0.5 }}
       >
-        <Block navigation={navigation} columns={background.columns} />
+        <Block navigation={navigation} columns={background.columns} page={page} />
       </LinearGradient>
     </View>
   );

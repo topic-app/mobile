@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { Content as ContentComponent, CustomHeaderBar } from '@components/index';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
+import { Page } from '@ts/groupPages';
 import { Account, Preferences, State, Pages } from '@ts/types';
 import { handleUrl, useTheme } from '@utils/index';
 
@@ -16,9 +17,10 @@ import getLocalStyles from '../../styles/Styles';
 type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
   element: Pages.Element<'menu'>;
+  page: Page;
 };
 
-const Menu: React.FC<PageProps> = ({ navigation, element }) => {
+const Menu: React.FC<PageProps> = ({ navigation, element, page }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const localStyles = getLocalStyles(theme);
@@ -62,7 +64,17 @@ const Menu: React.FC<PageProps> = ({ navigation, element }) => {
                   if (e.type === 'external') {
                     handleUrl(e.url, { trusted: true });
                   } else if (e.type === 'internal') {
-                    console.warn('Not implemented');
+                    const func = e.push === false ? navigation.navigate : navigation.push; // undefined is considered push
+                    func('Root', {
+                      screen: 'Main',
+                      params: {
+                        screen: 'Pages',
+                        params: {
+                          screen: 'Display',
+                          params: { group: page.group, page: e.page },
+                        },
+                      },
+                    });
                   }
                 }}
               >

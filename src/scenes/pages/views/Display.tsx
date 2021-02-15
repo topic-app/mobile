@@ -1,31 +1,62 @@
+import { RouteProp } from '@react-navigation/core';
 import React from 'react';
-import { View, Appearance, FlatList } from 'react-native';
+import { View, Appearance, FlatList, ActivityIndicator, Platform } from 'react-native';
 import { List, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CustomHeaderBar, PlatformBackButton, PlatformTouchable } from '@components/index';
+import {
+  CustomHeaderBar,
+  ErrorMessage,
+  PlatformBackButton,
+  PlatformTouchable,
+} from '@components/index';
+import { fetchGroupPage } from '@redux/actions/api/pages';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
-import { Account, Pages, Preferences, State } from '@ts/types';
+import { Account, GroupRequestState, GroupsState, Pages, Preferences, State } from '@ts/types';
 import { useSafeAreaInsets, useTheme } from '@utils/index';
 
 import Page from '../components/Page';
-import type { PagesScreenNavigationProp } from '../index';
+import type { PagesScreenNavigationProp, PagesStackParams } from '../index';
 import getSettingsStyles from '../styles/Styles';
 
 type PageDisplayProps = {
   navigation: PagesScreenNavigationProp<'Display'>;
+  route: RouteProp<PagesStackParams, 'Display'>;
+  pages: GroupsState['pages'];
+  state: GroupRequestState;
 };
 
-const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
+const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const localStyles = getSettingsStyles(theme);
   const { colors } = theme;
 
+  const { group, page } = route.params || {};
+
+  const fetchPage = () => {
+    fetchGroupPage({ group, page });
+  };
+
+  React.useEffect(fetchPage, [group, page]);
+
+  console.log(JSON.stringify(state.pages, null, 2));
+
+  const header = pages.headers.find((h) => h.group === group)?.content || []; // TODO: currently assumes we are only using ids, needs to be able to use handles as well
+  const footer = pages.footers.find((h) => h.group === group)?.content || [];
+  const pageDoc = pages.pages.find((p) => p.group === group && (page ? p.page === page : p.main));
+
+  const fullPage = {
+    page: page || 'main',
+    group,
+    main: pageDoc?.main || false,
+    content: pageDoc ? [...header, ...pageDoc.content, ...footer] : header,
+  };
+
   const insets = useSafeAreaInsets();
 
-  const page: Pages.Page = {
+  /* const page: Pages.Page = {
     page: 'main',
     group: 'test',
     main: true,
@@ -254,29 +285,55 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation }) => {
       },
     ],
     footer: [],
-  };
+  }; */
 
   return (
     <View style={styles.page}>
-      <View
-        style={{
-          position: 'absolute',
-          left: 5,
-          zIndex: 10000,
-          top: insets.top + 5,
-          backgroundColor: colors.surface,
-          height: 48,
-          borderRadius: 24,
-          opacity: 0.8,
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', opacity: 1, borderRadius: 24 }}>
-          <PlatformBackButton onPress={() => navigation.goBack()} />
+      {Platform.OS !== 'web' && (
+        <View
+          style={{
+            position: 'absolute',
+            left: 5,
+            zIndex: 10000,
+            top: insets.top + 5,
+            backgroundColor: colors.surface,
+            height: 48,
+            borderRadius: 24,
+            opacity: 0.8,
+          }}
+        >
+          <View
+            style={{ flexDirection: 'row', alignItems: 'center', opacity: 1, borderRadius: 24 }}
+          >
+            <PlatformBackButton onPress={() => navigation.goBack()} />
+          </View>
         </View>
-      </View>
-      <Page navigation={navigation} page={page} />
+      )}
+      {state.pages.error ? (
+        <View style={{ marginTop: insets.top }}>
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'le chargement de la page',
+              contentPlural: 'les informations',
+              contentSingular: 'La page',
+            }}
+            error={state.pages.error}
+            retry={fetchPage}
+          />
+        </View>
+      ) : null}
+      <Page
+        navigation={navigation}
+        page={fullPage}
+        loading={(state.pages.loading || !pageDoc) && !state.pages.error}
+      />
     </View>
   );
 };
 
-export default PageDisplay;
+const mapStateToProps = (state: State) => {
+  const { groups } = state;
+  return { state: groups.state, pages: groups.pages };
+};
+export default connect(mapStateToProps)(PageDisplay);
