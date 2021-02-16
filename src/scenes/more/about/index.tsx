@@ -9,7 +9,9 @@ import AboutLicenses from './views/Licenses';
 import AboutList from './views/List';
 
 export type AboutStackParams = {
-  List: undefined;
+  List: {
+    page?: 'about' | 'sponsors' | 'licenses';
+  };
   Legal: {
     page?: 'mentions' | 'conditions' | 'confidentialite';
   };

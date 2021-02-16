@@ -27,21 +27,59 @@ function getLandingStyles(theme: Theme) {
       alignSelf: 'center',
       flexDirection: 'row',
     },
-    title: {
-      fontSize: 60,
-      fontFamily: 'Rubik-Light',
-    },
     sectionTitle: {
       fontSize: 30,
     },
     sectionSubtitle: {
       fontSize: 24,
     },
-    headerContainer: {
-      margin: 10,
-      maxWidth: 600,
+    // Welcome page
+    title: {
+      fontSize: 50,
+      fontFamily: 'Rubik-Light',
+    },
+    subtitle: {
+      fontSize: 40,
+      fontFamily: 'Rubik-Light',
+    },
+    welcomeContainer: {
+      height: '100%',
       width: '100%',
+      maxWidth: 600,
       alignSelf: 'center',
+    },
+    headerContainer: {
+      marginTop: 25,
+      alignItems: 'center',
+    },
+    bottomContainer: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    illustrationText: {
+      paddingTop: 15,
+      paddingBottom: 15,
+      paddingHorizontal: 40,
+      textAlign: 'center',
+    },
+    illustrationContainer: {
+      position: 'absolute',
+      top: 0,
+      height: '70%',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    viewPage: {
+      alignItems: 'center',
+      alignSelf: 'flex-end',
+      paddingBottom: 100,
+    },
+    dot: {
+      height: 4.5,
+      width: 4.5,
+      borderRadius: 2.25,
+      margin: 2,
     },
     contentContainer: {
       padding: 20,
@@ -69,6 +107,13 @@ function getLandingStyles(theme: Theme) {
     },
     viewpager: {
       flex: 1,
+    },
+    locationHeaderContainer: {
+      margin: 10,
+      paddingBottom: 40,
+      maxWidth: 600,
+      width: '100%',
+      alignSelf: 'center',
     },
   });
 }

@@ -1,9 +1,7 @@
 import * as Assets from '@assets/index';
 import React from 'react';
-import { Platform } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 
-import { Config } from '@constants/index';
 import { useTheme, logger } from '@utils/index';
 
 const illustrationList = {
@@ -147,6 +145,11 @@ const illustrationList = {
   },
   empty: {
     all: Assets.ErrorsEmptyAll,
+  },
+
+  // Misc illustrations
+  telegram: {
+    all: Assets.Telegram,
   },
 };
 

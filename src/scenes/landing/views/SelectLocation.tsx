@@ -466,7 +466,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
             ) : null}
             <View
               style={[
-                landingStyles.headerContainer,
+                landingStyles.locationHeaderContainer,
                 { marginBottom: 0, flex: 1, justifyContent: 'flex-end' },
               ]}
             >
@@ -474,7 +474,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                 <CollapsibleView collapsed={userLocation}>
                   <Illustration name="location-select" height={200} width={200} />
                 </CollapsibleView>
-                <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 80 : 0 }]}>
+                <Text style={[landingStyles.sectionTitle, { marginTop: userLocation ? 40 : 0 }]}>
                   Choisissez votre école
                 </Text>
               </View>
