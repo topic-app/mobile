@@ -163,6 +163,12 @@ export default {
               },
             },
           },
+          Pages: {
+            screens: {
+              Sandbox: '/pages/sandbox',
+              Display: '/pages/:group/:page',
+            },
+          },
           NotFound: '*',
         },
       },

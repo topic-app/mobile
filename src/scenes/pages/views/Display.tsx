@@ -41,8 +41,6 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
 
   React.useEffect(fetchPage, [group, page]);
 
-  console.log(JSON.stringify(state.pages, null, 2));
-
   const header = pages.headers.find((h) => h.group === group)?.content || []; // TODO: currently assumes we are only using ids, needs to be able to use handles as well
   const footer = pages.footers.find((h) => h.group === group)?.content || [];
   const pageDoc = pages.pages.find((p) => p.group === group && (page ? p.page === page : p.main));

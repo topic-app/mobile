@@ -1,6 +1,13 @@
 import React from 'react';
-import { View, Appearance, FlatList, ActivityIndicator, useWindowDimensions } from 'react-native';
-import { List, Subheading, Text, ThemeProvider } from 'react-native-paper';
+import {
+  View,
+  Appearance,
+  FlatList,
+  ActivityIndicator,
+  useWindowDimensions,
+  Platform,
+} from 'react-native';
+import { List, ProgressBar, Subheading, Text, ThemeProvider } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CustomHeaderBar, Illustration, PlatformTouchable } from '@components/index';
@@ -52,6 +59,19 @@ const Page: React.FC<PageProps> = ({ navigation, page, loading }) => {
   return (
     <ThemeProvider theme={themes.light}>
       <View style={styles.page}>
+        {loading && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              zIndex: 10000,
+              height: 20,
+              width: '100%',
+            }}
+          >
+            <ProgressBar indeterminate />
+          </View>
+        )}
         <FlatList
           nestedScrollEnabled
           data={items}
@@ -59,40 +79,39 @@ const Page: React.FC<PageProps> = ({ navigation, page, loading }) => {
             const B = Backgrounds[item.type];
             return <B navigation={navigation} background={item} page={page} />;
           }}
-          contentContainerStyle={{ minHeight: dimensions.height - insets.bottom }}
+          contentContainerStyle={{
+            minHeight: dimensions.height - insets.bottom - (Platform.OS === 'web' ? 80 : 0),
+          }}
           ListFooterComponentStyle={{
             flex: 1,
             justifyContent: 'flex-end',
           }}
-          ListFooterComponent={
-            loading ? (
-              <View style={styles.container}>
-                <ActivityIndicator size="large" color={colors.primary} />
-              </View>
-            ) : (
-              () => (
-                <View style={{ flex: 1, flexGrow: 1, justifyContent: 'flex-end' }}>
-                  <PlatformTouchable
-                    style={[
-                      styles.container,
-                      {
-                        flexDirection: 'row',
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      },
-                    ]}
-                    onPress={() => setAboutVisible(true)}
-                  >
-                    <View style={{ marginRight: 10 }}>
-                      <Illustration name="topic-icon" height={30} width={30} />
-                    </View>
-                    <Subheading>Créé avec Topic</Subheading>
-                  </PlatformTouchable>
+          ListFooterComponent={() => (
+            <View
+              style={{
+                flex: 1,
+                flexGrow: 1,
+                justifyContent: 'flex-end',
+              }}
+            >
+              <PlatformTouchable
+                style={[
+                  styles.container,
+                  {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  },
+                ]}
+                onPress={() => setAboutVisible(true)}
+              >
+                <View style={{ marginRight: 10 }}>
+                  <Illustration name="topic-icon" height={30} width={30} />
                 </View>
-              )
-            )
-          }
+                <Subheading>Créé avec Topic</Subheading>
+              </PlatformTouchable>
+            </View>
+          )}
         />
         <AboutModal visible={aboutVisible} setVisible={setAboutVisible} navigation={navigation} />
       </View>

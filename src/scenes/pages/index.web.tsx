@@ -5,6 +5,7 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/st
 
 import { MainScreenNavigationProp } from '../Main';
 import PageDisplay from './views/Display';
+import PageSandbox from './views/Sandbox.web';
 
 export type PagesStackParams = {
   Display: { group: string; page?: string };
@@ -22,6 +23,7 @@ const SettingsStackNavigator: React.FC<{}> = () => {
   return (
     <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={PageDisplay} />
+      <Stack.Screen name="Sandbox" component={PageSandbox} />
     </Stack.Navigator>
   );
 };

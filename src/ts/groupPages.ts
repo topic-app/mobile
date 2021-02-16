@@ -16,7 +16,7 @@ export type MenuItem = {
   | { type: 'menu'; items: MenuItem[] }
 );
 
-export type ElementNames = 'content' | 'image' | 'contentTabView' | 'menu';
+export type ElementNames = 'content' | 'image' | 'contentTabView' | 'menu' | 'title' | 'spacer';
 export type ElementTypes<K extends ElementNames> = {
   content: {
     content: Content;
@@ -44,9 +44,21 @@ export type ElementTypes<K extends ElementNames> = {
     theme: keyof typeof themes;
   };
   menu: {
-    color?: string;
+    color: string;
     height?: number;
     elements: MenuItem[];
+  };
+  title: {
+    title: string;
+    subtitle?: string;
+    titleColor: string;
+    subtitleColor?: string;
+    titleSize?: number;
+    subtitleSize?: number;
+    textAlign?: 'center' | 'auto' | 'left' | 'right' | 'justify';
+  };
+  spacer: {
+    height: string;
   };
 }[K];
 export type Element<K extends ElementNames> = {

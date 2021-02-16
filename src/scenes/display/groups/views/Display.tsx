@@ -515,7 +515,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           screen: 'Pages',
                           params: {
                             screen: 'Display',
-                            params: { group: group._id },
+                            params: { group: group._id, page: 'main' },
                           },
                         },
                       })

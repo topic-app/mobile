@@ -27,8 +27,8 @@ const AboutModal: React.FC<AboutModalProps> = ({ visible, setVisible, navigation
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      <View>
-        <View style={[styles.container, styles.centerImageContainer]}>
+      <View style={{ alignSelf: 'center', maxWidth: 700 }}>
+        <View style={[styles.container, styles.centerIllustrationContainer]}>
           <Illustration name="topic-icon" height={100} width={200} />
           <Title>Crééz votre propre site web avec Topic !</Title>
         </View>

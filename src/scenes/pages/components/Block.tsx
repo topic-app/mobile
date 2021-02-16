@@ -16,6 +16,8 @@ import Content from './elements/Content';
 import ContentTabView from './elements/ContentTabView';
 import Image from './elements/Image';
 import Menu from './elements/Menu';
+import Spacer from './elements/Spacer';
+import Title from './elements/Title';
 
 type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
@@ -35,6 +37,8 @@ const Block: React.FC<PageProps> = ({ navigation, columns, page }) => {
     content: Content,
     contentTabView: ContentTabView,
     image: Image,
+    title: Title,
+    spacer: Spacer,
   } as Record<
     ElementNames,
     React.FC<{
