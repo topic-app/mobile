@@ -60,7 +60,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     logoScale: new Animated.Value(1),
     logoTranslate: new Animated.Value(0),
     backgroundScale: new Animated.Value(1),
-    iosBackgroundColor: new Animated.Value(0),
+    iosBackgroundOpacity: new Animated.Value(0),
     textColor: new Animated.Value(0),
     illustrations: [
       new Animated.Value(0),
@@ -141,7 +141,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             duration: 400,
             useNativeDriver: false, // can't use native driver for color
           }),
-          Animated.timing(animValues.iosBackgroundColor, {
+          Animated.timing(animValues.iosBackgroundOpacity, {
             toValue: 1,
             duration: 400,
             useNativeDriver: false, // can't use native driver for color
@@ -182,7 +182,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             duration: 150,
             useNativeDriver: false, // can't use native driver for color
           }),
-          Animated.timing(animValues.iosBackgroundColor, {
+          Animated.timing(animValues.iosBackgroundOpacity, {
             toValue: 0,
             duration: 400,
             useNativeDriver: false, // can't use native driver for color
@@ -237,9 +237,9 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     extrapolate: 'clamp',
   });
 
-  const purpleBackgroundColorAnim = animValues.iosBackgroundColor.interpolate({
+  const backgroundOpacity = animValues.iosBackgroundOpacity.interpolate({
     inputRange: [0, 1],
-    outputRange: [topicPurple, 'rgb(255, 255, 255)'],
+    outputRange: [1, 0],
     extrapolate: 'clamp',
   });
 
@@ -266,14 +266,27 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   return (
     <View style={styles.page}>
       <TranslucentStatusBar barStyle={lastPage === 0 ? 'light-content' : undefined} />
-      <Animated.View
+      {Platform.OS === 'ios' && (
+        <Animated.View
+          style={{
+            height: '100%',
+            width: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            opacity: backgroundOpacity,
+            backgroundColor: topicPurple,
+            zIndex: -2,
+          }}
+        />
+      )}
+      <View
         style={[
           landingStyles.welcomeContainer,
           Platform.OS === 'ios'
             ? {
                 paddingTop: insets.top + 40,
                 paddingBottom: insets.bottom,
-                backgroundColor: purpleBackgroundColorAnim,
               }
             : {},
         ]}
@@ -509,7 +522,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             </Button>
           </View>
         </View>
-      </Animated.View>
+      </View>
     </View>
   );
 };
