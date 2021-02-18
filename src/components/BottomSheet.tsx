@@ -59,7 +59,7 @@ const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
       if (typeof snapPoint === 'string') {
         let SP = parseFloat(snapPoint) * 0.01 * height;
         if (useInsets) {
-          SP += insets.top;
+          SP -= insets.top;
         }
         return SP;
       }
@@ -72,6 +72,7 @@ const BottomSheet = React.forwardRef<BottomSheetRef, BottomSheetProps>(
         snapPoints={snapPoints}
         renderContent={renderContent}
         enabledManualSnapping
+        enabledContentTapInteraction={false}
         {...rest}
       />
     );
