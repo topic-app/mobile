@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ViewStyle, StyleProp, Platform } from 'react-native';
+import { View, ViewStyle, StyleProp } from 'react-native';
 import { Text, Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -97,10 +97,7 @@ const CardBase: React.FC<CardBaseProps> = ({ onPress, style, contentContainerSty
 
   return onPress ? (
     <Card style={[styles.card, style]}>
-      <PlatformTouchable
-        onPress={Platform.OS === 'ios' ? undefined : onPress}
-        onPressOut={Platform.OS === 'ios' ? onPress : undefined}
-      >
+      <PlatformTouchable onPress={onPress}>
         <View style={[{ paddingTop: 10, paddingBottom: 10 }, contentContainerStyle]}>
           {children}
         </View>
