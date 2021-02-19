@@ -29,7 +29,11 @@ const Content: React.FC<PageProps> = ({ navigation, element }) => {
       <ThemeProvider
         theme={{ ...themes.light, colors: { ...themes.light.colors, text: element.data.color } }}
       >
-        <ContentComponent data={element.data.content.data} parser={element.data.content.parser} />
+        <ContentComponent
+          data={element.data.content.data}
+          parser={element.data.content.parser}
+          trustLinks
+        />
       </ThemeProvider>
     </View>
   );
