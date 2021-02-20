@@ -253,6 +253,8 @@ function ArticleLists({
               );
 
             case 'lists':
+              // TEMP: While lists are not synced to server
+              if (Platform.OS === 'web') return null;
               return (
                 <DraggableFlatList
                   data={lists}

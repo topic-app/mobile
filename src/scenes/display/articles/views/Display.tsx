@@ -734,7 +734,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         title={Platform.OS === 'ios' ? '' : title}
         subtitle={Platform.OS === 'ios' ? 'Actus' : subtitle}
         actions={
-          verification
+          verification || Platform.OS === 'web'
             ? undefined
             : [
                 {
