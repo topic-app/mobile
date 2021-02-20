@@ -109,7 +109,7 @@ function getStyles(theme: Theme) {
       borderTopRightRadius: 10,
       maxHeight: '90%',
     },
-    centeredPage: { maxWidth: 800, alignSelf: 'center' },
+    centeredPage: { maxWidth: 800, alignSelf: 'center', flex: 1 },
   });
 }
 
