@@ -31,7 +31,10 @@ const EventCard: React.FC<EventCardProps> = ({
   overrideImageWidth,
 }) => {
   const [cardWidth, setCardWidth] = React.useState(600);
-  const imageSize = cardWidth / 3.5;
+  let imageSize = overrideImageWidth || cardWidth / 3.5;
+  if (imageSize > 250) {
+    imageSize = 250;
+  }
 
   const eventVerification = event as EventVerificationPreload;
 
@@ -95,14 +98,14 @@ const EventCard: React.FC<EventCardProps> = ({
             <CustomImage
               image={event?.image}
               imageSize="medium"
-              width={overrideImageWidth || imageSize}
-              height={overrideImageWidth || imageSize}
+              width={imageSize}
+              height={imageSize}
             />
             <View
               style={{
                 marginLeft: 15,
                 flex: 1,
-                maxHeight: overrideImageWidth || imageSize,
+                maxHeight: imageSize,
               }}
             >
               <Paragraph numberOfLines={4} style={[{ fontFamily: preferences.fontFamily }]}>
