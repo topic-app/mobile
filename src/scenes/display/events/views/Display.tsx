@@ -277,7 +277,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         title={Platform.OS === 'ios' ? '' : title}
         subtitle={Platform.OS === 'ios' ? 'Évènements' : subtitle}
         actions={
-          verification
+          verification || Platform.OS === 'web'
             ? undefined
             : [
                 {
