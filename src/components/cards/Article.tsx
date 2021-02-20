@@ -71,8 +71,8 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
       <CardBase onPress={navigate}>
         <Card.Content>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Title numberOfLines={2} style={readStyle}>
+            <View style={{ flex: 1 }}>
+              <Title numberOfLines={2} style={[readStyle]}>
                 {article.title}
               </Title>
               <Caption>{`Publié ${moment(article.date).fromNow()}`}</Caption>

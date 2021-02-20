@@ -67,7 +67,7 @@ const EventCard: React.FC<EventCardProps> = ({
       <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
         <Card.Content>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-            <View>
+            <View style={{ flex: 1 }}>
               <Title numberOfLines={2}>{event?.title}</Title>
               <Caption>{Format.shortEventDate(event.duration)}</Caption>
             </View>
