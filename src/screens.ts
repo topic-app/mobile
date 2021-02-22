@@ -35,6 +35,7 @@ export default {
               Article: {
                 screens: {
                   Add: '/ajout/article',
+                  AddContent: '/ajout/article/contenu',
                 },
               },
               Event: {
