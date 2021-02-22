@@ -58,7 +58,7 @@ export type ElementTypes<K extends ElementNames> = {
     textAlign?: 'center' | 'auto' | 'left' | 'right' | 'justify';
   };
   spacer: {
-    height: string;
+    height: number;
   };
 }[K];
 export type Element<K extends ElementNames> = {
