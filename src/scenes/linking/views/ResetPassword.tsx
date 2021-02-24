@@ -3,9 +3,9 @@ import { Formik } from 'formik';
 import React from 'react';
 import { Platform, View, ActivityIndicator, ScrollView, Alert } from 'react-native';
 import { Text, Button, Divider, Checkbox, List } from 'react-native-paper';
-import { score } from 'react-native-zxcvbn';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
+import zxcvbn from 'zxcvbn';
 
 import {
   Illustration,
@@ -49,7 +49,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
         'checkPasswordStrength',
         "Votre mot de passe n'est pas assez robuste, essayez d'inclure des lettres, chiffres et symboles",
         async (password) => {
-          const strength = await score(password);
+          const strength = zxcvbn(password || '').score;
           setPasswordStrength(strength);
           return strength >= 3;
         },

@@ -2,8 +2,8 @@ import { Formik } from 'formik';
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { Button } from 'react-native-paper';
-import { score } from 'react-native-zxcvbn';
 import * as Yup from 'yup';
+import zxcvbn from 'zxcvbn';
 
 import { StepperViewPageProps, FormTextInput, StrengthMeter } from '@components';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
@@ -69,7 +69,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
         'checkPasswordStrength',
         "Votre mot de passe n'est pas assez robuste, essayez d'inclure des lettres, chiffres et symboles",
         async (password) => {
-          const strength = await score(password);
+          const strength = zxcvbn(password || '').score;
           setPasswordStrength(strength);
           return strength >= 3;
         },
