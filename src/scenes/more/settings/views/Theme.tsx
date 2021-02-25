@@ -36,48 +36,90 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
           },
         }}
       />
-      <FlatList
-        data={
-          preferences.themeEasterEggDiscovered
-            ? Object.values(themes)
-            : Object.values(themes).filter((t) => !t.egg)
-        }
-        ListHeaderComponent={() => (
-          <View>
-            <View style={styles.centerIllustrationContainer}>
-              <TouchableWithoutFeedback
+      <View style={styles.centeredPage}>
+        <FlatList
+          data={
+            preferences.themeEasterEggDiscovered
+              ? Object.values(themes)
+              : Object.values(themes).filter((t) => !t.egg)
+          }
+          ListHeaderComponent={() => (
+            <View>
+              <View style={styles.centerIllustrationContainer}>
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    if (presses > 5) {
+                      trackEvent('prefs:discover-easter-egg');
+                      updatePrefs({ themeEasterEggDiscovered: true });
+                    }
+                    setPresses(presses + 1);
+                  }}
+                >
+                  <View>
+                    <Illustration name="settings-theme" height={200} width={200} />
+                    {presses > 5 && (
+                      <Text style={{ marginTop: 10 }}>
+                        Vous avez découvert le thème ultraviolet !
+                      </Text>
+                    )}
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+              <Divider style={{ marginTop: 30 }} />
+              <List.Item
+                title={`Utiliser le thème du système (${
+                  Appearance.getColorScheme() === 'dark' ? 'Sombre' : 'Clair'
+                })`}
+                left={() =>
+                  Platform.OS !== 'ios' && (
+                    <RadioButton
+                      value=""
+                      color={colors.primary}
+                      status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        trackEvent('prefs:change-theme', { props: { theme: 'system' } });
+                        updatePrefs({ useSystemTheme: true });
+                      }}
+                    />
+                  )
+                }
+                right={() =>
+                  Platform.OS === 'ios' && (
+                    <RadioButton
+                      value=""
+                      color={colors.primary}
+                      status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        trackEvent('prefs:change-theme', { props: { theme: 'system' } });
+                        updatePrefs({ useSystemTheme: true });
+                      }}
+                    />
+                  )
+                }
                 onPress={() => {
-                  if (presses > 5) {
-                    trackEvent('prefs:discover-easter-egg');
-                    updatePrefs({ themeEasterEggDiscovered: true });
-                  }
-                  setPresses(presses + 1);
+                  trackEvent('prefs:change-theme', { props: { theme: 'system' } });
+                  updatePrefs({ useSystemTheme: true });
                 }}
-              >
-                <View>
-                  <Illustration name="settings-theme" height={200} width={200} />
-                  {presses > 5 && (
-                    <Text style={{ marginTop: 10 }}>
-                      Vous avez découvert le thème ultraviolet !
-                    </Text>
-                  )}
-                </View>
-              </TouchableWithoutFeedback>
+                style={settingsStyles.listItem}
+              />
             </View>
-            <Divider style={{ marginTop: 30 }} />
+          )}
+          renderItem={({ item }) => (
             <List.Item
-              title={`Utiliser le thème du système (${
-                Appearance.getColorScheme() === 'dark' ? 'Sombre' : 'Clair'
-              })`}
+              title={item.name}
               left={() =>
                 Platform.OS !== 'ios' && (
                   <RadioButton
                     value=""
                     color={colors.primary}
-                    status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
+                    status={
+                      item.value === preferences.theme && !preferences.useSystemTheme
+                        ? 'checked'
+                        : 'unchecked'
+                    }
                     onPress={() => {
-                      trackEvent('prefs:change-theme', { props: { theme: 'system' } });
-                      updatePrefs({ useSystemTheme: true });
+                      trackEvent('prefs:change-theme', { props: { theme: item.value } });
+                      updatePrefs({ theme: item.value, useSystemTheme: false });
                     }}
                   />
                 )
@@ -87,68 +129,28 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
                   <RadioButton
                     value=""
                     color={colors.primary}
-                    status={preferences.useSystemTheme ? 'checked' : 'unchecked'}
+                    status={
+                      item.value === preferences.theme && !preferences.useSystemTheme
+                        ? 'checked'
+                        : 'unchecked'
+                    }
                     onPress={() => {
-                      trackEvent('prefs:change-theme', { props: { theme: 'system' } });
-                      updatePrefs({ useSystemTheme: true });
+                      trackEvent('prefs:change-theme', { props: { theme: item.value } });
+                      updatePrefs({ theme: item.value, useSystemTheme: false });
                     }}
                   />
                 )
               }
               onPress={() => {
-                trackEvent('prefs:change-theme', { props: { theme: 'system' } });
-                updatePrefs({ useSystemTheme: true });
+                trackEvent('prefs:change-theme', { props: { theme: item.value } });
+                updatePrefs({ theme: item.value, useSystemTheme: false });
               }}
               style={settingsStyles.listItem}
             />
-          </View>
-        )}
-        renderItem={({ item }) => (
-          <List.Item
-            title={item.name}
-            left={() =>
-              Platform.OS !== 'ios' && (
-                <RadioButton
-                  value=""
-                  color={colors.primary}
-                  status={
-                    item.value === preferences.theme && !preferences.useSystemTheme
-                      ? 'checked'
-                      : 'unchecked'
-                  }
-                  onPress={() => {
-                    trackEvent('prefs:change-theme', { props: { theme: item.value } });
-                    updatePrefs({ theme: item.value, useSystemTheme: false });
-                  }}
-                />
-              )
-            }
-            right={() =>
-              Platform.OS === 'ios' && (
-                <RadioButton
-                  value=""
-                  color={colors.primary}
-                  status={
-                    item.value === preferences.theme && !preferences.useSystemTheme
-                      ? 'checked'
-                      : 'unchecked'
-                  }
-                  onPress={() => {
-                    trackEvent('prefs:change-theme', { props: { theme: item.value } });
-                    updatePrefs({ theme: item.value, useSystemTheme: false });
-                  }}
-                />
-              )
-            }
-            onPress={() => {
-              trackEvent('prefs:change-theme', { props: { theme: item.value } });
-              updatePrefs({ theme: item.value, useSystemTheme: false });
-            }}
-            style={settingsStyles.listItem}
-          />
-        )}
-        keyExtractor={(item) => item.value}
-      />
+          )}
+          keyExtractor={(item) => item.value}
+        />
+      </View>
     </View>
   );
 };

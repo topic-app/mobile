@@ -36,7 +36,10 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   const { colors } = theme;
 
   const [cardWidth, setCardWidth] = React.useState(600);
-  const imageSize = cardWidth / 3.5;
+  let imageSize = overrideImageWidth || cardWidth / 3.5;
+  if (imageSize > 200) {
+    imageSize = 200;
+  }
 
   if (!article) {
     return (
@@ -68,8 +71,8 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
       <CardBase onPress={navigate}>
         <Card.Content>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Title numberOfLines={2} style={readStyle}>
+            <View style={{ flex: 1 }}>
+              <Title numberOfLines={2} style={[readStyle]}>
                 {article.title}
               </Title>
               <Caption>{`Publié ${moment(article.date).fromNow()}`}</Caption>
@@ -99,14 +102,14 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             <CustomImage
               image={article.image}
               imageSize="medium"
-              width={overrideImageWidth || imageSize}
-              height={overrideImageWidth || imageSize}
+              width={imageSize}
+              height={imageSize}
             />
             <View
               style={{
                 marginLeft: 15,
                 flex: 1,
-                maxHeight: overrideImageWidth || imageSize,
+                maxHeight: imageSize,
               }}
             >
               <Paragraph

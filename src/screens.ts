@@ -35,6 +35,7 @@ export default {
               Article: {
                 screens: {
                   Add: '/ajout/article',
+                  AddContent: '/ajout/article/contenu',
                 },
               },
               Event: {
@@ -63,6 +64,11 @@ export default {
                   Privacy: '/parametres/confidentialite',
                   Content: '/parametres/contenu',
                   Dev: '/parametres/beta',
+                },
+              },
+              Moderation: {
+                screens: {
+                  List: '/moderation',
                 },
               },
               About: {
@@ -104,21 +110,9 @@ export default {
           },
           History: {
             screens: {
-              Article: {
-                screens: {
-                  History: '/articles/historique',
-                },
-              },
-              Event: {
-                screens: {
-                  History: '/evenements/historique',
-                },
-              },
-              Main: {
-                screens: {
-                  History: '/parametres/historique',
-                },
-              },
+              Article: '/articles/historique',
+              Event: '/evenements/historique',
+              Main: '/parametres/historique',
             },
           },
           Display: {
@@ -161,6 +155,12 @@ export default {
                   Explore: '/carte',
                 },
               },
+            },
+          },
+          Pages: {
+            screens: {
+              Sandbox: '/pages/sandbox',
+              Display: '/pages/:group',
             },
           },
           NotFound: '*',

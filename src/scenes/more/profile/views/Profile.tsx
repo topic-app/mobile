@@ -119,227 +119,229 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
           }}
         />
       )}
-      <ScrollView>
-        <VerificationBanner />
-        <View style={[styles.contentContainer, { marginTop: 20 }]}>
-          <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-            <Avatar size={120} avatar={account.accountInfo?.user.info.avatar} />
-          </View>
-          <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
-            {account.accountInfo?.user.data.public ? (
-              <View style={{ alignItems: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Title>
-                    {genName(account.accountInfo.user) ||
-                      `@${account.accountInfo?.user.info.username}`}
-                  </Title>
-                  <View style={{ marginLeft: 5 }}>
-                    {account.accountInfo.user.info.official && (
-                      <Icon name="check-decagram" color={colors.primary} size={20} />
-                    )}
+      <View style={styles.centeredPage}>
+        <ScrollView>
+          <VerificationBanner />
+          <View style={[styles.contentContainer, { marginTop: 20 }]}>
+            <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
+              <Avatar size={120} avatar={account.accountInfo?.user.info.avatar} />
+            </View>
+            <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
+              {account.accountInfo?.user.data.public ? (
+                <View style={{ alignItems: 'center' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Title>
+                      {genName(account.accountInfo.user) ||
+                        `@${account.accountInfo?.user.info.username}`}
+                    </Title>
+                    <View style={{ marginLeft: 5 }}>
+                      {account.accountInfo.user.info.official && (
+                        <Icon name="check-decagram" color={colors.primary} size={20} />
+                      )}
+                    </View>
                   </View>
+                  {genName(account.accountInfo.user) && (
+                    <Subheading style={{ marginTop: -10, color: colors.disabled }}>
+                      @{account.accountInfo.user.info.username}
+                    </Subheading>
+                  )}
                 </View>
-                {genName(account.accountInfo.user) && (
-                  <Subheading style={{ marginTop: -10, color: colors.disabled }}>
-                    @{account.accountInfo.user.info.username}
-                  </Subheading>
-                )}
-              </View>
-            ) : (
-              <Title>@{account.accountInfo?.user.info.username}</Title>
-            )}
-          </View>
-        </View>
-        <View>
-          <View style={{ height: 40 }} />
-          <List.Subheader>Compte</List.Subheader>
-          <Divider />
-          <ProfileItem
-            item="Visibilité"
-            value={account.accountInfo.user.data.public ? 'Public' : 'Privé'}
-            editable
-            type="none"
-            onPress={() => setVisibilityVisible(true)}
-          />
-          <ProfileItem
-            item="Nom d'utilisateur"
-            value={`@${account.accountInfo.user.info.username}`}
-            editable
-            type="public"
-            onPress={() => setUsernameVisible(true)}
-          />
-          {account.accountInfo.user.data.public && (
-            <View>
-              <ProfileItem
-                item="Nom"
-                value={genName(account.accountInfo.user) || 'Non spécifié'}
-                editable
-                disabled={!genName(account.accountInfo.user)}
-                type="public"
-                onPress={() => setNameVisible(true)}
-              />
+              ) : (
+                <Title>@{account.accountInfo?.user.info.username}</Title>
+              )}
             </View>
-          )}
-          <ProfileItem
-            item="Adresse email"
-            value={account.accountInfo.email || ''}
-            editable
-            type="private"
-            onPress={() => setEmailVisible(true)}
-            loading={account.state.fetchEmail.loading}
-          />
-          <View style={{ height: 50 }} />
-          <List.Subheader>Localisation</List.Subheader>
-          <Divider />
+          </View>
           <View>
-            {location.global && (
-              <InlineCard
-                icon="map-marker"
-                title="France Entière"
-                onPress={() => logger.warn('global pressed')}
+            <View style={{ height: 40 }} />
+            <List.Subheader>Compte</List.Subheader>
+            <Divider />
+            <ProfileItem
+              item="Visibilité"
+              value={account.accountInfo.user.data.public ? 'Public' : 'Privé'}
+              editable
+              type="none"
+              onPress={() => setVisibilityVisible(true)}
+            />
+            <ProfileItem
+              item="Nom d'utilisateur"
+              value={`@${account.accountInfo.user.info.username}`}
+              editable
+              type="public"
+              onPress={() => setUsernameVisible(true)}
+            />
+            {account.accountInfo.user.data.public && (
+              <View>
+                <ProfileItem
+                  item="Nom"
+                  value={genName(account.accountInfo.user) || 'Non spécifié'}
+                  editable
+                  disabled={!genName(account.accountInfo.user)}
+                  type="public"
+                  onPress={() => setNameVisible(true)}
+                />
+              </View>
+            )}
+            <ProfileItem
+              item="Adresse email"
+              value={account.accountInfo.email || ''}
+              editable
+              type="private"
+              onPress={() => setEmailVisible(true)}
+              loading={account.state.fetchEmail.loading}
+            />
+            <View style={{ height: 50 }} />
+            <List.Subheader>Localisation</List.Subheader>
+            <Divider />
+            <View>
+              {location.global && (
+                <InlineCard
+                  icon="map-marker"
+                  title="France Entière"
+                  onPress={() => logger.warn('global pressed')}
+                />
+              )}
+              {location.schoolData?.map((school) => (
+                <InlineCard
+                  key={school._id}
+                  icon="school"
+                  title={school.name}
+                  subtitle={`${
+                    school.address
+                      ? getAddressString(school.address?.address) || school.address?.shortName
+                      : 'Adresse inconnue'
+                  }${
+                    school.departments && school.departments[0]
+                      ? `, ${school.departments[0].displayName || school.departments[0].name}`
+                      : ''
+                  }`}
+                  onPress={() => logger.warn(`school ${school._id} pressed!`)}
+                />
+              ))}
+              {location.departmentData?.map((dep) => (
+                <InlineCard
+                  key={dep._id}
+                  icon="map-marker-radius"
+                  title={dep.name}
+                  subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${dep.code}`}
+                  onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                />
+              ))}
+              <View style={styles.container}>
+                <Button
+                  mode="outlined"
+                  onPress={() =>
+                    navigation.navigate('Landing', {
+                      screen: 'SelectLocation',
+                      params: { goBack: true },
+                    })
+                  }
+                >
+                  Changer
+                </Button>
+              </View>
+            </View>
+            <View style={{ height: 50 }} />
+            <List.Subheader>Authentification</List.Subheader>
+            <Divider />
+            <List.Item title="Changer mon mot de passe" onPress={() => setPasswordVisible(true)} />
+            <List.Item
+              disabled
+              title="Activer l'Authentification à deux facteurs"
+              titleStyle={{ color: colors.disabled }}
+              onPress={() => {}}
+            />
+            <List.Item
+              title="Se déconnecter"
+              titleStyle={{ color: 'red' }}
+              onPress={() => {
+                navigation.popToTop();
+                Alert.alert(
+                  'Se déconnecter ?',
+                  "Les listes et l'historique seront toujours disponibles sur votre téléphone",
+                  [
+                    {
+                      text: 'Annuler',
+                    },
+                    {
+                      text: 'Se déconnecter',
+                      onPress: logout,
+                    },
+                  ],
+                  { cancelable: true },
+                );
+              }}
+            />
+            <View style={{ height: 50 }} />
+            <List.Subheader>Données</List.Subheader>
+            <Divider />
+            {(state.export?.loading || state.delete?.loading) && <ProgressBar indeterminate />}
+            {state.delete?.error && (
+              <ErrorMessage
+                type="axios"
+                strings={{
+                  what: 'la demande de suppression du compte',
+                  contentPlural: 'Les éléments pour la suppression du compte',
+                  contentSingular: 'La demande de suppression du compte',
+                }}
+                error={state.delete?.error}
+                retry={deleteAccountFunc}
               />
             )}
-            {location.schoolData?.map((school) => (
-              <InlineCard
-                key={school._id}
-                icon="school"
-                title={school.name}
-                subtitle={`${
-                  school.address
-                    ? getAddressString(school.address?.address) || school.address?.shortName
-                    : 'Adresse inconnue'
-                }${
-                  school.departments && school.departments[0]
-                    ? `, ${school.departments[0].displayName || school.departments[0].name}`
-                    : ''
-                }`}
-                onPress={() => logger.warn(`school ${school._id} pressed!`)}
+            {state.export?.error && (
+              <ErrorMessage
+                type="axios"
+                strings={{
+                  what: "la demande d'exportation de données",
+                  contentPlural: "Les éléments pour l'exportation de données",
+                  contentSingular: "La demande d'exportation de données",
+                }}
+                error={state.export?.error}
               />
-            ))}
-            {location.departmentData?.map((dep) => (
-              <InlineCard
-                key={dep._id}
-                icon="map-marker-radius"
-                title={dep.name}
-                subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${dep.code}`}
-                onPress={() => logger.warn(`department ${dep._id} pressed!`)}
-              />
-            ))}
+            )}
+            <List.Item
+              title="Exporter mes données"
+              onPress={() =>
+                Alert.alert(
+                  'Exporter les données ?',
+                  "Cette fonction n'est pas encore implémentées, veuillez contacter le DPO pour exporter vos données.",
+                  [
+                    {
+                      text: 'Annuler',
+                    },
+                  ],
+                  { cancelable: true },
+                )
+              }
+            />
+            <List.Item
+              title="Supprimer mon compte"
+              onPress={() => {
+                Alert.alert(
+                  'Supprimer le compte ?',
+                  'Cette action est irréversible. Vous recevrez un email de confirmation.',
+                  [
+                    {
+                      text: 'Annuler',
+                    },
+                    {
+                      text: 'Supprimer',
+                      onPress: deleteAccountFunc,
+                    },
+                  ],
+                  { cancelable: true },
+                );
+              }}
+            />
+            <View style={{ height: 50 }} />
+            <Divider />
             <View style={styles.container}>
-              <Button
-                mode="outlined"
-                onPress={() =>
-                  navigation.navigate('Landing', {
-                    screen: 'SelectLocation',
-                    params: { goBack: true },
-                  })
-                }
-              >
-                Changer
-              </Button>
+              <Text style={{ color: colors.disabled }}>
+                Identifiant {account.accountInfo.accountId}
+              </Text>
             </View>
           </View>
-          <View style={{ height: 50 }} />
-          <List.Subheader>Authentification</List.Subheader>
-          <Divider />
-          <List.Item title="Changer mon mot de passe" onPress={() => setPasswordVisible(true)} />
-          <List.Item
-            disabled
-            title="Activer l'Authentification à deux facteurs"
-            titleStyle={{ color: colors.disabled }}
-            onPress={() => {}}
-          />
-          <List.Item
-            title="Se déconnecter"
-            titleStyle={{ color: 'red' }}
-            onPress={() => {
-              navigation.popToTop();
-              Alert.alert(
-                'Se déconnecter ?',
-                "Les listes et l'historique seront toujours disponibles sur votre téléphone",
-                [
-                  {
-                    text: 'Annuler',
-                  },
-                  {
-                    text: 'Se déconnecter',
-                    onPress: logout,
-                  },
-                ],
-                { cancelable: true },
-              );
-            }}
-          />
-          <View style={{ height: 50 }} />
-          <List.Subheader>Données</List.Subheader>
-          <Divider />
-          {(state.export?.loading || state.delete?.loading) && <ProgressBar indeterminate />}
-          {state.delete?.error && (
-            <ErrorMessage
-              type="axios"
-              strings={{
-                what: 'la demande de suppression du compte',
-                contentPlural: 'Les éléments pour la suppression du compte',
-                contentSingular: 'La demande de suppression du compte',
-              }}
-              error={state.delete?.error}
-              retry={deleteAccountFunc}
-            />
-          )}
-          {state.export?.error && (
-            <ErrorMessage
-              type="axios"
-              strings={{
-                what: "la demande d'exportation de données",
-                contentPlural: "Les éléments pour l'exportation de données",
-                contentSingular: "La demande d'exportation de données",
-              }}
-              error={state.export?.error}
-            />
-          )}
-          <List.Item
-            title="Exporter mes données"
-            onPress={() =>
-              Alert.alert(
-                'Exporter les données ?',
-                "Cette fonction n'est pas encore implémentées, veuillez contacter le DPO pour exporter vos données.",
-                [
-                  {
-                    text: 'Annuler',
-                  },
-                ],
-                { cancelable: true },
-              )
-            }
-          />
-          <List.Item
-            title="Supprimer mon compte"
-            onPress={() => {
-              Alert.alert(
-                'Supprimer le compte ?',
-                'Cette action est irréversible. Vous recevrez un email de confirmation.',
-                [
-                  {
-                    text: 'Annuler',
-                  },
-                  {
-                    text: 'Supprimer',
-                    onPress: deleteAccountFunc,
-                  },
-                ],
-                { cancelable: true },
-              );
-            }}
-          />
-          <View style={{ height: 50 }} />
-          <Divider />
-          <View style={styles.container}>
-            <Text style={{ color: colors.disabled }}>
-              Identifiant {account.accountInfo.accountId}
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
       <VisibilityModal visible={isVisibilityVisible} setVisible={setVisibilityVisible} />
       <NameModal visible={isNameVisible} setVisible={setNameVisible} />
       <UsernameModal visible={isUsernameVisible} setVisible={setUsernameVisible} />

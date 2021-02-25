@@ -17,9 +17,9 @@ import YouTube from '@utils/youtube';
 
 import { PlatformTouchable } from './PlatformComponents';
 
-type Props = ContentType & { preferences: Preferences };
+type Props = ContentType & { preferences: Preferences; trustLinks?: boolean };
 
-const Content: React.FC<Props> = ({ parser, data, preferences }) => {
+const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = false }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -86,57 +86,33 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
                       style={imageStyles._VIEW_SAFE_image}
                       source={{ uri: getImageUrl({ image: src.substring(6), size: 'full' }) || '' }}
                       width={Dimensions.get('window').width - 50}
-                      maxHeight={400}
                     />
                   </PlatformTouchable>
                 </View>
               );
             } else if (src.startsWith('youtube://')) {
-              if (preferences.youtubeConsent) {
-                if (Platform.OS === 'web') {
-                  return (
-                    <iframe
-                      src={`https://www.youtube.com/embed/${src.substring(10)}`}
-                      title="youtube"
-                      style={{ width: '100%', height: 480 }}
-                    />
-                  );
-                } else if (!config.google.youtubeKey) {
-                  return null;
-                } else {
-                  return (
-                    <View style={{ flex: 1 }}>
-                      <YouTube
-                        // apiKey is an Android-specific prop but does not
-                        // appear in prop types but is required
-                        // @ts-expect-error
-                        apiKey={config.google.youtubeKey}
-                        videoId={src.substring(10)}
-                        style={{ alignSelf: 'stretch', height: 300 }}
-                      />
-                    </View>
-                  );
-                }
+              if (Platform.OS === 'web') {
+                return (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${src.substring(10)}`}
+                    title="youtube"
+                    style={{ width: '100%', height: 480 }}
+                  />
+                );
+              } else if (!config.google.youtubeKey) {
+                return null;
               } else {
                 return (
-                  <Card style={{ flex: 1, minHeight: 200 }}>
-                    <View style={[styles.container, { alignItems: 'center' }]}>
-                      <Icon name="youtube" size={40} color={colors.disabled} />
-                      <Title>GDPR - Youtube</Title>
-                      <Text>
-                        Si vous choississez d&apos;activer les vidéos Youtube, Google pourra avoir
-                        accès à certaines informations sur votre téléphone conformément à leur
-                        politique de vie privée.
-                      </Text>
-                      <Button
-                        mode="outlined"
-                        onPress={() => updatePrefs({ youtubeConsent: true })}
-                        style={{ marginTop: 20 }}
-                      >
-                        Autoriser
-                      </Button>
-                    </View>
-                  </Card>
+                  <View style={{ flex: 1 }}>
+                    <YouTube
+                      // apiKey is an Android-specific prop but does not
+                      // appear in prop types but is required
+                      // @ts-expect-error
+                      apiKey={config.google.youtubeKey}
+                      videoId={src.substring(10)}
+                      style={{ alignSelf: 'stretch', height: 300 }}
+                    />
+                  </View>
                 );
               }
             } else {
@@ -157,7 +133,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences }) => {
           ),
         }}
         onLinkPress={(url: string) => {
-          handleUrl(url);
+          handleUrl(url, { trusted: trustLinks });
           return false; // Indicates that we are handling the link ourselves
         }}
       >

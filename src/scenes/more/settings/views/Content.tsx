@@ -47,131 +47,133 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
           },
         }}
       />
-      <ScrollView>
-        <ScrollView style={{ height: 300 }}>
-          <View style={styles.container}>
-            <Card>
-              <View style={styles.contentContainer}>
-                <Content parser="markdown" data={testData} />
-              </View>
-            </Card>
-          </View>
-        </ScrollView>
-        <Divider />
-        <List.Section>
-          <List.Item title="Taille du texte" description={`${preferences.fontSize}px`} />
-          <Slider
-            minimumValue={12}
-            maximumValue={20}
-            minimumTrackTintColor={colors.primary}
-            thumbTintColor={colors.primary}
-            step={1}
-            value={preferences.fontSize}
-            onValueChange={(data) => {
-              trackEvent('prefs:update-font-size', { props: { size: data.toString() } });
-              updatePrefs({ fontSize: data });
-            }}
-          />
-        </List.Section>
-        <List.Section>
-          <Divider />
-          <List.Item title="Police" />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-            <View style={[styles.container, { justifyContent: 'center' }]}>
-              <Button
-                uppercase={false}
-                labelStyle={{
-                  color: colors.text,
-                  fontFamily: 'Roboto',
-                }}
-                onPress={() => {
-                  trackEvent('prefs:update-font', { props: { font: 'Roboto' } });
-                  updatePrefs({ fontFamily: 'Roboto' });
-                }}
-                mode={preferences.fontFamily === 'Roboto' ? 'outlined' : 'text'}
-              >
-                Sans serif
-              </Button>
-            </View>
-            <View style={[styles.container, { marginLeft: 0, justifyContent: 'center' }]}>
-              <Button
-                uppercase={false}
-                labelStyle={{
-                  color: colors.text,
-                  fontFamily: 'Roboto-Slab',
-                }}
-                onPress={() => {
-                  trackEvent('prefs:update-font', { props: { font: 'Roboto-Slab' } });
-                  updatePrefs({ fontFamily: 'Roboto-Slab' });
-                }}
-                mode={preferences.fontFamily === 'Roboto-Slab' ? 'outlined' : 'text'}
-              >
-                Serif
-              </Button>
-            </View>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+      <View style={styles.centeredPage}>
+        <ScrollView>
+          <ScrollView style={{ height: 300 }}>
             <View style={styles.container}>
-              <Button
-                uppercase={false}
-                labelStyle={{
-                  color: colors.text,
-                  fontFamily: 'Roboto-Mono',
-                }}
-                onPress={() => {
-                  trackEvent('prefs:update-font', { props: { font: 'Roboto-Mono ' } });
-                  updatePrefs({ fontFamily: 'Roboto-Mono' });
-                }}
-                mode={preferences.fontFamily === 'Roboto-Mono' ? 'outlined' : 'text'}
-              >
-                Mono
-              </Button>
+              <Card>
+                <View style={styles.contentContainer}>
+                  <Content parser="markdown" data={testData} />
+                </View>
+              </Card>
             </View>
-            <View style={[styles.container, { marginLeft: 0 }]}>
-              <Button
-                uppercase={false}
-                labelStyle={{
-                  color: colors.text,
-                  fontFamily: 'OpenDyslexic',
-                }}
-                onPress={() => {
-                  trackEvent('prefs:update-font', { props: { font: 'OpenDyslexic' } });
-                  updatePrefs({ fontFamily: 'OpenDyslexic' });
-                }}
-                mode={preferences.fontFamily === 'OpenDyslexic' ? 'outlined' : 'text'}
-              >
-                Dyslexie
-              </Button>
+          </ScrollView>
+          <Divider />
+          <List.Section>
+            <List.Item title="Taille du texte" description={`${preferences.fontSize}px`} />
+            <Slider
+              minimumValue={12}
+              maximumValue={20}
+              minimumTrackTintColor={colors.primary}
+              thumbTintColor={colors.primary}
+              step={1}
+              value={preferences.fontSize}
+              onValueChange={(data) => {
+                trackEvent('prefs:update-font-size', { props: { size: data.toString() } });
+                updatePrefs({ fontSize: data });
+              }}
+            />
+          </List.Section>
+          <List.Section>
+            <Divider />
+            <List.Item title="Police" />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+              <View style={[styles.container, { justifyContent: 'center' }]}>
+                <Button
+                  uppercase={false}
+                  labelStyle={{
+                    color: colors.text,
+                    fontFamily: 'Roboto',
+                  }}
+                  onPress={() => {
+                    trackEvent('prefs:update-font', { props: { font: 'Roboto' } });
+                    updatePrefs({ fontFamily: 'Roboto' });
+                  }}
+                  mode={preferences.fontFamily === 'Roboto' ? 'outlined' : 'text'}
+                >
+                  Sans serif
+                </Button>
+              </View>
+              <View style={[styles.container, { marginLeft: 0, justifyContent: 'center' }]}>
+                <Button
+                  uppercase={false}
+                  labelStyle={{
+                    color: colors.text,
+                    fontFamily: 'Roboto-Slab',
+                  }}
+                  onPress={() => {
+                    trackEvent('prefs:update-font', { props: { font: 'Roboto-Slab' } });
+                    updatePrefs({ fontFamily: 'Roboto-Slab' });
+                  }}
+                  mode={preferences.fontFamily === 'Roboto-Slab' ? 'outlined' : 'text'}
+                >
+                  Serif
+                </Button>
+              </View>
             </View>
-          </View>
-        </List.Section>
-        <Divider />
-        <List.Section>
-          <List.Item
-            title="Retirer le formattage"
-            description="Ne pas afficher le gras, l'italique, etc"
-            right={() => (
-              <Switch
-                color={colors.primary}
-                value={preferences.stripFormatting}
-                onValueChange={(val) => {
-                  trackEvent('prefs:update-strip-formatting', {
-                    props: { value: val ? 'yes' : 'no' },
-                  });
-                  updatePrefs({ stripFormatting: val });
-                }}
-              />
-            )}
-            onPress={() => {
-              trackEvent('prefs:update-strip-formatting', {
-                props: { value: !preferences.stripFormatting ? 'yes' : 'no' },
-              });
-              updatePrefs({ stripFormatting: !preferences.stripFormatting });
-            }}
-            style={settingsStyles.listItem}
-          />
-        </List.Section>
-      </ScrollView>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+              <View style={styles.container}>
+                <Button
+                  uppercase={false}
+                  labelStyle={{
+                    color: colors.text,
+                    fontFamily: 'Roboto-Mono',
+                  }}
+                  onPress={() => {
+                    trackEvent('prefs:update-font', { props: { font: 'Roboto-Mono ' } });
+                    updatePrefs({ fontFamily: 'Roboto-Mono' });
+                  }}
+                  mode={preferences.fontFamily === 'Roboto-Mono' ? 'outlined' : 'text'}
+                >
+                  Mono
+                </Button>
+              </View>
+              <View style={[styles.container, { marginLeft: 0 }]}>
+                <Button
+                  uppercase={false}
+                  labelStyle={{
+                    color: colors.text,
+                    fontFamily: 'OpenDyslexic',
+                  }}
+                  onPress={() => {
+                    trackEvent('prefs:update-font', { props: { font: 'OpenDyslexic' } });
+                    updatePrefs({ fontFamily: 'OpenDyslexic' });
+                  }}
+                  mode={preferences.fontFamily === 'OpenDyslexic' ? 'outlined' : 'text'}
+                >
+                  Dyslexie
+                </Button>
+              </View>
+            </View>
+          </List.Section>
+          <Divider />
+          <List.Section>
+            <List.Item
+              title="Retirer le formattage"
+              description="Ne pas afficher le gras, l'italique, etc"
+              right={() => (
+                <Switch
+                  color={colors.primary}
+                  value={preferences.stripFormatting}
+                  onValueChange={(val) => {
+                    trackEvent('prefs:update-strip-formatting', {
+                      props: { value: val ? 'yes' : 'no' },
+                    });
+                    updatePrefs({ stripFormatting: val });
+                  }}
+                />
+              )}
+              onPress={() => {
+                trackEvent('prefs:update-strip-formatting', {
+                  props: { value: !preferences.stripFormatting ? 'yes' : 'no' },
+                });
+                updatePrefs({ stripFormatting: !preferences.stripFormatting });
+              }}
+              style={settingsStyles.listItem}
+            />
+          </List.Section>
+        </ScrollView>
+      </View>
     </View>
   );
 };

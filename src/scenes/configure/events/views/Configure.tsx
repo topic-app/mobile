@@ -250,6 +250,7 @@ function EventConfigure({
               );
 
             case 'lists':
+              if (Platform.OS === 'web') return null;
               return (
                 <DraggableFlatList
                   data={lists}

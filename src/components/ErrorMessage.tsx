@@ -55,6 +55,7 @@ const ErrorMessage: React.FC<Props> = ({
         retry,
         back,
         restart,
+        strings,
       });
       setErrorInfo({ message, actions, status });
       trackEvent('error', {

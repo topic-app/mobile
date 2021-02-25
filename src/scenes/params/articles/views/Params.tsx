@@ -93,11 +93,6 @@ const ArticleParamsScreen: React.FC<ArticleParamsProps> = ({
             <Text>Choisissez les écoles et départements dont vous voulez voir les articles.</Text>
 
             <Text>Ces paramètres s&apos;appliquent aux articles seulement. </Text>
-            <TouchableWithoutFeedback
-              onPress={() => navigation.navigate('Landing', { screen: 'SelectLocation' })}
-            >
-              <Text style={[styles.link, styles.primaryText]}>Changer d&apos;école</Text>
-            </TouchableWithoutFeedback>
           </View>
         </View>
         <Divider />

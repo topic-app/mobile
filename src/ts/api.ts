@@ -179,6 +179,11 @@ export type UserPreload = {
   };
   data?: {
     public?: boolean;
+    cache: {
+      followers: number;
+      following: number;
+      groups: GroupPreload[];
+    };
   };
 };
 
@@ -300,6 +305,9 @@ export type Group = GroupBase & {
     email?: string;
     website?: string;
     extra?: string;
+  };
+  pages?: {
+    enabled?: boolean;
   };
 };
 

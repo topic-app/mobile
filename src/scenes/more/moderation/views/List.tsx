@@ -75,73 +75,75 @@ const ModerationList: React.FC<Props> = ({ navigation, account, route }) => {
           },
         }}
       />
-      <ScrollView>
-        {['deverified', 'extra', 'reported'].includes(type) && (
-          <View style={styles.container}>
-            <Card
-              elevation={0}
-              style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
-            >
-              <View style={[styles.container, { flexDirection: 'row', alignItems: 'center' }]}>
-                <Icon
-                  name={
+      <View style={styles.centeredPage}>
+        <ScrollView>
+          {['deverified', 'extra', 'reported'].includes(type) && (
+            <View style={styles.container}>
+              <Card
+                elevation={0}
+                style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+              >
+                <View style={[styles.container, { flexDirection: 'row', alignItems: 'center' }]}>
+                  <Icon
+                    name={
+                      {
+                        deverified: 'shield',
+                        extra: 'alert-decagram',
+                        reported: 'message-alert',
+                        unverified: 'shield',
+                      }[type]
+                    }
+                    style={{ alignSelf: 'center', marginRight: 10 }}
+                    size={24}
+                    color={colors.primary}
+                  />
+                  <Text style={{ color: colors.text, flex: 1 }}>
                     {
-                      deverified: 'shield',
-                      extra: 'alert-decagram',
-                      reported: 'message-alert',
-                      unverified: 'shield',
-                    }[type]
-                  }
-                  style={{ alignSelf: 'center', marginRight: 10 }}
-                  size={24}
-                  color={colors.primary}
-                />
-                <Text style={{ color: colors.text, flex: 1 }}>
-                  {
+                      {
+                        deverified: 'Contenus remis en modération',
+                        extra: 'Contenus nécéssitant une vérification supplémentaire',
+                        reported: 'Contenus signalés',
+                        unverified: '',
+                      }[type]
+                    }
+                  </Text>
+                </View>
+              </Card>
+            </View>
+          )}
+          <CustomTabView
+            pages={[
+              ...(allowedArticles
+                ? [
                     {
-                      deverified: 'Contenus remis en modération',
-                      extra: 'Contenus nécéssitant une vérification supplémentaire',
-                      reported: 'Contenus signalés',
-                      unverified: '',
-                    }[type]
-                  }
-                </Text>
-              </View>
-            </Card>
-          </View>
-        )}
-        <CustomTabView
-          pages={[
-            ...(allowedArticles
-              ? [
-                  {
-                    key: 'articles',
-                    title: 'Articles',
-                    component: <ModerationArticles navigation={navigation} type={type} />,
-                  },
-                ]
-              : []),
-            ...(allowedEvents
-              ? [
-                  {
-                    key: 'events',
-                    title: 'Évènements',
-                    component: <ModerationEvents navigation={navigation} type={type} />,
-                  },
-                ]
-              : []),
-            ...(allowedGroups && type !== 'deverified'
-              ? [
-                  {
-                    key: 'groups',
-                    title: 'Groupes',
-                    component: <ModerationGroups navigation={navigation} type={type} />,
-                  },
-                ]
-              : []),
-          ]}
-        />
-      </ScrollView>
+                      key: 'articles',
+                      title: 'Articles',
+                      component: <ModerationArticles navigation={navigation} type={type} />,
+                    },
+                  ]
+                : []),
+              ...(allowedEvents
+                ? [
+                    {
+                      key: 'events',
+                      title: 'Évènements',
+                      component: <ModerationEvents navigation={navigation} type={type} />,
+                    },
+                  ]
+                : []),
+              ...(allowedGroups && type !== 'deverified'
+                ? [
+                    {
+                      key: 'groups',
+                      title: 'Groupes',
+                      component: <ModerationGroups navigation={navigation} type={type} />,
+                    },
+                  ]
+                : []),
+            ]}
+          />
+        </ScrollView>
+      </View>
     </View>
   );
 };

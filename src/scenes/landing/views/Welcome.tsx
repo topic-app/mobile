@@ -60,6 +60,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     logoScale: new Animated.Value(1),
     logoTranslate: new Animated.Value(0),
     backgroundScale: new Animated.Value(1),
+    iosBackgroundOpacity: new Animated.Value(0),
     textColor: new Animated.Value(0),
     illustrations: [
       new Animated.Value(0),
@@ -140,6 +141,11 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             duration: 400,
             useNativeDriver: false, // can't use native driver for color
           }),
+          Animated.timing(animValues.iosBackgroundOpacity, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
         ],
         { stopTogether: false },
       );
@@ -176,6 +182,11 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             duration: 150,
             useNativeDriver: false, // can't use native driver for color
           }),
+          Animated.timing(animValues.iosBackgroundOpacity, {
+            toValue: 0,
+            duration: 400,
+            useNativeDriver: true,
+          }),
         ],
         { stopTogether: false },
       );
@@ -211,7 +222,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
     setLastPage(page);
   };
 
-  const topicPurple = 'rgb(89,41,147)';
+  const topicPurple = 'rgb(89,41,137)';
   const normalTextColor = theme.dark ? 'rgb(240,240,240)' : 'rgb(0, 0, 0)';
 
   const normalTextColorAnim = animValues.textColor.interpolate({
@@ -223,6 +234,12 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   const purpleTextColorAnim = animValues.textColor.interpolate({
     inputRange: [0, 1],
     outputRange: ['rgb(255, 255, 255)', topicPurple],
+    extrapolate: 'clamp',
+  });
+
+  const backgroundOpacity = animValues.iosBackgroundOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
     extrapolate: 'clamp',
   });
 
@@ -249,7 +266,31 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   return (
     <View style={styles.page}>
       <TranslucentStatusBar barStyle={lastPage === 0 ? 'light-content' : undefined} />
-      <View style={landingStyles.welcomeContainer}>
+      {Platform.OS === 'ios' && (
+        <Animated.View
+          style={{
+            height: '100%',
+            width: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            opacity: backgroundOpacity,
+            backgroundColor: topicPurple,
+            zIndex: -2,
+          }}
+        />
+      )}
+      <View
+        style={[
+          landingStyles.welcomeContainer,
+          Platform.OS === 'ios'
+            ? {
+                paddingTop: insets.top + 40,
+                paddingBottom: insets.bottom,
+              }
+            : {},
+        ]}
+      >
         <View style={landingStyles.bottomContainer}>
           <ViewPager
             onPageSelected={({ nativeEvent }) => animate(nativeEvent.position)}
@@ -340,21 +381,23 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             <Illustration name="topic-icon" />
           </Animated.View>
           <View style={landingStyles.illustrationContainer}>
-            <Animated.View
-              style={{
-                // marginTop: insets.top + 30,
-                height: backgroundFullHeight,
-                width: backgroundFullHeight,
-                borderRadius: backgroundFullHeight / 2,
-                backgroundColor: colors.primaryBackground,
-                transform: [
-                  { translateY: animValues.logoTranslate },
-                  { scale: animValues.backgroundScale },
-                ],
-                zIndex: -1,
-              }}
-              pointerEvents="none"
-            />
+            {Platform.OS !== 'ios' && (
+              <Animated.View
+                style={{
+                  // marginTop: insets.top + 30,
+                  height: backgroundFullHeight,
+                  width: backgroundFullHeight,
+                  borderRadius: backgroundFullHeight / 2,
+                  backgroundColor: colors.primaryBackground,
+                  transform: [
+                    { translateY: animValues.logoTranslate },
+                    { scale: animValues.backgroundScale },
+                  ],
+                  zIndex: -1,
+                }}
+                pointerEvents="none"
+              />
+            )}
           </View>
           <Animated.View
             style={[{ opacity: animValues.illustrations[0] }, landingStyles.illustrationContainer]}

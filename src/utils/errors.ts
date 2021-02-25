@@ -11,10 +11,15 @@ type errorProps = {
   retry?: () => any | null;
   back?: () => any | null;
   restart?: () => any | null;
+  strings?: {
+    action?: string;
+    contentSingular?: string;
+    contentPlural?: string;
+  };
 };
 type popupProps = errorProps & { what: string };
 
-const processError = async ({ type, error, retry, back, restart }: errorProps) => {
+const processError = async ({ type, error, retry, back, restart, strings }: errorProps) => {
   const err = (Array.isArray(error) && error?.length > 0
     ? error.find((e) => !!e) || error[0]
     : error) as ErrorType;
@@ -89,7 +94,9 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
     } else if (err?.error?.response?.status === 404) {
       message = {
         icon: 'file-alert-outline',
-        text: "L'élément n'a pas été trouvé. Il n'existe pas ou n'a pas encore été publié.",
+        text: `${
+          strings?.contentSingular || "L'élément"
+        } n'a pas été trouvé. Il n'existe pas ou n'a pas encore été publié.`,
         code: 'notfound',
       };
       if (retry) {
@@ -108,7 +115,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
     } else if (err?.error?.response?.status === 410) {
       message = {
         icon: 'delete-outline',
-        text: "L'élément a été supprimé.",
+        text: `${strings?.contentSingular || "L'élément"} a été supprimé.`,
         code: 'deleted',
       };
       if (back) {
@@ -121,7 +128,7 @@ const processError = async ({ type, error, retry, back, restart }: errorProps) =
     } else if (err?.error?.response?.status === 451) {
       message = {
         icon: 'shield-alert-outline',
-        text: "L'élément est en attente de modération.",
+        text: `${strings?.contentSingular || "L'élément"} est en attente de modération.`,
         code: 'notvalidated',
       };
       if (retry) {
