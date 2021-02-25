@@ -128,11 +128,11 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   if (!account.loggedIn) return null;
 
-  const submit = async () => {
+  const submit = async (md?: string) => {
     const contentValid = markdown && markdown.length && markdown.length > 0;
     if (contentValid) {
-      updateArticleCreationData({ parser: 'markdown', data: markdown });
-      add(editor === 'plaintext' ? 'plaintext' : 'markdown', markdown);
+      updateArticleCreationData({ parser: 'markdown', data: md || markdown });
+      add(editor === 'plaintext' ? 'plaintext' : 'markdown', md || markdown);
     } else {
       setValid(false);
     }
@@ -189,11 +189,11 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 uppercase={Platform.OS !== 'ios'}
                 loading={reqState.add?.loading}
                 onPress={() => {
-                  setMarkdown(
+                  const md =
                     textEditorRef.current?.getInstance()?.getMarkdown()?.replace(/<br>/g, '\n') ||
-                      markdown,
-                  );
-                  submit();
+                    markdown;
+                  setMarkdown(md);
+                  submit(md);
                 }}
                 style={{ flex: 1 }}
               >
