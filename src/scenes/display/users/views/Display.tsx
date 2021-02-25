@@ -102,7 +102,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
   };
 
   React.useEffect(() => {
-    fetchUser(id);
+    if (id !== account.accountInfo?.accountId) {
+      fetchUser(id);
+    } else {
+      fetchAccount();
+    }
   }, [null]);
 
   const theme = useTheme();
@@ -228,7 +232,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                 <ActivityIndicator size="large" color={colors.primary} />
               </View>
             )}
-            {state.info.success && !user.preload && (
+            {(state.info.success || id === account.accountInfo?.accountId) && !user.preload && (
               <View>
                 <Divider style={{ marginVertical: 10 }} />
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>

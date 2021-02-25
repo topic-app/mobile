@@ -133,66 +133,68 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
           retry={fetch}
         />
       ) : null}
-      <SectionList
-        sections={data}
-        refreshing={state.list.loading.refresh}
-        stickySectionHeadersEnabled={false}
-        onRefresh={() => fetch(true)}
-        ListFooterComponent={
-          <View style={[styles.container, { height: 50 }]}>
-            {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
-          </View>
-        }
-        ListHeaderComponent={() => (
-          <View>
-            <View style={styles.centerIllustrationContainer}>
-              <Illustration name="group" height={200} width={200} />
-              <View style={[styles.contentContainer, { alignItems: 'center' }]}>
-                <Text>
-                  Rejoignez des groupes pour représenter vos clubs, associations et organisations et
-                  pour écrire du contenu.
-                </Text>
+      <View style={styles.centeredPage}>
+        <SectionList
+          sections={data}
+          refreshing={state.list.loading.refresh}
+          stickySectionHeadersEnabled={false}
+          onRefresh={() => fetch(true)}
+          ListFooterComponent={
+            <View style={[styles.container, { height: 50 }]}>
+              {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
+            </View>
+          }
+          ListHeaderComponent={() => (
+            <View>
+              <View style={styles.centerIllustrationContainer}>
+                <Illustration name="group" height={200} width={200} />
+                <View style={[styles.contentContainer, { alignItems: 'center' }]}>
+                  <Text>
+                    Rejoignez des groupes pour représenter vos clubs, associations et organisations
+                    et pour écrire du contenu.
+                  </Text>
+                </View>
               </View>
+              <GroupsBanner />
             </View>
-            <GroupsBanner />
-          </View>
-        )}
-        renderSectionHeader={({ section }) =>
-          section.data.length !== 0 ? (
-            <View style={{ marginTop: 10 }}>
-              <Divider />
-              <CategoryTitle style={{ paddingTop: 13, paddingLeft: 15 }}>
-                {section.title}
-              </CategoryTitle>
-            </View>
-          ) : (
-            <View />
-          )
-        }
-        renderItem={({ item }) => (
-          <>
-            <GroupCard
-              group={item}
-              following={account.accountInfo?.user.data.following.groups.some(
-                (g) => g._id === item._id,
-              )}
-              member={account.groups?.some((g) => g._id === item._id)}
-              navigate={() =>
-                navigation.navigate('Main', {
-                  screen: 'Display',
-                  params: {
-                    screen: 'Group',
+          )}
+          renderSectionHeader={({ section }) =>
+            section.data.length !== 0 ? (
+              <View style={{ marginTop: 10 }}>
+                <Divider />
+                <CategoryTitle style={{ paddingTop: 13, paddingLeft: 15 }}>
+                  {section.title}
+                </CategoryTitle>
+              </View>
+            ) : (
+              <View />
+            )
+          }
+          renderItem={({ item }) => (
+            <View style={{ margin: 5 }}>
+              <GroupCard
+                group={item}
+                following={account.accountInfo?.user.data.following.groups.some(
+                  (g) => g._id === item._id,
+                )}
+                member={account.groups?.some((g) => g._id === item._id)}
+                navigate={() =>
+                  navigation.navigate('Main', {
+                    screen: 'Display',
                     params: {
-                      screen: 'Display',
-                      params: { id: item._id, title: item.name },
+                      screen: 'Group',
+                      params: {
+                        screen: 'Display',
+                        params: { id: item._id, title: item.name },
+                      },
                     },
-                  },
-                })
-              }
-            />
-          </>
-        )}
-      />
+                  })
+                }
+              />
+            </View>
+          )}
+        />
+      </View>
       {account.accountInfo?.user?.verification?.verified && (
         <FAB
           icon="plus"

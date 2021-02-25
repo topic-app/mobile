@@ -179,6 +179,11 @@ export type UserPreload = {
   };
   data?: {
     public?: boolean;
+    cache: {
+      followers: number;
+      following: number;
+      groups: GroupPreload[];
+    };
   };
 };
 

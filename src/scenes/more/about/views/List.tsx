@@ -29,29 +29,31 @@ const About: React.FC<AboutProps> = ({ navigation, route }) => {
           },
         }}
       />
-      <ScrollView>
-        <CustomTabView
-          initialTab={{ about: 0, sponsors: 1, licenses: 2 }[route.params?.page || 'about']}
-          scrollEnabled={false}
-          pages={[
-            {
-              key: 'about',
-              title: 'À propos',
-              component: <AboutPage navigation={navigation} />,
-            },
-            {
-              key: 'sponsors',
-              title: 'Partenaires',
-              component: <SponsorsPage />,
-            },
-            {
-              key: 'licenses',
-              title: 'Licenses',
-              component: <LicensesPage navigation={navigation} />,
-            },
-          ]}
-        />
-      </ScrollView>
+      <View style={styles.centeredPage}>
+        <ScrollView>
+          <CustomTabView
+            initialTab={{ about: 0, sponsors: 1, licenses: 2 }[route.params?.page || 'about']}
+            scrollEnabled={false}
+            pages={[
+              {
+                key: 'about',
+                title: 'À propos',
+                component: <AboutPage navigation={navigation} />,
+              },
+              {
+                key: 'sponsors',
+                title: 'Partenaires',
+                component: <SponsorsPage />,
+              },
+              {
+                key: 'licenses',
+                title: 'Licenses',
+                component: <LicensesPage navigation={navigation} />,
+              },
+            ]}
+          />
+        </ScrollView>
+      </View>
     </View>
   );
 };
