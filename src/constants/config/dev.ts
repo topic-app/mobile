@@ -15,9 +15,9 @@ const config: DevAppConfig = {
     timeout: 3000,
     // Enable if working on web and have nginx setup
     // url: {
-    // base: 'http://localhost/api/api/v1',
-    // auth: 'http://localhost/api/auth/v1',
-    // data: 'http://localhost/api/api/v1',
+    //   base: 'http://localhost/api/api/v1',
+    //   auth: 'http://localhost/api/auth/v1',
+    //   data: 'http://localhost/api/api/v1',
     // },
   },
   cdn: {

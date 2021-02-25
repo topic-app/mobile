@@ -375,7 +375,10 @@ const Search: React.FC<SearchProps> = ({
 
   useFocusEffect(
     React.useCallback(() => {
-      setImmediate(() => searchRef.current?.focus());
+      // TEMP: This causes a crash on web for some reason
+      if (Platform.OS !== 'web') {
+        setImmediate(() => searchRef.current?.focus());
+      }
     }, [null]),
   );
 
@@ -394,148 +397,157 @@ const Search: React.FC<SearchProps> = ({
 
   return (
     <View style={styles.page}>
-      <View style={searchStyles.queryContainer}>
-        <View style={{ height: insets.top, width: '100%' }} />
-        <Searchbar
-          ref={searchRef}
-          delay={2000}
-          icon={Platform.OS === 'ios' ? 'chevron-left' : 'arrow-left'}
-          onIconPress={navigation.goBack}
-          placeholder="Rechercher"
-          onChangeText={(props) => {
-            setSearchText(props);
-            collapseFilter();
-            categories.find((c) => c.key === filters.category)?.clear();
-            fetchSuggestions(props);
-          }}
-          onIdle={submitSearch}
-          value={searchText}
-          style={searchStyles.searchbar}
-          onSubmitEditing={({ nativeEvent: { text } }) => submitSearch(text)}
-        />
-        <CollapsibleView collapsed={!filterCollapsed}>
-          <View style={searchStyles.containerBottom}>
-            <View style={searchStyles.container}>
-              <TouchableOpacity onPress={expandFilter}>
-                <View style={{ flexDirection: 'row' }}>
-                  <CategoryTitle containerStyle={{ flex: 1 }} numberOfLines={1}>
-                    {categoryName}
-                    {` · ${numFilters} ${numFilters === 1 ? 'filtre actif' : 'filtres actifs'}`}
-                  </CategoryTitle>
-                  <Button
-                    compact
-                    color={colors.subtext}
-                    mode="outlined"
-                    icon="filter-variant"
-                    onPress={expandFilter}
-                  >
-                    Filtres
-                  </Button>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </CollapsibleView>
-        <CollapsibleView collapsed={filterCollapsed}>
-          <View>
-            <CategoryTitle icon="shape" containerStyle={searchStyles.container}>
-              Catégorie
-            </CategoryTitle>
-            <CategoriesList
-              categories={categories}
-              selected={filters.category}
-              setSelected={(category) => setFilters({ ...filters, category })}
-            />
-          </View>
-          <CollapsibleView collapsed={locationData.length === 0}>
-            <CategoryTitle icon="map-marker" containerStyle={searchStyles.container}>
-              Localisation
-            </CategoryTitle>
-            <ChipAddList
-              data={locationData}
-              keyList={filters.locations}
-              setList={toggleSuggestion}
-            />
-          </CollapsibleView>
-          <CollapsibleView collapsed={tagData.length === 0}>
-            <CategoryTitle icon="tag-multiple" containerStyle={searchStyles.container}>
-              Tags
-            </CategoryTitle>
-            <ChipAddList data={tagData} keyList={filters.tags} setList={toggleSuggestion} />
-          </CollapsibleView>
-          <CollapsibleView collapsed={groupData.length === 0}>
-            <CategoryTitle icon="account-multiple" containerStyle={searchStyles.container}>
-              Groupes
-            </CategoryTitle>
-            <ChipAddList data={groupData} keyList={filters.groups} setList={toggleSuggestion} />
-          </CollapsibleView>
-          <View style={[searchStyles.container, searchStyles.containerBottom]}>
-            <Button
-              onPress={collapseFilter}
-              icon="filter-variant"
-              mode="outlined"
-              color={colors.subtext}
-            >
-              Cacher les filtres
-            </Button>
-          </View>
-        </CollapsibleView>
-        {categories.find((c) => c.key === filters.category)?.state?.loading.initial && (
-          <ProgressBar indeterminate style={{ marginTop: -4 }} />
-        )}
-        {categories.find((c) => c.key === filters.category)?.state?.error && (
-          <ErrorMessage
-            type="axios"
-            error={categories.find((c) => c.key === filters.category)?.state?.error}
-            strings={{ what: 'La recherche', contentPlural: 'Les résultats' }}
+      <View style={styles.centeredPage}>
+        <View style={searchStyles.queryContainer}>
+          <View style={{ height: insets.top, width: '100%' }} />
+          <Searchbar
+            ref={searchRef}
+            delay={2000}
+            icon={
+              Platform.OS === 'web'
+                ? undefined
+                : Platform.OS === 'ios'
+                ? 'chevron-left'
+                : 'arrow-left'
+            }
+            onIconPress={Platform.OS === 'web' ? undefined : navigation.goBack}
+            placeholder="Rechercher"
+            onChangeText={(props) => {
+              setSearchText(props);
+              collapseFilter();
+              categories.find((c) => c.key === filters.category)?.clear();
+              fetchSuggestions(props);
+            }}
+            onIdle={submitSearch}
+            value={searchText}
+            style={searchStyles.searchbar}
+            onSubmitEditing={({ nativeEvent: { text } }) => submitSearch(text)}
           />
-        )}
-      </View>
-      <View>
-        <FlatList
-          data={flatlistSearchData}
-          keyExtractor={(i) => i._id}
-          renderItem={({ item }) =>
-            categories.find((c) => c.key === filters.category)!.component(item as any)
-          }
-          ListHeaderComponent={
-            <CollapsibleView
-              collapsed={
-                (nonAddedTags.length === 0 &&
-                  nonAddedLocations.length === 0 &&
-                  nonAddedGroups.length === 0) ||
-                !filterCollapsed
-              }
-            >
-              <View style={{ marginVertical: 10 }}>
-                <View style={searchStyles.suggestionContainer}>
-                  <CategoryTitle icon="tag-multiple" containerStyle={{ flex: 1, paddingTop: 0 }}>
-                    Suggestions
-                  </CategoryTitle>
-                </View>
-                <ChipSuggestionList
-                  data={[...nonAddedTags, ...nonAddedLocations, ...nonAddedGroups]}
-                  containerStyle={{ paddingVertical: 0 }}
-                  setList={addSuggestion}
-                />
+          <CollapsibleView collapsed={!filterCollapsed}>
+            <View style={searchStyles.containerBottom}>
+              <View style={searchStyles.container}>
+                <TouchableOpacity onPress={expandFilter}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <CategoryTitle containerStyle={{ flex: 1 }} numberOfLines={1}>
+                      {categoryName}
+                      {` · ${numFilters} ${numFilters === 1 ? 'filtre actif' : 'filtres actifs'}`}
+                    </CategoryTitle>
+                    <Button
+                      compact
+                      color={colors.subtext}
+                      mode="outlined"
+                      icon="filter-variant"
+                      onPress={expandFilter}
+                    >
+                      Filtres
+                    </Button>
+                  </View>
+                </TouchableOpacity>
               </View>
+            </View>
+          </CollapsibleView>
+          <CollapsibleView collapsed={filterCollapsed}>
+            <View>
+              <CategoryTitle icon="shape" containerStyle={searchStyles.container}>
+                Catégorie
+              </CategoryTitle>
+              <CategoriesList
+                categories={categories}
+                selected={filters.category}
+                setSelected={(category) => setFilters({ ...filters, category })}
+              />
+            </View>
+            <CollapsibleView collapsed={locationData.length === 0}>
+              <CategoryTitle icon="map-marker" containerStyle={searchStyles.container}>
+                Localisation
+              </CategoryTitle>
+              <ChipAddList
+                data={locationData}
+                keyList={filters.locations}
+                setList={toggleSuggestion}
+              />
             </CollapsibleView>
-          }
-          ListFooterComponent={<View style={{ height: 200 }} />}
-          ListEmptyComponent={
-            searchText === '' ? (
-              <View style={styles.centerIllustrationContainer}>
-                <Illustration name="search" height={200} width={200} />
-                <Text>Commencez à taper pour rechercher !</Text>
-              </View>
-            ) : categories.find((c) => c.key === filters.category)?.state?.loading
-                .initial ? null : (
-              <View style={[styles.centerIllustrationContainer, styles.container]}>
-                <Text>Aucun résultat</Text>
-              </View>
-            )
-          }
-        />
+            <CollapsibleView collapsed={tagData.length === 0}>
+              <CategoryTitle icon="tag-multiple" containerStyle={searchStyles.container}>
+                Tags
+              </CategoryTitle>
+              <ChipAddList data={tagData} keyList={filters.tags} setList={toggleSuggestion} />
+            </CollapsibleView>
+            <CollapsibleView collapsed={groupData.length === 0}>
+              <CategoryTitle icon="account-multiple" containerStyle={searchStyles.container}>
+                Groupes
+              </CategoryTitle>
+              <ChipAddList data={groupData} keyList={filters.groups} setList={toggleSuggestion} />
+            </CollapsibleView>
+            <View style={[searchStyles.container, searchStyles.containerBottom]}>
+              <Button
+                onPress={collapseFilter}
+                icon="filter-variant"
+                mode="outlined"
+                color={colors.subtext}
+              >
+                Cacher les filtres
+              </Button>
+            </View>
+          </CollapsibleView>
+          {categories.find((c) => c.key === filters.category)?.state?.loading.initial && (
+            <ProgressBar indeterminate style={{ marginTop: -4 }} />
+          )}
+          {categories.find((c) => c.key === filters.category)?.state?.error && (
+            <ErrorMessage
+              type="axios"
+              error={categories.find((c) => c.key === filters.category)?.state?.error}
+              strings={{ what: 'La recherche', contentPlural: 'Les résultats' }}
+            />
+          )}
+        </View>
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={flatlistSearchData}
+            keyExtractor={(i) => i._id}
+            style={{ flex: 1 }}
+            renderItem={({ item }) =>
+              categories.find((c) => c.key === filters.category)!.component(item as any)
+            }
+            ListHeaderComponent={
+              <CollapsibleView
+                collapsed={
+                  (nonAddedTags.length === 0 &&
+                    nonAddedLocations.length === 0 &&
+                    nonAddedGroups.length === 0) ||
+                  !filterCollapsed
+                }
+              >
+                <View style={{ marginVertical: 10 }}>
+                  <View style={searchStyles.suggestionContainer}>
+                    <CategoryTitle icon="tag-multiple" containerStyle={{ flex: 1, paddingTop: 0 }}>
+                      Suggestions
+                    </CategoryTitle>
+                  </View>
+                  <ChipSuggestionList
+                    data={[...nonAddedTags, ...nonAddedLocations, ...nonAddedGroups]}
+                    containerStyle={{ paddingVertical: 0 }}
+                    setList={addSuggestion}
+                  />
+                </View>
+              </CollapsibleView>
+            }
+            ListFooterComponent={<View style={{ height: 200 }} />}
+            ListEmptyComponent={
+              searchText === '' ? (
+                <View style={styles.centerIllustrationContainer}>
+                  <Illustration name="search" height={200} width={200} />
+                  <Text>Commencez à taper pour rechercher !</Text>
+                </View>
+              ) : categories.find((c) => c.key === filters.category)?.state?.loading
+                  .initial ? null : (
+                <View style={[styles.centerIllustrationContainer, styles.container]}>
+                  <Text>Aucun résultat</Text>
+                </View>
+              )
+            }
+          />
+        </View>
       </View>
     </View>
   );
