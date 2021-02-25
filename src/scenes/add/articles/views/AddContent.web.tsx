@@ -269,15 +269,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                       {
                         type: 'button',
                         options: {
-                          className: 'tui-image',
-                          event: 'uploadImage',
-                          tooltip: 'Image',
-                        },
-                      },
-                      'image',
-                      {
-                        type: 'button',
-                        options: {
                           className: 'tui-link',
                           event: 'insertLink',
                           tooltip: 'Lien',
