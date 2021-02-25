@@ -1,7 +1,16 @@
 import { RouteProp } from '@react-navigation/core';
 import React from 'react';
 import { View, Appearance, FlatList, ActivityIndicator, Platform, ScrollView } from 'react-native';
-import { Banner, HelperText, List, Switch, Text, TextInput, Title } from 'react-native-paper';
+import {
+  Banner,
+  HelperText,
+  IconButton,
+  List,
+  Switch,
+  Text,
+  TextInput,
+  Title,
+} from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import {
@@ -41,6 +50,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
   const [errorFooter, setErrorFooter] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [mobile, setMobile] = React.useState(false);
+  const [fullscreen, setFullscreen] = React.useState(false);
 
   const fullPage: Pages.Page = {
     page: 'main',
@@ -96,12 +106,35 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
               height: 48,
               borderRadius: 24,
               opacity: 0.8,
+              flexDirection: 'row',
             }}
           >
             <View
               style={{ flexDirection: 'row', alignItems: 'center', opacity: 1, borderRadius: 24 }}
             >
               <PlatformBackButton onPress={() => navigation.goBack()} />
+            </View>
+          </View>
+        )}
+
+        {fullscreen && (
+          <View
+            style={{
+              position: 'absolute',
+              right: 5,
+              zIndex: 1000,
+              top: insets.top + 5,
+              backgroundColor: colors.surface,
+              height: 48,
+              borderRadius: 24,
+              opacity: 0.8,
+              flexDirection: 'row',
+            }}
+          >
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', opacity: 1, borderRadius: 24 }}
+            >
+              <IconButton icon="fullscreen-exit" onPress={() => setFullscreen(false)} />
             </View>
           </View>
         )}
@@ -114,8 +147,12 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
           loading={loading}
         />
       </View>
-      <View style={{ backgroundColor: colors.disabled, width: 2, height: '100%' }} />
-      <ScrollView style={{ flex: 1, backgroundColor: colors.surface }}>
+      <View
+        style={{ backgroundColor: colors.disabled, width: fullscreen ? 0 : 2, height: '100%' }}
+      />
+      <ScrollView
+        style={{ flex: 1, backgroundColor: colors.surface, maxWidth: fullscreen ? 0 : undefined }}
+      >
         <View style={[styles.container, { backgroundColor: colors.surface, flex: 1 }]}>
           <Title style={{ textAlign: 'center' }}>Environnement de test - pages groupe</Title>
           <TextInput
@@ -205,6 +242,13 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
             title="Version mobile"
             onPress={() => setMobile(!mobile)}
             right={() => <Switch value={mobile} onValueChange={setMobile} color={colors.primary} />}
+          />
+          <List.Item
+            title="Plein écran"
+            onPress={() => setFullscreen(!fullscreen)}
+            right={() => (
+              <Switch value={fullscreen} onValueChange={setFullscreen} color={colors.primary} />
+            )}
           />
         </View>
       </ScrollView>
