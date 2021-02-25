@@ -266,14 +266,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                       'outdent',
                       'divider',
                       'table',
-                      {
-                        type: 'button',
-                        options: {
-                          className: 'tui-link',
-                          event: 'insertLink',
-                          tooltip: 'Lien',
-                        },
-                      },
+                      'link',
                       'divider',
                       'code',
                       'codeblock',
