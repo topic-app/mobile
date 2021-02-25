@@ -66,6 +66,11 @@ export default {
                   Dev: '/parametres/beta',
                 },
               },
+              Moderation: {
+                screens: {
+                  List: '/moderation',
+                },
+              },
               About: {
                 screens: {
                   List: '/a_propos',
@@ -105,21 +110,9 @@ export default {
           },
           History: {
             screens: {
-              Article: {
-                screens: {
-                  History: '/articles/historique',
-                },
-              },
-              Event: {
-                screens: {
-                  History: '/evenements/historique',
-                },
-              },
-              Main: {
-                screens: {
-                  History: '/parametres/historique',
-                },
-              },
+              Article: '/articles/historique',
+              Event: '/evenements/historique',
+              Main: '/parametres/historique',
             },
           },
           Display: {
