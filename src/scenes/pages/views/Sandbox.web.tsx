@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/core';
 import React from 'react';
 import { View, Appearance, FlatList, ActivityIndicator, Platform, ScrollView } from 'react-native';
-import { Banner, HelperText, List, Text, TextInput, Title } from 'react-native-paper';
+import { Banner, HelperText, List, Switch, Text, TextInput, Title } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import {
@@ -39,11 +39,13 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
   const [errorHeader, setErrorHeader] = React.useState('');
   const [errorContent, setErrorContent] = React.useState('');
   const [errorFooter, setErrorFooter] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [mobile, setMobile] = React.useState(false);
 
   const fullPage: Pages.Page = {
     page: 'main',
     group: 'test',
-    content: [...header, ...content, ...footer],
+    content,
     main: true,
   };
 
@@ -54,7 +56,10 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
       page.every(
         (p: any) =>
           typeof p.id === 'string' &&
-          (p.type === 'image' || p.type === 'color' || p.type === 'gradient') &&
+          (p.type === 'image' ||
+            p.type === 'color' ||
+            p.type === 'gradient' ||
+            p.type === 'loader') &&
           typeof p.data === 'object' &&
           p.columns.every(
             (c: any) =>
@@ -79,7 +84,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
 
   return (
     <View style={[styles.page, { flexDirection: 'row' }]}>
-      <View style={{ flex: 1, flexGrow: 2 }}>
+      <View style={{ flex: 1, flexGrow: 2, maxWidth: mobile ? 400 : undefined }}>
         {Platform.OS !== 'web' && (
           <View
             style={{
@@ -101,7 +106,13 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
           </View>
         )}
 
-        <Page navigation={navigation} page={fullPage} loading={false} />
+        <Page
+          navigation={navigation}
+          page={fullPage}
+          header={header}
+          footer={footer}
+          loading={loading}
+        />
       </View>
       <View style={{ backgroundColor: colors.disabled, width: 2, height: '100%' }} />
       <ScrollView style={{ flex: 1, backgroundColor: colors.surface }}>
@@ -183,6 +194,18 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
           <HelperText visible={!!errorFooter} type="error">
             {errorFooter}
           </HelperText>
+          <List.Item
+            title="Chargement"
+            onPress={() => setLoading(!loading)}
+            right={() => (
+              <Switch value={loading} onValueChange={setLoading} color={colors.primary} />
+            )}
+          />
+          <List.Item
+            title="Version mobile"
+            onPress={() => setMobile(!mobile)}
+            right={() => <Switch value={mobile} onValueChange={setMobile} color={colors.primary} />}
+          />
         </View>
       </ScrollView>
     </View>

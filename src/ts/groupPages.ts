@@ -68,9 +68,16 @@ export type Element<K extends ElementNames> = {
   align?: 'center' | 'flex-start' | 'flex-end';
   maxWidth?: number; // Is hidden if currentWidth > maxWidth
   minWidth?: number; // Is hidder if currentWidth <= minWidth
+  marginLeft?: number;
+  marginRight?: number;
+  marginTop?: number;
+  marginBottom?: number;
+  marginHorizontal?: number;
+  marginVertical?: number;
+  margin?: number;
 };
 
-export type BackgroundNames = 'image' | 'color' | 'gradient';
+export type BackgroundNames = 'image' | 'color' | 'gradient' | 'loader';
 export type BackgroundTypes<K extends BackgroundNames> = {
   image: {
     image: Image;
@@ -83,6 +90,11 @@ export type BackgroundTypes<K extends BackgroundNames> = {
     start: string;
     end: string;
     angle: number;
+  };
+  loader: {
+    type: 'bar' | 'spinner' | 'paper';
+    color?: string;
+    backgroundColor?: string;
   };
 }[K];
 export type Background<K extends BackgroundNames> = {

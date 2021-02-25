@@ -49,7 +49,7 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
     page: page || 'main',
     group,
     main: pageDoc?.main || false,
-    content: pageDoc ? [...header, ...pageDoc.content, ...footer] : header,
+    content: pageDoc?.content || [],
   };
 
   const insets = useSafeAreaInsets();
@@ -325,7 +325,9 @@ const PageDisplay: React.FC<PageDisplayProps> = ({ navigation, route, pages, sta
 
         <Page
           navigation={navigation}
+          header={header}
           page={fullPage}
+          footer={footer}
           loading={(state.pages.loading || !pageDoc) && !state.pages.error}
         />
       </View>

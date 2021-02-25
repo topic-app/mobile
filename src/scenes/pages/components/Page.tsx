@@ -23,14 +23,17 @@ import AboutModal from './AboutModal';
 import Color from './backgrounds/Color';
 import Gradient from './backgrounds/Gradient';
 import Image from './backgrounds/Image';
+import Loader from './backgrounds/Loader';
 
 type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
   page: Pages.Page;
+  header: Pages.Background<BackgroundNames>[];
+  footer: Pages.Background<BackgroundNames>[];
   loading?: boolean;
 };
 
-const Page: React.FC<PageProps> = ({ navigation, page, loading }) => {
+const Page: React.FC<PageProps> = ({ navigation, page, loading, header, footer }) => {
   const theme = themes.light;
   const styles = getStyles(theme);
   const localStyles = getSettingsStyles(theme);
@@ -40,18 +43,20 @@ const Page: React.FC<PageProps> = ({ navigation, page, loading }) => {
     image: Image,
     color: Color,
     gradient: Gradient,
+    loader: Loader,
   } as Record<
     BackgroundNames,
     React.FC<{
       navigation: PagesScreenNavigationProp<any>;
       background: Pages.Background<BackgroundNames>;
       page: PageType;
+      loading?: boolean;
     }>
   >;
 
   const [aboutVisible, setAboutVisible] = React.useState(false);
 
-  const items = page.content;
+  const items = [...(header || []), ...(loading ? [] : page.content || [])];
 
   const dimensions = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -59,28 +64,15 @@ const Page: React.FC<PageProps> = ({ navigation, page, loading }) => {
   return (
     <ThemeProvider theme={themes.light}>
       <View style={styles.page}>
-        {loading && (
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              zIndex: 10000,
-              height: 20,
-              width: '100%',
-            }}
-          >
-            <ProgressBar indeterminate />
-          </View>
-        )}
         <FlatList
           nestedScrollEnabled
           data={items}
           renderItem={({ item }) => {
             const B = Backgrounds[item.type];
-            return <B navigation={navigation} background={item} page={page} />;
+            return <B navigation={navigation} background={item} page={page} loading={loading} />;
           }}
           contentContainerStyle={{
-            minHeight: dimensions.height - insets.bottom - (Platform.OS === 'web' ? 80 : 0),
+            minHeight: dimensions.height - insets.bottom,
           }}
           ListFooterComponentStyle={{
             flex: 1,
@@ -94,6 +86,12 @@ const Page: React.FC<PageProps> = ({ navigation, page, loading }) => {
                 justifyContent: 'flex-end',
               }}
             >
+              {footer.map((item) => {
+                const B = Backgrounds[item.type];
+                return (
+                  <B navigation={navigation} background={item} page={page} loading={loading} />
+                );
+              })}
               <PlatformTouchable
                 style={[
                   styles.container,

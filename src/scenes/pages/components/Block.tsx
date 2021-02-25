@@ -81,6 +81,13 @@ const Block: React.FC<PageProps> = ({ navigation, columns, page }) => {
                   style={[
                     {
                       alignSelf: item.align,
+                      marginLeft: item.marginLeft,
+                      marginRight: item.marginRight,
+                      marginTop: item.marginTop,
+                      marginBottom: item.marginBottom,
+                      marginHorizontal: item.marginHorizontal,
+                      marginVertical: item.marginVertical,
+                      margin: item.margin,
                     },
                   ]}
                 >

@@ -18,6 +18,7 @@ type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
   background: Pages.Background<'color'>;
   page: Page;
+  loading?: boolean;
 };
 
 const Color: React.FC<PageProps> = ({ navigation, background, page }) => {

@@ -19,6 +19,7 @@ type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
   background: Pages.Background<'gradient'>;
   page: Page;
+  loading?: boolean;
 };
 
 const Gradient: React.FC<PageProps> = ({ navigation, background, page }) => {

@@ -18,6 +18,7 @@ type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
   background: Pages.Background<'image'>;
   page: Page;
+  loading?: boolean;
 };
 
 const Image: React.FC<PageProps> = ({ navigation, background, page }) => {
