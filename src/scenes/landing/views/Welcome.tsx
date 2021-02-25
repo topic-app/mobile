@@ -144,7 +144,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
           Animated.timing(animValues.iosBackgroundOpacity, {
             toValue: 1,
             duration: 400,
-            useNativeDriver: false, // can't use native driver for color
+            useNativeDriver: true,
           }),
         ],
         { stopTogether: false },
@@ -185,7 +185,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
           Animated.timing(animValues.iosBackgroundOpacity, {
             toValue: 0,
             duration: 400,
-            useNativeDriver: false, // can't use native driver for color
+            useNativeDriver: true,
           }),
         ],
         { stopTogether: false },
