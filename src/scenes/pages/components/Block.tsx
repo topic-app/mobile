@@ -70,6 +70,12 @@ const Block: React.FC<PageProps> = ({ navigation, columns, page }) => {
             data={c.elements}
             renderItem={({ item }) => {
               const E = Elements[item.type];
+              if (
+                (item.maxWidth && item.maxWidth < dimensions.width) ||
+                (item.minWidth && item.minWidth >= dimensions.width)
+              ) {
+                return null;
+              }
               return (
                 <View
                   style={[

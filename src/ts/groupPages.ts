@@ -66,6 +66,8 @@ export type Element<K extends ElementNames> = {
   type: K;
   data: ElementTypes<K>;
   align?: 'center' | 'flex-start' | 'flex-end';
+  maxWidth?: number; // Is hidden if currentWidth > maxWidth
+  minWidth?: number; // Is hidder if currentWidth <= minWidth
 };
 
 export type BackgroundNames = 'image' | 'color' | 'gradient';
