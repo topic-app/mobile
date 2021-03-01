@@ -9,9 +9,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Config } from '@constants';
+import { updateArticleParams } from '@redux/actions/contentData/articles';
+import { updateEventParams } from '@redux/actions/contentData/events';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
+import Store from '@redux/store';
 import themes from '@styles/Theme';
 import { Preferences, PreferencesState, State } from '@ts/types';
 import { logger, useSafeAreaInsets } from '@utils/index';
@@ -65,6 +68,17 @@ const StoreApp: React.FC<Props> = ({
         updatePrefs({
           completedFeedback: preferences.completedFeedback || [],
           appOpens: preferences.appOpens || 0,
+        });
+      }
+      if (currentVersion < 4) {
+        updateArticleParams({
+          departments: Store.getState().articleData.params.departments?.filter((d) => !!d) || [],
+          ...Store.getState().articleData.params,
+        });
+
+        updateEventParams({
+          departments: Store.getState().eventData.params.departments?.filter((d) => !!d) || [],
+          ...Store.getState().eventData.params,
         });
       }
       // Add all migration scripts here in descending order
