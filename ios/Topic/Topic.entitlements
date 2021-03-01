@@ -6,9 +6,11 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:topicapp.fr</string>
+		<string>applinks:www.topicapp.fr</string>
 		<string>applinks:go.topicapp.fr</string>
 		<string>webcredentials:topicapp.fr</string>
+		<string>webcredentials:www.topicapp.fr</string>
+		<string>applinks:topicapp.fr</string>
 	</array>
 </dict>
 </plist>
