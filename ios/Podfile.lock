@@ -381,9 +381,6 @@ PODS:
     - React-Core
   - react-native-webview (11.2.0):
     - React-Core
-  - react-native-zxcvbn (1.0.1):
-    - React
-    - zxcvbn-ios
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
   - React-RCTAnimation (0.63.4):
@@ -510,7 +507,6 @@ PODS:
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
   - YoutubePlayer-in-WKWebView (0.3.4)
-  - zxcvbn-ios (1.0.4)
 
 DEPENDENCIES:
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
@@ -574,7 +570,6 @@ DEPENDENCIES:
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
-  - react-native-zxcvbn (from `../node_modules/react-native-zxcvbn`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -646,7 +641,6 @@ SPEC REPOS:
     - TOCropViewController
     - YogaKit
     - YoutubePlayer-in-WKWebView
-    - zxcvbn-ios
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -729,8 +723,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/viewpager"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
-  react-native-zxcvbn:
-    :path: "../node_modules/react-native-zxcvbn"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -878,7 +870,6 @@ SPEC CHECKSUMS:
   react-native-slider: b733e17fdd31186707146debf1f04b5d94aa1a93
   react-native-viewpager: 6363ba2652848f431ef07ebb4abebb43c1c42a0c
   react-native-webview: c010115ea45efd0d329ac7746d0cc59579d7860c
-  react-native-zxcvbn: 79d86ae648eac4f4cffc5d47e16f8230de67d9a7
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -922,7 +913,6 @@ SPEC CHECKSUMS:
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
   YoutubePlayer-in-WKWebView: af2f5929fc78882d94bfdfeea999b661b78d9717
-  zxcvbn-ios: fef98b7c80f1512ff0eec47ac1fa399fc00f7e3c
 
 PODFILE CHECKSUM: 3d3832936c52b6c86947d1dc10bee4167b61d968
 

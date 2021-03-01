@@ -213,7 +213,6 @@ const ContentFlatList = <T extends any>({
         //        Note: ↑ this is a TypeScript Generic, not a React component
         ref={flatListRef}
         data={currentSection.data}
-        bounces={false}
         refreshControl={
           currentSection.loading && currentSection.onLoad ? (
             <RefreshControl
