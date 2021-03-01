@@ -38,7 +38,7 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, preferences, ac
         <ScrollView>
           <List.Section>
             <List.Item
-              title="Theme"
+              title="Thème"
               right={() => <List.Icon icon="chevron-right" />}
               description={
                 preferences.useSystemTheme
