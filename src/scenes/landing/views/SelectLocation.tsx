@@ -224,10 +224,10 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       }
     });
 
-    const schoolIds = Array.from(schoolSet);
-    const departmentIds = Array.from(departmentSet);
-    const schoolDepartmentIds = Array.from(schoolDepartmentSet);
-    const global = otherSet.has('global') || schoolIds.length + departmentIds.length === 0;
+    const schoolIds = Array.from(schoolSet).filter((s) => !!s);
+    const departmentIds = Array.from(departmentSet).filter((s) => !!s);
+    const schoolDepartmentIds = Array.from(schoolDepartmentSet).filter((s) => !!s);
+    const global = otherSet.has('global') || schoolIds.length + departmentIds.length === 0 || false;
 
     const params = { schools: schoolIds, departments: departmentIds.concat(schoolDepartmentIds) };
 
