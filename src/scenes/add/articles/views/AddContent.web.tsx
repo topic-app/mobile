@@ -38,7 +38,7 @@ import {
   Content,
 } from '@components/index';
 import { Config, Permissions } from '@constants/index';
-import { articleAdd } from '@redux/actions/apiActions/articles';
+import { articleAdd, articleModify } from '@redux/actions/apiActions/articles';
 import { upload } from '@redux/actions/apiActions/upload';
 import {
   clearArticleCreationData,
