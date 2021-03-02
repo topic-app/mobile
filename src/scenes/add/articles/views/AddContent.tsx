@@ -28,7 +28,7 @@ import {
 } from '@components/index';
 import { RichToolbar, RichEditor } from '@components/richEditor/index';
 import { Config, Permissions } from '@constants/index';
-import { articleAdd } from '@redux/actions/apiActions/articles';
+import { articleAdd, articleModify } from '@redux/actions/apiActions/articles';
 import { upload } from '@redux/actions/apiActions/upload';
 import {
   clearArticleCreationData,
@@ -65,36 +65,66 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
     const replacedData = data || creationData.data;
 
-    trackEvent('articleadd:add-request');
-    articleAdd({
-      title: creationData.title,
-      summary: creationData.summary,
-      date: new Date(),
-      location: creationData.location,
-      opinion: creationData.opinion,
-      group: creationData.group,
-      image: creationData.image,
-      parser: parser || creationData.parser,
-      data: replacedData,
-      tags: creationData.tags,
-      preferences: {
-        comments: true,
-      },
-    })
-      .then(({ _id }) => {
-        trackEvent('articleadd:add-success');
-        navigation.goBack();
-        navigation.replace('Success', { id: _id, creationData });
-        clearArticleCreationData();
+    if (!creationData.editing) {
+      trackEvent('articleadd:add-request');
+      articleAdd({
+        title: creationData.title,
+        summary: creationData.summary,
+        date: new Date(),
+        location: creationData.location,
+        opinion: creationData.opinion,
+        group: creationData.group,
+        image: creationData.image,
+        parser: parser || creationData.parser,
+        data: replacedData,
+        tags: creationData.tags,
+        preferences: {
+          comments: true,
+        },
       })
-      .catch((error) => {
-        Errors.showPopup({
-          type: 'axios',
-          what: "l'ajout de l'article",
-          error,
-          retry: () => add(parser, data),
+        .then(({ _id }) => {
+          trackEvent('articleadd:add-success');
+          navigation.goBack();
+          navigation.replace('Success', { id: _id, creationData });
+          clearArticleCreationData();
+        })
+        .catch((error) => {
+          Errors.showPopup({
+            type: 'axios',
+            what: "l'ajout de l'article",
+            error,
+            retry: () => add(parser, data),
+          });
         });
-      });
+    } else {
+      trackEvent('articleadd:modify-request');
+      articleModify({
+        id: creationData.id,
+        group: creationData.group,
+        title: creationData.title,
+        summary: creationData.summary,
+        location: creationData.location,
+        opinion: creationData.opinion,
+        image: creationData.image,
+        parser: parser || creationData.parser,
+        data: replacedData,
+        tags: creationData.tags,
+      })
+        .then(({ _id }) => {
+          trackEvent('articleadd:modify-success');
+          navigation.goBack();
+          navigation.replace('Success', { id: _id, creationData, editing: true });
+          clearArticleCreationData();
+        })
+        .catch((error) => {
+          Errors.showPopup({
+            type: 'axios',
+            what: "la modification de l'article",
+            error,
+            retry: () => add(parser, data),
+          });
+        });
+    }
   };
 
   const editorTypes: {
@@ -192,7 +222,10 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 }}
               />
               <View style={styles.container}>
-                <Title numberOfLines={1}>{creationData?.title}</Title>
+                <Title numberOfLines={1}>
+                  {creationData?.editing ? 'Modification de ' : ''}
+                  {creationData?.title}
+                </Title>
               </View>
             </View>
             <View style={{ alignSelf: 'center' }}>
@@ -212,7 +245,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               <Button
                 mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                 uppercase={Platform.OS !== 'ios'}
-                loading={reqState.add?.loading}
+                loading={creationData.editing ? reqState.modify?.loading : reqState.add?.loading}
                 onPress={() => {
                   textEditorRef.current?.blurContentEditor();
                   submit();

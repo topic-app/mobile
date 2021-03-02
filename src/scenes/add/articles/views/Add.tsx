@@ -1,14 +1,17 @@
 import React from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import {
   TranslucentStatusBar,
   StepperView,
   PlatformBackButton,
   SafeAreaView,
+  StepperViewPageProps,
 } from '@components/index';
 import getStyles from '@styles/Styles';
+import { ArticleCreationData, State } from '@ts/types';
 import { trackEvent, useTheme } from '@utils/index';
 
 import ArticleAddPageGroup from '../components/AddGroup';
@@ -20,9 +23,10 @@ import getArticleStyles from '../styles/Styles';
 
 type ArticleAddProps = {
   navigation: ArticleAddScreenNavigationProp<'Add'>;
+  creationData: ArticleCreationData;
 };
 
-const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
+const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation, creationData }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const articleStyles = getArticleStyles(theme);
@@ -43,17 +47,25 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
           <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
             <PlatformBackButton onPress={navigation.goBack} />
             <View style={styles.centerIllustrationContainer}>
-              <Text style={articleStyles.title}>Écrire un article</Text>
+              <Text style={articleStyles.title}>
+                {creationData.editing ? `Modifier "${creationData.title}"` : 'Écrire un article'}
+              </Text>
             </View>
             <StepperView
               onChange={() => scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true })}
               pages={[
-                {
-                  key: 'group',
-                  icon: 'account-group',
-                  title: 'Groupe',
-                  component: (props) => <ArticleAddPageGroup {...props} />,
-                },
+                ...(creationData.editing
+                  ? []
+                  : [
+                      {
+                        key: 'group',
+                        icon: 'account-group',
+                        title: 'Groupe',
+                        component: (props: StepperViewPageProps) => (
+                          <ArticleAddPageGroup {...props} />
+                        ),
+                      },
+                    ]),
                 {
                   key: 'location',
                   icon: 'map-marker',
@@ -94,4 +106,9 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation }) => {
   );
 };
 
-export default ArticleAdd;
+const mapStateToProps = (state: State) => {
+  const { articleData } = state;
+  return { creationData: articleData.creationData };
+};
+
+export default connect(mapStateToProps)(ArticleAdd);

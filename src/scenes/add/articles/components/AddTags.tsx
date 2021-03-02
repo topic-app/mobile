@@ -17,7 +17,7 @@ import { Permissions } from '@constants/index';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
-import { Account, State, TagRequestState, TagPreload } from '@ts/types';
+import { Account, State, TagRequestState, TagPreload, ArticleCreationData } from '@ts/types';
 import { checkPermission, trackEvent, useTheme } from '@utils/index';
 
 import TagAddModal from '../../components/TagAddModal';
@@ -29,6 +29,7 @@ type ArticleAddPageTagsProps = StepperViewPageProps & {
   tagsSearch: TagPreload[];
   state: TagRequestState;
   navigate: () => void;
+  creationData: ArticleCreationData;
 };
 
 const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
@@ -38,9 +39,10 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   tagsData,
   tagsSearch,
   state,
+  creationData,
 }) => {
-  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
-  const [selectedData, setSelectedData] = React.useState<TagPreload[]>([]);
+  const [selectedTags, setSelectedTags] = React.useState<string[]>(creationData.tags || []);
+  const [selectedData, setSelectedData] = React.useState<TagPreload[]>(creationData.tagData || []);
   const [searchText, setSearchText] = React.useState('');
 
   const [tagAddModalVisible, setTagAddModalVisible] = React.useState(false);
@@ -308,12 +310,13 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, tags } = state;
+  const { account, tags, articleData } = state;
   return {
     account,
     tagsData: tags.data,
     tagsSearch: tags.search,
     state: tags.state,
+    creationData: articleData.creationData,
   };
 };
 
