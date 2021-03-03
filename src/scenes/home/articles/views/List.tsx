@@ -72,6 +72,11 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
           },
         }),
     },
+    {
+      title: 'Notifications',
+      onPress: () =>
+        navigation.navigate('Main', { screen: 'More', params: { screen: 'Notifications' } }),
+    },
   ];
 
   if (historyEnabled) {
