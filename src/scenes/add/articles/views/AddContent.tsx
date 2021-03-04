@@ -228,7 +228,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 </Title>
               </View>
             </View>
-            <View style={{ alignSelf: 'center' }}>
+            <View style={{ alignSelf: 'center', marginLeft: 40 }}>
               <IconButton
                 onPress={() => {
                   if (!viewing) {
