@@ -669,7 +669,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   React.useEffect(() => {
     fetch();
     updateComments('initial', { parentId: id });
-  }, [null]);
+  }, [id]);
 
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
   const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
