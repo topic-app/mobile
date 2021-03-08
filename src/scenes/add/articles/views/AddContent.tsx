@@ -63,9 +63,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const { colors } = theme;
 
   const add = (parser?: 'markdown' | 'plaintext', data?: string) => {
-    const replacedData = (data || creationData.data)
-      ?.replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
-      .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://');
+    const replacedData = data || creationData.data;
 
     trackEvent('articleadd:add-request');
     articleAdd({
@@ -201,6 +199,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               <IconButton
                 onPress={() => {
                   if (!viewing) {
+                    textEditorRef.current?.blurContentEditor();
                     Keyboard.dismiss();
                   }
                   setViewing(!viewing);
@@ -267,7 +266,16 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     <RichEditor
                       onHeightChange={() => {}}
                       ref={textEditorRef}
-                      onChangeMarkdown={(data: string) => setMarkdown(data)}
+                      onChangeMarkdown={(data: string) =>
+                        setMarkdown(
+                          data
+                            .replace(
+                              new RegExp(Config.google.youtubePlaceholder, 'g'),
+                              'youtube://',
+                            )
+                            .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://'),
+                        )
+                      }
                       editorStyle={{
                         backgroundColor: colors.background,
                         color: colors.text,

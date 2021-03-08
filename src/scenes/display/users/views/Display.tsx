@@ -107,7 +107,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
     } else {
       fetchAccount();
     }
-  }, [null]);
+  }, [id]);
 
   const theme = useTheme();
   const styles = getStyles(theme);

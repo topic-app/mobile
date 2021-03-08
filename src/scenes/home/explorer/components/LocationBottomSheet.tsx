@@ -22,8 +22,8 @@ import getExplorerStyles from '../styles/Styles';
 import { getStrings } from '../utils/getStrings';
 import type { MapMarkerDataType } from '../views/Map';
 
-const bottomSheetPortraitSnapPoints = [0, '21%', '100%'];
-const bottomSheetLandscapeSnapPoints = [0, '21%', '100%'];
+const bottomSheetPortraitSnapPoints = [0, '40%', '100%'];
+const bottomSheetLandscapeSnapPoints = [0, '60%', '100%'];
 
 type LocationBottomSheetProps = {
   bottomSheetRef: React.RefObject<BottomSheetRef>;

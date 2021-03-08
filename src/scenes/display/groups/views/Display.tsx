@@ -110,7 +110,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   React.useEffect(() => {
     fetch();
-  }, [null]);
+  }, [id]);
 
   const group: Group | GroupPreload | GroupVerification | null =
     groups.item?._id === id

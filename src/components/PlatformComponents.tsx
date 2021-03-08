@@ -68,7 +68,7 @@ type PlatformTouchableType = React.ComponentClass<
 >;
 
 const PlatformTouchable = Platform.select<PlatformTouchableType>({
-  ios: TouchableOpacity,
+  ios: TouchableOpacity as React.ComponentClass<TouchableOpacityProps>,
   android: TouchableNativeFeedback,
   default: ReactNativeTouchableOpacity,
 });

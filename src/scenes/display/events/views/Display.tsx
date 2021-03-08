@@ -152,7 +152,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   React.useEffect(() => {
     fetch();
     updateComments('initial', { parentId: id });
-  }, [null]);
+  }, [id]);
 
   const scrollViewRef = React.createRef<ScrollView>();
 
