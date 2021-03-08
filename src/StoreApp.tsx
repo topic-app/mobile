@@ -176,6 +176,11 @@ const StoreApp: React.FC<Props> = ({
 
             routeNameRef.current = currentRouteName;
           }}
+          documentTitle={{
+            formatter: (options, _route) => {
+              return options?.title ? `${options.title} · Topic` : 'Topic';
+            },
+          }}
         >
           {useDevServer ? (
             <View style={{ flex: 1 }}>

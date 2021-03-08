@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator();
 function PetitionDisplayStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Display" component={PetitionDisplay} />
+      <Stack.Screen name="Display" component={PetitionDisplay} options={{ title: 'Pétition' }} />
     </Stack.Navigator>
   );
 }

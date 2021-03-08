@@ -259,6 +259,8 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
     );
   }
 
+  navigation.setOptions({ title: group.name });
+
   return (
     <View style={styles.page}>
       <SafeAreaView>

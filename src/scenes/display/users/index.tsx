@@ -22,7 +22,11 @@ const Stack = createNativeStackNavigator<UserDisplayStackParams>();
 function UserDisplayStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Display">
-      <Stack.Screen name="Display" component={UserDisplay} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Display"
+        component={UserDisplay}
+        options={{ title: 'Utilisateur', headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

@@ -36,10 +36,26 @@ function LandingStackNavigator() {
       initialRouteName={Platform.OS === 'web' ? 'SelectLocation' : 'Welcome'}
       screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}
     >
-      <Stack.Screen name="SelectLocation" component={SelectLocation} />
-      <Stack.Screen name="Welcome" component={LandingWelcome} />
-      <Stack.Screen name="Info" component={LandingInfo} />
-      <Stack.Screen name="Beta" component={LandingBeta} />
+      <Stack.Screen
+        name="SelectLocation"
+        component={SelectLocation}
+        options={{ title: 'Séléctionnez une localisation' }}
+      />
+      <Stack.Screen
+        name="Welcome"
+        component={LandingWelcome}
+        options={{ title: 'Bienvenue sur Topic' }}
+      />
+      <Stack.Screen
+        name="Info"
+        component={LandingInfo}
+        options={{ title: 'Bienvenue sur Topic' }}
+      />
+      <Stack.Screen
+        name="Beta"
+        component={LandingBeta}
+        options={{ title: 'Bienvenue sur Topic' }}
+      />
     </Stack.Navigator>
   );
 }

@@ -29,7 +29,10 @@ const Stack = createNativeStackNavigator<SettingsStackParams>();
 
 const SettingsStackNavigator: React.FC<{}> = () => {
   return (
-    <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      initialRouteName="List"
+      screenOptions={{ headerShown: false, title: 'Paramètres' }}
+    >
       <Stack.Screen name="List" component={SettingsList} />
       <Stack.Screen name="Theme" component={SettingsTheme} />
       <Stack.Screen name="Privacy" component={SettingsPrivacy} />

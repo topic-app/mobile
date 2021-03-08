@@ -27,8 +27,12 @@ const Stack = createNativeStackNavigator<ArticleParamsStackParams>();
 function ArticleParamsStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Params" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Params" component={ArticleParams} />
-      <Stack.Screen name="EditParams" component={ArticleEditParams} />
+      <Stack.Screen name="Params" component={ArticleParams} options={{ title: 'Filtres' }} />
+      <Stack.Screen
+        name="EditParams"
+        component={ArticleEditParams}
+        options={{ title: 'Modifier mes filtres' }}
+      />
     </Stack.Navigator>
   );
 }

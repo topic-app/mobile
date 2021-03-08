@@ -224,21 +224,6 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         }),
       );
 
-  const title =
-    route.params.title ||
-    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-      ? 'Évènements - Hors ligne'
-      : verification
-      ? 'Évènements - modération'
-      : 'Évènements');
-  const subtitle =
-    route.params.title &&
-    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-      ? 'Évènements - Hors ligne'
-      : verification
-      ? 'Évènements - modération'
-      : 'Évènements');
-
   if (!event) {
     // This is when event has not been loaded in list, so we have absolutely no info
     return (
@@ -246,8 +231,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         <AnimatingHeader
           hideBack={dual}
           value={scrollY}
-          title={Platform.OS === 'ios' ? '' : title}
-          subtitle={Platform.OS === 'ios' ? 'Évènements' : subtitle}
+          title={Platform.OS === 'ios' ? '' : 'Évènement'}
+          subtitle={Platform.OS === 'ios' ? 'Évènements' : ''}
         />
         {reqState.events.info.error && (
           <ErrorMessage
@@ -268,6 +253,16 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
       </View>
     );
   }
+
+  const { title } = event;
+  const subtitle =
+    useLists && lists.some((l) => l.items.some((a) => a._id === id))
+      ? 'Évènement · Hors-ligne'
+      : verification
+      ? 'Évènement · Modération'
+      : 'Évènement';
+
+  navigation.setOptions({ title });
 
   return (
     <View style={styles.page}>

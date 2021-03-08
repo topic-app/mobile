@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator<ImageDisplayStackParams>();
 function ImageDisplayStackNavigator() {
   return (
     <Stack.Navigator mode="modal" initialRouteName="Display" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Display" component={ImageDisplay} />
+      <Stack.Screen name="Display" component={ImageDisplay} options={{ title: 'Image' }} />
     </Stack.Navigator>
   );
 }

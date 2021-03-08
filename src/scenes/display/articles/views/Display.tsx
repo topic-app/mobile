@@ -683,29 +683,14 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   const scrollY = new Animated.Value(0);
 
-  const title =
-    route.params.title ||
-    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-      ? 'Actus - Hors ligne'
-      : verification
-      ? 'Actus - modération'
-      : 'Actus');
-  const subtitle =
-    route.params.title &&
-    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-      ? 'Actus - Hors ligne'
-      : verification
-      ? 'Actus - modération'
-      : 'Actus');
-
   if (!article) {
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
         <AnimatingHeader
           value={scrollY}
-          title={Platform.OS === 'ios' ? '' : title}
-          subtitle={Platform.OS === 'ios' ? 'Actus' : subtitle}
+          title={Platform.OS === 'ios' ? '' : 'Actus'}
+          subtitle={Platform.OS === 'ios' ? 'Actus' : ''}
         />
         {reqState.articles.info.error && (
           <ErrorMessage
@@ -726,6 +711,17 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
       </View>
     );
   }
+
+  const { title } = article;
+  const subtitle =
+    useLists && lists.some((l) => l.items.some((a) => a._id === id))
+      ? 'Actus · Hors-ligne'
+      : verification
+      ? 'Actus · Modération'
+      : 'Actus';
+
+  navigation.setOptions({ title });
+
   return (
     <View style={styles.page}>
       <AnimatingHeader

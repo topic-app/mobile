@@ -26,9 +26,9 @@ const Stack = createNativeStackNavigator<HistoryStackParams>();
 function HistoryStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Main" component={MainHistory} />
-      <Stack.Screen name="Article" component={ArticleHistory} />
-      <Stack.Screen name="Event" component={EventHistory} />
+      <Stack.Screen name="Main" component={MainHistory} options={{ title: 'Historique' }} />
+      <Stack.Screen name="Article" component={ArticleHistory} options={{ title: 'Historique' }} />
+      <Stack.Screen name="Event" component={EventHistory} options={{ title: 'Historique' }} />
     </Stack.Navigator>
   );
 }

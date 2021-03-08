@@ -22,7 +22,11 @@ const Stack = createNativeStackNavigator<ArticleConfigureStackParams>();
 function ArticleConfigureStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Configure" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Configure" component={ArticleConfigure} />
+      <Stack.Screen
+        name="Configure"
+        options={{ title: 'Configurer mon feed' }}
+        component={ArticleConfigure}
+      />
     </Stack.Navigator>
   );
 }

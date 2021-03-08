@@ -26,10 +26,26 @@ const Stack = createNativeStackNavigator<AddStackParams>();
 function AddStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Article" component={ArticleAddStackNavigator} />
-      <Stack.Screen name="Event" component={EventAddStackNavigator} />
-      <Stack.Screen name="Group" component={GroupAddStackNavigator} />
-      <Stack.Screen name="Petition" component={PetitionAddStackNavigator} />
+      <Stack.Screen
+        name="Article"
+        options={{ title: 'Articles' }}
+        component={ArticleAddStackNavigator}
+      />
+      <Stack.Screen
+        name="Event"
+        options={{ title: 'Évènements' }}
+        component={EventAddStackNavigator}
+      />
+      <Stack.Screen
+        name="Group"
+        options={{ title: 'Groupes' }}
+        component={GroupAddStackNavigator}
+      />
+      <Stack.Screen
+        name="Petition"
+        options={{ title: 'Pétitions' }}
+        component={PetitionAddStackNavigator}
+      />
     </Stack.Navigator>
   );
 }
