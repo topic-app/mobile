@@ -166,7 +166,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
           </View>
         </>
       ) : null}
-      {appOpens > 5 && (
+      {appOpens > 7 && appOpens < 9 && (
         <View
           style={{
             position: 'absolute',
