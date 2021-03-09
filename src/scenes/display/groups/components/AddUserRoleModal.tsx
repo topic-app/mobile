@@ -229,21 +229,23 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
         }}
         renderSectionFooter={({ section: { key } }) => (
           <View>
-            <List.Item
-              title="Créer un rôle"
-              titleStyle={{ color: colors.disabled }}
-              descriptionStyle={{ color: colors.disabled }}
-              description="Non disponible"
-              left={() =>
-                Platform.OS !== 'ios' && (
-                  <IconButton
-                    style={{ width: 24, height: 24 }}
-                    color={colors.disabled}
-                    icon="plus"
-                  />
-                )
-              }
-            />
+            {key === 'secondary' && (
+              <List.Item
+                title="Créer un rôle"
+                titleStyle={{ color: colors.disabled }}
+                descriptionStyle={{ color: colors.disabled }}
+                description="Non disponible"
+                left={() =>
+                  Platform.OS !== 'ios' && (
+                    <IconButton
+                      style={{ width: 24, height: 24 }}
+                      color={colors.disabled}
+                      icon="plus"
+                    />
+                  )
+                }
+              />
+            )}
             {key === 'primary' && (
               <HelperText visible={errorVisible} type="error">
                 Vous devez spécifier un rôle principal
