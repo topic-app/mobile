@@ -66,7 +66,7 @@ async function fetchUser(userId: string) {
   );
 }
 
-async function fetchUserByUsername(username: string): Promise<User> {
+async function fetchUserByUsername(username: string) {
   return Store.dispatch(
     fetchCreator({
       update: UPDATE_USERS_ITEM,
@@ -76,7 +76,7 @@ async function fetchUserByUsername(username: string): Promise<User> {
       dataType: 'users',
       params: { username },
     }),
-  ) as Promise<User>;
+  );
 }
 
 /**
