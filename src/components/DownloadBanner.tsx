@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
-import { PreferencesState, State } from '@ts/types';
+import { PreferencesState, State, Account } from '@ts/types';
 import { useLayout, useTheme } from '@utils';
 
 import Illustration from './Illustration';
@@ -13,17 +13,18 @@ import { PlatformTouchable } from './PlatformComponents';
 
 type Props = {
   preferences: PreferencesState;
+  account: Account;
   mobile?: boolean;
 };
 
-const DownloadBanner: React.FC<Props> = ({ preferences, mobile }) => {
+const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
 
   const layout = useLayout();
 
-  if (!preferences.showDownloadBanner) {
+  if (!preferences.showDownloadBanner || account.loggedIn) {
     return null;
   }
 
@@ -112,8 +113,8 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile }) => {
 };
 
 const mapStateToProps = (state: State) => {
-  const { preferences } = state;
-  return { preferences };
+  const { preferences, account } = state;
+  return { preferences, account };
 };
 
 export default connect(mapStateToProps)(DownloadBanner);

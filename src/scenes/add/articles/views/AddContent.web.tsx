@@ -148,7 +148,12 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const [viewing, setViewing] = React.useState(false);
 
-  const [markdown, setMarkdown] = React.useState('');
+  const [markdown, setMarkdown] = React.useState(
+    creationData.data
+      ?.replace(/\n/g, '<br>')
+      .replace(new RegExp('youtube://', 'g'), Config.google.youtubePlaceholder)
+      .replace(new RegExp('cdn://', 'g'), Config.cdn.baseUrl) || '',
+  );
 
   const textEditorRef = React.createRef<Editor>();
 
@@ -281,7 +286,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 >
                   <Editor
                     ref={textEditorRef}
-                    initialValue=""
+                    initialValue={markdown}
                     previewStyle="vertical"
                     usageStatistics={false}
                     height={`${dimensions.height - 200}px`}
