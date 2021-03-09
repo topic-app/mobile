@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator<SearchStackParams>();
 function SearchStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Search" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Search" component={Search} options={{ title: 'Recherche' }} />
+      <Stack.Screen name="Search" component={Search} options={{ title: 'Rechercher' }} />
     </Stack.Navigator>
   );
 }

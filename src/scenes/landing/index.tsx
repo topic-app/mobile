@@ -39,7 +39,7 @@ function LandingStackNavigator() {
       <Stack.Screen
         name="SelectLocation"
         component={SelectLocation}
-        options={{ title: 'Séléctionnez une localisation' }}
+        options={{ title: 'Localisation' }}
       />
       <Stack.Screen
         name="Welcome"
