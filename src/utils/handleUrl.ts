@@ -171,7 +171,7 @@ function handleUrl(
           onPress: () => openUrl(targetUrl, customTab),
         },
       ],
-      { cancelable: false },
+      { cancelable: true },
     );
   }
 }

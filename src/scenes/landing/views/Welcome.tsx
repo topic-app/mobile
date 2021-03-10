@@ -328,8 +328,8 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               <Animated.Text
                 style={[landingStyles.illustrationText, { color: normalTextColorAnim }]}
               >
-                Découvrez l&apos;actu lycéenne et écrivez vos propres articles. Détaillez vos
-                projets, votre engagement, et partagez le avec toute la France !
+                Découvrez l&apos;actu de la jeunesse engagée et écrivez vos propres articles.
+                Détaillez vos projets, votre engagement, et partagez le avec toute la France !
               </Animated.Text>
             </View>
             <View key="3" style={landingStyles.viewPage}>
@@ -355,7 +355,8 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               <View style={{ height: '70%', width: '70%' }} />
               <Text style={[landingStyles.subtitle, landingStyles.illustrationText]}>Groupes</Text>
               <Text style={landingStyles.illustrationText}>
-                Rejoignez des groupes pour représenter vos clubs, associations et organisations
+                Rejoignez et créez des groupes pour représenter vos clubs, associations et
+                organisations.
               </Text>
             </View>
             <View key="6" style={landingStyles.viewPage}>

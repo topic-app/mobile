@@ -30,7 +30,7 @@ N'hésitez pas à créer un compte sur [chat.topicapp.fr](https://chat.topicapp.
 
 ## Documentation
 
-Visitez le [wiki](https://gitlab.com/topicapp/mobile/~/wiki/Home) pour plus d'infos.
+Visitez le [wiki](https://gitlab.com/topicapp/mobile/-/wikis/home) pour plus d'infos.
 
 ## Contributeurs
 

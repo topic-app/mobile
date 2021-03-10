@@ -5,13 +5,11 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/st
 
 import { MainScreenNavigationProp } from '../Main';
 import Search from './views/Search';
-import SearchTags from './views/Tags';
 
 export type SearchStackParams = {
   Search: {
     initialCategory: 'articles' | 'events' | 'groups' | 'users';
   };
-  Tags: undefined;
 };
 
 export type SearchScreenNavigationProp<K extends keyof SearchStackParams> = CompositeNavigationProp<
@@ -24,8 +22,7 @@ const Stack = createNativeStackNavigator<SearchStackParams>();
 function SearchStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Search" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Search" component={Search} />
-      <Stack.Screen name="Tags" component={SearchTags} />
+      <Stack.Screen name="Search" component={Search} options={{ title: 'Rechercher' }} />
     </Stack.Navigator>
   );
 }

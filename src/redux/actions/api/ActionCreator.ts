@@ -219,7 +219,7 @@ function fetchCreator<T extends ApiItemString>({
   stateName,
   useArray = false,
   auth = false,
-}: FetchCreatorParams<T>): AppThunk {
+}: FetchCreatorParams<T>): AppThunk<Promise<ApiItemMap[T]>> {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
       dispatch({

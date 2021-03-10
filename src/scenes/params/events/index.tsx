@@ -27,8 +27,12 @@ const Stack = createNativeStackNavigator<EventParamsStackParams>();
 function EventParamsStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Params" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Params" component={EventParams} />
-      <Stack.Screen name="EditParams" component={EventEditParams} />
+      <Stack.Screen name="Params" component={EventParams} options={{ title: 'Filtres' }} />
+      <Stack.Screen
+        name="EditParams"
+        component={EventEditParams}
+        options={{ title: 'Modifier mes filtres' }}
+      />
     </Stack.Navigator>
   );
 }

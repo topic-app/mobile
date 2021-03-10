@@ -44,14 +44,22 @@ function LinkingStackNavigator() {
       <Stack.Screen
         name="DeleteAccount"
         component={DeleteAccount}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, title: 'Supprimer mon compte' }}
       />
-      <Stack.Screen name="EmailChange" component={EmailChange} options={{ headerShown: false }} />
-      <Stack.Screen name="EmailVerify" component={EmailVerify} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="EmailChange"
+        component={EmailChange}
+        options={{ headerShown: false, title: 'Changer mon adresse email' }}
+      />
+      <Stack.Screen
+        name="EmailVerify"
+        component={EmailVerify}
+        options={{ headerShown: false, title: 'Vérifier mon adresse email' }}
+      />
       <Stack.Screen
         name="ResetPassword"
         component={ResetPassword}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, title: 'Réinitialiser mon mot de passe' }}
       />
     </Stack.Navigator>
   );

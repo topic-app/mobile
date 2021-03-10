@@ -30,9 +30,9 @@ const Stack = createNativeStackNavigator<AboutStackParams>();
 function AboutStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="List" component={AboutList} />
-      <Stack.Screen name="Legal" component={AboutLegal} />
-      <Stack.Screen name="Licenses" component={AboutLicenses} />
+      <Stack.Screen name="List" component={AboutList} options={{ title: 'À propos' }} />
+      <Stack.Screen name="Legal" component={AboutLegal} options={{ title: 'Mentions légales' }} />
+      <Stack.Screen name="Licenses" component={AboutLicenses} options={{ title: 'Licenses' }} />
     </Stack.Navigator>
   );
 }

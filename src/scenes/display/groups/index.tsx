@@ -24,8 +24,8 @@ const Stack = createNativeStackNavigator<GroupDisplayStackParams>();
 function GroupDisplayStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Display" component={GroupDisplay} />
-      <Stack.Screen name="Description" component={GroupDescription} />
+      <Stack.Screen name="Display" component={GroupDisplay} options={{ title: 'Groupe' }} />
+      <Stack.Screen name="Description" component={GroupDescription} options={{ title: 'Groupe' }} />
     </Stack.Navigator>
   );
 }

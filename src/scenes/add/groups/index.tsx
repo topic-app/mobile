@@ -37,7 +37,7 @@ function GroupAddStackNavigator() {
       <Stack.Screen
         name="Success"
         component={GroupAddSuccess}
-        options={{ title: 'Groupe ajouté' }}
+        options={{ title: 'Créer un groupe' }}
       />
     </Stack.Navigator>
   );

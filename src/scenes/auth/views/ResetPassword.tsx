@@ -18,12 +18,11 @@ import {
   PlatformBackButton,
   Illustration,
   SafeAreaView,
-  PlatformTouchable,
 } from '@components/index';
 import { requestPasswordReset } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { AccountRequestState, State } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';

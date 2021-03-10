@@ -26,6 +26,10 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
 
   const navigation = useNavigation<NativeStackNavigationProp<any, any>>();
 
+  const [loaded, setLoaded] = React.useState(false);
+
+  React.useEffect(() => setLoaded(true), [null]);
+
   if (parser === 'markdown') {
     return (
       <Markdown
@@ -92,6 +96,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
               );
             } else if (src.startsWith('youtube://')) {
               if (Platform.OS === 'web') {
+                if (!loaded) return null;
                 return (
                   <iframe
                     src={`https://www.youtube.com/embed/${src.substring(10)}`}

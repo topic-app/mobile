@@ -7,7 +7,7 @@ import { DisplayScreenNavigationProp } from '../index';
 import ArticleDisplay from './views/Display';
 
 export type ArticleDisplayStackParams = {
-  Display: { id: string; title: string; useLists: boolean; verification: boolean };
+  Display: { id: string; useLists: boolean; verification: boolean };
 };
 
 export type ArticleDisplayScreenNavigationProp<
