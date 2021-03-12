@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 
 import { searchArticles } from '@redux/actions/api/articles';
 import { searchEvents } from '@redux/actions/api/events';
+import { searchGroups } from '@redux/actions/api/groups';
 import getStyles from '@styles/Styles';
 import {
   ArticlePreload,
@@ -14,9 +15,14 @@ import {
   ArticleRequestState,
   EventRequestState,
   State,
+  GroupPreload,
+  GroupRequestState,
+  Group,
+  Account,
 } from '@ts/types';
 import { useTheme } from '@utils/index';
 
+import { InlineCard } from './Cards';
 import CustomTabView from './CustomTabView';
 import ErrorMessage from './ErrorMessage';
 import { CategoryTitle } from './Typography';
@@ -25,14 +31,17 @@ import EventCard from './cards/Event';
 
 type ContentTabViewProps = {
   searchParams: { authors?: string[]; groups?: string[]; tags?: string[]; schools?: string[] };
-  types?: ('articles' | 'events')[];
+  types?: ('articles' | 'events' | 'groups')[];
   showHeader?: boolean;
   header?: string;
   maxCards?: number;
   articles: ArticlePreload[];
   events: EventPreload[];
+  groups: (GroupPreload | Group)[];
   articlesState: ArticleRequestState;
   eventsState: EventRequestState;
+  groupsState: GroupRequestState;
+  account: Account;
 };
 
 const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
@@ -40,12 +49,15 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     searchParams,
     articles,
     events,
+    groups,
     articlesState,
     eventsState,
+    groupsState,
     types = ['articles', 'events'],
     showHeader = true,
     header,
     maxCards = 0,
+    account,
   }) => {
     const theme = useTheme();
     const { colors } = theme;
@@ -58,6 +70,9 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
       }
       if (types.includes('events')) {
         searchEvents('initial', '', searchParams, false);
+      }
+      if (types.includes('groups')) {
+        searchGroups('initial', '', searchParams, false);
       }
       // Use JSON.stringify sparingly with deep equality checks
       // Make sure the data that you want to stringify is somewhat small
@@ -197,14 +212,69 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
 
     return (
       <View>
-        {showHeader && (articles.length || events.length) && (
+        {types.includes('groups') && !!groupsState.search?.error && (
+          <ErrorMessage
+            type="axios"
+            strings={{
+              what: 'le chargement des groups',
+              contentPlural: 'les groups',
+            }}
+            error={groupsState.search?.error}
+            retry={() => searchGroups('initial', '', searchParams, false)}
+          />
+        )}
+        {types.includes('groups') && (
+          <View>
+            {groups
+              .sort((a, b) => (b.cache?.followers || 0) - (a.cache?.followers || 0))
+              .map((g) => (
+                <View key={g._id}>
+                  <InlineCard
+                    avatar={g?.avatar}
+                    title={g?.name || g?.displayName}
+                    subtitle={`Groupe ${g?.type}`}
+                    onPress={() =>
+                      navigation.navigate('Root', {
+                        screen: 'Main',
+                        params: {
+                          screen: 'Display',
+                          params: {
+                            screen: 'Group',
+                            params: {
+                              screen: 'Display',
+                              params: { id: g?._id, title: g?.displayName },
+                            },
+                          },
+                        },
+                      })
+                    }
+                    badge={
+                      account.loggedIn &&
+                      account.accountInfo?.user &&
+                      account.accountInfo?.user?.data?.following?.groups.some(
+                        (gr) => gr._id === gr?._id,
+                      )
+                        ? 'heart'
+                        : g?.official
+                        ? 'check-decagram'
+                        : undefined
+                    }
+                    badgeColor={colors.primary}
+                  />
+                </View>
+              ))}
+          </View>
+        )}
+        {showHeader && !!(articles.length || events.length) && (
           <View style={styles.container}>
             <CategoryTitle>
               {header || (pages.length === 1 ? `Derniers ${pages[0].title}` : 'Derniers contenus')}
             </CategoryTitle>
           </View>
         )}
-        {articlesState.search?.loading?.initial || eventsState.search?.loading?.initial ? (
+        {articlesState.search?.loading?.initial ||
+        eventsState.search?.loading?.initial ||
+        groupsState.search?.loading?.initial ? (
           <View style={styles.container}>
             <ActivityIndicator size="large" color={colors.primary} />
           </View>
@@ -247,12 +317,15 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
 );
 
 const mapStateToProps = (state: State) => {
-  const { articles, events } = state;
+  const { articles, events, groups, account } = state;
   return {
     articles: articles.search,
     events: events.search,
+    groups: groups.search,
     articlesState: articles.state,
     eventsState: events.state,
+    groupsState: groups.state,
+    account,
   };
 };
 

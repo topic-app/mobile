@@ -15,7 +15,7 @@ import {
   PlatformBackButton,
 } from '@components/index';
 import { updateMapLocations } from '@redux/actions/api/places';
-import { MapLocation, PlaceRequestState, State } from '@ts/types';
+import { GroupsState, MapLocation, PlaceRequestState, State } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
 import getExplorerStyles from '../styles/Styles';
@@ -194,7 +194,10 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
               />
             ) : null}
             {place.type === 'school' ? (
-              <ContentTabView searchParams={{ schools: [place.id] }} />
+              <ContentTabView
+                searchParams={{ schools: [place.id] }}
+                types={['articles', 'events', 'groups']}
+              />
             ) : null}
           </ScrollView>
         ) : (
