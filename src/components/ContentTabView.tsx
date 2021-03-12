@@ -66,7 +66,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
 
     const pages = [];
 
-    if (articles.length !== 0 && types.includes('articles')) {
+    if (articles.length && types.includes('articles')) {
       pages.push({
         key: 'articles',
         title: 'Articles',
@@ -131,7 +131,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
       });
     }
 
-    if (events.length !== 0 && types.includes('events')) {
+    if (events.length && types.includes('events')) {
       pages.push({
         key: 'events',
         title: 'Évènements',
@@ -197,7 +197,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
 
     return (
       <View>
-        {showHeader && (
+        {showHeader && (articles.length || events.length) && (
           <View style={styles.container}>
             <CategoryTitle>
               {header || (pages.length === 1 ? `Derniers ${pages[0].title}` : 'Derniers contenus')}
