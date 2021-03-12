@@ -264,7 +264,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                 <Divider style={{ marginVertical: 10 }} />
                 {!user.data?.public && (
                   <View>
-                    <Divider style={{ height: 2, backgroundColor: colors.primary }} />
                     <View
                       style={
                         (styles.container,
@@ -284,7 +283,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                       />
                       <Text style={{ fontSize: 20, color: colors.primary }}>Compte privé</Text>
                     </View>
-                    <Divider style={{ height: 2, backgroundColor: colors.primary }} />
                     <View style={{ height: 10 }} />
                   </View>
                 )}
