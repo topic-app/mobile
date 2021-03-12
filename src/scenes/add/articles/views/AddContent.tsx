@@ -152,9 +152,9 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const [toolbarInitialized, setToolbarInitialized] = React.useState(false);
   const [valid, setValid] = React.useState(true);
 
-  const [markdown, setMarkdown] = React.useState('');
+  const [markdown, setMarkdown] = React.useState(creationData.data || '');
   const [editor, setEditor] = React.useState<'plaintext' | 'source' | 'rich'>(
-    Platform.OS === 'web' ? 'source' : 'rich',
+    creationData.editing ? (creationData.parser === 'markdown' ? 'source' : 'plaintext') : 'rich',
   );
   const [youtubeAddModalVisible, setYoutubeAddModalVisible] = React.useState(false);
 
