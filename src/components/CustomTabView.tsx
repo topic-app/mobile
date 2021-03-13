@@ -73,7 +73,7 @@ const CustomTabView: React.FC<Props> = ({
       );
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <TabView
         navigationState={{ index, routes: pages }}
         renderScene={renderScene}

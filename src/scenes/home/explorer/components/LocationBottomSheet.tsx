@@ -1,7 +1,14 @@
 import { useFocusEffect } from '@react-navigation/core';
 import React from 'react';
-import { View, BackHandler, useWindowDimensions, Platform, ScrollView } from 'react-native';
-import { ActivityIndicator, Divider, Text } from 'react-native-paper';
+import {
+  View,
+  BackHandler,
+  useWindowDimensions,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import { Divider, Text } from 'react-native-paper';
 import Animated, { call, cond, greaterThan, lessThan, useCode } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -169,7 +176,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
           </View>
         </View>
         {place && !reqState.map.loading && !reqState.map.error ? (
-          <ScrollView>
+          <ScrollView bounces={false}>
             {/* HACK but whatever */}
             <Divider />
             {addresses.map((address) => (
@@ -201,7 +208,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
             ) : null}
           </ScrollView>
         ) : (
-          <ActivityIndicator style={{ transform: [{ scale: 1.5 }] }} />
+          <ActivityIndicator size="large" color={colors.primary} />
         )}
       </View>
     );

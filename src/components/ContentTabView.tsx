@@ -2,12 +2,12 @@ import { useNavigation } from '@react-navigation/core';
 import _ from 'lodash';
 import React from 'react';
 import { View, ActivityIndicator, FlatList } from 'react-native';
-import { Divider } from 'react-native-paper';
+import { Divider, Text } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { searchArticles } from '@redux/actions/api/articles';
-import { searchEvents } from '@redux/actions/api/events';
-import { searchGroups } from '@redux/actions/api/groups';
+import { clearArticles, searchArticles } from '@redux/actions/api/articles';
+import { clearEvents, searchEvents } from '@redux/actions/api/events';
+import { clearGroups, searchGroups } from '@redux/actions/api/groups';
 import getStyles from '@styles/Styles';
 import {
   ArticlePreload,
@@ -65,13 +65,17 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     const navigation = useNavigation();
 
     React.useEffect(() => {
+      console.log('ContentTabView useEffect');
       if (types.includes('articles')) {
+        clearArticles(false, true, false, false);
         searchArticles('initial', '', searchParams, false);
       }
       if (types.includes('events')) {
+        clearEvents(false, true);
         searchEvents('initial', '', searchParams, false);
       }
       if (types.includes('groups')) {
+        clearGroups(false, true, false);
         searchGroups('initial', '', searchParams, false);
       }
       // Use JSON.stringify sparingly with deep equality checks
@@ -86,7 +90,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
         key: 'articles',
         title: 'Articles',
         component: (
-          <View>
+          <View style={{ flex: 1 }}>
             {articlesState.search?.error && (
               <ErrorMessage
                 type="axios"
@@ -105,6 +109,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
             )}
             {articlesState.search?.success && (
               <FlatList
+                scrollEnabled={false}
                 data={maxCards ? articles.slice(0, maxCards) : articles}
                 keyExtractor={(i) => i._id}
                 ListFooterComponent={
@@ -151,7 +156,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
         key: 'events',
         title: 'Évènements',
         component: (
-          <View>
+          <View style={{ flex: 1 }}>
             {eventsState.search?.error && (
               <ErrorMessage
                 type="axios"
@@ -170,6 +175,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
             )}
             {eventsState.search?.success && (
               <FlatList
+                scrollEnabled={false}
                 data={maxCards ? events.slice(0, maxCards) : events}
                 keyExtractor={(i) => i._id}
                 ListFooterComponent={
@@ -211,7 +217,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     }
 
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         {types.includes('groups') && !!groupsState.search?.error && (
           <ErrorMessage
             type="axios"
@@ -272,15 +278,13 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
             </CategoryTitle>
           </View>
         )}
-        {articlesState.search?.loading?.initial ||
-        eventsState.search?.loading?.initial ||
-        groupsState.search?.loading?.initial ? (
+        {articlesState.search?.loading?.initial || eventsState.search?.loading?.initial ? (
           <View style={styles.container}>
             <ActivityIndicator size="large" color={colors.primary} />
           </View>
         ) : (
           (articles.length !== 0 || events.length !== 0) && (
-            <View>
+            <View style={{ flex: 1 }}>
               <CustomTabView hideTabBar={pages.length < 2} scrollEnabled={false} pages={pages} />
               <View style={{ height: 20 }} />
             </View>
@@ -297,16 +301,20 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
       // Only check ids because checking objects will take forever
       articleIds: prevProps.articles.map((a) => a._id),
       eventIds: prevProps.events.map((e) => e._id),
+      groupIds: prevProps.groups.map((g) => g._id),
       articleState: prevProps.articlesState,
       eventState: prevProps.eventsState,
+      groupsState: prevProps.groupsState,
     };
 
     const next = {
       params: nextProps.searchParams,
       articleIds: nextProps.articles.map((a) => a._id),
       eventIds: nextProps.events.map((e) => e._id),
+      groupIds: nextProps.groups.map((d) => d._id),
       articleState: nextProps.articlesState,
       eventState: nextProps.eventsState,
+      groupsState: nextProps.groupsState,
     };
 
     // Lodash performs deep equality check, works with arrays and objects
