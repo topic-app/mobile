@@ -62,6 +62,12 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
           Aucun évènement prévu
         </FullscreenIllustration>
       );
+    } else if (sectionKey === 'following') {
+      return (
+        <FullscreenIllustration illustration="event" style={{ height }}>
+          Vous verrez içi les évènements des groupes et utilisateurs que vous suivez
+        </FullscreenIllustration>
+      );
     } else if (group === 'lists') {
       return (
         <FullscreenIllustration illustration="article-lists" style={{ height }}>
