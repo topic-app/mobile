@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import React from 'react';
 import { Linking, Platform, View, ActivityIndicator } from 'react-native';
 import { Text, Card, IconButton } from 'react-native-paper';
