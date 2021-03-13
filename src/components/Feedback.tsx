@@ -58,6 +58,9 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
     uri += `&main=${rating}`;
   }
 
+  // TEMP: Temporarily disabling feedback because feedback.topicapp.fr doesnt work anymore
+  return null;
+
   if (preferences.completedFeedback?.includes(type) && !completed) {
     return null;
   }
