@@ -47,7 +47,7 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation, creationData }) => 
           <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
             <PlatformBackButton onPress={navigation.goBack} />
             <View style={styles.centerIllustrationContainer}>
-              <Text style={articleStyles.title}>
+              <Text style={articleStyles.title} numberOfLines={1}>
                 {creationData.editing ? `Modifier "${creationData.title}"` : 'Écrire un article'}
               </Text>
             </View>
