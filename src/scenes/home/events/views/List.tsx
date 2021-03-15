@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { AnimatingHeader, Illustration } from '@components';
 import { Config } from '@constants';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
 import getStyles from '@styles/Styles';
 import { State } from '@ts/types';
 import { useTheme } from '@utils';
@@ -112,12 +113,13 @@ const EventListScreen: React.FC<EventListProps> = ({
         <EventListComponent
           scrollY={scrollY}
           initialTabKey={route.params?.initialList}
-          onEventCreatePressed={() =>
+          onEventCreatePressed={() => {
+            updateEventCreationData({ editing: false, id: undefined });
             navigation.navigate('Main', {
               screen: 'Add',
               params: { screen: 'Event', params: { screen: 'Add' } },
-            })
-          }
+            });
+          }}
           onEventPress={
             shouldRenderDualView
               ? (eventData) => setEvent(eventData)

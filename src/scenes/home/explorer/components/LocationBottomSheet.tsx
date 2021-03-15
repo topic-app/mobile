@@ -1,7 +1,14 @@
 import { useFocusEffect } from '@react-navigation/core';
 import React from 'react';
-import { View, BackHandler, useWindowDimensions, Platform, ScrollView } from 'react-native';
-import { ActivityIndicator, Divider, Text } from 'react-native-paper';
+import {
+  View,
+  BackHandler,
+  useWindowDimensions,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import { Divider, Text } from 'react-native-paper';
 import Animated, { call, cond, greaterThan, lessThan, useCode } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -15,7 +22,7 @@ import {
   PlatformBackButton,
 } from '@components/index';
 import { updateMapLocations } from '@redux/actions/api/places';
-import { MapLocation, PlaceRequestState, State } from '@ts/types';
+import { GroupsState, MapLocation, PlaceRequestState, State } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
 import getExplorerStyles from '../styles/Styles';
@@ -169,7 +176,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
           </View>
         </View>
         {place && !reqState.map.loading && !reqState.map.error ? (
-          <ScrollView>
+          <ScrollView bounces={false}>
             {/* HACK but whatever */}
             <Divider />
             {addresses.map((address) => (
@@ -194,11 +201,14 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
               />
             ) : null}
             {place.type === 'school' ? (
-              <ContentTabView searchParams={{ schools: [place.id] }} />
+              <ContentTabView
+                searchParams={{ schools: [place.id] }}
+                types={['articles', 'events', 'groups']}
+              />
             ) : null}
           </ScrollView>
         ) : (
-          <ActivityIndicator style={{ transform: [{ scale: 1.5 }] }} />
+          <ActivityIndicator size="large" color={colors.primary} />
         )}
       </View>
     );

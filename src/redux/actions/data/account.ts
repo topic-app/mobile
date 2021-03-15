@@ -204,9 +204,13 @@ function fetchAccountCreator(): AppThunk {
     const location = result.data?.profile[0]?.data?.location;
     const data = {
       selected: true,
-      schools: location?.schools?.map((l: SchoolPreload) => l._id),
-      departments: location?.departments?.map((l: DepartmentPreload) => l._id),
-      global: location?.global,
+      schools: location?.schools
+        ?.map((l: SchoolPreload) => l._id)
+        ?.filter((s: SchoolPreload) => !!s),
+      departments: location?.departments
+        ?.map((l: DepartmentPreload) => l._id)
+        ?.filter((l: DepartmentPreload) => !!l),
+      global: location?.global || false,
     };
     dispatch({
       type: UPDATE_LOCATION,

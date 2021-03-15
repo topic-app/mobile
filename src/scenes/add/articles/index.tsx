@@ -15,6 +15,7 @@ export type ArticleAddStackParams = {
   Success: {
     id?: string;
     creationData?: ArticleCreationData;
+    editing?: boolean;
   };
   Location: {
     hideSearch: boolean;
