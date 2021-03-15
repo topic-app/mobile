@@ -27,12 +27,6 @@ const initialState: ArticlesContentState = {
             icon: 'star-outline',
             items: [],
           },
-          {
-            id: '1',
-            name: 'A lire plus tard',
-            icon: 'history',
-            items: [],
-          },
         ],
   quicks: [],
   prefs: {
