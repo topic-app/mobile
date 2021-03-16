@@ -5,6 +5,7 @@ import Store from '@redux/store';
 
 import { Config } from '../constants';
 import axios from './axiosInstance';
+import { crashlytics } from './firebase';
 import logger from './logger';
 
 type ApiDataType = {
@@ -47,8 +48,19 @@ async function request(
         method,
         endpoint: `${url}/${endpoint}`,
         params,
-        data: error.response,
+        data: error?.response,
       });
+      if (!__DEV__) {
+        crashlytics()?.recordError(
+          new Error(
+            `GET Request failed ${JSON.stringify({
+              status: error?.status,
+              endpoint: `${url}/${endpoint}`,
+              data: error?.response,
+            })}`,
+          ),
+        );
+      }
       throw {
         success: false,
         reason: 'axios',
@@ -70,7 +82,6 @@ async function request(
         data: res.data.info,
       };
     }
-    logger.warn('Request error');
     logger.http({
       status: res?.status,
       method,
@@ -78,6 +89,17 @@ async function request(
       params,
       data: res?.data?.info,
     });
+    if (!__DEV__) {
+      crashlytics()?.recordError(
+        new Error(
+          `GET Request server failure ${JSON.stringify({
+            status: res?.status,
+            endpoint: `${url}/${endpoint}`,
+            data: res?.data?.info,
+          })}`,
+        ),
+      );
+    }
     throw { success: false, reason: 'success', status: res?.status, error: null, res };
   }
   if (method === 'post') {
@@ -85,7 +107,6 @@ async function request(
     try {
       res = await axios.post(`${url}/${endpoint}`, params, { headers });
     } catch (error) {
-      logger.warn('Request error');
       logger.http({
         status: error.status,
         method,
@@ -93,6 +114,17 @@ async function request(
         params,
         data: error.response,
       });
+      if (!__DEV__) {
+        crashlytics()?.recordError(
+          new Error(
+            `POST Request failed ${JSON.stringify({
+              status: error?.status,
+              endpoint: `${url}/${endpoint}`,
+              data: error?.response,
+            })}`,
+          ),
+        );
+      }
       throw {
         success: false,
         reason: 'axios',
@@ -114,7 +146,6 @@ async function request(
         data: res.data.info,
       };
     }
-    logger.warn('Request error');
     logger.http({
       status: res.status,
       method,
@@ -122,6 +153,18 @@ async function request(
       params,
       data: res.data.info,
     });
+    if (!__DEV__) {
+      crashlytics()?.recordError(
+        new Error(
+          `POST Request server failure ${JSON.stringify({
+            status: res?.status,
+            method,
+            endpoint: `${url}/${endpoint}`,
+            data: res?.data?.info,
+          })}`,
+        ),
+      );
+    }
     throw { success: false, reason: 'success', status: res?.status, error: null, res };
   }
   logger.warn(`Request failed to ${endpoint} because of missing method ${method}`);
