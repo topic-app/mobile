@@ -3,7 +3,7 @@ import { View, ViewStyle, TextProps, StyleProp, TextStyle } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 type CategoryTitleProps = TextProps & {
   icon?: string;

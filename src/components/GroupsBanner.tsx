@@ -3,11 +3,11 @@ import { View } from 'react-native';
 import { Text, Subheading, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import { groupMemberAccept, groupMemberReject } from '@redux/actions/apiActions/groups';
 import { fetchWaitingGroups, fetchGroups } from '@redux/actions/data/account';
 import { State, Account, GroupRequestState } from '@ts/types';
-import { handleUrl, Alert, trackEvent } from '@utils/index';
+import { handleUrl, Alert, trackEvent } from '@utils';
 
 import Avatar from './Avatar';
 import Banner from './Banner';

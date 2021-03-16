@@ -2,6 +2,9 @@
   "singleQuote": true,
   "printWidth": 100,
   "trailingComma": "all",
-  "importOrder": ["^@(root|src|ts|constants|components|utils|redux|styles)(/(.*))?$", "^[./]"],
+  "importOrder": [
+    "^@(root|src|ts|constants|components|utils|redux|styles|assets)(/(.*))?$",
+    "^[./]"
+  ],
   "importOrderSeparation": true
 }

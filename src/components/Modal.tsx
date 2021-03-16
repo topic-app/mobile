@@ -5,7 +5,7 @@ import { Card } from 'react-native-paper';
 
 import getStyles from '@styles/Styles';
 import { ModalProps } from '@ts/types';
-import { useSafeAreaInsets, useTheme } from '@utils/index';
+import { useSafeAreaInsets, useTheme } from '@utils';
 
 const Modal: React.FC<ModalProps> = ({ visible, setVisible, children }) => {
   const styles = getStyles(useTheme());

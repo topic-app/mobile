@@ -1,17 +1,16 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, Card } from 'react-native-paper';
+import { Button, RadioButton, HelperText, List, Text, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { StepperViewPageProps } from '@components/index';
-import { Permissions } from '@constants/index';
+import { StepperViewPageProps } from '@components';
+import { Permissions } from '@constants';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { Account, State } from '@ts/types';
-import { checkPermission, useTheme } from '@utils/index';
+import { checkPermission } from '@utils';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps & { account: Account };
 
@@ -30,7 +29,6 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
 
   const theme = useTheme();
   const { colors } = theme;
-  const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const groupsWithPermission = account.groups.filter((g) =>
     checkPermission(
@@ -54,8 +52,8 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
   }
 
   return (
-    <View style={eventStyles.formContainer}>
-      <View style={eventStyles.listContainer}>
+    <View style={styles.formContainer}>
+      <View style={styles.listContainer}>
         {groupsWithPermission.map((g) => (
           <List.Item
             key={g._id}
@@ -109,7 +107,7 @@ const EventAddPageGroup: React.FC<Props> = ({ next, account }) => {
           </Text>
         )}
       </View>
-      <View style={eventStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}

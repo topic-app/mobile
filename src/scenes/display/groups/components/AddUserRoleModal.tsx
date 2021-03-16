@@ -12,19 +12,14 @@ import {
   Checkbox,
   TextInput,
   ProgressBar,
+  useTheme,
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import {
-  CollapsibleView,
-  CategoryTitle,
-  ErrorMessage,
-  Modal,
-  FullscreenIllustration,
-} from '@components/index';
+import { CollapsibleView, CategoryTitle, Modal } from '@components';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { groupMemberAdd, groupMemberModify } from '@redux/actions/apiActions/groups';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import {
   ModalProps,
   State,
@@ -35,7 +30,7 @@ import {
   GroupMember,
   AccountState,
 } from '@ts/types';
-import { Errors, useTheme } from '@utils/index';
+import { Errors } from '@utils';
 
 type AddUserRoleModalProps = ModalProps & {
   roles: GroupRole[];

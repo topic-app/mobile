@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, AnyAction, compose, Middleware } from 're
 import { persistStore, persistReducer } from 'redux-persist';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import { State } from '@ts/types';
 
 import reducer from './reducers/index';

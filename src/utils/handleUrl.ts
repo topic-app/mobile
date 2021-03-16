@@ -1,8 +1,8 @@
 import { Appearance, Linking, Platform } from 'react-native';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn';
 
-import { Config } from '@constants/index';
-import themes from '@styles/Theme';
+import { Config } from '@constants';
+import themes from '@styles/helpers/theme';
 
 import Alert from './alert';
 

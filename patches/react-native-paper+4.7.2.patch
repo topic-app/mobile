@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-native-paper/lib/typescript/types.d.ts b/node_modules/react-native-paper/lib/typescript/types.d.ts
+index bf0fa80..c85f612 100644
+--- a/node_modules/react-native-paper/lib/typescript/types.d.ts
++++ b/node_modules/react-native-paper/lib/typescript/types.d.ts
+@@ -1,4 +1,5 @@
+ import type * as React from 'react';
++import type { Theme as TopicThemeType } from '@ts/types';
+ export declare type Font = {
+     fontFamily: string;
+     fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+@@ -65,14 +66,7 @@ declare global {
+         interface ThemeAnimation {
+             scale: number;
+         }
+-        interface Theme {
+-            dark: boolean;
+-            mode?: Mode;
+-            roundness: number;
+-            colors: ThemeColors;
+-            fonts: ThemeFonts;
+-            animation: ThemeAnimation;
+-        }
++        type Theme = TopicThemeType;
+     }
+ }
+ export {};

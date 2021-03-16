@@ -1,4 +1,4 @@
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 
 const logTypes = ['critical', 'error', 'warning', 'info', 'http', 'verbose', 'debug'] as const;
 

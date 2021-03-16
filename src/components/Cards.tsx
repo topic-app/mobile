@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import getStyles from '@styles/Styles';
 import { Avatar as AvatarType } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import Avatar from './Avatar';
 import { PlatformTouchable } from './PlatformComponents';

@@ -1,24 +1,15 @@
 import React from 'react';
-import {
-  View,
-  Appearance,
-  FlatList,
-  ActivityIndicator,
-  useWindowDimensions,
-  Platform,
-} from 'react-native';
-import { List, ProgressBar, Subheading, Text, ThemeProvider } from 'react-native-paper';
-import { connect } from 'react-redux';
+import { View, FlatList, useWindowDimensions } from 'react-native';
+import { Subheading, ThemeProvider } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CustomHeaderBar, Illustration, PlatformTouchable } from '@components/index';
-import getStyles from '@styles/Styles';
-import themes from '@styles/Theme';
+import { Illustration, PlatformTouchable } from '@components';
+import getStyles from '@styles/global';
+import themes from '@styles/helpers/theme';
 import { BackgroundNames, Page as PageType } from '@ts/groupPages';
-import { Account, Preferences, State, Pages } from '@ts/types';
-import { useSafeAreaInsets, useTheme } from '@utils/index';
+import { Pages } from '@ts/types';
 
 import type { PagesScreenNavigationProp } from '../index';
-import getSettingsStyles from '../styles/Styles';
 import AboutModal from './AboutModal';
 import Color from './backgrounds/Color';
 import Gradient from './backgrounds/Gradient';
@@ -36,8 +27,6 @@ type PageProps = {
 const Page: React.FC<PageProps> = ({ navigation, page, loading, header, footer }) => {
   const theme = themes.light;
   const styles = getStyles(theme);
-  const localStyles = getSettingsStyles(theme);
-  const { colors } = theme;
 
   const Backgrounds = {
     image: Image,

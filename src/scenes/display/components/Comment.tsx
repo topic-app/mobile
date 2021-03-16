@@ -1,19 +1,18 @@
 import moment from 'moment';
 import React from 'react';
 import { View, Platform, TouchableOpacity, Alert } from 'react-native';
-import { Text, IconButton, Menu } from 'react-native-paper';
+import { Text, IconButton, Menu, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Avatar, Content } from '@components/index';
-import { Permissions } from '@constants/index';
+import { Avatar, Content } from '@components';
+import { Permissions } from '@constants';
 import { commentDelete } from '@redux/actions/apiActions/comments';
-import getStyles from '@styles/Styles';
 import { Comment, Account, State, CommentReply } from '@ts/types';
-import { checkPermission, Errors, useTheme } from '@utils/index';
+import { checkPermission, Errors } from '@utils';
 import { NativeStackNavigationProp } from '@utils/stack';
 
-import getCommentStyles from './styles/Styles';
+import getStyles from './styles';
 
 type CommentInlineCardPropsBase = {
   report: (id: string) => void;
@@ -52,7 +51,6 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
 
   const theme = useTheme();
   const styles = getStyles(theme);
-  const commentStyles = getCommentStyles(theme);
   const { colors } = theme;
 
   const navigateToPublisher = () =>
@@ -119,7 +117,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
             >
               <Text
                 style={[
-                  commentStyles.username,
+                  styles.username,
                   comment.publisher?.user?._id === account.accountInfo?.accountId
                     ? { color: colors.primary }
                     : {},
@@ -137,7 +135,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                   )}
               </Text>
             </TouchableOpacity>
-            <Text style={commentStyles.username}> · {moment(date).fromNow()}</Text>
+            <Text style={styles.username}> · {moment(date).fromNow()}</Text>
           </View>
           <Content data={content.data} parser={content.parser} />
         </View>

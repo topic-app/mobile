@@ -20,7 +20,7 @@ import {
   Group,
   Account,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import { InlineCard } from './Cards';
 import CustomTabView from './CustomTabView';

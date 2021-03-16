@@ -4,7 +4,7 @@ import React from 'react';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import { AddScreenNavigationProp } from '../index';
-import PetitionAdd from './views/Add';
+import PetitionAdd from './Add';
 
 export type PetitionAddStackParams = {
   Add: undefined;

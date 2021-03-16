@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { View, StyleSheet, ViewProps, Platform } from 'react-native';
 
-import { useSafeAreaInsets } from '@utils/index';
+import { useSafeAreaInsets } from '@utils';
 
 // prettier-ignore
 const TOP    = 0b1000,

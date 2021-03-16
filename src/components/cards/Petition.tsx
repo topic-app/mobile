@@ -1,17 +1,17 @@
+import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';
 import React from 'react';
 import { View } from 'react-native';
 import { Card, Text } from 'react-native-paper';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import moment from 'moment';
 
-import { PetitionStatus, PetitionPreload, Theme } from '@ts/types';
-import { useTheme } from '@utils/index';
 import getStyles from '@styles/Styles';
+import { PetitionStatus, PetitionPreload, Theme } from '@ts/types';
+import { useTheme } from '@utils';
 
 import { CardBase } from '../Cards';
-import PetitionChart from './components/Charts';
 import TagList from '../TagList';
+import PetitionChart from './components/Charts';
 
 function getShortTime(time: string) {
   // If time is in the past

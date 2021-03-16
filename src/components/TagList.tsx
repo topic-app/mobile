@@ -3,7 +3,7 @@ import { FlatList, View } from 'react-native';
 import { Chip } from 'react-native-paper';
 
 import getStyles from '@styles/Styles';
-import { useTheme, genTagListData, ItemData } from '@utils/index';
+import { useTheme, genTagListData, ItemData } from '@utils';
 
 import Avatar from './Avatar';
 

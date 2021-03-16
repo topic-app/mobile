@@ -12,7 +12,7 @@ import {
 import { Text, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import { PlatformTouchable } from './PlatformComponents';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Searchbar as PaperSearchbar } from 'react-native-paper';
 import { TextInput } from 'react-native';
 
-import { logger } from '@utils/index';
+import { logger } from '@utils';
 
 type SearchbarProps = React.ComponentPropsWithoutRef<typeof PaperSearchbar> & {
   onIdle?: (value: string) => void;

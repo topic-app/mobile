@@ -7,7 +7,7 @@ export * from './api';
 export * from './requestState';
 export * from './redux';
 export type { RootState as State } from '@redux/reducers/index';
-export type { Theme } from '@styles/Theme';
+export type { Theme } from '@styles/helpers/theme';
 export { Pages };
 
 export type ModalProps = {

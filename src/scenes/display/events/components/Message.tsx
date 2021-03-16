@@ -1,14 +1,13 @@
 import moment from 'moment';
 import React from 'react';
-import { View, Platform, TouchableOpacity } from 'react-native';
-import { Text, IconButton, Menu } from 'react-native-paper';
+import { View } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
 
-import { Avatar, Content } from '@components/index';
-import getStyles from '@styles/Styles';
+import { Avatar, Content } from '@components';
 import { EventMessage } from '@ts/types';
-import { Format, useTheme } from '@utils/index';
+import { Format } from '@utils';
 
-import getMessageStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type MessageInlineCardProps = {
   isPublisher: boolean;
@@ -20,7 +19,6 @@ const MessageInlineCard: React.FC<MessageInlineCardProps> = ({ message, isPublis
 
   const theme = useTheme();
   const styles = getStyles(theme);
-  const messageStyles = getMessageStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -32,7 +30,7 @@ const MessageInlineCard: React.FC<MessageInlineCardProps> = ({ message, isPublis
         )}
         <View style={{ paddingLeft: 10, flex: 1 }}>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={messageStyles.username}>
+            <Text style={styles.username}>
               {type === 'system' ? 'Message système' : `Groupe ${Format.groupName(group)}`}
               {isPublisher ? ' ✓' : ''} · {moment(date).fromNow()}
             </Text>

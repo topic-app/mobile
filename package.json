@@ -11,7 +11,8 @@
     "tsc": "tsc --noEmit",
     "clean": "npm run clean:npm && npm run clean:android",
     "clean:npm": "rm -rf node_modules && npm install",
-    "clean:android": "cd android && ./gradlew clean && cd .."
+    "clean:android": "cd android && ./gradlew clean && cd ..",
+    "postinstall": "npx patch-package"
   },
   "dependencies": {
     "@expo-google-fonts/roboto": "^0.1.0",

@@ -1,6 +1,6 @@
 import Store from '@redux/store';
 import { AppThunk, UPDATE_ARTICLES_STATE, ArticleCreationData } from '@ts/redux';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 import {
   reportCreator,

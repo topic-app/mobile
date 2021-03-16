@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { List, Checkbox } from 'react-native-paper';
-
-import { useTheme } from '@utils';
+import { List, Checkbox, useTheme } from 'react-native-paper';
 
 import { LocationItem } from '../utils/getNewLocations';
 

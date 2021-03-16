@@ -1,11 +1,11 @@
 import { Platform } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import Store from '@redux/store';
 import { UPDATE_UPLOAD_STATE } from '@ts/redux';
 import { AppThunk } from '@ts/types';
-import { request, logger } from '@utils/index';
+import { request, logger } from '@utils';
 
 function uploadCreator(
   groupId: string,

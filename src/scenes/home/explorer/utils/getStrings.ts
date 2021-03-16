@@ -1,6 +1,6 @@
 import { MapLocation } from '@ts/types';
 
-import { MapMarkerDataType } from '../views/Map';
+import { MapMarkerDataType } from '../Map';
 
 /**
  * Obtient les strings correspondants pour chaque type de données

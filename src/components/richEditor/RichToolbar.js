@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { actions } from './const';
-import { trackEvent } from '@utils/index';
+import { trackEvent } from '@utils';
 
 export const defaultActions = [
   actions.insertImage,

@@ -1,4 +1,4 @@
-import { Article, Event, EventPlace, Image, ProgramEntry, Address, TagPreload } from '../api';
+import { Article, Event, Image, ProgramEntry, Address, TagPreload } from '../api';
 import { FullClearAction } from './actions';
 import { ApiAction } from './apiReducers';
 

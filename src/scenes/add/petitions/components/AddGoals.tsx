@@ -2,11 +2,11 @@ import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { TextInput, HelperText, Button } from 'react-native-paper';
 
-import { StepperViewPageProps } from '@components/index';
+import { StepperViewPageProps } from '@components';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import { useTheme, request } from '@utils/index';
+import { useTheme, request } from '@utils';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps;
 
@@ -229,11 +229,11 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
 
   const theme = useTheme();
   const { colors } = theme;
-  const authStyles = getAuthStyles(theme);
+  const styles = getStyles(theme);
 
   return (
-    <View style={authStyles.formContainer}>
-      <View style={authStyles.textInputContainer}>
+    <View style={styles.formContainer}>
+      <View style={styles.textInputContainer}>
         <TextInput
           ref={usernameInput}
           label="Nom d'utilisateur"
@@ -257,7 +257,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
             validateUsernameInput(nativeEvent.text);
           }}
           textContentType="username"
-          style={authStyles.textInput}
+          style={styles.textInput}
           onChangeText={(text) => {
             setUsername({ value: text });
             preValidateUsernameInput(text);
@@ -267,7 +267,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           {currentUsername.message}
         </HelperText>
       </View>
-      <View style={authStyles.textInputContainer}>
+      <View style={styles.textInputContainer}>
         <TextInput
           ref={emailInput}
           label="Email"
@@ -292,7 +292,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           onEndEditing={({ nativeEvent }) => {
             validateEmailInput(nativeEvent.text);
           }}
-          style={authStyles.textInput}
+          style={styles.textInput}
           onChangeText={(text) => {
             setEmail({ value: text });
             preValidateEmailInput(text);
@@ -302,7 +302,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           {currentEmail.message}
         </HelperText>
       </View>
-      <View style={authStyles.textInputContainer}>
+      <View style={styles.textInputContainer}>
         <TextInput
           ref={passwordInput}
           label="Mot de passe"
@@ -323,7 +323,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           }}
           textContentType="password"
           autoCompleteType="password"
-          style={authStyles.textInput}
+          style={styles.textInput}
           onChangeText={(text) => {
             setPassword({ value: text });
             preValidatePasswordInput(text);
@@ -338,7 +338,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
           {currentPassword.message}
         </HelperText>
       </View>
-      <View style={authStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}

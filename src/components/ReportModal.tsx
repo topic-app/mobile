@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 
 import getStyles from '@styles/Styles';
 import { ModalProps, Account, State, RequestState } from '@ts/types';
-import { Errors, trackEvent, useTheme } from '@utils/index';
+import { Errors, trackEvent, useTheme } from '@utils';
 
 import ErrorMessage from './ErrorMessage';
 import Modal from './Modal';

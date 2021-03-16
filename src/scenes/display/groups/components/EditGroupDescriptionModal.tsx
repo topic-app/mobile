@@ -7,14 +7,14 @@ import {
   TextInput as PaperTextInput,
   ProgressBar,
   Title,
+  useTheme,
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, Modal, Avatar } from '@components/index';
+import { Modal, Avatar } from '@components';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { groupModify } from '@redux/actions/apiActions/groups';
 import { upload } from '@redux/actions/apiActions/upload';
-import getStyles from '@styles/Styles';
 import {
   ModalProps,
   State,
@@ -24,9 +24,9 @@ import {
   Avatar as AvatarType,
   UploadRequestState,
 } from '@ts/types';
-import { Errors, useTheme } from '@utils/index';
+import { Errors } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type EditGroupDescriptionModalProps = ModalProps & {
   group: Group | GroupPreload | null;
@@ -65,7 +65,6 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [errorVisible, setErrorVisible] = React.useState(false);
@@ -149,7 +148,7 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
               />
             )}
           </View>
-          <View style={articleStyles.activeCommentContainer}>
+          <View style={styles.activeCommentContainer}>
             <PaperTextInput
               mode="outlined"
               multiline
@@ -161,7 +160,7 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
             />
             <HelperText type="info">Décrivez ce que vous faites en une ou deux lignes</HelperText>
           </View>
-          <View style={articleStyles.activeCommentContainer}>
+          <View style={styles.activeCommentContainer}>
             <PaperTextInput
               mode="outlined"
               label="Description"

@@ -4,7 +4,7 @@ import React from 'react';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import { MainScreenNavigationProp } from '../Main';
-import PageDisplay from './views/Display';
+import PageDisplay from './Display';
 
 export type PagesStackParams = {
   Display: { group: string; page?: string };

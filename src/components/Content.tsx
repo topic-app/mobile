@@ -10,8 +10,8 @@ import config from '@constants/config';
 import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import { Content as ContentType, State, Preferences } from '@ts/types';
+import { useTheme, getImageUrl, handleUrl } from '@utils';
 import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl } from '@utils/index';
 import { NativeStackNavigationProp } from '@utils/stack';
 import YouTube from '@utils/youtube';
 

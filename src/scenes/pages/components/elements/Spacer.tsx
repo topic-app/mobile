@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Page } from '@ts/groupPages';
 import { Pages } from '@ts/types';
 
-import type { PagesScreenNavigationProp } from '../../index';
+import type { PagesScreenNavigationProp } from '../..';
 
 type PageProps = {
   navigation: PagesScreenNavigationProp<any>;

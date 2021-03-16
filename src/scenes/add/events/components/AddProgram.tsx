@@ -1,17 +1,15 @@
 import moment from 'moment';
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, IconButton, List, Text } from 'react-native-paper';
+import { Button, IconButton, List, Text, useTheme } from 'react-native-paper';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { connect } from 'react-redux';
 
-import { StepperViewPageProps, InlineCard } from '@components/index';
+import { StepperViewPageProps, InlineCard } from '@components';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { Account, State, EventCreationData, ProgramEntry, EventRequestState } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 import ProgramAddModal from './ProgramAddModal';
 
 type Props = StepperViewPageProps & {
@@ -23,7 +21,6 @@ type Props = StepperViewPageProps & {
 
 const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData = {}, state }) => {
   const theme = useTheme();
-  const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const [isProgramAddModalVisible, setProgramAddModalVisible] = React.useState(false);
   const [startDateShow, setStartDateShow] = React.useState(false);
@@ -77,7 +74,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
   }
 
   return (
-    <View style={eventStyles.formContainer}>
+    <View style={styles.formContainer}>
       <View style={{ marginTop: 30 }}>
         <List.Subheader> Progamme </List.Subheader>
         {eventProgram?.map((program) => (
@@ -151,7 +148,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
         }}
       />
       <View style={{ height: 30 }} />
-      <View style={eventStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}

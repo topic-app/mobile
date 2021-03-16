@@ -21,7 +21,7 @@ import {
   State,
   ReduxLocation,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import { ChipAddList } from './ChipLists';
 import CollapsibleView from './CollapsibleView';

@@ -4,7 +4,7 @@ import React from 'react';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import { ConfigureScreenNavigationProp } from '../index';
-import EventConfigure from './views/Configure';
+import EventConfigure from './Configure';
 
 export type EventConfigureStackParams = {
   Configure: undefined;

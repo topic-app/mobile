@@ -1,9 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import React from 'react';
-import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 
-import { Config } from '@constants';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import RootNavigator, { RootNavParams } from './scenes/Root';
@@ -28,10 +26,9 @@ const Stack = createNativeStackNavigator<AppStackParams>();
 
 type AppStackNavigatorProps = {
   locationSelected: boolean;
-  loggedIn: boolean;
 };
 
-const AppStackNavigator: React.FC<AppStackNavigatorProps> = ({ locationSelected, loggedIn }) => {
+const AppStackNavigator: React.FC<AppStackNavigatorProps> = ({ locationSelected }) => {
   return (
     <Stack.Navigator
       initialRouteName={locationSelected ? 'Root' : 'Landing'}
@@ -47,8 +44,7 @@ const AppStackNavigator: React.FC<AppStackNavigatorProps> = ({ locationSelected,
 
 const mapStateToProps = (state: State) => {
   const { selected } = state.location;
-  const { loggedIn } = state.account;
-  return { locationSelected: selected, loggedIn };
+  return { locationSelected: selected };
 };
 
 export default connect(mapStateToProps)(AppStackNavigator);

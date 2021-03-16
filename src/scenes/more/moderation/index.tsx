@@ -4,8 +4,8 @@ import React from 'react';
 import { ModerationTypes } from '@ts/types';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { MoreScreenNavigationProp } from '../index';
-import ModerationList from './views/List';
+import { MoreScreenNavigationProp } from '..';
+import ModerationList from './List';
 
 export type ModerationStackParams = {
   List: { type: ModerationTypes };

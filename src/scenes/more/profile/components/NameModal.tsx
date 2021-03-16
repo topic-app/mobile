@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, Platform, TextInput as TextInputRef } from 'react-native';
-import { Divider, Button, TextInput, ProgressBar } from 'react-native-paper';
+import { Divider, Button, TextInput, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, Modal } from '@components/index';
+import { Modal } from '@components';
 import { fetchAccount } from '@redux/actions/data/account';
 import { updateData } from '@redux/actions/data/profile';
-import getStyles from '@styles/Styles';
 import { ModalProps, State, Account } from '@ts/types';
-import { Errors, useTheme } from '@utils/index';
+import { Errors } from '@utils';
 
-import getprofileStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type NameModalProps = ModalProps & {
   account: Account;
@@ -20,7 +19,6 @@ type NameModalProps = ModalProps & {
 const NameModal: React.FC<NameModalProps> = ({ visible, setVisible, account, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const profileStyles = getprofileStyles(theme);
   const { colors } = theme;
 
   const firstNameInputRef = React.useRef<TextInputRef>(null);
@@ -49,7 +47,7 @@ const NameModal: React.FC<NameModalProps> = ({ visible, setVisible, account, sta
     <Modal visible={visible} setVisible={setVisible}>
       <View>
         <View style={{ marginHorizontal: 5, marginBottom: 10 }}>
-          <View style={profileStyles.inputContainer}>
+          <View style={styles.inputContainer}>
             <TextInput
               ref={firstNameInputRef}
               autoFocus
@@ -60,7 +58,7 @@ const NameModal: React.FC<NameModalProps> = ({ visible, setVisible, account, sta
               onSubmitEditing={() => lastNameInputRef.current?.focus()}
             />
           </View>
-          <View style={profileStyles.inputContainer}>
+          <View style={styles.inputContainer}>
             <TextInput
               ref={lastNameInputRef}
               mode="outlined"

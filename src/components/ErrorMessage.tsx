@@ -2,8 +2,8 @@ import React from 'react';
 import { Banner, Avatar } from 'react-native-paper';
 
 import { Error as ErrorType, RequestState } from '@ts/types';
+import { useTheme, trackEvent } from '@utils';
 import { processError } from '@utils/errors';
-import { useTheme, trackEvent } from '@utils/index';
 
 type Props = {
   /* Please change me if 'app' is too vague! */

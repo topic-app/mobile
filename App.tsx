@@ -53,11 +53,6 @@ function App() {
     return <AppLoading />;
   }
 
-  // return (
-  //   <View style={{ flex: 1, backgroundColor: 'red' }}>
-  //     <StatusBar translucent backgroundColor="red" />
-  //   </View>
-  // );
   return (
     <ReduxProvider store={Store}>
       <PersistGate persistor={Persistor} loading={<AppLoading />}>

@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, Platform, TextInput } from 'react-native';
-import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
+import { Divider, Button, HelperText, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
+import { CollapsibleView, Modal } from '@components';
 import { fetchAccount } from '@redux/actions/data/account';
 import { updatePassword } from '@redux/actions/data/profile';
-import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme, Alert, Errors } from '@utils/index';
+import { Errors } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 // import LocalAuthentication from 'rn-local-authentication';
 
@@ -21,7 +20,6 @@ type PasswordModalProps = ModalProps & {
 const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const profileStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const passwordInput = React.useRef<TextInput>(null);
@@ -99,7 +97,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
     <Modal visible={visible} setVisible={setVisible}>
       <View>
         <View>
-          <View style={profileStyles.inputContainer}>
+          <View style={styles.inputContainer}>
             <TextInput
               ref={passwordInput}
               autoFocus
@@ -110,7 +108,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
               autoCompleteType="password"
               placeholder="Nouveau mot de passe"
               placeholderTextColor={colors.disabled}
-              style={profileStyles.borderlessInput}
+              style={styles.borderlessInput}
               value={password}
               onChangeText={(text) => {
                 setPassword(text);

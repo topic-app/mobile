@@ -16,7 +16,7 @@ import {
   EventListItem,
   ArticleListItem,
 } from '@ts/types';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 type ContentItemWithListsString = 'articleData' | 'eventData';
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton, List } from 'react-native-paper';
+import { Button, RadioButton, List, useTheme } from 'react-native-paper';
 
-import { StepperViewPageProps } from '@components/index';
+import { StepperViewPageProps } from '@components';
 import { updateCreationData } from '@redux/actions/data/account';
-import { trackEvent, useTheme } from '@utils/index';
+import { trackEvent } from '@utils';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 import { ListHeading, ListItem } from './ListComponents';
 
 type Props = StepperViewPageProps;
@@ -22,7 +22,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
 
   const theme = useTheme();
   const { colors } = theme;
-  const authStyles = getAuthStyles(theme);
+  const styles = getStyles(theme);
 
   const always = {
     icon: 'check',
@@ -35,8 +35,8 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
   };
 
   return (
-    <View style={authStyles.formContainer}>
-      <View style={authStyles.listContainer}>
+    <View style={styles.formContainer}>
+      <View style={styles.listContainer}>
         <List.Item
           title="Compte public"
           left={() =>
@@ -86,8 +86,8 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           onPress={() => setAccountType('private')}
         />
       </View>
-      <View style={authStyles.descriptionContainer}>
-        <View style={authStyles.descriptionPartContainer}>
+      <View style={styles.descriptionContainer}>
+        <View style={styles.descriptionPartContainer}>
           <ListHeading label="Vous pouvez" />
           <ListItem
             icon={always.icon}
@@ -110,7 +110,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
             label="Être administrateur d'un groupe"
           />
         </View>
-        <View style={authStyles.descriptionPartContainer}>
+        <View style={styles.descriptionPartContainer}>
           <ListHeading label="Les autres utilisateurs peuvent" />
           <ListItem
             icon={always.icon}
@@ -144,7 +144,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           />
         </View>
       </View>
-      <View style={authStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}

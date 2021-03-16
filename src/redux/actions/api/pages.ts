@@ -2,7 +2,7 @@ import Store from '@redux/store';
 import { Background, BackgroundNames, Page } from '@ts/groupPages';
 import { UPDATE_GROUPS_PAGES, UPDATE_GROUPS_STATE, CLEAR_GROUPS, AppThunk } from '@ts/redux';
 import { Group, GroupTemplate } from '@ts/types';
-import { request, logger } from '@utils/index';
+import { request, logger } from '@utils';
 
 const nameAscSort = (data: Group[]) => data.sort((a, b) => a.name.localeCompare(b.name));
 

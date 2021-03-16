@@ -1,44 +1,21 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigatorScreenParams, CompositeNavigationProp } from '@react-navigation/native';
 import React from 'react';
-import { View, TouchableWithoutFeedback } from 'react-native';
-import { Text, Divider, Drawer as PaperDrawer, Button } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View } from 'react-native';
+import { Divider, Drawer as PaperDrawer, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Avatar, Illustration, MainFeedback } from '@components';
 import DownloadBanner from '@components/DownloadBanner';
-import { Permissions } from '@constants/index';
-import getStyles from '@styles/Styles';
+import { Permissions } from '@constants';
+import getStyles from '@styles/global';
 import { State, Account } from '@ts/types';
-import { useTheme, useLayout, checkPermission } from '@utils/index';
+import { useLayout, checkPermission } from '@utils';
 
 import { AppScreenNavigationProp } from '..';
 import { NativeStackNavigationProp } from '../utils/stack';
 import MainStackNavigator, { MainStackParams } from './Main';
 import AndroidNavigator from './Root.android';
-
-type TabItemProps = {
-  label: string;
-  icon: string;
-  onPress: () => void;
-  active: boolean;
-};
-
-const TabItem: React.FC<TabItemProps> = ({ label, onPress, icon, active }) => {
-  const { colors } = useTheme();
-  const color = active ? colors.primary : colors.disabled;
-  return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
-      <TouchableWithoutFeedback onPress={onPress}>
-        <View style={{ alignItems: 'center' }}>
-          <Icon name={icon} size={28} color={color} />
-          <Text style={{ fontSize: 11, color }}>{label}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
-  );
-};
 
 type DrawerContentProps = {
   navigation: any;
@@ -339,7 +316,6 @@ function RootNavigator() {
   const [drawerExpanded, setDrawerExpanded] = React.useState(false);
   const theme = useTheme();
   const { colors } = theme;
-  const styles = getStyles(theme);
 
   if (useLayout() === 'desktop') {
     return (

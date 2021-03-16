@@ -1,15 +1,14 @@
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
+import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useTheme } from '@utils/index';
-
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleList from './articles/views/List';
-import EventList from './events/views/List';
-import ExplorerList from './explorer/views/List';
-import ListScreen from './list/views/List';
+import ArticleList from './articles/List';
+import EventList from './events/List';
+import ExplorerList from './explorer/List';
+import ListScreen from './list/List';
 
 // import PetitionList from './petitions/views/List';
 

@@ -4,7 +4,7 @@ import { Text, Paragraph, Title, Card } from 'react-native-paper';
 
 import getStyles from '@styles/Styles';
 import { User, UserPreload } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import { InlineCard } from '../Cards';
 

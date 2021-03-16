@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { EventVerificationPreload, State, Preferences, AnyEvent } from '@ts/types';
-import { Format, useTheme } from '@utils/index';
+import { Format, useTheme } from '@utils';
 import { NativeStackNavigationProp } from '@utils/stack';
 
 import { CardBase } from '../Cards';

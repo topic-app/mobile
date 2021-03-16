@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, TextInput, ActivityIndicator } from 'react-native';
-import { Divider, Menu, Provider } from 'react-native-paper';
+import { Divider, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components/index';
-import { Permissions } from '@constants/index';
+import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components';
+import { Permissions } from '@constants';
 import { ModalProps, State, Account, EventRequestState, Content } from '@ts/types';
-import { useTheme, logger, checkPermission } from '@utils/index';
+import { logger, checkPermission } from '@utils';
 
-import getEventStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type MessagePublisher = {
   key: string;
@@ -34,7 +34,7 @@ const AddMessageModal: React.FC<AddMessageModalProps> = ({
   id,
 }) => {
   const theme = useTheme();
-  const eventStyles = getEventStyles(theme);
+  const styles = getStyles(theme);
   const { colors } = theme;
 
   const [messageText, setMessageText] = React.useState('');
@@ -100,18 +100,18 @@ const AddMessageModal: React.FC<AddMessageModalProps> = ({
             retry={submitMessage}
           />
         )}
-        <View style={eventStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <TextInput
             autoFocus
             placeholder="Écrire un message..."
             placeholderTextColor={colors.disabled}
-            style={eventStyles.commentInput}
+            style={styles.commentInput}
             multiline
             value={messageText}
             onChangeText={setMessageText}
           />
         </View>
-        <Divider style={eventStyles.divider} />
+        <Divider style={styles.divider} />
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View style={{ flex: 1, flexGrow: 1 }}>
             <CategoriesList

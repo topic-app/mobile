@@ -1,9 +1,9 @@
 /* eslint-disable no-throw-literal */
 import { AxiosResponse } from 'axios';
 
+import { Config } from '@constants';
 import Store from '@redux/store';
 
-import { Config } from '../constants';
 import axios from './axiosInstance';
 import logger from './logger';
 

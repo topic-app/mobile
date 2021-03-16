@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Dimensions } from 'react-native';
 import { TabView, TabBar, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 type TabBarProps = SceneRendererProps & {
   navigationState: NavigationState<Route>;

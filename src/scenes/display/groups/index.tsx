@@ -3,9 +3,9 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { DisplayScreenNavigationProp } from '../index';
-import GroupDescription from './views/Description';
-import GroupDisplay from './views/Display';
+import { DisplayScreenNavigationProp } from '..';
+import GroupDescription from './Description';
+import GroupDisplay from './Display';
 
 export type GroupDisplayStackParams = {
   Display: { id: string; verification: boolean };

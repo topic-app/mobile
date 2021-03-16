@@ -5,6 +5,7 @@ import React from 'react';
 import { Platform, Appearance, ColorSchemeName, View, Text } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
@@ -15,9 +16,9 @@ import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/da
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
 import Store from '@redux/store';
-import themes from '@styles/Theme';
+import themes from '@styles/helpers/theme';
 import { Preferences, PreferencesState, State } from '@ts/types';
-import { logger, useSafeAreaInsets } from '@utils/index';
+import { logger } from '@utils';
 import { trackPageview } from '@utils/plausible';
 
 import AppNavigator from './index';

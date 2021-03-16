@@ -5,15 +5,16 @@ import {
 } from '@react-navigation/material-bottom-tabs';
 import React from 'react';
 import { Platform } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getNavigatorStyles from '@styles/NavStyles';
-import { useTheme, useSafeAreaInsets } from '@utils/index';
+import getStyles from '@styles/navigators';
+import { useSafeAreaInsets } from '@utils';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleList from './articles/views/List';
-import EventList from './events/views/List';
-import ExplorerList from './explorer/views/List';
+import ArticleList from './articles/List';
+import EventList from './events/List';
+import ExplorerList from './explorer/List';
 
 // import PetitionList from './petitions/views/List';
 
@@ -35,7 +36,7 @@ const Tab = createMaterialBottomTabNavigator<HomeTwoNavParams>();
 function HomeTwoNavigator() {
   const theme = useTheme();
   const { colors } = theme;
-  const navigatorStyles = getNavigatorStyles(theme);
+  const styles = getStyles(theme);
 
   const insets = useSafeAreaInsets();
 
@@ -46,7 +47,7 @@ function HomeTwoNavigator() {
       activeColor={colors.bottomBarActive}
       inactiveColor={colors.bottomBarInactive}
       barStyle={[
-        navigatorStyles.barStyle,
+        styles.barStyle,
         { backgroundColor: colors.bottomBar, paddingBottom: insets.bottom },
       ]}
       screenOptions={({ route }) => ({

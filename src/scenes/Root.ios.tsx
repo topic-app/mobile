@@ -3,7 +3,7 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { AppScreenNavigationProp } from '../index';
+import { AppScreenNavigationProp } from '..';
 import MainStackNavigator, { MainStackParams } from './Main';
 
 export type RootNavParams = {

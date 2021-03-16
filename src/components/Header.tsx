@@ -6,7 +6,7 @@ import { Appbar, Menu } from 'react-native-paper';
 import shortid from 'shortid';
 
 import getNavigatorStyles from '@styles/NavStyles';
-import { useTheme, useSafeAreaInsets, useLayout } from '@utils/index';
+import { useTheme, useSafeAreaInsets, useLayout } from '@utils';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();

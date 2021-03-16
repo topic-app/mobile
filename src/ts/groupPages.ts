@@ -1,4 +1,4 @@
-import themes from '@styles/Theme';
+import themes from '@styles/helpers/theme';
 
 import { Content, Image } from './api';
 

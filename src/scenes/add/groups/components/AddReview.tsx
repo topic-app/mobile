@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, Text, Divider, Subheading, Title } from 'react-native-paper';
+import { Button, Text, Divider, Subheading, Title, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { StepperViewPageProps } from '@components/index';
+import { StepperViewPageProps } from '@components';
 import { groupAdd } from '@redux/actions/apiActions/groups';
 import { clearGroupCreationData } from '@redux/actions/contentData/groups';
-import getStyles from '@styles/Styles';
 import { State, GroupRequestState, GroupCreationData } from '@ts/types';
-import { Errors, useTheme } from '@utils/index';
+import { Errors } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps & {
   creationData: GroupCreationData;
@@ -21,7 +20,6 @@ type Props = StepperViewPageProps & {
 const ArticleAddPageReview: React.FC<Props> = ({ next, prev, creationData, state, navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
 
   const add = () => {
     groupAdd({
@@ -51,7 +49,7 @@ const ArticleAddPageReview: React.FC<Props> = ({ next, prev, creationData, state
 
   return (
     <View>
-      <View style={articleStyles.formContainer}>
+      <View style={styles.formContainer}>
         <Title>Informations générales</Title>
         <View style={styles.contentContainer}>
           <Divider style={{ marginBottom: 20 }} />
@@ -75,7 +73,7 @@ const ArticleAddPageReview: React.FC<Props> = ({ next, prev, creationData, state
         </View>
       </View>
       <Divider style={{ marginTop: 30 }} />
-      <View style={articleStyles.formContainer}>
+      <View style={styles.formContainer}>
         <View>
           <Title>Informations de vérification</Title>
           <View style={styles.contentContainer}>
@@ -108,8 +106,8 @@ const ArticleAddPageReview: React.FC<Props> = ({ next, prev, creationData, state
           </View>
         </View>
       </View>
-      <View style={articleStyles.formContainer}>
-        <View style={articleStyles.buttonContainer}>
+      <View style={styles.formContainer}>
+        <View style={styles.buttonContainer}>
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}

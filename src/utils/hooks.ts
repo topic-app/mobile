@@ -1,6 +1,6 @@
 import { StatusBar, useWindowDimensions, Platform } from 'react-native';
-import { useSafeAreaInsets as RNuseSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme as usePaperTheme } from 'react-native-paper';
+import { useSafeAreaInsets as RNuseSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Theme } from '@ts/types';
 

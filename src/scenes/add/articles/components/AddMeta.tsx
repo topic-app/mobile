@@ -1,20 +1,19 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput, Image } from 'react-native';
-import { Button, ProgressBar, Card, Text, List, Switch } from 'react-native-paper';
+import { Button, ProgressBar, Card, Text, List, Switch, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components/index';
-import { Permissions } from '@constants/index';
+import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components';
+import { Permissions } from '@constants';
 import { upload } from '@redux/actions/apiActions/upload';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import getStyles from '@styles/Styles';
 import { State, ArticleCreationData, UploadRequestState, Account } from '@ts/types';
-import { useTheme, getImageUrl, checkPermission, trackEvent } from '@utils/index';
+import { getImageUrl, checkPermission, trackEvent } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type ArticleAddPageMetaProps = StepperViewPageProps & {
   creationData: ArticleCreationData;
@@ -36,7 +35,6 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getArticleStyles(theme);
   const styles = getStyles(theme);
 
   const [isOpinion, setOpinion] = React.useState(creationData.opinion || false);
@@ -53,7 +51,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   });
 
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={styles.formContainer}>
       <Formik
         initialValues={{
           title: creationData.title || '',
@@ -83,7 +81,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               onChangeText={handleChange('title')}
               onBlur={handleBlur('title')}
               onSubmitEditing={() => summaryInput.current?.focus()}
-              style={articleStyles.textInput}
+              style={styles.textInput}
               autoFocus
             />
             <FormTextInput
@@ -98,7 +96,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               onChangeText={handleChange('summary')}
               onBlur={handleBlur('summary')}
               onSubmitEditing={() => handleSubmit()}
-              style={articleStyles.textInput}
+              style={styles.textInput}
             />
             {checkPermission(account, {
               permission: Permissions.CONTENT_UPLOAD,
@@ -209,7 +207,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                 descriptionNumberOfLines={10}
               />
             </View>
-            <View style={articleStyles.buttonContainer}>
+            <View style={styles.buttonContainer}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}

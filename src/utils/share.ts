@@ -1,6 +1,6 @@
 import { Platform, Share, Clipboard } from 'react-native';
 
-import config from '@constants/config';
+import { Config } from '@constants';
 
 import Alert from './alert';
 import logger from './logger';
@@ -12,7 +12,7 @@ type shareProps = {
   id: string;
 };
 const share = async ({ title, group, type, id }: shareProps) => {
-  const url = `${config.links.share}/${type}/${id}`;
+  const url = `${Config.links.share}/${type}/${id}`;
   const message = group ? `${title} par ${group}` : title;
   try {
     await Platform.select({

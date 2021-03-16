@@ -2,11 +2,11 @@ import React, { useState, createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput } from 'react-native';
 import { TextInput, HelperText, Button } from 'react-native-paper';
 
-import { StepperViewPageProps } from '@components/index';
+import { StepperViewPageProps } from '@components';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import { useTheme, request } from '@utils/index';
+import { useTheme, request } from '@utils';
 
-import getAuthStyles from '../styles/Styles';
+import getAuthStyles from '../styles';
 
 type Props = StepperViewPageProps;
 

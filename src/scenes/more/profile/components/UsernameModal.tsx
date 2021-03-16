@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, Platform, TextInput } from 'react-native';
-import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
+import { Divider, Button, HelperText, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
+import { CollapsibleView, Modal } from '@components';
 import { fetchAccount } from '@redux/actions/data/account';
 import { updateUsername } from '@redux/actions/data/profile';
-import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme, request, Errors } from '@utils/index';
+import { request, Errors } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type UsernameModalProps = ModalProps & {
   state: { updateProfile: { loading: boolean; error: any } };
@@ -19,7 +18,6 @@ type UsernameModalProps = ModalProps & {
 const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const profileStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const usernameInput = React.useRef<TextInput>(null);
@@ -118,13 +116,13 @@ const UsernameModal: React.FC<UsernameModalProps> = ({ visible, setVisible, stat
     <Modal visible={visible} setVisible={setVisible}>
       <View>
         <View>
-          <View style={profileStyles.inputContainer}>
+          <View style={styles.inputContainer}>
             <TextInput
               ref={usernameInput}
               autoFocus
               placeholder="Nouveau nom d'utilisateur"
               placeholderTextColor={colors.disabled}
-              style={profileStyles.borderlessInput}
+              style={styles.borderlessInput}
               value={username}
               onChangeText={(text) => {
                 setUsername(text);

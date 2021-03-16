@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Dimensions, Animated, StyleSheet } from 'react-native';
 
-import { logger, useTheme } from '@utils/index';
+import { logger, useTheme } from '@utils';
 
 const deviceWindow = Dimensions.get('window');
 

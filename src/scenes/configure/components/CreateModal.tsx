@@ -1,18 +1,16 @@
 import { Formik } from 'formik';
 import React from 'react';
 import { View, Platform, TextInput } from 'react-native';
-import { Divider, Button, HelperText } from 'react-native-paper';
+import { Divider, Button, HelperText, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import { CollapsibleView, Modal } from '@components/index';
+import { CollapsibleView, Modal } from '@components';
 import { addArticleList } from '@redux/actions/contentData/articles';
 import { addEventList } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getArticleStyles from './styles/Styles';
+import getStyles from './styles';
 
 type CreateModalProps = ModalProps & {
   articleLists: ArticleListItem[];
@@ -23,7 +21,6 @@ type CreateModalProps = ModalProps & {
 function CreateModal({ visible, setVisible, articleLists, eventLists, type }: CreateModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const lists = (type === 'articles' ? articleLists : eventLists) as Array<
@@ -45,7 +42,7 @@ function CreateModal({ visible, setVisible, articleLists, eventLists, type }: Cr
       <View>
         <Divider />
 
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <Formik
             initialValues={{ name: '' }}
             onSubmit={({ name }) => {
@@ -64,7 +61,7 @@ function CreateModal({ visible, setVisible, articleLists, eventLists, type }: Cr
                 <TextInput
                   placeholder="Nom de la liste"
                   placeholderTextColor={colors.disabled}
-                  style={articleStyles.addListInput}
+                  style={styles.addListInput}
                   value={values.name}
                   onChangeText={handleChange('name')}
                   onBlur={handleBlur('name')}

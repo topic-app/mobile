@@ -3,8 +3,8 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { DisplayScreenNavigationProp } from '../index';
-import ArticleDisplay from './views/Display';
+import { DisplayScreenNavigationProp } from '..';
+import ArticleDisplay from './Display';
 
 export type ArticleDisplayStackParams = {
   Display: { id: string; useLists: boolean; verification: boolean };

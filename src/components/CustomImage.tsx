@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image as RNImage, ImageProps, Platform } from 'react-native';
 
 import { Image as ImageType } from '@ts/types';
-import { useTheme, getImageUrl } from '@utils/index';
+import { useTheme, getImageUrl } from '@utils';
 
 import getStyles from '../styles/Styles';
 

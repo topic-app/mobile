@@ -3,9 +3,9 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { ParamsScreenNavigationProp } from '../index';
-import ArticleEditParams from './views/EditParams';
-import ArticleParams from './views/Params';
+import { ParamsScreenNavigationProp } from '..';
+import ArticleEditParams from './EditParams';
+import ArticleParams from './Params';
 
 export type ArticleParamsStackParams = {
   Params: undefined;

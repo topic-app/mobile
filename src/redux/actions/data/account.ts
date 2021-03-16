@@ -22,8 +22,8 @@ import {
   AccountCreationData,
   UPDATE_ACCOUNT_EMAIL,
 } from '@ts/types';
+import { request, logger } from '@utils';
 import { hashPassword } from '@utils/crypto';
-import { request, logger } from '@utils/index';
 
 import { fetchLocationData } from './location';
 

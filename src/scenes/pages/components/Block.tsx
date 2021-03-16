@@ -1,17 +1,10 @@
 import React from 'react';
-import { View, Appearance, FlatList, useWindowDimensions } from 'react-native';
-import { List, Text } from 'react-native-paper';
-import { connect } from 'react-redux';
+import { View, FlatList, useWindowDimensions } from 'react-native';
 
-import { CustomHeaderBar } from '@components/index';
-import getStyles from '@styles/Styles';
-import themes from '@styles/Theme';
 import { Page, ElementNames } from '@ts/groupPages';
-import { Account, Preferences, State, Pages } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Pages } from '@ts/types';
 
 import type { PagesScreenNavigationProp } from '../index';
-import getSettingsStyles from '../styles/Styles';
 import Content from './elements/Content';
 import ContentTabView from './elements/ContentTabView';
 import Image from './elements/Image';
@@ -26,10 +19,6 @@ type PageProps = {
 };
 
 const Block: React.FC<PageProps> = ({ navigation, columns, page }) => {
-  const theme = useTheme();
-  const styles = getStyles(theme);
-  const localStyles = getSettingsStyles(theme);
-
   const dimensions = useWindowDimensions();
 
   const Elements = {

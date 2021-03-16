@@ -1,25 +1,22 @@
 import _ from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
-import { Text, ProgressBar } from 'react-native-paper';
+import { Text, ProgressBar, useTheme } from 'react-native-paper';
 
 import {
   PetitionVoteData,
-  PetitionVoteDataNoGoal,
-  PetitionVoteDataGoal,
   PetitionVoteDataDouble,
   PetitionVoteDataMultiple,
   Petition,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getPetitionStyles from '../styles/Styles';
+import getStyles from '../styles';
 import MultiVote from './MultiVote';
 
 type PetitionNoGoalProps = { signatures: number };
 
 const PetitionNoGoal: React.FC<PetitionNoGoalProps> = ({ signatures }) => {
-  const petitionStyles = getPetitionStyles(useTheme());
+  const petitionStyles = getStyles(useTheme());
   return (
     <Text style={[petitionStyles.signText, { fontWeight: 'bold' }]}>{signatures} signatures</Text>
   );
@@ -30,7 +27,7 @@ type PetitionGoalProps = { signatures: number; goals: number[] };
 const PetitionGoal: React.FC<PetitionGoalProps> = ({ signatures, goals }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const petitionStyles = getPetitionStyles(theme);
+  const petitionStyles = getStyles(theme);
 
   // TODO: Intermediate goals
   const endGoal = goals[goals.length - 1];

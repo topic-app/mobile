@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import {
   PrefActionTypes,
   SET_PREFS,

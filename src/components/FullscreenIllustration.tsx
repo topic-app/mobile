@@ -3,7 +3,7 @@ import { View, Platform, useWindowDimensions, StyleProp, ViewStyle } from 'react
 import { Button, Text } from 'react-native-paper';
 
 import getStyles from '@styles/Styles';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import Illustration, { IllustrationName } from './Illustration';
 

@@ -1,21 +1,18 @@
 import React from 'react';
 import { View, Dimensions, Platform } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { ArticleCard, PlatformTouchable } from '@components/index';
+import { ArticleCard, PlatformTouchable } from '@components';
 import {
   addArticleRead,
   deleteArticleRead,
-  addArticleToList,
   removeArticleFromList,
 } from '@redux/actions/contentData/articles';
-import getStyles from '@styles/Styles';
 import { ArticleListItem, Article, ArticlePreload } from '@ts/types';
-import { useTheme, Alert } from '@utils/index';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from './styles';
 
 type ArticleListCardProps = {
   article: ArticlePreload | Article;
@@ -45,7 +42,6 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
 
   const swipeRef = React.createRef<Swipeable>();
 

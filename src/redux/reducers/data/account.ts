@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import {
   LOGOUT,
   LOGIN,

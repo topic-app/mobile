@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { fetchAccount } from '@redux/actions/data/account';
 import { resendVerification } from '@redux/actions/data/profile';
 import { State, Account, AccountRequestState } from '@ts/types';
-import { Alert, trackEvent, useTheme } from '@utils/index';
+import { Alert, trackEvent, useTheme } from '@utils';
 
 import Banner from './Banner';
 import ErrorMessage from './ErrorMessage';

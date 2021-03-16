@@ -5,11 +5,11 @@ import { Button } from 'react-native-paper';
 import shortid from 'shortid';
 import * as Yup from 'yup';
 
-import { FormTextInput, Modal } from '@components/index';
+import { FormTextInput, Modal } from '@components';
 import { ModalProps, EventCreationDataPlace } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
-import getEventStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type PlaceOnlineModalProps = ModalProps & {
   add: (place: EventCreationDataPlace) => void;
@@ -19,7 +19,7 @@ const PlaceOnlineModal: React.FC<PlaceOnlineModalProps> = ({ visible, setVisible
   const linkInput = React.createRef<TextInput>();
 
   const theme = useTheme();
-  const eventStyles = getEventStyles(theme);
+  const styles = getStyles(theme);
 
   const OnlineSchema = Yup.object().shape({
     link: Yup.string()
@@ -30,7 +30,7 @@ const PlaceOnlineModal: React.FC<PlaceOnlineModalProps> = ({ visible, setVisible
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      <View style={eventStyles.formContainer}>
+      <View style={styles.formContainer}>
         <Formik
           initialValues={{ link: '' }}
           onSubmit={({ link }) => {
@@ -53,12 +53,12 @@ const PlaceOnlineModal: React.FC<PlaceOnlineModalProps> = ({ visible, setVisible
                 error={errors.link}
                 onChangeText={handleChange('link')}
                 onBlur={handleBlur('link')}
-                style={eventStyles.textInput}
+                style={styles.textInput}
                 autoCorrect={false}
                 autoCapitalize="none"
                 autoFocus
               />
-              <View style={eventStyles.buttonContainer}>
+              <View style={styles.buttonContainer}>
                 <Button
                   mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                   uppercase={Platform.OS !== 'ios'}

@@ -1,15 +1,14 @@
 import React from 'react';
 import { View, TextInput, ActivityIndicator } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
+import { Divider, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components/index';
-import { Config, Permissions } from '@constants/index';
-import getStyles from '@styles/Styles';
-import { ModalProps, State, Account, CommentRequestState, Publisher, Content } from '@ts/types';
-import { useTheme, logger, checkPermission, trackEvent } from '@utils/index';
+import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components';
+import { Config, Permissions } from '@constants';
+import { ModalProps, State, Account, CommentRequestState, Content } from '@ts/types';
+import { logger, checkPermission, trackEvent } from '@utils';
 
-import getArticleStyles from './styles/Styles';
+import getStyles from './styles';
 
 type CommentPublisher = {
   key: string;
@@ -51,7 +50,6 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
   group,
 }) => {
   const theme = useTheme();
-  const articleStyles = getArticleStyles(theme);
   const styles = getStyles(theme);
   const { colors } = theme;
 
@@ -151,20 +149,20 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
             <Divider />
           </View>
         )}
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <TextInput
             // TODO: Hook up comments to drafts in redux, so the user sees his comment when he leaves and comes back.
             // Could possibly also hook it up to drafts with the server in the future.
             autoFocus
             placeholder="Écrire un commentaire..."
             placeholderTextColor={colors.disabled}
-            style={articleStyles.commentInput}
+            style={styles.commentInput}
             multiline
             value={commentText}
             onChangeText={setCommentText}
           />
         </View>
-        <Divider style={articleStyles.divider} />
+        <Divider style={styles.divider} />
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View style={{ flex: 1, flexGrow: 1 }}>
             <CategoriesList

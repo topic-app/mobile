@@ -10,7 +10,7 @@ import {
   PetitionVoteDataMultiple,
   Petition,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import getPetitionStyles from '../styles/PetitionStyles';
 import MultiVote from './MultiVote';

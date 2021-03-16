@@ -1,14 +1,13 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
+import { AppScreenNavigationProp } from '@src/index';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { AppScreenNavigationProp } from '../../index';
-import types from './data/types.json';
-import DeleteAccount from './views/DeleteAccount';
-import EmailChange from './views/EmailChange';
-import EmailVerify from './views/EmailVerify';
-import ResetPassword from './views/ResetPassword';
+import DeleteAccount from './DeleteAccount';
+import EmailChange from './EmailChange';
+import EmailVerify from './EmailVerify';
+import ResetPassword from './ResetPassword';
 
 export type LinkingStackParams = {
   DeleteAccount: {

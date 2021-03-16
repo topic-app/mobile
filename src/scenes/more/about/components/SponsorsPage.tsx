@@ -1,12 +1,11 @@
 import sponsors from '@assets/json/sponsors.json';
 import React from 'react';
 import { View, Image } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
+import { Divider, Text, useTheme } from 'react-native-paper';
 
-import getStyles from '@styles/Styles';
-import { handleUrl, useTheme } from '@utils/index';
+import { handleUrl } from '@utils';
 
-import getLocalStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 const sponsorsWithImages = sponsors.map((sponsor) => ({
   ...sponsor,
@@ -21,13 +20,12 @@ const sponsorsWithImages = sponsors.map((sponsor) => ({
 const SponsorsPage: React.FC = () => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const localStyles = getLocalStyles(theme);
 
   return (
     <View>
-      <View style={localStyles.headerContainer}>
+      <View style={styles.headerContainer}>
         <View style={styles.centerIllustrationContainer}>
-          <Text style={localStyles.sectionTitle}>Partenaires</Text>
+          <Text style={styles.sectionTitle}>Partenaires</Text>
         </View>
       </View>
       <View style={styles.contentContainer}>

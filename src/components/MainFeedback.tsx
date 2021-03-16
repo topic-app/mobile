@@ -5,7 +5,7 @@ import WebView from 'react-native-webview';
 
 import { Config } from '@constants';
 import Store from '@redux/store';
-import { trackEvent, useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils';
 
 import Modal from './Modal';
 

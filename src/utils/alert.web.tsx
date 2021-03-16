@@ -11,7 +11,7 @@
  * https://github.com/Wildtyto/Alert7.js
  *
  * Copyright (c) 2016 Wildtyto
- * Licensed under the MIT licenses.
+ * Licensed under the MIT license.
  */
 'use strict';
 

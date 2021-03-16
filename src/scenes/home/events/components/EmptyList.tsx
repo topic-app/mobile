@@ -3,7 +3,7 @@ import React from 'react';
 import { ActivityIndicator, useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { FullscreenIllustration } from '@components/index';
+import { FullscreenIllustration } from '@components';
 import { EventRequestState } from '@ts/types';
 import { useTheme } from '@utils';
 

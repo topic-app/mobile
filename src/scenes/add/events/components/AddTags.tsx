@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import { Button, Text, Divider, Card } from 'react-native-paper';
+import { Button, Text, Divider, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
@@ -11,16 +11,15 @@ import {
   CollapsibleView,
   CategoryTitle,
   Searchbar,
-} from '@components/index';
-import { Permissions } from '@constants/index';
+} from '@components';
+import { Permissions } from '@constants';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { Account, State, TagRequestState, TagPreload } from '@ts/types';
-import { checkPermission, useTheme } from '@utils/index';
+import { checkPermission } from '@utils';
 
 import TagAddModal from '../../components/TagAddModal';
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps & {
   account: Account;
@@ -58,7 +57,6 @@ const EventAddPageTags: React.FC<Props> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   const fetch = () => {
@@ -160,7 +158,7 @@ const EventAddPageTags: React.FC<Props> = ({
   );
 
   return (
-    <View style={eventStyles.formContainer}>
+    <View style={styles.formContainer}>
       <View>
         <View>
           <View>
@@ -246,7 +244,7 @@ const EventAddPageTags: React.FC<Props> = ({
       </View>
       <View style={{ marginTop: 30 }}>
         <Divider />
-        <View style={eventStyles.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}

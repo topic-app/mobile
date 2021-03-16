@@ -3,8 +3,8 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { MoreScreenNavigationProp } from '../index';
-import Profile from './views/Profile';
+import { MoreScreenNavigationProp } from '..';
+import Profile from './Profile';
 
 export type ProfileStackParams = {
   Profile: undefined;

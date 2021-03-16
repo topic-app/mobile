@@ -1,20 +1,14 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { useWindowDimensions } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { Config } from '@constants/index';
-import getNavigatorStyles from '@styles/NavStyles';
-import { useTheme, useSafeAreaInsets } from '@utils/index';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleList from './articles/views/List';
-import EventList from './events/views/List';
-import ExplorerList from './explorer/views/List';
-import ListScreen from './list/views/List';
+import ArticleList from './articles/List';
+import EventList from './events/List';
+import ListScreen from './list/List';
 
-// import PetitionList from './petitions/views/List';
+// import ExplorerList from './explorer/List';
+// import PetitionList from './petitions/List';
 
 export type HomeTwoNavParams = {
   Article: { initialList?: string } | undefined;
@@ -33,10 +27,6 @@ export type HomeTwoScreenNavigationProp<K extends keyof HomeTwoNavParams> = Comp
 const Stack = createStackNavigator<HomeTwoNavParams>();
 
 function HomeTwoNavigator() {
-  const theme = useTheme();
-  const { colors } = theme;
-  const navigatorStyles = getNavigatorStyles(theme);
-
   return (
     <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />

@@ -1,4 +1,4 @@
-import { Permissions } from '@constants/index';
+import { Permissions } from '@constants';
 import { Account } from '@ts/types';
 import { checkPermission } from '@utils/permissions';
 

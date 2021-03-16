@@ -1,15 +1,14 @@
 import { Formik } from 'formik';
 import React from 'react';
 import { View, Platform, TextInput } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, useTheme } from 'react-native-paper';
 import shortid from 'shortid';
 import * as Yup from 'yup';
 
-import { FormTextInput, Modal } from '@components/index';
+import { FormTextInput, Modal } from '@components';
 import { ModalProps, EventCreationDataPlace } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getEventStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type PlaceAddressModalProps = ModalProps & {
   add: (place: EventCreationDataPlace) => void;
@@ -31,7 +30,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
   }
 
   const theme = useTheme();
-  const eventStyles = getEventStyles(theme);
+  const styles = getStyles(theme);
 
   const AddressSchema = Yup.object().shape({
     number: Yup.string().max(10, 'Le numéro de rue doit comporter moins de 10 caractères'),
@@ -58,7 +57,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      <View style={eventStyles.formContainer}>
+      <View style={styles.formContainer}>
         <Formik
           initialValues={{ number: '', street: '', city: '', code: '', extra: '' }}
           onSubmit={({ number, street, city, code, extra }) => {
@@ -97,7 +96,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
                 onChangeText={handleChange('number')}
                 onBlur={handleBlur('number')}
                 onSubmitEditing={() => streetInput.current!.focus()}
-                style={eventStyles.textInput}
+                style={styles.textInput}
                 autoCorrect={false}
                 autoCapitalize="none"
                 autoFocus
@@ -111,7 +110,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
                 onChangeText={handleChange('street')}
                 onBlur={handleBlur('street')}
                 onSubmitEditing={() => extraInput.current!.focus()}
-                style={eventStyles.textInput}
+                style={styles.textInput}
               />
               <FormTextInput
                 ref={extraInput}
@@ -122,7 +121,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
                 onChangeText={handleChange('extra')}
                 onBlur={handleBlur('extra')}
                 onSubmitEditing={() => codeInput.current!.focus()}
-                style={eventStyles.textInput}
+                style={styles.textInput}
               />
               <FormTextInput
                 ref={codeInput}
@@ -133,7 +132,7 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
                 onChangeText={handleChange('code')}
                 onBlur={handleBlur('code')}
                 onSubmitEditing={() => cityInput.current!.focus()}
-                style={eventStyles.textInput}
+                style={styles.textInput}
                 autoCorrect={false}
                 autoCapitalize="none"
                 keyboardType="number-pad"
@@ -148,12 +147,12 @@ const PlaceAddressModal: React.FC<PlaceAddressModalProps> = ({ visible, setVisib
                 onChangeText={handleChange('city')}
                 onBlur={handleBlur('city')}
                 onSubmitEditing={() => handleSubmit()}
-                style={eventStyles.textInput}
+                style={styles.textInput}
                 autoCorrect={false}
                 autoCapitalize="none"
                 textContentType="addressCity"
               />
-              <View style={eventStyles.buttonContainer}>
+              <View style={styles.buttonContainer}>
                 <Button
                   mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                   uppercase={Platform.OS !== 'ios'}

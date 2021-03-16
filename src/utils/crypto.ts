@@ -1,5 +1,6 @@
 import crypto from 'react-native-simple-crypto';
-import { Config } from '@constants/index';
+
+import { Config } from '@constants';
 
 const hashPassword = async (password: string) => {
   const hashedPassword = await crypto.PBKDF2.hash(

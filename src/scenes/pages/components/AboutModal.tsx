@@ -1,21 +1,10 @@
 import React from 'react';
-import { View, Platform, FlatList } from 'react-native';
-import {
-  Divider,
-  Button,
-  Text,
-  TextInput,
-  RadioButton,
-  List,
-  ProgressBar,
-  Title,
-} from 'react-native-paper';
-import { connect } from 'react-redux';
+import { View } from 'react-native';
+import { Text, Title, useTheme } from 'react-native-paper';
 
-import { Illustration, Modal } from '@components/index';
-import getStyles from '@styles/Styles';
-import { ModalProps, Account, State, RequestState } from '@ts/types';
-import { Errors, trackEvent, useTheme } from '@utils/index';
+import { Illustration, Modal } from '@components';
+import getStyles from '@styles/global';
+import { ModalProps } from '@ts/types';
 
 import { PagesScreenNavigationProp } from '../index';
 
@@ -23,7 +12,6 @@ type AboutModalProps = ModalProps & { navigation: PagesScreenNavigationProp<any>
 const AboutModal: React.FC<AboutModalProps> = ({ visible, setVisible, navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const { colors } = theme;
 
   return (
     <Modal visible={visible} setVisible={setVisible}>

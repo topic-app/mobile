@@ -5,7 +5,7 @@ import { G, Path } from 'react-native-svg';
 import { PieChart } from 'react-native-svg-charts';
 import shortid from 'shortid';
 
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 const showNumbers = false;
 

@@ -3,9 +3,9 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { ParamsScreenNavigationProp } from '../index';
-import EventEditParams from './views/EditParams';
-import EventParams from './views/Params';
+import { ParamsScreenNavigationProp } from '..';
+import EventEditParams from './EditParams';
+import EventParams from './Params';
 
 export type EventParamsStackParams = {
   Params: undefined;

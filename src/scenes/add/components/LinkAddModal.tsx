@@ -1,14 +1,12 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Divider, Button, TextInput, HelperText } from 'react-native-paper';
-import { connect } from 'react-redux';
+import { Divider, Button, TextInput, HelperText, useTheme } from 'react-native-paper';
 
-import { Modal } from '@components/index';
-import getStyles from '@styles/Styles';
-import { ModalProps, State } from '@ts/types';
-import { trackEvent, useTheme } from '@utils/index';
+import { Modal } from '@components';
+import { ModalProps } from '@ts/types';
+import { trackEvent } from '@utils';
 
-import getArticleStyles from './styles/Styles';
+import getStyles from './styles';
 
 type LinkAddModalProps = ModalProps & {
   add: (link: string, name: string) => any;
@@ -17,7 +15,6 @@ type LinkAddModalProps = ModalProps & {
 const LinkAddModal: React.FC<LinkAddModalProps> = ({ visible, setVisible, add }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [linkText, setLinkText] = React.useState('');
@@ -42,7 +39,7 @@ const LinkAddModal: React.FC<LinkAddModalProps> = ({ visible, setVisible, add })
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <TextInput
             autoFocus
             mode="outlined"
@@ -57,7 +54,7 @@ const LinkAddModal: React.FC<LinkAddModalProps> = ({ visible, setVisible, add })
             }}
           />
         </View>
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <TextInput
             mode="outlined"
             label="Texte (facultatif)"

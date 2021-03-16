@@ -3,12 +3,12 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { MoreScreenNavigationProp } from '../index';
-import SettingsContent from './views/Content';
-import SettingsDev from './views/Dev';
-import SettingsList from './views/List';
-import SettingsPrivacy from './views/Privacy';
-import SettingsTheme from './views/Theme';
+import { MoreScreenNavigationProp } from '..';
+import SettingsContent from './Content';
+import SettingsDev from './Dev';
+import SettingsList from './List';
+import SettingsPrivacy from './Privacy';
+import SettingsTheme from './Theme';
 
 export type SettingsStackParams = {
   List: undefined;

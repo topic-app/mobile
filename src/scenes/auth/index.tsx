@@ -4,10 +4,10 @@ import React from 'react';
 import { AppScreenNavigationProp } from '@root/src';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import AuthCreateScreen from './views/Create';
-import AuthCreateSuccessScreen from './views/CreateSuccess';
-import AuthLoginScreen from './views/Login';
-import AuthResetPasswordScreen from './views/ResetPassword';
+import AuthCreateScreen from './Create';
+import AuthCreateSuccessScreen from './CreateSuccess';
+import AuthLoginScreen from './Login';
+import AuthResetPasswordScreen from './ResetPassword';
 
 export type AuthStackParams = {
   Login: undefined;

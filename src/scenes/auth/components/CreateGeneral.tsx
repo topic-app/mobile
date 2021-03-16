@@ -1,15 +1,15 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, useTheme } from 'react-native-paper';
 import * as Yup from 'yup';
 import zxcvbn from 'zxcvbn';
 
 import { StepperViewPageProps, FormTextInput, StrengthMeter } from '@components';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import { useTheme, request, trackEvent } from '@utils/index';
+import { request, trackEvent } from '@utils';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps;
 
@@ -19,7 +19,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
   const passwordInput = createRef<RNTextInput>();
 
   const theme = useTheme();
-  const authStyles = getAuthStyles(theme);
+  const styles = getStyles(theme);
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
 
@@ -77,7 +77,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
   });
 
   return (
-    <View style={authStyles.formContainer}>
+    <View style={styles.formContainer}>
       <Formik
         initialValues={{ username: '', email: '', password: '' }}
         validationSchema={RegisterSchema}
@@ -98,7 +98,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
               onChangeText={handleChange('username')}
               onBlur={handleBlur('username')}
               onSubmitEditing={() => emailInput.current?.focus()}
-              style={authStyles.textInput}
+              style={styles.textInput}
               textContentType="username"
               autoCorrect={false}
               autoCapitalize="none"
@@ -113,7 +113,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               onSubmitEditing={() => passwordInput.current?.focus()}
-              style={authStyles.textInput}
+              style={styles.textInput}
               keyboardType="email-address"
               textContentType="emailAddress"
               autoCompleteType="email"
@@ -129,7 +129,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
               onSubmitEditing={() => handleSubmit()}
-              style={authStyles.textInput}
+              style={styles.textInput}
               textContentType="password"
               autoCapitalize="none"
               autoCompleteType="password"
@@ -138,7 +138,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
               secureTextEntry
             />
             <StrengthMeter level={passwordStrength} />
-            <View style={authStyles.buttonContainer}>
+            <View style={styles.buttonContainer}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                 uppercase={Platform.OS !== 'ios'}

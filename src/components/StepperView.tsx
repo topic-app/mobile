@@ -6,7 +6,7 @@ import { TabView, SceneRendererProps, NavigationState, Route } from 'react-nativ
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Theme } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 const stepperStyles = StyleSheet.create({
   centerContainer: {

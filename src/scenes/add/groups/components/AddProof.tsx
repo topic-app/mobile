@@ -1,18 +1,16 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput } from 'react-native';
-import { HelperText, Button, ProgressBar, Checkbox, List, Card, Text } from 'react-native-paper';
+import { HelperText, Button, Checkbox, List, Card, Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, FormTextInput } from '@components/index';
+import { StepperViewPageProps, FormTextInput } from '@components';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
-import getStyles from '@styles/Styles';
 import { State, GroupRequestState, GroupCreationData } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps & {
   creationData: GroupCreationData;
@@ -59,10 +57,9 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
 
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={styles.formContainer}>
       <Formik
         initialValues={{
           name: '',
@@ -101,7 +98,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onChangeText={handleChange('name')}
                 onBlur={handleBlur('name')}
                 onSubmitEditing={() => idInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
                 autoFocus
               />
             </View>
@@ -116,7 +113,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onChangeText={handleChange('id')}
                 onBlur={handleBlur('id')}
                 onSubmitEditing={() => adminInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
             <View style={{ marginBottom: 20 }}>
@@ -130,7 +127,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onChangeText={handleChange('admin')}
                 onBlur={handleBlur('admin')}
                 onSubmitEditing={() => addressInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
             <View style={{ marginBottom: 20 }}>
@@ -144,7 +141,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onChangeText={handleChange('address')}
                 onBlur={handleBlur('address')}
                 onSubmitEditing={() => emailInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
             <View style={{ marginBottom: 20 }}>
@@ -161,7 +158,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
                 onSubmitEditing={() => extraInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
             <View style={{ marginBottom: 20 }}>
@@ -177,7 +174,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 onChangeText={handleChange('extra')}
                 onBlur={handleBlur('extra')}
                 onSubmitEditing={() => extraVerificationInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
             <View style={{ marginBottom: 20 }}>
@@ -192,7 +189,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 error={errors.extraVerification}
                 onChangeText={handleChange('extraVerification')}
                 onBlur={handleBlur('extraVerification')}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
             <View style={[styles.container, { marginTop: 20 }]}>
@@ -263,7 +260,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                 {errors.terms || errors.correct}
               </HelperText>
             </View>
-            <View style={articleStyles.buttonContainer}>
+            <View style={styles.buttonContainer}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}

@@ -3,8 +3,8 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { ConfigureScreenNavigationProp } from '../index';
-import ArticleConfigure from './views/Configure';
+import { ConfigureScreenNavigationProp } from '..';
+import ArticleConfigure from './Configure';
 
 export type ArticleConfigureStackParams = {
   Configure: undefined;

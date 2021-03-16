@@ -13,7 +13,7 @@ import {
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Modal } from '@components/index';
+import { Modal } from '@components';
 import { Permissions } from '@constants';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { groupModify } from '@redux/actions/apiActions/groups';
@@ -26,7 +26,7 @@ import {
   ReduxLocation,
   GroupRolePermission,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import getArticleStyles from '../styles/Styles';
 

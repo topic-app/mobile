@@ -1,18 +1,12 @@
 import React from 'react';
-import { View, Appearance, FlatList } from 'react-native';
-import { Button, List, Provider, Text, Menu as MenuComponent } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { connect } from 'react-redux';
+import { View } from 'react-native';
+import { Button } from 'react-native-paper';
 
-import { Content as ContentComponent, CustomHeaderBar } from '@components/index';
-import getStyles from '@styles/Styles';
-import themes from '@styles/Theme';
 import { Page } from '@ts/groupPages';
-import { Account, Preferences, State, Pages } from '@ts/types';
-import { handleUrl, useTheme } from '@utils/index';
+import { Pages } from '@ts/types';
+import { handleUrl } from '@utils';
 
-import type { PagesScreenNavigationProp } from '../../index';
-import getLocalStyles from '../../styles/Styles';
+import type { PagesScreenNavigationProp } from '../..';
 
 type PageProps = {
   navigation: PagesScreenNavigationProp<any>;
@@ -21,12 +15,6 @@ type PageProps = {
 };
 
 const Menu: React.FC<PageProps> = ({ navigation, element, page }) => {
-  const theme = useTheme();
-  const styles = getStyles(theme);
-  const localStyles = getLocalStyles(theme);
-
-  const [menuVisible, setMenuVisible] = React.useState<string | null>(null);
-
   return (
     <View style={{ flexDirection: 'row', margin: 10, flexWrap: 'wrap' }}>
       {element.data.elements.map((e) => {

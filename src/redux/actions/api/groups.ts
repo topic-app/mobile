@@ -10,7 +10,7 @@ import {
   AppThunk,
 } from '@ts/redux';
 import { Group, GroupTemplate } from '@ts/types';
-import { request, logger } from '@utils/index';
+import { request, logger } from '@utils';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 

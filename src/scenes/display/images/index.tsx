@@ -3,8 +3,8 @@ import React from 'react';
 
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
-import { DisplayScreenNavigationProp } from '../index';
-import ImageDisplay from './views/Display';
+import { DisplayScreenNavigationProp } from '..';
+import ImageDisplay from './Display';
 
 export type ImageDisplayStackParams = {
   Display: { image: string };

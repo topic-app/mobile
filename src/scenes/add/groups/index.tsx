@@ -5,8 +5,8 @@ import { ReduxLocation, GroupCreationData } from '@ts/types';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import { AddScreenNavigationProp } from '../index';
-import GroupAdd from './views/Add';
-import GroupAddSuccess from './views/AddSuccess';
+import GroupAdd from './Add';
+import GroupAddSuccess from './AddSuccess';
 
 // TODO: Define GroupCreationData
 

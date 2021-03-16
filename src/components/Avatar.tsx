@@ -6,7 +6,7 @@ import { Avatar as PaperAvatar, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Avatar as AvatarType } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import Image from './CustomImage';
 import Illustration from './Illustration';

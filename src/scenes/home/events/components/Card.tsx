@@ -1,21 +1,20 @@
 import React from 'react';
 import { View, Dimensions, Platform } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { EventCard, PlatformTouchable } from '@components/index';
+import { EventCard, PlatformTouchable } from '@components';
 import {
   addEventRead,
   deleteEventRead,
   addEventToList,
   removeEventFromList,
 } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { AnyEvent, EventListItem } from '@ts/types';
-import { useTheme, Alert } from '@utils/index';
+import { Alert } from '@utils';
 
-import getEventStyles from '../styles/Styles';
+import getStyles from './styles';
 
 type EventListCardProps = {
   event: AnyEvent;
@@ -41,7 +40,6 @@ const EventListCard: React.FC<EventListCardProps> = ({
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
-  const eventStyles = getEventStyles(theme);
 
   const swipeRef = React.createRef<Swipeable>();
 
@@ -58,7 +56,7 @@ const EventListCard: React.FC<EventListCardProps> = ({
               marginRight: 20,
             }}
           >
-            <Text style={eventStyles.captionText}>Marquer comme {isRead ? 'non lu' : 'lu'}</Text>
+            <Text style={styles.captionText}>Marquer comme {isRead ? 'non lu' : 'lu'}</Text>
             <Icon
               name={isRead ? 'eye-off' : 'eye'}
               size={32}
@@ -74,7 +72,7 @@ const EventListCard: React.FC<EventListCardProps> = ({
               marginRight: 20,
             }}
           >
-            <Text style={eventStyles.captionText}>Retirer</Text>
+            <Text style={styles.captionText}>Retirer</Text>
             <Icon
               name="delete"
               color={colors.disabled}

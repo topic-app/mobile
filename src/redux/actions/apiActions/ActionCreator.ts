@@ -1,5 +1,5 @@
 import { ApiAction, AppThunk } from '@ts/redux';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 type ReportCreatorParams = {
   contentId: string;

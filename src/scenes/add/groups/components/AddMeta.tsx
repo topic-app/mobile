@@ -1,14 +1,13 @@
 import { Formik } from 'formik';
-import React, { useState, createRef } from 'react';
+import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput } from 'react-native';
-import { TextInput, HelperText, Button } from 'react-native-paper';
+import { Button, useTheme } from 'react-native-paper';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, CollapsibleView, FormTextInput } from '@components/index';
+import { StepperViewPageProps, FormTextInput } from '@components';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
-import { useTheme } from '@utils/index';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps;
 
@@ -19,7 +18,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   const descriptionInput = createRef<RNTextInput>();
 
   const theme = useTheme();
-  const articleStyles = getArticleStyles(theme);
+  const styles = getStyles(theme);
 
   const MetaSchema = Yup.object().shape({
     name: Yup.string()
@@ -36,7 +35,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
   });
 
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={styles.formContainer}>
       <Formik
         initialValues={{ name: '', shortName: '', summary: '', description: '' }}
         validationSchema={MetaSchema}
@@ -63,7 +62,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
                 onChangeText={handleChange('name')}
                 onBlur={handleBlur('name')}
                 onSubmitEditing={() => shortNameInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
                 autoFocus
               />
             </View>
@@ -78,7 +77,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
                 onChangeText={handleChange('shortName')}
                 onBlur={handleBlur('shortName')}
                 onSubmitEditing={() => summaryInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
             <View style={{ marginBottom: 20 }}>
@@ -94,7 +93,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
                 onChangeText={handleChange('summary')}
                 onBlur={handleBlur('summary')}
                 onSubmitEditing={() => descriptionInput.current?.focus()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
             <View style={{ marginBottom: 20 }}>
@@ -110,10 +109,10 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
                 onChangeText={handleChange('description')}
                 onBlur={handleBlur('description')}
                 onSubmitEditing={() => handleSubmit()}
-                style={articleStyles.textInput}
+                style={styles.textInput}
               />
             </View>
-            <View style={articleStyles.buttonContainer}>
+            <View style={styles.buttonContainer}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}

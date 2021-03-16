@@ -9,7 +9,7 @@ import { updatePrefs } from '@redux/actions/data/prefs';
 import getStyles from '@styles/Styles';
 import themes from '@styles/Theme';
 import { PreferencesState, State } from '@ts/types';
-import { trackEvent, useTheme } from '@utils/index';
+import { trackEvent, useTheme } from '@utils';
 
 import Modal from './Modal';
 

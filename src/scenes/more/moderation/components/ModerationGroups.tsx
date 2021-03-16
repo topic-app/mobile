@@ -1,15 +1,14 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { Text, ProgressBar } from 'react-native-paper';
+import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, GroupCard } from '@components/index';
+import { ErrorMessage, GroupCard } from '@components';
 import { updateGroupsVerification } from '@redux/actions/api/groups';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { State, Account, GroupRequestState, AnyGroup, ModerationTypes } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import type { ModerationScreenNavigationProp } from '../index';
+import type { ModerationScreenNavigationProp } from '..';
 
 type Props = {
   navigation: ModerationScreenNavigationProp<'List'>;

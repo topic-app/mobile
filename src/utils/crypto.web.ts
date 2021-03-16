@@ -1,7 +1,7 @@
 // @ts-nocheck
 import crypto from 'crypto-browserify';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 
 const hashPassword = (password: string) => {
   return new Promise((resolve, reject) => {

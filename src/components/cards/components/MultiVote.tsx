@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 import shortid from 'shortid';
 
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import getPetitionStyles from '../styles/PetitionStyles';
 

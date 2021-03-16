@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { ArticlePreload, ArticleVerificationPreload, State, Preferences, Article } from '@ts/types';
-import { useTheme } from '@utils/index';
+import { useTheme } from '@utils';
 
 import { CardBase } from '../Cards';
 import CustomImage from '../CustomImage';
