@@ -1,9 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import shortid from 'shortid';
-
-import { useTheme } from '@utils';
 
 import getPetitionStyles from '../styles/PetitionStyles';
 

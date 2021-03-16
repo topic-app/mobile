@@ -2,8 +2,7 @@
 // Changed `useSafeAreaInsets` import from `./SafeAreaContext` to `@utils/index`
 import * as React from 'react';
 import { View, StyleSheet, ViewProps, Platform } from 'react-native';
-
-import { useSafeAreaInsets } from '@utils';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // prettier-ignore
 const TOP    = 0b1000,

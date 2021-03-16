@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import StepIndicator from 'react-native-step-indicator';
 import { TabView, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Theme } from '@ts/types';
-import { useTheme } from '@utils';
 
 const stepperStyles = StyleSheet.create({
   centerContainer: {

@@ -1,15 +1,15 @@
 /* eslint-disable no-unreachable */
 import React from 'react';
 import { Linking, Platform, View, ActivityIndicator } from 'react-native';
-import { Text, Card, IconButton } from 'react-native-paper';
+import { Text, Card, IconButton, useTheme } from 'react-native-paper';
 import WebView from 'react-native-webview';
 import { connect } from 'react-redux';
 
 import { updatePrefs } from '@redux/actions/data/prefs';
-import getStyles from '@styles/Styles';
-import themes from '@styles/Theme';
+import getStyles from '@styles/global';
+import themes from '@styles/helpers/theme';
 import { PreferencesState, State } from '@ts/types';
-import { trackEvent, useTheme } from '@utils';
+import { trackEvent } from '@utils';
 
 import Modal from './Modal';
 

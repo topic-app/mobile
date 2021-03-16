@@ -1,12 +1,12 @@
 import React from 'react';
 import { Linking, View } from 'react-native';
-import { Button, IconButton, Text } from 'react-native-paper';
+import { Button, IconButton, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import updatePrefs from '@redux/actions/data/prefs';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { PreferencesState, State, Account } from '@ts/types';
-import { useLayout, useTheme } from '@utils';
+import { useLayout } from '@utils';
 
 import Illustration from './Illustration';
 import { PlatformTouchable } from './PlatformComponents';

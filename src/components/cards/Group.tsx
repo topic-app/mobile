@@ -1,12 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Paragraph, Title, Card } from 'react-native-paper';
+import { Text, Paragraph, Title, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { AnyGroup } from '@ts/types';
-import { useTheme } from '@utils';
 
 import Avatar from '../Avatar';
 import { PlatformTouchable } from '../PlatformComponents';

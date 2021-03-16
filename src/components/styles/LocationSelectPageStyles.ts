@@ -1,8 +1,12 @@
-import { Theme } from '@ts/types';
 import { StyleSheet } from 'react-native';
 
-function getArticleStyles(_theme: Theme) {
+import getGlobalStyles from '@styles/global';
+import { Theme } from '@ts/types';
+
+export default function getStyles(theme: Theme) {
+  const globalStyles = getGlobalStyles(theme);
   return StyleSheet.create({
+    ...globalStyles,
     listItem: { padding: 6 },
     searchContainer: {
       paddingHorizontal: 20,
@@ -18,5 +22,3 @@ function getArticleStyles(_theme: Theme) {
     },
   });
 }
-
-export default getArticleStyles;

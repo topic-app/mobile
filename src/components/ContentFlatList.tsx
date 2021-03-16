@@ -11,10 +11,9 @@ import {
   ListRenderItemInfo,
   ActivityIndicator,
 } from 'react-native';
-import { Subheading, Text } from 'react-native-paper';
+import { Subheading, Text, useTheme } from 'react-native-paper';
 
-import getStyles from '@styles/Styles';
-import { useTheme } from '@utils';
+import getStyles from '@styles/global';
 
 import Banner from './Banner';
 import TabChipList from './TabChipList';

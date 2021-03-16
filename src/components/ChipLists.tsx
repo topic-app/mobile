@@ -9,12 +9,8 @@ import {
   StyleProp,
   TouchableOpacity,
 } from 'react-native';
-import { Text, IconButton } from 'react-native-paper';
+import { Text, IconButton, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { useTheme } from '@utils';
-
-import { PlatformTouchable } from './PlatformComponents';
 
 type ChipBaseProps = {
   icon?: string;

@@ -1,10 +1,9 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { Text, Paragraph, Title, Card } from 'react-native-paper';
+import { Card, useTheme } from 'react-native-paper';
 
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { User, UserPreload } from '@ts/types';
-import { useTheme } from '@utils';
 
 import { InlineCard } from '../Cards';
 

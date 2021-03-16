@@ -1,8 +1,9 @@
-import * as Assets from '@assets/index';
 import React from 'react';
+import { useTheme } from 'react-native-paper';
 import { SvgProps } from 'react-native-svg';
 
-import { useTheme, logger } from '@utils';
+import * as Assets from '@assets/index';
+import { logger } from '@utils';
 
 const illustrationList = {
   // Topic Icon

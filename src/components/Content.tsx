@@ -1,16 +1,14 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
-import { ImageStyle, View, Dimensions, Platform, Linking } from 'react-native';
+import { ImageStyle, View, Dimensions, Platform } from 'react-native';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
-import { Text, Card, Title, Button } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import config from '@constants/config';
-import updatePrefs from '@redux/actions/data/prefs';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { Content as ContentType, State, Preferences } from '@ts/types';
-import { useTheme, getImageUrl, handleUrl } from '@utils';
+import { getImageUrl, handleUrl } from '@utils';
 import AutoHeightImage from '@utils/autoHeightImage';
 import { NativeStackNavigationProp } from '@utils/stack';
 import YouTube from '@utils/youtube';

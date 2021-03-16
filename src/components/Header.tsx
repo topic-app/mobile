@@ -2,11 +2,12 @@ import { useNavigation } from '@react-navigation/core';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp, Platform } from 'react-native';
-import { Appbar, Menu } from 'react-native-paper';
+import { Appbar, Menu, useTheme } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import shortid from 'shortid';
 
-import getNavigatorStyles from '@styles/NavStyles';
-import { useTheme, useSafeAreaInsets, useLayout } from '@utils';
+import getStyles from '@styles/navigators';
+import { useLayout } from '@utils';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
@@ -48,7 +49,7 @@ export type CustomHeaderBarProps = {
 const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
 
-  const navigatorStyles = getNavigatorStyles(useTheme());
+  const styles = getStyles(useTheme());
   const { colors } = useTheme();
   const navigation = useNavigation<DrawerNavigationProp<any>>();
 
@@ -117,7 +118,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   return (
     <View>
       <TranslucentStatusBar />
-      <Appbar.Header style={[navigatorStyles.header, headerStyle]} statusBarHeight={insets.top}>
+      <Appbar.Header style={[styles.header, headerStyle]} statusBarHeight={insets.top}>
         {primaryAction}
         <Appbar.Content title={title} subtitle={subtitle} />
         {secondaryActions}

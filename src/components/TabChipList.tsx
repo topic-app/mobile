@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, SectionList, Platform } from 'react-native';
-import { IconButton } from 'react-native-paper';
-
-import { useTheme } from '@utils';
+import { IconButton, useTheme } from 'react-native-paper';
 
 import { TextChip } from './ChipLists';
 

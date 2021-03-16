@@ -1,9 +1,7 @@
 import React, { forwardRef } from 'react';
 import { View, TextInput as NativeTextInput, Platform } from 'react-native';
-import { HelperText, TextInput as PaperTextInput } from 'react-native-paper';
+import { HelperText, TextInput as PaperTextInput, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { useTheme } from '@utils';
 
 type Props = Omit<Omit<React.ComponentProps<typeof PaperTextInput>, 'error'>, 'render'> & {
   error?: string;

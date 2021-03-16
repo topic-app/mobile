@@ -9,10 +9,8 @@ import {
   TouchableNativeFeedbackProps,
 } from 'react-native';
 import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
-import { IconButton } from 'react-native-paper';
+import { IconButton, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { useTheme } from '@utils';
 
 type PlatformIconButtonProps = {
   // TODO: find a way to accept either `icon`, or `iosIcon` and `androidIcon`

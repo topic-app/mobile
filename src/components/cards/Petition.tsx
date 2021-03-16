@@ -2,12 +2,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
 import { View } from 'react-native';
-import { Card, Text } from 'react-native-paper';
+import { Card, Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { PetitionStatus, PetitionPreload, Theme } from '@ts/types';
-import { useTheme } from '@utils';
 
 import { CardBase } from '../Cards';
 import TagList from '../TagList';

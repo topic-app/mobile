@@ -1,13 +1,12 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
-import { View, Dimensions } from 'react-native';
-import { Card, Paragraph, Text, Title, Caption } from 'react-native-paper';
+import { View } from 'react-native';
+import { Card, Paragraph, Text, Title, Caption, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { ArticlePreload, ArticleVerificationPreload, State, Preferences, Article } from '@ts/types';
-import { useTheme } from '@utils';
 
 import { CardBase } from '../Cards';
 import CustomImage from '../CustomImage';

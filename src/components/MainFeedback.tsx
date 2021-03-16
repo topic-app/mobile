@@ -1,11 +1,12 @@
 import React from 'react';
 import { Linking, Platform, View, ActivityIndicator } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import { useTheme } from 'react-native-paper';
 import WebView from 'react-native-webview';
 
 import { Config } from '@constants';
 import Store from '@redux/store';
-import { trackEvent, useTheme } from '@utils';
+import { trackEvent } from '@utils';
 
 import Modal from './Modal';
 

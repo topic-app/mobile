@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, ViewStyle, StyleProp } from 'react-native';
-import { Text, Card } from 'react-native-paper';
+import { Text, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { Avatar as AvatarType } from '@ts/types';
-import { useTheme } from '@utils';
 
 import Avatar from './Avatar';
 import { PlatformTouchable } from './PlatformComponents';

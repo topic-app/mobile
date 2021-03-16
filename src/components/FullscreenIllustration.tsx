@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Platform, useWindowDimensions, StyleProp, ViewStyle } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, useTheme } from 'react-native-paper';
 
-import getStyles from '@styles/Styles';
-import { useTheme } from '@utils';
+import getStyles from '@styles/global';
 
 import Illustration, { IllustrationName } from './Illustration';
 

@@ -1,13 +1,13 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp, Dimensions } from 'react-native';
-import { Appbar, Text, Menu } from 'react-native-paper';
+import { Appbar, Text, Menu, useTheme } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import shortid from 'shortid';
 
 import { PlatformTouchable } from '@components';
-import getNavigatorStyles from '@styles/NavStyles';
-import { useTheme, useSafeAreaInsets } from '@utils';
+import getStyles from '@styles/navigators';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
@@ -86,7 +86,7 @@ export type CustomHeaderBarProps = {
 const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const navigatorStyles = getNavigatorStyles(theme);
+  const styles = getStyles(theme);
 
   const navigation = useNavigation();
 
@@ -160,7 +160,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   return (
     <View>
       <TranslucentStatusBar />
-      <Appbar.Header statusBarHeight={insets.top} style={[navigatorStyles.header, headerStyle]}>
+      <Appbar.Header statusBarHeight={insets.top} style={[styles.header, headerStyle]}>
         <View
           style={{
             position: 'absolute',

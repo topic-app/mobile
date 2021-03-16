@@ -1,10 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Title, Button } from 'react-native-paper';
+import { Text, Title, Button, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getStyles from '@styles/Styles';
-import { useTheme } from '@utils';
+import getStyles from '@styles/global';
 
 type UnauthorizedBetaProps = {
   back: () => void;

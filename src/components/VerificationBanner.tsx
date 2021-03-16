@@ -1,12 +1,12 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Avatar, ProgressBar } from 'react-native-paper';
+import { Avatar, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { fetchAccount } from '@redux/actions/data/account';
 import { resendVerification } from '@redux/actions/data/profile';
 import { State, Account, AccountRequestState } from '@ts/types';
-import { Alert, trackEvent, useTheme } from '@utils';
+import { Alert, trackEvent } from '@utils';
 
 import Banner from './Banner';
 import ErrorMessage from './ErrorMessage';

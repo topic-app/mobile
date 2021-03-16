@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, ProgressBar } from 'react-native-paper';
+import { Text, ProgressBar, useTheme } from 'react-native-paper';
 
 import {
   PetitionVoteData,
@@ -10,7 +10,6 @@ import {
   PetitionVoteDataMultiple,
   Petition,
 } from '@ts/types';
-import { useTheme } from '@utils';
 
 import getPetitionStyles from '../styles/PetitionStyles';
 import MultiVote from './MultiVote';

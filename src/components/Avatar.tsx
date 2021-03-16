@@ -2,15 +2,12 @@ import color from 'color';
 import React from 'react';
 import { View, ViewStyle, TextStyle, ImageStyle, StyleProp, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { Avatar as PaperAvatar, Text } from 'react-native-paper';
+import { Avatar as PaperAvatar, Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Avatar as AvatarType } from '@ts/types';
-import { useTheme } from '@utils';
 
 import Image from './CustomImage';
-import Illustration from './Illustration';
-import { PlatformTouchable } from './PlatformComponents';
 
 const getInitials = (title: string) => {
   const initials = title.match(/\b\w/g) || [];
