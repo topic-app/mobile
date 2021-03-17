@@ -10,21 +10,21 @@ typescript test:
   stage: test
   image: node:12
   script:
-    - npm install
+    - npm install --unsafe-perm
     - npm run tsc
 
 eslint test:
   stage: test
   image: node:12
   script:
-    - npm install
+    - npm install --unsafe-perm
     - npm run lint
 
 unit test:
   stage: test
   image: node:12
   script:
-    - npm install
+    - npm install --unsafe-perm
     - npm run test
 
 build app android:
