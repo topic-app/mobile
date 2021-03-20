@@ -73,10 +73,6 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
       });
   };
 
-  if (Platform.OS === 'web') {
-    return <View style={styles.page}>Accès non autorisé</View>;
-  }
-
   return (
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>

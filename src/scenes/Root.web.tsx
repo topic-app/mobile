@@ -290,7 +290,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                 })
               }
             />
-            {/* <PaperDrawer.Item
+            <PaperDrawer.Item
               icon="account-plus-outline"
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
@@ -300,7 +300,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                   screen: 'Create',
                 })
               }
-            /> */}
+            />
           </View>
         )}
 
