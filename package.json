@@ -68,7 +68,7 @@
     "randomcolor": "^0.6.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-native": "^0.64.0",
+    "react-native": "^0.63.4",
     "react-native-auto-height-image": "^3.2.4",
     "react-native-device-info": "^8.0.6",
     "react-native-draggable-dynamic-flatlist": "^1.0.4",
