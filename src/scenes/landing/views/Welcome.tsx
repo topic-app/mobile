@@ -1,7 +1,7 @@
 import sponsors from '@assets/json/sponsors.json';
-import ViewPager from '@react-native-community/viewpager';
 import React, { useRef } from 'react';
 import { View, Platform, Animated, useWindowDimensions, Easing, Image } from 'react-native';
+import ViewPager from 'react-native-pager-view';
 import { Text, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
