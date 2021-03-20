@@ -33,7 +33,7 @@ const processError = async ({ type, error, retry, back, restart, strings, extra 
     text: 'Erreur inconnue',
     code: 'unknown',
   };
-  let actions: { text: string; onPress: () => any }[] = [];
+  let actions: { text: string; onPress: () => void }[] = [];
 
   /* Category 1: api request error */
   if (type === 'axios') {
@@ -367,6 +367,10 @@ const showPopup = async ({ what, type, error, retry, back, restart }: popupProps
     retry,
     back,
     restart,
+    extra: {
+      type: 'popup',
+      what,
+    },
   });
   trackEvent('error', {
     props: { type: 'popup', what, error: message.code, status: (status || 0).toString() },
@@ -378,7 +382,7 @@ const showPopup = async ({ what, type, error, retry, back, restart }: popupProps
       { text: 'Fermer' },
       ...actions,
       ...(Store.getState().preferences.advancedMode
-        ? [{ text: 'Copier', onPress: Clipboard.setString(details) }]
+        ? [{ text: 'Copier', onPress: () => Clipboard.setString(details) }]
         : []),
     ],
   );
