@@ -170,7 +170,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
       key: 'settings',
       text: 'Paramètres',
       type: 'button',
-      icon: 'settings-outline',
+      icon: 'cog-outline',
       path: '/parametres',
       navigate: () =>
         navigation.navigate('Main', {
