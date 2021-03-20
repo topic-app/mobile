@@ -1,8 +1,10 @@
 import { fetch as fetchNetInfo } from '@react-native-community/netinfo';
-import { Alert } from 'react-native';
+import { Clipboard } from 'react-native';
 
+import Store from '@redux/store';
 import { Error as ErrorType } from '@ts/types';
 
+import Alert from './alert';
 import { trackEvent } from './plausible';
 
 type errorProps = {
@@ -11,6 +13,7 @@ type errorProps = {
   retry?: () => any | null;
   back?: () => any | null;
   restart?: () => any | null;
+  extra?: any;
   strings?: {
     action?: string;
     contentSingular?: string;
@@ -19,7 +22,7 @@ type errorProps = {
 };
 type popupProps = errorProps & { what: string };
 
-const processError = async ({ type, error, retry, back, restart, strings }: errorProps) => {
+const processError = async ({ type, error, retry, back, restart, strings, extra }: errorProps) => {
   const err = (Array.isArray(error) && error?.length > 0
     ? error.find((e) => !!e) || error[0]
     : error) as ErrorType;
@@ -336,18 +339,48 @@ const processError = async ({ type, error, retry, back, restart, strings }: erro
       }
     }
   }
-  return { message, actions, status: err?.error?.response?.status };
+
+  let stringifiedErr;
+  try {
+    stringifiedErr = JSON.stringify(err, null, 2);
+  } catch (err) {
+    stringifiedErr = `Could not stringify`;
+  }
+  const details = JSON.stringify(
+    {
+      status: err?.error?.response?.status,
+      code: message.code,
+      extra,
+      error: stringifiedErr,
+    },
+    null,
+    2,
+  );
+
+  return { message, actions, status: err?.error?.response?.status, details };
 };
 
 const showPopup = async ({ what, type, error, retry, back, restart }: popupProps) => {
-  const { message, actions, status } = await processError({ type, error, retry, back, restart });
+  const { message, actions, status, details } = await processError({
+    type,
+    error,
+    retry,
+    back,
+    restart,
+  });
   trackEvent('error', {
     props: { type: 'popup', what, error: message.code, status: (status || 0).toString() },
   });
   Alert.alert(
     `Une erreur est survenue lors de ${what}`,
     `${message.text} (${error?.error?.toString()})`,
-    [{ text: 'Fermer' }, ...actions],
+    [
+      { text: 'Fermer' },
+      ...actions,
+      ...(Store.getState().preferences.advancedMode
+        ? [{ text: 'Copier', onPress: Clipboard.setString(details) }]
+        : []),
+    ],
   );
 };
 
