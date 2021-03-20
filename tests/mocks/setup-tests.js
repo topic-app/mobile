@@ -8,3 +8,4 @@ jest.mock('react-native-device-info', () => mockRNDeviceInfo);
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 jest.mock('react-native-geolocation-service', () => mockRNGeolocationService);
 jest.mock('@utils/firebase', () => mockFirebase);
+jest.mock('@react-native/polyfills/error-guard.js', () => {});
