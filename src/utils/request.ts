@@ -95,7 +95,7 @@ async function request(
           `GET Request server failure ${JSON.stringify({
             status: res?.status,
             endpoint: `${url}/${endpoint}`,
-            data: res?.data?.info,
+            data: res?.data,
           })}`,
         ),
       );
@@ -120,7 +120,7 @@ async function request(
             `POST Request failed ${JSON.stringify({
               status: error?.status,
               endpoint: `${url}/${endpoint}`,
-              data: error?.response,
+              data: error?.response?.data,
             })}`,
           ),
         );
