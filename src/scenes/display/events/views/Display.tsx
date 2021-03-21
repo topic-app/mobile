@@ -281,76 +281,72 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                 },
               ]
         }
-        overflow={
-          verification
-            ? undefined
-            : [
+        overflow={[
+          {
+            title: 'Partager',
+            onPress: () => {
+              if (!event) return;
+              shareContent({
+                title: event.title,
+                group: event.group?.displayName,
+                type: 'evenements',
+                id: event._id,
+              });
+            },
+          },
+          {
+            title: 'Signaler',
+            onPress: () => setArticleReportModalVisible(true),
+          },
+          ...(checkPermission(account, {
+            permission: Permissions.EVENT_DELETE,
+            scope: { groups: [event?.group?._id] },
+          })
+            ? [
                 {
-                  title: 'Partager',
-                  onPress: () => {
-                    if (!event) return;
-                    shareContent({
-                      title: event.title,
-                      group: event.group?.displayName,
-                      type: 'evenements',
-                      id: event._id,
-                    });
-                  },
+                  title: 'Supprimer',
+                  onPress: () =>
+                    Alert.alert(
+                      'Supprimer cette évènement ?',
+                      'Les autres administrateurs du groupe seront notifiés.',
+                      [
+                        { text: 'Annuler' },
+                        {
+                          text: 'Supprimer',
+                          onPress: deleteEvent,
+                        },
+                      ],
+                      { cancelable: true },
+                    ),
                 },
-                {
-                  title: 'Signaler',
-                  onPress: () => setArticleReportModalVisible(true),
-                },
-                ...(checkPermission(account, {
-                  permission: Permissions.EVENT_DELETE,
-                  scope: { groups: [event?.group?._id] },
-                })
-                  ? [
-                      {
-                        title: 'Supprimer',
-                        onPress: () =>
-                          Alert.alert(
-                            'Supprimer cette évènement ?',
-                            'Les autres administrateurs du groupe seront notifiés.',
-                            [
-                              { text: 'Annuler' },
-                              {
-                                text: 'Supprimer',
-                                onPress: deleteEvent,
-                              },
-                            ],
-                            { cancelable: true },
-                          ),
-                      },
-                    ]
-                  : []),
-                ...(checkPermission(account, {
-                  permission: Permissions.EVENT_VERIFICATION_DEVERIFY,
-                  scope: { groups: [event?.group?._id || ''] },
-                })
-                  ? [
-                      {
-                        title: 'Dévérifier',
-                        onPress: () =>
-                          Alert.alert(
-                            'Remettre cet article en modération ?',
-                            'Les autres administrateurs du groupe seront notifiés.',
-                            [
-                              { text: 'Annuler' },
-                              {
-                                text: 'Dévérifier',
-                                onPress: () => {
-                                  deverifyEvent();
-                                },
-                              },
-                            ],
-                            { cancelable: true },
-                          ),
-                      },
-                    ]
-                  : []),
               ]
-        }
+            : []),
+          ...(checkPermission(account, {
+            permission: Permissions.EVENT_VERIFICATION_DEVERIFY,
+            scope: { groups: [event?.group?._id || ''] },
+          })
+            ? [
+                {
+                  title: 'Dévérifier',
+                  onPress: () =>
+                    Alert.alert(
+                      'Remettre cet article en modération ?',
+                      'Les autres administrateurs du groupe seront notifiés.',
+                      [
+                        { text: 'Annuler' },
+                        {
+                          text: 'Dévérifier',
+                          onPress: () => {
+                            deverifyEvent();
+                          },
+                        },
+                      ],
+                      { cancelable: true },
+                    ),
+                },
+              ]
+            : []),
+        ]}
       >
         {reqState.events.info.error && (
           <ErrorMessage
