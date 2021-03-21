@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { Platform, View, ActivityIndicator, ScrollView, Alert } from 'react-native';
+import { Platform, View, ActivityIndicator, ScrollView } from 'react-native';
 import { Text, Button, Divider, Checkbox, List } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -14,7 +14,7 @@ import { logout } from '@redux/actions/data/account';
 import { accountDelete } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LinkingRequestState } from '@ts/types';
-import { Errors, useTheme } from '@utils/index';
+import { Errors, useTheme, Alert } from '@utils/index';
 
 import types from '../data/types.json';
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '../index';

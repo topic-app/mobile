@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 

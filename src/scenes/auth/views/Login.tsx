@@ -187,32 +187,19 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                 )}
               </Formik>
               <View style={{ alignItems: 'flex-end', marginTop: 20 }}>
-                <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>
-                  Mot de passe oublié ?
+                <Text>
+                  <Text style={styles.link} onPress={() => navigation.navigate('Create')}>
+                    Créer un compte
+                  </Text>
+                  {'  -  '}
+                  <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>
+                    Mot de passe oublié
+                  </Text>
                 </Text>
               </View>
               {Platform.OS === 'web' && (
                 <View>
-                  <View style={[styles.container, { marginTop: 70 }]}>
-                    <PlatformTouchable
-                      onPress={() => window.location.replace('https://beta.topicapp.fr/')}
-                    >
-                      <Card
-                        elevation={0}
-                        style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
-                      >
-                        <View style={[styles.container, { flexDirection: 'row' }]}>
-                          <Text style={{ color: colors.text, flex: 1 }}>
-                            La création de compte n&apos;est pas disponible sur le site web pour le
-                            moment. Rendez vous sur{' '}
-                            <Text style={styles.link}>beta.topicapp.fr</Text> pour télécharger
-                            l&apos;application et créer un compte.
-                          </Text>
-                        </View>
-                      </Card>
-                    </PlatformTouchable>
-                  </View>
-                  <View style={{ alignItems: 'center', marginTop: 20 }}>
+                  <View style={{ alignItems: 'center', marginTop: 100 }}>
                     <Text>
                       <Text
                         style={styles.link}

@@ -198,7 +198,7 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
         <List.Section>
           <List.Item
             title="Paramètres"
-            left={() => <List.Icon icon="settings-outline" />}
+            left={() => <List.Icon icon="cog-outline" />}
             onPress={() => {
               navigation.navigate('Main', {
                 screen: 'More',
