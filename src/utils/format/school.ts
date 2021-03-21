@@ -17,11 +17,12 @@ import { AnySchool, SchoolType } from '@ts/types';
  * ```
  */
 export function schoolTypes(types: SchoolType[]): string {
-  const sortedTypes = ['college', 'lycee', 'prepa', 'other'];
+  const sortedTypes = ['college', 'lycee', 'prepa', 'sup', 'other'];
   const mappedTypes = {
     college: 'collège',
     lycee: 'lycée',
     prepa: 'CPGE',
+    sup: 'supérieur',
     other: 'autre',
   };
   const newTypes = types
