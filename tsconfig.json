@@ -23,8 +23,8 @@
       "@redux/*": ["./src/redux/*"],
       "@assets/*": ["./src/assets/*"],
       "@src/*": ["./src/*"],
-      "@root/*": ["./*"],
+      "@root/*": ["./*"]
     }
   },
-  "exclude": ["node_modules", "android", "ios", "web", "web-build", "android-build", "scripts"]
+  "exclude": ["node_modules", "android", "ios", "web", "web-build", "android-build", "scripts"]
 }

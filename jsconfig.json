@@ -15,7 +15,7 @@
       "@redux/*": ["./src/redux/*"],
       "@assets/*": ["./src/assets/*"],
       "@src/*": ["./src/*"],
-      "@root/*": ["./*"],
+      "@root/*": ["./*"]
     }
   },
   "exclude": ["node_modules"]
