@@ -118,11 +118,9 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
     return cond(
       lessThan(bottomSheetY, 0.1),
       call([], () => {
-        console.log('Setting extended to true');
         extended = true;
       }),
       call([], () => {
-        console.log('Setting extended to false');
         extended = false;
       }),
     );
