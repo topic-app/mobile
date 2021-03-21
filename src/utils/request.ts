@@ -56,7 +56,7 @@ async function request(
             `GET Request failed ${JSON.stringify({
               status: error?.status,
               endpoint: `${url}/${endpoint}`,
-              data: error?.response,
+              data: error?.response?.data,
             })}`,
           ),
         );
