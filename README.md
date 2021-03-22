@@ -13,6 +13,7 @@ Code source pour le projet d'application mobile écrit avec React-Native et Type
 [![Pipeline status](https://gitlab.com/topicapp/mobile/badges/master/pipeline.svg)](https://gitlab.com/topicapp/mobile/-/commits/master)
 [![Latest release](https://badgen.net/gitlab/release/topicapp/mobile)](https://gitlab.com/topicapp/mobile/-/releases)
 [![Registry](https://badgen.net/badge/registry/gitlab/cyan)](https://gitlab.com/topicapp/mobile/container_registry)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://gitlab.com/topicapp/mobile)
 
 </div>
 <br><br>
