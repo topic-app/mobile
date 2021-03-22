@@ -13,21 +13,25 @@ Code source pour le projet d'application mobile écrit avec React-Native et Type
 [![Pipeline status](https://gitlab.com/topicapp/mobile/badges/master/pipeline.svg)](https://gitlab.com/topicapp/mobile/-/commits/master)
 [![Latest release](https://badgen.net/gitlab/release/topicapp/mobile)](https://gitlab.com/topicapp/mobile/-/releases)
 [![Registry](https://badgen.net/badge/registry/gitlab/cyan)](https://gitlab.com/topicapp/mobile/container_registry)
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://gitlab.com/topicapp/mobile)
+[![Environnement Gitpod](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://gitlab.com/topicapp/mobile)
 
 </div>
 <br><br>
 
 ## Contribuer
 
-Il y a pleins de façons de contribuer au projet, même si vous n'avez pas de connaissances en programmation !
+Il y a plein de façons de contribuer au projet, même si vous n'avez pas de connaissances en programmation !
 
-Voila quelque exemples :
+Voila quelques exemples :
 
 - [S'inscrire à la bêta](https://beta.topicapp.fr) et trouver des bugs
 - Encourager votre lycée ou des associations à rejoindre Topic
 
 N'hésitez pas à créer un compte sur [chat.topicapp.fr](https://chat.topicapp.fr/register) pour communiquer avec les développeurs.
+
+#### Développer sur Gitpod
+
+Vous pouvez accéder à un environnement de développement dans le navigateur, avec votre compte Gitlab : [![Environnement Gitpod](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://gitlab.com/topicapp/mobile)
 
 ## Documentation
 
