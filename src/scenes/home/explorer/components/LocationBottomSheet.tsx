@@ -183,7 +183,9 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
           <Animated.ScrollView
             bounces={false}
             style={{ flex: Platform.OS === 'ios' ? 1 : 0 }}
-            scrollEnabled={cond(lessThan(bottomSheetY, 0.1), true, false)}
+            scrollEnabled={
+              Platform.OS === 'ios' ? cond(lessThan(bottomSheetY, 0.1), true, false) : true
+            }
           >
             {/* HACK but whatever */}
             <Divider />
