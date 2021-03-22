@@ -22,13 +22,13 @@ const initialState: PreferencesState = {
   stripFormatting: false,
   themeEasterEggDiscovered: false,
   youtubeConsent: false,
-  useDevServer: false,
+  useDevServer: process?.env?.GP_DEV === 'true',
   analytics: true,
   completedFeedback: [],
   appOpens: 0,
   reduxVersion: Config.reduxVersion,
-  showDownloadBanner: true,
-  advancedMode: false,
+  showDownloadBanner: !__DEV__,
+  advancedMode: !!__DEV__,
   ...Config.seedDb.preferences,
 };
 
