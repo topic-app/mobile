@@ -22,7 +22,7 @@ const initialState: PreferencesState = {
   stripFormatting: false,
   themeEasterEggDiscovered: false,
   youtubeConsent: false,
-  useDevServer: process?.env?.GP_DEV === 'true',
+  useDevServer: !!__DEV__,
   analytics: true,
   completedFeedback: [],
   appOpens: 0,
