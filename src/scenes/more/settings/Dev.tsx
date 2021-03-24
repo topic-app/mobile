@@ -26,7 +26,7 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
 
   const toggleDevServer = () => {
     Alert.alert(
-      'Voulez vous vraiment changer de serveur ?',
+      'Voulez-vous vraiment changer de serveur ?',
       "Les données de l'application seront supprimées, étant donné que les deux serveurs sont incompatibles.",
       [
         {

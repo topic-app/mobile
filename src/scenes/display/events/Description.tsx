@@ -399,7 +399,7 @@ function EventDisplayDescriptionHeader({
             </View>
           ) : (
             <View style={styles.contentContainer}>
-              <Text style={styles.disabledText}>Connectez vous pour écrire un commentaire</Text>
+              <Text style={styles.disabledText}>Connectez-vous pour écrire un commentaire</Text>
               <Text>
                 <Text
                   onPress={() =>

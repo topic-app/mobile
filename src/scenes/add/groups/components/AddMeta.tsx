@@ -70,7 +70,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
               <FormTextInput
                 ref={shortNameInput}
                 label="Acronyme ou nom raccourci"
-                info="Si vous avez un acronyme ou une abbréviation reconnaissable, fournissez-la ici. Ce nom sera affiché en priorité, donc laissez-le vide si vous préférez afficher le nom complet sur vos publications."
+                info="Si vous avez un acronyme ou une abréviation reconnaissable, fournissez-la ici. Ce nom sera affiché en priorité, donc laissez-le vide si vous préférez afficher le nom complet sur vos publications."
                 value={values.shortName}
                 touched={touched.shortName}
                 error={errors.shortName}

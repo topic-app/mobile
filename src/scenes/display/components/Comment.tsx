@@ -152,7 +152,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                 <Menu.Item
                   onPress={() =>
                     Alert.alert(
-                      'Voulez vous vraiment supprimer ce commentaire ?',
+                      'Voulez-vous vraiment supprimer ce commentaire ?',
                       'Cette action est irréversible',
                       [{ text: 'Annuler' }, { text: 'Supprimer', onPress: deleteComment }],
                       { cancelable: true },

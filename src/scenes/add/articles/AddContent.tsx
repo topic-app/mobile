@@ -339,7 +339,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                       trackEvent('editor:switch-editor', { props: { type: i.type } });
                       if (markdown) {
                         Alert.alert(
-                          "Voulez vous vraiment changer d'éditeur ?",
+                          "Voulez-vous vraiment changer d'éditeur ?",
                           'Vous pourrez perdre le formattage, les images etc.',
                           [
                             { text: 'Annuler', onPress: () => setMenuVisible(false) },

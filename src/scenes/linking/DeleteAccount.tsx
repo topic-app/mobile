@@ -112,7 +112,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
             style={[styles.centerIllustrationContainer, styles.contentContainer, { marginTop: 40 }]}
           >
             <Illustration name="empty" height={200} width={200} />
-            <Text style={styles.title}>Voulez vous vraiment supprimer votre compte?</Text>
+            <Text style={styles.title}>Voulez-vous vraiment supprimer votre compte?</Text>
             <Text>
               Cette action est réversible dans les 7 jours qui suivent la suppression, et votre
               compte sera supprimé au bout d&apos;un mois au plus tard.{'\n\n'}Vous pouvez toujours
