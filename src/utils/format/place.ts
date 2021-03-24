@@ -67,7 +67,7 @@ export function address({ shortName, address: addr, geo, departments }: Address)
     return departmentName;
   }
 
-  return 'Addresse non reconnue';
+  return 'Adresse invalide';
 }
 
 /**

@@ -1,4 +1,3 @@
-import sponsors from '@assets/json/sponsors.json';
 import ViewPager from '@react-native-community/viewpager';
 import React, { useRef } from 'react';
 import { View, Platform, Animated, useWindowDimensions, Easing, Image } from 'react-native';
@@ -6,6 +5,7 @@ import { Text, Button, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import sponsors from '@assets/json/sponsors.json';
 import { Illustration, PlatformTouchable, TranslucentStatusBar } from '@components';
 import { updateDepartments } from '@redux/actions/api/departments';
 import { trackEvent } from '@utils';
@@ -305,7 +305,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                 Topic
               </Animated.Text>
               <Animated.Text style={[styles.illustrationText, { color: normalTextColorAnim }]}>
-                La malette à outils de l&apos;engagement citoyen
+                La mallette à outils de l&apos;engagement citoyen
               </Animated.Text>
             </View>
             <View key="2" style={styles.viewPage}>

@@ -32,7 +32,7 @@ const feedbackElements = {
   },
   recommendations: {
     id: '935254',
-    name: 'les recommendations',
+    name: 'les recommandations',
   },
 };
 

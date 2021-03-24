@@ -33,7 +33,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
     } else {
       Alert.alert(
         "Voulez-vous vraiment désactiver l'historique ?",
-        "L'historique actuel et les centres d'intérêt seront aussi supprimés. Vous n'aurez plus de recommendations.",
+        "L'historique actuel et les centres d'intérêt seront aussi supprimés. Vous n'aurez plus de recommandations.",
         [
           {
             text: 'Annuler',
@@ -188,7 +188,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
               description={
                 preferences.history
                   ? "Indisponible dans cette version de l'application"
-                  : "Activez l'historique pour enregistrer des recommendations"
+                  : "Activez l'historique pour avoir des recommandations"
               }
               right={() => (
                 <Switch
@@ -228,7 +228,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
             description={
               account.loggedIn
                 ? preferences.history
-                  ? "Associer l'historique et les recommendations avec votre compte et synchroniser entre vos appareils"
+                  ? "Associer l'historique et les recommandations avec votre compte et synchroniser entre vos appareils"
                   : "Activez l'historique pour synchroniser"
                 : "Connectez-vous pour synchroniser l'historique avec votre compte"
             }

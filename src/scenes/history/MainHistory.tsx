@@ -52,7 +52,7 @@ const MainHistory: React.FC<MainHistoryProps> = ({ navigation, preferences }) =>
         <Divider />
         {!preferences.recommendations ? (
           <List.Item
-            title="Les recommendations sont désactivées"
+            title="Les recommandations sont désactivées"
             titleStyle={{ color: colors.disabled }}
           />
         ) : (

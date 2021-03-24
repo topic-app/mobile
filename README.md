@@ -2,7 +2,7 @@
 <div align="center">
   <img src="images/topic-icon-text.svg" alt="Topic Logo" />
 <h2>
-  La malette à outils de l'engagement citoyen.
+  La mallette à outils de l'engagement citoyen.
 </h2>
 
 Code source pour le projet d'application mobile écrit avec React-Native et TypeScript.

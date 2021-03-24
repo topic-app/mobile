@@ -269,7 +269,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
             />
             <Text style={{ color: colors.text, flex: 1 }}>
               Les tags permettent aux utilisateurs de trouver plus facilement vos articles,et nous
-              les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez pour
+              les utilisons pour pouvoir faire des recommandations aux utilisateurs.{'\n'}Tapez pour
               rechercher ou pour créer un nouveau tag si aucun ne correspond.
             </Text>
           </View>
