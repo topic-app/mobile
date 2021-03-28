@@ -23,7 +23,7 @@ import {
   State,
 } from '@ts/types';
 
-import { ArticleParamsScreenNavigationProp } from '.';
+import type { ArticleParamsScreenNavigationProp } from '.';
 
 type ArticleParamsProps = {
   navigation: ArticleParamsScreenNavigationProp<'Params'>;
