@@ -1,5 +1,6 @@
 const analytics = null;
 const crashlytics = null;
+const messaging = null;
 
 const getApiDevice = async () => {
   return {
@@ -9,4 +10,4 @@ const getApiDevice = async () => {
   };
 };
 
-export { analytics, crashlytics, getApiDevice };
+export { messaging, crashlytics, getApiDevice };

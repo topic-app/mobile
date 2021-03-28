@@ -71,7 +71,7 @@ const StrengthMeter: React.FC<StrengthMeterProps> = ({
 const styles = StyleSheet.create({
   backBar: {
     backgroundColor: 'gray',
-    width: deviceWindow.width * 0.9,
+    width: deviceWindow.width < 600 ? deviceWindow.width * 0.9 : 550,
     height: 10,
     borderRadius: 25,
   },

@@ -56,7 +56,11 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
 
   const insets = useSafeAreaInsets();
   // 54 is the height of the bottom Tabbar
-  const offset = Platform.OS !== 'web' ? 54 : 0;
+  const offset = Platform.select({
+    android: 54,
+    ios: 138, // To take into account the bottom bar
+    default: 0,
+  });
   const minHeight = useWindowDimensions().height + insets.top - offset;
 
   // Search for desired place in places
@@ -115,10 +119,10 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
     return cond(
       lessThan(bottomSheetY, 0.1),
       call([], () => {
-        if (!extended) extended = true;
+        extended = true;
       }),
       call([], () => {
-        if (extended) extended = false;
+        extended = false;
       }),
     );
   }, [bottomSheetY]);
@@ -177,7 +181,13 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
           </View>
         </View>
         {place && !reqState.map.loading && !reqState.map.error ? (
-          <ScrollView bounces={false}>
+          <Animated.ScrollView
+            bounces={false}
+            style={{ flex: Platform.OS === 'ios' ? 1 : 0 }}
+            scrollEnabled={
+              Platform.OS === 'ios' ? cond(lessThan(bottomSheetY, 0.1), true, false) : true
+            }
+          >
             {/* HACK but whatever */}
             <Divider />
             {addresses.map((address) => (
@@ -207,7 +217,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
                 types={['articles', 'events', 'groups']}
               />
             ) : null}
-          </ScrollView>
+          </Animated.ScrollView>
         ) : (
           <ActivityIndicator size="large" color={colors.primary} />
         )}

@@ -3,7 +3,7 @@ import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp, Dimensions } from 'react-native';
 import { Appbar, Text, Menu, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Feather';
 import shortid from 'shortid';
 
 import { PlatformTouchable } from '@components';
@@ -36,9 +36,9 @@ const BackButton: React.FC<BackButtonProps> = ({ onPress, previous }) => {
             alignItems: 'center',
           }}
         >
-          <Ionicons
-            name="ios-arrow-back"
-            size={30}
+          <Icon
+            name="chevron-left"
+            size={34}
             style={{ paddingTop: 2, paddingLeft: 7 }}
             color={backColor}
           />

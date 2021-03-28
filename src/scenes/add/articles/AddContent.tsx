@@ -378,7 +378,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
               }}
             >
               <IconButton
-                icon="settings"
+                icon="cog"
                 color={colors.text}
                 onPress={() => setMenuVisible(!menuVisible)}
               />

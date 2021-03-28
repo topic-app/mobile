@@ -1,7 +1,9 @@
 import React from 'react';
+import { Clipboard } from 'react-native';
 import { useTheme, Banner, Avatar } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-import { Error as ErrorType, RequestState } from '@ts/types';
+import { Error as ErrorType, RequestState, State } from '@ts/types';
 import { trackEvent } from '@utils';
 import { processError } from '@utils/errors';
 
@@ -19,6 +21,7 @@ type Props = {
   retry?: () => any;
   restart?: () => any;
   back?: () => any;
+  advancedMode: boolean;
 };
 
 const ErrorMessage: React.FC<Props> = ({
@@ -34,6 +37,7 @@ const ErrorMessage: React.FC<Props> = ({
   retry,
   restart,
   back,
+  advancedMode,
 }) => {
   const err = (Array.isArray(error) && error?.length > 0
     ? error.find((e) => !!e) || error[0]
@@ -45,19 +49,25 @@ const ErrorMessage: React.FC<Props> = ({
     message: { icon: string; text: string; code: string };
     actions: { text: string; onPress: () => void }[];
     status: number;
+    details: string;
   } | null>(null);
 
   React.useEffect(() => {
     const init = async () => {
-      const { message, actions, status } = await processError({
+      const { message, actions, status, details } = await processError({
         type,
         error,
         retry,
         back,
         restart,
         strings,
+        extra: {
+          type: 'banner',
+          what: strings.what,
+          advancedMode,
+        },
       });
-      setErrorInfo({ message, actions, status });
+      setErrorInfo({ message, actions, status, details });
       trackEvent('error', {
         props: {
           type: 'banner',
@@ -72,12 +82,19 @@ const ErrorMessage: React.FC<Props> = ({
 
   if (!errorInfo) return null;
 
+  const actions: { label: string; onPress: () => void }[] = errorInfo.actions.map((a) => ({
+    label: a.text,
+    onPress: a.onPress,
+  }));
+
+  if (advancedMode) {
+    actions.push({ label: 'Copier', onPress: () => Clipboard.setString(errorInfo.details) });
+  }
+
   return (
     <Banner
       visible
-      actions={errorInfo.actions.map((a) => {
-        return { label: a.text, onPress: a.onPress };
-      })}
+      actions={actions}
       icon={({ size }) => (
         <Avatar.Icon
           style={{ backgroundColor: colors.invalid }}
@@ -98,4 +115,9 @@ const ErrorMessage: React.FC<Props> = ({
   );
 };
 
-export default ErrorMessage;
+const mapStateToProps = (state: State) => {
+  const { preferences } = state;
+  return { advancedMode: preferences.advancedMode };
+};
+
+export default connect(mapStateToProps)(ErrorMessage);

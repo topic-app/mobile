@@ -6,7 +6,6 @@ import {
   Platform,
   TextInput as RNTextInput,
   KeyboardAvoidingView,
-  Alert,
 } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,6 +15,7 @@ import * as Yup from 'yup';
 import { TranslucentStatusBar, ErrorMessage, PlatformBackButton, Illustration } from '@components';
 import { requestPasswordReset } from '@redux/actions/data/account';
 import { AccountRequestState, State } from '@ts/types';
+import { Alert } from '@utils';
 
 import type { AuthScreenNavigationProp } from '.';
 import getStyles from './styles';

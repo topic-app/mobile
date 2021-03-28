@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, BackHandler, Platform } from 'react-native';
+import { View, ScrollView, BackHandler, Platform, Clipboard } from 'react-native';
 import { List, Avatar, Divider, Switch, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -19,7 +19,7 @@ type SettingsDevProps = {
   navigation: SettingsScreenNavigationProp<'Privacy'>;
 };
 
-const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigation }) => {
+const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -49,6 +49,25 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
       { cancelable: true },
     );
   };
+
+  const toggleAdvancedMode = () =>
+    preferences.advancedMode
+      ? updatePrefs({ advancedMode: false })
+      : Alert.alert(
+          'Voulez vous vraiment activer le mode avancé ?',
+          "Cette option donne accès à des informations sensibles sur votre compte et votre appareil, et peut réduire la sécurité de votre compte et la stabilité de l'application. Activez le mode avancé uniquement si vous savez ce que vous faites.",
+          [
+            {
+              text: 'Annuler',
+              style: 'cancel',
+            },
+            {
+              text: 'Activer',
+              onPress: () => updatePrefs({ advancedMode: true }),
+            },
+          ],
+          { cancelable: true },
+        );
 
   const [crashlyticsEnabled, setCrashlyticsEnabled] = React.useState(
     Platform.OS !== 'web' ? crashlytics().isCrashlyticsCollectionEnabled : false,
@@ -111,46 +130,128 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
               />
             )}
           </List.Section>
-          <Divider />
-          <View>
-            <Banner
-              visible
-              actions={[]}
-              icon={({ size }) => (
-                <Avatar.Icon
-                  style={{ backgroundColor: colors.primary }}
-                  size={size}
-                  icon="wrench"
-                />
-              )}
-            >
-              {`Si vous utilisez le serveur de développement, vous pourrez publier des articles et des évènements de test.${'\n'}Vérifiez bien que la bannière "Serveur de développement" est affichée avant de publier un contenu de test.${'\n'}Utiliser le serveur de développement nécéssitera d'effacer les données de l'application et de redémarrer l'application.`}
-            </Banner>
-          </View>
+          <Divider style={{ marginTop: 50 }} />
           <List.Section>
             <List.Item
-              title="Utiliser le serveur de développement"
-              description="Pour pouvoir publier des contenus de test"
+              title="Mode développeur"
+              description="Options utiles pour le déboguage et le développement"
               right={() => (
                 <Switch
                   color={colors.primary}
-                  value={preferences.useDevServer}
-                  onValueChange={toggleDevServer}
+                  value={preferences.advancedMode}
+                  onValueChange={toggleAdvancedMode}
                 />
               )}
-              onPress={toggleDevServer}
+              onPress={toggleAdvancedMode}
               style={styles.listItem}
             />
-            <List.Item
-              title="Montrer l'écran de bienvenue"
-              description="Cette option n'efface aucune donnée"
-              onPress={() => {
-                navigation.push('Landing', {
-                  screen: 'Welcome',
-                });
-              }}
-            />
           </List.Section>
+          {preferences.advancedMode && (
+            <View>
+              <Divider />
+              <View>
+                <Banner
+                  visible
+                  actions={[]}
+                  icon={({ size }) => (
+                    <Avatar.Icon
+                      style={{ backgroundColor: colors.primary }}
+                      size={size}
+                      icon="wrench"
+                    />
+                  )}
+                >
+                  {`Si vous utilisez le serveur de développement, vous pourrez publier des articles et des évènements de test.${'\n'}Vérifiez bien que la bannière "Serveur de développement" est affichée avant de publier un contenu de test.${'\n'}Utiliser le serveur de développement nécéssitera d'effacer les données de l'application et de redémarrer l'application.`}
+                </Banner>
+              </View>
+              <List.Section>
+                <List.Item
+                  title="Utiliser le serveur de développement"
+                  description="Pour pouvoir publier des contenus de test"
+                  right={() => (
+                    <Switch
+                      color={colors.primary}
+                      value={preferences.useDevServer}
+                      onValueChange={toggleDevServer}
+                    />
+                  )}
+                  onPress={toggleDevServer}
+                  style={styles.listItem}
+                />
+
+                <List.Item
+                  title="Montrer l'écran de bienvenue"
+                  description="Cette option n'efface aucune donnée"
+                  onPress={() => {
+                    navigation.push('Landing', {
+                      screen: 'Welcome',
+                    });
+                  }}
+                />
+              </List.Section>
+              <Divider />
+              <List.Section>
+                <List.Item
+                  title="Copier l'entièreté de la base de données locale"
+                  description="Inclut des données sensibles"
+                  onPress={() => {
+                    Clipboard.setString(JSON.stringify(Store.getState(), null, 2));
+                  }}
+                />
+                <List.Item
+                  title="Copier la base de données permanente locale"
+                  description="Inclut des données sensibles"
+                  onPress={() => {
+                    Clipboard.setString(
+                      JSON.stringify(
+                        {
+                          preferences: Store.getState().preferences,
+                          account: Store.getState().account,
+                          location: Store.getState().location,
+                          articleData: Store.getState().articleData,
+                          eventData: Store.getState().eventData,
+                          groupData: Store.getState().groupData,
+                        },
+                        null,
+                        2,
+                      ),
+                    );
+                  }}
+                />
+                <List.Item
+                  title="Copier les informations sur le compte"
+                  description="Inclut des données sensibles"
+                  onPress={() => {
+                    Clipboard.setString(JSON.stringify(Store.getState().account, null, 2));
+                  }}
+                />
+                <List.Item
+                  title="Copier les paramètres"
+                  description="Peut inclure des données sensibles"
+                  onPress={() => {
+                    Clipboard.setString(JSON.stringify(Store.getState().preferences, null, 2));
+                  }}
+                />
+              </List.Section>
+              <Divider />
+              <List.Section>
+                <List.Item
+                  title="Forcer un plantage du thread JavaScript"
+                  description="Lance une erreur JS"
+                  onPress={() => {
+                    throw new Error('[DEBUG] Testing crash');
+                  }}
+                />
+                <List.Item
+                  title="Forcer un plantage natif"
+                  description="Cause un plantage via crashlytics"
+                  onPress={() => {
+                    crashlytics().crash();
+                  }}
+                />
+              </List.Section>
+            </View>
+          )}
           <Divider />
           <View style={styles.container}>
             <Text style={{ color: colors.disabled }}>
@@ -164,8 +265,8 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, account, navigat
 };
 
 const mapStateToProps = (state: State) => {
-  const { preferences, account } = state;
-  return { preferences, account };
+  const { preferences } = state;
+  return { preferences };
 };
 
 export default connect(mapStateToProps)(SettingsDev);

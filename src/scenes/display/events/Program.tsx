@@ -1,10 +1,10 @@
 import moment from 'moment';
 import React from 'react';
-import { View, Dimensions, Alert } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import { Subheading, useTheme } from 'react-native-paper';
 
 import { Event, Image } from '@ts/types';
-import { Format } from '@utils';
+import { Format, Alert } from '@utils';
 
 import EventCalendar from './components/calendar/EventCalendar';
 

@@ -21,6 +21,7 @@ import {
   AppThunk,
   AccountCreationData,
   UPDATE_ACCOUNT_EMAIL,
+  Location,
 } from '@ts/types';
 import { request, logger } from '@utils';
 import { hashPassword } from '@utils/crypto';
@@ -201,15 +202,11 @@ function fetchAccountCreator(): AppThunk {
       type: UPDATE_ACCOUNT_USER,
       data: result.data?.profile[0], // TEMP: This should change on server
     });
-    const location = result.data?.profile[0]?.data?.location;
+    const location: Location = result.data?.profile[0]?.data?.location;
     const data = {
       selected: true,
-      schools: location?.schools
-        ?.map((l: SchoolPreload) => l._id)
-        ?.filter((s: SchoolPreload) => !!s),
-      departments: location?.departments
-        ?.map((l: DepartmentPreload) => l._id)
-        ?.filter((l: DepartmentPreload) => !!l),
+      schools: location?.schools?.map((l) => l._id)?.filter((s) => !!s) || [],
+      departments: location?.departments?.map((l) => l._id)?.filter((l) => !!l) || [],
       global: location?.global || false,
     };
     dispatch({

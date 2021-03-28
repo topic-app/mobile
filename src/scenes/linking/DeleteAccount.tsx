@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { Platform, View, ScrollView, Alert } from 'react-native';
+import { Platform, View, ScrollView } from 'react-native';
 import { Text, Button, Divider, Checkbox, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -8,7 +8,7 @@ import { Illustration, TranslucentStatusBar, CustomHeaderBar } from '@components
 import { logout } from '@redux/actions/data/account';
 import { accountDelete } from '@redux/actions/data/profile';
 import { State, LinkingRequestState } from '@ts/types';
-import { Errors } from '@utils';
+import { Errors, Alert } from '@utils';
 
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '.';
 import getStyles from './styles';

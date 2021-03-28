@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { View, Platform, TouchableOpacity, Alert } from 'react-native';
+import { View, Platform, TouchableOpacity } from 'react-native';
 import { Text, IconButton, Menu, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { Avatar, Content } from '@components';
 import { Permissions } from '@constants';
 import { commentDelete } from '@redux/actions/apiActions/comments';
 import { Comment, Account, State, CommentReply } from '@ts/types';
-import { checkPermission, Errors } from '@utils';
+import { checkPermission, Errors, Alert } from '@utils/index';
 import { NativeStackNavigationProp } from '@utils/stack';
 
 import getStyles from './styles';
@@ -183,10 +183,8 @@ const CommentItem: React.FC<CommentInlineCardPropsComment> = (props) => {
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, comments } = state;
-  return {
-    account,
-  };
+  const { account } = state;
+  return { account };
 };
 
 export default connect(mapStateToProps)(CommentItem);

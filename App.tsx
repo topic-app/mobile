@@ -13,7 +13,7 @@ import {
   Rubik_700Bold,
   Rubik_700Bold_Italic,
 } from '@expo-google-fonts/rubik';
-import { AppLoading } from 'expo';
+import AppLoading from 'expo-app-loading';
 import 'moment/locale/fr';
 import React from 'react';
 import 'react-native-gesture-handler';

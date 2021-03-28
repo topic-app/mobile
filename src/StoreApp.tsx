@@ -1,6 +1,6 @@
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import Color from 'color';
-import { AppLoading } from 'expo';
+import AppLoading from 'expo-app-loading';
 import React from 'react';
 import { Platform, Appearance, ColorSchemeName, View, Text } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';

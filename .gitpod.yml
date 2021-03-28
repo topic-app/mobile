@@ -1,0 +1,19 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - init: npm install
+    command: npm run web
+
+ports:
+  - port: 19006
+    onOpen: open-preview
+  - port: 19002
+    onOpen: open-preview
+  - port: 19001
+    onOpen: open-preview
+
+vscode:
+  extensions:
+    - esbenp.prettier-vscode@6.2.0:V6SIQeR7NykrlhqUEshRPA==
+    - dbaeumer.vscode-eslint@2.1.8:02aHhbJ0Q4aGdjHXlTdVKg==

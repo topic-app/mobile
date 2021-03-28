@@ -197,6 +197,7 @@ export type Preferences = {
   showDownloadBanner: boolean;
   completedFeedback: string[];
   reduxVersion: number;
+  advancedMode: boolean;
 };
 
 export type PreferencesState = Preferences;

@@ -49,6 +49,5 @@
         <data android:scheme="http" android:host="www.topicapp.fr"/>
       </intent-filter>
     </activity>
-    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
   </application>
 </manifest>

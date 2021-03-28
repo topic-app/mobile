@@ -1,6 +1,6 @@
-import ViewPager from '@react-native-community/viewpager';
 import React, { useRef } from 'react';
 import { View, Platform, Animated, useWindowDimensions, Easing, Image } from 'react-native';
+import ViewPager from 'react-native-pager-view';
 import { Text, Button, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, View, FlatList, Alert } from 'react-native';
+import { Platform, View, FlatList } from 'react-native';
 import { Text, Button, Divider, Snackbar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 

@@ -1,7 +1,8 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
-import { View, Platform, TextInput as RNTextInput } from 'react-native';
-import { Button, useTheme } from 'react-native-paper';
+import { View, Platform, TextInput as RNTextInput, Text } from 'react-native';
+import { Button, Card, useTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Yup from 'yup';
 import zxcvbn from 'zxcvbn';
 
@@ -19,6 +20,7 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
   const passwordInput = createRef<RNTextInput>();
 
   const theme = useTheme();
+  const { colors } = theme;
   const styles = getStyles(theme);
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
@@ -147,6 +149,26 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
               >
                 Suivant
               </Button>
+            </View>
+            <View style={{ marginTop: 50 }}>
+              <Card
+                elevation={0}
+                style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+              >
+                <View style={[styles.container, { flexDirection: 'row' }]}>
+                  <Icon
+                    name="information-outline"
+                    style={{ alignSelf: 'center', marginRight: 10 }}
+                    size={24}
+                    color={colors.primary}
+                  />
+                  <Text style={{ color: colors.text, flex: 1 }}>
+                    Ne créez pas un compte pour représenter votre association ou club. Vous pourrez
+                    créer un groupe dans un second temps, qui vous permettra de publier des contenus
+                    et d&apos;inviter d&apos;autres personnes.
+                  </Text>
+                </View>
+              </Card>
             </View>
           </View>
         )}

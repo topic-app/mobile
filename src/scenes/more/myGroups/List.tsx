@@ -76,7 +76,7 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
     },
     {
       key: 'location',
-      title: 'Recommendés',
+      title: 'Recommandés',
       data:
         groups.data?.filter(
           (g) =>

@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React from 'react';
-import { Platform, View, ScrollView, Alert } from 'react-native';
+import { Platform, View, ScrollView } from 'react-native';
 import { Text, Button, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
@@ -18,7 +18,7 @@ import {
 import { fetchAccount } from '@redux/actions/data/account';
 import { passwordReset } from '@redux/actions/data/profile';
 import { State, LinkingRequestState } from '@ts/types';
-import { Errors } from '@utils';
+import { Errors, Alert } from '@utils';
 
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '.';
 import getStyles from './styles';
@@ -32,8 +32,6 @@ type Props = {
 const Linking: React.FC<Props> = ({ navigation, route, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const linkingStyles = getStyles(theme);
-  const { colors } = theme;
 
   const { id, token } = route.params;
 
@@ -131,7 +129,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                   ]}
                 >
                   <Illustration name="auth-login" height={200} width={200} />
-                  <Text style={linkingStyles.title}>Réinitialisez votre mot de passe</Text>
+                  <Text style={styles.title}>Réinitialisez votre mot de passe</Text>
                 </View>
                 <View>
                   <View>
@@ -143,7 +141,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                       onChangeText={handleChange('password')}
                       onBlur={handleBlur('password')}
                       onSubmitEditing={() => handleSubmit()}
-                      style={linkingStyles.textInput}
+                      style={styles.textInput}
                       textContentType="password"
                       autoCapitalize="none"
                       autoCompleteType="password"
@@ -152,7 +150,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
                       secureTextEntry
                     />
                     <StrengthMeter level={passwordStrength} />
-                    <View style={linkingStyles.buttonContainer}>
+                    <View style={styles.buttonContainer}>
                       <Button
                         loading={state.resetPassword.loading}
                         disabled={state.resetPassword.loading}
