@@ -39,7 +39,6 @@ export type StandardRequestState = {
 };
 
 export type ArticleRequestState = StandardRequestState;
-export type PetitionRequestState = StandardRequestState;
 export type PlaceRequestState = StandardRequestState & {
   near: RequestStateComplex;
   map: RequestState;
@@ -63,7 +62,6 @@ export type GroupRequestState = StandardRequestState & {
   modify: RequestState;
   templates: RequestStateComplex;
   verification_delete: RequestState;
-  pages: RequestState;
 };
 
 export type LegalRequestState = {

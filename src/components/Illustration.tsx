@@ -97,16 +97,6 @@ const illustrationList = {
     dark: Assets.GroupDark,
   },
 
-  // Petition Illustrations
-  petition: {
-    light: Assets.PetitionLight,
-    dark: Assets.PetitionDark,
-  },
-  'petition-greyed': {
-    light: Assets.PetitionGreyedLight,
-    dark: Assets.PetitionGreyedDark,
-  },
-
   // Select Location
   'location-select': {
     light: Assets.LocationSelectLight,

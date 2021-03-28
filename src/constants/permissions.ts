@@ -24,15 +24,6 @@ export const GROUP_VERIFICATION_DEVERIFY = 'group.verification.deverify';
 
 export const CONTENT_UPLOAD = 'content.upload';
 
-export const PETITION_ADD = 'petition.add';
-export const PETITION_MESSAGE_ADD = 'petition.message.add';
-export const PETITION_DELETE = 'petition.delete';
-export const PETITION_DELETE_IMMEDIATE = 'petition.delete.immediate';
-export const PETITION_VERIFICATION_VIEW = 'petition.verification.view';
-export const PETITION_VERIFICATION_APPROVE = 'petition.verification.approve';
-export const PETITION_VERIFICATION_APPROVE_EXTRA = 'petition.verification.approve.extra';
-export const PETITION_VERIFICATION_DEVERIFY = 'petition.verification.deverify';
-
 export const EVENT_ADD = 'event.add';
 export const EVENT_MODIFY = 'event.modify';
 export const EVENT_DELETE = 'event.delete';

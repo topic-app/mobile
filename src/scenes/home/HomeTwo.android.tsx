@@ -16,12 +16,9 @@ import ArticleList from './articles/List';
 import EventList from './events/List';
 import ExplorerList from './explorer/List';
 
-// import PetitionList from './petitions/views/List';
-
 export type HomeTwoNavParams = {
   Article: { initialList?: string } | undefined;
   Event: { initialList?: string } | undefined;
-  Petition: undefined;
   Explorer: undefined;
   Tests: undefined;
 };
@@ -60,9 +57,6 @@ function HomeTwoNavigator() {
             case 'Event':
               iconName = 'calendar';
               break;
-            case 'Petition':
-              iconName = 'comment-check-outline';
-              break;
             case 'Explorer':
               iconName = 'compass-outline';
               break;
@@ -76,7 +70,6 @@ function HomeTwoNavigator() {
     >
       <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
       <Tab.Screen name="Event" component={EventList} options={{ title: 'Évènements' }} />
-      {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
       {Platform.OS !== 'web' && (
         <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
       )}

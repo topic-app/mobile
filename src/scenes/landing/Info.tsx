@@ -83,23 +83,6 @@ const LandingInfo: React.FC<LandingInfoProps> = ({ navigation, route }) => {
                   </View>
                 ),
               },
-              /* {
-                key: 'petitions',
-                title: 'Pétitions',
-                component: (
-                  <View>
-                    <View style={landingStyles.headerContainer}>
-                      <View style={landingStyles.centerIllustrationContainer}>
-                        <Illustration name="petition" height={300} width={300} />
-                        <Text style={landingStyles.sectionTitle}>Pétitions</Text>
-                      </View>
-                    </View>
-                    <View style={landingStyles.contentContainer}>
-                      <Text>Some long and boring description</Text>
-                    </View>
-                  </View>
-                ),
-              }, */
               {
                 key: 'explore',
                 title: 'Explorer',

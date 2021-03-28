@@ -28,7 +28,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
 
   const extras: {
     name: string;
-    value: 'articles' | 'events' | 'petitions' | 'places' | 'comments';
+    value: 'articles' | 'events' | 'places' | 'comments';
   }[] = [
     {
       name: 'Articles',
@@ -37,10 +37,6 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
     {
       name: 'Évènements',
       value: 'events',
-    },
-    {
-      name: 'Pétitions',
-      value: 'petitions',
     },
     {
       name: 'Lieux',
@@ -55,7 +51,6 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
   const [values, setValues] = React.useState({
     articles: false,
     events: false,
-    petitions: false,
     places: false,
     comments: false,
   });

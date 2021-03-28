@@ -36,9 +36,6 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
   const eventPermission = group?.preload
     ? null
     : group?.permissions?.find((p) => p.permission === Permissions.EVENT_ADD)?.scope;
-  const petitionPermission = group?.preload
-    ? null
-    : group?.permissions?.find((p) => p.permission === Permissions.PETITION_ADD)?.scope;
   const placePermission = group?.preload
     ? null
     : group?.permissions?.find((p) => p.permission === Permissions.PLACE_ADD)?.scope;
@@ -73,12 +70,6 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
       key: 'events',
       name: 'Évènements',
       data: eventPermission,
-      callback: (l) => {},
-    },
-    {
-      key: 'petitions',
-      name: 'Petition',
-      data: petitionPermission,
       callback: (l) => {},
     },
     {

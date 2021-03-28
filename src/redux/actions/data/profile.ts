@@ -198,7 +198,6 @@ type ExtraParams = {
   articles: boolean;
   events: boolean;
   places: boolean;
-  petitions: boolean;
   comments: boolean;
 };
 

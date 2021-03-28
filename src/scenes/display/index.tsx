@@ -9,12 +9,10 @@ import EventDisplayStackNavigator, { EventDisplayStackParams } from './events/in
 import GroupDisplayStackNavigator, { GroupDisplayStackParams } from './groups/index';
 import ImageDisplayStackNavigator, { ImageDisplayStackParams } from './images/index';
 import LocationDisplayStackNavigator, { LocationDisplayStackParams } from './locations/index';
-import PetitionDisplayStackNavigator, { PetitionDisplayStackParams } from './petitions/index';
 import UserDisplayStackNavigator, { UserDisplayStackParams } from './users/index';
 
 export type DisplayStackParams = {
   Article: NavigatorScreenParams<ArticleDisplayStackParams>;
-  Petition: NavigatorScreenParams<PetitionDisplayStackParams>;
   Event: NavigatorScreenParams<EventDisplayStackParams>;
   Location: NavigatorScreenParams<LocationDisplayStackParams>;
   Image: NavigatorScreenParams<ImageDisplayStackParams>;
@@ -35,7 +33,6 @@ function DisplayStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Article" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Article" component={ArticleDisplayStackNavigator} />
-      <Stack.Screen name="Petition" component={PetitionDisplayStackNavigator} />
       <Stack.Screen name="Event" component={EventDisplayStackNavigator} />
       <Stack.Screen name="Location" component={LocationDisplayStackNavigator} />
       <Stack.Screen name="Image" component={ImageDisplayStackNavigator} />

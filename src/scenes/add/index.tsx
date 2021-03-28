@@ -7,13 +7,11 @@ import { MainScreenNavigationProp } from '../Main';
 import ArticleAddStackNavigator, { ArticleAddStackParams } from './articles/index';
 import EventAddStackNavigator, { EventAddStackParams } from './events/index';
 import GroupAddStackNavigator, { GroupAddStackParams } from './groups/index';
-import PetitionAddStackNavigator, { PetitionAddStackParams } from './petitions/index';
 
 export type AddStackParams = {
   Article: NavigatorScreenParams<ArticleAddStackParams>;
   Event: NavigatorScreenParams<EventAddStackParams>;
   Group: NavigatorScreenParams<GroupAddStackParams>;
-  Petition: NavigatorScreenParams<PetitionAddStackParams>;
 };
 
 export type AddScreenNavigationProp<K extends keyof AddStackParams> = CompositeNavigationProp<
@@ -40,11 +38,6 @@ function AddStackNavigator() {
         name="Group"
         options={{ title: 'Groupes' }}
         component={GroupAddStackNavigator}
-      />
-      <Stack.Screen
-        name="Petition"
-        options={{ title: 'Pétitions' }}
-        component={PetitionAddStackNavigator}
       />
     </Stack.Navigator>
   );

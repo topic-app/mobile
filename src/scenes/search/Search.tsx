@@ -37,7 +37,6 @@ import {
   TagPreload,
   Account,
   PlacePreload,
-  PetitionPreload,
   RequestStateComplex,
   Group,
 } from '@ts/types';
@@ -88,7 +87,6 @@ const Search: React.FC<SearchProps> = ({
     Item = {
       articles: ArticlePreload;
       events: EventPreload;
-      petitions: PetitionPreload;
       groups: GroupPreload;
       locations: PlacePreload;
       users: UserPreload;
