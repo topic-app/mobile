@@ -8,6 +8,7 @@ import { updateGroups } from '@redux/actions/api/groups';
 import { fetchAccount } from '@redux/actions/data/account';
 import { resendVerification } from '@redux/actions/data/profile';
 import { State, LocationList, GroupPreload, Group } from '@ts/types';
+import { Alert } from '@utils';
 
 import type { AuthScreenNavigationProp } from '.';
 import getStyles from './styles';

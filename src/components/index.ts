@@ -23,7 +23,6 @@ export { default as GroupsBanner } from './GroupsBanner';
 export { default as CustomImage } from './CustomImage';
 export { default as Modal } from './Modal';
 export { default as FormTextInput } from './FormTextInput';
-export { default as SafeAreaView } from './SafeAreaView';
 export { default as StrengthMeter } from './StrengthMeter';
 export { default as Banner } from './Banner';
 export { default as VerificationBanner } from './VerificationBanner';
