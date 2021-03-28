@@ -35,7 +35,7 @@ import {
 } from '@ts/types';
 import { logger, Alert } from '@utils';
 
-import { ProfileScreenNavigationProp, ProfileStackParams } from '.';
+import type { ProfileScreenNavigationProp } from '.';
 import EmailModal from './components/EmailModal';
 import NameModal from './components/NameModal';
 import PasswordModal from './components/PasswordModal';

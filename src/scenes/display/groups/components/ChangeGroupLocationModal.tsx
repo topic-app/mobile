@@ -1,23 +1,12 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { View, Platform, ScrollView } from 'react-native';
-import {
-  Divider,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
-  Subheading,
-  List,
-  Text,
-} from 'react-native-paper';
+import { View, ScrollView } from 'react-native';
+import { Button, Subheading, List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Modal } from '@components';
 import { Permissions } from '@constants';
-import { fetchGroup } from '@redux/actions/api/groups';
-import { groupModify } from '@redux/actions/apiActions/groups';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import {
   ModalProps,
   State,
@@ -26,9 +15,6 @@ import {
   ReduxLocation,
   GroupRolePermission,
 } from '@ts/types';
-import { useTheme } from '@utils';
-
-import getArticleStyles from '../styles/Styles';
 
 type ChangeGroupLocationModalProps = ModalProps & {
   group: Group | GroupPreload | null;
@@ -43,10 +29,6 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
-  const { colors } = theme;
-
-  const [errorVisible, setErrorVisible] = React.useState(false);
 
   const articlePermission = group?.preload
     ? null

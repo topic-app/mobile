@@ -24,7 +24,7 @@ import {
   AnyGroup,
 } from '@ts/types';
 
-import { MyGroupsScreenNavigationProp } from '.';
+import type { MyGroupsScreenNavigationProp } from '.';
 
 type MyGroupsListProps = {
   account: Account;

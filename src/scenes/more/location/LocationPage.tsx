@@ -4,7 +4,7 @@ import React from 'react';
 import LocationSelectPage from '@components/LocationSelectPage';
 import { ReduxLocation } from '@ts/types';
 
-import type { MoreScreenNavigationProp, MoreStackParams } from '../../index';
+import type { MoreScreenNavigationProp, MoreStackParams } from '..';
 
 type GroupAddLocationProps = {
   navigation: MoreScreenNavigationProp<'Location'>;

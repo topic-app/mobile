@@ -9,7 +9,7 @@ import { deleteArticleRead } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/global';
 import { EventReadItem, Preferences, State } from '@ts/types';
 
-import { HistoryScreenNavigationProp } from '.';
+import type { HistoryScreenNavigationProp } from '.';
 
 type EventHistoryProps = {
   navigation: HistoryScreenNavigationProp<'Event'>;

@@ -7,7 +7,7 @@ import { TranslucentStatusBar, CustomHeaderBar, FeedbackCard } from '@components
 import getStyles from '@styles/global';
 import { ArticleReadItem, Preferences, State } from '@ts/types';
 
-import { HistoryScreenNavigationProp } from '.';
+import type { HistoryScreenNavigationProp } from '.';
 
 type MainHistoryProps = {
   navigation: HistoryScreenNavigationProp<'Main'>;

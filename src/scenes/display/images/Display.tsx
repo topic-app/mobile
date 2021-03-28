@@ -7,7 +7,7 @@ import { TranslucentStatusBar, PlatformBackButton } from '@components';
 import { getImageUrl } from '@utils';
 import AutoHeightImage from '@utils/autoHeightImage';
 
-import { ImageDisplayScreenNavigationProp, ImageDisplayStackParams } from '.';
+import type { ImageDisplayScreenNavigationProp, ImageDisplayStackParams } from '.';
 
 type ImageDisplayProps = {
   navigation: ImageDisplayScreenNavigationProp<'Display'>;

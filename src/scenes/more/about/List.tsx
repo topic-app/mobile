@@ -6,7 +6,7 @@ import { useTheme } from 'react-native-paper';
 import { CustomHeaderBar, TranslucentStatusBar, CustomTabView } from '@components';
 import getStyles from '@styles/global';
 
-import { AboutStackParams } from '.';
+import type { AboutStackParams } from '.';
 import AboutPage from './components/AboutPage';
 import LicensesPage from './components/LicensesPage';
 import SponsorsPage from './components/SponsorsPage';
