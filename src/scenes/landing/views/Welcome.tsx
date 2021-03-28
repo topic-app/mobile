@@ -311,7 +311,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               <Animated.Text
                 style={[landingStyles.illustrationText, { color: normalTextColorAnim }]}
               >
-                La malette à outils de l&apos;engagement citoyen
+                La mallette à outils de l&apos;engagement citoyen
               </Animated.Text>
             </View>
             <View key="2" style={landingStyles.viewPage}>
