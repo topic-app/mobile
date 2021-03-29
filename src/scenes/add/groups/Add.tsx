@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
-import { TranslucentStatusBar, StepperView, PlatformBackButton, SafeAreaView } from '@components';
+import { TranslucentStatusBar, StepperView, PlatformBackButton } from '@components';
 import {
   State,
   ArticleRequestState,

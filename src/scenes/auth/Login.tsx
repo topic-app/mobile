@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { Text, Button, TextInput, HelperText, Card, useTheme } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
@@ -15,7 +16,6 @@ import {
   TranslucentStatusBar,
   PlatformBackButton,
   Illustration,
-  SafeAreaView,
   PlatformTouchable,
 } from '@components';
 import { fetchAccount, login } from '@redux/actions/data/account';

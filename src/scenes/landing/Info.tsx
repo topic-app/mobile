@@ -2,14 +2,9 @@ import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Platform, ScrollView } from 'react-native';
 import { Text, Button, Divider, useTheme } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import {
-  PlatformBackButton,
-  CustomTabView,
-  TranslucentStatusBar,
-  Illustration,
-  SafeAreaView,
-} from '@components';
+import { PlatformBackButton, CustomTabView, TranslucentStatusBar, Illustration } from '@components';
 import SponsorsPage from '@src/scenes/more/about/components/SponsorsPage';
 
 import type { LandingScreenNavigationProp, LandingStackParams } from '.';
