@@ -378,6 +378,7 @@ function ArticleLists({
                       <Divider />
                     </View>
                   )}
+                  keyExtractor={(item: ArticleQuickItem) => item.id}
                   renderItem={({ item, move }: { item: ArticleQuickItem; move: () => any }) => {
                     let content = { description: 'Erreur', icon: 'alert-decagram' };
                     if (item.type === 'tag') {

@@ -226,10 +226,56 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
                   }}
                 />
                 <List.Item
-                  title="Copier les paramètres"
-                  description="Peut inclure des données sensibles"
+                  title="Copier les informations sur la localisation"
+                  onPress={() => {
+                    Clipboard.setString(JSON.stringify(Store.getState().location, null, 2));
+                  }}
+                />
+                <List.Item
+                  title="Copier les paramètres locaux"
                   onPress={() => {
                     Clipboard.setString(JSON.stringify(Store.getState().preferences, null, 2));
+                  }}
+                />
+                <List.Item
+                  title="Copier la base de données permanente des contenus"
+                  onPress={() => {
+                    Clipboard.setString(
+                      JSON.stringify(
+                        {
+                          articleData: Store.getState().articleData,
+                          eventData: Store.getState().eventData,
+                          groupData: Store.getState().groupData,
+                        },
+                        null,
+                        2,
+                      ),
+                    );
+                  }}
+                />
+                <List.Item
+                  title="Copier la base de données temporaire des contenus"
+                  onPress={() => {
+                    Clipboard.setString(
+                      JSON.stringify(
+                        {
+                          articles: Store.getState().articles,
+                          events: Store.getState().events,
+                          groups: Store.getState().groups,
+                          users: Store.getState().users,
+                          comments: Store.getState().comments,
+                          schools: Store.getState().schools,
+                          departments: Store.getState().departments,
+                          tags: Store.getState().tags,
+                          legal: Store.getState().legal,
+                          linking: Store.getState().linking,
+                          places: Store.getState().places,
+                          upload: Store.getState().upload,
+                        },
+                        null,
+                        2,
+                      ),
+                    );
                   }}
                 />
               </List.Section>
