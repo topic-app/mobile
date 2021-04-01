@@ -8,7 +8,7 @@ import { updatePrefs } from '@redux/actions/data/prefs';
 import Store from '@redux/store';
 import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
 import { Alert } from '@utils';
-import { crashlytics } from '@utils/firebase';
+import { crashlytics, messaging } from '@utils/firebase';
 
 import type { SettingsScreenNavigationProp } from '.';
 import getStyles from './styles';
@@ -276,6 +276,12 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
                         2,
                       ),
                     );
+                  }}
+                />
+                <List.Item
+                  title="Copier le jeton FCM"
+                  onPress={async () => {
+                    Clipboard.setString(await messaging().getToken());
                   }}
                 />
               </List.Section>
