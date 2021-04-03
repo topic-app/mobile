@@ -144,7 +144,13 @@ function handleUrl(
     trusted: false,
   },
 ) {
-  if (!(targetUrl.startsWith('http://') || targetUrl.startsWith('https://'))) {
+  if (
+    !(
+      targetUrl.startsWith('http://') ||
+      targetUrl.startsWith('https://') ||
+      targetUrl.startsWith('mailto:')
+    )
+  ) {
     return Alert.alert('Lien invalide');
   } // Only allow http and https links
   const target = decomposeLink(targetUrl);
