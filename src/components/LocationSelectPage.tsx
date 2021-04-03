@@ -24,7 +24,8 @@ import {
 import { ChipAddList } from './ChipLists';
 import CollapsibleView from './CollapsibleView';
 import ErrorMessage from './ErrorMessage';
-import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
+import { HeaderBarProps } from './Header';
+import PageContainer from './PageContainer';
 import Searchbar from './Searchbar';
 import getStyles from './styles/LocationSelectPageStyles';
 
@@ -116,7 +117,7 @@ type LocationSelectProps = {
   type: 'schools' | 'departements' | 'regions' | 'other';
   hideSearch?: boolean;
   callback: (location: ReduxLocation) => any;
-  headerOptions?: Partial<CustomHeaderBarProps['scene']['descriptor']['options']>;
+  headerOptions?: Partial<HeaderBarProps>;
 };
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
@@ -398,17 +399,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   );
 
   return (
-    <View style={styles.page}>
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              title: 'Localisation',
-              ...headerOptions,
-            },
-          },
-        }}
-      />
+    <PageContainer headerOptions={{ title: 'Localisation', ...headerOptions }}>
       <FlatList
         ref={scrollRef}
         keyboardShouldPersistTaps="handled"
@@ -452,7 +443,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
           </Button>
         </View>
       </View>
-    </View>
+    </PageContainer>
   );
 };
 

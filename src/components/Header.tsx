@@ -29,49 +29,44 @@ type ActionItem = {
   onPress: () => void;
 };
 
-export type CustomHeaderBarProps = {
-  scene: {
-    descriptor: {
-      options: {
-        title: string;
-        subtitle?: string;
-        headerStyle?: StyleProp<ViewStyle>;
-        primary?: () => void;
-        home?: boolean;
-        actions?: ActionItem[];
-        overflow?: OverflowItem[];
-        hideBack?: boolean;
-      };
-    };
-  };
+export type HeaderBarProps = {
+  title: string;
+  subtitle?: string;
+  headerStyle?: StyleProp<ViewStyle>;
+  primary?: () => void;
+  home?: boolean;
+  actions?: ActionItem[];
+  overflow?: OverflowItem[];
+  hideBack?: boolean;
 };
 
-const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
+const HeaderBar: React.FC<HeaderBarProps> = ({
+  title,
+  subtitle,
+  headerStyle,
+  primary,
+  home,
+  actions = [],
+  overflow,
+  hideBack,
+}) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
 
-  const styles = getStyles(useTheme());
-  const { colors } = useTheme();
-  const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
 
-  const {
-    title,
-    subtitle,
-    headerStyle,
-    primary,
-    home = false,
-    actions = [],
-    overflow,
-    hideBack = false,
-  } = scene.descriptor.options;
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   const layout = useLayout();
 
   let primaryAction;
   if (primary) {
     primaryAction = <Appbar.BackAction onPress={primary} />;
+  } else if (layout === 'desktop') {
+    primaryAction = null;
   } else if (home) {
-    primaryAction =
-      layout === 'desktop' ? null : <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
+    primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
   } else {
     primaryAction =
       hideBack || Platform.OS === 'web' ? (
@@ -128,4 +123,4 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   );
 };
 
-export { TranslucentStatusBar, CustomHeaderBar };
+export { TranslucentStatusBar, HeaderBar };

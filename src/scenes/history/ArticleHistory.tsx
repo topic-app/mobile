@@ -4,7 +4,7 @@ import { View, FlatList } from 'react-native';
 import { List, Text, Divider, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { PlatformTouchable, TranslucentStatusBar, CustomHeaderBar } from '@components';
+import { PlatformTouchable, PageContainer } from '@components';
 import { deleteArticleRead } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/global';
 import { ArticleReadItem, Preferences, State } from '@ts/types';
@@ -32,18 +32,7 @@ const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, prefe
   }
 
   return (
-    <View style={styles.page}>
-      <TranslucentStatusBar />
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              title: 'Historique',
-              subtitle: 'Articles',
-            },
-          },
-        }}
-      />
+    <PageContainer headerOptions={{ title: 'Historique', subtitle: 'Articles' }}>
       <FlatList
         data={read.reverse()}
         // TODO: ArticleReadItem ids need to be individually distinct from eachother
@@ -93,7 +82,7 @@ const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, prefe
         )}
         ItemSeparatorComponent={() => <Divider />}
       />
-    </View>
+    </PageContainer>
   );
 };
 

@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React from 'react';
-import { Platform, View, ScrollView } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Text, Button, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
@@ -10,10 +10,9 @@ import zxcvbn from 'zxcvbn';
 import {
   Illustration,
   ErrorMessage,
-  TranslucentStatusBar,
-  CustomHeaderBar,
   StrengthMeter,
   FormTextInput,
+  PageContainer,
 } from '@components';
 import { fetchAccount } from '@redux/actions/data/account';
 import { passwordReset } from '@redux/actions/data/profile';
@@ -86,90 +85,81 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
   };
 
   return (
-    <View style={styles.page}>
-      <TranslucentStatusBar />
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              hideBack: true,
-              title: 'Topic',
-              subtitle: 'Réinitialisation du mot de passe',
-            },
-          },
-        }}
-      />
-      <View style={{ flex: 1, flexGrow: 1 }}>
-        <ScrollView>
-          <Formik
-            initialValues={{ password: '' }}
-            validationSchema={ResetPasswordSchema}
-            onSubmit={submit}
-          >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-              <View style={styles.container}>
-                {state.resetPassword.error ? (
-                  <View>
-                    <ErrorMessage
-                      type="axios"
-                      strings={{
-                        what: 'la réinitialisation du mot de passe',
-                        contentSingular: 'La réinitialisation du mot de passe',
-                      }}
-                      error={state.resetPassword.error}
-                      retry={() => handleSubmit()}
-                    />
-                  </View>
-                ) : null}
-                <View
-                  style={[
-                    styles.centerIllustrationContainer,
-                    styles.contentContainer,
-                    { marginTop: 40 },
-                  ]}
-                >
-                  <Illustration name="auth-login" height={200} width={200} />
-                  <Text style={styles.title}>Réinitialisez votre mot de passe</Text>
-                </View>
-                <View>
-                  <View>
-                    <FormTextInput
-                      label="Mot de passe"
-                      value={values.password}
-                      touched={touched.password}
-                      error={errors.password}
-                      onChangeText={handleChange('password')}
-                      onBlur={handleBlur('password')}
-                      onSubmitEditing={() => handleSubmit()}
-                      style={styles.textInput}
-                      textContentType="password"
-                      autoCapitalize="none"
-                      autoCompleteType="password"
-                      autoCorrect={false}
-                      returnKeyType="go"
-                      secureTextEntry
-                    />
-                    <StrengthMeter level={passwordStrength} />
-                    <View style={styles.buttonContainer}>
-                      <Button
-                        loading={state.resetPassword.loading}
-                        disabled={state.resetPassword.loading}
-                        mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-                        uppercase={Platform.OS !== 'ios'}
-                        onPress={() => handleSubmit()}
-                        style={{ flex: 1 }}
-                      >
-                        Changer
-                      </Button>
-                    </View>
-                  </View>
+    <PageContainer
+      headerOptions={{
+        hideBack: true,
+        title: 'Topic',
+        subtitle: 'Réinitialisation du mot de passe',
+      }}
+      scroll
+    >
+      <Formik
+        initialValues={{ password: '' }}
+        validationSchema={ResetPasswordSchema}
+        onSubmit={submit}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          <View style={styles.container}>
+            {state.resetPassword.error ? (
+              <View>
+                <ErrorMessage
+                  type="axios"
+                  strings={{
+                    what: 'la réinitialisation du mot de passe',
+                    contentSingular: 'La réinitialisation du mot de passe',
+                  }}
+                  error={state.resetPassword.error}
+                  retry={() => handleSubmit()}
+                />
+              </View>
+            ) : null}
+            <View
+              style={[
+                styles.centerIllustrationContainer,
+                styles.contentContainer,
+                { marginTop: 40 },
+              ]}
+            >
+              <Illustration name="auth-login" height={200} width={200} />
+              <Text style={styles.title}>Réinitialisez votre mot de passe</Text>
+            </View>
+            <View>
+              <View>
+                <FormTextInput
+                  label="Mot de passe"
+                  value={values.password}
+                  touched={touched.password}
+                  error={errors.password}
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  onSubmitEditing={() => handleSubmit()}
+                  style={styles.textInput}
+                  textContentType="password"
+                  autoCapitalize="none"
+                  autoCompleteType="password"
+                  autoCorrect={false}
+                  returnKeyType="go"
+                  secureTextEntry
+                />
+                <StrengthMeter level={passwordStrength} />
+                <View style={styles.buttonContainer}>
+                  <Button
+                    loading={state.resetPassword.loading}
+                    disabled={state.resetPassword.loading}
+                    mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+                    uppercase={Platform.OS !== 'ios'}
+                    onPress={() => handleSubmit()}
+                    style={{ flex: 1 }}
+                  >
+                    Changer
+                  </Button>
                 </View>
               </View>
-            )}
-          </Formik>
-        </ScrollView>
-      </View>
-    </View>
+            </View>
+          </View>
+        )}
+      </Formik>
+    </PageContainer>
   );
 };
 

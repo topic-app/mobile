@@ -11,6 +11,7 @@ export { default as CollapsibleView } from './CollapsibleView';
 export { default as Content } from './Content';
 export { default as CustomTabView } from './CustomTabView';
 export { default as ErrorMessage } from './ErrorMessage';
+export type { ErrorMessageProps } from './ErrorMessage';
 export { default as StepperView } from './StepperView';
 export type { StepperViewPageProps } from './StepperView';
 export { default as TagList } from './TagList';
@@ -30,6 +31,7 @@ export { default as ContentTabView } from './ContentTabView';
 export { default as ContentFlatList, ContentSection } from './ContentFlatList';
 export { default as FeedbackCard } from './Feedback';
 export { default as MainFeedback } from './MainFeedback';
+export { default as PageContainer } from './PageContainer';
 
 export { default as BottomSheet } from './BottomSheet';
 export * from './BottomSheet';

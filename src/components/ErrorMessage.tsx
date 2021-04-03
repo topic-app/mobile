@@ -7,7 +7,7 @@ import { Error as ErrorType, RequestState, State } from '@ts/types';
 import { trackEvent } from '@utils';
 import { processError } from '@utils/errors';
 
-type Props = {
+export type ErrorMessageProps = {
   /* Please change me if 'app' is too vague! */
   type: 'axios' | 'app';
   strings: {
@@ -21,10 +21,9 @@ type Props = {
   retry?: () => any;
   restart?: () => any;
   back?: () => any;
-  advancedMode: boolean;
 };
 
-const ErrorMessage: React.FC<Props> = ({
+const ErrorMessage: React.FC<ErrorMessageProps & { advancedMode: boolean }> = ({
   type,
   strings = {
     what: 'la récupération des données',

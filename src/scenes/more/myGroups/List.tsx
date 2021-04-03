@@ -9,8 +9,7 @@ import {
   ErrorMessage,
   GroupsBanner,
   GroupCard,
-  CustomHeaderBar,
-  TranslucentStatusBar,
+  PageContainer,
 } from '@components';
 import { updateGroups } from '@redux/actions/api/groups';
 import { fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
@@ -87,113 +86,109 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
   ];
 
   return (
-    <View style={styles.page}>
-      <TranslucentStatusBar />
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              title: 'Mes groupes',
-              actions: [
-                {
-                  icon: 'magnify',
-                  onPress: () =>
-                    navigation.navigate('Main', {
-                      screen: 'Search',
-                      params: {
-                        screen: 'Search',
-                        params: { initialCategory: 'groups' },
-                      },
-                    }),
+    <PageContainer
+      headerOptions={{
+        title: 'Mes groupes',
+        actions: [
+          {
+            icon: 'magnify',
+            onPress: () =>
+              navigation.navigate('Main', {
+                screen: 'Search',
+                params: {
+                  screen: 'Search',
+                  params: { initialCategory: 'groups' },
                 },
-              ],
-            },
+              }),
           },
-        }}
-      />
-      {(state.list.loading.initial ||
+        ],
+      }}
+      loading={
+        state.list.loading.initial ||
         accountState.fetchGroups?.loading ||
-        accountState.fetchWaitingGroups?.loading) && <ProgressBar indeterminate />}
-      {state.list.error ||
-      accountState.fetchGroups?.error ||
-      accountState.fetchWaitingGroups?.error ? (
-        <ErrorMessage
-          type="axios"
-          strings={{
-            what: 'la récupération des groupes',
-            contentPlural: 'des groupes',
-            contentSingular: 'La liste de groupes',
-          }}
-          error={[
-            state.list.error,
-            accountState.fetchGroups.error,
-            accountState.fetchWaitingGroups.error,
-          ]}
-          retry={fetch}
-        />
-      ) : null}
-      <View style={styles.centeredPage}>
-        <SectionList
-          sections={data}
-          refreshing={state.list.loading.refresh}
-          stickySectionHeadersEnabled={false}
-          onRefresh={() => fetch(true)}
-          ListFooterComponent={
-            <View style={[styles.container, { height: 50 }]}>
-              {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
-            </View>
-          }
-          ListHeaderComponent={() => (
-            <View>
-              <View style={styles.centerIllustrationContainer}>
-                <Illustration name="group" height={200} width={200} />
-                <View style={[styles.contentContainer, { alignItems: 'center' }]}>
-                  <Text>
-                    Rejoignez des groupes pour représenter vos clubs, associations et organisations
-                    et pour écrire du contenu.
-                  </Text>
-                </View>
+        accountState.fetchWaitingGroups?.loading
+      }
+      showError={
+        state.list.error ||
+        accountState.fetchGroups?.error ||
+        accountState.fetchWaitingGroups?.error
+      }
+      errorOptions={{
+        type: 'axios',
+        strings: {
+          what: 'la récupération des groupes',
+          contentPlural: 'des groupes',
+          contentSingular: 'La liste de groupes',
+        },
+        error: [
+          state.list.error,
+          accountState.fetchGroups.error,
+          accountState.fetchWaitingGroups.error,
+        ],
+        retry: fetch,
+      }}
+      centered
+    >
+      <SectionList
+        sections={data}
+        refreshing={state.list.loading.refresh}
+        stickySectionHeadersEnabled={false}
+        onRefresh={() => fetch(true)}
+        ListFooterComponent={
+          <View style={[styles.container, { height: 50 }]}>
+            {state.list.loading.next && <ActivityIndicator size="large" color={colors.primary} />}
+          </View>
+        }
+        ListHeaderComponent={() => (
+          <View>
+            <View style={styles.centerIllustrationContainer}>
+              <Illustration name="group" height={200} width={200} />
+              <View style={[styles.contentContainer, { alignItems: 'center' }]}>
+                <Text>
+                  Rejoignez des groupes pour représenter vos clubs, associations et organisations et
+                  pour écrire du contenu.
+                </Text>
               </View>
-              <GroupsBanner />
             </View>
-          )}
-          renderSectionHeader={({ section }) =>
-            section.data.length !== 0 ? (
-              <View style={{ marginTop: 10 }}>
-                <Divider />
-                <CategoryTitle style={{ paddingTop: 13, paddingLeft: 15 }}>
-                  {section.title}
-                </CategoryTitle>
-              </View>
-            ) : (
-              <View />
-            )
-          }
-          renderItem={({ item }) => (
-            <View style={{ margin: 5 }}>
-              <GroupCard
-                group={item}
-                following={account.accountInfo?.user.data.following.groups.some(
-                  (g) => g._id === item._id,
-                )}
-                member={account.groups?.some((g) => g._id === item._id)}
-                navigate={() =>
-                  navigation.navigate('Main', {
-                    screen: 'Display',
+            <GroupsBanner />
+          </View>
+        )}
+        renderSectionHeader={({ section }) =>
+          section.data.length !== 0 ? (
+            <View style={{ marginTop: 10 }}>
+              <Divider />
+              <CategoryTitle style={{ paddingTop: 13, paddingLeft: 15 }}>
+                {section.title}
+              </CategoryTitle>
+            </View>
+          ) : (
+            <View />
+          )
+        }
+        renderItem={({ item }) => (
+          <View style={{ margin: 5 }}>
+            <GroupCard
+              group={item}
+              following={account.accountInfo?.user.data.following.groups.some(
+                (g) => g._id === item._id,
+              )}
+              member={account.groups?.some((g) => g._id === item._id)}
+              navigate={() =>
+                navigation.navigate('Main', {
+                  screen: 'Display',
+                  params: {
+                    screen: 'Group',
                     params: {
-                      screen: 'Group',
-                      params: {
-                        screen: 'Display',
-                        params: { id: item._id, title: item.name },
-                      },
+                      screen: 'Display',
+                      params: { id: item._id, title: item.name },
                     },
-                  })
-                }
-              />
-            </View>
-          )}
-        />
-      </View>
+                  },
+                })
+              }
+            />
+          </View>
+        )}
+      />
       {account.accountInfo?.user?.verification?.verified && (
         <FAB
           icon="plus"
@@ -211,7 +206,7 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
           style={styles.bottomRightFab}
         />
       )}
-    </View>
+    </PageContainer>
   );
 };
 

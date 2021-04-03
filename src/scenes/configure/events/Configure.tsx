@@ -5,12 +5,7 @@ import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import {
-  PlatformTouchable,
-  Illustration,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components';
+import { PlatformTouchable, Illustration, PageContainer } from '@components';
 import {
   deleteEventList,
   updateEventPrefs,
@@ -151,18 +146,7 @@ function EventConfigure({
   ];
 
   return (
-    <View style={styles.page}>
-      <TranslucentStatusBar />
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              title: 'Configurer',
-              subtitle: 'Évènements',
-            },
-          },
-        }}
-      />
+    <PageContainer headerOptions={{ title: 'Configurer', subtitle: 'Évènements' }}>
       <FlatList
         data={['categories', 'lists', 'tags']}
         keyExtractor={(s) => s}
@@ -487,7 +471,7 @@ function EventConfigure({
         dataType={quickType}
         type="events"
       />
-    </View>
+    </PageContainer>
   );
 }
 

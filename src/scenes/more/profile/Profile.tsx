@@ -17,8 +17,8 @@ import {
   Avatar,
   ErrorMessage,
   InlineCard,
+  PageContainer,
   TranslucentStatusBar,
-  CustomHeaderBar,
   VerificationBanner,
 } from '@components';
 import { fetchAccount, logout, deleteAccount, fetchEmail } from '@redux/actions/data/account';
@@ -101,33 +101,24 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
   };
 
   return (
-    <View style={styles.page}>
-      <TranslucentStatusBar />
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              title: 'Compte',
-            },
-          },
-        }}
-      />
-      {account.state.fetchAccount.loading && <ProgressBar indeterminate />}
-      {(account.state.fetchAccount.error || account.state.fetchEmail.error) && (
-        <ErrorMessage
-          type="axios"
-          strings={{
-            what: 'la mise à jour du profil',
-            contentPlural: 'des informations de profil',
-            contentSingular: 'Le profil',
-          }}
-          error={[account.state.fetchAccount.error, account.state.fetchEmail.error]}
-          retry={() => {
-            fetchAccount();
-            fetchEmail();
-          }}
-        />
-      )}
+    <PageContainer
+      headerOptions={{ title: 'Compte' }}
+      loading={account.state.fetchAccount.loading}
+      showError={account.state.fetchAccount.error || account.state.fetchEmail.error}
+      errorOptions={{
+        type: 'axios',
+        strings: {
+          what: 'la mise à jour du profil',
+          contentPlural: 'des informations de profil',
+          contentSingular: 'Le profil',
+        },
+        error: [account.state.fetchAccount.error, account.state.fetchEmail.error],
+        retry: () => {
+          fetchAccount();
+          fetchEmail();
+        },
+      }}
+    >
       <View style={styles.centeredPage}>
         <ScrollView>
           <VerificationBanner />
@@ -356,7 +347,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
       <UsernameModal visible={isUsernameVisible} setVisible={setUsernameVisible} />
       <EmailModal visible={isEmailVisible} setVisible={setEmailVisible} />
       <PasswordModal visible={isPasswordVisible} setVisible={setPasswordVisible} />
-    </View>
+    </PageContainer>
   );
 };
 

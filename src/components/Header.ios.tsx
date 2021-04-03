@@ -1,4 +1,4 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp, Dimensions } from 'react-native';
 import { Appbar, Text, Menu, useTheme } from 'react-native-paper';
@@ -62,44 +62,35 @@ type ActionItem = {
   onPress: () => void;
 };
 
-export type CustomHeaderBarProps = {
-  scene: {
-    descriptor: {
-      options: {
-        title: string;
-        subtitle?: string;
-        headerStyle?: StyleProp<ViewStyle>;
-        primary?: () => void;
-        iosLeftAction?: {
-          title: string;
-          onPress: () => void;
-        };
-        home?: boolean;
-        actions?: ActionItem[];
-        overflow?: OverflowItem[];
-      };
-    };
+export type HeaderBarProps = {
+  title: string;
+  subtitle?: string;
+  headerStyle?: StyleProp<ViewStyle>;
+  primary?: () => void;
+  iosLeftAction?: {
+    title: string;
+    onPress: () => void;
   };
-  navigation: NavigationProp<any, any>;
+  home?: boolean;
+  actions?: ActionItem[];
+  overflow?: OverflowItem[];
 };
 
-const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
+const HeaderBar: React.FC<HeaderBarProps> = ({
+  title,
+  subtitle,
+  headerStyle,
+  primary,
+  iosLeftAction,
+  home,
+  actions = [],
+  overflow,
+}) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
 
   const navigation = useNavigation();
-
-  const {
-    title,
-    subtitle,
-    headerStyle,
-    primary,
-    iosLeftAction,
-    home,
-    actions,
-    overflow,
-  } = scene.descriptor.options;
 
   let primaryAction;
   if (primary) {
@@ -118,7 +109,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
 
   const [menuVisible, setMenuVisible] = React.useState(false);
 
-  const secondaryActions = actions?.map((item) => (
+  const secondaryActions = actions.map((item) => (
     <Appbar.Action
       key={shortid()}
       icon={item.icon}
@@ -185,4 +176,4 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   );
 };
 
-export { TranslucentStatusBar, CustomHeaderBar };
+export { TranslucentStatusBar, HeaderBar };

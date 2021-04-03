@@ -5,12 +5,7 @@ import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
 import { Divider, Text, List, Button, Switch, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import {
-  PlatformTouchable,
-  Illustration,
-  TranslucentStatusBar,
-  CustomHeaderBar,
-} from '@components';
+import { PlatformTouchable, Illustration, PageContainer } from '@components';
 import {
   deleteArticleList,
   updateArticlePrefs,
@@ -155,18 +150,7 @@ function ArticleLists({
   ];
 
   return (
-    <View style={styles.page}>
-      <TranslucentStatusBar />
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              title: 'Configurer',
-              subtitle: 'Actus',
-            },
-          },
-        }}
-      />
+    <PageContainer headerOptions={{ title: 'Configurer', subtitle: 'Actus' }}>
       <FlatList
         data={['categories', 'lists', 'tags']}
         keyExtractor={(s) => s}
@@ -495,7 +479,7 @@ function ArticleLists({
         dataType={quickType}
         type="articles"
       />
-    </View>
+    </PageContainer>
   );
 }
 

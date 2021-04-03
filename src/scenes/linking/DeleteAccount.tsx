@@ -4,7 +4,7 @@ import { Platform, View, ScrollView } from 'react-native';
 import { Text, Button, Divider, Checkbox, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Illustration, TranslucentStatusBar, CustomHeaderBar } from '@components';
+import { Illustration, PageContainer } from '@components';
 import { logout } from '@redux/actions/data/account';
 import { accountDelete } from '@redux/actions/data/profile';
 import { State, LinkingRequestState } from '@ts/types';
@@ -88,19 +88,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
   };
 
   return (
-    <View style={styles.page}>
-      <TranslucentStatusBar />
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              hideBack: true,
-              title: 'Topic',
-              subtitle: 'Suppression du compte',
-            },
-          },
-        }}
-      />
+    <PageContainer headerOptions={{ title: 'Topic', subtitle: 'Suppression du compte' }}>
       <View style={{ flex: 1, flexGrow: 1 }}>
         <ScrollView>
           <View
@@ -159,7 +147,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
           </View>
         </View>
       </View>
-    </View>
+    </PageContainer>
   );
 };
 

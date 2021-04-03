@@ -4,7 +4,7 @@ import { Platform, View, ActivityIndicator, ScrollView } from 'react-native';
 import { Text, Button, Divider, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Illustration, ErrorMessage, TranslucentStatusBar, CustomHeaderBar } from '@components';
+import { Illustration, ErrorMessage, TranslucentStatusBar, PageContainer } from '@components';
 import { fetchAccount } from '@redux/actions/data/account';
 import { emailVerify } from '@redux/actions/data/profile';
 import { State, LinkingRequestState } from '@ts/types';
@@ -32,19 +32,13 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
   React.useEffect(fetch, []);
 
   return (
-    <View style={styles.page}>
-      <TranslucentStatusBar />
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              hideBack: true,
-              title: 'Topic',
-              subtitle: "Vérification de l'adresse email",
-            },
-          },
-        }}
-      />
+    <PageContainer
+      headerOptions={{
+        hideBack: true,
+        title: 'Topic',
+        subtitle: "Vérification de l'adresse email",
+      }}
+    >
       <View style={{ flex: 1, flexGrow: 1 }}>
         <ScrollView>
           {state.emailVerify.error ? (
@@ -107,7 +101,7 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
           </View>
         </View>
       </View>
-    </View>
+    </PageContainer>
   );
 };
 
