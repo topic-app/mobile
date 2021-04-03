@@ -98,15 +98,17 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
         <TagList item={article} scrollable />
         <Card.Content>
           <View style={{ flexDirection: 'row', paddingTop: 6 }}>
-            <CustomImage
-              image={article.image}
-              imageSize="medium"
-              width={imageSize}
-              height={imageSize}
-            />
+            {article.image?.image ? (
+              <CustomImage
+                image={article.image}
+                imageSize="medium"
+                width={imageSize}
+                height={imageSize}
+              />
+            ) : null}
             <View
               style={{
-                marginLeft: 15,
+                marginLeft: article.image?.image ? 15 : 0,
                 flex: 1,
                 maxHeight: imageSize,
               }}

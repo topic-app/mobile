@@ -95,15 +95,17 @@ const EventCard: React.FC<EventCardProps> = ({
         </View>
         <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
           <View style={{ flexDirection: 'row' }}>
-            <CustomImage
-              image={event?.image}
-              imageSize="medium"
-              width={imageSize}
-              height={imageSize}
-            />
+            {event.image?.image ? (
+              <CustomImage
+                image={event?.image}
+                imageSize="medium"
+                width={imageSize}
+                height={imageSize}
+              />
+            ) : null}
             <View
               style={{
-                marginLeft: 15,
+                marginLeft: event.image?.image ? 15 : 0,
                 flex: 1,
                 maxHeight: imageSize,
               }}
