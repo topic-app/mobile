@@ -1,11 +1,31 @@
 import { Config } from '@constants';
+import Store from '@redux/store';
 
 const logTypes = ['critical', 'error', 'warning', 'info', 'http', 'verbose', 'debug'] as const;
 
-const truncateLength = 100;
+const logObj = (data: object) => {
+  const properties = Object.getOwnPropertyNames(data);
+  // Find how many properties fit withing 20 characters
+  let charCount = 0;
+  let propertyIndex = 0;
 
-const logObj = (data: any) => {
-  const str = JSON.stringify(data);
+  for (let i = 0; i < properties.length; i++) {
+    charCount += properties[i].length;
+    if (charCount >= 20) {
+      break;
+    }
+    propertyIndex = i;
+  }
+
+  const display = properties.slice(0, propertyIndex + 1);
+  const rest = properties.slice(propertyIndex + 1);
+
+  let str = `{ ${display.join(', ')}`;
+  if (rest.length !== 0) {
+    str += ` + ${rest.length} }`;
+  } else {
+    str += ' }';
+  }
   return str;
 };
 
@@ -18,7 +38,7 @@ type ConfigureType = {
 type HTTPLog = {
   status?: number;
   params?: { [key: string]: any };
-  data?: any;
+  data?: object;
   method: 'get' | 'post' | 'put' | 'patch' | 'delete';
   endpoint: string;
   sent?: boolean;
@@ -59,13 +79,19 @@ class Logger {
 
   http({ status, method, endpoint, params, data, sent = false }: HTTPLog) {
     if (this.shouldLog('http')) {
-      let logEntry = `[request] ${method.toUpperCase()} `;
-      if (sent) logEntry += `${status || '-'} `;
-      else logEntry += 'sent ';
-      logEntry += `to ${endpoint} `;
-      if (params) logEntry += `with params ${logObj(params)} `;
-      if (params && data) logEntry += 'and ';
-      if (data) logEntry += `with data ${logObj(data)}`;
+      const { useDevServer } = Store.getState().preferences;
+      const server = useDevServer ? 'api-dev' : 'api';
+
+      let logEntry = `[http] ${method.toUpperCase()} `;
+
+      if (sent) logEntry += 'sent ';
+      else logEntry += `${status || '???'} `;
+
+      logEntry += `to ${server}/${endpoint} `;
+
+      if (sent && params) logEntry += `with params ${logObj(params)}`;
+      if (!sent && data) logEntry += `with data ${logObj(data)}`;
+
       console.log(logEntry);
     }
   }
@@ -79,6 +105,6 @@ class Logger {
   }
 }
 
-const logger = new Logger({ level: Config.logger.level as LogLevel });
+const logger = new Logger({ level: Config.logger.level });
 
 export default logger;

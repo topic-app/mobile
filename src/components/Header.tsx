@@ -67,13 +67,10 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
     primaryAction = null;
   } else if (home) {
     primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
+  } else if (hideBack || Platform.OS === 'web') {
+    primaryAction = <View />;
   } else {
-    primaryAction =
-      hideBack || Platform.OS === 'web' ? (
-        <View />
-      ) : (
-        <Appbar.BackAction onPress={navigation.goBack} />
-      );
+    primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
   }
 
   const secondaryActions = actions.map((item) => (

@@ -23,14 +23,17 @@ async function request(
   server: 'base' | 'auth' | 'data' = 'base',
 ) {
   let url;
-  if (Store.getState().preferences.useDevServer) {
+  const { useDevServer } = Store.getState().preferences;
+
+  if (useDevServer) {
     url = Config.api.devUrl[server];
   } else {
     url = Config.api.url[server];
   }
+
   logger.http({
     method,
-    endpoint: `${url}/${endpoint}`,
+    endpoint,
     params,
     sent: true,
   });
@@ -46,7 +49,7 @@ async function request(
       logger.http({
         status: error?.status,
         method,
-        endpoint: `${url}/${endpoint}`,
+        endpoint,
         params,
         data: error?.response,
       });
@@ -73,7 +76,7 @@ async function request(
       logger.http({
         status: res.status,
         method,
-        endpoint: `${url}/${endpoint}`,
+        endpoint,
         params,
         data: res.data.info,
       });
@@ -110,7 +113,7 @@ async function request(
       logger.http({
         status: error.status,
         method,
-        endpoint: `${url}/${endpoint}`,
+        endpoint,
         params,
         data: error.response,
       });
@@ -137,7 +140,7 @@ async function request(
       logger.http({
         status: res.status,
         method,
-        endpoint: `${url}/${endpoint}`,
+        endpoint,
         params,
         data: res.data.info,
       });
@@ -149,7 +152,7 @@ async function request(
     logger.http({
       status: res.status,
       method,
-      endpoint: `${url}/${endpoint}`,
+      endpoint,
       params,
       data: res.data.info,
     });
@@ -159,7 +162,7 @@ async function request(
           `POST Request server failure ${JSON.stringify({
             status: res?.status,
             method,
-            endpoint: `${url}/${endpoint}`,
+            endpoint,
             data: res?.data?.info,
           })}`,
         ),
