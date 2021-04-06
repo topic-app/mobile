@@ -6,10 +6,10 @@ import {
 import React from 'react';
 import { Platform } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import getStyles from '@styles/navigators';
-import { useSafeAreaInsets } from '@utils';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
 import ArticleList from './articles/List';

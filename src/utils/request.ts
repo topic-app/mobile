@@ -1,12 +1,16 @@
 /* eslint-disable no-throw-literal */
-import { AxiosResponse } from 'axios';
+import axiosCreator, { AxiosResponse } from 'axios';
 
 import { Config } from '@constants';
 import Store from '@redux/store';
 
-import axios from './axiosInstance';
-import { crashlytics } from './firebase';
+import { crashlytics } from './compat/firebase';
 import logger from './logger';
+
+const axios = axiosCreator.create({
+  baseURL: Config.api.url.base,
+  timeout: Config.api.timeout,
+});
 
 type ApiDataType = {
   success: boolean;

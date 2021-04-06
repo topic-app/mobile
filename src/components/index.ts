@@ -32,6 +32,7 @@ export { default as ContentFlatList, ContentSection } from './ContentFlatList';
 export { default as FeedbackCard } from './Feedback';
 export { default as MainFeedback } from './MainFeedback';
 export { default as PageContainer } from './PageContainer';
+export { default as AutoHeightImage } from './AutoHeightImage';
 
 export { default as BottomSheet } from './BottomSheet';
 export * from './BottomSheet';

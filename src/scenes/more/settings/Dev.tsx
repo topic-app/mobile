@@ -7,8 +7,7 @@ import { Illustration, Banner, PageContainer } from '@components';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import Store from '@redux/store';
 import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
-import { Alert } from '@utils';
-import { crashlytics, messaging } from '@utils/firebase';
+import { Alert, crashlytics, messaging } from '@utils';
 
 import type { SettingsScreenNavigationProp } from '.';
 import getStyles from './styles';

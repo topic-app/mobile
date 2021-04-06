@@ -2,10 +2,10 @@ import React from 'react';
 import { Platform, ScrollView, View } from 'react-native';
 import ModalComponent from 'react-native-modal';
 import { Card, useTheme } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import getStyles from '@styles/global';
 import { ModalProps } from '@ts/types';
-import { useSafeAreaInsets } from '@utils';
 
 const Modal: React.FC<ModalProps> = ({ visible, setVisible, children }) => {
   const styles = getStyles(useTheme());

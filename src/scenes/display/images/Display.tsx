@@ -3,9 +3,8 @@ import React from 'react';
 import { View, ScrollView, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { TranslucentStatusBar, PlatformBackButton } from '@components';
+import { TranslucentStatusBar, PlatformBackButton, AutoHeightImage } from '@components';
 import { getImageUrl } from '@utils';
-import AutoHeightImage from '@utils/autoHeightImage';
 
 import type { ImageDisplayScreenNavigationProp, ImageDisplayStackParams } from '.';
 

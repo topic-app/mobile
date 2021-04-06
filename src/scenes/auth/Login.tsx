@@ -7,21 +7,15 @@ import {
   TextInput as RNTextInput,
   KeyboardAvoidingView,
 } from 'react-native';
-import { Text, Button, TextInput, HelperText, Card, useTheme } from 'react-native-paper';
+import { Text, Button, TextInput, HelperText, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import {
-  TranslucentStatusBar,
-  PlatformBackButton,
-  Illustration,
-  PlatformTouchable,
-} from '@components';
+import { TranslucentStatusBar, PlatformBackButton, Illustration } from '@components';
 import { fetchAccount, login } from '@redux/actions/data/account';
 import { AccountRequestState, State } from '@ts/types';
-import { Errors, trackEvent } from '@utils';
-import { getApiDevice } from '@utils/firebase';
+import { Errors, trackEvent, getApiDevice } from '@utils';
 
 import type { AuthScreenNavigationProp } from '.';
 import getStyles from './styles';
@@ -46,9 +40,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
   const passwordInput = React.createRef<RNTextInput>();
 
   const theme = useTheme();
-  const authStyles = getStyles(theme);
   const styles = getStyles(theme);
-  const { colors } = theme;
 
   React.useEffect(() => trackEvent('auth:login-start'), []);
 
@@ -103,17 +95,17 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
         <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <PlatformBackButton onPress={navigation.goBack} />
-            <View style={authStyles.stepIndicatorContainer}>
+            <View style={styles.stepIndicatorContainer}>
               <View style={styles.centerIllustrationContainer}>
                 <Illustration
                   name={Platform.OS === 'web' ? 'topic-icon-text' : 'auth-login'}
                   height={200}
                   width={200}
                 />
-                <Text style={authStyles.title}>Se connecter</Text>
+                <Text style={styles.title}>Se connecter</Text>
               </View>
             </View>
-            <View style={authStyles.formContainer}>
+            <View style={styles.formContainer}>
               <Formik
                 initialValues={{ username: '', password: '' }}
                 validationSchema={LoginSchema}
@@ -130,7 +122,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                       onChangeText={handleChange('username')}
                       onBlur={handleBlur('username')}
                       onSubmitEditing={() => passwordInput.current?.focus()}
-                      style={authStyles.textInput}
+                      style={styles.textInput}
                       mode="outlined"
                       autoCompleteType="username"
                       autoCapitalize="none"
@@ -149,7 +141,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                       onChangeText={handleChange('password')}
                       onBlur={handleBlur('password')}
                       onSubmitEditing={() => handleSubmit()}
-                      style={authStyles.textInput}
+                      style={styles.textInput}
                       mode="outlined"
                       secureTextEntry
                       autoCapitalize="none"
@@ -169,7 +161,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                         : null}
                     </HelperText>
 
-                    <View style={authStyles.buttonContainer}>
+                    <View style={styles.buttonContainer}>
                       <Button
                         mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                         uppercase={Platform.OS !== 'ios'}

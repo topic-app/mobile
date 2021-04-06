@@ -9,8 +9,8 @@ import { Avatar, Content } from '@components';
 import { Permissions } from '@constants';
 import { commentDelete } from '@redux/actions/apiActions/comments';
 import { Comment, Account, State, CommentReply } from '@ts/types';
+import { NativeStackNavigationProp } from '@utils/compat/stack';
 import { checkPermission, Errors, Alert } from '@utils/index';
-import { NativeStackNavigationProp } from '@utils/stack';
 
 import getStyles from './styles';
 

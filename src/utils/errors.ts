@@ -4,10 +4,10 @@ import { Clipboard } from 'react-native';
 import Store from '@redux/store';
 import { Error as ErrorType } from '@ts/types';
 
-import Alert from './alert';
+import Alert from './compat/alert';
 import { trackEvent } from './plausible';
 
-type errorProps = {
+type ErrorParams = {
   type: 'axios' | 'app' | 'other';
   error: any;
   retry?: () => any | null;
@@ -20,9 +20,9 @@ type errorProps = {
     contentPlural?: string;
   };
 };
-type popupProps = errorProps & { what: string };
+type PopupParams = ErrorParams & { what: string };
 
-const processError = async ({ type, error, retry, back, restart, strings, extra }: errorProps) => {
+const processError = async ({ type, error, retry, back, restart, strings, extra }: ErrorParams) => {
   const err = (Array.isArray(error) && error?.length > 0
     ? error.find((e) => !!e) || error[0]
     : error) as ErrorType;
@@ -360,7 +360,7 @@ const processError = async ({ type, error, retry, back, restart, strings, extra 
   return { message, actions, status: err?.error?.response?.status, details };
 };
 
-const showPopup = async ({ what, type, error, retry, back, restart }: popupProps) => {
+const showPopup = async ({ what, type, error, retry, back, restart }: PopupParams) => {
   const { message, actions, status, details } = await processError({
     type,
     error,

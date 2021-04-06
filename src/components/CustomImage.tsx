@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Image as RNImage, ImageProps, Platform } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 import getStyles from '@styles/global';
 import { Image as ImageType } from '@ts/types';
-import { useTheme, getImageUrl } from '@utils';
+import { getImageUrl } from '@utils';
 
 type CustomImageProps = {
   image?: ImageType;

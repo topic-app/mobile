@@ -2,7 +2,7 @@ import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
 import { AppScreenNavigationProp } from '@root/src';
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import AuthCreateScreen from './Create';
 import AuthCreateSuccessScreen from './CreateSuccess';

@@ -1,7 +1,6 @@
 import Store from '@redux/store';
 import { AppThunk, UPDATE_ACCOUNT_STATE, UPDATE_LINKING_STATE, User } from '@ts/types';
-import { request } from '@utils';
-import { hashPassword } from '@utils/crypto';
+import { request, hashPassword } from '@utils';
 
 /**
  * @docs actionCreators

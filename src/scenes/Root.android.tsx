@@ -1,7 +1,7 @@
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { AppScreenNavigationProp } from '..';
 import MainStackNavigator, { MainStackParams } from './Main';

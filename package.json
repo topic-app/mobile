@@ -114,6 +114,7 @@
     "redux-thunk": "^2.3.0",
     "shortid": "^2.2.16",
     "showdown": "^1.9.1",
+    "url-parse": "^1.5.1",
     "yup": "^0.32.9",
     "zxcvbn": "^4.4.2"
   },
@@ -137,6 +138,7 @@
     "@types/react-test-renderer": "^17.0.1",
     "@types/shortid": "0.0.29",
     "@types/showdown": "^1.9.3",
+    "@types/url-parse": "^1.4.3",
     "@types/yup": "^0.29.11",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",

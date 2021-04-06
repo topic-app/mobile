@@ -13,8 +13,7 @@ import {
 } from '@components';
 import { register } from '@redux/actions/data/account';
 import { State, AccountRequestState, AccountCreationData } from '@ts/types';
-import { Errors, trackEvent } from '@utils';
-import { getApiDevice } from '@utils/firebase';
+import { Errors, trackEvent, getApiDevice } from '@utils';
 
 import type { AuthScreenNavigationProp } from '.';
 import AuthCreatePageGeneral from './components/CreateGeneral';

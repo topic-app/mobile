@@ -11,9 +11,9 @@ import { Permissions } from '@constants';
 import getStyles from '@styles/global';
 import { State, Account } from '@ts/types';
 import { useLayout, checkPermission } from '@utils';
+import { NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { AppScreenNavigationProp } from '..';
-import { NativeStackNavigationProp } from '../utils/stack';
 import MainStackNavigator, { MainStackParams } from './Main';
 import AndroidNavigator from './Root.android';
 

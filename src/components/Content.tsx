@@ -5,13 +5,12 @@ import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import { Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import config from '@constants/config';
+import { AutoHeightImage } from '@components';
+import { Config } from '@constants';
 import getStyles from '@styles/global';
 import { Content as ContentType, State, Preferences } from '@ts/types';
-import { getImageUrl, handleUrl } from '@utils';
-import AutoHeightImage from '@utils/autoHeightImage';
-import { NativeStackNavigationProp } from '@utils/stack';
-import YouTube from '@utils/youtube';
+import { getImageUrl, handleUrl, YouTube } from '@utils';
+import { NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { PlatformTouchable } from './PlatformComponents';
 
@@ -102,7 +101,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
                     style={{ width: '100%', height: 480 }}
                   />
                 );
-              } else if (!config.google.youtubeKey) {
+              } else if (!Config.google.youtubeKey) {
                 return null;
               } else {
                 return (
@@ -111,7 +110,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
                       // apiKey is an Android-specific prop but does not
                       // appear in prop types but is required
                       // @ts-expect-error
-                      apiKey={config.google.youtubeKey}
+                      apiKey={Config.google.youtubeKey}
                       videoId={src.substring(10)}
                       style={{ alignSelf: 'stretch', height: 300 }}
                     />

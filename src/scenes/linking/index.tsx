@@ -2,7 +2,7 @@ import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
 import { AppScreenNavigationProp } from '@src/index';
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import DeleteAccount from './DeleteAccount';
 import EmailChange from './EmailChange';

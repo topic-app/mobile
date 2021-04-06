@@ -4,8 +4,6 @@ import Store from '@redux/store';
 import {
   GroupRolePermission,
   GroupRole,
-  SchoolPreload,
-  DepartmentPreload,
   GroupWithMembership,
   UPDATE_ACCOUNT_GROUPS,
   UPDATE_ACCOUNT_PERMISSIONS,
@@ -23,8 +21,7 @@ import {
   UPDATE_ACCOUNT_EMAIL,
   Location,
 } from '@ts/types';
-import { request, logger } from '@utils';
-import { hashPassword } from '@utils/crypto';
+import { request, logger, hashPassword } from '@utils';
 
 import { fetchLocationData } from './location';
 

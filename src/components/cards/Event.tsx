@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import { EventVerificationPreload, State, Preferences, AnyEvent } from '@ts/types';
 import { Format } from '@utils';
-import { NativeStackNavigationProp } from '@utils/stack';
+import { NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { CardBase } from '../Cards';
 import CustomImage from '../CustomImage';

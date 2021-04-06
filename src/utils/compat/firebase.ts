@@ -1,7 +1,7 @@
 import crashlytics from '@react-native-firebase/crashlytics';
 import messaging from '@react-native-firebase/messaging';
 
-import logger from './logger';
+import logger from '../logger';
 
 async function getApiDevice() {
   let token: string | null = null;

@@ -17,6 +17,7 @@ import {
   Illustration,
   ReportModal,
   PlatformTouchable,
+  AutoHeightImage,
 } from '@components';
 import { Permissions } from '@constants';
 import {
@@ -57,12 +58,11 @@ import {
   trackEvent,
   shareContent,
 } from '@utils';
-import AutoHeightImage from '@utils/autoHeightImage';
 
+import type { ArticleDisplayScreenNavigationProp, ArticleDisplayStackParams } from '.';
 import AddCommentModal from '../components/AddCommentModal';
 import AddToListModal from '../components/AddToListModal';
 import CommentInlineCard from '../components/Comment';
-import type { ArticleDisplayScreenNavigationProp, ArticleDisplayStackParams } from '.';
 import getStyles from './styles';
 
 // Common types
@@ -339,9 +339,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 </View>
               ) : (
                 <View style={styles.contentContainer}>
-                  <Text style={styles.disabledText}>
-                    Connectez-vous pour écrire un commentaire
-                  </Text>
+                  <Text style={styles.disabledText}>Connectez-vous pour écrire un commentaire</Text>
                   <Text>
                     <Text
                       onPress={() =>

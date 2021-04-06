@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { ActivityIndicator, useWindowDimensions } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { FullscreenIllustration } from '@components';
 import { EventRequestState } from '@ts/types';
-import { useTheme } from '@utils';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 

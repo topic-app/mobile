@@ -7,7 +7,7 @@ declare module '*.svg' {
 }
 
 // TEMPORARY: Until someone finds out how to resolve these navigation errors
-declare module '@utils/stack' {
+declare module '@utils/compat/stack' {
   type NativeStackNavigationProp<
     ParamList extends object,
     RouteName extends string

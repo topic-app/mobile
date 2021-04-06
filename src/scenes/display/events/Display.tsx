@@ -20,6 +20,7 @@ import {
   ReportModal,
   CustomTabView,
   PlatformTouchable,
+  AutoHeightImage,
 } from '@components';
 import { Permissions } from '@constants';
 import { updateComments } from '@redux/actions/api/comments';
@@ -46,7 +47,6 @@ import {
   EventVerification,
 } from '@ts/types';
 import { getImageUrl, handleUrl, checkPermission, Alert, Errors, shareContent } from '@utils';
-import AutoHeightImage from '@utils/autoHeightImage';
 
 import type { EventDisplayScreenNavigationProp, EventDisplayStackParams } from '.';
 import AddCommentModal from '../components/AddCommentModal';

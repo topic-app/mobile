@@ -1,13 +1,12 @@
 import { Formik } from 'formik';
 import React from 'react';
 import { View, Platform, TextInput } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, useTheme } from 'react-native-paper';
 import shortid from 'shortid';
 import * as Yup from 'yup';
 
 import { FormTextInput, Modal } from '@components';
 import { ModalProps, EventCreationDataPlace } from '@ts/types';
-import { useTheme } from '@utils';
 
 import getStyles from '../styles';
 

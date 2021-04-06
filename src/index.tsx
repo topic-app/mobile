@@ -2,7 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import RootNavigator, { RootNavParams } from './scenes/Root';
 import AuthStackNavigator, { AuthStackParams } from './scenes/auth/index';
