@@ -5,7 +5,6 @@ import { Button, Subheading, List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Modal } from '@components';
-import { Permissions } from '@constants';
 import getStyles from '@styles/global';
 import {
   ModalProps,
@@ -15,6 +14,7 @@ import {
   ReduxLocation,
   GroupRolePermission,
 } from '@ts/types';
+import { Permissions } from '@utils';
 
 type ChangeGroupLocationModalProps = ModalProps & {
   group: Group | GroupPreload | null;

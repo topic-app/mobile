@@ -13,12 +13,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { ErrorMessage, Avatar, Illustration, CollapsibleView, MainFeedback } from '@components';
-import { Permissions } from '@constants';
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import getStyles from '@styles/navigators';
 import { Account, LocationList, State } from '@ts/types';
-import { checkPermission, Format } from '@utils';
+import { checkPermission, Format, Permissions } from '@utils';
 
 import { MainScreenNavigationProp } from '../Main';
 import HomeTwoNavigator, { HomeTwoNavParams } from './HomeTwo';

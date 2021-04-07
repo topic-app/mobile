@@ -4,10 +4,9 @@ import { Button, RadioButton, HelperText, List, Text, useTheme } from 'react-nat
 import { connect } from 'react-redux';
 
 import { StepperViewPageProps } from '@components';
-import { Permissions } from '@constants';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import { Account, State } from '@ts/types';
-import { checkPermission, trackEvent } from '@utils';
+import { checkPermission, trackEvent, Permissions } from '@utils';
 
 import getStyles from '../styles';
 

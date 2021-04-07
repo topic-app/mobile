@@ -4,7 +4,6 @@ import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { ChipAddList, ErrorMessage, ArticleCard } from '@components';
-import { Permissions } from '@constants';
 import { updateArticlesVerification } from '@redux/actions/api/articles';
 import getStyles from '@styles/global';
 import {
@@ -14,7 +13,7 @@ import {
   ArticleVerificationPreload,
   ModerationTypes,
 } from '@ts/types';
-import { checkPermission, getPermissionGroups } from '@utils';
+import { checkPermission, getPermissionGroups, Permissions } from '@utils';
 
 import type { ModerationScreenNavigationProp } from '..';
 

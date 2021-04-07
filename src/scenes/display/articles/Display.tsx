@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import moment from 'moment';
 import React from 'react';
-import { View, ActivityIndicator, Animated, Platform, useWindowDimensions } from 'react-native';
+import { View, ActivityIndicator, FlatList, Platform, useWindowDimensions } from 'react-native';
 import { Text, Title, Divider, List, Card, Button, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -13,13 +13,12 @@ import {
   TagList,
   InlineCard,
   CategoryTitle,
-  AnimatingHeader,
   Illustration,
   ReportModal,
   PlatformTouchable,
   AutoHeightImage,
+  PageContainer,
 } from '@components';
-import { Permissions } from '@constants';
 import {
   fetchArticle,
   fetchArticleMy,
@@ -57,6 +56,7 @@ import {
   Errors,
   trackEvent,
   shareContent,
+  Permissions,
 } from '@utils';
 
 import type { ArticleDisplayScreenNavigationProp, ArticleDisplayStackParams } from '.';
@@ -702,36 +702,32 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const [replyingToComment, setReplyingToComment] = React.useState<string | null>(null);
   const replyingToPublisher = articleComments.find((c) => c._id === replyingToComment)?.publisher;
 
-  const scrollY = new Animated.Value(0);
-
   if (!article) {
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
-      <View style={styles.page}>
-        <AnimatingHeader
-          value={scrollY}
-          title={Platform.OS === 'ios' ? '' : 'Actus'}
-          subtitle={Platform.OS === 'ios' ? 'Actus' : ''}
-        />
-        {reqState.articles.info.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la récupération de cet article',
-              contentSingular: "L'article",
-            }}
-            error={reqState.articles.info.error}
-            retry={fetch}
-          />
-        )}
-        {reqState.articles.info.loading && (
-          <View style={styles.container}>
-            <ActivityIndicator size="large" color={colors.primary} />
-          </View>
-        )}
-      </View>
+      <PageContainer
+        headerOptions={{ title: 'Actus' }}
+        loading={reqState.articles.info.loading}
+        showError={reqState.articles.info.error}
+        errorOptions={{
+          type: 'axios',
+          strings: {
+            what: 'la récupération de cet article',
+            contentSingular: "L'article",
+          },
+          error: reqState.articles.info.error,
+          retry: fetch,
+        }}
+      />
     );
   }
+
+  const hasPermissionInGroup = (permission: string) => {
+    return checkPermission(account, {
+      permission,
+      scope: { groups: [article!.group._id] },
+    });
+  };
 
   const { title } = article;
   const subtitle =
@@ -744,23 +740,21 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   navigation.setOptions({ title });
 
   return (
-    <View style={styles.page}>
-      <AnimatingHeader
-        hideBack={dual}
-        value={scrollY}
-        title={Platform.OS === 'ios' ? '' : title}
-        subtitle={Platform.OS === 'ios' ? 'Actus' : subtitle}
-        actions={
-          verification || Platform.OS === 'web'
-            ? undefined
-            : [
+    <PageContainer
+      headerOptions={{
+        hideBack: dual,
+        title,
+        subtitle,
+        actions:
+          !verification && Platform.OS !== 'web'
+            ? [
                 {
                   icon: 'playlist-plus',
                   onPress: () => setListModalVisible(true),
                 },
               ]
-        }
-        overflow={[
+            : undefined,
+        overflow: [
           {
             title: 'Partager',
             onPress: () => {
@@ -780,10 +774,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               setArticleReportModalVisible(true);
             },
           },
-          ...(checkPermission(account, {
-            permission: Permissions.ARTICLE_MODIFY,
-            scope: { groups: [article?.group?._id || ''] },
-          })
+          ...(hasPermissionInGroup(Permissions.ARTICLE_MODIFY)
             ? [
                 {
                   title: 'Modifier',
@@ -794,10 +785,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                 },
               ]
             : []),
-          ...(checkPermission(account, {
-            permission: Permissions.ARTICLE_DELETE,
-            scope: { groups: [article?.group?._id || ''] },
-          })
+          ...(hasPermissionInGroup(Permissions.ARTICLE_DELETE)
             ? [
                 {
                   title: 'Supprimer',
@@ -820,10 +808,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                 },
               ]
             : []),
-          ...(checkPermission(account, {
-            permission: Permissions.ARTICLE_VERIFICATION_DEVERIFY,
-            scope: { groups: [article?.group?._id || ''] },
-          })
+          ...(hasPermissionInGroup(Permissions.ARTICLE_VERIFICATION_DEVERIFY)
             ? [
                 {
                   title: 'Dévérifier',
@@ -846,24 +831,20 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                 },
               ]
             : []),
-        ]}
-      >
-        {reqState.articles.info.error && (
-          <ErrorMessage
-            type="axios"
-            strings={{
-              what: 'la récupération de cet article',
-              contentSingular: "L'article",
-            }}
-            error={reqState.articles.info.error}
-            retry={() => fetch()}
-          />
-        )}
-      </AnimatingHeader>
-      <Animated.FlatList
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-          useNativeDriver: true,
-        })}
+        ],
+      }}
+      showError={reqState.articles.info.error}
+      errorOptions={{
+        type: 'axios',
+        strings: {
+          what: 'la récupération de cet article',
+          contentSingular: "L'article",
+        },
+        error: reqState.articles.info.error,
+        retry: fetch,
+      }}
+    >
+      <FlatList
         ListHeaderComponent={() =>
           article ? (
             <ArticleDisplayHeader
@@ -983,7 +964,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         id={id}
         type="article"
       />
-    </View>
+    </PageContainer>
   );
 };
 

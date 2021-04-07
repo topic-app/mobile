@@ -22,7 +22,6 @@ import {
   PlatformTouchable,
   AutoHeightImage,
 } from '@components';
-import { Permissions } from '@constants';
 import { updateComments } from '@redux/actions/api/comments';
 import { fetchEvent, fetchEventMy, fetchEventVerification } from '@redux/actions/api/events';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
@@ -46,7 +45,15 @@ import {
   Content,
   EventVerification,
 } from '@ts/types';
-import { getImageUrl, handleUrl, checkPermission, Alert, Errors, shareContent } from '@utils';
+import {
+  getImageUrl,
+  handleUrl,
+  checkPermission,
+  Alert,
+  Errors,
+  shareContent,
+  Permissions,
+} from '@utils';
 
 import type { EventDisplayScreenNavigationProp, EventDisplayStackParams } from '.';
 import AddCommentModal from '../components/AddCommentModal';

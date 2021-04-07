@@ -12,11 +12,10 @@ import {
   CategoryTitle,
   Searchbar,
 } from '@components';
-import { Permissions } from '@constants';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { Account, State, TagRequestState, TagPreload } from '@ts/types';
-import { checkPermission } from '@utils';
+import { checkPermission, Permissions } from '@utils';
 
 import TagAddModal from '../../components/TagAddModal';
 import getStyles from '../styles';

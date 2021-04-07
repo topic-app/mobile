@@ -5,10 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
 import { Avatar, ErrorMessage, Illustration, MainFeedback } from '@components';
-import { Permissions } from '@constants';
 import { fetchLocationData } from '@redux/actions/data/location';
 import { Account, LocationList, State } from '@ts/types';
-import { logger, Format, checkPermission } from '@utils';
+import { logger, Format, checkPermission, Permissions } from '@utils';
 
 import { HomeTwoScreenNavigationProp } from '../HomeTwo';
 import getStyles from './styles';

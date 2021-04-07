@@ -11,7 +11,6 @@ import {
   ContentSection,
   EVENT_CARD_HEADER_HEIGHT,
 } from '@components';
-import { Permissions } from '@constants';
 import {
   updateUpcomingEvents,
   updatePassedEvents,
@@ -31,7 +30,7 @@ import {
   Account,
   AnyEvent,
 } from '@ts/types';
-import { checkPermission } from '@utils';
+import { checkPermission, Permissions } from '@utils';
 
 import EventListCard from './components/Card';
 import EventEmptyList from './components/EmptyList';

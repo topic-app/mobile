@@ -6,11 +6,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Avatar, Content } from '@components';
-import { Permissions } from '@constants';
 import { commentDelete } from '@redux/actions/apiActions/comments';
 import { Comment, Account, State, CommentReply } from '@ts/types';
+import { checkPermission, Errors, Alert, Permissions } from '@utils';
 import { NativeStackNavigationProp } from '@utils/compat/stack';
-import { checkPermission, Errors, Alert } from '@utils/index';
 
 import getStyles from './styles';
 

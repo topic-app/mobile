@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 
 import { TranslucentStatusBar, PlatformBackButton, CollapsibleView, Content } from '@components';
 import { RichToolbar, RichEditor } from '@components/richEditor';
-import { Config, Permissions } from '@constants';
+import { Config } from '@constants';
 import { articleAdd, articleModify } from '@redux/actions/apiActions/articles';
 import { upload } from '@redux/actions/apiActions/upload';
 import {
@@ -27,7 +27,7 @@ import {
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
 import { State, ArticleRequestState, ArticleCreationData, Account } from '@ts/types';
-import { logger, checkPermission, Alert, Errors, trackEvent } from '@utils';
+import { logger, checkPermission, Alert, Errors, trackEvent, Permissions } from '@utils';
 
 import type { ArticleAddScreenNavigationProp } from '.';
 import LinkAddModal from '../components/LinkAddModal';

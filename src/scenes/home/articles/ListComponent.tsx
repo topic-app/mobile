@@ -11,7 +11,6 @@ import {
   ContentFlatList,
   ContentSection,
 } from '@components';
-import { Permissions } from '@constants';
 import {
   updateArticles,
   searchArticles,
@@ -30,7 +29,7 @@ import {
   Account,
   AnyArticle,
 } from '@ts/types';
-import { checkPermission } from '@utils';
+import { checkPermission, Permissions } from '@utils';
 
 import AddToListModal from '../../display/components/AddToListModal';
 import ArticleListCard from './components/Card';

@@ -7,11 +7,10 @@ import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
 import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components';
-import { Permissions } from '@constants';
 import { upload } from '@redux/actions/apiActions/upload';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { State, EventCreationData, UploadRequestState, Account } from '@ts/types';
-import { getImageUrl, checkPermission } from '@utils';
+import { getImageUrl, checkPermission, Permissions } from '@utils';
 
 import getStyles from '../styles';
 

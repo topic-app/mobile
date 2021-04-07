@@ -7,10 +7,9 @@ import { connect } from 'react-redux';
 
 import { Avatar, Illustration, MainFeedback } from '@components';
 import DownloadBanner from '@components/DownloadBanner';
-import { Permissions } from '@constants';
 import getStyles from '@styles/global';
 import { State, Account } from '@ts/types';
-import { useLayout, checkPermission } from '@utils';
+import { useLayout, checkPermission, Permissions } from '@utils';
 import { NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { AppScreenNavigationProp } from '..';

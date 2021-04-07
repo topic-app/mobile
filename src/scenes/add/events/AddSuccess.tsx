@@ -7,10 +7,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Illustration, ErrorMessage } from '@components';
-import { Permissions } from '@constants';
 import { eventVerificationApprove } from '@redux/actions/apiActions/events';
 import { State, EventRequestState, Account } from '@ts/types';
-import { checkPermission, Alert, shareContent } from '@utils';
+import { checkPermission, Alert, shareContent, Permissions } from '@utils';
 
 import type { EventAddScreenNavigationProp, EventAddStackParams } from '.';
 import getStyles from './styles';

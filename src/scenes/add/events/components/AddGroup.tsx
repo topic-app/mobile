@@ -5,10 +5,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { StepperViewPageProps } from '@components';
-import { Permissions } from '@constants';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
 import { Account, State } from '@ts/types';
-import { checkPermission } from '@utils';
+import { checkPermission, Permissions } from '@utils';
 
 import getStyles from '../styles';
 

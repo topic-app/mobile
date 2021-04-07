@@ -6,10 +6,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { CustomTabView, PageContainer } from '@components';
-import { Permissions } from '@constants';
 import getStyles from '@styles/global';
 import { State, Account } from '@ts/types';
-import { checkPermission } from '@utils';
+import { checkPermission, Permissions } from '@utils';
 
 import type { ModerationScreenNavigationProp, ModerationStackParams } from '.';
 import ModerationArticles from './components/ModerationArticles';

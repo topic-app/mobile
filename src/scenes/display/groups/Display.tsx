@@ -32,7 +32,6 @@ import {
   Banner,
   ContentTabView,
 } from '@components';
-import { Permissions } from '@constants';
 import { fetchGroup, fetchGroupVerification } from '@redux/actions/api/groups';
 import {
   groupFollow,
@@ -60,7 +59,16 @@ import {
   GroupVerification,
   Avatar as AvatarType,
 } from '@ts/types';
-import { logger, Format, checkPermission, Alert, Errors, shareContent, trackEvent } from '@utils';
+import {
+  logger,
+  Format,
+  checkPermission,
+  Alert,
+  Errors,
+  shareContent,
+  trackEvent,
+  Permissions,
+} from '@utils';
 
 import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '.';
 import AddUserRoleModal from './components/AddUserRoleModal';

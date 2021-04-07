@@ -4,9 +4,9 @@ import { Divider, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { CategoriesList, PlatformIconButton, Modal, ErrorMessage } from '@components';
-import { Config, Permissions } from '@constants';
+import { Config } from '@constants';
 import { ModalProps, State, Account, CommentRequestState, Content } from '@ts/types';
-import { logger, checkPermission, trackEvent } from '@utils';
+import { logger, checkPermission, trackEvent, Permissions } from '@utils';
 
 import getStyles from './styles';
 

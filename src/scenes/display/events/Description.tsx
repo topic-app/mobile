@@ -14,7 +14,6 @@ import {
   ErrorMessage,
   PlatformTouchable,
 } from '@components';
-import { Permissions } from '@constants';
 import { updateComments } from '@redux/actions/api/comments';
 import { fetchEventMy } from '@redux/actions/api/events';
 import { eventLike } from '@redux/actions/apiActions/events';
@@ -29,7 +28,7 @@ import {
   Comment,
   EventMyInfo,
 } from '@ts/types';
-import { logger, checkPermission, Errors, shareContent, handleUrl } from '@utils';
+import { logger, checkPermission, Errors, shareContent, handleUrl, Permissions } from '@utils';
 
 import CommentInlineCard from '../components/Comment';
 import MessageInlineCard from './components/Message';
