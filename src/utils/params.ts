@@ -8,7 +8,7 @@ function getContentParams(): ReduxLocation {
     schools: location.schools.filter((s) => !!s),
     departments: [
       ...location.departments,
-      ...location.schoolData.map((s) => s.departments?.map((d) => d._id) || []).flat(),
+      ...location.schoolData.flatMap((s) => s.departments?.map((d) => d._id) || []),
     ].filter((d) => !!d),
     global: true,
   };
