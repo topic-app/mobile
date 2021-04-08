@@ -6,10 +6,8 @@ import {
   UPDATE_EVENTS_LISTS,
   UPDATE_EVENTS_STATE,
   UPDATE_EVENTS_PREFS,
-  UPDATE_EVENTS_PARAMS,
   CLEAR_EVENTS,
   Event,
-  EventParams,
   EventPrefs,
   EventCreationData,
 } from '@ts/types';
@@ -172,25 +170,6 @@ async function clearEventsRead() {
   );
 }
 
-/**
- * @docs actions
- * Change les parametres de requete pour un évènement
- * @param eventId L'id de l'évènement à récuperer
- */
-async function updateEventParams(params: Partial<EventParams>) {
-  Store.dispatch(
-    updateParamsCreator({
-      updateParams: UPDATE_EVENTS_PARAMS,
-      params,
-    }),
-  );
-  Store.dispatch(
-    clearCreator({
-      clear: CLEAR_EVENTS,
-    }),
-  );
-}
-
 async function updateEventPrefs(prefs: Partial<EventPrefs>) {
   Store.dispatch(
     updatePrefsCreator({
@@ -262,7 +241,6 @@ export {
   addEventRead,
   deleteEventRead,
   clearEventsRead,
-  updateEventParams,
   updateEventPrefs,
   addEventQuick,
   reorderEventQuick,

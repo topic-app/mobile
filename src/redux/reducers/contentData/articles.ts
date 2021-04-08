@@ -3,7 +3,6 @@ import { Platform } from 'react-native';
 import {
   ArticlesContentState,
   ArticlesContentActionTypes,
-  UPDATE_ARTICLES_PARAMS,
   UPDATE_ARTICLES_LISTS,
   UPDATE_ARTICLES_READ,
   UPDATE_ARTICLES_PREFS,
@@ -14,7 +13,6 @@ import {
 } from '@ts/redux';
 
 const initialState: ArticlesContentState = {
-  params: {},
   read: [],
   creationData: {},
   lists:
@@ -54,11 +52,6 @@ function articleDataReducer(
   action: ArticlesContentActionTypes,
 ): ArticlesContentState {
   switch (action.type) {
-    case UPDATE_ARTICLES_PARAMS:
-      return {
-        ...state,
-        params: action.data,
-      };
     case UPDATE_ARTICLES_LISTS:
       return {
         ...state,

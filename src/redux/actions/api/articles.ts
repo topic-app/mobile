@@ -9,6 +9,7 @@ import {
   CLEAR_ARTICLES,
 } from '@ts/redux';
 import { UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
+import { getContentParams } from '@utils';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -35,7 +36,7 @@ async function updateArticles(
       sort: dateDescSort,
       dataType: 'articles',
       type,
-      params: useDefaultParams ? { ...Store.getState().articleData.params, ...params } : params,
+      params: useDefaultParams ? { ...getContentParams(), ...params } : params,
     }),
   );
 }
@@ -103,7 +104,7 @@ async function searchArticles(
       dataType: 'articles',
       type,
       params: useDefaultParams
-        ? { ...Store.getState().articleData.params, ...params, search, terms }
+        ? { ...getContentParams(), ...params, search, terms }
         : { ...params, search, terms },
       stateName: 'search',
       listName: 'search',

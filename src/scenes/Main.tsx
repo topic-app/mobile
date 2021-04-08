@@ -11,7 +11,6 @@ import DisplayStackNavigator, { DisplayStackParams } from './display/index';
 import HistoryStackNavigator, { HistoryStackParams } from './history/index';
 import HomeOneNavigator, { HomeOneNavParams } from './home/HomeOne';
 import MoreStackNavigator, { MoreStackParams } from './more/index';
-import ParamsStackNavigator, { ParamsStackParams } from './params/index';
 import SearchStackNavigator, { SearchStackParams } from './search/index';
 
 export type MainStackParams = {
@@ -22,7 +21,6 @@ export type MainStackParams = {
   Search: NavigatorScreenParams<SearchStackParams>;
   Home1: NavigatorScreenParams<HomeOneNavParams>;
   History: NavigatorScreenParams<HistoryStackParams>;
-  Params: NavigatorScreenParams<ParamsStackParams>;
   NotFound: undefined;
 };
 
@@ -38,7 +36,6 @@ function MainNavigator() {
     <Stack.Navigator initialRouteName="Home1" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
       <Stack.Screen name="Configure" component={ConfigureStackNavigator} />
-      <Stack.Screen name="Params" component={ParamsStackNavigator} />
       <Stack.Screen name="Add" component={AddStackNavigator} />
       <Stack.Screen name="More" component={MoreStackNavigator} />
       <Stack.Screen name="Search" component={SearchStackNavigator} />

@@ -10,6 +10,7 @@ export * from './hooks';
 export * from './permissions';
 export * from './plausible';
 export { default as shareContent } from './share';
+export { default as getContentParams } from './params';
 export { Location } from './deviceLocation';
 export { Errors };
 

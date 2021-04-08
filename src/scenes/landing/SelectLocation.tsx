@@ -23,8 +23,8 @@ import {
 } from '@components';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
 import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
-import { updateArticleParams, addArticleQuick } from '@redux/actions/contentData/articles';
-import { updateEventParams, addEventQuick } from '@redux/actions/contentData/events';
+import { addArticleQuick } from '@redux/actions/contentData/articles';
+import { addEventQuick } from '@redux/actions/contentData/events';
 import { updateLocation } from '@redux/actions/data/location';
 import {
   School,
@@ -234,8 +234,6 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         schools: schoolIds,
         departments: departmentIds,
       }),
-      updateArticleParams({ global: true, ...params }),
-      updateEventParams({ global: true, ...params }),
       ...schoolIds.map((schId) =>
         addArticleQuick('school', schId, selectedLocations.find((loc) => loc.id === schId)!.name),
       ),

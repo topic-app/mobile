@@ -62,16 +62,6 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
           },
         }),
     },
-    {
-      title: 'Localisation',
-      onPress: () =>
-        navigation.navigate('Main', {
-          screen: 'Params',
-          params: {
-            screen: 'Article',
-          },
-        }),
-    },
   ];
 
   if (historyEnabled) {

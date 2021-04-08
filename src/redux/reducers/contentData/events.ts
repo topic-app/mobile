@@ -2,7 +2,6 @@ import { Platform } from 'react-native';
 
 import {
   EventsContentState,
-  UPDATE_EVENTS_PARAMS,
   UPDATE_EVENTS_LISTS,
   UPDATE_EVENTS_READ,
   UPDATE_EVENTS_PREFS,
@@ -13,7 +12,6 @@ import {
 } from '@ts/redux';
 
 const initialState: EventsContentState = {
-  params: {},
   read: [],
   creationData: {},
   lists:
@@ -53,11 +51,6 @@ function eventDataReducer(
   action: EventsContentActionTypes,
 ): EventsContentState {
   switch (action.type) {
-    case UPDATE_EVENTS_PARAMS:
-      return {
-        ...state,
-        params: action.data,
-      };
     case UPDATE_EVENTS_LISTS:
       return {
         ...state,

@@ -60,16 +60,6 @@ const EventListScreen: React.FC<EventListProps> = ({
           },
         }),
     },
-    {
-      title: 'Localisation',
-      onPress: () =>
-        navigation.navigate('Main', {
-          screen: 'Params',
-          params: {
-            screen: 'Event',
-          },
-        }),
-    },
   ];
 
   if (historyEnabled) {

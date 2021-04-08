@@ -6,12 +6,10 @@ import {
   UPDATE_ARTICLES_LISTS,
   UPDATE_ARTICLES_STATE,
   UPDATE_ARTICLES_PREFS,
-  UPDATE_ARTICLES_PARAMS,
   CLEAR_ARTICLES,
   ArticlePrefs,
   ArticleCreationData,
   Article,
-  ArticleParams,
 } from '@ts/types';
 
 import { clearCreator } from '../api/ActionCreator';
@@ -172,25 +170,6 @@ async function clearArticlesRead() {
   );
 }
 
-/**
- * @docs actions
- * Change les parametres de requete pour un article
- * @param articleId L'id de l'article à récuperer
- */
-async function updateArticleParams(params: Partial<ArticleParams>) {
-  Store.dispatch(
-    updateParamsCreator({
-      updateParams: UPDATE_ARTICLES_PARAMS,
-      params,
-    }),
-  );
-  Store.dispatch(
-    clearCreator({
-      clear: CLEAR_ARTICLES,
-    }),
-  );
-}
-
 async function updateArticlePrefs(prefs: Partial<ArticlePrefs>) {
   Store.dispatch(
     updatePrefsCreator({
@@ -262,7 +241,6 @@ export {
   addArticleRead,
   deleteArticleRead,
   clearArticlesRead,
-  updateArticleParams,
   updateArticlePrefs,
   addArticleQuick,
   deleteArticleQuick,
