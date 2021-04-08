@@ -485,17 +485,15 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     </View>
                     {group.description?.data ? (
                       <View>
-                        <View style={{ alignItems: 'flex-end' }}>
-                          <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: colors.disabled, alignSelf: 'center' }}>
-                              Voir la description complète
-                            </Text>
-                            <Icon
-                              name={descriptionVisible ? 'chevron-down' : 'chevron-right'}
-                              color={colors.disabled}
-                              size={23}
-                            />
-                          </View>
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text style={{ color: colors.disabled, alignSelf: 'center' }}>
+                            Voir la description complète
+                          </Text>
+                          <Icon
+                            name={descriptionVisible ? 'chevron-down' : 'chevron-right'}
+                            color={colors.disabled}
+                            size={23}
+                          />
                         </View>
                       </View>
                     ) : null}
