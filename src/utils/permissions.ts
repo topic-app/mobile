@@ -67,31 +67,31 @@ export function checkPermission(
 ): boolean {
   if (!account.loggedIn) return false;
   return account.permissions.some((accountPermission) => {
-    const isSamePermission = accountPermission.permission === permission.permission;
-    const isSameGroup = !group || accountPermission.group === group;
-    const isSameGroupScope = permission.scope?.groups?.every(
+    if (accountPermission.permission !== permission.permission) {
+      return false;
+    }
+    if (group && accountPermission.group !== group) {
+      return false;
+    }
+
+    if (accountPermission.scope.everywhere) {
+      return true;
+    }
+
+    const groupsScope = (permission.scope?.groups || []).every(
       (g) =>
         accountPermission.scope.groups?.includes(g) ||
         (accountPermission.group === g && accountPermission.scope.self),
     );
-
-    const isSameSchoolScope = permission.scope?.schools?.every((s) =>
+    const schoolsScope = (permission.scope?.schools || []).every((s) =>
       accountPermission.scope.schools?.includes(s),
     );
-
-    const isSameDepartmentScope = permission.scope?.departments?.every((d) =>
+    const departmentsScope = (permission.scope?.departments || [])?.every((d) =>
       accountPermission.scope.departments?.includes(d),
     );
+    const globalScope = !permission.scope?.global || accountPermission.scope.global;
 
-    const isSameGlobalScope =
-      (!permission.scope?.global || accountPermission.scope.global) &&
-      !permission.scope?.everywhere;
-
-    const isSameScope =
-      isSameGroupScope && isSameSchoolScope && isSameDepartmentScope && isSameGlobalScope;
-    const bypassScope = accountPermission.scope.everywhere;
-
-    return isSamePermission && isSameGroup && (isSameScope || bypassScope);
+    return groupsScope && schoolsScope && departmentsScope && globalScope;
   });
 }
 
