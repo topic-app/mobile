@@ -421,7 +421,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               style={{
                 flexDirection: 'row',
                 flexWrap: 'wrap',
-                height: 100 * 2 + 10,
+                height: 100 * Math.ceil(sponsorsWithImages.length / 2) + 10,
                 width: 100 * 2 + 10,
               }}
             >

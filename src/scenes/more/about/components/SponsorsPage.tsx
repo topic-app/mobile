@@ -1,8 +1,8 @@
-import sponsors from '@assets/json/sponsors.json';
 import React from 'react';
 import { View, Image } from 'react-native';
 import { Divider, Text, useTheme } from 'react-native-paper';
 
+import sponsors from '@assets/json/sponsors.json';
 import { handleUrl } from '@utils';
 
 import getStyles from '../styles';
@@ -14,6 +14,7 @@ const sponsorsWithImages = sponsors.map((sponsor) => ({
     jtac: require('@assets/images/sponsors/jtac.png'),
     lesper: require('@assets/images/sponsors/esper.jpg'),
     edtech: require('@assets/images/sponsors/edtech.png'),
+    solidarsport: require('@assets/images/sponsors/solidarsport.jpg'),
   }[sponsor.id as 'mgen' | 'jtac' | 'edtech' | 'lesper'],
 }));
 
