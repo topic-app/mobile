@@ -22,7 +22,6 @@ import {
   addReadCreator,
   deleteReadCreator,
   clearReadCreator,
-  updateParamsCreator,
   updatePrefsCreator,
   addQuickCreator,
   deleteQuickCreator,

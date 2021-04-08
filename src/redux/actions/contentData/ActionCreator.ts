@@ -310,27 +310,6 @@ function clearReadCreator<T extends ContentItemWithListsString>({
   };
 }
 
-/**
- * @docs actionCreators
- * Créateur d'action pour mettre à jour les paramètres de requete
- * @param updateParams L'action pour clear la db
- * @param params Les paramètres à mettre à jour
- * @returns Action
- */
-type UpdateParamsCreatorParams<T extends ContentItemWithListsString> = {
-  updateParams: ContentAction.UpdateParamsTypeMap[T];
-  params: ContentAction.UpdateParamsDataMap[T];
-};
-function updateParamsCreator<T extends ContentItemWithListsString>({
-  updateParams,
-  params,
-}: UpdateParamsCreatorParams<T>): AnyAction {
-  return {
-    type: updateParams,
-    data: params,
-  };
-}
-
 type UpdatePrefsCreatorParams<T extends ContentItemWithListsString> = {
   updatePrefs: ContentAction.UpdatePrefsTypeMap[T];
   prefs: ContentAction.UpdatePrefsDataMap[T];
@@ -525,7 +504,6 @@ export {
   addReadCreator,
   deleteReadCreator,
   clearReadCreator,
-  updateParamsCreator,
   updatePrefsCreator,
   addQuickCreator,
   deleteQuickCreator,
