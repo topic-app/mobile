@@ -95,6 +95,7 @@ const EventListScreen: React.FC<EventListProps> = ({
                     params: { initialCategory: 'events' },
                   },
                 }),
+              label: 'Rechercher',
             },
           ]}
           overflow={headerOverflow}

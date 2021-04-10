@@ -117,6 +117,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                     <TextInput
                       ref={usernameInput}
                       label="Nom d'utilisateur ou adresse mail"
+                      accessibilityLabel="Nom d'utilisateur ou adresse mail"
                       value={values.username}
                       error={(!!errors.username || !!reqState.login.incorrect) && touched.username} // `!!` transforms it into a boolean
                       onChangeText={handleChange('username')}
@@ -136,6 +137,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                     <TextInput
                       ref={passwordInput}
                       label="Mot de passe"
+                      accessibilityLabel="Mot de passe"
                       value={values.password}
                       error={(!!errors.password || !!reqState.login.incorrect) && touched.password}
                       onChangeText={handleChange('password')}

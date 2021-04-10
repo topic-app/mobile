@@ -97,6 +97,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
                     params: { initialCategory: 'articles' },
                   },
                 }),
+              label: 'Rechercher',
             },
           ]}
           overflow={headerOverflow}

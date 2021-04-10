@@ -17,6 +17,7 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
     info: infoString,
     disableFullscreenUI = true,
     value,
+    label,
     autoFocus,
     ...rest
   } = props;
@@ -33,6 +34,8 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
           ref={ref}
           error={error}
           mode={mode}
+          label={label}
+          accessibilityLabel={label}
           disableFullscreenUI={disableFullscreenUI}
           value={value}
           render={

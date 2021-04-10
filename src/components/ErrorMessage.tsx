@@ -96,6 +96,7 @@ const ErrorMessage: React.FC<ErrorMessageProps & { advancedMode: boolean }> = ({
       actions={actions}
       icon={({ size }) => (
         <Avatar.Icon
+          accessibilityRole="none"
           style={{ backgroundColor: colors.invalid }}
           size={size}
           icon={errorInfo.message.icon}

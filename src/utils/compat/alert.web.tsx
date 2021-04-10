@@ -105,7 +105,6 @@
       'font-size: 1.1em;' +
       'font-weight: bolder;' +
       'font-family: sans-serif;' +
-      'line-height: 2em;' +
       '}' +
       '' +
       '#Alert7 .alert7-message {' +

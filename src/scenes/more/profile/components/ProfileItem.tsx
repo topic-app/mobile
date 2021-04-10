@@ -42,14 +42,31 @@ const ProfileItem: React.FC<Props> = ({
         {type !== 'none' && (
           <View>
             {type === 'private' ? (
-              <IconButton color={colors.disabled} icon="lock-outline" />
+              <IconButton
+                color={colors.disabled}
+                icon="lock-outline"
+                accessibilityLabel="Privé"
+                accessibilityRole="text"
+              />
             ) : (
-              <IconButton color={colors.disabled} icon="eye-outline" />
+              <IconButton
+                color={colors.disabled}
+                icon="eye-outline"
+                accessibilityLabel="Privé"
+                accessibilityRole="text"
+              />
             )}
           </View>
         )}
         <View>
-          {editable && <IconButton icon="pencil" color={colors.text} onPress={onPress} />}
+          {editable && (
+            <IconButton
+              icon="pencil"
+              color={colors.text}
+              onPress={onPress}
+              accessibilityLabel="Modifier"
+            />
+          )}
         </View>
       </View>
     </View>

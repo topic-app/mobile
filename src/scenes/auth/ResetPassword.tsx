@@ -99,6 +99,7 @@ const AuthResetPassword: React.FC<AuthResetPasswordProps> = ({
                     <TextInput
                       ref={usernameInput}
                       label="Nom d'utilisateur ou adresse mail"
+                      accessibilityLabel="Nom d'utilisateur ou adresse mail"
                       value={values.username}
                       error={!!errors.username && touched.username} // `!!` transforms it into a boolean
                       onChangeText={handleChange('username')}

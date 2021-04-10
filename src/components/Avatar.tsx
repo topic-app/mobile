@@ -135,7 +135,11 @@ const Avatar: React.FC<AvatarProps> = ({
   if (onPress) {
     return (
       <View style={{ borderRadius: size / 2 }}>
-        <TouchableOpacity onPress={onPress} style={{ height: size, width: size }}>
+        <TouchableOpacity
+          onPress={onPress}
+          style={{ height: size, width: size }}
+          accessibilityLabel="Avatar"
+        >
           {AvatarComponent}
         </TouchableOpacity>
       </View>

@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 type PlatformIconButtonProps = {
   // TODO: find a way to accept either `icon`, or `iosIcon` and `androidIcon`
   icon: string;
+  accessibilityLabel: string;
   iosIcon?: string;
   androidIcon?: string;
   size?: number;
@@ -27,6 +28,7 @@ type PlatformIconButtonProps = {
 
 const PlatformIconButton: React.FC<PlatformIconButtonProps> = ({
   icon,
+  accessibilityLabel,
   iosIcon,
   androidIcon,
   size = 25,
@@ -57,6 +59,7 @@ const PlatformIconButton: React.FC<PlatformIconButtonProps> = ({
       size={androidSize || size}
       onPress={onPress}
       style={style}
+      accessibilityLabel={accessibilityLabel}
     />
   );
 };

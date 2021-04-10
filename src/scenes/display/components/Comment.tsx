@@ -125,12 +125,22 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                 {isReply ? 'Réponse de ' : ''}
                 {displayName}{' '}
                 {publisher?.group?.official && (
-                  <Icon name="check-decagram" color={colors.primary} size={12} />
+                  <Icon
+                    name="check-decagram"
+                    color={colors.primary}
+                    size={12}
+                    accessibilityLabel="Groupe vérifié"
+                  />
                 )}
                 {authors &&
                   (authors.includes(publisher?.group?._id || '') ||
                     authors.includes(publisher?.user?._id || '')) && (
-                    <Icon name="account-edit" color={colors.primary} size={12} />
+                    <Icon
+                      name="account-edit"
+                      color={colors.primary}
+                      size={12}
+                      accessibilityLabel="Auteur"
+                    />
                   )}
               </Text>
             </TouchableOpacity>
@@ -143,7 +153,13 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
             <Menu
               visible={menuVisible === 'main'}
               onDismiss={() => setMenuVisible(null)}
-              anchor={<IconButton icon="dots-vertical" onPress={() => setMenuVisible('main')} />}
+              anchor={
+                <IconButton
+                  icon="dots-vertical"
+                  accessibilityLabel="Options pour ce commentaire"
+                  onPress={() => setMenuVisible('main')}
+                />
+              }
             >
               <Menu.Item onPress={() => reply(id)} title="Répondre" />
               <Menu.Item onPress={() => report(id)} title="Signaler" />

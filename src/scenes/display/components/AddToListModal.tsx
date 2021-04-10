@@ -125,6 +125,7 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
                 left={() =>
                   Platform.OS !== 'ios' && (
                     <IconButton
+                      accessibilityLabel="Créer une liste"
                       style={{ width: 24, height: 24 }}
                       color={colors.primary}
                       icon="plus"

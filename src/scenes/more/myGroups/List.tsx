@@ -100,6 +100,7 @@ const MyGroupsList: React.FC<MyGroupsListProps> = ({
                   params: { initialCategory: 'groups' },
                 },
               }),
+            label: 'Rechercher',
           },
         ],
       }}

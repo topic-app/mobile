@@ -98,6 +98,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
             </View>
             <View style={{ flexGrow: 1 }}>
               <IconButton
+                accessibilityLabel="Supprimer cet élément"
                 icon="delete"
                 size={30}
                 style={{ marginRight: 20, flexGrow: 1 }}

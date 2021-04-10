@@ -271,6 +271,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                 {
                   icon: 'playlist-plus',
                   onPress: () => setListModalVisible(true),
+                  label: 'Ajouter à une liste',
                 },
               ]
         }

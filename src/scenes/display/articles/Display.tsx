@@ -141,6 +141,21 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
       );
   };
 
+  const showLikeLoginAlert = () =>
+    Alert.alert(
+      'Connectez vous pour liker cet article',
+      'Avec un compte Topic, vous pourrez liker les articles, suivres vos groupes préférés et en rejoindre.',
+      [
+        { text: 'Se connecter', onPress: () => navigation.navigate('Auth', { screen: 'Login' }) },
+        {
+          text: 'Créer un compte',
+          onPress: () => navigation.navigate('Auth', { screen: 'Create' }),
+        },
+        { text: 'Annuler' },
+      ],
+      { cancelable: true },
+    );
+
   return (
     <View style={styles.page}>
       {article.image?.image && (
@@ -219,7 +234,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
                 loading={reqState.articles.my?.loading || reqState.articles.like?.loading}
                 style={{ flex: 1, marginRight: 5 }}
                 color={articleMy?.liked ? colors.primary : colors.muted}
-                onPress={account.loggedIn ? likeArticle : undefined}
+                onPress={account.loggedIn ? likeArticle : showLikeLoginAlert}
               >
                 {typeof article.cache?.likes === 'number'
                   ? article.cache.likes + (articleMy?.liked ? 1 : 0)
@@ -751,6 +766,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
                 {
                   icon: 'playlist-plus',
                   onPress: () => setListModalVisible(true),
+                  label: 'Ajouter à une liste',
                 },
               ]
             : undefined,

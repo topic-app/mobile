@@ -204,6 +204,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           <Illustration
             name={drawerExpanded ? 'topic-icon-text' : 'topic-icon'}
             style={{ height: 36, marginTop: 10 }}
+            label="Logo Topic"
           />
         </View>
         <Divider style={{ marginVertical: 10 }} />
@@ -226,6 +227,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                   theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
                   icon={item.icon}
                   label={drawerExpanded ? item.text || '' : ''}
+                  accessibilityLabel={item.text}
                   onPress={() => {
                     item.navigate?.();
                     setActive(item.key);
@@ -260,6 +262,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
               label="Se connecter"
+              accessibilityLabel="Se connecter"
               onPress={() =>
                 navigation.navigate('Auth', {
                   screen: 'Login',
@@ -271,6 +274,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
               label="Créer un compte"
+              accessibilityLabel="Créer un compte"
               onPress={() =>
                 navigation.navigate('Auth', {
                   screen: 'Create',
@@ -285,6 +289,9 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
           style={drawerExpanded ? { width: 230 } : { width: 40 }}
           label=""
+          accessibilityLabel={
+            drawerExpanded ? 'Réduire le menu principal' : 'Agrandir le menu principal'
+          }
           onPress={() => setDrawerExpanded(!drawerExpanded)}
         />
       </View>

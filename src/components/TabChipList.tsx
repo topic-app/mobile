@@ -57,6 +57,7 @@ const TabChipList = <T extends ListItem>({
             ? () => (
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                   <IconButton
+                    accessibilityLabel="Configurer"
                     icon="pencil"
                     size={26}
                     style={{ marginLeft: 5, margin: 0 }}

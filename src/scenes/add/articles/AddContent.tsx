@@ -228,6 +228,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                   setViewing(!viewing);
                 }}
                 icon={viewing ? 'pencil' : 'eye'}
+                accessibilityLabel={viewing ? 'Mode éditeur' : 'Mode relecture'}
                 style={{ marginLeft: 5 }}
               />
             </View>
@@ -379,6 +380,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             >
               <IconButton
                 icon="cog"
+                accessibilityLabel="Changer le type d'éditeur"
                 color={colors.text}
                 onPress={() => setMenuVisible(!menuVisible)}
               />

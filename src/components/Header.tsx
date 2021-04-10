@@ -26,6 +26,7 @@ type OverflowItem = {
 
 type ActionItem = {
   icon: string;
+  label: string;
   onPress: () => void;
 };
 
@@ -66,15 +67,26 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   } else if (layout === 'desktop') {
     primaryAction = null;
   } else if (home) {
-    primaryAction = <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
+    primaryAction = (
+      <Appbar.Action
+        icon="menu"
+        onPress={navigation.openDrawer}
+        accessibilityLabel="Menu principal"
+      />
+    );
   } else if (hideBack || Platform.OS === 'web') {
     primaryAction = <View />;
   } else {
-    primaryAction = <Appbar.BackAction onPress={navigation.goBack} />;
+    primaryAction = <Appbar.BackAction onPress={navigation.goBack} accessibilityLabel="Retour" />;
   }
 
   const secondaryActions = actions.map((item) => (
-    <Appbar.Action key={shortid()} icon={item.icon} onPress={item.onPress} />
+    <Appbar.Action
+      key={shortid()}
+      icon={item.icon}
+      onPress={item.onPress}
+      accessibilityLabel={item.label}
+    />
   ));
 
   const insets = useSafeAreaInsets();
@@ -88,6 +100,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
           icon="dots-vertical"
           onPress={() => setMenuVisible(true)}
           color={colors.drawerContent}
+          accessibilityLabel="Options supplémentaires"
         />
       }
       statusBarHeight={insets.top}

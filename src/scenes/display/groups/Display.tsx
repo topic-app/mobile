@@ -281,6 +281,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   }) && (
                     <IconButton
                       icon="pencil"
+                      accessibilityLabel="Modifier le groupe"
                       onPress={() => {
                         setEditingGroup({
                           id: group._id,
@@ -299,6 +300,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   anchor={
                     <Appbar.Action
                       icon="dots-vertical"
+                      accessibilityLabel="Options supplémentaires"
                       onPress={() => setMenuVisible(true)}
                       color={colors.drawerContent}
                     />
@@ -672,6 +674,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           ) : (
                             <IconButton
                               icon="pencil"
+                              accessibilityLabel="Modifier mon role"
                               onPress={() => {
                                 setCurrentMembers(group.members || []);
                                 setCurrentRoles(group.roles || []);
@@ -753,6 +756,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         ) : (
                           <IconButton
                             icon="pencil"
+                            accessibilityLabel="Modifier le membre"
                             onPress={() => {
                               setCurrentMembers(group.members || []);
                               setCurrentRoles(group.roles || []);
@@ -774,6 +778,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         ) : (
                           <IconButton
                             icon="delete"
+                            accessibilityLabel="Retirer le membre"
                             onPress={() => {
                               Alert.alert(
                                 `Retirer @${mem.user?.info?.username} de ${group.name} ?`,

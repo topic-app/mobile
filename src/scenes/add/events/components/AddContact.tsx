@@ -143,6 +143,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
                   </View>
                   <View style={{ flexGrow: 1 }}>
                     <IconButton
+                      accessibilityLabel="Supprimer cet élément"
                       icon="delete"
                       size={30}
                       style={{ marginRight: 20, flexGrow: 1 }}
@@ -186,6 +187,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
                   </View>
                   <View style={{ flexGrow: 1 }}>
                     <IconButton
+                      accessibilityLabel="Supprimer l'organisateur"
                       icon="delete"
                       size={30}
                       style={{ marginRight: 20, flexGrow: 1 }}

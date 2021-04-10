@@ -127,6 +127,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             {articleVerification.verification?.bot?.flags?.length !== 0 && (
               <View style={{ flexDirection: 'row' }}>
                 <Icon
+                  accessibilityRole="none"
                   name="tag"
                   color={colors.invalid}
                   size={16}
@@ -140,6 +141,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             {articleVerification.verification?.reports?.length !== 0 && (
               <View style={{ flexDirection: 'row' }}>
                 <Icon
+                  accessibilityRole="none"
                   name="message-alert"
                   color={colors.invalid}
                   size={16}
@@ -152,6 +154,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
               !articleVerification.verification?.verified && (
                 <View style={{ flexDirection: 'row' }}>
                   <Icon
+                    accessibilityRole="none"
                     name="shield"
                     color={colors.invalid}
                     size={16}
@@ -163,6 +166,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             {articleVerification.verification?.extraVerification && (
               <View style={{ flexDirection: 'row' }}>
                 <Icon
+                  accessibilityRole="none"
                   name="alert-decagram"
                   color={colors.invalid}
                   size={16}

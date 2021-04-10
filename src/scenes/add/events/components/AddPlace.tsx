@@ -104,6 +104,7 @@ const EventAddPagePlace: React.FC<Props> = ({ next, prev, account }) => {
                 </View>
                 <View style={{ flex: 1 }}>
                   <IconButton
+                    accessibilityLabel="Supprimer ce lieu"
                     icon="delete"
                     size={30}
                     style={{ marginRight: 20, flexGrow: 1 }}

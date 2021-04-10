@@ -182,6 +182,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             </View>
             <View style={{ alignSelf: 'center' }}>
               <IconButton
+                accessibilityLabel={viewing ? 'Mode éditeur' : 'Mode relecture'}
                 onPress={() => {
                   if (!viewing) {
                     Keyboard.dismiss();

@@ -66,6 +66,7 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
               <View style={styles.container}>
                 <IconButton
                   icon="close"
+                  accessibilityLabel="Cacher la bannière"
                   color={colors.disabled}
                   onPress={() => updatePrefs({ showDownloadBanner: false })}
                 />
@@ -100,6 +101,7 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
               <View style={styles.container}>
                 <IconButton
                   icon="close"
+                  accessibilityLabel="Cacher la bannière"
                   color={colors.disabled}
                   onPress={() => updatePrefs({ showDownloadBanner: false })}
                 />

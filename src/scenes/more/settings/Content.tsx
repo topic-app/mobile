@@ -50,6 +50,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
         <Slider
           minimumValue={12}
           maximumValue={20}
+          accessibilityLabel="Taile du texte"
           minimumTrackTintColor={colors.primary}
           thumbTintColor={colors.primary}
           step={1}
@@ -71,6 +72,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 color: colors.text,
                 fontFamily: 'Roboto',
               }}
+              accessibilityLabel="Police Sans serif"
               onPress={() => {
                 trackEvent('prefs:update-font', { props: { font: 'Roboto' } });
                 updatePrefs({ fontFamily: 'Roboto' });
@@ -87,6 +89,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 color: colors.text,
                 fontFamily: 'Roboto-Slab',
               }}
+              accessibilityLabel="Police Serif"
               onPress={() => {
                 trackEvent('prefs:update-font', { props: { font: 'Roboto-Slab' } });
                 updatePrefs({ fontFamily: 'Roboto-Slab' });
@@ -109,6 +112,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 trackEvent('prefs:update-font', { props: { font: 'Roboto-Mono ' } });
                 updatePrefs({ fontFamily: 'Roboto-Mono' });
               }}
+              accessibilityLabel="Poline Mono"
               mode={preferences.fontFamily === 'Roboto-Mono' ? 'outlined' : 'text'}
             >
               Mono
@@ -121,6 +125,7 @@ Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia de
                 color: colors.text,
                 fontFamily: 'OpenDyslexic',
               }}
+              accessibilityLabel="Police Dyslexie"
               onPress={() => {
                 trackEvent('prefs:update-font', { props: { font: 'OpenDyslexic' } });
                 updatePrefs({ fontFamily: 'OpenDyslexic' });

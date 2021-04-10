@@ -19,6 +19,17 @@ const TagList: React.FC<Props> = ({ item, scrollable }) => {
   const styles = getStyles(theme);
   const { colors } = theme;
 
+  const accessibilityValues = {
+    tag: 'Tag',
+    group: 'Groupe',
+    author: 'Author',
+    likes: 'Nombre de likes',
+    global: 'Publié en',
+    school: "Publié dans l'école",
+    department: 'Publié dans la zone',
+    opinion: 'Article',
+  };
+
   return (
     <View onStartShouldSetResponder={() => true}>
       <FlatList
@@ -37,6 +48,8 @@ const TagList: React.FC<Props> = ({ item, scrollable }) => {
           >
             <Chip
               mode="outlined"
+              accessibilityLabel={`${accessibilityValues[tag.type] || 'Info'} ${tag.label}`}
+              accessibilityRole="text"
               icon={tag.image || tag.avatar ? undefined : tag.icon}
               avatar={
                 tag.image || tag.avatar ? (

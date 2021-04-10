@@ -174,6 +174,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                 anchor={
                   <Appbar.Action
                     icon="dots-vertical"
+                    accessibilityLabel="Options supplémentaires"
                     onPress={() => setMenuVisible(true)}
                     color={colors.drawerContent}
                   />

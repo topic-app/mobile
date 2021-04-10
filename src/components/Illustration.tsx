@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { SvgProps } from 'react-native-svg';
 
@@ -151,9 +152,9 @@ const illustrations: {
 
 export type IllustrationName = keyof typeof illustrationList;
 
-type Props = SvgProps & { name: IllustrationName };
+type Props = SvgProps & { name: IllustrationName; label?: string };
 
-const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, ...rest }) => {
+const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, label, ...rest }) => {
   const { dark } = useTheme();
 
   if (!(name in illustrations)) {
@@ -165,7 +166,16 @@ const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, ...res
   const IllustrationComponent = item.all || (dark ? item.dark : item.light);
 
   if (IllustrationComponent) {
-    return <IllustrationComponent height={height} width={width} {...rest} />;
+    return (
+      <View
+        accessibilityLabel={label}
+        accessibilityElementsHidden={!label}
+        importantForAccessibility={label ? undefined : 'no-hide-descendants'}
+        aria-hidden={!label}
+      >
+        <IllustrationComponent height={height} width={width} {...rest} />
+      </View>
+    );
   }
 
   return null;
