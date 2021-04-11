@@ -1,6 +1,4 @@
 import Store from '@redux/store';
-
-import { Tag } from '@ts/types';
 import {
   UPDATE_TAGS_DATA,
   UPDATE_TAGS_SEARCH,
@@ -8,6 +6,7 @@ import {
   UPDATE_TAGS_STATE,
   CLEAR_TAGS,
 } from '@ts/redux';
+import { Tag } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -71,8 +70,8 @@ async function fetchTag(tagId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-function clearTags(data = true, search = true) {
-  Store.dispatch(clearCreator({ clear: CLEAR_TAGS, data, search }));
+function clearTags(data = true, search = true, items = false, item = false) {
+  Store.dispatch(clearCreator({ clear: CLEAR_TAGS, data, search, item, items }));
 }
 
 export { updateTags, clearTags, fetchTag, searchTags };

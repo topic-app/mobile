@@ -145,8 +145,8 @@ function articleReducer(state = initialState, action: ArticlesActionTypes): Arti
         search: action.data.search ? [] : state.search,
         following: action.data.following ? [] : state.following,
         verification: action.data.verification ? [] : state.verification,
-        item: null,
-        my: null,
+        item: action.data.item ? null : state.item,
+        my: action.data.item ? null : state.my,
         state: state.state,
       };
     default:

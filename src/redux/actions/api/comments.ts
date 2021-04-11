@@ -1,6 +1,6 @@
 import Store from '@redux/store';
-import { Comment } from '@ts/types';
 import { UPDATE_COMMENTS_DATA, UPDATE_COMMENTS_STATE, CLEAR_COMMENTS } from '@ts/redux';
+import { Comment } from '@ts/types';
 
 import { clearCreator, updateCreator } from './ActionCreator';
 
@@ -31,7 +31,7 @@ async function updateComments(type: 'initial' | 'refresh' | 'next', params = {})
  * @docs actions
  * Vide la database redux complètement
  */
-function clearComments(data = true, search = true) {
+function clearComments(data = false, search = false) {
   Store.dispatch(clearCreator({ clear: CLEAR_COMMENTS, data, search }));
 }
 

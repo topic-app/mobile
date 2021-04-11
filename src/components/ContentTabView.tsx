@@ -66,7 +66,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     React.useEffect(() => {
       console.log('ContentTabView useEffect');
       if (types.includes('articles')) {
-        clearArticles(false, true, false, false);
+        clearArticles(false, true, false, false, false);
         searchArticles('initial', '', searchParams, false);
       }
       if (types.includes('events')) {

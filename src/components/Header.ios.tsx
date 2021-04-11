@@ -36,13 +36,8 @@ const BackButton: React.FC<BackButtonProps> = ({ onPress, previous }) => {
             alignItems: 'center',
           }}
         >
-          <Icon
-            name="chevron-left"
-            size={34}
-            style={{ paddingTop: 2, paddingLeft: 7 }}
-            color={backColor}
-          />
-          <Text style={{ fontSize: 16, paddingLeft: 5, color: backColor }}>
+          <Icon name="chevron-left" size={34} style={{ paddingTop: 2 }} color={backColor} />
+          <Text style={{ fontSize: 18, marginLeft: -5, color: backColor }}>
             {previous ?? 'Retour'}
           </Text>
         </View>

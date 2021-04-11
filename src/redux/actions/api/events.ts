@@ -212,8 +212,8 @@ async function updateEventsVerification(
  * @docs actions
  * Vide la database redux complètement
  */
-function clearEvents(data = true, search = true) {
-  Store.dispatch(clearCreator({ clear: CLEAR_EVENTS, data, search }));
+function clearEvents(data = false, search = false, verification = false, item = false) {
+  Store.dispatch(clearCreator({ clear: CLEAR_EVENTS, data, search, verification, item }));
 }
 
 export {

@@ -98,7 +98,13 @@ type UpdateArticlesVerificationAction = {
 
 type ClearArticlesAction = {
   type: typeof CLEAR_ARTICLES;
-  data: { data?: boolean; search?: boolean; verification?: boolean; following?: boolean };
+  data: {
+    data?: boolean;
+    search?: boolean;
+    verification?: boolean;
+    following?: boolean;
+    item?: boolean;
+  };
 };
 
 export type ArticlesActionTypes =
@@ -194,7 +200,7 @@ type UpdateDepartmentsSearchAction = {
 
 type ClearDepartmentsAction = {
   type: typeof CLEAR_DEPARTMENTS;
-  data: { data?: boolean; search?: boolean; items?: boolean };
+  data: { data?: boolean; search?: boolean; items?: boolean; item?: boolean };
 };
 
 export type DepartmentsActionTypes =
@@ -270,7 +276,13 @@ type UpdateEventsVerificationAction = {
 
 type ClearEventsAction = {
   type: typeof CLEAR_EVENTS;
-  data: { data?: boolean; search?: boolean; verification?: boolean; following?: boolean };
+  data: {
+    data?: boolean;
+    search?: boolean;
+    verification?: boolean;
+    following?: boolean;
+    item?: boolean;
+  };
 };
 
 export type EventsActionTypes =
@@ -340,6 +352,7 @@ type ClearGroupsAction = {
     search?: boolean;
     templates?: boolean;
     verification?: boolean;
+    item?: boolean;
   };
 };
 
@@ -396,7 +409,7 @@ type UpdatePlacesSearchAction = {
 
 type ClearPlacesAction = {
   type: typeof CLEAR_PLACES;
-  data: { data?: boolean; search?: boolean; mapData?: boolean };
+  data: { data?: boolean; search?: boolean; mapData?: boolean; item?: boolean };
 };
 
 export type PlacesActionTypes =
@@ -458,7 +471,7 @@ type UpdateSchoolsNearAction = {
 
 type ClearSchoolsAction = {
   type: typeof CLEAR_SCHOOLS;
-  data: { data?: boolean; search?: boolean; near?: boolean };
+  data: { data?: boolean; search?: boolean; near?: boolean; item?: boolean };
 };
 
 export type SchoolsActionTypes =
@@ -507,7 +520,7 @@ type UpdateTagsSearchAction = {
 
 type ClearTagsAction = {
   type: typeof CLEAR_TAGS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; item?: boolean };
 };
 
 export type TagsActionTypes =
@@ -554,7 +567,7 @@ type UpdateUsersSearchAction = {
 
 type ClearUsersAction = {
   type: typeof CLEAR_USERS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; item?: boolean };
 };
 
 export type UsersActionTypes =

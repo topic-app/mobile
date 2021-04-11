@@ -238,8 +238,8 @@ async function updateMapLocations(type: MapLocation.PointDataType, id: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-function clearPlaces(data = true, search = true) {
-  Store.dispatch(clearCreator({ clear: CLEAR_PLACES, data, search }));
+function clearPlaces(data = false, search = false, item = false) {
+  Store.dispatch(clearCreator({ clear: CLEAR_PLACES, data, search, item }));
 }
 
 export {

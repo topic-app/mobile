@@ -146,7 +146,7 @@ function groupReducer(state = initialState, action: GroupsActionTypes): GroupsSt
         search: action.data.search ? [] : state.search,
         templates: action.data.templates ? [] : state.templates,
         verification: action.data.verification ? [] : state.verification,
-        item: null,
+        item: action.data.item ? null : state.item,
         state: state.state,
       };
     default:
