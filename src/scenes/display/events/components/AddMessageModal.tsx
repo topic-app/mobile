@@ -128,6 +128,13 @@ const AddMessageModal: React.FC<AddMessageModalProps> = ({
             }}
           >
             <PlatformIconButton
+              accessibilityLabel={
+                type === 'high'
+                  ? 'Notifications prioritaire'
+                  : type === 'medium'
+                  ? 'Notifications allumées'
+                  : 'Notifications éteintes'
+              }
               color={colors.text}
               icon={type === 'high' ? 'bell-ring' : type === 'medium' ? 'bell' : 'bell-off'}
               onPress={incrementType}
@@ -141,6 +148,7 @@ const AddMessageModal: React.FC<AddMessageModalProps> = ({
               />
             ) : (
               <PlatformIconButton
+                accessibilityLabel="Publier"
                 color={messageText.length < 1 ? colors.disabled : colors.primary}
                 icon="send"
                 onPress={messageText.length < 1 ? undefined : submitMessage}

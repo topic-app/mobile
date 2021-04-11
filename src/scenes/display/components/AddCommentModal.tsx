@@ -191,6 +191,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({
               />
             ) : (
               <PlatformIconButton
+                accessibilityLabel="Publier"
                 color={tooManyChars || commentText.length < 1 ? colors.disabled : colors.primary}
                 icon="send"
                 onPress={tooManyChars || commentText.length < 1 ? undefined : submitComment}

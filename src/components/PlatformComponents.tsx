@@ -83,6 +83,7 @@ const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) =>
     <View />
   ) : (
     <PlatformIconButton
+      accessibilityLabel="Retour"
       icon="arrow-left"
       androidIcon="arrow-left"
       iosIcon="chevron-left"
