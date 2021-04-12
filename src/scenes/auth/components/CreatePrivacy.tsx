@@ -92,12 +92,12 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
           <ListItem
             icon={always.icon}
             iconColor={always.iconColor}
-            label="Voir tous les articles, évènements et lieux culturels"
+            label="Voir tous les articles et évènements"
           />
           <ListItem
             icon={always.icon}
             iconColor={always.iconColor}
-            label="Écrire des articles et créer des évènements si vous appartenez à un groupe"
+            label="Suivre des utilisateurs et des groupes"
           />
           <ListItem
             icon={always.icon}
@@ -105,9 +105,14 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
             label="Écrire des commentaires"
           />
           <ListItem
-            icon={publicOnly.icon}
-            iconColor={publicOnly.iconColor}
-            label="Être administrateur d'un groupe"
+            icon={always.icon}
+            iconColor={always.iconColor}
+            label="Rejoindre et créer des groupes"
+          />
+          <ListItem
+            icon={always.icon}
+            iconColor={always.iconColor}
+            label="Écrire des articles et créer des évènements si vous appartenez à un groupe"
           />
         </View>
         <View style={styles.descriptionPartContainer}>

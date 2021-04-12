@@ -122,7 +122,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({
               />
               <ListItem
                 icon="close"
-                label="Les contenus illégaux, explicites, trompeurs, malveillants, abusifs ou diffamatoires sont interdits"
+                label="Les contenus illégaux, non-adaptés aux mineurs, trompeurs, malveillants, abusifs ou diffamatoires sont interdits"
               />
               <ListItem
                 icon="close"
@@ -138,11 +138,11 @@ const AuthCreatePageLegal: React.FC<Props> = ({
               />
               <ListItem
                 icon="information-outline"
-                label="Nous déclinons toute responsabilité en cas de problème et ne garantissons pas que le service fonctionne correctement"
+                label="Nous ne garantissons pas que le service fonctionne correctement, et il peut y avoir des pannes"
               />
               <ListItem
                 icon="information-outline"
-                label="Si vous êtes mineur, votre représentant légal doit accepter les conditions d'utilisation et la politique de vie privée aussi"
+                label="Si vous avez moins de 18 ans, vous devez avoir l'accord de votre représentant légal pour créer un compte"
               />
               <ListItemAnchor
                 onPress={() =>
