@@ -140,8 +140,8 @@ async function fetchGroupVerification(groupId: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-function clearGroups(data = true, search = true, templates = true) {
-  Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates }));
+function clearGroups(data = false, search = false, templates = false, item = false) {
+  Store.dispatch(clearCreator({ clear: CLEAR_GROUPS, data, search, templates, item }));
 }
 
 /**

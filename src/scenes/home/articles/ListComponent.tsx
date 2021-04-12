@@ -177,7 +177,7 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
       loading: state.search?.loading,
       onLoad: async (loadType) => {
         if (loadType === 'initial') {
-          clearArticles(false, true, false, false);
+          clearArticles(false, true, false, false, false);
         }
         await searchArticles(loadType, '', params, false, false);
       },

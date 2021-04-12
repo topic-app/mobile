@@ -721,7 +721,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <PageContainer
-        headerOptions={{ title: 'Actus' }}
+        headerOptions={
+          Platform.OS === 'ios' ? { subtitle: 'Actus', title: '' } : { title: 'Actus' }
+        }
         loading={reqState.articles.info.loading}
         showError={reqState.articles.info.error}
         errorOptions={{
@@ -758,7 +760,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
     <PageContainer
       headerOptions={{
         hideBack: dual,
-        title,
+        title: Platform.OS === 'ios' ? '' : title,
         subtitle,
         actions:
           !verification && Platform.OS !== 'web'

@@ -138,8 +138,8 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
         following: action.data.following ? [] : state.following,
         search: action.data.search ? [] : state.search,
         verification: action.data.verification ? [] : state.verification,
-        my: null,
-        item: null,
+        my: action.data.item ? null : state.my,
+        item: action.data.item ? null : state.item,
         state: state.state,
       };
     default:

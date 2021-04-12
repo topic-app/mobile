@@ -100,7 +100,7 @@ function placeReducer(state = initialState, action: PlacesActionTypes): PlacesSt
         data: action.data.data ? [] : state.data,
         mapData: action.data.mapData ? [] : state.mapData,
         search: action.data.search ? [] : state.search,
-        item: null,
+        item: action.data.item ? null : state.item,
         state: state.state,
       };
     default:
