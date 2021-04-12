@@ -1,14 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-import getGlobalStyles from '@styles/global';
-import { Theme } from '@ts/types';
+import { createStyleSheet } from '@styles/helpers';
 
-export default function getStyles(theme: Theme) {
-  const { colors } = theme;
-  const globalStyles = getGlobalStyles(theme);
-
-  return StyleSheet.create({
-    ...globalStyles,
+export default createStyleSheet(
+  ({ colors }) => ({
     listItem: { padding: 6 },
     image: {
       height: 250,
@@ -45,5 +40,6 @@ export default function getStyles(theme: Theme) {
     listSpacer: {
       height: 20,
     },
-  });
-}
+  }),
+  { global: true },
+);

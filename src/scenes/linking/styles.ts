@@ -1,13 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { createStyleSheet } from '@styles/helpers';
 
-import getGlobalStyles from '@styles/global';
-import { Theme } from '@ts/types';
-
-export default function getStyles(theme: Theme) {
-  const globalStyles = getGlobalStyles(theme);
-
-  return StyleSheet.create({
-    ...globalStyles,
+export default createStyleSheet(
+  () => ({
     centerContainer: {
       marginTop: 20,
       padding: 20,
@@ -33,5 +27,6 @@ export default function getStyles(theme: Theme) {
       alignSelf: 'center',
       paddingBottom: 3,
     },
-  });
-}
+  }),
+  { global: true },
+);

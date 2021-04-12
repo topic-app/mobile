@@ -1,12 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { createStyleSheet } from '@styles/helpers';
 
-import getGlobalStyles from '@styles/global';
-import { Theme } from '@ts/types';
-
-export default function getStyles(theme: Theme) {
-  const globalStyles = getGlobalStyles(theme);
-  return StyleSheet.create({
-    ...globalStyles,
+export default createStyleSheet(
+  () => ({
     listItem: { padding: 6 },
     searchContainer: {
       paddingHorizontal: 20,
@@ -20,5 +15,6 @@ export default function getStyles(theme: Theme) {
       marginHorizontal: 10,
       marginVertical: 10,
     },
-  });
-}
+  }),
+  { global: true },
+);

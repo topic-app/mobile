@@ -1,15 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { createStyleSheet } from '@styles/helpers';
 
-import getGlobalStyles from '@styles/global';
-import { Theme } from '@ts/types';
-
-export default function getStyles(theme: Theme) {
-  const { colors } = theme;
-
-  const globalStyles = getGlobalStyles(theme);
-
-  return StyleSheet.create({
-    ...globalStyles,
+export default createStyleSheet(
+  ({ colors }) => ({
     searchbar: {
       margin: 12,
     },
@@ -28,5 +20,6 @@ export default function getStyles(theme: Theme) {
     containerBottom: {
       paddingBottom: 12,
     },
-  });
-}
+  }),
+  { global: true },
+);

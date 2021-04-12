@@ -1,15 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { createStyleSheet } from '@styles/helpers';
 
-import getGlobalStyles from '@styles/global';
-import { Theme } from '@ts/types';
-
-export default function getStyles(theme: Theme) {
-  const { colors, dark } = theme;
-
-  const globalStyles = getGlobalStyles(theme);
-
-  return StyleSheet.create({
-    ...globalStyles,
+export default createStyleSheet(
+  ({ dark, colors }) => ({
     modal: {
       margin: 0,
     },
@@ -95,5 +87,6 @@ export default function getStyles(theme: Theme) {
       backgroundColor: colors.highlight,
       marginTop: 7,
     },
-  });
-}
+  }),
+  { global: true },
+);

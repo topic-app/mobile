@@ -1,15 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { createStyleSheet } from '@styles/helpers';
 
-import getGlobalStyles from '@styles/global';
-import { Theme } from '@ts/types';
-
-export default function getStyles(theme: Theme) {
-  const { colors } = theme;
-
-  const globalStyles = getGlobalStyles(theme);
-
-  return StyleSheet.create({
-    ...globalStyles,
+export default createStyleSheet(
+  ({ colors }) => ({
     title: {
       color: colors.text,
       fontSize: 25,
@@ -19,5 +11,6 @@ export default function getStyles(theme: Theme) {
     captionText: {
       color: colors.disabled,
     },
-  });
-}
+  }),
+  { global: true },
+);
