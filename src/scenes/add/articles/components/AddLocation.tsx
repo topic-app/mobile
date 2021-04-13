@@ -63,9 +63,11 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
   departmentItems,
   locationStates,
 }) => {
-  const [schools, setSchools] = React.useState<string[]>([]);
-  const [departments, setDepartments] = React.useState<string[]>([]);
-  const [global, setGlobal] = React.useState(false);
+  const [schools, setSchools] = React.useState<string[]>(creationData.location?.schools || []);
+  const [departments, setDepartments] = React.useState<string[]>(
+    creationData.location?.departments || [],
+  );
+  const [global, setGlobal] = React.useState(creationData.location?.global || false);
   const [showError, setError] = React.useState(false);
 
   const theme = useTheme();
@@ -103,6 +105,8 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
       fetchMultiSchool(selectedGroupLocation.schools || []);
       fetchMultiDepartment(selectedGroupLocation.departments || []);
     }
+    fetchMultiSchool(schools);
+    fetchMultiDepartment(departments);
   }, [null]);
 
   return (
@@ -306,14 +310,16 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
         </HelperText>
       </View>
       <View style={articleStyles.buttonContainer}>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={() => prev()}
-          style={{ flex: 1, marginRight: 5 }}
-        >
-          Retour
-        </Button>
+        {!creationData.editing && (
+          <Button
+            mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
+            uppercase={Platform.OS !== 'ios'}
+            onPress={() => prev()}
+            style={{ flex: 1, marginRight: 5 }}
+          >
+            Retour
+          </Button>
+        )}
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}

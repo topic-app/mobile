@@ -86,8 +86,83 @@ function articleAddCreator({
   };
 }
 
+function articleModifyCreator({
+  id,
+  title,
+  location,
+  opinion,
+  image,
+  summary,
+  parser,
+  data,
+  tags,
+}: ArticleCreationData): AppThunk<Promise<{ _id: string }>> {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_ARTICLES_STATE,
+      data: {
+        modify: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request(
+        'articles/modify',
+        'post',
+        {
+          articleId: id,
+          article: {
+            title,
+            location,
+            image,
+            opinion,
+            summary,
+            tags,
+            content: {
+              parser,
+              data,
+            },
+          },
+        },
+        true,
+      );
+    } catch (error) {
+      dispatch({
+        type: UPDATE_ARTICLES_STATE,
+        data: {
+          modify: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+    dispatch({
+      type: UPDATE_ARTICLES_STATE,
+      data: {
+        modify: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return result.data as { _id: string };
+  };
+}
+
 async function articleAdd(data: ArticleCreationData) {
   return Store.dispatch(articleAddCreator(data));
+}
+
+async function articleModify(data: ArticleCreationData) {
+  return Store.dispatch(articleModifyCreator(data));
 }
 
 async function articleVerificationApprove(id: string) {
@@ -141,6 +216,7 @@ async function articleLike(contentId: string, liking: boolean = true) {
 
 export {
   articleAdd,
+  articleModify,
   articleReport,
   articleVerificationApprove,
   articleDelete,

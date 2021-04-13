@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { View, Platform, TouchableOpacity, Alert } from 'react-native';
+import { View, Platform, TouchableOpacity } from 'react-native';
 import { Text, IconButton, Menu } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -10,7 +10,7 @@ import { Permissions } from '@constants/index';
 import { commentDelete } from '@redux/actions/apiActions/comments';
 import getStyles from '@styles/Styles';
 import { Comment, Account, State, CommentReply } from '@ts/types';
-import { checkPermission, Errors, useTheme } from '@utils/index';
+import { checkPermission, Errors, useTheme, Alert } from '@utils/index';
 import { NativeStackNavigationProp } from '@utils/stack';
 
 import getCommentStyles from './styles/Styles';

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { AnimatingHeader, FeedbackCard, Illustration } from '@components';
 import { Config } from '@constants';
+import { updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import { State } from '@ts/types';
 import { useTheme } from '@utils';
@@ -119,12 +120,13 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
         <ArticleListComponent
           scrollY={scrollY}
           initialTabKey={route.params?.initialList}
-          onArticleCreatePressed={() =>
+          onArticleCreatePressed={() => {
+            updateArticleCreationData({ editing: false, id: undefined });
             navigation.navigate('Main', {
               screen: 'Add',
               params: { screen: 'Article', params: { screen: 'Add' } },
-            })
-          }
+            });
+          }}
           onArticlePress={
             shouldRenderDualView
               ? (articleData) => setArticle(articleData)
@@ -171,7 +173,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
           </View>
         </>
       ) : null}
-      {appOpens > 2 && (
+      {appOpens > 7 && appOpens < 9 && (
         <View
           style={{
             position: 'absolute',

@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator<EventDisplayStackParams>();
 function EventDisplayStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Display" component={EventDisplay} />
+      <Stack.Screen name="Display" component={EventDisplay} options={{ title: 'Évènement' }} />
     </Stack.Navigator>
   );
 }

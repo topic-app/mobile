@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import React from 'react';
 import { Linking, Platform, View, ActivityIndicator } from 'react-native';
 import { Text, Card, IconButton } from 'react-native-paper';
@@ -57,6 +58,9 @@ const FeedbackCard: React.FC<Props> = ({ type, preferences, closable = false }) 
   if (rating) {
     uri += `&main=${rating}`;
   }
+
+  // TEMP: Temporarily disabling feedback because feedback.topicapp.fr doesnt work anymore
+  return null;
 
   if (preferences.completedFeedback?.includes(type) && !completed) {
     return null;

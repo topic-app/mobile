@@ -16,6 +16,7 @@ import {
   UserPreload,
   UserRequestState,
   AccountRequestState,
+  User,
 } from '@ts/types';
 import { logger, request, useTheme } from '@utils/index';
 
@@ -24,7 +25,7 @@ import getGroupStyles from '../styles/Styles';
 type AddUserSelectModalProps = ModalProps & {
   state: UserRequestState;
   members: GroupMember[];
-  next: (user: UserPreload) => any;
+  next: (user: User) => any;
   reqState: AccountRequestState;
 };
 

@@ -4,7 +4,7 @@ import React from 'react';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
 
 import { ConfigureScreenNavigationProp } from '../index';
-import ArticleConfigure from './views/Configure';
+import EventConfigure from './views/Configure';
 
 export type EventConfigureStackParams = {
   Configure: undefined;
@@ -22,7 +22,11 @@ const Stack = createNativeStackNavigator<EventConfigureStackParams>();
 function EventConfigureStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Configure" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Configure" component={ArticleConfigure} />
+      <Stack.Screen
+        name="Configure"
+        options={{ title: 'Configurer mon feed' }}
+        component={EventConfigure}
+      />
     </Stack.Navigator>
   );
 }

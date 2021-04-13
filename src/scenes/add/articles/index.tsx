@@ -15,6 +15,7 @@ export type ArticleAddStackParams = {
   Success: {
     id?: string;
     creationData?: ArticleCreationData;
+    editing?: boolean;
   };
   Location: {
     hideSearch: boolean;
@@ -36,9 +37,17 @@ const Stack = createNativeStackNavigator<ArticleAddStackParams>();
 function ArticleAddStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Add" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Add" component={ArticleAdd} />
-      <Stack.Screen name="AddContent" component={ArticleAddContent} />
-      <Stack.Screen name="Success" component={ArticleAddSuccess} />
+      <Stack.Screen name="Add" options={{ title: 'Écrire un article' }} component={ArticleAdd} />
+      <Stack.Screen
+        name="AddContent"
+        options={{ title: 'Écrire un article' }}
+        component={ArticleAddContent}
+      />
+      <Stack.Screen
+        name="Success"
+        options={{ title: 'Écrire un article' }}
+        component={ArticleAddSuccess}
+      />
     </Stack.Navigator>
   );
 }

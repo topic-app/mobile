@@ -5,7 +5,7 @@ import React from 'react';
 import { View, Linking, Platform, Image } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Text, FAB, IconButton } from 'react-native-paper';
-import Animated, { Easing, cond, greaterThan } from 'react-native-reanimated';
+import Animated, { Easing, EasingNode, cond, greaterThan } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { BottomSheetRef } from '@components/index';
@@ -204,7 +204,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     Animated.timing(zoomAnim, {
       toValue: 0,
       duration: 200,
-      easing: Easing.linear,
+      easing: EasingNode.linear,
     }).start();
   };
   const showZoomButtons = () => {
@@ -212,7 +212,7 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
     Animated.timing(zoomAnim, {
       toValue: 1,
       duration: 200,
-      easing: Easing.linear,
+      easing: EasingNode.linear, // Easing.linear,
     }).start();
   };
   const zoomElevationAnim = zoomAnim.interpolate({

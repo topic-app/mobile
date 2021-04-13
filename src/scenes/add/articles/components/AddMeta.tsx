@@ -39,7 +39,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   const articleStyles = getArticleStyles(theme);
   const styles = getStyles(theme);
 
-  const [isOpinion, setOpinion] = React.useState(false);
+  const [isOpinion, setOpinion] = React.useState(creationData.opinion || false);
 
   if (!account.loggedIn) return null;
 
@@ -55,7 +55,11 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   return (
     <View style={articleStyles.formContainer}>
       <Formik
-        initialValues={{ title: '', summary: '', file: null }}
+        initialValues={{
+          title: creationData.title || '',
+          summary: creationData.summary || '',
+          file: creationData.image?.image || null,
+        }}
         validationSchema={MetaSchema}
         onSubmit={({ title, summary, file }) => {
           trackEvent('articleadd:page-tags');

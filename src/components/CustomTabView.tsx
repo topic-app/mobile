@@ -32,7 +32,7 @@ const CustomTabView: React.FC<Props> = ({
   hideTabBar = false,
   hideTabIndicator = false,
   initialTab = 0,
-  preloadDistance,
+  preloadDistance = 0,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -50,7 +50,7 @@ const CustomTabView: React.FC<Props> = ({
 
   pages[index]?.onVisible?.();
 
-  const renderScene = ({ route }: { route: PageType }) => {
+  const renderScene = ({ route }: { route: Route }) => {
     return pages.find((p) => p.key === route.key)!.component;
   };
 
@@ -73,7 +73,7 @@ const CustomTabView: React.FC<Props> = ({
       );
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <TabView
         navigationState={{ index, routes: pages }}
         renderScene={renderScene}
@@ -83,6 +83,8 @@ const CustomTabView: React.FC<Props> = ({
         renderTabBar={renderTabBar}
         lazy={preloadDistance !== null}
         lazyPreloadDistance={preloadDistance}
+        renderLazyPlaceholder={() => null}
+        tabBarPosition="top"
       />
     </View>
   );

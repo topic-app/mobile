@@ -65,6 +65,7 @@ export type AccountUser = User & { verification?: { verified?: boolean } };
 
 export type AccountInfo = {
   accountId: string;
+  device?: string;
   accountToken: string;
   accountTokenExpiry: string;
   user: AccountUser;
@@ -196,6 +197,7 @@ export type Preferences = {
   showDownloadBanner: boolean;
   completedFeedback: string[];
   reduxVersion: number;
+  advancedMode: boolean;
 };
 
 export type PreferencesState = Preferences;

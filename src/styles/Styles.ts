@@ -109,12 +109,15 @@ function getStyles(theme: Theme) {
       borderTopRightRadius: 10,
       maxHeight: '90%',
     },
-    centeredPage: {
-      maxWidth: 800,
-      alignSelf: 'center',
-      height: '100%',
-      width: '100%',
-    },
+    centeredPage: Platform.select({
+      web: {
+        maxWidth: 800,
+        alignSelf: 'center',
+        height: '100%',
+        width: '100%',
+      },
+      default: { flex: 1 },
+    }),
   });
 }
 

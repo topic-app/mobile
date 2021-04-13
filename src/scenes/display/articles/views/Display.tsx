@@ -33,7 +33,7 @@ import {
   articleDeverify,
 } from '@redux/actions/apiActions/articles';
 import { commentAdd, commentReport } from '@redux/actions/apiActions/comments';
-import { addArticleRead } from '@redux/actions/contentData/articles';
+import { addArticleRead, updateArticleCreationData } from '@redux/actions/contentData/articles';
 import getStyles from '@styles/Styles';
 import {
   Article,
@@ -644,6 +644,32 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         }),
       );
 
+  const modifyArticle = () => {
+    if (!article || article.preload) return;
+    updateArticleCreationData({
+      editing: true,
+      id: article._id,
+      group: article.group._id,
+      location: {
+        schools: article.location.schools.map((s) => s._id),
+        departments: article.location.departments.map((d) => d._id),
+        global: article.location.global,
+      },
+      title: article.title,
+      summary: article.summary,
+      image: article.image,
+      opinion: article.opinion,
+      tags: article.tags.map((t) => t._id),
+      tagData: article.tags,
+      parser: article.content?.parser,
+      data: article.content?.data,
+    });
+    navigation.navigate('Main', {
+      screen: 'Add',
+      params: { screen: 'Article', params: { screen: 'Add' } },
+    });
+  };
+
   const deverifyArticle = () =>
     articleDeverify(id)
       .then(() => {
@@ -669,7 +695,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   React.useEffect(() => {
     fetch();
     updateComments('initial', { parentId: id });
-  }, [null]);
+  }, [id]);
 
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
   const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
@@ -683,29 +709,14 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   const scrollY = new Animated.Value(0);
 
-  const title =
-    route.params.title ||
-    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-      ? 'Actus - Hors ligne'
-      : verification
-      ? 'Actus - modération'
-      : 'Actus');
-  const subtitle =
-    route.params.title &&
-    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-      ? 'Actus - Hors ligne'
-      : verification
-      ? 'Actus - modération'
-      : 'Actus');
-
   if (!article) {
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
         <AnimatingHeader
           value={scrollY}
-          title={Platform.OS === 'ios' ? '' : title}
-          subtitle={Platform.OS === 'ios' ? 'Actus' : subtitle}
+          title={Platform.OS === 'ios' ? '' : 'Actus'}
+          subtitle={Platform.OS === 'ios' ? 'Actus' : ''}
         />
         {reqState.articles.info.error && (
           <ErrorMessage
@@ -726,6 +737,17 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
       </View>
     );
   }
+
+  const { title } = article;
+  const subtitle =
+    useLists && lists.some((l) => l.items.some((a) => a._id === id))
+      ? 'Actus · Hors-ligne'
+      : verification
+      ? 'Actus · Modération'
+      : 'Actus';
+
+  navigation.setOptions({ title });
+
   return (
     <View style={styles.page}>
       <AnimatingHeader
@@ -763,6 +785,20 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               setArticleReportModalVisible(true);
             },
           },
+          ...(checkPermission(account, {
+            permission: Permissions.ARTICLE_MODIFY,
+            scope: { groups: [article?.group?._id || ''] },
+          })
+            ? [
+                {
+                  title: 'Modifier',
+                  onPress: () => {
+                    trackEvent('articledisplay:modify', { props: { button: 'header' } });
+                    modifyArticle();
+                  },
+                },
+              ]
+            : []),
           ...(checkPermission(account, {
             permission: Permissions.ARTICLE_DELETE,
             scope: { groups: [article?.group?._id || ''] },

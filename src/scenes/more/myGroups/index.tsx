@@ -23,7 +23,7 @@ const Stack = createNativeStackNavigator<MyGroupsStackParams>();
 function MyGroupsStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="List" component={MyGroupsList} />
+      <Stack.Screen name="List" component={MyGroupsList} options={{ title: 'Mes groupes' }} />
     </Stack.Navigator>
   );
 }

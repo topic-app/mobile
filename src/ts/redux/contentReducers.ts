@@ -1,4 +1,4 @@
-import { Article, Event, EventPlace, Image, ProgramEntry, Address } from '../api';
+import { Article, Event, EventPlace, Image, ProgramEntry, Address, TagPreload } from '../api';
 import { FullClearAction } from './actions';
 import { ApiAction } from './apiReducers';
 
@@ -73,6 +73,9 @@ export type ArticleCreationData = {
   tags?: string[];
   parser?: 'plaintext' | 'markdown';
   data?: string;
+  tagData?: TagPreload[]; // For the editing
+  editing?: boolean;
+  id?: string;
 };
 
 export type ArticlesContentState = {
@@ -211,7 +214,7 @@ export type EventCreationDataPlace =
       associatedSchool?: undefined;
       link?: undefined;
     }
-    | {
+  | {
       id?: string;
       type: 'online';
       address?: undefined;
@@ -249,8 +252,11 @@ export type EventCreationData = {
     comments?: boolean;
   };
   tags?: string[];
+  tagData?: TagPreload[]; // For the editing
   image?: Image;
   program?: ProgramEntry[];
+  editing?: boolean;
+  id?: string;
 };
 
 export type EventsContentState = {

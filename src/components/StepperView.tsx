@@ -124,7 +124,7 @@ const StepperView: React.FC<Props> = ({
 
   const initialLayout = { width: Dimensions.get('window').width };
 
-  const renderScene = ({ route }: { route: PageType }) => {
+  const renderScene = ({ route }: { route: Route }) => {
     const i = pages.findIndex((page) => page.key === route.key);
 
     return pages[i].component({
@@ -171,11 +171,13 @@ const StepperView: React.FC<Props> = ({
       <TabView
         lazy={preloadDistance !== null}
         lazyPreloadDistance={preloadDistance}
+        renderLazyPlaceholder={() => null}
         swipeEnabled={swipeEnabled}
         navigationState={{ index, routes: pages }}
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={initialLayout}
+        tabBarPosition="top"
         keyboardDismissMode={keyboardDismissMode}
         renderTabBar={!hideTabBar ? StepperTabBar : () => null}
       />

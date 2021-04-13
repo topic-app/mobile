@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { AnySchool, SchoolType } from '@ts/types';
 
 /**
@@ -15,15 +13,16 @@ import { AnySchool, SchoolType } from '@ts/types';
  *
  * const types = Format.schoolTypes(school.types);
  *
- * console.log(types); // 'Collège, lycée et classes préparatoires'
+ * console.log(types); // 'Collège, lycée et CPGE'
  * ```
  */
 export function schoolTypes(types: SchoolType[]): string {
-  const sortedTypes = ['college', 'lycee', 'prepa', 'other'];
+  const sortedTypes = ['college', 'lycee', 'prepa', 'sup', 'other'];
   const mappedTypes = {
     college: 'collège',
     lycee: 'lycée',
-    prepa: 'classes préparatoires',
+    prepa: 'CPGE',
+    sup: 'supérieur',
     other: 'autre',
   };
   const newTypes = types
@@ -34,10 +33,11 @@ export function schoolTypes(types: SchoolType[]): string {
     return '';
   }
   if (newTypes.length === 1) {
-    return _.capitalize(newTypes[0]);
+    return newTypes[0].charAt(0).toUpperCase() + newTypes[0].slice(1);
   }
   const lastType = newTypes.pop();
-  return _.capitalize(`${newTypes.join(', ')} et ${lastType}`);
+  const str = `${newTypes.join(', ')} et ${lastType}`;
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**

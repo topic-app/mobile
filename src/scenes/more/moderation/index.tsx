@@ -23,7 +23,7 @@ const Stack = createNativeStackNavigator<ModerationStackParams>();
 function ModerationStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="List" component={ModerationList} />
+      <Stack.Screen name="List" component={ModerationList} options={{ title: 'Modération' }} />
     </Stack.Navigator>
   );
 }

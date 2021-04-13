@@ -1,7 +1,14 @@
 import { useFocusEffect } from '@react-navigation/core';
 import React from 'react';
-import { View, BackHandler, useWindowDimensions, Platform, ScrollView } from 'react-native';
-import { ActivityIndicator, Divider, Text } from 'react-native-paper';
+import {
+  View,
+  BackHandler,
+  useWindowDimensions,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import { Divider, Text } from 'react-native-paper';
 import Animated, { call, cond, greaterThan, lessThan, useCode } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -15,15 +22,15 @@ import {
   PlatformBackButton,
 } from '@components/index';
 import { updateMapLocations } from '@redux/actions/api/places';
-import { MapLocation, PlaceRequestState, State } from '@ts/types';
+import { GroupsState, MapLocation, PlaceRequestState, State } from '@ts/types';
 import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
 
 import getExplorerStyles from '../styles/Styles';
 import { getStrings } from '../utils/getStrings';
 import type { MapMarkerDataType } from '../views/Map';
 
-const bottomSheetPortraitSnapPoints = [0, '21%', '100%'];
-const bottomSheetLandscapeSnapPoints = [0, '21%', '100%'];
+const bottomSheetPortraitSnapPoints = [0, '40%', '100%'];
+const bottomSheetLandscapeSnapPoints = [0, '60%', '100%'];
 
 type LocationBottomSheetProps = {
   bottomSheetRef: React.RefObject<BottomSheetRef>;
@@ -48,7 +55,11 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
 
   const insets = useSafeAreaInsets();
   // 54 is the height of the bottom Tabbar
-  const offset = Platform.OS !== 'web' ? 54 : 0;
+  const offset = Platform.select({
+    android: 54,
+    ios: 138, // To take into account the bottom bar
+    default: 0,
+  });
   const minHeight = useWindowDimensions().height + insets.top - offset;
 
   // Search for desired place in places
@@ -107,10 +118,10 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
     return cond(
       lessThan(bottomSheetY, 0.1),
       call([], () => {
-        if (!extended) extended = true;
+        extended = true;
       }),
       call([], () => {
-        if (extended) extended = false;
+        extended = false;
       }),
     );
   }, [bottomSheetY]);
@@ -169,7 +180,13 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
           </View>
         </View>
         {place && !reqState.map.loading && !reqState.map.error ? (
-          <ScrollView>
+          <Animated.ScrollView
+            bounces={false}
+            style={{ flex: Platform.OS === 'ios' ? 1 : 0 }}
+            scrollEnabled={
+              Platform.OS === 'ios' ? cond(lessThan(bottomSheetY, 0.1), true, false) : true
+            }
+          >
             {/* HACK but whatever */}
             <Divider />
             {addresses.map((address) => (
@@ -194,11 +211,14 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
               />
             ) : null}
             {place.type === 'school' ? (
-              <ContentTabView searchParams={{ schools: [place.id] }} />
+              <ContentTabView
+                searchParams={{ schools: [place.id] }}
+                types={['articles', 'events', 'groups']}
+              />
             ) : null}
-          </ScrollView>
+          </Animated.ScrollView>
         ) : (
-          <ActivityIndicator style={{ transform: [{ scale: 1.5 }] }} />
+          <ActivityIndicator size="large" color={colors.primary} />
         )}
       </View>
     );

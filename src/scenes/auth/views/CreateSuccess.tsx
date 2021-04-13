@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, View, FlatList, Alert } from 'react-native';
+import { Platform, View, FlatList } from 'react-native';
 import { Text, Button, Divider, Snackbar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -9,7 +9,7 @@ import { fetchAccount } from '@redux/actions/data/account';
 import { resendVerification } from '@redux/actions/data/profile';
 import getStyles from '@styles/Styles';
 import { State, LocationList, GroupPreload, Group } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, logger, Alert } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';

@@ -43,10 +43,16 @@ const exampleNotifications = [
         {
           name: 'Ajouter au calendrier',
           action: "/event",
-          important: true,
+          icon: 'event',
+          color: 'blue',
+          actions: [
+            {
+              name: 'Ajouter au calendrier',
+              action: "euh, demande à alex ce qu'est action :)",
+              important: true,
+            },
+          ],
         },
-      ],
-    },
   },
 ];
 

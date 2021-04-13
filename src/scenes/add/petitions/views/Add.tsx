@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+/* eslint-disable */
 import ViewPager from '@react-native-community/viewpager';
 import React from 'react';
 import { connect } from 'react-redux';

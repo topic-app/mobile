@@ -69,6 +69,12 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
           <Icon name="playlist-plus" size={20} />
         </FullscreenIllustration>
       );
+    } else if (sectionKey === 'following') {
+      return (
+        <FullscreenIllustration illustration="article" style={{ height }}>
+          Vous verrez içi les articles des groupes et utilisateurs que vous suivez
+        </FullscreenIllustration>
+      );
     } else {
       return (
         <FullscreenIllustration illustration="article" style={{ height }}>

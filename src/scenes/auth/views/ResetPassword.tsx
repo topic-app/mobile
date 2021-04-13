@@ -6,7 +6,6 @@ import {
   Platform,
   TextInput as RNTextInput,
   KeyboardAvoidingView,
-  Alert,
 } from 'react-native';
 import { Text, Button, ProgressBar, TextInput, HelperText, Card } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -18,12 +17,11 @@ import {
   PlatformBackButton,
   Illustration,
   SafeAreaView,
-  PlatformTouchable,
 } from '@components/index';
 import { requestPasswordReset } from '@redux/actions/data/account';
 import getStyles from '@styles/Styles';
 import { AccountRequestState, State } from '@ts/types';
-import { useTheme, logger } from '@utils/index';
+import { useTheme, Alert } from '@utils/index';
 
 import type { AuthScreenNavigationProp } from '../index';
 import getAuthStyles from '../styles/Styles';

@@ -281,7 +281,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
       <Drawer.Section>
         <Drawer.Item
           label="Paramètres"
-          icon="settings-outline"
+          icon="cog-outline"
           onPress={() => {
             navigation.closeDrawer();
             navigation.navigate('Main', {

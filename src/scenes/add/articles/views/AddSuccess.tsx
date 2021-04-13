@@ -43,7 +43,7 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
 
   const [approved, setApproved] = React.useState(false);
 
-  const { id, creationData } = route?.params || {};
+  const { id, creationData, editing } = route?.params || {};
 
   const groupName = account?.groups?.find((g) => g._id === creationData?.group)?.name;
 
@@ -75,9 +75,9 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
         >
           <Illustration name="auth-register-success" height={200} width={200} />
           <Text style={authStyles.title}>
-            Article {approved ? 'publié' : 'en attente de modération'}
+            Article {editing ? 'Modifié' : approved ? 'publié' : 'en attente de modération'}
           </Text>
-          {!approved && (
+          {!approved && !editing && (
             <View>
               <Text style={{ marginTop: 40 }}>
                 Votre article doit être approuvé par un administrateur de {groupName}.
@@ -89,6 +89,7 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
             permission: Permissions.ARTICLE_VERIFICATION_APPROVE,
             scope: { groups: [creationData?.group || ''] },
           }) &&
+            !editing &&
             (approved ? (
               <Text>Article approuvé par @{account?.accountInfo?.user?.info?.username}</Text>
             ) : (

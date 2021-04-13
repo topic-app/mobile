@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator();
 function LocationDisplayStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Display" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Display" component={LocationDisplay} />
+      <Stack.Screen name="Display" component={LocationDisplay} options={{ title: 'Localisation' }} />
     </Stack.Navigator>
   );
 }

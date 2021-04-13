@@ -37,12 +37,7 @@ const Stack = createNativeStackNavigator<MainStackParams>();
 
 function MainNavigator() {
   return (
-    <Stack.Navigator
-      initialRouteName="Home1"
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
+    <Stack.Navigator initialRouteName="Home1" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
       <Stack.Screen name="Configure" component={ConfigureStackNavigator} />
       <Stack.Screen name="Params" component={ParamsStackNavigator} />
@@ -52,7 +47,7 @@ function MainNavigator() {
       <Stack.Screen name="Pages" component={PagesStackNavigator} />
       <Stack.Screen name="History" component={HistoryStackNavigator} />
       <Stack.Screen name="Home1" component={HomeOneNavigator} />
-      <Stack.Screen name="NotFound" component={NotFound} />
+      <Stack.Screen name="NotFound" component={NotFound} options={{ title: 'Page inexistente' }} />
     </Stack.Navigator>
   );
 }

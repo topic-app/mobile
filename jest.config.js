@@ -13,6 +13,7 @@ module.exports = {
       '|@react-native-community' +
       '|expo(nent)?' +
       '|@expo(nent)?/.*' +
+      '|@react-native/.*' +
       '|@expo-google-fonts/.*' +
       '|react-navigation' +
       '|@react-navigation/.*' +

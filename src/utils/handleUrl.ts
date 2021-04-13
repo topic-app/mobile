@@ -144,6 +144,9 @@ function handleUrl(
     trusted: false,
   },
 ) {
+  if (!(targetUrl.startsWith('http://') || targetUrl.startsWith('https://'))) {
+    return Alert.alert('Lien invalide');
+  } // Only allow http and https links
   const target = decomposeLink(targetUrl);
   const { allowedSites } = Config.content;
   if (
@@ -171,7 +174,7 @@ function handleUrl(
           onPress: () => openUrl(targetUrl, customTab),
         },
       ],
-      { cancelable: false },
+      { cancelable: true },
     );
   }
 }

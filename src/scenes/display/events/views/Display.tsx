@@ -152,7 +152,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   React.useEffect(() => {
     fetch();
     updateComments('initial', { parentId: id });
-  }, [null]);
+  }, [id]);
 
   const scrollViewRef = React.createRef<ScrollView>();
 
@@ -224,21 +224,6 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         }),
       );
 
-  const title =
-    route.params.title ||
-    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-      ? 'Évènements - Hors ligne'
-      : verification
-      ? 'Évènements - modération'
-      : 'Évènements');
-  const subtitle =
-    route.params.title &&
-    (useLists && lists?.some((l) => l.items?.some((i) => i._id === id))
-      ? 'Évènements - Hors ligne'
-      : verification
-      ? 'Évènements - modération'
-      : 'Évènements');
-
   if (!event) {
     // This is when event has not been loaded in list, so we have absolutely no info
     return (
@@ -246,8 +231,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         <AnimatingHeader
           hideBack={dual}
           value={scrollY}
-          title={Platform.OS === 'ios' ? '' : title}
-          subtitle={Platform.OS === 'ios' ? 'Évènements' : subtitle}
+          title={Platform.OS === 'ios' ? '' : 'Évènement'}
+          subtitle={Platform.OS === 'ios' ? 'Évènements' : ''}
         />
         {reqState.events.info.error && (
           <ErrorMessage
@@ -269,6 +254,16 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
     );
   }
 
+  const { title } = event;
+  const subtitle =
+    useLists && lists.some((l) => l.items.some((a) => a._id === id))
+      ? 'Évènement · Hors-ligne'
+      : verification
+      ? 'Évènement · Modération'
+      : 'Évènement';
+
+  navigation.setOptions({ title });
+
   return (
     <View style={styles.page}>
       <AnimatingHeader
@@ -286,76 +281,72 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                 },
               ]
         }
-        overflow={
-          verification
-            ? undefined
-            : [
+        overflow={[
+          {
+            title: 'Partager',
+            onPress: () => {
+              if (!event) return;
+              shareContent({
+                title: event.title,
+                group: event.group?.displayName,
+                type: 'evenements',
+                id: event._id,
+              });
+            },
+          },
+          {
+            title: 'Signaler',
+            onPress: () => setArticleReportModalVisible(true),
+          },
+          ...(checkPermission(account, {
+            permission: Permissions.EVENT_DELETE,
+            scope: { groups: [event?.group?._id] },
+          })
+            ? [
                 {
-                  title: 'Partager',
-                  onPress: () => {
-                    if (!event) return;
-                    shareContent({
-                      title: event.title,
-                      group: event.group?.displayName,
-                      type: 'evenements',
-                      id: event._id,
-                    });
-                  },
+                  title: 'Supprimer',
+                  onPress: () =>
+                    Alert.alert(
+                      'Supprimer cette évènement ?',
+                      'Les autres administrateurs du groupe seront notifiés.',
+                      [
+                        { text: 'Annuler' },
+                        {
+                          text: 'Supprimer',
+                          onPress: deleteEvent,
+                        },
+                      ],
+                      { cancelable: true },
+                    ),
                 },
-                {
-                  title: 'Signaler',
-                  onPress: () => setArticleReportModalVisible(true),
-                },
-                ...(checkPermission(account, {
-                  permission: Permissions.EVENT_DELETE,
-                  scope: { groups: [event?.group?._id] },
-                })
-                  ? [
-                      {
-                        title: 'Supprimer',
-                        onPress: () =>
-                          Alert.alert(
-                            'Supprimer cette évènement ?',
-                            'Les autres administrateurs du groupe seront notifiés.',
-                            [
-                              { text: 'Annuler' },
-                              {
-                                text: 'Supprimer',
-                                onPress: deleteEvent,
-                              },
-                            ],
-                            { cancelable: true },
-                          ),
-                      },
-                    ]
-                  : []),
-                ...(checkPermission(account, {
-                  permission: Permissions.EVENT_VERIFICATION_DEVERIFY,
-                  scope: { groups: [event?.group?._id || ''] },
-                })
-                  ? [
-                      {
-                        title: 'Dévérifier',
-                        onPress: () =>
-                          Alert.alert(
-                            'Remettre cet article en modération ?',
-                            'Les autres administrateurs du groupe seront notifiés.',
-                            [
-                              { text: 'Annuler' },
-                              {
-                                text: 'Dévérifier',
-                                onPress: () => {
-                                  deverifyEvent();
-                                },
-                              },
-                            ],
-                            { cancelable: true },
-                          ),
-                      },
-                    ]
-                  : []),
               ]
-        }
+            : []),
+          ...(checkPermission(account, {
+            permission: Permissions.EVENT_VERIFICATION_DEVERIFY,
+            scope: { groups: [event?.group?._id || ''] },
+          })
+            ? [
+                {
+                  title: 'Dévérifier',
+                  onPress: () =>
+                    Alert.alert(
+                      'Remettre cet article en modération ?',
+                      'Les autres administrateurs du groupe seront notifiés.',
+                      [
+                        { text: 'Annuler' },
+                        {
+                          text: 'Dévérifier',
+                          onPress: () => {
+                            deverifyEvent();
+                          },
+                        },
+                      ],
+                      { cancelable: true },
+                    ),
+                },
+              ]
+            : []),
+        ]}
       >
         {reqState.events.info.error && (
           <ErrorMessage

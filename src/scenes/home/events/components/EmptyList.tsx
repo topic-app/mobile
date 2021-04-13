@@ -33,7 +33,7 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
     (group === 'quicks' && reqState.search?.success) ||
     group === 'lists'
   ) {
-    if (sectionKey === 'upcoming' || sectionKey === 'passed') {
+    if (sectionKey === 'passed') {
       return (
         <FullscreenIllustration
           style={{ height }}
@@ -48,7 +48,24 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
             })
           }
         >
-          Aucun évènement {sectionKey === 'upcoming' && 'prévu '} pour cette localisation
+          Aucun évènement pour cette localisation
+        </FullscreenIllustration>
+      );
+    } else if (sectionKey === 'upcoming') {
+      return (
+        <FullscreenIllustration
+          style={{ height }}
+          illustration="event"
+          buttonLabel="Évènements finis"
+          buttonOnPress={() => changeTab('passed')}
+        >
+          Aucun évènement prévu
+        </FullscreenIllustration>
+      );
+    } else if (sectionKey === 'following') {
+      return (
+        <FullscreenIllustration illustration="event" style={{ height }}>
+          Vous verrez içi les évènements des groupes et utilisateurs que vous suivez
         </FullscreenIllustration>
       );
     } else if (group === 'lists') {
