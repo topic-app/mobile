@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import getStyles from '@styles/navigators';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleList from './articles/List';
+import ArticleList from './articles/ArticleList';
 import EventList from './events/List';
 import ExplorerList from './explorer/List';
 

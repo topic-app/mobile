@@ -51,6 +51,7 @@ const common = {
   fonts,
   roundness: Platform.OS === 'ios' ? 15 : 5,
   colors: {
+    accent: '#592989',
     statusBar: 'transparent',
     primary: '#592989',
     primaryLighter: '#6a31a3',

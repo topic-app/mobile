@@ -9,6 +9,7 @@ import {
   StepperView,
   PlatformBackButton,
   StepperViewPageProps,
+  PageContainer,
 } from '@components';
 import getStyles from '@styles/global';
 import { ArticleCreationData, State } from '@ts/types';
@@ -36,7 +37,7 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation, creationData }) => 
   React.useEffect(() => trackEvent('articleadd:page-group'), []);
 
   return (
-    <View style={styles.page}>
+    <PageContainer>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
         <KeyboardAvoidingView
@@ -102,7 +103,7 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation, creationData }) => 
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </View>
+    </PageContainer>
   );
 };
 

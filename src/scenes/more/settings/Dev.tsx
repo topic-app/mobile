@@ -4,6 +4,7 @@ import { List, Avatar, Divider, Switch, Text, useTheme } from 'react-native-pape
 import { connect } from 'react-redux';
 
 import { Illustration, Banner, PageContainer } from '@components';
+import { SettingToggle } from '@components/Settings';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import Store from '@redux/store';
 import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
@@ -85,52 +86,29 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
       </View>
       <List.Section>
         <List.Subheader>Données Analytiques</List.Subheader>
-        <Divider />
-        <List.Item
+        <SettingToggle
           title="Envoyer des données analytiques anonymes"
           description="Envoie des informations sur vos actions dans l'application et des informations sur l'appareil, pour nous aider à résoudre des bugs et améliorer l'application. Ces données sont anonymisées et ne contienent pas d'informations sur l'historique de lecture ou sur votre compte."
           onPress={() => updatePrefs({ analytics: !preferences.analytics })}
-          right={() => (
-            <Switch
-              color={colors.primary}
-              value={preferences.analytics}
-              onValueChange={(data) => updatePrefs({ analytics: data })}
-            />
-          )}
-          descriptionNumberOfLines={10}
-          style={styles.listItem}
+          value={preferences.analytics}
         />
         {Platform.OS !== 'web' && (
-          <List.Item
+          <SettingToggle
             title="Envoyer des rapports de plantage"
             description="Envoie des informations sur les plantages afin de nous aider à les résoudre"
-            onPress={() => toggleCrashlytics()}
-            right={() => (
-              <Switch
-                color={colors.primary}
-                value={crashlyticsEnabled}
-                onValueChange={toggleCrashlytics}
-              />
-            )}
+            value={crashlyticsEnabled}
+            onPress={toggleCrashlytics}
             descriptionNumberOfLines={10}
-            style={styles.listItem}
           />
         )}
       </List.Section>
       <Divider style={{ marginTop: 50 }} />
       <List.Section>
-        <List.Item
+        <SettingToggle
           title="Mode développeur"
           description="Options utiles pour le déboguage et le développement"
-          right={() => (
-            <Switch
-              color={colors.primary}
-              value={preferences.advancedMode}
-              onValueChange={toggleAdvancedMode}
-            />
-          )}
+          value={preferences.advancedMode}
           onPress={toggleAdvancedMode}
-          style={styles.listItem}
         />
       </List.Section>
       {preferences.advancedMode && (
@@ -152,20 +130,12 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
             </Banner>
           </View>
           <List.Section>
-            <List.Item
+            <SettingToggle
               title="Utiliser le serveur de développement"
               description="Pour pouvoir publier des contenus de test"
-              right={() => (
-                <Switch
-                  color={colors.primary}
-                  value={preferences.useDevServer}
-                  onValueChange={toggleDevServer}
-                />
-              )}
+              value={preferences.useDevServer}
               onPress={toggleDevServer}
-              style={styles.listItem}
             />
-
             <List.Item
               title="Montrer l'écran de bienvenue"
               description="Cette option n'efface aucune donnée"

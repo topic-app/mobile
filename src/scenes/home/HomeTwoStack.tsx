@@ -3,7 +3,7 @@ import { createStackNavigator, StackNavigationProp } from '@react-navigation/sta
 import React from 'react';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleList from './articles/List';
+import ArticleList from './articles/ArticleList';
 import EventList from './events/List';
 import ListScreen from './list/List';
 

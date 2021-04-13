@@ -5,7 +5,7 @@ import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleList from './articles/List';
+import ArticleList from './articles/ArticleList';
 import EventList from './events/List';
 import ExplorerList from './explorer/List';
 import ListScreen from './list/List';

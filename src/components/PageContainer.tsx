@@ -27,8 +27,15 @@ const PageContainer: React.FC<Props> = ({
 }) => {
   const styles = getStyles(useTheme());
 
-  let component = scroll ? <ScrollView>{children}</ScrollView> : children;
-  component = centered ? <View style={styles.centeredPage}>{component}</View> : component;
+  let component = children;
+
+  if (scroll) {
+    component = <ScrollView>{children}</ScrollView>;
+  }
+
+  if (centered) {
+    component = <View style={styles.centeredPage}>{component}</View>;
+  }
 
   return (
     <View style={styles.page}>
