@@ -257,7 +257,14 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
       {checkPermission(account, {
         permission: Permissions.EVENT_ADD,
         scope: {},
-      }) && <FAB icon="plus" onPress={onEventCreatePressed} style={styles.bottomRightFab} />}
+      }) && (
+        <FAB
+          icon="plus"
+          onPress={onEventCreatePressed}
+          style={styles.bottomRightFab}
+          accessibilityLabel="Créer un évènement"
+        />
+      )}
     </View>
   );
 };

@@ -94,6 +94,11 @@ const SettingsTheme: React.FC<SettingsThemeProps> = ({ preferences }) => {
         renderItem={({ item }) => (
           <List.Item
             title={item.name}
+            accessibilityLabel={
+              item.egg
+                ? 'Bravo ! Vous avez découvert l’easter egg dans les thèmes. Et puisque vous utilisez un lecteur d’écran, voila un deuxième easter egg.'
+                : item.name
+            }
             left={() =>
               Platform.OS !== 'ios' && (
                 <RadioButton

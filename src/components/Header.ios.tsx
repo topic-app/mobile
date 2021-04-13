@@ -21,15 +21,16 @@ const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) =
 type BackButtonProps = {
   onPress: () => void;
   previous?: string;
+  accessibilityLabel?: string;
 };
 
-const BackButton: React.FC<BackButtonProps> = ({ onPress, previous }) => {
+const BackButton: React.FC<BackButtonProps> = ({ onPress, previous, accessibilityLabel }) => {
   const theme = useTheme();
   const backColor = theme.colors.appBarButton;
   return (
     <View>
       <TranslucentStatusBar />
-      <PlatformTouchable onPress={onPress}>
+      <PlatformTouchable onPress={onPress} accessibilityLabel={accessibilityLabel}>
         <View
           style={{
             flexDirection: 'row',
@@ -54,6 +55,7 @@ type OverflowItem = {
 
 type ActionItem = {
   icon: string;
+  label: string;
   onPress: () => void;
 };
 
@@ -88,9 +90,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   const navigation = useNavigation();
 
   let primaryAction;
-  if (primary) {
-    primaryAction = <BackButton onPress={primary} previous={subtitle} />;
-  } else if (home) {
+  if (home && !primary) {
     primaryAction = !iosLeftAction ? null : (
       <PlatformTouchable onPress={iosLeftAction.onPress}>
         <Text style={{ fontSize: 20, paddingLeft: 16, color: colors.appBarButton }}>
@@ -99,7 +99,13 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
       </PlatformTouchable>
     );
   } else {
-    primaryAction = <BackButton onPress={navigation?.goBack} previous={subtitle} />;
+    primaryAction = (
+      <BackButton
+        onPress={navigation?.goBack}
+        previous={subtitle}
+        accessibilityLabel={subtitle ? `Retour ${subtitle}` : 'Retour'}
+      />
+    );
   }
 
   const [menuVisible, setMenuVisible] = React.useState(false);
@@ -110,6 +116,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
       icon={item.icon}
       onPress={item.onPress}
       color={colors.appBarButton}
+      accessibilityLabel={item.label}
     />
   ));
 
@@ -122,6 +129,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
           icon="dots-vertical"
           onPress={() => setMenuVisible(true)}
           color={colors.appBarButton}
+          accessibilityLabel="Options supplémentaires"
         />
       }
       statusBarHeight={StatusBar.currentHeight}
