@@ -14,8 +14,6 @@ export const SettingToggle: React.FC<SettingToggleProps> = ({
 }) => {
   return (
     <List.Item
-      title="Envoyer des rapports de plantage"
-      description="Envoie des informations sur les plantages afin de nous aider à les résoudre"
       onPress={() => onPress()}
       right={() => <Switch value={value} disabled={disabled} onValueChange={() => onPress()} />}
       descriptionNumberOfLines={3}
