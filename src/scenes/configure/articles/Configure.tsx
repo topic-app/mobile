@@ -201,6 +201,7 @@ function ArticleLists({
                             <View style={{ flexDirection: 'row' }}>
                               <Switch
                                 disabled={item.disable}
+                                accessibilityLabel={item.name}
                                 value={enabled && !item.disable}
                                 color={colors.primary}
                                 onValueChange={(val) =>
@@ -276,6 +277,7 @@ function ArticleLists({
                                   setEditingList(item);
                                   setEditModalVisible(true);
                                 }}
+                                accessibilityLabel="Modifier"
                               >
                                 <List.Icon icon="pencil" />
                               </PlatformTouchable>
@@ -285,6 +287,7 @@ function ArticleLists({
                                 disabled={
                                   lists.length === 1 && articlePrefs.categories?.length === 0
                                 }
+                                accessibilityLabel="Supprimer"
                                 onPress={() => {
                                   Alert.alert(
                                     `Voulez-vous vraiment supprimer la liste ${item.name} ?`,
@@ -412,6 +415,7 @@ function ArticleLists({
                                 onPress={() => {
                                   deleteArticleQuick(item.id);
                                 }}
+                                accessibilityLabel="Supprimer"
                               >
                                 <List.Icon icon="delete" />
                               </PlatformTouchable>

@@ -256,7 +256,14 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
       {checkPermission(account, {
         permission: Permissions.ARTICLE_ADD,
         scope: {},
-      }) && <FAB icon="pencil" onPress={onArticleCreatePressed} style={styles.bottomRightFab} />}
+      }) && (
+        <FAB
+          icon="pencil"
+          onPress={onArticleCreatePressed}
+          style={styles.bottomRightFab}
+          accessibilityLabel="Écrire un article"
+        />
+      )}
 
       <AddToListModal
         visible={addToListModalVisible}

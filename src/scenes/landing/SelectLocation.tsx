@@ -531,7 +531,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
           <ChipAddList
             setList={({ key }) => removeLocation(key)}
             data={selectedLocations.map((loc) => ({ title: loc.name, key: loc.id, ...loc }))}
-            chipProps={{ icon: 'close', rightAction: true }}
+            chipProps={{ icon: 'close', rightAction: true, actionLabel: 'Supprimer' }}
             style={{ marginBottom: 0 }}
           />
         </CollapsibleView>
