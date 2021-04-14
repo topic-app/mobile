@@ -78,6 +78,11 @@ const SettingsAppearance: React.FC<SettingsAppearance> = ({ preferences }) => {
         {visibleThemes.map(({ name, value }) => (
           <SettingRadio
             key={name}
+            accessibilityLabel={
+              theme.egg
+                ? 'Bravo ! Vous avez découvert l’easter egg dans les thèmes. Et puisque vous utilisez un lecteur d’écran, voila un deuxième easter egg.'
+                : theme.name
+            }
             title={name}
             checked={value === preferences.theme && !preferences.useSystemTheme}
             onPress={() => {
