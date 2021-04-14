@@ -198,6 +198,7 @@ function EventConfigure({
                               <Switch
                                 disabled={item.disable}
                                 value={enabled && !item.disable}
+                                accessibilityLabel={item.name}
                                 color={colors.primary}
                                 onValueChange={(val) =>
                                   val
@@ -271,6 +272,7 @@ function EventConfigure({
                                   setEditingList(item);
                                   setEditModalVisible(true);
                                 }}
+                                accessibilityLabel="Modifier"
                               >
                                 <List.Icon icon="pencil" />
                               </PlatformTouchable>
@@ -278,6 +280,7 @@ function EventConfigure({
                             <View onStartShouldSetResponder={() => true}>
                               <PlatformTouchable
                                 disabled={lists.length === 1 && eventPrefs.categories?.length === 0}
+                                accessibilityLabel="Supprimer"
                                 onPress={() => {
                                   Alert.alert(
                                     `Voulez-vous vraiment supprimer la liste ${item.name} ?`,
@@ -404,6 +407,7 @@ function EventConfigure({
                                 onPress={() => {
                                   deleteEventQuick(item.id);
                                 }}
+                                accessibilityLabel="Supprimer"
                               >
                                 <List.Icon icon="delete" />
                               </PlatformTouchable>

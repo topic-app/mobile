@@ -25,6 +25,7 @@ const CustomImage: React.FC<CustomImageProps> = ({
     return (
       <View style={Platform.OS === 'web' ? { width, height } : undefined}>
         <RNImage
+          accessibilityLabel="Image sans texte alternatif"
           source={{ uri: getImageUrl({ image, size: imageSize }) }}
           style={[styles.thumbnail, Platform.OS === 'web' ? { flex: 1 } : { width, height }, style]}
           {...props}
