@@ -1,3 +1,15 @@
+import {
+  RobotoMono_400Regular,
+  RobotoMono_400Regular_Italic,
+} from '@expo-google-fonts/roboto-mono';
+import { RobotoSlab_400Regular } from '@expo-google-fonts/roboto-slab';
+import {
+  useFonts,
+  Rubik_300Light,
+  Rubik_300Light_Italic,
+  Rubik_400Regular,
+  Rubik_400Regular_Italic,
+} from '@expo-google-fonts/rubik';
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import Color from 'color';
 import AppLoading from 'expo-app-loading';
@@ -9,36 +21,60 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Config } from '@constants';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
-import Store from '@redux/store';
 import themes from '@styles/helpers/theme';
-import { Preferences, PreferencesState, State } from '@ts/types';
+import { Preferences, State } from '@ts/types';
 import { logger } from '@utils';
+import { migrateReduxDB } from '@utils/compat/migrate';
 import { trackPageview } from '@utils/plausible';
 
 import AppNavigator from './index';
 import screens from './screens';
 
+const OpenDyslexic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Regular.otf');
+const OpenDyslexic_Italic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Italic.otf');
+
 type Props = {
   useSystemTheme: boolean;
   theme: Preferences['theme'];
+  fontFamily: Preferences['fontFamily'];
   useDevServer: boolean;
-  reduxVersion: number;
   appOpens: number;
-  preferences: PreferencesState;
 };
 
 const StoreApp: React.FC<Props> = ({
   useSystemTheme,
   theme: themeName,
   useDevServer,
-  reduxVersion,
   appOpens,
-  preferences,
+  fontFamily,
 }) => {
+  const [fontsLoaded] = useFonts({
+    'Rubik-Light': Rubik_300Light,
+    'Rubik-Light_Italic': Rubik_300Light_Italic,
+    Rubik: Rubik_400Regular,
+    Rubik_Italic: Rubik_400Regular_Italic,
+    ...(fontFamily === 'Roboto-Slab'
+      ? {
+          'Roboto-Slab': RobotoSlab_400Regular,
+        }
+      : {}),
+    ...(fontFamily === 'Roboto-Mono'
+      ? {
+          'Roboto-Mono': RobotoMono_400Regular,
+          'Roboto-Mono_Italic': RobotoMono_400Regular_Italic,
+        }
+      : {}),
+    ...(fontFamily === 'OpenDyslexic'
+      ? {
+          OpenDyslexic,
+          OpenDyslexic_Italic,
+        }
+      : {}),
+  });
+
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
     useSystemTheme ? Appearance.getColorScheme() : 'light',
   );
@@ -52,31 +88,6 @@ const StoreApp: React.FC<Props> = ({
   };
 
   React.useEffect(() => {
-    // Redux db migration
-    let currentVersion = reduxVersion;
-    if (currentVersion < Config.reduxVersion || !currentVersion) {
-      logger.warn(`StoreApp: Migrating Redux DB from ${currentVersion} to ${Config.reduxVersion}`);
-      if (!currentVersion) {
-        logger.warn('StoreApp: No current redux version, assuming version 0');
-        currentVersion = 0;
-      }
-      if (currentVersion < 2) {
-        updatePrefs({ analytics: true });
-      }
-      if (currentVersion < 3) {
-        updatePrefs({
-          completedFeedback: preferences.completedFeedback || [],
-          appOpens: preferences.appOpens || 0,
-        });
-      }
-      // Add all migration scripts here in descending order
-      updatePrefs({ reduxVersion: Config.reduxVersion });
-    }
-
-    // Increase app opens
-    updatePrefs({ appOpens: appOpens + 1 });
-
-    // Theme
     Appearance.addChangeListener(handleAppearanceChange);
     return () => {
       Appearance.removeChangeListener(handleAppearanceChange);
@@ -84,6 +95,11 @@ const StoreApp: React.FC<Props> = ({
   }, [useSystemTheme]);
 
   React.useEffect(() => {
+    migrateReduxDB();
+
+    // Increase app opens
+    updatePrefs({ appOpens: appOpens + 1 });
+
     fetchLocationData().catch((e) => logger.warn(`fetchLocationData err ${e}`));
     fetchGroups().catch((e) => logger.warn(`fetchGroups err ${e}`));
     fetchWaitingGroups().catch((e) => logger.warn(`fetchWaitingGroups err ${e}`));
@@ -124,6 +140,10 @@ const StoreApp: React.FC<Props> = ({
   const navigationRef = React.useRef<NavigationContainerRef>(null);
 
   const insets = useSafeAreaInsets();
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
 
   return (
     <PaperProvider theme={theme}>
@@ -202,9 +222,8 @@ const StoreApp: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { preferences } = state;
-  const { useSystemTheme, theme, useDevServer, reduxVersion, appOpens } = preferences;
-  return { useSystemTheme, theme, useDevServer, reduxVersion, appOpens, preferences };
+  const { useSystemTheme, theme, useDevServer, appOpens, fontFamily } = state.preferences;
+  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily };
 };
 
 export default connect(mapStateToProps)(StoreApp);

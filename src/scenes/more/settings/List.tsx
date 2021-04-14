@@ -1,10 +1,8 @@
 import React from 'react';
-import { Appearance } from 'react-native';
 import { List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { PageContainer } from '@components';
-import themes from '@styles/helpers/theme';
 import { Account, Preferences, State } from '@ts/types';
 
 import type { SettingsScreenNavigationProp } from '.';
@@ -16,7 +14,7 @@ type SettingsListProps = {
   navigation: SettingsScreenNavigationProp<'List'>;
 };
 
-const SettingsList: React.FC<SettingsListProps> = ({ navigation, preferences, account }) => {
+const SettingsList: React.FC<SettingsListProps> = ({ navigation, account }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -24,23 +22,11 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, preferences, ac
     <PageContainer headerOptions={{ title: 'Paramètres' }} centered scroll>
       <List.Section>
         <List.Item
-          title="Thème"
+          title="Apparence"
+          description="Thème, taille du texte, accessibilité"
           right={() => <List.Icon icon="chevron-right" />}
-          description={
-            preferences.useSystemTheme
-              ? `${Appearance.getColorScheme() === 'dark' ? 'Sombre' : 'Clair'} (système)`
-              : themes[preferences.theme]?.name
-          }
           left={() => <List.Icon icon="brightness-6" />}
-          onPress={() => navigation.navigate('Theme')}
-          style={styles.listItem}
-        />
-        <List.Item
-          title="Contenu"
-          description="Taille du texte, accessibilité"
-          right={() => <List.Icon icon="chevron-right" />}
-          left={() => <List.Icon icon="format-letter-case" />}
-          onPress={() => navigation.navigate('Content')}
+          onPress={() => navigation.navigate('Appearance')}
           style={styles.listItem}
         />
         <List.Item
@@ -93,8 +79,8 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, preferences, ac
 };
 
 const mapStateToProps = (state: State) => {
-  const { preferences, account } = state;
-  return { preferences, account };
+  const { account } = state;
+  return { account };
 };
 
 export default connect(mapStateToProps)(SettingsList);

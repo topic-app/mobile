@@ -4,6 +4,7 @@ export * from './PlatformComponents';
 export * from './Typography';
 export * from './ChipLists';
 export * from './Cards';
+export * from './Settings';
 
 export { default as AnimatingHeader } from './AnimatingHeader';
 export { default as Avatar } from './Avatar';

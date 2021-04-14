@@ -1,4 +1,5 @@
 {
+  "name": "Topic",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -15,7 +16,6 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@expo-google-fonts/roboto": "^0.1.0",
     "@expo-google-fonts/roboto-mono": "^0.1.0",
     "@expo-google-fonts/roboto-slab": "^0.1.0",
     "@expo-google-fonts/rubik": "^0.1.0",

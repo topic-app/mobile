@@ -4,6 +4,7 @@ import { useTheme } from 'react-native-paper';
 import { SvgProps } from 'react-native-svg';
 
 import * as Assets from '@assets/index';
+import getStyles from '@styles/global';
 import { logger } from '@utils';
 
 const illustrationList = {
@@ -152,10 +153,18 @@ const illustrations: {
 
 export type IllustrationName = keyof typeof illustrationList;
 
-type Props = SvgProps & { name: IllustrationName; label?: string };
+type Props = SvgProps & { name: IllustrationName; label?: string; centered?: boolean };
 
-const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, label, ...rest }) => {
-  const { dark } = useTheme();
+const Illustration: React.FC<Props> = ({
+  name,
+  height = 200,
+  width = 200,
+  centered = false,
+  label,
+  ...rest
+}) => {
+  const theme = useTheme();
+  const styles = getStyles(theme);
 
   if (!(name in illustrations)) {
     logger.warn(`Error: ${name} not found in list of artwork`);
@@ -163,7 +172,7 @@ const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, label,
   }
 
   const item = illustrations[name];
-  const IllustrationComponent = item.all || (dark ? item.dark : item.light);
+  const IllustrationComponent = item.all || (theme.dark ? item.dark : item.light);
 
   if (IllustrationComponent) {
     return (
@@ -172,6 +181,7 @@ const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, label,
         accessibilityElementsHidden={!label}
         importantForAccessibility={label ? undefined : 'no-hide-descendants'}
         aria-hidden={!label}
+        style={centered && styles.centerIllustrationContainer}
       >
         <IllustrationComponent height={height} width={width} {...rest} />
       </View>

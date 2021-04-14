@@ -188,7 +188,7 @@ export type Preferences = {
   syncLists: boolean;
   fontSize: number;
   stripFormatting: boolean;
-  fontFamily: string;
+  fontFamily: 'system' | 'Roboto-Slab' | 'Roboto-Mono' | 'OpenDyslexic';
   themeEasterEggDiscovered: boolean;
   youtubeConsent: boolean;
   useDevServer: boolean;

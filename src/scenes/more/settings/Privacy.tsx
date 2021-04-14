@@ -1,36 +1,26 @@
 import React from 'react';
-import { View } from 'react-native';
-import { List, Divider, Switch, useTheme } from 'react-native-paper';
+import { List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Illustration, PageContainer } from '@components';
+import { Illustration, PageContainer, Setting, SettingSection, SettingToggle } from '@components';
 import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import { updatePrefs } from '@redux/actions/data/prefs';
-import { Preferences, State, AccountState } from '@ts/types';
+import { Preferences, State } from '@ts/types';
 import { Alert, trackEvent } from '@utils';
 
 import type { SettingsScreenNavigationProp } from '.';
-import getStyles from './styles';
 
 type SettingsPrivacyProps = {
   preferences: Preferences;
-  account: AccountState;
   navigation: SettingsScreenNavigationProp<'Privacy'>;
 };
 
-const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account, navigation }) => {
+const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, navigation }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
-  const settingsStyles = getStyles(theme);
   const { colors } = theme;
 
-  const toggleHistory = (val: boolean) => {
-    if (val) {
-      trackEvent('prefs:update-history', { props: { value: 'yes' } });
-      updatePrefs({
-        history: true,
-      });
-    } else {
+  const toggleHistory = () => {
+    if (preferences.history) {
       Alert.alert(
         "Voulez-vous vraiment désactiver l'historique ?",
         "L'historique actuel et les centres d'intérêt seront aussi supprimés. Vous n'aurez plus de recommandations.",
@@ -55,16 +45,16 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
         ],
         { cancelable: true },
       );
+    } else {
+      trackEvent('prefs:update-history', { props: { value: 'yes' } });
+      updatePrefs({
+        history: true,
+      });
     }
   };
 
-  const toggleRecommendations = (val: boolean) => {
-    if (val) {
-      trackEvent('prefs:update-recommendations', { props: { value: 'yes' } });
-      updatePrefs({
-        recommendations: true,
-      });
-    } else {
+  const toggleRecommendations = () => {
+    if (preferences.recommendations) {
       Alert.alert(
         'Voulez-vous vraiment désactiver les recommendations ?',
         "Les centres d'intérêt actuels seront aussi supprimés.",
@@ -86,111 +76,102 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
         ],
         { cancelable: true },
       );
-    }
-  };
-
-  const toggleSyncHistory = (val: boolean) => {
-    if (val) {
-      updatePrefs({
-        syncHistory: true,
-      });
     } else {
-      Alert.alert(
-        "Voulez-vous vraiment désactiver la synchronisation de l'historique ?",
-        'Les données sur le serveur seront supprimées',
-        [
-          {
-            text: 'Annuler',
-            onPress: () => {},
-            style: 'cancel',
-          },
-          {
-            text: 'Désactiver',
-            onPress: () => {
-              updatePrefs({
-                syncHistory: false,
-              });
-            },
-          },
-        ],
-        { cancelable: true },
-      );
-    }
-  };
-
-  const toggleSyncLists = (val: boolean) => {
-    if (val) {
+      trackEvent('prefs:update-recommendations', { props: { value: 'yes' } });
       updatePrefs({
-        syncLists: true,
+        recommendations: true,
       });
-    } else {
-      Alert.alert(
-        'Voulez-vous vraiment désactiver la synchronisation des listes de contenu ?',
-        'Les données sur le serveur seront supprimées',
-        [
-          {
-            text: 'Annuler',
-            onPress: () => {},
-            style: 'cancel',
-          },
-          {
-            text: 'Désactiver',
-            onPress: () => {
-              updatePrefs({
-                syncLists: false,
-              });
-            },
-          },
-        ],
-        { cancelable: true },
-      );
     }
   };
 
   return (
     <PageContainer headerOptions={{ title: 'Vie privée', subtitle: 'Paramètres' }} centered scroll>
-      <View style={styles.centerIllustrationContainer}>
-        <Illustration name="settings-privacy" height={200} width={200} />
-      </View>
-      <List.Section>
-        <List.Subheader>Historique</List.Subheader>
-        <Divider />
-        <List.Item
+      <Illustration name="settings-privacy" centered />
+      <SettingSection title="Historique">
+        <SettingToggle
           title="Enregistrer l'historique"
           description="Garder un historique des contenus visités"
-          right={() => (
-            <Switch
-              value={preferences.history}
-              color={colors.primary}
-              onValueChange={toggleHistory}
-            />
-          )}
-          onPress={() => toggleHistory(!preferences.history)}
-          style={settingsStyles.listItem}
+          value={preferences.history}
+          onPress={toggleHistory}
         />
-        <List.Item
-          title="Recommender des contenus"
+        <SettingToggle
           disabled
-          titleStyle={{ color: colors.disabled }}
-          descriptionStyle={{ color: colors.disabled }}
+          title="Recommender des contenus"
           description={
             preferences.history
               ? "Indisponible dans cette version de l'application"
               : "Activez l'historique pour avoir des recommandations"
           }
+          value={preferences.recommendations}
+          onPress={toggleRecommendations}
+        />
+        <Setting
+          disabled={!preferences.history}
+          title="Voir l'historique et les centres d'intérêt"
+          onPress={() =>
+            navigation.navigate('Main', {
+              screen: 'History',
+              params: {
+                screen: 'Main',
+              },
+            })
+          }
           right={() => (
-            <Switch
-              disabled
-              color={colors.primary}
-              value={preferences.recommendations}
-              onValueChange={toggleRecommendations}
+            <List.Icon
+              icon="chevron-right"
+              style={{ height: 18 }}
+              color={preferences.history ? colors.text : colors.disabled}
             />
           )}
-          onPress={() => toggleRecommendations(!preferences.recommendations)}
-          style={settingsStyles.listItem}
         />
-      </List.Section>
-      <Divider />
+        <Setting
+          disabled={!preferences.history}
+          title="Supprimer l'historique"
+          onPress={() =>
+            Alert.alert(
+              "Voulez-vous vraiment supprimer l'intégralité de l'historique ?",
+              'Cette action est irréversible',
+              [
+                {
+                  text: 'Annuler',
+                  onPress: () => {},
+                  style: 'cancel',
+                },
+                {
+                  text: 'Supprimer',
+                  onPress: () => {
+                    trackEvent('prefs:clear-history');
+                    clearArticlesRead();
+                  },
+                },
+              ],
+              { cancelable: true },
+            )
+          }
+        />
+        <Setting
+          disabled={!preferences.recommendations}
+          title="Supprimer les centres d'intérêt"
+          onPress={() =>
+            Alert.alert(
+              "Voulez-vous vraiment supprimer tous les centres d'intérêt ?",
+              'Cette action est irréversible (non implémenté)',
+              [
+                {
+                  text: 'Annuler',
+                  onPress: () => {},
+                  style: 'cancel',
+                },
+                /* {
+                    text: 'Supprimer',
+                    onPress: () =>   trackEvent('prefs:delete-recommendations'); console.log('Delete interests'),
+                  }, */
+              ],
+              { cancelable: true },
+            )
+          }
+        />
+      </SettingSection>
       {/* {account.loggedIn && (
           <View>
             <Banner
@@ -259,90 +240,13 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, account,
           />
         </List.Section>
         <Divider /> */}
-      <List.Section>
-        <List.Item
-          title="Voir l'historique et les centres d'intérêt"
-          right={() => (
-            <List.Icon
-              style={{ height: 15 }}
-              icon="chevron-right"
-              color={preferences.history ? colors.text : colors.disabled}
-            />
-          )}
-          onPress={() =>
-            navigation.navigate('Main', {
-              screen: 'History',
-              params: {
-                screen: 'Main',
-              },
-            })
-          }
-          disabled={!preferences.history}
-          titleStyle={preferences.history ? {} : { color: colors.disabled }}
-          descriptionStyle={preferences.history ? {} : { color: colors.disabled }}
-          style={settingsStyles.listItem}
-        />
-        <List.Item
-          title="Supprimer l'historique"
-          onPress={() =>
-            Alert.alert(
-              "Voulez-vous vraiment supprimer l'intégralité de l'historique ?",
-              'Cette action est irréversible',
-              [
-                {
-                  text: 'Annuler',
-                  onPress: () => {},
-                  style: 'cancel',
-                },
-                {
-                  text: 'Supprimer',
-                  onPress: () => {
-                    trackEvent('prefs:clear-history');
-                    clearArticlesRead();
-                  },
-                },
-              ],
-              { cancelable: true },
-            )
-          }
-          disabled={!preferences.history}
-          titleStyle={preferences.history ? {} : { color: colors.disabled }}
-          descriptionStyle={preferences.history ? {} : { color: colors.disabled }}
-          style={settingsStyles.listItem}
-        />
-        <List.Item
-          title="Supprimer les centres d'intérêt"
-          disabled={!preferences.recommendations}
-          titleStyle={preferences.recommendations ? {} : { color: colors.disabled }}
-          descriptionStyle={preferences.recommendations ? {} : { color: colors.disabled }}
-          onPress={() =>
-            Alert.alert(
-              "Voulez-vous vraiment supprimer tous les centres d'intérêt ?",
-              'Cette action est irréversible (non implémenté)',
-              [
-                {
-                  text: 'Annuler',
-                  onPress: () => {},
-                  style: 'cancel',
-                },
-                /* {
-                    text: 'Supprimer',
-                    onPress: () =>   trackEvent('prefs:delete-recommendations'); console.log('Delete interests'),
-                  }, */
-              ],
-              { cancelable: true },
-            )
-          }
-          style={settingsStyles.listItem}
-        />
-      </List.Section>
     </PageContainer>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { preferences, account } = state;
-  return { preferences, account };
+  const { preferences } = state;
+  return { preferences };
 };
 
 export default connect(mapStateToProps)(SettingsPrivacy);

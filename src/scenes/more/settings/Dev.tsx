@@ -1,10 +1,16 @@
 import React from 'react';
 import { View, BackHandler, Platform, Clipboard } from 'react-native';
-import { List, Avatar, Divider, Switch, Text, useTheme } from 'react-native-paper';
+import { List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Illustration, Banner, PageContainer } from '@components';
-import { SettingToggle } from '@components/Settings';
+import {
+  Illustration,
+  PageContainer,
+  Setting,
+  SettingSection,
+  SettingToggle,
+  SettingTooltip,
+} from '@components';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import Store from '@redux/store';
 import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
@@ -81,11 +87,8 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
 
   return (
     <PageContainer headerOptions={{ title: 'Bêta', subtitle: 'Paramètres' }} centered scroll>
-      <View style={styles.centerIllustrationContainer}>
-        <Illustration name="beta-bugs" height={200} width={200} />
-      </View>
-      <List.Section>
-        <List.Subheader>Données Analytiques</List.Subheader>
+      <Illustration centered name="beta-bugs" />
+      <SettingSection title="Données Analytiques" bottomDivider>
         <SettingToggle
           title="Envoyer des données analytiques anonymes"
           description="Envoie des informations sur vos actions dans l'application et des informations sur l'appareil, pour nous aider à résoudre des bugs et améliorer l'application. Ces données sont anonymisées et ne contienent pas d'informations sur l'historique de lecture ou sur votre compte."
@@ -101,53 +104,53 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
             descriptionNumberOfLines={10}
           />
         )}
-      </List.Section>
-      <Divider style={{ marginTop: 50 }} />
-      <List.Section>
+      </SettingSection>
+      <SettingSection title="Dévéloppeurs" bottomDivider>
         <SettingToggle
           title="Mode développeur"
           description="Options utiles pour le déboguage et le développement"
           value={preferences.advancedMode}
           onPress={toggleAdvancedMode}
         />
-      </List.Section>
-      {preferences.advancedMode && (
-        <View>
-          <Divider />
-          <View>
-            <Banner
-              visible
-              actions={[]}
-              icon={({ size }) => (
-                <Avatar.Icon
-                  style={{ backgroundColor: colors.primary }}
-                  size={size}
-                  icon="wrench"
-                />
-              )}
-            >
-              {`Si vous utilisez le serveur de développement, vous pourrez publier des articles et des évènements de test.${'\n'}Vérifiez bien que la bannière "Serveur de développement" est affichée avant de publier un contenu de test.${'\n'}Utiliser le serveur de développement nécéssitera d'effacer les données de l'application et de redémarrer l'application.`}
-            </Banner>
-          </View>
-          <List.Section>
+        {preferences.advancedMode && (
+          <>
             <SettingToggle
               title="Utiliser le serveur de développement"
-              description="Pour pouvoir publier des contenus de test"
+              description="Publiez des articles et des évènements de test, cette option efface les données et redémarre l'application"
               value={preferences.useDevServer}
               onPress={toggleDevServer}
             />
-            <List.Item
+            <SettingTooltip
+              icon="alert-circle-outline"
+              tooltip={
+                'Vérifiez que la bannière "Serveur de développement" est affichée avant de publier un contenu de test'
+              }
+            />
+            <Setting
               title="Montrer l'écran de bienvenue"
               description="Cette option n'efface aucune donnée"
+              onPress={() => navigation.push('Landing', { screen: 'Welcome' })}
+            />
+            <Setting
+              title="Forcer un plantage du thread JavaScript"
+              description="Lance une erreur JS"
               onPress={() => {
-                navigation.push('Landing', {
-                  screen: 'Welcome',
-                });
+                throw new Error('[DEBUG] Testing crash');
               }}
             />
-          </List.Section>
-          <Divider />
-          <List.Section>
+            <Setting
+              title="Forcer un plantage natif"
+              description="Cause un plantage via crashlytics"
+              onPress={() => {
+                crashlytics().crash();
+              }}
+            />
+          </>
+        )}
+      </SettingSection>
+      {preferences.advancedMode && (
+        <>
+          <SettingSection title="Données" bottomDivider>
             <List.Item
               title="Copier l'entièreté de la base de données locale"
               description="Inclut des données sensibles"
@@ -241,27 +244,9 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
                 Clipboard.setString(await messaging().getToken());
               }}
             />
-          </List.Section>
-          <Divider />
-          <List.Section>
-            <List.Item
-              title="Forcer un plantage du thread JavaScript"
-              description="Lance une erreur JS"
-              onPress={() => {
-                throw new Error('[DEBUG] Testing crash');
-              }}
-            />
-            <List.Item
-              title="Forcer un plantage natif"
-              description="Cause un plantage via crashlytics"
-              onPress={() => {
-                crashlytics().crash();
-              }}
-            />
-          </List.Section>
-        </View>
+          </SettingSection>
+        </>
       )}
-      <Divider />
       <View style={styles.container}>
         <Text style={{ color: colors.disabled }}>
           Version de la base de données : {preferences.reduxVersion}

@@ -39,7 +39,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
           body: {
             ...styles.text,
             fontSize: preferences.fontSize,
-            fontFamily: preferences.fontFamily,
+            fontFamily: preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
           },
           link: styles.primaryText,
           heading1: { fontSize: Math.floor(preferences.fontSize * 2) },
@@ -107,8 +107,8 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
                 return (
                   <View style={{ flex: 1 }}>
                     <YouTube
-                      // apiKey is an Android-specific prop but does not
-                      // appear in prop types but is required
+                      // apiKey is an Android-specific prop that does not
+                      // appear in prop types and is required
                       // @ts-expect-error
                       apiKey={Config.google.youtubeKey}
                       videoId={src.substring(10)}
@@ -147,7 +147,10 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
     return (
       <Text
         selectable
-        style={{ fontSize: preferences.fontSize, fontFamily: preferences.fontFamily }}
+        style={{
+          fontSize: preferences.fontSize,
+          fontFamily: preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
+        }}
       >
         {data}
       </Text>

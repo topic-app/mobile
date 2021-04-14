@@ -7,7 +7,7 @@ export default configureFonts({
       fontWeight: 'normal',
     },
     medium: {
-      fontFamily: 'Rubik-Medium, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontFamily: 'Rubik, "Helvetica Neue", Helvetica, Arial, sans-serif',
       fontWeight: 'normal',
     },
     light: {
@@ -25,7 +25,7 @@ export default configureFonts({
       fontWeight: '400',
     },
     medium: {
-      fontFamily: 'Rubik-Medium',
+      fontFamily: 'Rubik',
       fontWeight: 'normal',
     },
     light: {
@@ -39,11 +39,11 @@ export default configureFonts({
   },
   default: {
     regular: {
-      fontFamily: 'Roboto',
+      fontFamily: 'System',
       fontWeight: 'normal',
     },
     medium: {
-      fontFamily: 'Rubik-Medium',
+      fontFamily: 'Rubik',
       fontWeight: 'normal',
     },
     light: {

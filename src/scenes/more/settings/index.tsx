@@ -4,17 +4,16 @@ import React from 'react';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { MoreScreenNavigationProp } from '..';
-import SettingsContent from './Content';
+import SettingsAppearance from './Appearance';
 import SettingsDev from './Dev';
 import SettingsList from './List';
 import SettingsPrivacy from './Privacy';
-import SettingsTheme from './Theme';
 
 export type SettingsStackParams = {
   List: undefined;
   Theme: undefined;
   Privacy: undefined;
-  Content: undefined;
+  Appearance: undefined;
   Dev: undefined;
 };
 
@@ -34,9 +33,8 @@ const SettingsStackNavigator: React.FC<{}> = () => {
       screenOptions={{ headerShown: false, title: 'Paramètres' }}
     >
       <Stack.Screen name="List" component={SettingsList} />
-      <Stack.Screen name="Theme" component={SettingsTheme} />
       <Stack.Screen name="Privacy" component={SettingsPrivacy} />
-      <Stack.Screen name="Content" component={SettingsContent} />
+      <Stack.Screen name="Appearance" component={SettingsAppearance} />
       <Stack.Screen name="Dev" component={SettingsDev} />
     </Stack.Navigator>
   );
