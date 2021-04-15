@@ -107,7 +107,7 @@ const SettingsAppearance: React.FC<SettingsAppearance> = ({ preferences }) => {
           step={1}
           minimumValue={12}
           maximumValue={20}
-          accessibilityLabel="Taile du texte"
+          accessibilityLabel="Taille du texte"
           minimumTrackTintColor={colors.primary}
           thumbTintColor={colors.primary}
           onValueChange={(data) => {
