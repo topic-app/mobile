@@ -41,7 +41,14 @@ export const SettingToggle: React.FC<SettingToggleProps> = ({
       onPress={() => onPress()}
       titleStyle={disabled && { color: colors.disabled }}
       descriptionStyle={disabled && { color: colors.disabled }}
-      right={() => <Switch value={value} disabled={disabled} onValueChange={() => onPress()} />}
+      right={() => (
+        <Switch
+          value={value}
+          disabled={disabled}
+          onValueChange={() => onPress()}
+          style={{ alignSelf: 'center', marginLeft: 5 }}
+        />
+      )}
       descriptionNumberOfLines={3}
       style={{ padding: 6 }}
       {...rest}
