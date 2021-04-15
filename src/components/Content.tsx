@@ -121,10 +121,10 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
               return <Text>[CONTENU NON VALIDE]</Text>;
             }
           },
-          textgroup: (node, children, parent, textStyles) => (
+          textgroup: ({ key }, children, parent, textStyles) => (
             <Text
               selectable
-              key={node.key}
+              key={key}
               style={[
                 textStyles.textgroup,
                 { textAlign: Platform.OS === 'android' ? 'left' : 'justify' },

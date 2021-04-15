@@ -71,10 +71,10 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
 
   const lastZoomLevel = React.useRef(mapConfig.minZoom);
   const headingAnim = React.useRef(new Animated.Value<number>(0)).current;
-  const compassRotateAnim = headingAnim.interpolate({
+  const compassRotateAnim = (headingAnim.interpolate({
     inputRange: [0, 360],
     outputRange: ['360deg', '0deg'],
-  });
+  }) as unknown) as Animated.Node<string>;
 
   const theme = useTheme();
   const { dark, colors } = theme;
