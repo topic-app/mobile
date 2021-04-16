@@ -65,7 +65,6 @@ export type AccountUser = User & { verification?: { verified?: boolean } };
 
 export type AccountInfo = {
   accountId: string;
-  device?: string;
   accountToken: string;
   accountTokenExpiry: string;
   user: AccountUser;

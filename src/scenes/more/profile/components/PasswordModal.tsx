@@ -7,7 +7,7 @@ import { CollapsibleView, Modal } from '@components';
 import { fetchAccount } from '@redux/actions/data/account';
 import { updatePassword } from '@redux/actions/data/profile';
 import { ModalProps, State } from '@ts/types';
-import { Errors } from '@utils';
+import { Errors, hashPassword } from '@utils';
 
 import getStyles from '../styles';
 
@@ -74,20 +74,19 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ visible, setVisible, stat
   const update = async () => {
     const passwordValidation = validatePasswordInput(password);
     if (passwordValidation.valid) {
-      updatePassword(password)
-        .then(() => {
-          setPassword('');
-          setVisible(false);
-          fetchAccount();
-        })
-        .catch((error) =>
-          Errors.showPopup({
-            type: 'axios',
-            what: 'le changement du mot de passe',
-            error,
-            retry: update,
-          }),
-        );
+      try {
+        await updatePassword(await hashPassword(password));
+      } catch (error) {
+        return Errors.showPopup({
+          type: 'axios',
+          what: 'le changement du mot de passe',
+          error,
+          retry: update,
+        });
+      }
+      setPassword('');
+      setVisible(false);
+      fetchAccount();
     } else {
       passwordInput.current?.focus();
     }

@@ -17,7 +17,7 @@ import {
 import { fetchAccount } from '@redux/actions/data/account';
 import { passwordReset } from '@redux/actions/data/profile';
 import { State, LinkingRequestState } from '@ts/types';
-import { Errors, Alert } from '@utils';
+import { Errors, Alert, hashPassword } from '@utils';
 
 import type { LinkingScreenNavigationProp, LinkingStackParams } from '.';
 import getStyles from './styles';
@@ -52,36 +52,35 @@ const Linking: React.FC<Props> = ({ navigation, route, state }) => {
       ),
   });
 
-  const submit = (values: { password: string }) => {
-    passwordReset(id, token, values.password)
-      .then(() => {
-        fetchAccount();
-        Alert.alert(
-          'Mot de passe changé',
-          'Utilisez votre nouveau mot de passe pour vous connecter.',
-          [
-            {
-              text: 'Fermer',
-            },
-          ],
-          { cancelable: true },
-        );
-        navigation.replace('Root', {
-          screen: 'Main',
-          params: {
-            screen: 'Home1',
-            params: { screen: 'Home2', params: { screen: 'Article' } },
-          },
-        });
-      })
-      .catch((error) =>
-        Errors.showPopup({
-          type: 'axios',
-          what: 'la réinitialisation du mot de passe',
-          error,
-          retry: () => submit(values),
-        }),
-      );
+  const submit = async (values: { password: string }): Promise<void> => {
+    try {
+      await passwordReset(id, token, await hashPassword(values.password));
+    } catch (error) {
+      return Errors.showPopup({
+        type: 'axios',
+        what: 'la réinitialisation du mot de passe',
+        error,
+        retry: () => submit(values),
+      });
+    }
+    fetchAccount();
+    Alert.alert(
+      'Mot de passe changé',
+      'Utilisez votre nouveau mot de passe pour vous connecter.',
+      [
+        {
+          text: 'Fermer',
+        },
+      ],
+      { cancelable: true },
+    );
+    navigation.replace('Root', {
+      screen: 'Main',
+      params: {
+        screen: 'Home1',
+        params: { screen: 'Home2', params: { screen: 'Article' } },
+      },
+    });
   };
 
   return (

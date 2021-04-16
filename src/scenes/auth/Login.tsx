@@ -15,7 +15,7 @@ import * as Yup from 'yup';
 import { TranslucentStatusBar, PlatformBackButton, Illustration } from '@components';
 import { fetchAccount, login } from '@redux/actions/data/account';
 import { AccountRequestState, State } from '@ts/types';
-import { Errors, trackEvent, getApiDevice } from '@utils';
+import { Errors, trackEvent, getApiDevice, hashPassword } from '@utils';
 
 import type { AuthScreenNavigationProp } from '.';
 import getStyles from './styles';
@@ -54,7 +54,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
     const fields = {
       accountInfo: {
         username,
-        password,
+        password: await hashPassword(password),
       },
       device: await getApiDevice(),
     };

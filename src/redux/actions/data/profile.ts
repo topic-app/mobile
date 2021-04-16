@@ -1,6 +1,6 @@
 import Store from '@redux/store';
 import { AppThunk, UPDATE_ACCOUNT_STATE, UPDATE_LINKING_STATE, User } from '@ts/types';
-import { request, hashPassword } from '@utils';
+import { request } from '@utils';
 
 /**
  * @docs actionCreators
@@ -363,11 +363,10 @@ async function updateEmail(email: string) {
 }
 
 async function updatePassword(password: string) {
-  const hashedPassword = await hashPassword(password);
   await Store.dispatch(
     updateProfileStringCreator({
       url: 'profile/modify/password',
-      params: { password: hashedPassword },
+      params: { password },
       authServer: true,
     }),
   );
@@ -386,8 +385,7 @@ async function accountDelete(id: string, token: string, extra: ExtraParams) {
 }
 
 async function passwordReset(id: string, token: string, password: string) {
-  const hashedPassword = await hashPassword(password);
-  await Store.dispatch(passwordResetCreator({ id, token, password: hashedPassword }));
+  await Store.dispatch(passwordResetCreator({ id, token, password }));
 }
 
 async function resendVerification() {

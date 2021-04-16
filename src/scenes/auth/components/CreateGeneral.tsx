@@ -8,7 +8,7 @@ import zxcvbn from 'zxcvbn';
 
 import { StepperViewPageProps, FormTextInput, StrengthMeter } from '@components';
 import { updateCreationData, updateState } from '@redux/actions/data/account';
-import { request, trackEvent } from '@utils';
+import { hashPassword, request, trackEvent } from '@utils';
 
 import getStyles from '../styles';
 
@@ -83,8 +83,8 @@ const AuthCreatePageGeneral: React.FC<Props> = ({ next }) => {
       <Formik
         initialValues={{ username: '', email: '', password: '' }}
         validationSchema={RegisterSchema}
-        onSubmit={(values) => {
-          updateCreationData(values);
+        onSubmit={async ({ email, password, username }) => {
+          updateCreationData({ email, username, password: await hashPassword(password) });
           trackEvent('auth:create-page-privacy');
           next();
         }}

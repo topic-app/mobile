@@ -19,7 +19,7 @@ async function getApiDevice() {
 
   return {
     type: 'app',
-    deviceId: token,
+    token,
     canNotify: !!token && canMessage,
   };
 }

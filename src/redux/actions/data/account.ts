@@ -21,7 +21,7 @@ import {
   UPDATE_ACCOUNT_EMAIL,
   Location,
 } from '@ts/types';
-import { request, logger, hashPassword } from '@utils';
+import { request, logger } from '@utils';
 
 import { fetchLocationData } from './location';
 
@@ -291,12 +291,11 @@ function updateStateCreator(state: Partial<AccountRequestState>): AnyAction {
 
 type LoginFields = {
   accountInfo: { username: string; password: string };
-  device: { type: string; deviceId: string | null; canNotify: boolean };
+  device: { type: string; token: string | null; canNotify: boolean };
 };
 
 function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
   return async (dispatch) => {
-    const newFields = fields;
     dispatch({
       type: UPDATE_ACCOUNT_STATE,
       data: {
@@ -308,26 +307,9 @@ function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
         },
       },
     });
-    try {
-      // We also hash passwords on the server, this is just a small extra security
-      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password);
-    } catch (err) {
-      dispatch({
-        type: UPDATE_ACCOUNT_STATE,
-        data: {
-          login: {
-            success: false,
-            loading: false,
-            error: err,
-            incorrect: null,
-          },
-        },
-      });
-      throw err;
-    }
     let result;
     try {
-      result = await request('auth/login/local', 'post', newFields, false, 'auth');
+      result = await request('auth/login/local', 'post', fields, false, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
@@ -381,12 +363,11 @@ function loginCreator(fields: LoginFields): AppThunk<Promise<boolean>> {
 
 type RegisterFields = {
   accountInfo: AccountCreationData;
-  device: { type: string; deviceId: string | null; canNotify: boolean };
+  device: { type: string; token: string | null; canNotify: boolean };
 };
 
 function registerCreator(fields: RegisterFields): AppThunk {
   return async (dispatch) => {
-    const newFields = fields;
     dispatch({
       type: UPDATE_ACCOUNT_STATE,
       data: {
@@ -397,25 +378,9 @@ function registerCreator(fields: RegisterFields): AppThunk {
         },
       },
     });
-    try {
-      newFields.accountInfo.password = await hashPassword(newFields.accountInfo.password || '');
-    } catch (err) {
-      dispatch({
-        type: UPDATE_ACCOUNT_STATE,
-        data: {
-          login: {
-            success: false,
-            loading: false,
-            error: err,
-            incorrect: null,
-          },
-        },
-      });
-      throw err;
-    }
     let result;
     try {
-      result = await request('auth/register/local', 'post', newFields, false, 'auth');
+      result = await request('auth/register/local', 'post', fields, false, 'auth');
     } catch (err) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
