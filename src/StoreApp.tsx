@@ -24,9 +24,10 @@ import { connect } from 'react-redux';
 import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
+import { updateToken } from '@redux/actions/data/profile';
 import themes from '@styles/helpers/theme';
 import { Preferences, State } from '@ts/types';
-import { logger } from '@utils';
+import { logger, messaging } from '@utils';
 import { migrateReduxDB } from '@utils/compat/migrate';
 import { trackPageview } from '@utils/plausible';
 
@@ -39,6 +40,7 @@ const OpenDyslexic_Italic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Ita
 type Props = {
   useSystemTheme: boolean;
   theme: Preferences['theme'];
+  loggedIn: boolean;
   fontFamily: Preferences['fontFamily'];
   useDevServer: boolean;
   appOpens: number;
@@ -47,6 +49,7 @@ type Props = {
 const StoreApp: React.FC<Props> = ({
   useSystemTheme,
   theme: themeName,
+  loggedIn,
   useDevServer,
   appOpens,
   fontFamily,
@@ -96,6 +99,11 @@ const StoreApp: React.FC<Props> = ({
 
   React.useEffect(() => {
     migrateReduxDB();
+
+    if (loggedIn) {
+      messaging().getToken().then(updateToken);
+      messaging().onTokenRefresh(updateToken);
+    }
 
     // Increase app opens
     updatePrefs({ appOpens: appOpens + 1 });
@@ -223,7 +231,8 @@ const StoreApp: React.FC<Props> = ({
 
 const mapStateToProps = (state: State) => {
   const { useSystemTheme, theme, useDevServer, appOpens, fontFamily } = state.preferences;
-  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily };
+  const { loggedIn } = state.account;
+  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily, loggedIn };
 };
 
 export default connect(mapStateToProps)(StoreApp);

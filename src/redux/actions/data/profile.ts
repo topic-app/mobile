@@ -51,6 +51,49 @@ function updateDataCreator(fields: Partial<User['data']>): AppThunk {
   };
 }
 
+function updateTokenCreator(token: string): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateToken: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+
+    try {
+      await request('profile/modify/token', 'post', { token }, true);
+    } catch (error) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          updateToken: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateToken: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
 type UpdateStringCreatorParams = {
   url: 'profile/modify/username' | 'profile/modify/email' | 'profile/modify/password';
   params: { [key: string]: any };
@@ -339,6 +382,10 @@ function resendVerificationCreator(): AppThunk {
   };
 }
 
+async function updateToken(token: string) {
+  await Store.dispatch(updateTokenCreator(token));
+}
+
 async function updateData(fields: Partial<User['data']>) {
   await Store.dispatch(updateDataCreator(fields));
 }
@@ -394,6 +441,7 @@ async function resendVerification() {
 
 export {
   updateData,
+  updateToken,
   updateUsername,
   updateEmail,
   updatePassword,
