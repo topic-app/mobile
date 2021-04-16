@@ -75,6 +75,11 @@ const initialState: AccountState = {
       success: null,
       error: null,
     },
+    updateToken: {
+      loading: false,
+      success: null,
+      error: null,
+    },
     updateProfile: {
       loading: false,
       success: null,
