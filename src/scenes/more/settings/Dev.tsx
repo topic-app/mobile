@@ -105,7 +105,7 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
           />
         )}
       </SettingSection>
-      <SettingSection title="Dévéloppeurs" bottomDivider>
+      <SettingSection title="Développeurs" bottomDivider>
         <SettingToggle
           title="Mode développeur"
           description="Options utiles pour le déboguage et le développement"
