@@ -1,8 +1,7 @@
-const analytics = null;
 const crashlytics = null;
 const messaging = null;
 
-const getApiDevice = async () => {
+const getApiDevice = () => {
   return {
     type: 'web',
     deviceId: null,

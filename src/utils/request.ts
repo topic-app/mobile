@@ -1,5 +1,6 @@
 /* eslint-disable no-throw-literal */
 import axiosCreator, { AxiosResponse } from 'axios';
+import { Platform } from 'react-native';
 
 import { Config } from '@constants';
 import Store from '@redux/store';
@@ -57,8 +58,8 @@ async function request(
         params,
         data: error?.response,
       });
-      if (!__DEV__) {
-        crashlytics()?.recordError(
+      if (!__DEV__ && Platform.OS !== 'web') {
+        crashlytics!().recordError(
           new Error(
             `GET Request failed ${JSON.stringify({
               status: error?.status,
@@ -96,8 +97,8 @@ async function request(
       params,
       data: res?.data?.info,
     });
-    if (!__DEV__) {
-      crashlytics()?.recordError(
+    if (!__DEV__ && Platform.OS !== 'web') {
+      crashlytics!().recordError(
         new Error(
           `GET Request server failure ${JSON.stringify({
             status: res?.status,
@@ -121,8 +122,8 @@ async function request(
         params,
         data: error.response,
       });
-      if (!__DEV__) {
-        crashlytics()?.recordError(
+      if (!__DEV__ && Platform.OS !== 'web') {
+        crashlytics!().recordError(
           new Error(
             `POST Request failed ${JSON.stringify({
               status: error?.status,
@@ -160,8 +161,8 @@ async function request(
       params,
       data: res.data.info,
     });
-    if (!__DEV__) {
-      crashlytics()?.recordError(
+    if (!__DEV__ && Platform.OS !== 'web') {
+      crashlytics!().recordError(
         new Error(
           `POST Request server failure ${JSON.stringify({
             status: res?.status,
