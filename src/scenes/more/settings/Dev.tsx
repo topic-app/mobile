@@ -76,11 +76,11 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
         );
 
   const [crashlyticsEnabled, setCrashlyticsEnabled] = React.useState(
-    Platform.OS !== 'web' ? crashlytics().isCrashlyticsCollectionEnabled : false,
+    Platform.OS !== 'web' ? crashlytics!().isCrashlyticsCollectionEnabled : false,
   );
 
   function toggleCrashlytics(val = !crashlyticsEnabled) {
-    crashlytics()
+    crashlytics?.()
       .setCrashlyticsCollectionEnabled(val)
       .then(() => setCrashlyticsEnabled(val));
   }
@@ -138,13 +138,15 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
                 throw new Error('[DEBUG] Testing crash');
               }}
             />
-            <Setting
-              title="Forcer un plantage natif"
-              description="Cause un plantage via crashlytics"
-              onPress={() => {
-                crashlytics().crash();
-              }}
-            />
+            {Platform.OS !== 'web' && (
+              <Setting
+                title="Forcer un plantage natif"
+                description="Cause un plantage via crashlytics"
+                onPress={() => {
+                  crashlytics!().crash();
+                }}
+              />
+            )}
           </>
         )}
       </SettingSection>
@@ -238,12 +240,14 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
                 );
               }}
             />
-            <List.Item
-              title="Copier le jeton FCM"
-              onPress={async () => {
-                Clipboard.setString(await messaging().getToken());
-              }}
-            />
+            {Platform.OS === 'web' && (
+              <List.Item
+                title="Copier le jeton FCM"
+                onPress={async () => {
+                  Clipboard.setString(await messaging!().getToken());
+                }}
+              />
+            )}
           </SettingSection>
         </>
       )}

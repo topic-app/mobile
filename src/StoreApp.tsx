@@ -101,8 +101,8 @@ const StoreApp: React.FC<Props> = ({
     migrateReduxDB();
 
     if (loggedIn) {
-      messaging().getToken().then(updateToken);
-      messaging().onTokenRefresh(updateToken);
+      messaging?.().getToken().then(updateToken);
+      messaging?.().onTokenRefresh(updateToken);
     }
 
     // Increase app opens
