@@ -1,9 +1,10 @@
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Dimensions } from 'react-native';
 
 import { Theme } from '@ts/types';
 
 export default function getGlobalStyles(theme: Theme) {
   const { colors } = theme;
+  const width = Dimensions.get('window').width;
   return StyleSheet.create({
     page: {
       flex: 1,
@@ -109,13 +110,14 @@ export default function getGlobalStyles(theme: Theme) {
       borderTopRightRadius: 10,
       maxHeight: '90%',
     },
-    centeredPage: Platform.select({
-      web: {
-        maxWidth: 800,
-        alignSelf: 'center',
-        flex: 1,
-      },
-      default: { flex: 1 },
-    }),
+    centeredPage:
+      width <= 800 || Platform.OS !== 'web'
+        ? { flex: 1 }
+        : {
+            maxWidth: 800,
+            minWidth: 800, // Sorry, havent found another way
+            alignSelf: 'center',
+            flex: 1,
+          },
   });
 }
