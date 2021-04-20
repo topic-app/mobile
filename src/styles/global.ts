@@ -4,7 +4,7 @@ import { Theme } from '@ts/types';
 
 export default function getGlobalStyles(theme: Theme) {
   const { colors } = theme;
-  const width = Dimensions.get('window').width;
+  const { width } = Dimensions.get('window');
   return StyleSheet.create({
     page: {
       flex: 1,
