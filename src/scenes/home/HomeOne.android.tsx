@@ -257,18 +257,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               });
             }}
           />
-          {Platform.OS !== 'web' && (
-            <Drawer.Item
-              label="Créer un compte"
-              icon="account-plus-outline"
-              onPress={() => {
-                navigation.closeDrawer();
-                navigation.navigate('Auth', {
-                  screen: 'Create',
-                });
-              }}
-            />
-          )}
+          <Drawer.Item
+            label="Créer un compte"
+            icon="account-plus-outline"
+            onPress={() => {
+              navigation.closeDrawer();
+              navigation.navigate('Auth', {
+                screen: 'Create',
+              });
+            }}
+          />
         </Drawer.Section>
       )}
       <Drawer.Section>
