@@ -113,8 +113,7 @@ export default function getGlobalStyles(theme: Theme) {
       web: {
         maxWidth: 800,
         alignSelf: 'center',
-        height: '100%',
-        width: '100%',
+        flex: 1,
       },
       default: { flex: 1 },
     }),
