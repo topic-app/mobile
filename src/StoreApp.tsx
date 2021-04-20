@@ -100,7 +100,7 @@ const StoreApp: React.FC<Props> = ({
   React.useEffect(() => {
     migrateReduxDB();
 
-    if (loggedIn) {
+    if (loggedIn && Platform.OS !== 'web') {
       messaging?.().getToken().then(updateToken);
       messaging?.().onTokenRefresh(updateToken);
     }
