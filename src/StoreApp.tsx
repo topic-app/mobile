@@ -119,7 +119,7 @@ const StoreApp: React.FC<Props> = ({
       if (
         typeof decoded !== 'object' ||
         typeof decoded?.exp !== 'number' ||
-        decoded?.exp > new Date().valueOf()
+        decoded?.exp < new Date().valueOf()
       ) {
         logger.warn('Token expired, loggin out');
         logout();
