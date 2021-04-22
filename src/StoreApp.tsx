@@ -114,14 +114,14 @@ const StoreApp: React.FC<Props> = ({
     // Increase app opens
     updatePrefs({ appOpens: appOpens + 1 });
 
-    if (loggedIn && accountToken) {
+    if (accountToken) {
       const decoded = decode(accountToken);
       if (
         typeof decoded !== 'object' ||
         typeof decoded?.exp !== 'number' ||
-        decoded?.exp < new Date().valueOf()
+        decoded?.exp > new Date().valueOf()
       ) {
-        logger.warn('Token expired, loggin out');
+        logger.warn('Token expired, logging out');
         logout();
         Alert.alert(
           'Vous avez été déconnectés',
