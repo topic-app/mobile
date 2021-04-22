@@ -13,6 +13,7 @@ import {
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import Color from 'color';
 import AppLoading from 'expo-app-loading';
+import { decode } from 'jsonwebtoken';
 import React from 'react';
 import { Platform, Appearance, ColorSchemeName, View, Text } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
@@ -21,13 +22,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
+import { fetchGroups, fetchWaitingGroups, fetchAccount, logout } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
 import { updateToken } from '@redux/actions/data/profile';
 import themes from '@styles/helpers/theme';
 import { Preferences, State } from '@ts/types';
-import { logger, messaging } from '@utils';
+import { logger, messaging, Alert } from '@utils';
 import { migrateReduxDB } from '@utils/compat/migrate';
 import { trackPageview } from '@utils/plausible';
 
@@ -41,6 +42,7 @@ type Props = {
   useSystemTheme: boolean;
   theme: Preferences['theme'];
   loggedIn: boolean;
+  accountToken?: string;
   fontFamily: Preferences['fontFamily'];
   useDevServer: boolean;
   appOpens: number;
@@ -50,6 +52,7 @@ const StoreApp: React.FC<Props> = ({
   useSystemTheme,
   theme: themeName,
   loggedIn,
+  accountToken,
   useDevServer,
   appOpens,
   fontFamily,
@@ -97,6 +100,9 @@ const StoreApp: React.FC<Props> = ({
     };
   }, [useSystemTheme]);
 
+  const routeNameRef = React.useRef<string | undefined>();
+  const navigationRef = React.useRef<NavigationContainerRef>(null);
+
   React.useEffect(() => {
     migrateReduxDB();
 
@@ -107,6 +113,30 @@ const StoreApp: React.FC<Props> = ({
 
     // Increase app opens
     updatePrefs({ appOpens: appOpens + 1 });
+
+    if (loggedIn && accountToken) {
+      const decoded = decode(accountToken);
+      if (
+        typeof decoded !== 'object' ||
+        typeof decoded?.exp !== 'number' ||
+        decoded?.exp > new Date().valueOf()
+      ) {
+        logger.warn('Token expired, loggin out');
+        logout();
+        Alert.alert(
+          'Vous avez été déconnectés',
+          'Votre session a expiré',
+          [
+            { text: 'Fermer' },
+            {
+              text: 'Se connecter',
+              onPress: () => navigationRef.current?.navigate('Auth', { screen: 'Login' }),
+            },
+          ],
+          { cancelable: true },
+        );
+      }
+    }
 
     fetchLocationData().catch((e) => logger.warn(`fetchLocationData err ${e}`));
     fetchGroups().catch((e) => logger.warn(`fetchGroups err ${e}`));
@@ -143,9 +173,6 @@ const StoreApp: React.FC<Props> = ({
       notification: colors.primary,
     },
   };
-
-  const routeNameRef = React.useRef<string | undefined>();
-  const navigationRef = React.useRef<NavigationContainerRef>(null);
 
   const insets = useSafeAreaInsets();
 
@@ -231,8 +258,9 @@ const StoreApp: React.FC<Props> = ({
 
 const mapStateToProps = (state: State) => {
   const { useSystemTheme, theme, useDevServer, appOpens, fontFamily } = state.preferences;
-  const { loggedIn } = state.account;
-  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily, loggedIn };
+  const { loggedIn, accountInfo } = state.account;
+  const { accountToken } = accountInfo || {};
+  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily, loggedIn, accountToken };
 };
 
 export default connect(mapStateToProps)(StoreApp);
