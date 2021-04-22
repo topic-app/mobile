@@ -110,6 +110,6 @@ export default function getGlobalStyles(theme: Theme) {
       borderTopRightRadius: 10,
       maxHeight: '90%',
     },
-    centeredPage: { flex: 1 }, // TEMP: Disabled because it caused lots of issues
+    centeredPage: { flex: 1 }, // TEMP: Disabled because it caused lots of issues
   });
 }
