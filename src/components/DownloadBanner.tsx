@@ -47,7 +47,7 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
                 style={{ marginRight: 10 }}
               />
               <Text style={{ fontSize: mobile ? 18 : 22, color: colors.muted }}>
-                Rejoignez la bêta {!mobile && "de l'application"}
+                Téléchargez l'appli{!mobile && 'cation'}
               </Text>
             </View>
           </View>
@@ -60,7 +60,7 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
                   icon="download"
                   onPress={() => Linking.openURL('https://beta.topicapp.fr')}
                 >
-                  Plus d&apos;infos
+                  Télécharger
                 </Button>
               </View>
               <View style={styles.container}>
@@ -75,8 +75,8 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
           ) : (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={styles.container}>
-                <Button
-                  mode="outlined"
+                <IconButton
+                  accessibilityLabel="Android"
                   color={colors.primary}
                   icon="android"
                   onPress={() =>
@@ -84,19 +84,15 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
                       'https://play.google.com/store/apps/details?id=fr.topicapp.topic',
                     )
                   }
-                >
-                  Android
-                </Button>
+                />
               </View>
               <View style={styles.container}>
-                <Button
-                  mode="outlined"
+                <IconButton
+                  accessibilityLabel="iOS"
                   color={colors.primary}
                   icon="apple"
                   onPress={() => Linking.openURL('https://testflight.apple.com/join/87FfV2f8')}
-                >
-                  iOS
-                </Button>
+                />
               </View>
               <View style={styles.container}>
                 <IconButton
