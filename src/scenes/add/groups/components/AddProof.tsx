@@ -215,7 +215,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
             </View>
             <View style={styles.container}>
               <List.Item
-                title="J'ai lu et j'accepte les conditions d'utilisation de Topic ainsi que la charte des administrateurs"
+                title="J'ai lu et j'accepte les conditions d'utilisation de Topic (notamment les sections Contenu et Modération)"
                 titleNumberOfLines={20}
                 left={() =>
                   Platform.OS !== 'ios' ? (
