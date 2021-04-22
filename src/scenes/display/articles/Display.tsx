@@ -144,7 +144,7 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   const showLikeLoginAlert = () =>
     Alert.alert(
       'Connectez vous pour liker cet article',
-      'Avec un compte Topic, vous pourrez liker les articles, suivres vos groupes préférés et en rejoindre.',
+      'Avec un compte Topic, vous pourrez liker les articles, suivre vos groupes préférés et en rejoindre.',
       [
         { text: 'Se connecter', onPress: () => navigation.navigate('Auth', { screen: 'Login' }) },
         {
