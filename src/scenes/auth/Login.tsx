@@ -177,7 +177,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                   </View>
                 )}
               </Formik>
-              <View style={{ alignItems: 'flex-end', marginTop: 20 }}>
+              <View style={{ alignItems: 'center', marginTop: 20 }}>
                 <Text>
                   <Text style={styles.link} onPress={() => navigation.navigate('Create')}>
                     Créer un compte
