@@ -123,7 +123,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
   if (!user) {
     return (
       <View style={styles.page}>
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
           <PlatformBackButton onPress={navigation.goBack} />
 
           {state.info.error && (
@@ -150,7 +150,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
 
   return (
     <View style={styles.page}>
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
         {state.info.error && (
           <ErrorMessage

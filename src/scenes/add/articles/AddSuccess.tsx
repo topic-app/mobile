@@ -47,7 +47,7 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
   return (
     <View style={styles.page}>
       {reqState.verification_approve?.success === false && (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
           <ErrorMessage
             error={reqState.verification_approve?.error}
             strings={{

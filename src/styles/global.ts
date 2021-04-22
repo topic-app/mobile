@@ -110,6 +110,14 @@ export default function getGlobalStyles(theme: Theme) {
       borderTopRightRadius: 10,
       maxHeight: '90%',
     },
-    centeredPage: { flex: 1 }, // TEMP: Disabled because it caused lots of issues
+    centeredPage:
+      width <= 800 || Platform.OS !== 'web'
+        ? { flex: 1 }
+        : {
+            maxWidth: 800,
+            minWidth: 800, // Sorry, havent found another way
+            alignSelf: 'center',
+            flex: 1,
+          },
   });
 }

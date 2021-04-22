@@ -228,7 +228,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
     // This is when article has not been loaded in list, so we have absolutely no info
     return (
       <View style={styles.page}>
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
           <PlatformBackButton onPress={navigation.goBack} />
 
           {state.info.error && (
@@ -256,7 +256,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   return (
     <View style={styles.page}>
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
         {state.info.error && (
           <ErrorMessage
