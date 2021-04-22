@@ -47,7 +47,7 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
                 style={{ marginRight: 10 }}
               />
               <Text style={{ fontSize: mobile ? 18 : 22, color: colors.muted }}>
-                Téléchargez l'appli{!mobile && 'cation'}
+                Téléchargez l&apos;appli{!mobile && 'cation'}
               </Text>
             </View>
           </View>
