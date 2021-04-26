@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -6,7 +7,7 @@ import { Illustration, PageContainer, Setting, SettingSection, SettingToggle } f
 import { clearArticlesRead } from '@redux/actions/contentData/articles';
 import { updatePrefs } from '@redux/actions/data/prefs';
 import { Preferences, State } from '@ts/types';
-import { Alert, trackEvent } from '@utils';
+import { Alert, crashlytics, trackEvent } from '@utils';
 
 import type { SettingsScreenNavigationProp } from '.';
 
@@ -83,6 +84,16 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, navigati
       });
     }
   };
+
+  const [crashlyticsEnabled, setCrashlyticsEnabled] = React.useState(
+    Platform.OS !== 'web' ? crashlytics!().isCrashlyticsCollectionEnabled : false,
+  );
+
+  function toggleCrashlytics(val = !crashlyticsEnabled) {
+    crashlytics?.()
+      .setCrashlyticsCollectionEnabled(val)
+      .then(() => setCrashlyticsEnabled(val));
+  }
 
   return (
     <PageContainer headerOptions={{ title: 'Vie privée', subtitle: 'Paramètres' }} centered scroll>
@@ -171,6 +182,23 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, navigati
             )
           }
         />
+      </SettingSection>
+      <SettingSection title="Données analytiques" bottomDivider>
+        <SettingToggle
+          title="Envoyer des données analytiques anonymes"
+          description="Envoie des informations sur vos actions dans l'application et des informations sur l'appareil, pour nous aider à résoudre des bugs et améliorer l'application. Ces données sont anonymisées et ne contienent pas d'informations sur l'historique de lecture ou sur votre compte."
+          onPress={() => updatePrefs({ analytics: !preferences.analytics })}
+          value={preferences.analytics}
+        />
+        {Platform.OS !== 'web' && (
+          <SettingToggle
+            title="Envoyer des rapports de plantage"
+            description="Envoie des informations sur les plantages afin de nous aider à les résoudre"
+            value={crashlyticsEnabled}
+            onPress={toggleCrashlytics}
+            descriptionNumberOfLines={10}
+          />
+        )}
       </SettingSection>
       {/* {account.loggedIn && (
           <View>

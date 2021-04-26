@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, BackHandler, Platform, Clipboard } from 'react-native';
+import { View, BackHandler, Platform, Clipboard, Linking } from 'react-native';
 import { List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -75,35 +75,120 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
           { cancelable: true },
         );
 
-  const [crashlyticsEnabled, setCrashlyticsEnabled] = React.useState(
-    Platform.OS !== 'web' ? crashlytics!().isCrashlyticsCollectionEnabled : false,
-  );
-
-  function toggleCrashlytics(val = !crashlyticsEnabled) {
-    crashlytics?.()
-      .setCrashlyticsCollectionEnabled(val)
-      .then(() => setCrashlyticsEnabled(val));
-  }
-
   return (
-    <PageContainer headerOptions={{ title: 'Bêta', subtitle: 'Paramètres' }} centered scroll>
+    <PageContainer
+      headerOptions={{ title: 'Développement', subtitle: 'Paramètres' }}
+      centered
+      scroll
+    >
       <Illustration centered name="beta-bugs" />
-      <SettingSection title="Données Analytiques" bottomDivider>
-        <SettingToggle
-          title="Envoyer des données analytiques anonymes"
-          description="Envoie des informations sur vos actions dans l'application et des informations sur l'appareil, pour nous aider à résoudre des bugs et améliorer l'application. Ces données sont anonymisées et ne contienent pas d'informations sur l'historique de lecture ou sur votre compte."
-          onPress={() => updatePrefs({ analytics: !preferences.analytics })}
-          value={preferences.analytics}
+      <SettingSection title="Informations">
+        <List.Item
+          title="Feedback"
+          description={`Utilisez l'élément "Feedback" depuis ${
+            Platform.OS === 'ios' ? 'la section Plus' : 'le menu'
+          } pour donner votre avis sur l'application ou signaler un bug`}
+          left={() => (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <List.Icon
+                color={colors.background}
+                style={{
+                  backgroundColor: colors.primary,
+                  borderRadius: 20,
+                }}
+                icon="bug"
+              />
+            </View>
+          )}
+          descriptionNumberOfLines={3}
         />
-        {Platform.OS !== 'web' && (
-          <SettingToggle
-            title="Envoyer des rapports de plantage"
-            description="Envoie des informations sur les plantages afin de nous aider à les résoudre"
-            value={crashlyticsEnabled}
-            onPress={toggleCrashlytics}
-            descriptionNumberOfLines={10}
-          />
-        )}
+        <List.Item
+          title="Canal Telegram"
+          description="Recevez les dernières infos et discutez avec l'équipe Topic App et les autres utilisateurs"
+          left={() => (
+            <View
+              style={{
+                margin: 8,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Illustration name="telegram" height={40} width={40} />
+            </View>
+          )}
+          right={() => <List.Icon icon="open-in-new" color={colors.subtext} />}
+          descriptionNumberOfLines={3}
+          onPress={() => Linking.openURL('https://t.me/joinchat/AAAAAEfRz29dT2eYy9w_7A')}
+        />
+        <List.Item
+          title="Bêta"
+          description="Visitez beta.topicapp.fr pour télécharger la bêta et avoir accès aux nouvelles fonctionnalités avant les autres utilisateurs"
+          left={() => (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <List.Icon
+                color={colors.background}
+                style={{
+                  backgroundColor: colors.disabled,
+                  borderRadius: 20,
+                }}
+                icon="flask"
+              />
+            </View>
+          )}
+          onPress={() => Linking.openURL('https://beta.topicapp.fr')}
+          descriptionNumberOfLines={3}
+        />
+        <List.Item
+          title="Plantages"
+          description="Certains rapports de plantage sont envoyés automatiquement, mais nous vous conseillons de les signaler"
+          left={() => (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <List.Icon
+                color={colors.background}
+                style={{
+                  backgroundColor: colors.disabled,
+                  borderRadius: 20,
+                }}
+                icon="pulse"
+              />
+            </View>
+          )}
+          descriptionNumberOfLines={3}
+        />
+        <List.Item
+          title="Statistiques"
+          description="Topic envoie automatiquement des informations anonymes sur votre interaction avec l'application. Vous pouvez désactiver l'envoi depuis les paramètres"
+          left={() => (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <List.Icon
+                color={colors.background}
+                style={{
+                  backgroundColor: colors.disabled,
+                  borderRadius: 20,
+                }}
+                icon="chart-timeline-variant"
+              />
+            </View>
+          )}
+          descriptionNumberOfLines={3}
+        />
+        <List.Item
+          title="Mises à jour"
+          description="Nous publions des mises à jour toutes les semaines environ. Vous pouvez regarder les notes de mise à jour pour voir les fonctionnalités à tester"
+          left={() => (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <List.Icon
+                color={colors.background}
+                style={{
+                  backgroundColor: colors.disabled,
+                  borderRadius: 20,
+                }}
+                icon="update"
+              />
+            </View>
+          )}
+          descriptionNumberOfLines={3}
+        />
       </SettingSection>
       <SettingSection title="Développeurs" bottomDivider>
         <SettingToggle

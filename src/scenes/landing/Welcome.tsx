@@ -497,7 +497,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               color={lastPage === 0 ? 'white' : colors.primary}
               uppercase={Platform.OS !== 'ios'}
               onPress={() => {
-                navigation.navigate('Beta');
+                navigation.navigate('SelectLocation');
               }}
             >
               Continuer

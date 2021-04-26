@@ -13,7 +13,7 @@ import {
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import Color from 'color';
 import AppLoading from 'expo-app-loading';
-import { decode } from 'jsonwebtoken';
+import decode from 'jwt-decode';
 import React from 'react';
 import { Platform, Appearance, ColorSchemeName, View, Text } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
@@ -115,7 +115,12 @@ const StoreApp: React.FC<Props> = ({
     updatePrefs({ appOpens: appOpens + 1 });
 
     if (accountToken) {
-      const decoded = decode(accountToken);
+      let decoded;
+      try {
+        decoded = decode(accountToken) as { exp?: number } | null;
+      } catch (error) {
+        logger.warn('JWT decode failed');
+      }
       if (
         typeof decoded !== 'object' ||
         typeof decoded?.exp !== 'number' ||

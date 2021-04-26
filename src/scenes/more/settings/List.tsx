@@ -66,8 +66,8 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, account }) => {
           />
         )}
         <List.Item
-          title="Bêta"
-          description="Analytiques, serveur"
+          title="Développement"
+          description="Informations, mode développeur"
           right={() => <List.Icon icon="chevron-right" />}
           left={() => <List.Icon icon="wrench" />}
           onPress={() => navigation.navigate('Dev')}
