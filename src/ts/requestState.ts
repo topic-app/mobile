@@ -104,6 +104,7 @@ export type LinkingRequestState = {
   emailVerify: RequestState;
   accountDelete: RequestState;
   resetPassword: RequestState;
+  feedback: RequestState;
 };
 export type UploadRequestState = {
   upload: RequestState;

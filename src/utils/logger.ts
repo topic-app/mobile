@@ -87,10 +87,10 @@ class Logger {
       if (sent) logEntry += 'sent ';
       else logEntry += `${status || '???'} `;
 
-      logEntry += `to ${server}/${endpoint} `;
+      logEntry += `to ${server}:${endpoint} `;
 
-      if (sent && params) logEntry += `with params ${logObj(params)}`;
-      if (!sent && data) logEntry += `with data ${logObj(data)}`;
+      if (sent && params) logEntry += `with params ${JSON.stringify(params)}`;
+      if (!sent && data) logEntry += `with data ${JSON.stringify(data)}`;
 
       console.log(logEntry);
     }

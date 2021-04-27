@@ -22,6 +22,11 @@ const initialState: LinkingState = {
       success: null,
       error: null,
     },
+    feedback: {
+      loading: false,
+      success: false,
+      error: null,
+    },
   },
 };
 
