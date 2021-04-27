@@ -204,7 +204,11 @@ const FeedbackCard: React.FC<Props> = ({
               </View>
               <View>
                 <SettingTooltip
-                  tooltip="Certaines données sur le modèle de votre téléphone et sur votre système d'exploitation sont envoyées pour nous aider à résoudre les problèmes"
+                  tooltip={
+                    Platform.OS === 'web'
+                      ? 'Certaines données sur votre appareil et votre navigateur sont envoyées pour nous aider à résoudre les problèmes'
+                      : "Certaines données sur le modèle de votre téléphone et sur votre système d'exploitation sont envoyées pour nous aider à résoudre les problèmes"
+                  }
                   icon="shield-outline"
                 />
               </View>
