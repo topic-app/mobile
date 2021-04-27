@@ -398,7 +398,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                       icon="map-marker"
                       style={{ borderRadius: 20 }}
                     >
-                      Me géolocaliser
+                      Rechercher autour de moi
                     </Button>
                   </View>
                 </View>
