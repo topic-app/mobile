@@ -77,7 +77,7 @@ const FeedbackCard: React.FC<Props> = ({
 
   const types = ['Rapport de bug', 'Demande de fonctionnalité', 'Question', 'Autre'];
 
-  return Platform.OS === 'web' ? null : (
+  return (
     <Modal visible={visible} setVisible={setVisible}>
       {submitted ? (
         <View>
