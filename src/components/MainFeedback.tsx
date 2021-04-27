@@ -49,7 +49,6 @@ const FeedbackCard: React.FC<Props> = ({
   accountEmail,
   state,
 }) => {
-  loggedIn = false;
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
@@ -128,7 +127,7 @@ const FeedbackCard: React.FC<Props> = ({
                 device: `${brand}-${product}-${deviceId}`,
                 app: `${topicVersion}`,
                 os: `${Platform.OS}-${systemVersion}-api${apiLevel}`,
-                extra: `UA: ${userAgent}`,
+                extra: `UA: ${userAgent}`,
               },
             })
               .then(() => setSubmitted(true))
