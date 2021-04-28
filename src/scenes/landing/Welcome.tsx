@@ -334,7 +334,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               <Text style={[styles.subtitle, styles.illustrationText]}>Explorer</Text>
               <Text style={styles.illustrationText}>
                 Nous vous proposons une carte interactive des territoires français, ou seront
-                repertoriés, avec votre aide, les lieux culturels, les évènements et les
+                répertoriés, avec votre aide, les lieux culturels, les évènements et les
                 établissements scolaires.
               </Text>
             </View>
@@ -475,7 +475,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             </Animated.View>
           </View>
           <Animated.Text style={{ fontSize: 12, color: normalTextColorAnim }}>
-            Vous avez déjà un compte?{' '}
+            Vous avez déjà un compte ?{' '}
             <Animated.Text
               style={[styles.link, { color: purpleTextColorAnim }]}
               onPress={() =>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Text, Button, useTheme } from 'react-native-paper';
+import { Divider, Text, Title, Button, useTheme, Searchbar } from 'react-native-paper';
 
-import { TranslucentStatusBar } from '@components';
+import { Illustration, TranslucentStatusBar } from '@components';
 import { updateDepartments } from '@redux/actions/api/departments';
 import { trackEvent } from '@utils';
 
@@ -26,32 +26,47 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   return (
     <View style={styles.page}>
       <TranslucentStatusBar />
-      <View style={styles.welcomeContainer}>
-        <View style={styles.bottomContainer}>
-          <Text style={{ fontSize: 12 }}>
-            Vous avez un compte?{' '}
-            <Text
-              style={styles.link}
+      <View>
+        <View style={{ flexDirection: 'row', flex: 1 }}>
+          <View style={{ margin: 10 }}>
+            <Illustration name="topic-icon" style={{ height: 50, width: 50 }} />
+          </View>
+          <Text style={[styles.title, { fontSize: 30, marginTop: 15 }]}>Topic</Text>
+          <View
+            style={[{ flexDirection: 'row', flex: 1, justifyContent: 'flex-end', marginTop: 10 }]}
+          >
+            <Button
+              style={{ height: 35, margin: 5 }}
+              mode="contained"
+              uppercase={Platform.OS !== 'ios'}
               onPress={() =>
                 navigation.navigate('Auth', {
                   screen: 'Login',
                 })
               }
             >
-              Connectez-vous
-            </Text>
-          </Text>
-          <View style={styles.contentContainer}>
+              Se connecter
+            </Button>
             <Button
+              style={{ height: 35, margin: 5, marginRight: 10 }}
               mode="contained"
               uppercase={Platform.OS !== 'ios'}
               onPress={() => {
                 navigation.navigate('Beta');
               }}
             >
-              Continuer
+              Créer un compte
             </Button>
           </View>
+        </View>
+      </View>
+      <View>
+        <Divider />
+        <Title style={[styles.title, { fontSize: 30, alignSelf: 'center', marginTop: 20 }]}>
+          Choisissez votre école
+        </Title>
+        <View style={{ width: 400, marginVertical: 20, alignSelf: 'center' }}>
+          <Searchbar placeholder="Rechercher" />
         </View>
       </View>
     </View>
