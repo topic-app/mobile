@@ -33,7 +33,7 @@ const Stack = createStackNavigator<LandingStackParams>();
 function LandingStackNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName={Platform.OS === 'web' ? 'SelectLocation' : 'Welcome'}
+      initialRouteName="Welcome"
       screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}
     >
       <Stack.Screen
