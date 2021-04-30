@@ -116,6 +116,7 @@
     "react-native-webview": "^11.4.4",
     "react-native-youtube": "^2.0.1",
     "react-redux": "^7.2.4",
+    "react-spring": "^9.1.2",
     "react-window": "^1.8.6",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "redux": "^4.1.0",
