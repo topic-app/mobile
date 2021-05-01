@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { ImageStyle, View, Dimensions, Platform } from 'react-native';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
-import { Text, useTheme } from 'react-native-paper';
+import { Button, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { AutoHeightImage } from '@components';
@@ -95,11 +95,28 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
               if (Platform.OS === 'web') {
                 if (!loaded) return null;
                 return (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${src.substring(10)}`}
-                    title="youtube"
-                    style={{ width: '100%', height: 480 }}
-                  />
+                  <View style={{ flex: 1 }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${src.substring(
+                        10,
+                      )}?modestbranding=1&rel=0`}
+                      title="youtube"
+                      style={{ width: '100%', height: 480 }}
+                      allow="fullscreen"
+                    />
+                    <View style={{ flex: 1 }}>
+                      <Button
+                        onPress={() =>
+                          handleUrl(`https://youtube.com/watch?v=${src.substring(10)}`)
+                        }
+                        mode="text"
+                        uppercase={false}
+                        icon="open-in-new"
+                      >
+                        Ouvrir sur Youtube
+                      </Button>
+                    </View>
+                  </View>
                 );
               } else if (!Config.google.youtubeKey) {
                 return null;
@@ -114,6 +131,18 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
                       videoId={src.substring(10)}
                       style={{ alignSelf: 'stretch', height: 300 }}
                     />
+                    <View style={{ flex: 1 }}>
+                      <Button
+                        onPress={() =>
+                          handleUrl(`https://youtube.com/watch?v=${src.substring(10)}`)
+                        }
+                        mode="text"
+                        uppercase={false}
+                        icon="open-in-new"
+                      >
+                        Ouvrir sur Youtube
+                      </Button>
+                    </View>
                   </View>
                 );
               }
