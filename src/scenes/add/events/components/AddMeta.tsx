@@ -29,7 +29,6 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
 }) => {
   const titleInput = createRef<RNTextInput>();
   const summaryInput = createRef<RNTextInput>();
-  const descriptionInput = createRef<RNTextInput>();
 
   const uploadImage = () => upload(creationData.group || '');
 
@@ -46,21 +45,18 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
       .required('Titre requis'),
     summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères'),
     file: Yup.mixed(),
-    description: Yup.string().required('Description requise'),
   });
 
   return (
     <View style={styles.formContainer}>
       <Formik
-        initialValues={{ title: '', summary: '', file: null, description: '' }}
+        initialValues={{ title: '', summary: '', file: null }}
         validationSchema={MetaSchema}
-        onSubmit={({ title, summary, file, description }) => {
+        onSubmit={({ title, summary, file }) => {
           updateEventCreationData({
             title,
             summary,
             image: { image: file, thumbnails: { small: false, medium: true, large: true } },
-            description,
-            parser: 'markdown',
           });
           next();
         }}
@@ -91,19 +87,6 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
               onChangeText={handleChange('summary')}
               onBlur={handleBlur('summary')}
               onSubmitEditing={() => summaryInput.current?.focus()}
-              style={styles.textInput}
-            />
-            <FormTextInput
-              ref={descriptionInput}
-              label="Décrivez votre évènement..."
-              multiline
-              numberOfLines={8}
-              value={values.description}
-              touched={touched.description}
-              error={errors.description}
-              onChangeText={handleChange('description')}
-              onBlur={handleBlur('description')}
-              onSubmitEditing={() => handleSubmit()}
               style={styles.textInput}
             />
             {checkPermission(account, {

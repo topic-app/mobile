@@ -33,11 +33,15 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
 
   const scrollViewRef = React.useRef<ScrollView>(null);
 
-  const add = (program?: ProgramEntry[]) => {
+  const add = (
+    parser?: 'markdown' | 'plaintext',
+    description?: string,
+    program?: ProgramEntry[],
+  ) => {
     eventAdd({
       title: creationData.title,
       summary: creationData.summary,
-      data: creationData.description,
+      data: description || creationData.description,
       phone: creationData.phone,
       email: creationData.email,
       contact: creationData.contact,
@@ -48,7 +52,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
       location: creationData.location,
       group: creationData.group,
       places: creationData.places,
-      parser: creationData.parser,
+      parser: parser || creationData.parser,
       image: creationData.image,
       preferences: {
         comments: true,

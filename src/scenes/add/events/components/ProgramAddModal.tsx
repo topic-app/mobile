@@ -140,13 +140,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   function validateTitleInput(title: string) {
     let validation: Partial<InputStateType> = { valid: false, error: false };
     if (title !== '') {
-      if (title.length <= 10) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'Le titre doit contenir au moins 10 caractères',
-        };
-      } else if (title.length >= 100) {
+      if (title.length >= 100) {
         validation = {
           valid: false,
           error: true,
@@ -180,12 +174,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
           valid: false,
           error: true,
           message: 'La description doit contenir moins de 500 caractères',
-        };
-      } else if (description.length <= 10) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'La description doit contenir au moins 10 caractères',
         };
       } else {
         validation = { valid: true, error: false };
