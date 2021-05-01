@@ -11,7 +11,7 @@ import ExplorerList from './explorer/List';
 import ListScreen from './list/List';
 
 export type HomeTwoNavParams = {
-  Article: { initialList?: string } | undefined;
+  Article: { initialList?: string; article?: string } | undefined;
   Event: { initialList?: string } | undefined;
   Explorer: undefined;
   Tests: undefined;

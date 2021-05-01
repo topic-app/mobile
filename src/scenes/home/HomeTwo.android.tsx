@@ -17,7 +17,7 @@ import EventList from './events/List';
 import ExplorerList from './explorer/List';
 
 export type HomeTwoNavParams = {
-  Article: { initialList?: string } | undefined;
+  Article: { initialList?: string; article?: string } | undefined;
   Event: { initialList?: string } | undefined;
   Explorer: undefined;
   Tests: undefined;

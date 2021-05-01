@@ -33,7 +33,9 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
     id: string;
     title: string;
     useLists: boolean;
-  } | null>(null);
+  } | null>(
+    route.params?.article ? { id: route.params.article, title: '', useLists: false } : null,
+  );
 
   const theme = useTheme();
   const deviceWidth = useWindowDimensions().width;
@@ -114,7 +116,10 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
           }}
           onArticlePress={
             shouldRenderDualView
-              ? (articleData) => setArticle(articleData)
+              ? (articleData) => {
+                  navigation.setParams({ article: articleData.id });
+                  setArticle(articleData);
+                }
               : (articleData) =>
                   navigation.navigate('Main', {
                     screen: 'Display',
