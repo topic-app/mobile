@@ -1,10 +1,10 @@
-import licenses from '@assets/json/licenses.json';
-import packages from '@assets/json/packages.json';
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { View, SectionList } from 'react-native';
 import { Text, List, Divider, useTheme } from 'react-native-paper';
 
+import licenses from '@assets/json/licenses.json';
+import packages from '@assets/json/packages.json';
 import getStyles from '@styles/global';
 
 import type { AboutStackParams } from '.';
@@ -37,7 +37,7 @@ const Licenses: React.FC<LicensesProps> = ({ route }) => {
   return (
     <View style={styles.page}>
       {(page === 'list' || page === 'full') && (
-        <View>
+        <View style={{ flex: 1 }}>
           <SectionList
             sections={licenseData}
             keyExtractor={(item) => item.id}
