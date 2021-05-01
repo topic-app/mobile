@@ -31,7 +31,9 @@ const EventListScreen: React.FC<EventListProps> = ({
     id: string;
     title: string;
     useLists: boolean;
-  } | null>(null);
+  } | null>(
+    route.params?.evenement ? { id: route.params.evenement, title: '', useLists: false } : null,
+  );
 
   const theme = useTheme();
   const deviceWidth = useWindowDimensions().width;
@@ -112,7 +114,10 @@ const EventListScreen: React.FC<EventListProps> = ({
           }}
           onEventPress={
             shouldRenderDualView
-              ? (eventData) => setEvent(eventData)
+              ? (eventData) => {
+                  navigation.setParams({ evenement: eventData.id });
+                  setEvent(eventData);
+                }
               : (eventData) =>
                   navigation.navigate('Main', {
                     screen: 'Display',
