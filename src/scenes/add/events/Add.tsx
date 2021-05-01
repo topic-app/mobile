@@ -69,7 +69,7 @@ const EventAdd: React.FC<Props> = ({ navigation, reqState, creationData = {} }) 
           type: 'axios',
           what: 'la connexion',
           error,
-          retry: () => add(program),
+          retry: () => add(parser, description, program),
         });
       });
   };
