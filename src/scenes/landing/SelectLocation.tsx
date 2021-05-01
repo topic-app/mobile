@@ -458,12 +458,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
             {hasUserAlreadyBeenToLanding ? (
               <PlatformBackButton onPress={() => navigation.goBack()} />
             ) : null}
-            <View
-              style={[
-                styles.locationHeaderContainer,
-                { marginBottom: 0, flex: 1, justifyContent: 'flex-end' },
-              ]}
-            >
+            <View style={[styles.locationHeaderContainer, { marginBottom: 0, flex: 1 }]}>
               <View style={styles.centerIllustrationContainer}>
                 <CollapsibleView collapsed={userLocation}>
                   <Illustration name="location-select" height={200} width={200} />

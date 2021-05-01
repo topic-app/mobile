@@ -25,6 +25,7 @@ const CollapsibleView: React.FC<Props> = ({
       collapsed={collapsed}
       renderChildrenCollapsed={renderChildrenCollapsed}
       align={align}
+      style={{ flex: 1 }}
     >
       <View style={style} {...viewProps}>
         {children}
