@@ -420,7 +420,7 @@ const Search: React.FC<SearchProps> = ({
             style={searchStyles.searchbar}
             onSubmitEditing={({ nativeEvent: { text } }) => submitSearch(text)}
           />
-          <CollapsibleView collapsed={!filterCollapsed}>
+          <CollapsibleView collapsed={!filterCollapsed} align="top">
             <View style={searchStyles.containerBottom}>
               <View style={searchStyles.container}>
                 <TouchableOpacity onPress={expandFilter}>
@@ -443,7 +443,7 @@ const Search: React.FC<SearchProps> = ({
               </View>
             </View>
           </CollapsibleView>
-          <CollapsibleView collapsed={filterCollapsed}>
+          <CollapsibleView collapsed={filterCollapsed} align="bottom">
             <View>
               <CategoryTitle icon="shape" containerStyle={searchStyles.container}>
                 Catégorie
