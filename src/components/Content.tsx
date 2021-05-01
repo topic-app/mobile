@@ -130,6 +130,8 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
                       apiKey={Config.google.youtubeKey}
                       videoId={src.substring(10)}
                       style={{ alignSelf: 'stretch', height: 300 }}
+                      modestbranding
+                      rel={false}
                     />
                     <View style={{ flex: 1 }}>
                       <Button
