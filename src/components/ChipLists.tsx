@@ -79,6 +79,7 @@ const ChipBase: React.FC<ChipBaseProps> = ({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         accessibilityLabel={label}
+        style={{ flex: 1 }}
       >
         <View
           style={{
@@ -87,7 +88,6 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             alignItems: 'center',
             paddingLeft: 8,
             paddingRight: rightAction ? 0 : 10,
-            marginVertical: Platform.OS === 'web' ? 10 : undefined,
           }}
         >
           {!rightAction && icon ? (
