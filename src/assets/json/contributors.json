@@ -19,7 +19,7 @@
   },
   {
     "name": "Benjamin Sengupta",
-    "description": "Développeur, responsable frontend",
+    "description": "Secrétaire général adjoint, développeur, responsable frontend",
     "link": "https://gitlab.com/bensengupta",
     "icon": "gitlab"
   },
@@ -36,22 +36,20 @@
     "icon": "gitlab"
   },
   {
-    "name": "Paul Giroux",
-    "description": "Secrétaire général adjoint",
-    "link": ""
+    "name": "Joachim Laplanche",
+    "description": "Développeur, frontend",
+    "link": "https://gitlab.com/joachim.laplanche",
+    "icon": "gitlab"
   },
   {
     "name": "Baptiste Zigmann",
     "description": "Développeur, frontend",
-    "link": ""
+    "link": "https://gitlab.com/BAZIG060",
+    "icon": "gitlab"
   },
   {
     "name": "Jérémy Hendrikse",
     "description": "Développeur, frontend",
     "link": ""
-  },
-  {
-    "name": "Luke Burch",
-    "description": "Développeur, frontend"
   }
 ]
