@@ -22,6 +22,8 @@ const config: DevAppConfig = {
   },
   cdn: {
     timeout: 3000,
+    uploadUrl: 'https://cdn-dev.topicapp.fr/file/upload',
+    baseUrl: 'https://cdn-dev.topicapp.fr/file/get/',
   },
   dev: {
     webAllowAnonymous: true,
