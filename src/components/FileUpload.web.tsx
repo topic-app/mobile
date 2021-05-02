@@ -59,25 +59,23 @@ const FileUpload: React.FC<Props> = ({
         allowFileTypeValidation
         // @ts-expect-error
         credits={false}
-        maxFileSize={'5MB'}
+        maxFileSize="5MB"
         acceptedFileTypes={['image/*']}
         allowMultiple={false}
-        labelIdle={
-          'Déposez une image ici ou <span class="filepond--label-action">choississez un fichier</span>'
-        }
-        labelFileLoading={'Chargement...'}
-        labelFileLoadError={'Erreur durant le chargement'}
-        labelFileProcessingError={"Erreur durant l'upload"}
-        labelFileProcessing={'Upload en cours...'}
-        labelFileProcessingComplete={'Image ajoutée'}
-        labelFileProcessingAborted={'Upload annulé'}
-        labelTapToCancel={'Cliquez pour annuler'}
-        labelTapToRetry={'Cliquez pour réessayer'}
-        labelTapToUndo={'Cliquez pour supprimer'}
-        labelMaxFileSizeExceeded={'Fichier trop grand'}
-        labelMaxFileSize={'Maximum 5MB'}
-        labelFileTypeNotAllowed={"Ce fichier n'est pas une image"}
-        fileValidateTypeLabelExpectedTypes={'Fichiers autorisés: .jpg, .png'}
+        labelIdle='Déposez une image ici ou <span class="filepond--label-action">choississez un fichier</span>'
+        labelFileLoading="Chargement..."
+        labelFileLoadError="Erreur durant le chargement"
+        labelFileProcessingError="Erreur durant l'upload"
+        labelFileProcessing="Upload en cours..."
+        labelFileProcessingComplete="Image ajoutée"
+        labelFileProcessingAborted="Upload annulé"
+        labelTapToCancel="Cliquez pour annuler"
+        labelTapToRetry="Cliquez pour réessayer"
+        labelTapToUndo="Cliquez pour supprimer"
+        labelMaxFileSizeExceeded="Fichier trop grand"
+        labelMaxFileSize="Maximum 5MB"
+        labelFileTypeNotAllowed="Ce fichier n'est pas une image"
+        fileValidateTypeLabelExpectedTypes="Fichiers autorisés: .jpg, .png"
         onremovefile={() => setFile(null)}
         server={{
           process: ((async (
