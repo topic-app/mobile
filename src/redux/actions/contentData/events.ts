@@ -1,3 +1,5 @@
+import shortid from 'shortid';
+
 import Store from '@redux/store';
 import {
   UPDATE_EVENTS_QUICKS,
@@ -140,22 +142,22 @@ async function deleteEventList(listId: string) {
   );
 }
 
-async function addEventRead(eventId: string, title: string, marked = false) {
+async function addEventRead(eventId: string, title?: string, marked = false, date?: Date) {
   Store.dispatch(
     addReadCreator({
       update: UPDATE_EVENTS_READ,
       dataType: 'eventData',
-      data: { id: eventId, title, date: new Date(), marked },
+      data: { key: shortid(), id: eventId, title, date: date || new Date(), marked },
     }),
   );
 }
 
-async function deleteEventRead(eventId: string) {
+async function deleteEventRead(key: string) {
   Store.dispatch(
     deleteReadCreator({
       update: UPDATE_EVENTS_READ,
       dataType: 'eventData',
-      id: eventId,
+      key,
     }),
   );
 }

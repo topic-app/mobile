@@ -5,7 +5,7 @@ import { List, Text, Divider, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { PlatformTouchable, PageContainer } from '@components';
-import { deleteArticleRead } from '@redux/actions/contentData/articles';
+import { deleteEventRead } from '@redux/actions/contentData/events';
 import getStyles from '@styles/global';
 import { EventReadItem, Preferences, State } from '@ts/types';
 
@@ -34,9 +34,8 @@ const EventHistory: React.FC<EventHistoryProps> = ({ navigation, read, preferenc
   return (
     <PageContainer headerOptions={{ title: 'Historique', subtitle: 'Évènements' }}>
       <FlatList
-        data={read.reverse()}
-        // TODO: EventReadItem ids need to be individually distinct from eachother
-        keyExtractor={(i) => i.id}
+        data={read.sort((a, b) => (a.date?.valueOf() || 0) - (b.date?.valueOf() || 0))}
+        keyExtractor={(i) => i.key}
         renderItem={({ item }) => (
           <List.Item
             title={item.title || 'Article inconnu'}
@@ -47,7 +46,7 @@ const EventHistory: React.FC<EventHistoryProps> = ({ navigation, read, preferenc
             }
             right={() => (
               <View onStartShouldSetResponder={() => true}>
-                <PlatformTouchable onPress={() => deleteArticleRead(item.id)}>
+                <PlatformTouchable onPress={() => deleteEventRead(item.key)}>
                   <List.Icon icon="delete" />
                 </PlatformTouchable>
               </View>

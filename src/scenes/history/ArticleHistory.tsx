@@ -34,9 +34,8 @@ const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, prefe
   return (
     <PageContainer headerOptions={{ title: 'Historique', subtitle: 'Articles' }}>
       <FlatList
-        data={read.reverse()}
-        // TODO: ArticleReadItem ids need to be individually distinct from eachother
-        keyExtractor={(i) => i.id}
+        data={read.sort((a, b) => (a.date?.valueOf() || 0) - (b.date?.valueOf() || 0))}
+        keyExtractor={(i) => i.key}
         renderItem={({ item }) => (
           <List.Item
             title={item.title || 'Article inconnu'}
@@ -49,7 +48,7 @@ const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, prefe
             }
             right={() => (
               <View onStartShouldSetResponder={() => true}>
-                <PlatformTouchable onPress={() => deleteArticleRead(item.id)}>
+                <PlatformTouchable onPress={() => deleteArticleRead(item.key)}>
                   <List.Icon icon="delete" />
                 </PlatformTouchable>
               </View>

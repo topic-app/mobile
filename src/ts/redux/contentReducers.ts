@@ -31,6 +31,7 @@ export type ArticlePrefs = {
 
 export type ArticleReadItem = {
   id: string;
+  key: string;
   title?: string;
   date?: Date;
   marked: boolean;
@@ -160,6 +161,7 @@ export type EventRecommendations = {
 
 export type EventReadItem = {
   id: string;
+  key: string;
   title?: string;
   date?: Date;
   marked: boolean;

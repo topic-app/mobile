@@ -283,16 +283,16 @@ function addReadCreator<T extends ContentItemWithListsString>({
 type DeleteReadCreatorParams<T extends ContentItemWithListsString> = {
   dataType: T;
   update: ContentAction.TypeMap[T];
-  id: string;
+  key: string;
 };
 function deleteReadCreator<T extends ContentItemWithListsString>({
   update,
   dataType,
-  id,
+  key,
 }: DeleteReadCreatorParams<T>): AnyAction {
   return {
     type: update,
-    data: Store.getState()[dataType].read.filter((i) => i.id !== id),
+    data: Store.getState()[dataType].read.filter((i) => i.key !== key),
   };
 }
 

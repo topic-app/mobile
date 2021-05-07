@@ -20,11 +20,6 @@ const config: DevAppConfig = {
     //   data: 'http://localhost/api/api/v1',
     // },
   },
-  cdn: {
-    timeout: 3000,
-    uploadUrl: 'https://cdn-dev.topicapp.fr/file/upload',
-    baseUrl: 'https://cdn-dev.topicapp.fr/file/get/',
-  },
   dev: {
     webAllowAnonymous: true,
   },

@@ -1,3 +1,5 @@
+import shortid from 'shortid';
+
 import Store from '@redux/store';
 import {
   UPDATE_ARTICLES_QUICKS,
@@ -140,22 +142,27 @@ async function deleteArticleList(listId: string) {
   );
 }
 
-async function addArticleRead(articleId: string, title: string, marked: boolean = false) {
+async function addArticleRead(
+  articleId: string,
+  title?: string,
+  marked: boolean = false,
+  date?: Date,
+) {
   Store.dispatch(
     addReadCreator({
       update: UPDATE_ARTICLES_READ,
       dataType: 'articleData',
-      data: { id: articleId, title, date: new Date(), marked },
+      data: { key: shortid(), id: articleId, title, date: date || new Date(), marked },
     }),
   );
 }
 
-async function deleteArticleRead(articleId: string) {
+async function deleteArticleRead(key: string) {
   Store.dispatch(
     deleteReadCreator({
       update: UPDATE_ARTICLES_READ,
       dataType: 'articleData',
-      id: articleId,
+      key,
     }),
   );
 }

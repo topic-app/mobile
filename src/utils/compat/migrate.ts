@@ -1,4 +1,6 @@
 import { Config } from '@constants';
+import { addArticleRead, clearArticlesRead } from '@redux/actions/contentData/articles';
+import { addEventRead, clearEventsRead } from '@redux/actions/contentData/events';
 import updatePrefs from '@redux/actions/data/prefs';
 import Store from '@redux/store';
 
@@ -32,6 +34,19 @@ export const migrateReduxDB = () => {
       if ((preferences.fontFamily as string) === 'Roboto') {
         updatePrefs({ fontFamily: 'system' });
       }
+    }
+
+    if (currentVersion < 6) {
+      const articleReadItems = Store.getState().articleData.read;
+      clearArticlesRead();
+      articleReadItems.forEach((r) => {
+        addArticleRead(r.id, r.title, r.marked, r.date);
+      });
+      const eventReadItems = Store.getState().eventData.read;
+      clearEventsRead();
+      eventReadItems.forEach((r) => {
+        addEventRead(r.id, r.title, r.marked, r.date);
+      });
     }
 
     // Add all migration scripts here in descending order
