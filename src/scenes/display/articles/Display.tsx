@@ -881,7 +881,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           ) : null
         }
         data={
-          reqState.articles.info.success && !verification
+          commentsDisplayed && reqState.articles.info.success && !verification
             ? [...(articleMy?.comments || []), ...articleComments]
             : []
         }

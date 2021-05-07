@@ -514,7 +514,7 @@ function EventDisplayDescription({
         ) : null
       }
       data={
-        reqState.events.info.success && !verification
+        commentsDisplayed && reqState.events.info.success && !verification
           ? [...(eventMy?.comments || []), ...eventComments]
           : []
       }
