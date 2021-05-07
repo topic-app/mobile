@@ -32,6 +32,7 @@ import {
 } from '@ts/types';
 import { checkPermission, Permissions } from '@utils';
 
+import AddToListModal from '../../display/components/AddToListModal';
 import EventListCard from './components/Card';
 import EventEmptyList from './components/EmptyList';
 
@@ -200,6 +201,9 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
   const [cardWidth, setCardWidth] = React.useState(100);
   const imageSize = cardWidth / 3.5;
 
+  const [addToListModalVisible, setAddToListModalVisible] = React.useState(false);
+  const [addToListModalEvent, setAddToListModalEvent] = React.useState('');
+
   const itemHeight = EVENT_CARD_HEADER_HEIGHT + imageSize;
 
   return (
@@ -221,6 +225,8 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
             historyActive={historyEnabled}
             lists={lists}
             overrideImageWidth={imageSize}
+            setAddToListModalEvent={setAddToListModalEvent}
+            setAddToListModalVisible={setAddToListModalVisible}
             navigate={() =>
               onEventPress({
                 id: event._id,
@@ -265,6 +271,13 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
           accessibilityLabel="Créer un évènement"
         />
       )}
+
+      <AddToListModal
+        visible={addToListModalVisible}
+        setVisible={setAddToListModalVisible}
+        id={addToListModalEvent}
+        type="event"
+      />
     </View>
   );
 };

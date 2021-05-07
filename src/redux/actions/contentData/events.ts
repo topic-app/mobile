@@ -31,6 +31,7 @@ import {
   clearCreationDataCreator,
   reorderQuickCreator,
   reorderListCreator,
+  deleteReadAllCreator,
 } from './ActionCreator';
 
 /**
@@ -76,7 +77,11 @@ async function removeEventFromList(eventId: string, listId: string) {
  * @param icon
  * @param description
  */
-async function addEventList(name: string, icon: string = '', description: string = '') {
+async function addEventList(
+  name: string,
+  icon: string = 'bookmark-outline',
+  description: string = '',
+) {
   Store.dispatch(
     addListCreator({
       update: UPDATE_EVENTS_LISTS,
@@ -162,6 +167,16 @@ async function deleteEventRead(key: string) {
   );
 }
 
+async function deleteEventReadAll(id: string) {
+  Store.dispatch(
+    deleteReadAllCreator({
+      update: UPDATE_EVENTS_READ,
+      dataType: 'eventData',
+      id,
+    }),
+  );
+}
+
 async function clearEventsRead() {
   Store.dispatch(
     clearReadCreator({
@@ -241,6 +256,7 @@ export {
   deleteEventList,
   addEventRead,
   deleteEventRead,
+  deleteEventReadAll,
   clearEventsRead,
   updateEventPrefs,
   addEventQuick,

@@ -31,6 +31,7 @@ import {
   clearCreationDataCreator,
   reorderQuickCreator,
   reorderListCreator,
+  deleteReadAllCreator,
 } from './ActionCreator';
 
 /**
@@ -76,7 +77,11 @@ async function removeArticleFromList(articleId: string, listId: string) {
  * @param icon
  * @param description
  */
-async function addArticleList(name: string, icon: string = '', description: string = '') {
+async function addArticleList(
+  name: string,
+  icon: string = 'bookmark-outline',
+  description: string = '',
+) {
   Store.dispatch(
     addListCreator({
       update: UPDATE_ARTICLES_LISTS,
@@ -167,6 +172,16 @@ async function deleteArticleRead(key: string) {
   );
 }
 
+async function deleteArticleReadAll(id: string) {
+  Store.dispatch(
+    deleteReadAllCreator({
+      update: UPDATE_ARTICLES_READ,
+      dataType: 'articleData',
+      id,
+    }),
+  );
+}
+
 async function clearArticlesRead() {
   Store.dispatch(
     clearReadCreator({
@@ -246,6 +261,7 @@ export {
   deleteArticleList,
   addArticleRead,
   deleteArticleRead,
+  deleteArticleReadAll,
   clearArticlesRead,
   updateArticlePrefs,
   addArticleQuick,

@@ -296,6 +296,22 @@ function deleteReadCreator<T extends ContentItemWithListsString>({
   };
 }
 
+type DeleteReadAllCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
+  id: string;
+};
+function deleteReadAllCreator<T extends ContentItemWithListsString>({
+  update,
+  dataType,
+  id,
+}: DeleteReadAllCreatorParams<T>): AnyAction {
+  return {
+    type: update,
+    data: Store.getState()[dataType].read.filter((i) => i.id !== id),
+  };
+}
+
 type ClearReadCreatorParams<T extends ContentItemWithListsString> = {
   dataType: T;
   update: ContentAction.TypeMap[T];
@@ -503,6 +519,7 @@ export {
   deleteListCreator,
   addReadCreator,
   deleteReadCreator,
+  deleteReadAllCreator,
   clearReadCreator,
   updatePrefsCreator,
   addQuickCreator,
