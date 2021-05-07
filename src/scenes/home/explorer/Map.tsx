@@ -169,14 +169,16 @@ const ExplorerMap: React.FC<ExplorerMapProps> = ({
   };
 
   const zoomToUserSchool = () => {
-    const { id, properties, geometry } = permanentPlaces[0];
     zoomToLocation(mapConfig.centerCoordinate, mapConfig.defaultZoom);
-    setSelectedLocation({
-      id,
-      type: properties.dataType,
-      name: properties.name,
-      coordinates: geometry.coordinates,
-    });
+    if (permanentPlaces.length) {
+      const { id, properties, geometry } = permanentPlaces[0];
+      setSelectedLocation({
+        id,
+        type: properties.dataType,
+        name: properties.name,
+        coordinates: geometry.coordinates,
+      });
+    }
   };
 
   const zoomToLocation = (coordinates: [number, number], zoomLevel: number = 16) => {
