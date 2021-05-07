@@ -38,14 +38,14 @@ export const SettingToggle: React.FC<SettingToggleProps> = ({
   const { colors } = useTheme();
   return (
     <List.Item
-      onPress={() => onPress()}
+      onPress={disabled ? undefined : () => onPress()}
       titleStyle={disabled && { color: colors.disabled }}
       descriptionStyle={disabled && { color: colors.disabled }}
       right={() => (
         <Switch
           value={value}
           disabled={disabled}
-          onValueChange={() => onPress()}
+          onValueChange={disabled ? undefined : () => onPress()}
           style={{ alignSelf: 'center', marginLeft: 5 }}
         />
       )}
