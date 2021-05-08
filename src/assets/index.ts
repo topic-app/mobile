@@ -46,3 +46,6 @@ export { default as TopicIcon } from '@assets/images/topic-icon.svg';
 export { default as TopicIconTextLight } from '@assets/images/topic-icon-text-light.svg';
 export { default as TopicIconTextDark } from '@assets/images/topic-icon-text-dark.svg';
 export { default as Telegram } from '@assets/images/misc/telegram.svg';
+export { default as WelcomeSearchBlob } from '@assets/images/welcome/search-blob.svg';
+export { default as WelcomeWavesTop } from '@assets/images/welcome/waves-top.svg';
+export { default as WelcomeWavesBottom } from '@assets/images/welcome/waves-bottom.svg';
