@@ -1,6 +1,7 @@
 import { useLinkTo } from '@react-navigation/native';
 import { Platform } from 'react-native';
 import PushNotification from 'react-native-push-notification';
+import parseUrl from 'url-parse';
 
 import { logger, messaging } from '@utils';
 
@@ -74,7 +75,8 @@ const setUpMessaging = () => {
           }
           if (action.type === 'link') {
             const linkTo = useLinkTo();
-            linkTo(action.data);
+            const { pathname, query } = parseUrl(action.data);
+            linkTo(pathname + query);
           }
         }
       });
