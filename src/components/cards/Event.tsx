@@ -28,14 +28,8 @@ const EventCard: React.FC<EventCardProps> = ({
   navigate,
   verification,
   preferences,
-  overrideImageWidth,
+  overrideImageWidth = 150,
 }) => {
-  const [cardWidth, setCardWidth] = React.useState(600);
-  let imageSize = overrideImageWidth || cardWidth / 3.5;
-  if (imageSize > 250) {
-    imageSize = 250;
-  }
-
   const eventVerification = event as EventVerificationPreload;
 
   const theme = useTheme();
@@ -55,150 +49,135 @@ const EventCard: React.FC<EventCardProps> = ({
   const verificationColors = ['green', 'yellow', 'yellow', 'orange', 'orange', 'orange'];
 
   return (
-    <View
-      onLayout={({
-        nativeEvent: {
-          layout: { width },
-        },
-      }) => {
-        setCardWidth(width);
-      }}
-    >
-      <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
-        <Card.Content>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-            <View style={{ flex: 1 }}>
-              <Title numberOfLines={2}>{event?.title}</Title>
-              <Caption>{Format.shortEventDate(event.duration)}</Caption>
-            </View>
-            {verification && eventVerification?.verification && (
-              <View
-                style={{
-                  borderRadius: 20,
-                  backgroundColor:
-                    verificationColors[eventVerification?.verification?.bot?.score] || 'red',
-                  height: 40,
-                  width: 40,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Text style={{ fontSize: 20, color: 'black' }}>
-                  {eventVerification?.verification?.bot?.score}
-                </Text>
-              </View>
-            )}
+    <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
+      <Card.Content>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+          <View style={{ flex: 1 }}>
+            <Title numberOfLines={2}>{event?.title}</Title>
+            <Caption>{Format.shortEventDate(event.duration)}</Caption>
           </View>
-        </Card.Content>
-        <View style={{ paddingVertical: 5 }}>
-          <TagList item={event} scrollable={false} />
-        </View>
-        <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
-          <View style={{ flexDirection: 'row' }}>
-            {event.image?.image ? (
-              <CustomImage
-                image={event?.image}
-                imageSize="medium"
-                width={imageSize}
-                height={imageSize}
-              />
-            ) : null}
+          {verification && eventVerification?.verification && (
             <View
               style={{
-                marginLeft: event.image?.image ? 15 : 0,
-                flex: 1,
-                maxHeight: imageSize,
+                borderRadius: 20,
+                backgroundColor:
+                  verificationColors[eventVerification?.verification?.bot?.score] || 'red',
+                height: 40,
+                width: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              <Paragraph numberOfLines={4} style={[{ fontFamily: preferences.fontFamily }]}>
-                {event?.summary}
-              </Paragraph>
-              {Array.isArray(event?.places) &&
-                event.places.map((p) => (
-                  <View
-                    key={p._id}
-                    style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
-                  >
-                    <Icon
-                      color={colors.icon}
-                      name={p.type === 'online' ? 'link' : 'map-marker'}
-                      style={cardStyles.cardDescription}
-                    />
-                    <Text
-                      style={[cardStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
-                      numberOfLines={1}
-                    >
-                      {p.type === 'standalone' && Format.address(p.address)}
-                      {p.type === 'school' && p.associatedSchool?.displayName}
-                      {p.type === 'place' && p.associatedPlace?.displayName}
-                      {p.type === 'online' &&
-                        p.link
-                          ?.replace('http://', '')
-                          ?.replace('https://', '')
-                          ?.split(/[/?#]/)?.[0]}
-                    </Text>
-                  </View>
-                ))}
+              <Text style={{ fontSize: 20, color: 'black' }}>
+                {eventVerification?.verification?.bot?.score}
+              </Text>
             </View>
-          </View>
-        </Card.Content>
-        {verification && (
-          <Card.Content>
-            {eventVerification.verification?.bot?.flags?.length !== 0 && (
-              <View style={{ flexDirection: 'row' }}>
-                <Icon
-                  accessibilityRole="none"
-                  name="tag"
-                  color={colors.invalid}
-                  size={16}
-                  style={{ alignSelf: 'center', marginRight: 5 }}
-                />
-                <Text>
-                  Classifié comme {eventVerification.verification?.bot?.flags?.join(', ')}
-                </Text>
-              </View>
-            )}
-            {eventVerification.verification?.reports?.length !== 0 && (
-              <View style={{ flexDirection: 'row' }}>
-                <Icon
-                  accessibilityRole="none"
-                  name="message-alert"
-                  color={colors.invalid}
-                  size={16}
-                  style={{ alignSelf: 'center', marginRight: 5 }}
-                />
-                <Text>Signalé {eventVerification.verification?.reports?.length} fois</Text>
-              </View>
-            )}
-            {eventVerification.verification?.users?.length !== 0 &&
-              !eventVerification.verification?.verified && (
-                <View style={{ flexDirection: 'row' }}>
+          )}
+        </View>
+      </Card.Content>
+      <View style={{ paddingVertical: 5 }}>
+        <TagList item={event} scrollable={false} />
+      </View>
+      <Card.Content style={{ marginTop: 5, marginBottom: 20 }}>
+        <View style={{ flexDirection: 'row' }}>
+          {event.image?.image ? (
+            <CustomImage
+              image={event?.image}
+              imageSize="medium"
+              width={overrideImageWidth}
+              height={overrideImageWidth}
+            />
+          ) : null}
+          <View
+            style={{
+              marginLeft: event.image?.image ? 15 : 0,
+              flex: 1,
+              maxHeight: overrideImageWidth,
+            }}
+          >
+            <Paragraph numberOfLines={4} style={[{ fontFamily: preferences.fontFamily }]}>
+              {event?.summary}
+            </Paragraph>
+            {Array.isArray(event?.places) &&
+              event.places.map((p) => (
+                <View
+                  key={p._id}
+                  style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
+                >
                   <Icon
-                    accessibilityRole="none"
-                    name="shield"
-                    color={colors.invalid}
-                    size={16}
-                    style={{ alignSelf: 'center', marginRight: 5 }}
+                    color={colors.icon}
+                    name={p.type === 'online' ? 'link' : 'map-marker'}
+                    style={cardStyles.cardDescription}
                   />
-                  <Text>Remis en moderation</Text>
+                  <Text
+                    style={[cardStyles.cardDescription, { flex: 1, paddingLeft: 4 }]}
+                    numberOfLines={1}
+                  >
+                    {p.type === 'standalone' && Format.address(p.address)}
+                    {p.type === 'school' && p.associatedSchool?.displayName}
+                    {p.type === 'place' && p.associatedPlace?.displayName}
+                    {p.type === 'online' &&
+                      p.link?.replace('http://', '')?.replace('https://', '')?.split(/[/?#]/)?.[0]}
+                  </Text>
                 </View>
-              )}
-            {eventVerification.verification?.extraVerification && (
+              ))}
+          </View>
+        </View>
+      </Card.Content>
+      {verification && (
+        <Card.Content>
+          {eventVerification.verification?.bot?.flags?.length !== 0 && (
+            <View style={{ flexDirection: 'row' }}>
+              <Icon
+                accessibilityRole="none"
+                name="tag"
+                color={colors.invalid}
+                size={16}
+                style={{ alignSelf: 'center', marginRight: 5 }}
+              />
+              <Text>Classifié comme {eventVerification.verification?.bot?.flags?.join(', ')}</Text>
+            </View>
+          )}
+          {eventVerification.verification?.reports?.length !== 0 && (
+            <View style={{ flexDirection: 'row' }}>
+              <Icon
+                accessibilityRole="none"
+                name="message-alert"
+                color={colors.invalid}
+                size={16}
+                style={{ alignSelf: 'center', marginRight: 5 }}
+              />
+              <Text>Signalé {eventVerification.verification?.reports?.length} fois</Text>
+            </View>
+          )}
+          {eventVerification.verification?.users?.length !== 0 &&
+            !eventVerification.verification?.verified && (
               <View style={{ flexDirection: 'row' }}>
                 <Icon
                   accessibilityRole="none"
-                  name="alert-decagram"
+                  name="shield"
                   color={colors.invalid}
                   size={16}
                   style={{ alignSelf: 'center', marginRight: 5 }}
                 />
-                <Text>Vérification d&apos;un administrateur Topic requise</Text>
+                <Text>Remis en moderation</Text>
               </View>
             )}
-          </Card.Content>
-        )}
-      </CardBase>
-    </View>
+          {eventVerification.verification?.extraVerification && (
+            <View style={{ flexDirection: 'row' }}>
+              <Icon
+                accessibilityRole="none"
+                name="alert-decagram"
+                color={colors.invalid}
+                size={16}
+                style={{ alignSelf: 'center', marginRight: 5 }}
+              />
+              <Text>Vérification d&apos;un administrateur Topic requise</Text>
+            </View>
+          )}
+        </Card.Content>
+      )}
+    </CardBase>
   );
 };
 
