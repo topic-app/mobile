@@ -10,7 +10,7 @@ import {
   Rubik_400Regular,
   Rubik_400Regular_Italic,
 } from '@expo-google-fonts/rubik';
-import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+import { NavigationContainer, NavigationContainerRef, useLinkTo } from '@react-navigation/native';
 import Color from 'color';
 import AppLoading from 'expo-app-loading';
 import decode from 'jwt-decode';
@@ -21,6 +21,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
+import parseUrl from 'url-parse';
 
 import { fetchGroups, fetchWaitingGroups, fetchAccount, logout } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
@@ -28,7 +29,7 @@ import updatePrefs from '@redux/actions/data/prefs';
 import { updateToken } from '@redux/actions/data/profile';
 import themes from '@styles/helpers/theme';
 import { Preferences, State } from '@ts/types';
-import { logger, messaging, Alert } from '@utils';
+import { logger, messaging, Alert, messageHandler } from '@utils';
 import { migrateReduxDB } from '@utils/compat/migrate';
 import { trackPageview } from '@utils/plausible';
 
@@ -47,6 +48,8 @@ type Props = {
   useDevServer: boolean;
   appOpens: number;
 };
+
+const navigationDeferred = messageHandler();
 
 const StoreApp: React.FC<Props> = ({
   useSystemTheme,
@@ -81,6 +84,8 @@ const StoreApp: React.FC<Props> = ({
       : {}),
   });
 
+  const linkTo = useLinkTo();
+
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
     useSystemTheme ? Appearance.getColorScheme() : 'light',
   );
@@ -106,9 +111,9 @@ const StoreApp: React.FC<Props> = ({
   React.useEffect(() => {
     migrateReduxDB();
 
-    if (loggedIn && Platform.OS !== 'web') {
-      messaging?.().getToken().then(updateToken);
-      messaging?.().onTokenRefresh(updateToken);
+    if (loggedIn && Platform.OS !== 'web' && messaging) {
+      messaging().getToken().then(updateToken);
+      messaging().onTokenRefresh(updateToken);
     }
 
     // Increase app opens
@@ -189,7 +194,7 @@ const StoreApp: React.FC<Props> = ({
     <PaperProvider theme={theme}>
       <>
         <NavigationContainer
-          ref={navigationRef}
+          ref={(navigationRef) => navigationDeferred.resolve(navigationRef)}
           linking={linking}
           fallback={<AppLoading />}
           theme={navTheme}

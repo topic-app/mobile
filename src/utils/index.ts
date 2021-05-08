@@ -15,6 +15,7 @@ export { Location } from './deviceLocation';
 export { Errors };
 
 export { default as Alert } from './compat/alert';
+export { default as messageHandler } from './compat/messageHandler';
 export { hashPassword } from './compat/crypto';
 export * from './compat/firebase';
 export { default as YouTube } from './compat/youtube';
