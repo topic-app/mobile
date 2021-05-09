@@ -6,28 +6,38 @@ stages:
   - test
   - build
 
+cache:
+  paths:
+    - node_modules/
+  key:
+    files:
+      - package.json
+
 typescript test:
   stage: test
   image: node:12
-  script:
+  before_script:
     - echo "unsafe-perm = true" > .npmrc
-    - npm install
+    - npm install --prefer-offline
+  script:
     - npm run tsc
 
 eslint test:
   stage: test
   image: node:12
-  script:
+  before_script:
     - echo "unsafe-perm = true" > .npmrc
-    - npm install
+    - npm install --prefer-offline
+  script:
     - npm run lint
 
 unit test:
   stage: test
   image: node:12
-  script:
+  before_script:
     - echo "unsafe-perm = true" > .npmrc
-    - npm install
+    - npm install --prefer-offline
+  script:
     - npm run test
 
 build app android:
