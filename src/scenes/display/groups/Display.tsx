@@ -660,7 +660,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                                 ? 'star'
                                 : undefined
                             }
-                            badgeColor={colors.solid.gold}
+                            badgeColor={colors.primary}
                             avatar={account.accountInfo?.user?.info?.avatar}
                           />
                         </View>
@@ -715,7 +715,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       <View style={{ flex: 1 }}>
                         <InlineCard
                           key={mem._id}
-                          title={mem.user?.displayName}
+                          title={
+                            mem.user?.data?.public
+                              ? mem.user?.displayName
+                              : `@${mem.user?.info?.username}`
+                          }
                           subtitle={`${
                             mem.user?.data?.public ? `@${mem.user?.info?.username} - ` : ''
                           }${group.roles?.find((r) => mem.role === r._id)?.name}${group.roles
@@ -726,7 +730,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           badge={
                             group.roles?.find((r) => r._id === mem.role)?.admin ? 'star' : undefined
                           }
-                          badgeColor={colors.solid.gold}
+                          badgeColor={colors.primary}
                           avatar={mem.user?.info?.avatar}
                           onPress={() =>
                             navigation.push('Root', {

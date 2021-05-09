@@ -66,7 +66,7 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, account }) => {
           />
         )}
         <List.Item
-          title="Développement"
+          title="Avancé"
           description="Informations, mode développeur"
           right={() => <List.Icon icon="chevron-right" />}
           left={() => <List.Icon icon="wrench" />}
