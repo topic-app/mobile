@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-paper/lib/typescript/types.d.ts b/node_modules/react-native-paper/lib/typescript/types.d.ts
-index bf0fa80..c85f612 100644
+index f696257..9032ff5 100644
 --- a/node_modules/react-native-paper/lib/typescript/types.d.ts
 +++ b/node_modules/react-native-paper/lib/typescript/types.d.ts
 @@ -1,4 +1,5 @@
@@ -8,7 +8,7 @@ index bf0fa80..c85f612 100644
  export declare type Font = {
      fontFamily: string;
      fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
-@@ -65,14 +66,7 @@ declare global {
+@@ -63,14 +64,7 @@ declare global {
          interface ThemeAnimation {
              scale: number;
          }
