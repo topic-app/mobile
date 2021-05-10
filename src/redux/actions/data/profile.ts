@@ -1,5 +1,5 @@
 import Store from '@redux/store';
-import { AppThunk, UPDATE_ACCOUNT_STATE, UPDATE_LINKING_STATE, User } from '@ts/types';
+import { AppThunk, Avatar, UPDATE_ACCOUNT_STATE, UPDATE_LINKING_STATE, User } from '@ts/types';
 import { request } from '@utils';
 
 /**
@@ -95,7 +95,11 @@ function updateTokenCreator(token: string): AppThunk {
 }
 
 type UpdateStringCreatorParams = {
-  url: 'profile/modify/username' | 'profile/modify/email' | 'profile/modify/password';
+  url:
+    | 'profile/modify/username'
+    | 'profile/modify/email'
+    | 'profile/modify/password'
+    | 'profile/modify/avatar';
   params: { [key: string]: any };
   authServer?: boolean;
 };
@@ -399,6 +403,15 @@ async function updateUsername(username: string) {
   );
 }
 
+async function updateAvatar(avatar: Avatar) {
+  await Store.dispatch(
+    updateProfileStringCreator({
+      url: 'profile/modify/avatar',
+      params: { avatar },
+    }),
+  );
+}
+
 async function updateEmail(email: string) {
   await Store.dispatch(
     updateProfileStringCreator({
@@ -445,6 +458,7 @@ export {
   updateUsername,
   updateEmail,
   updatePassword,
+  updateAvatar,
   emailChange,
   emailVerify,
   accountDelete,

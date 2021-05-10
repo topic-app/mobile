@@ -26,7 +26,7 @@ type ArticleListCardProps = {
   historyActive: boolean;
   lists: ArticleListItem[];
   navigate: () => void;
-  overrideImageWidth: number;
+  overrideImageWidth?: number;
 };
 
 const ArticleListCard: React.FC<ArticleListCardProps> = ({
@@ -46,8 +46,6 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
   const styles = getStyles(theme);
 
   const swipeRef = React.createRef<Swipeable>();
-
-  const maxLeftActions = (Dimensions.get('window').width - (100 + 120 * 2)) / 120;
 
   if (Platform.OS === 'web') {
     return (

@@ -26,7 +26,7 @@ type EventListCardProps = {
   historyActive: boolean;
   lists: EventListItem[];
   navigate: () => void;
-  overrideImageWidth: number;
+  overrideImageWidth?: number;
 };
 
 const EventListCard: React.FC<EventListCardProps> = ({

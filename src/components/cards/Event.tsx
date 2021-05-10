@@ -13,7 +13,7 @@ import CustomImage from '../CustomImage';
 import TagList from '../TagList';
 import getCardStyles from './styles/CardStyles';
 
-const EVENT_CARD_HEADER_HEIGHT = 157; // IMPORTANT: This should be updated every time something is changed (used for getItemLayout optimization)
+const EVENT_CARD_HEIGHT = 297; // IMPORTANT: This should be updated every time something is changed (used for getItemLayout optimization)
 
 type EventCardProps = {
   event: AnyEvent;
@@ -28,7 +28,7 @@ const EventCard: React.FC<EventCardProps> = ({
   navigate,
   verification,
   preferences,
-  overrideImageWidth = 150,
+  overrideImageWidth = 140,
 }) => {
   const eventVerification = event as EventVerificationPreload;
 
@@ -188,6 +188,6 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export { EVENT_CARD_HEADER_HEIGHT };
+export { EVENT_CARD_HEIGHT };
 
 export default connect(mapStateToProps)(EventCard);

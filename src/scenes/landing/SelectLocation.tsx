@@ -7,7 +7,7 @@ import {
   Animated,
   KeyboardAvoidingView,
 } from 'react-native';
-import { Text, Button, Divider, List, ProgressBar, useTheme } from 'react-native-paper';
+import { Text, Button, Divider, List, ProgressBar, useTheme, Title } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
@@ -41,13 +41,10 @@ import {
 import { logger, Location, Format, Alert, Errors, trackEvent } from '@utils';
 
 import type { LandingScreenNavigationProp } from '.';
-import LocationListItem from './components/LocationListItem';
 import getStyles from './styles';
-import { getNewLocations, LocationItem } from './utils/getNewLocations';
 
 type WelcomeLocationProps = {
   schoolsNear: (School | SchoolPreload)[];
-  departmentsData: (Department | DepartmentPreload)[];
   schoolsSearch: SchoolPreload[];
   departmentsSearch: DepartmentPreload[];
   state: {
@@ -55,20 +52,15 @@ type WelcomeLocationProps = {
     departments: DepartmentRequestState;
     location: LocationRequestState;
   };
-  location: LocationList;
   navigation: LandingScreenNavigationProp<'SelectLocation'>;
   route: { params?: { goBack?: boolean } };
-  account: Account;
 };
 
 const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   schoolsNear,
-  departmentsData,
   schoolsSearch,
   departmentsSearch,
   state,
-  account,
-  location,
   navigation,
   route,
 }) => {
@@ -82,259 +74,129 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const scrollRef = React.createRef<FlatList>();
   const inputRef = React.createRef<Searchbar>();
 
-  // If the user has already been to landing, used to show back buttons
-  const hasUserAlreadyBeenToLanding = !!route.params?.goBack;
-
-  const initialLocations: LocationItem[] = [
-    ...location.schoolData
-      .filter((sch) => location.schools.includes(sch._id))
-      .map((sch) => ({
-        id: sch._id,
-        type: 'school' as const,
-        name: sch.name,
-        description: sch.address && Format.shortAddress(sch.address),
-        departmentIds: sch.departments?.map((dep) => dep._id),
-      })),
-    ...location.departmentData
-      .filter((dep) => location.departments.includes(dep._id))
-      .map((dep) => ({
-        id: dep._id,
-        type: 'department' as const,
-        description: `Département ${dep.code}`,
-        name: dep.name,
-      })),
-  ];
-
-  if (location.global) {
-    initialLocations.push({ id: 'global', name: 'France entière', type: 'other' });
-  }
-
-  const [selectedLocations, setSelectedLocations] = React.useState(initialLocations);
-  // For convenience
-  const selectedIds = selectedLocations.map((loc) => loc.id);
-
-  const [chipCategory, setChipCategory] = React.useState<
-    'schools' | 'departements' | 'regions' | 'other'
-  >('schools');
-
-  const [buttonVisible, setButtonVisible] = React.useState(false);
-  const [userLocation, setUserLocation] = React.useState(false);
-  const [locationError, setLocationError] = React.useState(false);
+  const [locationStatus, setLocationStatus] = React.useState<'yes' | 'no' | 'error' | 'never' | ''>(
+    '',
+  );
   const [searchFocused, setSearchFocused] = React.useState(false);
 
   React.useEffect(() => {
-    updateDepartments('initial');
-    Location.getStatus().then(async (status) => {
-      if (status === 'yes') {
-        setUserLocation(true);
-        const coords = await Location.getCoordinates();
-        updateNearSchools('initial', coords.latitude, coords.longitude);
-      } else if (status === 'no') {
-        setButtonVisible(true);
-      } else if (status === 'error') {
-        setLocationError(true);
-      }
-      // else can never use location :(
-    });
+    searchNearSchools(false);
   }, []);
 
-  // Helper functions to add and remove locations,
-  // memoized so they don't re-render memoized LocationListItem
-  const addLocation = React.useCallback(
-    (newLocation: LocationItem) =>
-      setSelectedLocations((prevLocations) => [...prevLocations, newLocation]),
-    [],
-  );
-  const removeLocation = React.useCallback(
-    (locationId: string) =>
-      setSelectedLocations((prevLocations) => prevLocations.filter((loc) => loc.id !== locationId)),
-    [],
-  );
-
-  const requestUserLocation = () => {
-    Location.request().then(async (status) => {
-      if (status === 'yes') {
-        trackEvent('landing:locate-accept-permission');
-        setUserLocation(true);
-        setButtonVisible(false);
-        const coords = await Location.getCoordinates();
-        updateNearSchools('initial', coords.latitude, coords.longitude);
-      } else if (status === 'no') {
-        trackEvent('landing:locate-reject-permission');
-        setButtonVisible(false);
-      } else if (status === 'error') {
-        setLocationError(true);
-        trackEvent('error:landing-locate');
-      }
-      // else can never use location :(
-    });
+  const searchNearSchools = async (request = false) => {
+    const status = await (request ? Location.request : Location.getStatus)();
+    setLocationStatus(status);
+    if (status === 'yes') {
+      const coords = await Location.getCoordinates();
+      updateNearSchools('initial', coords.latitude, coords.longitude);
+    }
   };
 
   const onSearchChange = (text: string) => {
-    if (text !== '') {
+    if (text) {
       searchSchools('initial', text);
       searchDepartments('initial', text);
     }
   };
 
   const retry = async () => {
-    if (searchText !== '') {
+    if (searchText) {
       searchSchools('initial', searchText);
       searchDepartments('initial', searchText);
     } else {
-      if (userLocation) {
-        const coords = await Location.getCoordinates();
-        updateNearSchools('initial', coords.latitude, coords.longitude);
-      }
-      updateDepartments('initial');
+      searchNearSchools();
     }
   };
 
-  const next = () => {
-    if (chipCategory === 'schools' && searchText) {
-      searchSchools('next', searchText);
-    } else if (chipCategory === 'departements' || chipCategory === 'regions') {
-      if (searchText) {
-        searchDepartments('next', searchText);
-      } else {
-        updateDepartments('next');
-      }
-    }
-  };
-
-  function done() {
-    // Sets are arrays that only permit unique values
-    const schoolSet: Set<string> = new Set();
-    const departmentSet: Set<string> = new Set();
-    const schoolDepartmentSet: Set<string> = new Set();
-    const otherSet: Set<string> = new Set();
-
-    selectedLocations.forEach((loc) => {
-      if (loc.type === 'school') {
-        schoolSet.add(loc.id);
-        loc.departmentIds?.forEach((depId) => schoolDepartmentSet.add(depId));
-      } else if (loc.type === 'department') {
-        departmentSet.add(loc.id);
-      } else if (loc.type === 'other') {
-        otherSet.add(loc.id);
-      }
-    });
-
-    const schoolIds = Array.from(schoolSet).filter((s) => !!s);
-    const departmentIds = Array.from(departmentSet).filter((s) => !!s);
-    const schoolDepartmentIds = Array.from(schoolDepartmentSet).filter((s) => !!s);
-    const global = otherSet.has('global') || schoolIds.length + departmentIds.length === 0 || false;
-
-    const params = { schools: schoolIds, departments: departmentIds.concat(schoolDepartmentIds) };
-
-    Promise.all([
-      updateLocation({
-        selected: true,
-        global,
-        schools: schoolIds,
-        departments: departmentIds,
-      }),
-      ...schoolIds.map((schId) =>
-        addArticleQuick('school', schId, selectedLocations.find((loc) => loc.id === schId)!.name),
-      ),
-      ...schoolIds.map((schId) =>
-        addEventQuick('school', schId, selectedLocations.find((loc) => loc.id === schId)!.name),
-      ),
-      ...departmentIds.map((depId) =>
-        addArticleQuick(
-          'departement',
-          depId,
-          selectedLocations.find((loc) => loc.id === depId)!.name,
-        ),
-      ),
-      ...departmentIds.map((depId) =>
-        addEventQuick('school', depId, selectedLocations.find((loc) => loc.id === depId)!.name),
-      ),
-    ])
+  function done<
+    T extends
+      | { type: 'school'; element: SchoolPreload | School }
+      | { type: 'department'; element: DepartmentPreload | Department }
+      | { type: 'global'; element: undefined }
+  >(type: T['type'], element: T['element']) {
+    Promise.all(
+      type === 'school'
+        ? [
+            updateLocation({
+              selected: true,
+              global: false,
+              schools: [(element as SchoolPreload)._id],
+              departments: [],
+            }),
+            addArticleQuick(
+              'school',
+              (element as SchoolPreload)._id,
+              (element as SchoolPreload).name,
+            ),
+            addEventQuick(
+              'school',
+              (element as SchoolPreload)._id,
+              (element as SchoolPreload).name,
+            ),
+          ]
+        : type === 'department'
+        ? [
+            updateLocation({
+              selected: true,
+              global: false,
+              schools: [],
+              departments: [(element as DepartmentPreload)._id],
+            }),
+            addArticleQuick(
+              'departement',
+              (element as DepartmentPreload)._id,
+              (element as DepartmentPreload).name,
+            ),
+            addEventQuick(
+              'departement',
+              (element as DepartmentPreload)._id,
+              (element as DepartmentPreload).name,
+            ),
+          ]
+        : [
+            updateLocation({
+              selected: true,
+              global: true,
+              schools: [],
+              departments: [],
+            }),
+          ],
+    )
       .then(() => {
-        if (hasUserAlreadyBeenToLanding) {
-          navigation.goBack();
-        } else {
-          navigation.popToTop();
-          navigation.replace('Root', {
-            screen: 'Main',
-            params: {
-              screen: 'Home1',
-              params: { screen: 'Home2', params: { screen: 'Article' } },
-            },
-          });
-        }
+        navigation.popToTop();
+        navigation.replace('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'Home1',
+            params: { screen: 'Home2', params: { screen: 'Article' } },
+          },
+        });
       })
       .catch((error) =>
         Errors.showPopup({
           type: 'axios',
           what: 'la mise à jour de la localisation',
           error,
-          retry: done,
+          retry: () => done(type, element),
         }),
       );
   }
 
-  const schools = searchText === '' ? schoolsNear : schoolsSearch;
-  const departments = searchText === '' ? departmentsData : departmentsSearch;
-
-  // useMemo is used to perform memoization on expensive calculations
-  // chipListData will be re-generated if schools or departments change
-  const chiplistData = React.useMemo(
-    () => ({
-      schools: {
-        key: 'schools' as const,
-        title: 'Écoles',
-        data: getNewLocations('school', schools),
-      },
-      departements: {
-        key: 'departements' as const,
-        title: 'Départements',
-        data: getNewLocations('department', departments),
-      },
-      regions: {
-        key: 'regions' as const,
-        title: 'Régions',
-        data: getNewLocations('region', departments),
-      },
-      other: {
-        key: 'other' as const,
-        title: 'Autre',
-        data: getNewLocations('other', []),
-      },
-    }),
-    [schools, departments],
-  );
-
-  const shouldCollapseHeader =
-    searchFocused ||
-    chipCategory !== 'schools' ||
-    (chiplistData.schools.data.length !== 0 && !userLocation);
+  const relevantStates = searchText
+    ? [state.schools.search, state.departments.search]
+    : [state.schools.near];
 
   const ListHeaderComponent = (
     <View>
-      <View style={{ alignItems: 'center' }}>
-        <CategoriesList
-          selected={chipCategory}
-          setSelected={setChipCategory}
-          categories={Object.values(chiplistData)}
-        />
-      </View>
-      {((searchText === '' &&
-        (state.schools.near.loading.initial || state.departments.list.loading.initial)) ||
-        (searchText !== '' &&
-          (state.schools.search?.loading.initial ||
-            state.departments.search?.loading.initial))) && <ProgressBar indeterminate />}
-      {((searchText === '' && (state.schools.near.error || state.departments.list.error)) ||
-        (searchText !== '' &&
-          (state.schools.search?.error || state.departments.search?.error))) && (
+      {relevantStates.some((s) => s?.loading.initial) ? (
+        <ProgressBar indeterminate />
+      ) : (
+        <View style={{ height: 4 }} />
+      )}
+      {relevantStates.some((s) => s?.error) && (
         <ErrorMessage
           type="axios"
-          error={
-            searchText === ''
-              ? [state.schools.near.error, state.departments.list.error]
-              : [state.schools.search?.error, state.departments.search?.error]
-          }
+          error={relevantStates.map((s) => s?.error)}
           retry={retry}
           strings={{
             what: 'La récupération des localisations',
@@ -343,7 +205,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
           }}
         />
       )}
-      {searchText === '' && chipCategory === 'schools' && schoolsNear.length > 0 ? (
+      {!searchText && schoolsNear.length > 0 ? (
         <View style={{ paddingTop: 5 }}>
           <List.Subheader>Écoles autour de vous</List.Subheader>
           <Divider />
@@ -352,85 +214,45 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
     </View>
   );
 
-  const ITEM_HEIGHT = 68.5714;
-
-  const getItemLayout = React.useCallback(
-    (data, index) => ({
-      length: ITEM_HEIGHT,
-      offset: ITEM_HEIGHT * index,
-      index,
-    }),
-    [],
-  );
-
-  const ListEmptyComponent =
-    searchText === '' && chipCategory === 'schools' ? (
-      <View>
-        {state.schools.near.loading.initial ? null : (
-          <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 50 }]}>
-            {locationError ? (
-              <View style={{ marginTop: 30 }}>
-                <Text>Erreur lors de la récupération des écoles autour de vous</Text>
-                <View style={styles.container}>
-                  <Button
-                    onPress={requestUserLocation}
-                    uppercase={Platform.OS !== 'ios'}
-                    mode="outlined"
-                    style={{ borderRadius: 20 }}
-                  >
-                    Réessayer
-                  </Button>
-                </View>
-              </View>
-            ) : (
-              buttonVisible &&
-              Platform.OS !== 'web' && (
-                <View>
-                  <Text>Appuyez ci-dessous pour trouver les écoles autour de vous</Text>
-                  <View style={styles.container}>
-                    <Button
-                      onPress={() => {
-                        trackEvent('landing:press-locate-button');
-                        requestUserLocation();
-                      }}
-                      uppercase={Platform.OS !== 'ios'}
-                      mode="outlined"
-                      icon="map-marker"
-                      style={{ borderRadius: 20 }}
-                    >
-                      Rechercher autour de moi
-                    </Button>
-                  </View>
-                </View>
-              )
-            )}
+  const ListEmptyComponent = () => {
+    if (
+      !searchText &&
+      !state.schools.near.loading.initial &&
+      Platform.OS !== 'web' &&
+      (locationStatus === 'no' || locationStatus === 'error')
+    ) {
+      return (
+        <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 50 }]}>
+          <Text>
+            {locationStatus === 'no'
+              ? 'Appuyez ci-dessous pour trouver les écoles autour de vous'
+              : 'Erreur lors de la recherche des écoles autour de vous'}
+          </Text>
+          <View style={styles.container}>
+            <Button
+              onPress={() => {
+                trackEvent('landing:press-locate-button');
+                searchNearSchools(true);
+              }}
+              uppercase={Platform.OS !== 'ios'}
+              mode="outlined"
+              icon="map-marker"
+              style={{ borderRadius: 20 }}
+            >
+              {locationStatus === 'no' ? 'Rechercher autour de moi' : 'Réessayer'}
+            </Button>
           </View>
-        )}
-      </View>
-    ) : (
-      <View>
-        {(searchText === '' &&
-          (state.schools.near.loading.initial || state.departments.list.loading.initial)) ||
-        (searchText !== '' &&
-          (state.schools.search?.loading.initial ||
-            state.departments.search?.loading.initial)) ? null : (
-          <View style={styles.centerIllustrationContainer}>
-            <Text>Aucun résultat</Text>
-          </View>
-        )}
-      </View>
-    );
-
-  const ListFooterComponent = () => (
-    <View style={{ minHeight: 50 }}>
-      {((searchText === '' &&
-        (state.schools.list.loading.next || state.departments.list.loading.next)) ||
-        (searchText !== '' &&
-          (state.schools.search?.loading.next || state.departments.search?.loading.next))) && (
-        <ActivityIndicator size="large" color={colors.primary} />
-      )}
-    </View>
-  );
+        </View>
+      );
+    }
+    if (!relevantStates.some((s) => s?.loading.initial) && searchText)
+      return (
+        <View style={styles.centerIllustrationContainer}>
+          <Text>Aucun résultat</Text>
+        </View>
+      );
+    return null;
+  };
 
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const headerElevation = scrollY.interpolate({
@@ -438,6 +260,17 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
     outputRange: [0, 3],
     extrapolate: 'clamp',
   });
+
+  const data = (searchText
+    ? [
+        ...schoolsSearch.map((s) => ({ ...s, element: 'school' })).slice(0, 3),
+        ...departmentsSearch.map((d) => ({ ...d, element: 'department' })),
+        ...schoolsSearch.map((s) => ({ ...s, element: 'school' })).slice(3),
+      ]
+    : schoolsNear.map((s) => ({ ...s, element: 'school' }))) as (
+    | ((SchoolPreload | School) & { element: 'school' })
+    | ((DepartmentPreload | Department) & { element: 'department' })
+  )[];
 
   return (
     <View style={styles.page}>
@@ -448,34 +281,22 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
           style={{
             elevation: headerElevation,
             backgroundColor: colors.background,
-            justifyContent: 'flex-end',
           }}
         >
-          <CollapsibleView
-            collapsed={shouldCollapseHeader}
-            style={{ height: userLocation ? 50 : '40%' }}
-          >
-            {hasUserAlreadyBeenToLanding ? (
-              <PlatformBackButton onPress={() => navigation.goBack()} />
-            ) : null}
-            <View style={[styles.locationHeaderContainer, { marginBottom: 0, flex: 1 }]}>
-              <View style={styles.centerIllustrationContainer}>
-                <CollapsibleView collapsed={userLocation}>
-                  <Illustration name="location-select" height={200} width={200} />
-                </CollapsibleView>
-                <Text style={[styles.sectionTitle, { marginTop: userLocation ? 40 : 0 }]}>
-                  Choisissez votre école
-                </Text>
-              </View>
+          <CollapsibleView collapsed={!!(searchText || searchFocused)}>
+            <View style={styles.centerIllustrationContainer}>
+              <CollapsibleView collapsed={schoolsNear.length > 0}>
+                <Illustration name="location-select" />
+              </CollapsibleView>
+              <Title style={{ fontSize: 24, paddingTop: schoolsNear.length ? 20 : 0 }}>
+                Choisissez votre école
+              </Title>
             </View>
           </CollapsibleView>
           <View style={styles.searchContainer}>
             <Searchbar
               ref={inputRef}
-              icon={shouldCollapseHeader && hasUserAlreadyBeenToLanding ? 'arrow-left' : undefined}
-              onIconPress={
-                shouldCollapseHeader && hasUserAlreadyBeenToLanding ? navigation.goBack : undefined
-              }
+              icon="magnify"
               placeholder="Rechercher"
               value={searchText}
               onChangeText={setSearchText}
@@ -485,104 +306,67 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
             />
           </View>
         </Animated.View>
-        <Animated.FlatList<LocationItem>
+        <Animated.FlatList<
+          | ((SchoolPreload | School) & { element: 'school' })
+          | ((DepartmentPreload | Department) & { element: 'department' })
+        >
           ref={scrollRef}
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
             useNativeDriver: true,
           })}
-          keyExtractor={(item) => item.id}
-          data={chiplistData[chipCategory].data}
+          keyExtractor={(item) => item._id}
+          data={data}
           ListHeaderComponent={ListHeaderComponent}
-          ListFooterComponent={ListFooterComponent}
           ListEmptyComponent={ListEmptyComponent}
           renderItem={({ item }) => (
-            <LocationListItem
-              {...item}
-              onAdd={addLocation}
-              onRemove={removeLocation}
-              selected={selectedIds.includes(item.id)}
+            <List.Item
+              title={item.name}
+              description={
+                item.element === 'school'
+                  ? `${item.address?.address?.city}, ${
+                      item.departments?.length
+                        ? item.departments[0].displayName
+                        : 'Département inconnu'
+                    }`
+                  : `${item.type === 'departement' ? 'Département' : 'Région'}, ${item.code}`
+              }
+              descriptionNumberOfLines={1}
+              onPress={() => {
+                done(item.element, item);
+              }}
             />
           )}
-          onEndReached={next}
-          onEndReachedThreshold={1}
-          getItemLayout={getItemLayout}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="none"
         />
-        <Divider />
-        {state.location.update.loading && <ProgressBar indeterminate />}
-        {state.location.update.error && (
-          <ErrorMessage
-            type="axios"
-            error={state.location.update.error}
-            strings={{
-              what: 'la mise à jour de la localisation',
-              contentSingular: 'La localisation',
-            }}
-            retry={done}
-          />
-        )}
-        <CollapsibleView collapsed={selectedLocations.length === 0}>
-          <ChipAddList
-            setList={({ key }) => removeLocation(key)}
-            data={selectedLocations.map((loc) => ({ title: loc.name, key: loc.id, ...loc }))}
-            chipProps={{ icon: 'close', rightAction: true, actionLabel: 'Supprimer' }}
-            style={{ marginBottom: 0 }}
-          />
-        </CollapsibleView>
-        <View
-          style={[
-            styles.contentContainer,
-            {
-              paddingVertical: 15,
-            },
-          ]}
-        >
-          <View style={styles.buttonContainer}>
+        <CollapsibleView collapsed={!!(searchText || searchFocused)}>
+          <Divider />
+          <View style={[styles.container, styles.buttonContainer]}>
             <Button
-              mode={
-                Platform.OS === 'ios' || selectedLocations.length === 0 ? 'outlined' : 'contained'
-              }
-              color={colors.primary}
+              mode="text"
               uppercase={Platform.OS !== 'ios'}
-              onPress={() => {
-                if (selectedLocations.length === 0 && Platform.OS !== 'web') {
-                  logger.info('User has not specified a landing location. Showing alert.');
-                  Alert.alert(
-                    'Ne pas spécifier de localisation?',
-                    'Vous verrez uniquement les articles destinés à la france entière',
-                    [{ text: 'Annuler' }, { text: 'Continuer', onPress: done }],
-                    { cancelable: true },
-                  );
-                } else {
-                  done();
-                }
-              }}
-              style={{ flex: 1 }}
+              onPress={() => done('global', undefined)}
             >
-              {selectedLocations.length === 0 ? 'Passer' : 'Confirmer'}
+              Passer
             </Button>
           </View>
-        </View>
+        </CollapsibleView>
       </KeyboardAvoidingView>
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { schools, departments, location, account } = state;
+  const { schools, departments, location } = state;
   return {
     schoolsNear: schools.near,
-    departmentsData: departments.data,
     schoolsSearch: schools.search,
     departmentsSearch: departments.search,
-    location,
     state: {
       schools: schools.state,
       departments: departments.state,
       location: location.state,
     },
-    account,
   };
 };
 

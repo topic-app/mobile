@@ -24,7 +24,8 @@ const sponsorsWithImages = sponsors.map((sponsor) => ({
     jtac: require('@assets/images/sponsors/jtac.png'),
     lesper: require('@assets/images/sponsors/esper.jpg'),
     edtech: require('@assets/images/sponsors/edtech.png'),
-  }[sponsor.id as 'mgen' | 'jtac' | 'edtech' | 'lesper'],
+    solidarsport: require('@assets/images/sponsors/solidarsport.jpg'),
+  }[sponsor.id as 'mgen' | 'jtac' | 'edtech' | 'lesper' | 'solidarsport'],
 }));
 
 const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
@@ -48,7 +49,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   const [sponsorContent, setSponsorContent] = React.useState({
     title: 'Partenaires',
     description:
-      "Un grand merci à nos partenaires sans qui cette application ne serait pas possible, ainsi qu'aux membres de l'équipe et à nos bêta - testeurs.",
+      "Un grand merci à nos partenaires sans qui cette application ne serait pas possible, ainsi qu'aux membres de l'équipe et à nos bêta-testeurs. Cliquez sur les logos pour plus d'infos.",
   });
 
   const backgroundFullHeight =
@@ -132,7 +133,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             useNativeDriver: true,
           }),
           Animated.timing(animValues.logoTranslate, {
-            toValue: -230,
+            toValue: -180,
             duration: 150,
             useNativeDriver: true,
           }),
@@ -421,16 +422,16 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               style={{
                 flexDirection: 'row',
                 flexWrap: 'wrap',
-                height: 100 * Math.ceil(sponsorsWithImages.length / 2) + 10,
-                width: 100 * 2 + 10,
+                height: 100 * Math.ceil(sponsorsWithImages.length / 3) + 10,
+                width: 100 * 3 + 10,
               }}
             >
               {sponsorsWithImages.map((sponsor, index) => (
                 <View
                   key={sponsor.id}
                   style={{
-                    marginRight: index % 2 === 0 ? 10 : 0,
-                    marginBottom: index < 2 ? 10 : 0,
+                    marginRight: index % 3 === 0 ? 10 : 0,
+                    marginBottom: index < 3 ? 10 : 0,
                   }}
                 >
                   <PlatformTouchable
@@ -440,8 +441,9 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
                   >
                     <Image
                       style={{
-                        width: 100,
-                        height: 100,
+                        width: 94,
+                        height: 94,
+                        margin: 3,
                       }}
                       resizeMode="contain"
                       source={sponsor.image}

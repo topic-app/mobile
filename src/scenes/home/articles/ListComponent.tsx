@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import {
   ErrorMessage,
   GroupsBanner,
-  ARTICLE_CARD_HEADER_HEIGHT,
+  ARTICLE_CARD_HEIGHT,
   VerificationBanner,
   ContentFlatList,
   ContentSection,
@@ -189,19 +189,13 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
     updateArticlesFollowing('initial');
   }, [null]);
 
-  const [cardWidth, setCardWidth] = React.useState(100);
-  const imageSize = cardWidth / 3.5;
-
   const [addToListModalVisible, setAddToListModalVisible] = React.useState(false);
   const [addToListModalArticle, setAddToListModalArticle] = React.useState('');
 
-  const itemHeight = ARTICLE_CARD_HEADER_HEIGHT + imageSize;
+  const itemHeight = ARTICLE_CARD_HEIGHT;
 
   return (
-    <View
-      style={styles.page}
-      onLayout={({ nativeEvent }) => setCardWidth(nativeEvent.layout.width)}
-    >
+    <View style={styles.page}>
       <ContentFlatList
         scrollY={scrollY}
         initialSection={initialTabKey}
@@ -217,7 +211,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
             lists={lists}
             setAddToListModalArticle={setAddToListModalArticle}
             setAddToListModalVisible={setAddToListModalVisible}
-            overrideImageWidth={imageSize}
             navigate={() =>
               onArticlePress({
                 id: article._id,
