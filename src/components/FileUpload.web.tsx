@@ -62,7 +62,7 @@ const FileUpload: React.FC<Props> = ({
         maxFileSize="5MB"
         acceptedFileTypes={['image/*']}
         allowMultiple={false}
-        labelIdle='Déposez une image ici ou <span class="filepond--label-action">choississez un fichier</span>'
+        labelIdle='Déposez une image ici ou <span class="filepond--label-action">choisissez un fichier</span>'
         labelFileLoading="Chargement..."
         labelFileLoadError="Erreur durant le chargement"
         labelFileProcessingError="Erreur durant l'upload"

@@ -245,7 +245,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         </View>
       );
     }
-    if (!relevantStates.some((s) => s?.loading.initial))
+    if (!relevantStates.some((s) => s?.loading.initial) && searchText)
       return (
         <View style={styles.centerIllustrationContainer}>
           <Text>Aucun résultat</Text>
@@ -289,7 +289,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                 <Illustration name="location-select" />
               </CollapsibleView>
               <Title style={{ fontSize: 24, paddingTop: schoolsNear.length ? 20 : 0 }}>
-                Choississez votre école
+                Choisissez votre école
               </Title>
             </View>
           </CollapsibleView>
