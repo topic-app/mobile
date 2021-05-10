@@ -1,11 +1,12 @@
-import { useLinkTo } from '@react-navigation/native';
-import { Platform } from 'react-native';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import { Linking, Platform } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import parseUrl from 'url-parse';
 
 import { logger, messaging } from '@utils';
 
 const handleMessage = async (remoteMessage: any) => {
+  logger.info(`Push notification received, ${JSON.stringify(remoteMessage)}`);
   if (remoteMessage?.data?.type === 'notification') {
     const { priority, message } = remoteMessage.data;
     const push = JSON.parse(message);
@@ -21,7 +22,8 @@ const handleMessage = async (remoteMessage: any) => {
           playSound: priority === 'urgent' || priority === 'high' || priority === 'medium',
         },
         (created) => {
-          PushNotification.localNotification({
+          logger.info(created ? `Created channel, sending notification` : 'Sending notification');
+          logger.info({
             channelId: push.channel?.id,
             title: push.title,
             message: push.content,
@@ -29,9 +31,22 @@ const handleMessage = async (remoteMessage: any) => {
             actions: push.actions?.map((a: { text: string }) => a?.text),
             userInfo: { onPress: push.onPress, actions: push.actions },
           });
+          try {
+            PushNotification.localNotification({
+              channelId: push.channel?.id,
+              title: push.title,
+              message: push.content,
+              actions: push.actions?.map((a: { text: string }) => a?.text),
+              userInfo: { onPress: push.onPress, actions: push.actions },
+            });
+          } catch (err) {
+            logger.warn('Failed to notify');
+            logger.warn(err);
+          }
         },
       );
     } else if (Platform.OS === 'ios') {
+      logger.info('Sending notification');
       PushNotification.localNotification({
         category: push.channel?.id,
         title: push.title,
@@ -42,50 +57,48 @@ const handleMessage = async (remoteMessage: any) => {
   }
 };
 
-function Deferred(): void {
-  this.promise = new Promise((resolve, reject) => {
-    this.reject = reject;
-    this.resolve = resolve;
-  });
-}
-
 const setUpMessaging = () => {
-  const navigationDeferred: PromiseConstructor = new Deferred();
-
   if (Platform.OS !== 'web' && messaging) {
     messaging().setBackgroundMessageHandler(handleMessage);
+    messaging().onMessage(handleMessage);
   }
+};
 
+const setUpHandler = () => {
   PushNotification.configure({
     onNotification: (notification) => {
-      navigationDeferred.promise.then((navigation) => {
-        if (notification.userInteraction) {
-          let action: { data: string; type: string } | undefined;
-          if (notification.action) {
-            action = notification.data.actions?.find(
-              (a: { text: string; action: { type: string; data: string } }) =>
-                a.text === notification.action,
-            )?.action;
+      if (notification.userInteraction) {
+        let action: { data: string; type: string } | undefined;
+        console.log(notification);
+        if (notification.action) {
+          action = notification.data.actions?.find(
+            (a: { text: string; action: { type: string; data: string } }) =>
+              a.text === notification.action,
+          )?.action;
+        } else {
+          action = notification.data.onPress;
+        }
+        if (!action) {
+          logger.warn('No action on notification');
+          return;
+        }
+        if (action.type === 'link') {
+          const { pathname, query } = parseUrl(action.data);
+          // Trying to get navigation to work here is to complicated, hopefully this'll work well enough
+          if (Linking.canOpenURL(`topic://${pathname}${query}`)) {
+            Linking.openURL(`topic://${pathname}${query}`);
           } else {
-            action = notification.data.onPress?.action;
-          }
-          if (!action) {
-            logger.warn('No action on notification');
-            return;
-          }
-          if (action.type === 'link') {
-            const linkTo = useLinkTo();
-            const { pathname, query } = parseUrl(action.data);
-            linkTo(pathname + query);
+            logger.info('Could not open topic:// link, falling back to http');
+            Linking.openURL(action.data);
           }
         }
-      });
+      }
+
+      notification.finish(PushNotificationIOS.FetchResult.NoData);
     },
 
     requestPermissions: false,
   });
-
-  return navigationDeferred;
 };
 
-export default setUpMessaging;
+export { setUpHandler, setUpMessaging };

@@ -29,7 +29,7 @@ import updatePrefs from '@redux/actions/data/prefs';
 import { updateToken } from '@redux/actions/data/profile';
 import themes from '@styles/helpers/theme';
 import { Preferences, State } from '@ts/types';
-import { logger, messaging, Alert, messageHandler } from '@utils';
+import { logger, messaging, Alert, setUpMessaging, setUpHandler } from '@utils';
 import { migrateReduxDB } from '@utils/compat/migrate';
 import { trackPageview } from '@utils/plausible';
 
@@ -49,7 +49,7 @@ type Props = {
   appOpens: number;
 };
 
-const navigationDeferred = messageHandler();
+setUpHandler();
 
 const StoreApp: React.FC<Props> = ({
   useSystemTheme,
@@ -84,8 +84,6 @@ const StoreApp: React.FC<Props> = ({
       : {}),
   });
 
-  const linkTo = useLinkTo();
-
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
     useSystemTheme ? Appearance.getColorScheme() : 'light',
   );
@@ -110,6 +108,8 @@ const StoreApp: React.FC<Props> = ({
 
   React.useEffect(() => {
     migrateReduxDB();
+
+    setUpMessaging();
 
     if (loggedIn && Platform.OS !== 'web' && messaging) {
       messaging().getToken().then(updateToken);
@@ -194,8 +194,8 @@ const StoreApp: React.FC<Props> = ({
     <PaperProvider theme={theme}>
       <>
         <NavigationContainer
-          ref={(navigationRef) => navigationDeferred.resolve(navigationRef)}
           linking={linking}
+          ref={navigationRef}
           fallback={<AppLoading />}
           theme={navTheme}
           onStateChange={async () => {
