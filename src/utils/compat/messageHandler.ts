@@ -6,7 +6,6 @@ import parseUrl from 'url-parse';
 import { logger, messaging } from '@utils';
 
 const handleMessage = async (remoteMessage: any) => {
-  logger.info(`Push notification received, ${JSON.stringify(remoteMessage)}`);
   if (remoteMessage?.data?.type === 'notification') {
     const { priority, message } = remoteMessage.data;
     const push = JSON.parse(message);
@@ -69,7 +68,6 @@ const setUpHandler = () => {
     onNotification: (notification) => {
       if (notification.userInteraction) {
         let action: { data: string; type: string } | undefined;
-        console.log(notification);
         if (notification.action) {
           action = notification.data.actions?.find(
             (a: { text: string; action: { type: string; data: string } }) =>
