@@ -263,8 +263,9 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
 
   const data = (searchText
     ? [
-        ...schoolsSearch.map((s) => ({ ...s, element: 'school' })),
-        ...departmentsSearch.map((d) => ({ element: 'department' })),
+        ...schoolsSearch.map((s) => ({ ...s, element: 'school' })).slice(0, 3),
+        ...departmentsSearch.map((d) => ({ ...d, element: 'department' })),
+        ...schoolsSearch.map((s) => ({ ...s, element: 'school' })).slice(3),
       ]
     : schoolsNear.map((s) => ({ ...s, element: 'school' }))) as (
     | ((SchoolPreload | School) & { element: 'school' })
@@ -340,7 +341,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         />
         <CollapsibleView collapsed={!!(searchText || searchFocused)}>
           <Divider />
-          <View style={styles.container}>
+          <View style={[styles.container, styles.buttonContainer]}>
             <Button
               mode="text"
               uppercase={Platform.OS !== 'ios'}
