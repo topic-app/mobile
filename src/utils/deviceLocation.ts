@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import LocationService from 'react-native-geolocation-service';
 
 import logger from './logger';
+import { trackEvent } from './plausible';
 
 export namespace Location {
   /**
@@ -45,10 +46,13 @@ export namespace Location {
     const { status, canAskAgain } = result;
     // User previously granted permission
     if (status === Permissions.PermissionStatus.GRANTED) {
+      trackEvent('landing:locate-accept-permission');
       return 'yes';
     } else if (canAskAgain) {
+      trackEvent('landing:locate-reject-permission');
       return 'no';
     } else {
+      trackEvent('landing:locate-reject-permission');
       return 'never';
     }
   }

@@ -8,6 +8,7 @@ import SettingsAppearance from './Appearance';
 import SettingsDev from './Dev';
 import SettingsList from './List';
 import SettingsPrivacy from './Privacy';
+import SettingsSelectLocation from './SelectLocation';
 
 export type SettingsStackParams = {
   List: undefined;
@@ -15,6 +16,7 @@ export type SettingsStackParams = {
   Privacy: undefined;
   Appearance: undefined;
   Dev: undefined;
+  SelectLocation: undefined;
 };
 
 export type SettingsScreenNavigationProp<
@@ -36,6 +38,11 @@ const SettingsStackNavigator: React.FC<{}> = () => {
       <Stack.Screen name="Privacy" component={SettingsPrivacy} />
       <Stack.Screen name="Appearance" component={SettingsAppearance} />
       <Stack.Screen name="Dev" component={SettingsDev} />
+      <Stack.Screen
+        name="SelectLocation"
+        component={SettingsSelectLocation}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

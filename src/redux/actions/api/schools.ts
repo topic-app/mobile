@@ -66,7 +66,7 @@ async function searchSchools(type: 'initial' | 'refresh' | 'next', terms: string
       url: 'schools/list',
       dataType: 'schools',
       type,
-      params: { ...params, search: true, terms },
+      params: { number: 100, ...params, search: true, terms },
       stateName: 'search',
       listName: 'search',
       clear: type !== 'next',
