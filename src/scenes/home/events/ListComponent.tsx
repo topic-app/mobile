@@ -9,7 +9,7 @@ import {
   VerificationBanner,
   ContentFlatList,
   ContentSection,
-  EVENT_CARD_HEADER_HEIGHT,
+  EVENT_CARD_HEIGHT,
 } from '@components';
 import {
   updateUpcomingEvents,
@@ -198,19 +198,13 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
     updateEventsFollowing('initial');
   }, [null]);
 
-  const [cardWidth, setCardWidth] = React.useState(100);
-  const imageSize = cardWidth / 3.5;
-
   const [addToListModalVisible, setAddToListModalVisible] = React.useState(false);
   const [addToListModalEvent, setAddToListModalEvent] = React.useState('');
 
-  const itemHeight = EVENT_CARD_HEADER_HEIGHT + imageSize;
+  const itemHeight = EVENT_CARD_HEIGHT;
 
   return (
-    <View
-      style={styles.page}
-      onLayout={({ nativeEvent }) => setCardWidth(nativeEvent.layout.width)}
-    >
+    <View style={styles.page}>
       <ContentFlatList
         scrollY={scrollY}
         initialSection={initialTabKey}
@@ -224,7 +218,6 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
             isRead={read.some((r) => r.id === event._id)}
             historyActive={historyEnabled}
             lists={lists}
-            overrideImageWidth={imageSize}
             setAddToListModalEvent={setAddToListModalEvent}
             setAddToListModalVisible={setAddToListModalVisible}
             navigate={() =>

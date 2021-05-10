@@ -39,7 +39,7 @@ export { default as FileUpload } from './FileUpload';
 export { default as BottomSheet } from './BottomSheet';
 export * from './BottomSheet';
 
-export { default as ArticleCard, ARTICLE_CARD_HEADER_HEIGHT } from './cards/Article';
-export { default as EventCard, EVENT_CARD_HEADER_HEIGHT } from './cards/Event';
+export { default as ArticleCard, ARTICLE_CARD_HEIGHT } from './cards/Article';
+export { default as EventCard, EVENT_CARD_HEIGHT } from './cards/Event';
 export { default as GroupCard } from './cards/Group';
 export { default as UserCard } from './cards/User';

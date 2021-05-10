@@ -21,7 +21,7 @@ type ArticleCardProps = {
   overrideImageWidth?: number;
 };
 
-const ARTICLE_CARD_HEADER_HEIGHT = 145; // IMPORTANT: This should be updated every time something is changed (used for getItemLayout optimization)
+const ARTICLE_CARD_HEIGHT = 285; // IMPORTANT: This should be updated every time something is changed (used for getItemLayout optimization)
 
 const ArticleCard: React.FC<ArticleCardProps> = ({
   article,
@@ -29,7 +29,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   unread = true,
   preferences,
   verification = false,
-  overrideImageWidth = 150,
+  overrideImageWidth = 140,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -173,6 +173,6 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export { ARTICLE_CARD_HEADER_HEIGHT };
+export { ARTICLE_CARD_HEIGHT };
 
 export default connect(mapStateToProps)(ArticleCard);
