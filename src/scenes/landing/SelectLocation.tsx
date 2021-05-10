@@ -143,12 +143,12 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
               departments: [(element as DepartmentPreload)._id],
             }),
             addArticleQuick(
-              'department',
+              'departement',
               (element as DepartmentPreload)._id,
               (element as DepartmentPreload).name,
             ),
             addEventQuick(
-              'department',
+              'departement',
               (element as DepartmentPreload)._id,
               (element as DepartmentPreload).name,
             ),
