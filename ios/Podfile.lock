@@ -319,23 +319,20 @@ PODS:
     - React
   - react-native-geolocation-service (5.2.0):
     - React
-  - react-native-mapbox-gl (8.1.0):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.9.0)"
-    - Mapbox-iOS-SDK (~> 5.9.0)
+  - react-native-mapbox-gl (8.1.0-rc.4):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
+    - Mapbox-iOS-SDK (~> 5.8)
     - React
-    - React-Core
-    - react-native-mapbox-gl/DynamicLibrary (= 8.1.0)
-    - react-native-mapbox-gl/StaticLibraryFixer (= 8.1.0)
-  - react-native-mapbox-gl/DynamicLibrary (8.1.0):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.9.0)"
-    - Mapbox-iOS-SDK (~> 5.9.0)
+    - react-native-mapbox-gl/DynamicLibrary (= 8.1.0-rc.4)
+    - react-native-mapbox-gl/StaticLibraryFixer (= 8.1.0-rc.4)
+  - react-native-mapbox-gl/DynamicLibrary (8.1.0-rc.4):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
+    - Mapbox-iOS-SDK (~> 5.8)
     - React
-    - React-Core
-  - react-native-mapbox-gl/StaticLibraryFixer (8.1.0):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.9.0)"
-    - Mapbox-iOS-SDK (~> 5.9.0)
+  - react-native-mapbox-gl/StaticLibraryFixer (8.1.0-rc.4):
+    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
+    - Mapbox-iOS-SDK (~> 5.8)
     - React
-    - React-Core
   - react-native-netinfo (6.0.0):
     - React-Core
   - react-native-pager-view (5.1.7):
@@ -831,7 +828,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-geolocation-service: 7c9436da6dfdecd9526c62eac62ea2bc3f0cc8ea
-  react-native-mapbox-gl: eec7e5be5b874cfceb79fcfe24d595411015153a
+  react-native-mapbox-gl: b2e4cee6a40cb713cd72846c9573cd5bc468c3d5
   react-native-netinfo: 34f4d7a42f49157f3b45c14217d256bce7dc9682
   react-native-pager-view: a10e94628bf100ff9a377ebc63690c8c05358ab7
   react-native-safe-area-context: e471852c5ed67eea4b10c5d9d43c1cebae3b231d
