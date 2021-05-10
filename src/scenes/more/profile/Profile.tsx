@@ -91,21 +91,6 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
     fetchEmail();
   }, []);
 
-  if (!account.loggedIn) return <Text>Non autorisé</Text>;
-
-  const deleteAccountFunc = () => {
-    deleteAccount().then(() =>
-      Alert.alert(
-        'Vérifiez vos emails',
-        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
-        [{ text: 'Fermer' }],
-        { cancelable: true },
-      ),
-    );
-  };
-
-  const [avatarsVisible, setAvatarsVisible] = React.useState(false);
-
   const generateAvatars = () =>
     ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((i) => {
       return {
@@ -119,6 +104,20 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
     });
 
   const [avatars, setAvatars] = React.useState(generateAvatars());
+  const [avatarsVisible, setAvatarsVisible] = React.useState(false);
+
+  if (!account.loggedIn) return <Text>Non autorisé</Text>;
+
+  const deleteAccountFunc = () => {
+    deleteAccount().then(() =>
+      Alert.alert(
+        'Vérifiez vos emails',
+        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
+        [{ text: 'Fermer' }],
+        { cancelable: true },
+      ),
+    );
+  };
 
   const addAvatars = () => setAvatars([...avatars, ...generateAvatars()]);
 

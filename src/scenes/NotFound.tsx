@@ -34,7 +34,7 @@ const NotFound: React.FC<Props> = ({ navigation }) => {
             })
           }
         >
-          Retour à la page d'acceuil
+          Retour à la page d&apos;acceuil
         </Button>
       </View>
       {navigation.canGoBack() ? (
