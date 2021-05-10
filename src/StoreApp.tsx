@@ -26,10 +26,9 @@ import parseUrl from 'url-parse';
 import { fetchGroups, fetchWaitingGroups, fetchAccount, logout } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
-import { updateToken } from '@redux/actions/data/profile';
 import themes from '@styles/helpers/theme';
 import { Preferences, State } from '@ts/types';
-import { logger, messaging, Alert, setUpMessaging, setUpHandler } from '@utils';
+import { logger, Alert, setUpMessaging, setUpHandler } from '@utils';
 import { migrateReduxDB } from '@utils/compat/migrate';
 import { trackPageview } from '@utils/plausible';
 
@@ -110,11 +109,6 @@ const StoreApp: React.FC<Props> = ({
     migrateReduxDB();
 
     setUpMessaging();
-
-    if (loggedIn && Platform.OS !== 'web' && messaging) {
-      messaging().getToken().then(updateToken);
-      messaging().onTokenRefresh(updateToken);
-    }
 
     // Increase app opens
     updatePrefs({ appOpens: appOpens + 1 });

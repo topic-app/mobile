@@ -3,6 +3,7 @@ import { Linking, Platform } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import parseUrl from 'url-parse';
 
+import { updateToken } from '@redux/actions/data/profile';
 import { logger, messaging } from '@utils';
 
 const handleMessage = async (remoteMessage: any) => {
@@ -58,6 +59,9 @@ const handleMessage = async (remoteMessage: any) => {
 
 const setUpMessaging = () => {
   if (Platform.OS !== 'web' && messaging) {
+    messaging().getToken().then(updateToken);
+    messaging().onTokenRefresh(updateToken);
+
     messaging().setBackgroundMessageHandler(handleMessage);
     messaging().onMessage(handleMessage);
   }
