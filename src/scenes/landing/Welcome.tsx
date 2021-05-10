@@ -49,7 +49,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   const [sponsorContent, setSponsorContent] = React.useState({
     title: 'Partenaires',
     description:
-      "Un grand merci à nos partenaires sans qui cette application ne serait pas possible, ainsi qu'aux membres de l'équipe et à nos bêta - testeurs.",
+      "Un grand merci à nos partenaires sans qui cette application ne serait pas possible, ainsi qu'aux membres de l'équipe et à nos bêta-testeurs. Cliquez sur les logos pour plus d'infos.",
   });
 
   const backgroundFullHeight =

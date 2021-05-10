@@ -1,5 +1,6 @@
+import randomColor from 'randomcolor';
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, FlatList } from 'react-native';
 import {
   Text,
   Title,
@@ -12,9 +13,11 @@ import {
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 
 import {
   Avatar,
+  CollapsibleView,
   ErrorMessage,
   InlineCard,
   PageContainer,
@@ -22,6 +25,7 @@ import {
   VerificationBanner,
 } from '@components';
 import { fetchAccount, logout, deleteAccount, fetchEmail } from '@redux/actions/data/account';
+import { updateAvatar } from '@redux/actions/data/profile';
 import getStyles from '@styles/global';
 import {
   Account,
@@ -100,6 +104,24 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
     );
   };
 
+  const [avatarsVisible, setAvatarsVisible] = React.useState(false);
+
+  const generateAvatars = () =>
+    ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((i) => {
+      return {
+        type: 'gradient',
+        gradient: {
+          start: randomColor({ hue: i }),
+          end: randomColor(),
+          angle: Math.floor(Math.random() * 90 + 1),
+        },
+      };
+    });
+
+  const [avatars, setAvatars] = React.useState(generateAvatars());
+
+  const addAvatars = () => setAvatars([...avatars, ...generateAvatars()]);
+
   return (
     <PageContainer
       headerOptions={{ title: 'Compte' }}
@@ -124,8 +146,43 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
         <VerificationBanner />
         <View style={[styles.contentContainer, { marginTop: 20 }]}>
           <View style={[styles.centerIllustrationContainer, { marginBottom: 10 }]}>
-            <Avatar size={120} avatar={account.accountInfo?.user.info.avatar} />
+            <Avatar
+              size={120}
+              avatar={account.accountInfo?.user.info.avatar}
+              onPress={() => setAvatarsVisible(!avatarsVisible)}
+            />
           </View>
+          <CollapsibleView collapsed={!avatarsVisible}>
+            <Divider />
+            <FlatList
+              data={avatars}
+              horizontal
+              onEndReachedThreshold={0.5}
+              onEndReached={addAvatars}
+              renderItem={({ item }) => {
+                return (
+                  <View style={{ borderRadius: 55, margin: 10 }}>
+                    <Avatar
+                      size={100}
+                      onPress={() =>
+                        updateAvatar({
+                          type: 'gradient',
+                          gradient: item.gradient,
+                          text: account.accountInfo?.user.info.username.substring(0, 1) || '',
+                        }).then(() => fetchAccount())
+                      }
+                      avatar={{
+                        type: 'gradient',
+                        gradient: item.gradient,
+                        text: account.accountInfo?.user.info.username.substring(0, 1) || '',
+                      }}
+                    />
+                  </View>
+                );
+              }}
+            />
+            <Divider />
+          </CollapsibleView>
           <View style={[styles.centerIllustrationContainer, { flexDirection: 'row' }]}>
             {account.accountInfo?.user.data.public ? (
               <View style={{ alignItems: 'center' }}>
