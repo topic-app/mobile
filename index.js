@@ -1,6 +1,8 @@
 import { registerRootComponent } from 'expo';
 import { Platform, AppRegistry } from 'react-native';
 
+import { setUpMessagingInitial } from '@utils/compat/messageHandler';
+
 import App from './App';
 
 /* eslint-disable global-require */
@@ -36,6 +38,8 @@ if (Platform.OS === 'android' || global.HermesInternal) {
     Intl.DateTimeFormat.__setDefaultTimeZone(RNLocalize.getTimeZone());
   }
 }
+
+setUpMessagingInitial();
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in the Expo client or in a native build,

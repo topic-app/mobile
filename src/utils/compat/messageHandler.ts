@@ -6,7 +6,9 @@ import parseUrl from 'url-parse';
 import { updateToken } from '@redux/actions/data/profile';
 import { logger, messaging } from '@utils';
 
+// handleMessage is called both for foreground, background and quit notifications
 const handleMessage = async (remoteMessage: any) => {
+  // (This is async to allow rn-firebase to run it in the background)
   if (remoteMessage?.data?.type === 'notification') {
     const { priority, message } = remoteMessage.data;
     const push = JSON.parse(message);
@@ -23,14 +25,6 @@ const handleMessage = async (remoteMessage: any) => {
         },
         (created) => {
           logger.info(created ? `Created channel, sending notification` : 'Sending notification');
-          logger.info({
-            channelId: push.channel?.id,
-            title: push.title,
-            message: push.content,
-            color: 'primary',
-            actions: push.actions?.map((a: { text: string }) => a?.text),
-            userInfo: { onPress: push.onPress, actions: push.actions },
-          });
           try {
             PushNotification.localNotification({
               channelId: push.channel?.id,
@@ -57,50 +51,52 @@ const handleMessage = async (remoteMessage: any) => {
   }
 };
 
-const setUpMessaging = () => {
+const setUpMessagingLoaded = () => {
   if (Platform.OS !== 'web' && messaging) {
     messaging().getToken().then(updateToken);
     messaging().onTokenRefresh(updateToken);
 
-    messaging().setBackgroundMessageHandler(handleMessage);
     messaging().onMessage(handleMessage);
   }
 };
 
-const setUpHandler = () => {
-  PushNotification.configure({
-    onNotification: (notification) => {
-      if (notification.userInteraction) {
-        let action: { data: string; type: string } | undefined;
-        if (notification.action) {
-          action = notification.data.actions?.find(
-            (a: { text: string; action: { type: string; data: string } }) =>
-              a.text === notification.action,
-          )?.action;
-        } else {
-          action = notification.data.onPress;
-        }
-        if (!action) {
-          logger.warn('No action on notification');
-          return;
-        }
-        if (action.type === 'link') {
-          const { pathname, query } = parseUrl(action.data);
-          // Trying to get navigation to work here is to complicated, hopefully this'll work well enough
-          if (Linking.canOpenURL(`topic://${pathname}${query}`)) {
-            Linking.openURL(`topic://${pathname}${query}`);
+const setUpMessagingInitial = () => {
+  if (Platform.OS !== 'web' && messaging) {
+    messaging().setBackgroundMessageHandler(handleMessage);
+    PushNotification.configure({
+      onNotification: (notification) => {
+        if (notification.userInteraction) {
+          let action: { data: string; type: string } | undefined;
+          if (notification.action) {
+            action = notification.data.actions?.find(
+              (a: { text: string; action: { type: string; data: string } }) =>
+                a.text === notification.action,
+            )?.action;
           } else {
-            logger.info('Could not open topic:// link, falling back to http');
-            Linking.openURL(action.data);
+            action = notification.data.onPress;
+          }
+          if (!action) {
+            logger.warn('No action on notification');
+            return;
+          }
+          if (action.type === 'link') {
+            const { pathname, query } = parseUrl(action.data);
+            // Trying to get navigation to work here is to complicated, hopefully this'll work well enough
+            if (Linking.canOpenURL(`topic://${pathname}${query}`)) {
+              Linking.openURL(`topic://${pathname}${query}`);
+            } else {
+              logger.info('Could not open topic:// link, falling back to http');
+              Linking.openURL(action.data);
+            }
           }
         }
-      }
 
-      notification.finish(PushNotificationIOS.FetchResult.NoData);
-    },
+        notification.finish(PushNotificationIOS.FetchResult.NoData);
+      },
 
-    requestPermissions: false,
-  });
+      requestPermissions: false,
+    });
+  }
 };
 
-export { setUpHandler, setUpMessaging };
+export { setUpMessagingLoaded, setUpMessagingInitial };
