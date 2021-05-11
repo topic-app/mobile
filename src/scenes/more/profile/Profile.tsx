@@ -1,6 +1,6 @@
 import randomColor from 'randomcolor';
 import React from 'react';
-import { View, ScrollView, FlatList } from 'react-native';
+import { View, ScrollView, FlatList, Platform } from 'react-native';
 import {
   Text,
   Title,
@@ -37,7 +37,7 @@ import {
   AccountRequestState,
   User,
 } from '@ts/types';
-import { logger, Alert } from '@utils';
+import { logger, Alert, messaging } from '@utils';
 
 import type { ProfileScreenNavigationProp } from '.';
 import EmailModal from './components/EmailModal';
@@ -320,7 +320,12 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                   },
                   {
                     text: 'Se déconnecter',
-                    onPress: logout,
+                    onPress: () => {
+                      if (Platform.OS !== 'web') {
+                        messaging?.().deleteToken();
+                      }
+                      logout();
+                    },
                   },
                 ],
                 { cancelable: true },
