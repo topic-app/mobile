@@ -32,6 +32,7 @@ const handleMessage = async (remoteMessage: any) => {
               message: push.content,
               actions: push.actions?.map((a: { text: string }) => a?.text),
               userInfo: { onPress: push.onPress, actions: push.actions },
+              invokeApp: false,
             });
           } catch (err) {
             logger.warn('Failed to notify');
@@ -51,6 +52,39 @@ const handleMessage = async (remoteMessage: any) => {
   }
 };
 
+const onNotification = (notification: any) => {
+  console.log('ON NOTIF');
+  console.log(notification);
+  if (notification.userInteraction) {
+    let action: { data: string; type: string } | undefined;
+    const info = notification.data || JSON.parse(notification.userInfo);
+    if (notification.action) {
+      action = info?.actions?.find(
+        (a: { text: string; action: { type: string; data: string } }) =>
+          a.text === notification.action,
+      )?.action;
+    } else {
+      action = info?.onPress;
+    }
+    if (!action) {
+      logger.warn('No action on notification');
+      return;
+    }
+    if (action.type === 'link') {
+      const { pathname, query } = parseUrl(action.data);
+      // Trying to get navigation to work here is to complicated, hopefully this'll work well enough
+      if (Linking.canOpenURL(`topic://${pathname}${query}`)) {
+        Linking.openURL(`topic://${pathname}${query}`);
+      } else {
+        logger.info('Could not open topic:// link, falling back to http');
+        Linking.openURL(action.data);
+      }
+    }
+  }
+
+  notification.finish?.(PushNotificationIOS.FetchResult.NoData);
+};
+
 const setUpMessagingLoaded = () => {
   if (Platform.OS !== 'web' && messaging) {
     messaging().getToken().then(updateToken);
@@ -64,35 +98,8 @@ const setUpMessagingInitial = () => {
   if (Platform.OS !== 'web' && messaging) {
     messaging().setBackgroundMessageHandler(handleMessage);
     PushNotification.configure({
-      onNotification: (notification) => {
-        if (notification.userInteraction) {
-          let action: { data: string; type: string } | undefined;
-          if (notification.action) {
-            action = notification.data.actions?.find(
-              (a: { text: string; action: { type: string; data: string } }) =>
-                a.text === notification.action,
-            )?.action;
-          } else {
-            action = notification.data.onPress;
-          }
-          if (!action) {
-            logger.warn('No action on notification');
-            return;
-          }
-          if (action.type === 'link') {
-            const { pathname, query } = parseUrl(action.data);
-            // Trying to get navigation to work here is to complicated, hopefully this'll work well enough
-            if (Linking.canOpenURL(`topic://${pathname}${query}`)) {
-              Linking.openURL(`topic://${pathname}${query}`);
-            } else {
-              logger.info('Could not open topic:// link, falling back to http');
-              Linking.openURL(action.data);
-            }
-          }
-        }
-
-        notification.finish(PushNotificationIOS.FetchResult.NoData);
-      },
+      onNotification,
+      onAction: onNotification,
 
       requestPermissions: false,
     });
