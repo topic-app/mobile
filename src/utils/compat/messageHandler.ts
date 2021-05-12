@@ -1,5 +1,5 @@
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import { Linking, Platform } from 'react-native';
+import { Linking, Platform, Share } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import parseUrl from 'url-parse';
 
@@ -32,6 +32,7 @@ const handleMessage = async (remoteMessage: any) => {
               message: push.content,
               actions: push.actions?.map((a: { text: string }) => a?.text),
               userInfo: { onPress: push.onPress, actions: push.actions },
+              playSound: priority === 'urgent' || priority === 'high' || priority === 'medium',
               invokeApp: false,
             });
           } catch (err) {
@@ -53,9 +54,8 @@ const handleMessage = async (remoteMessage: any) => {
 };
 
 const onNotification = (notification: any) => {
-  console.log('ON NOTIF');
-  console.log(notification);
   if (notification.userInteraction) {
+    logger.info('Notification opened');
     let action: { data: string; type: string } | undefined;
     const info = notification.data || JSON.parse(notification.userInfo);
     if (notification.action) {
@@ -79,6 +79,10 @@ const onNotification = (notification: any) => {
         logger.info('Could not open topic:// link, falling back to http');
         Linking.openURL(action.data);
       }
+    } else if (action.type === 'share') {
+      Share.share({ message: action.data });
+    } else {
+      logger.warn(`Action ${action.type} cannot be handled`);
     }
   }
 
