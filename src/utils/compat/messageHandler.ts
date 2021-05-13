@@ -24,7 +24,7 @@ const handleMessage = async (remoteMessage: any) => {
           playSound: priority === 'urgent' || priority === 'high' || priority === 'medium',
         },
         (created) => {
-          logger.info(created ? `Created channel, sending notification` : 'Sending notification');
+          logger.info(created ? 'Created channel, sending notification' : 'Sending notification');
           try {
             PushNotification.localNotification({
               channelId: push.channel?.id,
@@ -46,8 +46,9 @@ const handleMessage = async (remoteMessage: any) => {
       PushNotification.localNotification({
         category: push.channel?.id,
         title: push.title,
-        message: push.message,
+        message: push.content,
         playSound: priority === 'urgent' || priority === 'high' || priority === 'medium',
+        userInfo: { onPress: push.onPress, actions: push.actions },
       });
     }
   }
