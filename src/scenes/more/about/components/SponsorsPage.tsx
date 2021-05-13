@@ -11,7 +11,7 @@ const sponsorsWithImages = sponsors.map((sponsor) => ({
   ...sponsor,
   image: {
     mgen: require('@assets/images/sponsors/mgen.png'),
-    jtac: require('@assets/images/sponsors/jtac.png'),
+    jtac: require('@assets/images/sponsors/jtac.jpg'),
     lesper: require('@assets/images/sponsors/esper.jpg'),
     edtech: require('@assets/images/sponsors/edtech.png'),
     solidarsport: require('@assets/images/sponsors/solidarsport.jpg'),

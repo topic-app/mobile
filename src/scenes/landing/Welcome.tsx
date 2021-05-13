@@ -21,7 +21,7 @@ const sponsorsWithImages = sponsors.map((sponsor) => ({
   ...sponsor,
   image: {
     mgen: require('@assets/images/sponsors/mgen.png'),
-    jtac: require('@assets/images/sponsors/jtac.png'),
+    jtac: require('@assets/images/sponsors/jtac.jpg'),
     lesper: require('@assets/images/sponsors/esper.jpg'),
     edtech: require('@assets/images/sponsors/edtech.png'),
     solidarsport: require('@assets/images/sponsors/solidarsport.jpg'),
@@ -427,13 +427,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               }}
             >
               {sponsorsWithImages.map((sponsor, index) => (
-                <View
-                  key={sponsor.id}
-                  style={{
-                    marginRight: index % 3 === 0 ? 10 : 0,
-                    marginBottom: index < 3 ? 10 : 0,
-                  }}
-                >
+                <View key={sponsor.id}>
                   <PlatformTouchable
                     onPress={() => {
                       setSponsorContent({ title: sponsor.name, description: sponsor.description });
