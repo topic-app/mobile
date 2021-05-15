@@ -321,9 +321,6 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                   {
                     text: 'Se déconnecter',
                     onPress: () => {
-                      if (Platform.OS !== 'web') {
-                        messaging?.().deleteToken();
-                      }
                       logout();
                     },
                   },
