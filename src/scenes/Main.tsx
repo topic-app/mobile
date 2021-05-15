@@ -1,6 +1,8 @@
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
+import { useLinkTo } from '@react-navigation/native';
 import React from 'react';
 
+import { setUpActionListener } from '@utils';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import NotFound from './NotFound';
@@ -32,6 +34,11 @@ export type MainScreenNavigationProp<K extends keyof MainStackParams> = Composit
 const Stack = createNativeStackNavigator<MainStackParams>();
 
 function MainNavigator() {
+  const linkTo = useLinkTo();
+  React.useEffect(() => {
+    setUpActionListener(linkTo);
+  });
+
   return (
     <Stack.Navigator initialRouteName="Home1" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Display" component={DisplayStackNavigator} />
