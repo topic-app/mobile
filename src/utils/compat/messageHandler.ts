@@ -1,4 +1,3 @@
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { Linking, Platform, Share } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import parseUrl from 'url-parse';
@@ -6,109 +5,134 @@ import parseUrl from 'url-parse';
 import { updateToken } from '@redux/actions/data/profile';
 import { logger, messaging } from '@utils';
 
-// handleMessage is called both for foreground, background and quit notifications
-const handleMessage = async (remoteMessage: any) => {
-  // (This is async to allow rn-firebase to run it in the background)
-  if (remoteMessage?.data?.type === 'notification') {
-    const { priority, message } = remoteMessage.data;
-    const push = JSON.parse(message);
-    if (!push) {
-      logger.warn('Notification push data was empty');
-      return;
-    }
-    if (Platform.OS === 'android') {
-      PushNotification.createChannel(
-        {
-          channelId: push.channel?.id || 'default',
-          channelName: push.channel?.name || 'Autres',
-          playSound: priority === 'urgent' || priority === 'high' || priority === 'medium',
-        },
-        (created) => {
-          logger.info(created ? 'Created channel, sending notification' : 'Sending notification');
-          try {
-            PushNotification.localNotification({
-              channelId: push.channel?.id,
-              title: push.title,
-              message: push.content,
-              actions: push.actions?.map((a: { text: string }) => a?.text),
-              userInfo: { onPress: push.onPress, actions: push.actions },
-              playSound: priority === 'urgent' || priority === 'high' || priority === 'medium',
-              invokeApp: false,
-            });
-          } catch (err) {
-            logger.warn('Failed to notify');
-            logger.warn(err);
-          }
-        },
-      );
-    } else if (Platform.OS === 'ios') {
-      logger.info('Sending notification');
-      PushNotification.localNotification({
-        category: push.channel?.id,
-        title: push.title,
-        message: push.content,
-        playSound: priority === 'urgent' || priority === 'high' || priority === 'medium',
-        userInfo: { onPress: push.onPress, actions: push.actions },
-      });
-    }
-  }
-};
-
-const onNotification = (notification: any) => {
-  if (notification.userInteraction) {
-    logger.info('Notification opened');
-    let action: { data: string; type: string } | undefined;
-    const info = notification.data || JSON.parse(notification.userInfo);
-    if (notification.action) {
-      action = info?.actions?.find(
-        (a: { text: string; action: { type: string; data: string } }) =>
-          a.text === notification.action,
-      )?.action;
-    } else {
-      action = info?.onPress;
-    }
-    if (!action) {
+const onNotification = (
+  notification: { data?: { actionType?: string; actionData?: string } } | null,
+  linkTo: (path: string) => void,
+) => {
+  if (notification) {
+    logger.info('Notification clicked, executing action');
+    const { actionType, actionData } = notification.data || {};
+    if (!actionType || !actionData) {
       logger.warn('No action on notification');
       return;
     }
-    if (action.type === 'link') {
-      const { pathname, query } = parseUrl(action.data);
-      // Trying to get navigation to work here is to complicated, hopefully this'll work well enough
-      if (Linking.canOpenURL(`topic://${pathname}${query}`)) {
-        Linking.openURL(`topic://${pathname}${query}`);
-      } else {
-        logger.info('Could not open topic:// link, falling back to http');
-        Linking.openURL(action.data);
-      }
-    } else if (action.type === 'share') {
-      Share.share({ message: action.data });
+    if (actionType === 'link') {
+      const { pathname, query } = parseUrl(actionData);
+      linkTo(`${pathname}${query}`);
+    } else if (actionType === 'share') {
+      Share.share({ message: actionData });
     } else {
-      logger.warn(`Action ${action.type} cannot be handled`);
+      logger.warn(`Action ${actionType} cannot be handled`);
     }
   }
-
-  notification.finish?.(PushNotificationIOS.FetchResult.NoData);
 };
+
+const channels = [
+  {
+    id: 'moderation',
+    name: 'Modération',
+    description: 'Contenus en modération, suppressions, modifications',
+    playSound: true,
+    importance: 4,
+  },
+  {
+    id: 'groups',
+    name: 'Groupes',
+    description: 'Invitations, ajout et suppression de membres',
+    playSound: true,
+    importance: 4,
+  },
+  {
+    id: 'content',
+    name: 'Contenus',
+    description: 'Contenus publiés par les groupes que vous suivez',
+    playSound: false,
+    importance: 2,
+  },
+  {
+    id: 'eventmessages',
+    name: "Messages d'évènements",
+    description: 'Messages publiés sur les évènements que vous suivez',
+    playSound: false,
+    importance: 2,
+  },
+  {
+    id: 'eventmessagesimportant',
+    name: "Messages importants d'évènements",
+    description: 'Messages importants publiés sur les évènements que vous suivez',
+    playSound: true,
+    importance: 4,
+  },
+  {
+    id: 'broadcasts',
+    name: 'Annonces',
+    description: "Messages de l'équipe Topic",
+    playSound: true,
+    importance: 4,
+  },
+  {
+    id: 'default',
+    name: 'Autres',
+    description: 'Notifications sans catégorie spécifique',
+    playSound: true,
+    importance: 4,
+  },
+];
 
 const setUpMessagingLoaded = () => {
   if (Platform.OS !== 'web' && messaging) {
+    // Handle fcm token
     messaging().getToken().then(updateToken);
     messaging().onTokenRefresh(updateToken);
 
-    messaging().onMessage(handleMessage);
-  }
-};
+    // PushNotification.getChannels((i) => i.forEach((j) => PushNotification.deleteChannel(j)));
+    // Create channels
+    if (Platform.OS === 'android') {
+      channels.forEach((channel) => {
+        PushNotification.channelExists(channel.id, (exists) => {
+          if (!exists) {
+            PushNotification.createChannel(
+              {
+                channelId: channel.id,
+                channelName: channel.name,
+                channelDescription: channel.description,
+                playSound: channel.playSound,
+                importance: channel.importance,
+              },
+              () => {},
+            );
+          }
+        });
+      });
+    }
 
-const setUpMessagingInitial = () => {
-  if (Platform.OS !== 'web' && messaging) {
-    messaging().setBackgroundMessageHandler(handleMessage);
-    PushNotification.configure({
-      onNotification,
-      onAction: onNotification,
-
-      requestPermissions: false,
+    // Handle foreground messages
+    messaging().onMessage((remoteMessage) => {
+      if (!remoteMessage.notification) return;
+      PushNotification.localNotification(
+        Platform.OS === 'android'
+          ? {
+              title: remoteMessage.notification.title,
+              message: remoteMessage.notification.body || '',
+              channelId: remoteMessage.notification.android?.channelId || 'default',
+            }
+          : {
+              title: remoteMessage.notification.title,
+              message: remoteMessage.notification.body || '',
+              category: remoteMessage.notification.android?.channelId || 'default',
+            },
+      );
     });
   }
 };
 
-export { setUpMessagingLoaded, setUpMessagingInitial };
+const setUpActionListener = (linkTo: (path: string) => void) => {
+  if (Platform.OS !== 'web' && messaging) {
+    messaging()
+      .getInitialNotification()
+      .then((notif) => onNotification(notif, linkTo));
+    messaging().onNotificationOpenedApp((notif) => onNotification(notif, linkTo));
+  }
+};
+
+export { setUpMessagingLoaded, setUpActionListener };
