@@ -65,7 +65,7 @@ function updateTokenCreator(token: string): AppThunk {
     });
 
     try {
-      await request('profile/modify/token', 'post', { token }, true);
+      await request('profile/modify/token', 'post', { token }, true, 'auth');
     } catch (error) {
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
