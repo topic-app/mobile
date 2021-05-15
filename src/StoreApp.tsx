@@ -10,7 +10,7 @@ import {
   Rubik_400Regular,
   Rubik_400Regular_Italic,
 } from '@expo-google-fonts/rubik';
-import { NavigationContainer, NavigationContainerRef, useLinkTo } from '@react-navigation/native';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import Color from 'color';
 import AppLoading from 'expo-app-loading';
 import decode from 'jwt-decode';
@@ -21,7 +21,6 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import parseUrl from 'url-parse';
 
 import { fetchGroups, fetchWaitingGroups, fetchAccount, logout } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
@@ -41,7 +40,6 @@ const OpenDyslexic_Italic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Ita
 type Props = {
   useSystemTheme: boolean;
   theme: Preferences['theme'];
-  loggedIn: boolean;
   accountToken?: string;
   fontFamily: Preferences['fontFamily'];
   useDevServer: boolean;
@@ -51,7 +49,6 @@ type Props = {
 const StoreApp: React.FC<Props> = ({
   useSystemTheme,
   theme: themeName,
-  loggedIn,
   accountToken,
   useDevServer,
   appOpens,
@@ -260,9 +257,9 @@ const StoreApp: React.FC<Props> = ({
 
 const mapStateToProps = (state: State) => {
   const { useSystemTheme, theme, useDevServer, appOpens, fontFamily } = state.preferences;
-  const { loggedIn, accountInfo } = state.account;
+  const { accountInfo } = state.account;
   const { accountToken } = accountInfo || {};
-  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily, loggedIn, accountToken };
+  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily, accountToken };
 };
 
 export default connect(mapStateToProps)(StoreApp);

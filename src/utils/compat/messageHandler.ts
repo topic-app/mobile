@@ -1,4 +1,4 @@
-import { Linking, Platform, Share } from 'react-native';
+import { Platform, Share } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import parseUrl from 'url-parse';
 

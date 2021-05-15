@@ -1,9 +1,8 @@
 import { registerRootComponent } from 'expo';
-import { Platform, AppRegistry } from 'react-native';
+import { Platform } from 'react-native';
 
 import App from './App';
 
-/* eslint-disable global-require */
 if (Platform.OS === 'android' || global.HermesInternal) {
   require('@formatjs/intl-getcanonicallocales/polyfill');
   require('@formatjs/intl-locale/polyfill');
