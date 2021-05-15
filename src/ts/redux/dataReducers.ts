@@ -1,4 +1,4 @@
-import themes from '@styles/Theme';
+import themes from '@styles/helpers/theme';
 
 import {
   WaitingGroup,
@@ -65,7 +65,6 @@ export type AccountUser = User & { verification?: { verified?: boolean } };
 
 export type AccountInfo = {
   accountId: string;
-  device?: string;
   accountToken: string;
   accountTokenExpiry: string;
   user: AccountUser;
@@ -188,7 +187,7 @@ export type Preferences = {
   syncLists: boolean;
   fontSize: number;
   stripFormatting: boolean;
-  fontFamily: string;
+  fontFamily: 'system' | 'Roboto-Slab' | 'Roboto-Mono' | 'OpenDyslexic';
   themeEasterEggDiscovered: boolean;
   youtubeConsent: boolean;
   useDevServer: boolean;

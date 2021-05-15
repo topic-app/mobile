@@ -86,7 +86,7 @@ function departmentReducer(state = initialState, action: DepartmentsActionTypes)
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
         items: action.data.items ? [] : state.items,
-        item: null,
+        item: action.data.item ? null : state.item,
         state: state.state,
       };
     default:

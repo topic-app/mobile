@@ -1,17 +1,16 @@
 import randomColor from 'randomcolor';
 import React from 'react';
 import { View, Platform, FlatList, TouchableOpacity } from 'react-native';
-import { Divider, Button, TextInput, Title, ProgressBar } from 'react-native-paper';
+import { Divider, Button, TextInput, Title, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { Illustration, PlatformTouchable, ErrorMessage, Modal } from '@components/index';
+import { Illustration, ErrorMessage, Modal } from '@components';
 import { tagAdd } from '@redux/actions/apiActions/tags';
-import getStyles from '@styles/Styles';
 import { ModalProps, State, TagPreload, TagRequestState } from '@ts/types';
-import { trackEvent, useTheme } from '@utils/index';
+import { trackEvent } from '@utils';
 
-import getArticleStyles from './styles/Styles';
+import getStyles from './styles';
 
 type TagAddModalProps = ModalProps & {
   state: TagRequestState;
@@ -22,7 +21,6 @@ type TagAddModalProps = ModalProps & {
 function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [descriptionText, setDescriptionText] = React.useState('');
@@ -81,11 +79,11 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
           <Divider />
         </View>
         <Divider />
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <TextInput mode="outlined" label="Nom" value={name} disabled />
         </View>
 
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <TextInput
             autoFocus
             mode="outlined"
@@ -99,7 +97,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
             }}
           />
         </View>
-        <View style={[articleStyles.activeCommentContainer, { marginVertical: 20 }]}>
+        <View style={[styles.activeCommentContainer, { marginVertical: 20 }]}>
           <FlatList
             horizontal
             onEndReached={() => setColorList([...colorList, ...generateColors()])}

@@ -1,10 +1,10 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
-import { MoreScreenNavigationProp } from '../index';
-import MyGroupsList from './views/List';
+import { MoreScreenNavigationProp } from '..';
+import MyGroupsList from './List';
 
 export type MyGroupsStackParams = {
   List: undefined;

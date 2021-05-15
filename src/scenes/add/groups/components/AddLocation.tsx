@@ -1,15 +1,23 @@
 import _ from 'lodash';
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, HelperText, List, Card, Text, Divider, ProgressBar } from 'react-native-paper';
+import {
+  Button,
+  HelperText,
+  List,
+  Card,
+  Text,
+  Divider,
+  ProgressBar,
+  useTheme,
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { StepperViewPageProps, ErrorMessage } from '@components';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
-import getStyles from '@styles/Styles';
 import {
   State,
   Department,
@@ -20,11 +28,11 @@ import {
   AnySchool,
   AnyDepartment,
 } from '@ts/types';
-import { Format, useTheme } from '@utils/index';
+import { Format } from '@utils';
 
 import { CheckboxListItem } from '../../components/ListItems';
 import type { GroupAddScreenNavigationProp } from '../index';
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type GroupAddLocationProps = StepperViewPageProps & {
   navigation: GroupAddScreenNavigationProp<'Add'>;
@@ -101,7 +109,6 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   // Toggle location
@@ -119,7 +126,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
   };
 
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={styles.formContainer}>
       <View style={[styles.container, { marginTop: 40 }]}>
         <Card
           elevation={0}
@@ -139,7 +146,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
           </View>
         </Card>
       </View>
-      <View style={articleStyles.listContainer}>
+      <View style={styles.listContainer}>
         {location.schoolData.map((s) => (
           <CheckboxListItem
             key={s._id}
@@ -269,7 +276,7 @@ const GroupAddLocation: React.FC<GroupAddLocationProps> = ({
           Vous devez sélectionner au moins une localisation
         </HelperText>
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}

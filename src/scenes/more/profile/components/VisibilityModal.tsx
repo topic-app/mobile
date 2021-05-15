@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Divider, Button, RadioButton, List, ProgressBar } from 'react-native-paper';
+import { Divider, Button, RadioButton, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ErrorMessage, Modal } from '@components/index';
+import { Modal } from '@components';
 import { fetchAccount } from '@redux/actions/data/account';
 import { updateData } from '@redux/actions/data/profile';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { ModalProps, State } from '@ts/types';
-import { Errors, useTheme } from '@utils/index';
+import { Errors } from '@utils';
 
 type VisibilityModalProps = ModalProps & {
   isInitialPublic: boolean;

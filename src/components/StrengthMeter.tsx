@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Dimensions, Animated, StyleSheet } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
-import { logger, useTheme } from '@utils/index';
+import { logger } from '@utils';
 
 const deviceWindow = Dimensions.get('window');
 

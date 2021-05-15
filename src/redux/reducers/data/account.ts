@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import {
   LOGOUT,
   LOGIN,
@@ -71,6 +71,11 @@ const initialState: AccountState = {
       error: null,
     },
     fetchAccount: {
+      loading: false,
+      success: null,
+      error: null,
+    },
+    updateToken: {
       loading: false,
       success: null,
       error: null,

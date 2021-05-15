@@ -20,9 +20,6 @@ const config: DevAppConfig = {
     //   data: 'http://localhost/api/api/v1',
     // },
   },
-  cdn: {
-    timeout: 3000,
-  },
   dev: {
     webAllowAnonymous: true,
   },

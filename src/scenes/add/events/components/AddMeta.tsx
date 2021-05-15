@@ -1,20 +1,18 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput, Image } from 'react-native';
-import { Button, ProgressBar, Card, Text } from 'react-native-paper';
+import { Button, ProgressBar, Card, Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components/index';
-import { Permissions } from '@constants/index';
+import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components';
 import { upload } from '@redux/actions/apiActions/upload';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { State, EventCreationData, UploadRequestState, Account } from '@ts/types';
-import { useTheme, getImageUrl, checkPermission } from '@utils/index';
+import { getImageUrl, checkPermission, Permissions } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type EventAddPageMetaProps = StepperViewPageProps & {
   creationData: EventCreationData;
@@ -31,13 +29,11 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
 }) => {
   const titleInput = createRef<RNTextInput>();
   const summaryInput = createRef<RNTextInput>();
-  const descriptionInput = createRef<RNTextInput>();
 
   const uploadImage = () => upload(creationData.group || '');
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getArticleStyles(theme);
   const styles = getStyles(theme);
 
   if (!account.loggedIn) return null;
@@ -49,21 +45,18 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
       .required('Titre requis'),
     summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères'),
     file: Yup.mixed(),
-    description: Yup.string().required('Description requise'),
   });
 
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={styles.formContainer}>
       <Formik
-        initialValues={{ title: '', summary: '', file: null, description: '' }}
+        initialValues={{ title: '', summary: '', file: null }}
         validationSchema={MetaSchema}
-        onSubmit={({ title, summary, file, description }) => {
+        onSubmit={({ title, summary, file }) => {
           updateEventCreationData({
             title,
             summary,
             image: { image: file, thumbnails: { small: false, medium: true, large: true } },
-            description,
-            parser: 'markdown',
           });
           next();
         }}
@@ -79,7 +72,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
               onChangeText={handleChange('title')}
               onBlur={handleBlur('title')}
               onSubmitEditing={() => summaryInput.current?.focus()}
-              style={articleStyles.textInput}
+              style={styles.textInput}
               autoFocus
             />
             <FormTextInput
@@ -94,20 +87,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
               onChangeText={handleChange('summary')}
               onBlur={handleBlur('summary')}
               onSubmitEditing={() => summaryInput.current?.focus()}
-              style={articleStyles.textInput}
-            />
-            <FormTextInput
-              ref={descriptionInput}
-              label="Décrivez votre évènement..."
-              multiline
-              numberOfLines={8}
-              value={values.description}
-              touched={touched.description}
-              error={errors.description}
-              onChangeText={handleChange('description')}
-              onBlur={handleBlur('description')}
-              onSubmitEditing={() => handleSubmit()}
-              style={articleStyles.textInput}
+              style={styles.textInput}
             />
             {checkPermission(account, {
               permission: Permissions.CONTENT_UPLOAD,
@@ -193,7 +173,7 @@ const EventAddPageMeta: React.FC<EventAddPageMetaProps> = ({
                 </View>
               </Card>
             )}
-            <View style={articleStyles.buttonContainer}>
+            <View style={styles.buttonContainer}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}

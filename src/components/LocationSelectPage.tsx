@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import { Text, Button, Divider, List, Checkbox, ProgressBar } from 'react-native-paper';
+import { Text, Button, Divider, List, Checkbox, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import {
@@ -10,7 +10,6 @@ import {
   fetchMultiDepartment,
 } from '@redux/actions/api/departments';
 import { updateSchools, searchSchools, fetchMultiSchool } from '@redux/actions/api/schools';
-import getStyles from '@styles/Styles';
 import {
   School,
   SchoolPreload,
@@ -21,14 +20,14 @@ import {
   State,
   ReduxLocation,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
 
 import { ChipAddList } from './ChipLists';
 import CollapsibleView from './CollapsibleView';
 import ErrorMessage from './ErrorMessage';
-import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
+import { HeaderBarProps } from './Header';
+import PageContainer from './PageContainer';
 import Searchbar from './Searchbar';
-import getLocationStyles from './styles/LocationSelectPageStyles';
+import getStyles from './styles/LocationSelectPageStyles';
 
 function done(
   selectedSchools: string[],
@@ -118,7 +117,7 @@ type LocationSelectProps = {
   type: 'schools' | 'departements' | 'regions' | 'other';
   hideSearch?: boolean;
   callback: (location: ReduxLocation) => any;
-  headerOptions?: Partial<CustomHeaderBarProps['scene']['descriptor']['options']>;
+  headerOptions?: Partial<HeaderBarProps>;
 };
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
@@ -141,7 +140,6 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
 }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const locationStyles = getLocationStyles(theme);
   const styles = getStyles(theme);
 
   const [searchText, setSearchText] = React.useState('');
@@ -328,7 +326,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
 
   const ListHeaderComponent = (
     <View>
-      <View style={locationStyles.searchContainer}>
+      <View style={styles.searchContainer}>
         {!hideSearch && (
           <Searchbar
             ref={searchbarRef}
@@ -401,17 +399,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
   );
 
   return (
-    <View style={styles.page}>
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              title: 'Localisation',
-              ...headerOptions,
-            },
-          },
-        }}
-      />
+    <PageContainer headerOptions={{ title: 'Localisation', ...headerOptions }}>
       <FlatList
         ref={scrollRef}
         keyboardShouldPersistTaps="handled"
@@ -435,7 +423,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
             style={{ marginBottom: 0 }}
           />
         </CollapsibleView>
-        <View style={locationStyles.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <Button
             mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
             color={colors.primary}
@@ -455,7 +443,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
           </Button>
         </View>
       </View>
-    </View>
+    </PageContainer>
   );
 };
 

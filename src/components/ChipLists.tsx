@@ -9,29 +9,29 @@ import {
   StyleProp,
   TouchableOpacity,
 } from 'react-native';
-import { Text, IconButton } from 'react-native-paper';
+import { Text, IconButton, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { useTheme } from '@utils/index';
-
-import { PlatformTouchable } from './PlatformComponents';
 
 type ChipBaseProps = {
   icon?: string;
+  label?: string;
   onPress?: () => void;
   selected?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   rightAction?: boolean;
+  actionLabel?: string;
   color?: string;
 };
 
 const ChipBase: React.FC<ChipBaseProps> = ({
   children,
+  label,
   icon,
   onPress,
   selected = false,
   containerStyle,
   rightAction = false,
+  actionLabel,
   color: borderColor,
 }) => {
   const elevation = new Animated.Value(0);
@@ -78,6 +78,8 @@ const ChipBase: React.FC<ChipBaseProps> = ({
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        accessibilityLabel={label}
+        style={{ flex: 1 }}
       >
         <View
           style={{
@@ -86,14 +88,16 @@ const ChipBase: React.FC<ChipBaseProps> = ({
             alignItems: 'center',
             paddingLeft: 8,
             paddingRight: rightAction ? 0 : 10,
-            marginVertical: Platform.OS === 'web' ? 10 : undefined,
           }}
         >
-          {!rightAction && icon ? <Icon name={icon} size={20} color={colors.icon} /> : null}
+          {!rightAction && icon ? (
+            <Icon name={icon} size={20} color={colors.icon} accessibilityLabel={actionLabel} />
+          ) : null}
           {children}
           {rightAction && icon ? (
             <IconButton
               icon={icon}
+              accessibilityLabel={actionLabel}
               color={colors.softContrast}
               size={20}
               onPress={onPress}

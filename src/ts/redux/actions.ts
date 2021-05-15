@@ -1,18 +1,7 @@
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 
-import {
-  Article,
-  Comment,
-  Department,
-  Event,
-  Group,
-  Petition,
-  Place,
-  School,
-  Tag,
-  User,
-} from '../api';
+import { Article, Comment, Department, Event, Group, Place, School, Tag, User } from '../api';
 import { State } from '../types';
 import {
   ArticlesActionTypes,
@@ -28,8 +17,6 @@ import {
   GroupsActionTypes,
   GroupsState,
   LegalActionTypes,
-  PetitionsActionTypes,
-  PetitionsState,
   PlacesActionTypes,
   PlacesState,
   SchoolsState,
@@ -49,7 +36,6 @@ export type ActionType =
   | DepartmentsActionTypes
   | UsersActionTypes
   | GroupsActionTypes
-  | PetitionsActionTypes
   | TagsActionTypes
   | PlacesActionTypes
   | LegalActionTypes
@@ -70,7 +56,6 @@ export type ApiItemMap = {
   departments: Department;
   groups: Group;
   events: Event;
-  petitions: Petition;
   places: Place;
   tags: Tag;
   schools: School;
@@ -85,7 +70,6 @@ export type ApiStateMap = {
   departments: DepartmentsState;
   groups: GroupsState;
   events: EventsState;
-  petitions: PetitionsState;
   places: PlacesState;
   tags: TagsState;
   schools: SchoolsState;

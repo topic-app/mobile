@@ -1,3 +1,5 @@
+import shortid from 'shortid';
+
 import Store from '@redux/store';
 import {
   UPDATE_EVENTS_QUICKS,
@@ -6,10 +8,8 @@ import {
   UPDATE_EVENTS_LISTS,
   UPDATE_EVENTS_STATE,
   UPDATE_EVENTS_PREFS,
-  UPDATE_EVENTS_PARAMS,
   CLEAR_EVENTS,
   Event,
-  EventParams,
   EventPrefs,
   EventCreationData,
 } from '@ts/types';
@@ -24,7 +24,6 @@ import {
   addReadCreator,
   deleteReadCreator,
   clearReadCreator,
-  updateParamsCreator,
   updatePrefsCreator,
   addQuickCreator,
   deleteQuickCreator,
@@ -32,6 +31,7 @@ import {
   clearCreationDataCreator,
   reorderQuickCreator,
   reorderListCreator,
+  deleteReadAllCreator,
 } from './ActionCreator';
 
 /**
@@ -77,7 +77,11 @@ async function removeEventFromList(eventId: string, listId: string) {
  * @param icon
  * @param description
  */
-async function addEventList(name: string, icon: string = '', description: string = '') {
+async function addEventList(
+  name: string,
+  icon: string = 'bookmark-outline',
+  description: string = '',
+) {
   Store.dispatch(
     addListCreator({
       update: UPDATE_EVENTS_LISTS,
@@ -143,22 +147,32 @@ async function deleteEventList(listId: string) {
   );
 }
 
-async function addEventRead(eventId: string, title: string, marked = false) {
+async function addEventRead(eventId: string, title?: string, marked = false, date?: Date) {
   Store.dispatch(
     addReadCreator({
       update: UPDATE_EVENTS_READ,
       dataType: 'eventData',
-      data: { id: eventId, title, date: new Date(), marked },
+      data: { key: shortid(), id: eventId, title, date: date || new Date(), marked },
     }),
   );
 }
 
-async function deleteEventRead(eventId: string) {
+async function deleteEventRead(key: string) {
   Store.dispatch(
     deleteReadCreator({
       update: UPDATE_EVENTS_READ,
       dataType: 'eventData',
-      id: eventId,
+      key,
+    }),
+  );
+}
+
+async function deleteEventReadAll(id: string) {
+  Store.dispatch(
+    deleteReadAllCreator({
+      update: UPDATE_EVENTS_READ,
+      dataType: 'eventData',
+      id,
     }),
   );
 }
@@ -168,25 +182,6 @@ async function clearEventsRead() {
     clearReadCreator({
       update: UPDATE_EVENTS_READ,
       dataType: 'eventData',
-    }),
-  );
-}
-
-/**
- * @docs actions
- * Change les parametres de requete pour un évènement
- * @param eventId L'id de l'évènement à récuperer
- */
-async function updateEventParams(params: Partial<EventParams>) {
-  Store.dispatch(
-    updateParamsCreator({
-      updateParams: UPDATE_EVENTS_PARAMS,
-      params,
-    }),
-  );
-  Store.dispatch(
-    clearCreator({
-      clear: CLEAR_EVENTS,
     }),
   );
 }
@@ -261,8 +256,8 @@ export {
   deleteEventList,
   addEventRead,
   deleteEventRead,
+  deleteEventReadAll,
   clearEventsRead,
-  updateEventParams,
   updateEventPrefs,
   addEventQuick,
   reorderEventQuick,

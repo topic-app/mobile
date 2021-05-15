@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import { Button, Text, Divider, Card } from 'react-native-paper';
+import { Button, Text, Divider, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
@@ -12,16 +12,14 @@ import {
   CollapsibleView,
   CategoryTitle,
   Searchbar,
-} from '@components/index';
-import { Permissions } from '@constants/index';
+} from '@components';
 import { updateTags, searchTags } from '@redux/actions/api/tags';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import getStyles from '@styles/Styles';
 import { Account, State, TagRequestState, TagPreload, ArticleCreationData } from '@ts/types';
-import { checkPermission, trackEvent, useTheme } from '@utils/index';
+import { checkPermission, trackEvent, Permissions } from '@utils';
 
 import TagAddModal from '../../components/TagAddModal';
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type ArticleAddPageTagsProps = StepperViewPageProps & {
   account: Account;
@@ -63,7 +61,6 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   const fetch = () => {
@@ -186,7 +183,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   let onEndReachedCalledDuringMomentum = false;
 
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={styles.formContainer}>
       <View>
         <View>
           <View>
@@ -271,7 +268,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
             />
             <Text style={{ color: colors.text, flex: 1 }}>
               Les tags permettent aux utilisateurs de trouver plus facilement vos articles,et nous
-              les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez pour
+              les utilisons pour pouvoir faire des recommandations aux utilisateurs.{'\n'}Tapez pour
               rechercher ou pour créer un nouveau tag si aucun ne correspond.
             </Text>
           </View>
@@ -279,7 +276,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
       </View>
       <View style={{ marginTop: 30 }}>
         <Divider />
-        <View style={articleStyles.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}

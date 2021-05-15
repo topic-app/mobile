@@ -1,12 +1,12 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { MoreScreenNavigationProp } from '../index';
-import AboutLegal from './views/Legal';
-import AboutLicenses from './views/Licenses';
-import AboutList from './views/List';
+import AboutLegal from './Legal';
+import AboutLicenses from './Licenses';
+import AboutList from './List';
 
 export type AboutStackParams = {
   List: {

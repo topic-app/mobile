@@ -1,44 +1,20 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigatorScreenParams, CompositeNavigationProp } from '@react-navigation/native';
 import React from 'react';
-import { View, TouchableWithoutFeedback } from 'react-native';
-import { Text, Divider, Drawer as PaperDrawer, Button } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View } from 'react-native';
+import { Divider, Drawer as PaperDrawer, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Avatar, Illustration, MainFeedback } from '@components';
 import DownloadBanner from '@components/DownloadBanner';
-import { Permissions } from '@constants/index';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { State, Account } from '@ts/types';
-import { useTheme, useLayout, checkPermission } from '@utils/index';
+import { useLayout, checkPermission, Permissions } from '@utils';
+import { NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { AppScreenNavigationProp } from '..';
-import { NativeStackNavigationProp } from '../utils/stack';
 import MainStackNavigator, { MainStackParams } from './Main';
 import AndroidNavigator from './Root.android';
-
-type TabItemProps = {
-  label: string;
-  icon: string;
-  onPress: () => void;
-  active: boolean;
-};
-
-const TabItem: React.FC<TabItemProps> = ({ label, onPress, icon, active }) => {
-  const { colors } = useTheme();
-  const color = active ? colors.primary : colors.disabled;
-  return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
-      <TouchableWithoutFeedback onPress={onPress}>
-        <View style={{ alignItems: 'center' }}>
-          <Icon name={icon} size={28} color={color} />
-          <Text style={{ fontSize: 11, color }}>{label}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
-  );
-};
 
 type DrawerContentProps = {
   navigation: any;
@@ -228,6 +204,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           <Illustration
             name={drawerExpanded ? 'topic-icon-text' : 'topic-icon'}
             style={{ height: 36, marginTop: 10 }}
+            label="Logo Topic"
           />
         </View>
         <Divider style={{ marginVertical: 10 }} />
@@ -250,6 +227,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                   theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
                   icon={item.icon}
                   label={drawerExpanded ? item.text || '' : ''}
+                  accessibilityLabel={item.text}
                   onPress={() => {
                     item.navigate?.();
                     setActive(item.key);
@@ -284,6 +262,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
               label="Se connecter"
+              accessibilityLabel="Se connecter"
               onPress={() =>
                 navigation.navigate('Auth', {
                   screen: 'Login',
@@ -295,6 +274,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
               style={drawerExpanded ? { width: 230 } : { width: 40 }}
               theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
               label="Créer un compte"
+              accessibilityLabel="Créer un compte"
               onPress={() =>
                 navigation.navigate('Auth', {
                   screen: 'Create',
@@ -309,6 +289,9 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           theme={{ ...theme, colors: { ...theme.colors, text: colors.appBarText } }}
           style={drawerExpanded ? { width: 230 } : { width: 40 }}
           label=""
+          accessibilityLabel={
+            drawerExpanded ? 'Réduire le menu principal' : 'Agrandir le menu principal'
+          }
           onPress={() => setDrawerExpanded(!drawerExpanded)}
         />
       </View>
@@ -339,7 +322,6 @@ function RootNavigator() {
   const [drawerExpanded, setDrawerExpanded] = React.useState(false);
   const theme = useTheme();
   const { colors } = theme;
-  const styles = getStyles(theme);
 
   if (useLayout() === 'desktop') {
     return (

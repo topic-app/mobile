@@ -83,8 +83,8 @@ async function fetchUserByUsername(username: string) {
  * @docs actions
  * Vide la database redux complètement
  */
-function clearUsers(data = true, search = true) {
-  Store.dispatch(clearCreator({ clear: CLEAR_USERS, data, search }));
+function clearUsers(data = true, search = true, item = false) {
+  Store.dispatch(clearCreator({ clear: CLEAR_USERS, data, search, item }));
 }
 
 export { updateUsers, clearUsers, fetchUser, searchUsers, fetchUserByUsername };

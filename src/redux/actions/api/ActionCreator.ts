@@ -11,7 +11,7 @@ import {
   School,
   Department,
 } from '@ts/types';
-import { request, logger } from '@utils/index';
+import { request, logger } from '@utils';
 
 type UpdateCreatorParams<T extends ApiItemString> = {
   dataType: T;

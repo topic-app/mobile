@@ -2,7 +2,10 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "jsx": "react-native",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "moduleResolution": "node",
     "noEmit": true,
     "skipLibCheck": true,
@@ -10,21 +13,58 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@ts/*": ["./src/ts/*"],
-      "@components": ["./src/components"],
-      "@components/*": ["./src/components/*"],
-      "@constants": ["./src/constants"],
-      "@constants/*": ["./src/constants/*"],
-      "@styles": ["./src/styles"],
-      "@styles/*": ["./src/styles/*"],
-      "@utils": ["./src/utils"],
-      "@utils/*": ["./src/utils/*"],
-      "@redux": ["./src/redux"],
-      "@redux/*": ["./src/redux/*"],
-      "@assets/*": ["./src/assets/*"],
-      "@src/*": ["./src/*"],
-      "@root/*": ["./*"],
+      "@ts/*": [
+        "./src/ts/*"
+      ],
+      "@components": [
+        "./src/components"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@constants": [
+        "./src/constants"
+      ],
+      "@constants/*": [
+        "./src/constants/*"
+      ],
+      "@styles": [
+        "./src/styles"
+      ],
+      "@styles/*": [
+        "./src/styles/*"
+      ],
+      "@utils": [
+        "./src/utils"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@redux": [
+        "./src/redux"
+      ],
+      "@redux/*": [
+        "./src/redux/*"
+      ],
+      "@assets/*": [
+        "./src/assets/*"
+      ],
+      "@src/*": [
+        "./src/*"
+      ],
+      "@root/*": [
+        "./*"
+      ]
     }
   },
-  "exclude": ["node_modules", "android", "ios", "web", "web-build", "android-build", "scripts"]
+  "exclude": [
+    "node_modules",
+    "android",
+    "ios",
+    "web",
+    "web-build",
+    "android-build",
+    "scripts"
+  ],
+  "extends": "expo/tsconfig.base"
 }

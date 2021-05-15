@@ -1,15 +1,14 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Divider, Button, TextInput, HelperText } from 'react-native-paper';
+import { Divider, Button, TextInput, HelperText, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Modal } from '@components/index';
-import config from '@constants/config';
-import getStyles from '@styles/Styles';
+import { Modal } from '@components';
+import { Config } from '@constants';
 import { ModalProps, State } from '@ts/types';
-import { trackEvent, useTheme } from '@utils/index';
+import { trackEvent } from '@utils';
 
-import getArticleStyles from './styles/Styles';
+import getStyles from './styles';
 
 type YoutubeAddModalProps = ModalProps & {
   add: (url: string) => any;
@@ -18,7 +17,6 @@ type YoutubeAddModalProps = ModalProps & {
 const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, add }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [linkText, setLinkText] = React.useState('');
@@ -40,7 +38,7 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
           /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/gi,
           '$1',
         );
-      add(`${config.google.youtubePlaceholder}${id}`);
+      add(`${Config.google.youtubePlaceholder}${id}`);
       setVisible(false);
       setLinkText('');
     } else {
@@ -51,7 +49,7 @@ const YoutubeAddModal: React.FC<YoutubeAddModalProps> = ({ visible, setVisible, 
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <TextInput
             autoFocus
             mode="outlined"

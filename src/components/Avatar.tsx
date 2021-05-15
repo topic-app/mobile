@@ -2,15 +2,12 @@ import color from 'color';
 import React from 'react';
 import { View, ViewStyle, TextStyle, ImageStyle, StyleProp, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { Avatar as PaperAvatar, Text } from 'react-native-paper';
+import { Avatar as PaperAvatar, Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Avatar as AvatarType } from '@ts/types';
-import { useTheme } from '@utils/index';
 
 import Image from './CustomImage';
-import Illustration from './Illustration';
-import { PlatformTouchable } from './PlatformComponents';
 
 const getInitials = (title: string) => {
   const initials = title.match(/\b\w/g) || [];
@@ -138,7 +135,11 @@ const Avatar: React.FC<AvatarProps> = ({
   if (onPress) {
     return (
       <View style={{ borderRadius: size / 2 }}>
-        <TouchableOpacity onPress={onPress} style={{ height: size, width: size }}>
+        <TouchableOpacity
+          onPress={onPress}
+          style={{ height: size, width: size }}
+          accessibilityLabel="Avatar"
+        >
           {AvatarComponent}
         </TouchableOpacity>
       </View>

@@ -1,17 +1,15 @@
 import moment from 'moment';
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, HelperText, List, Text } from 'react-native-paper';
+import { Button, HelperText, List, Text, useTheme } from 'react-native-paper';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { connect } from 'react-redux';
 
-import { StepperViewPageProps } from '@components/index';
+import { StepperViewPageProps } from '@components';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { Account, State } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps & { account: Account };
 
@@ -47,7 +45,6 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   };
 
   const theme = useTheme();
-  const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   const changeStartDate = ({ date }: { date: Date | undefined }) => {
@@ -125,7 +122,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
   }
 
   return (
-    <View style={eventStyles.formContainer}>
+    <View style={styles.formContainer}>
       <View>
         <List.Subheader> Début de l&apos;évènement </List.Subheader>
         <View style={styles.container}>
@@ -192,7 +189,7 @@ const EventAddPageDuration: React.FC<Props> = ({ next, prev, account }) => {
           Vous devez sélectionner une date de début et de fin
         </HelperText>
       </View>
-      <View style={eventStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}

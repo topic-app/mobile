@@ -1,20 +1,18 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput, Image } from 'react-native';
-import { Button, ProgressBar, Card, Text, List, Switch } from 'react-native-paper';
+import { Button, ProgressBar, Card, Text, List, Switch, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, ErrorMessage, FormTextInput } from '@components/index';
-import { Permissions } from '@constants/index';
+import { StepperViewPageProps, ErrorMessage, FormTextInput, FileUpload } from '@components';
 import { upload } from '@redux/actions/apiActions/upload';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import getStyles from '@styles/Styles';
 import { State, ArticleCreationData, UploadRequestState, Account } from '@ts/types';
-import { useTheme, getImageUrl, checkPermission, trackEvent } from '@utils/index';
+import { getImageUrl, checkPermission, trackEvent, Permissions } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type ArticleAddPageMetaProps = StepperViewPageProps & {
   creationData: ArticleCreationData;
@@ -32,11 +30,8 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   const titleInput = createRef<RNTextInput>();
   const summaryInput = createRef<RNTextInput>();
 
-  const uploadImage = () => upload(creationData.group || '');
-
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getArticleStyles(theme);
   const styles = getStyles(theme);
 
   const [isOpinion, setOpinion] = React.useState(creationData.opinion || false);
@@ -53,7 +48,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
   });
 
   return (
-    <View style={articleStyles.formContainer}>
+    <View style={styles.formContainer}>
       <Formik
         initialValues={{
           title: creationData.title || '',
@@ -83,7 +78,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               onChangeText={handleChange('title')}
               onBlur={handleBlur('title')}
               onSubmitEditing={() => summaryInput.current?.focus()}
-              style={articleStyles.textInput}
+              style={styles.textInput}
               autoFocus
             />
             <FormTextInput
@@ -98,102 +93,13 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               onChangeText={handleChange('summary')}
               onBlur={handleBlur('summary')}
               onSubmitEditing={() => handleSubmit()}
-              style={articleStyles.textInput}
+              style={styles.textInput}
             />
-            {checkPermission(account, {
-              permission: Permissions.CONTENT_UPLOAD,
-              scope: { groups: [creationData.group || ''] },
-            }) ? (
-              <View>
-                {values.file && !state.upload?.loading && (
-                  <View style={styles.container}>
-                    <Card style={{ minHeight: 100 }}>
-                      <Image
-                        source={{
-                          uri:
-                            getImageUrl({
-                              image: { image: values.file, thumbnails: {} },
-                              size: 'full',
-                            }) || '',
-                        }}
-                        style={{ height: 250 }}
-                        resizeMode="contain"
-                      />
-                    </Card>
-                  </View>
-                )}
-                <View style={[styles.container, { marginBottom: 30 }]}>
-                  {state.upload?.error && (
-                    <ErrorMessage
-                      error={state.upload?.error}
-                      strings={{
-                        what: "l'upload de l'image",
-                        contentSingular: "L'image",
-                      }}
-                      type="axios"
-                      retry={() => uploadImage().then((id) => setFieldValue('file', id))}
-                    />
-                  )}
-                  {state.upload?.loading ? (
-                    <Card style={{ height: 50, flex: 1 }}>
-                      <View style={{ flexDirection: 'row', margin: 10, alignItems: 'center' }}>
-                        <View>
-                          <Icon name="image" size={24} color={colors.disabled} />
-                        </View>
-                        <View style={{ marginHorizontal: 10, flexGrow: 1 }}>
-                          <ProgressBar indeterminate />
-                        </View>
-                      </View>
-                    </Card>
-                  ) : (
-                    <View style={{ flexDirection: 'row' }}>
-                      <Button
-                        mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-                        uppercase={false}
-                        onPress={() => {
-                          trackEvent(
-                            values.file
-                              ? 'articleadd:meta-image-replace'
-                              : 'articleadd-meta-image-upload',
-                          );
-                          uploadImage().then((id) => setFieldValue('file', id));
-                        }}
-                        style={{ flex: 1, marginRight: 5 }}
-                      >
-                        {values.file ? 'Remplacer' : 'Séléctionner une image'}
-                      </Button>
-                      {values.file ? (
-                        <Button
-                          mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
-                          uppercase={false}
-                          onPress={() => {
-                            trackEvent('articleadd:meta-image-remove');
-                            setFieldValue('file', null);
-                          }}
-                          style={{ flex: 1, marginLeft: 5 }}
-                        >
-                          Supprimer
-                        </Button>
-                      ) : null}
-                    </View>
-                  )}
-                </View>
-              </View>
-            ) : (
-              <Card style={{ height: 50, flex: 1, marginBottom: 30 }}>
-                <View style={{ flexDirection: 'row', margin: 10, alignItems: 'center' }}>
-                  <View>
-                    <Icon name="image" size={24} color={colors.disabled} />
-                  </View>
-                  <View style={{ marginHorizontal: 10, flexGrow: 1 }}>
-                    <Text>
-                      Vous n&apos;avez pas l&apos;autorisation d&apos;ajouter des images pour ce
-                      groupe
-                    </Text>
-                  </View>
-                </View>
-              </Card>
-            )}
+            <FileUpload
+              file={values.file}
+              setFile={(file) => setFieldValue('file', file)}
+              group={creationData.group || ''}
+            />
             <View style={[styles.container, { marginBottom: 40 }]}>
               <List.Item
                 title="Article d'opinion"
@@ -209,7 +115,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                 descriptionNumberOfLines={10}
               />
             </View>
-            <View style={articleStyles.buttonContainer}>
+            <View style={styles.buttonContainer}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}

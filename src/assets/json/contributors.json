@@ -1,0 +1,55 @@
+[
+  {
+    "name": "Tom Ruchier-Berquet",
+    "description": "Président, fondateur, responsable communication",
+    "link": "https://twitter.com/TomRB4",
+    "icon": "twitter"
+  },
+  {
+    "name": "Alexander Nitters",
+    "description": "Trésorier, développeur, responsable technique",
+    "link": "https://gitlab.com/al340",
+    "icon": "gitlab"
+  },
+  {
+    "name": "Axel Martin",
+    "description": "Secrétaire général, DPO",
+    "link": "https://twitter.com/Axel_Grm",
+    "icon": "twitter"
+  },
+  {
+    "name": "Benjamin Sengupta",
+    "description": "Secrétaire général adjoint, développeur, responsable frontend",
+    "link": "https://gitlab.com/bensengupta",
+    "icon": "gitlab"
+  },
+  {
+    "name": "Ysée Laplanche",
+    "description": "Développeuse, frontend",
+    "link": "https://gitlab.com/ysee.laplanche",
+    "icon": "gitlab"
+  },
+  {
+    "name": "Romain Chardiny",
+    "description": "Développeur, responsable backend",
+    "link": "https://gitlab.com/romch007",
+    "icon": "gitlab"
+  },
+  {
+    "name": "Joachim Laplanche",
+    "description": "Développeur, frontend",
+    "link": "https://gitlab.com/joachim.laplanche",
+    "icon": "gitlab"
+  },
+  {
+    "name": "Baptiste Zigmann",
+    "description": "Développeur, frontend",
+    "link": "https://gitlab.com/BAZIG060",
+    "icon": "gitlab"
+  },
+  {
+    "name": "Jérémy Hendrikse",
+    "description": "Développeur, frontend",
+    "link": ""
+  }
+]

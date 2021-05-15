@@ -1,14 +1,13 @@
+import contributors from '@assets/json/contributors.json';
 import React from 'react';
-import { View, ScrollView, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
-import { Divider, List, Subheading, Text } from 'react-native-paper';
+import { View, TouchableOpacity } from 'react-native';
+import { Divider, List, Subheading, Text, useTheme } from 'react-native-paper';
 
-import { Content, ErrorMessage, Illustration, PlatformTouchable } from '@components/index';
-import getStyles from '@styles/Styles';
-import { RequestState } from '@ts/types';
-import { handleUrl, useTheme } from '@utils/index';
+import { Illustration } from '@components';
+import { handleUrl } from '@utils';
 
-import { AboutScreenNavigationProp } from '../index';
-import getLocalStyles from '../styles/Styles';
+import { AboutScreenNavigationProp } from '..';
+import getStyles from '../styles';
 
 type props = {
   navigation: AboutScreenNavigationProp<'Legal'>;
@@ -17,65 +16,6 @@ type props = {
 const AboutPage: React.FC<props> = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const localStyles = getLocalStyles(theme);
-
-  const contributors = [
-    {
-      name: 'Tom Ruchier-Berquet',
-      description: 'Président, fondateur, responsable communication',
-      link: 'https://twitter.com/TomRB4',
-      icon: 'twitter',
-    },
-    {
-      name: 'Alexander Nitters',
-      description: 'Trésorier, développeur, responsable technique',
-      link: 'https://gitlab.com/al340',
-      icon: 'gitlab',
-    },
-    {
-      name: 'Axel Martin',
-      description: 'Secrétaire général, DPO',
-      link: 'https://twitter.com/Axel_Grm',
-      icon: 'twitter',
-    },
-    {
-      name: 'Benjamin Sengupta',
-      description: 'Développeur, responsable frontend',
-      link: 'https://gitlab.com/bensengupta',
-      icon: 'gitlab',
-    },
-    {
-      name: 'Ysée Laplanche',
-      description: 'Développeuse, frontend',
-      link: 'https://gitlab.com/ysee.laplanche',
-      icon: 'gitlab',
-    },
-    {
-      name: 'Romain Chardiny',
-      description: 'Développeur, responsable backend',
-      link: 'https://gitlab.com/romch007',
-      icon: 'gitlab',
-    },
-    {
-      name: 'Paul Giroux',
-      description: 'Secrétaire général adjoint',
-      link: '',
-    },
-    {
-      name: 'Baptiste Zigmann',
-      description: 'Développeur, frontend',
-      link: '',
-    },
-    {
-      name: 'Jérémy Hendrikse',
-      description: 'Développeur, frontend',
-      link: '',
-    },
-    {
-      name: 'Luke Burch',
-      description: 'Développeur, frontend',
-    },
-  ];
 
   return (
     <View>
@@ -84,7 +24,7 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
           <Illustration name="topic-icon" style={{ height: 200, width: 200 }} />
         </View>
       </View>
-      <View style={localStyles.headerContainer}>
+      <View style={styles.headerContainer}>
         <View style={styles.centerIllustrationContainer}>
           <Text style={[styles.topic, { fontSize: 60 }]}>Topic</Text>
           <Subheading>La mallette à outils de l&apos;engagement citoyen</Subheading>

@@ -1,10 +1,10 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
-import { DisplayScreenNavigationProp } from '../index';
-import UserDisplay from './views/Display';
+import { DisplayScreenNavigationProp } from '..';
+import UserDisplay from './Display';
 
 export type UserDisplayStackParams = {
   Display: { id: string };

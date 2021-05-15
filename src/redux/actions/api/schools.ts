@@ -1,5 +1,4 @@
 import Store from '@redux/store';
-import { School } from '@ts/types';
 import {
   UPDATE_SCHOOLS_DATA,
   UPDATE_SCHOOLS_ITEM,
@@ -9,6 +8,7 @@ import {
   UPDATE_SCHOOLS_NEAR,
   CLEAR_SCHOOLS,
 } from '@ts/redux';
+import { School } from '@ts/types';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -66,7 +66,7 @@ async function searchSchools(type: 'initial' | 'refresh' | 'next', terms: string
       url: 'schools/list',
       dataType: 'schools',
       type,
-      params: { ...params, search: true, terms },
+      params: { number: 100, ...params, search: true, terms },
       stateName: 'search',
       listName: 'search',
       clear: type !== 'next',
@@ -117,8 +117,8 @@ async function fetchMultiSchool(schoolIds: string[]) {
  * @docs actions
  * Vide la database redux complètement
  */
-function clearSchools(data = true, search = true) {
-  Store.dispatch(clearCreator({ clear: CLEAR_SCHOOLS, data, search }));
+function clearSchools(data = true, search = true, items = false, item = false) {
+  Store.dispatch(clearCreator({ clear: CLEAR_SCHOOLS, data, search, items, item }));
 }
 
 export {

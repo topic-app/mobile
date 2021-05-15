@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { actions } from './const';
-import { trackEvent } from '@utils/index';
+import { trackEvent } from '@utils';
 
 export const defaultActions = [
   actions.insertImage,
@@ -158,9 +158,30 @@ export default class RichToolbar extends Component {
     }
   }
 
+  _getAccessibilityLabel(action) {
+    switch (action) {
+      case actions.insertLink: return "Insérer un lien";
+      case actions.setBold: return "Gras";
+      case actions.setItalic: return "Italique";
+      case actions.insertBulletsList: return "Insérer une liste non-ordonnée";
+      case actions.insertOrderedList: return "Insérer une liste ordonnée";
+    case actions.heading1: return 'Titre 1';
+    case actions.heading2: return 'Titre 2';
+    case actions.heading3: return 'Titre 3';
+    case actions.heading4: return 'Titre 4';
+    case actions.heading5: return 'Titre 5';
+    case actions.heading6: return 'Titre 6';
+    case actions.setParagraph: return 'Retirer le formattage';
+    case actions.removeFormat: return 'Retirer le formattage';
+    case actions.insertImage: return 'Insérer une image';
+    case actions.insertYoutube: return 'Insérer une vidéo youtube';
+    }
+  }
+
   _defaultRenderAction(action, selected) {
     let that = this;
     const icon = that._getButtonIcon(action);
+    const label = that._getAccessibilityLabel(action);
     const { iconSize = 50, disabled } = that.props;
     const style = selected ? that._getButtonSelectedStyle() : that._getButtonUnselectedStyle();
     const tintColor = disabled
@@ -174,6 +195,7 @@ export default class RichToolbar extends Component {
         disabled={disabled}
         style={[{ width: iconSize, justifyContent: 'center' }, style]}
         onPress={() => that._onPress(action)}
+        accessibilityLabel={label}
       >
         {icon ? (
           typeof icon === 'function' ? (

@@ -1,17 +1,14 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, Card } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Button, RadioButton, HelperText, List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { StepperViewPageProps } from '@components/index';
-import { Permissions } from '@constants/index';
+import { StepperViewPageProps } from '@components';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import getStyles from '@styles/Styles';
 import { Account, State } from '@ts/types';
-import { checkPermission, trackEvent, useTheme } from '@utils/index';
+import { checkPermission, trackEvent, Permissions } from '@utils';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type ArticleAddPageGroupProps = StepperViewPageProps & { account: Account };
 
@@ -31,7 +28,6 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
   };
 
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
   const groupsWithPermission = account.groups?.filter((g) =>
     checkPermission(
@@ -55,8 +51,8 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
   }
 
   return (
-    <View style={articleStyles.formContainer}>
-      <View style={articleStyles.listContainer}>
+    <View style={styles.formContainer}>
+      <View style={styles.listContainer}>
         {groupsWithPermission?.map((g) => (
           <List.Item
             key={g._id}
@@ -110,7 +106,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
           </Text>
         )}
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}

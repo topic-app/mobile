@@ -1,23 +1,11 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { View, Platform, ScrollView } from 'react-native';
-import {
-  Divider,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
-  Subheading,
-  List,
-  Text,
-} from 'react-native-paper';
+import { View, ScrollView } from 'react-native';
+import { Button, Subheading, List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Modal } from '@components/index';
-import { Permissions } from '@constants';
-import { fetchGroup } from '@redux/actions/api/groups';
-import { groupModify } from '@redux/actions/apiActions/groups';
-import getStyles from '@styles/Styles';
+import { Modal } from '@components';
+import getStyles from '@styles/global';
 import {
   ModalProps,
   State,
@@ -26,9 +14,7 @@ import {
   ReduxLocation,
   GroupRolePermission,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
-
-import getArticleStyles from '../styles/Styles';
+import { Permissions } from '@utils';
 
 type ChangeGroupLocationModalProps = ModalProps & {
   group: Group | GroupPreload | null;
@@ -43,10 +29,6 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
-  const { colors } = theme;
-
-  const [errorVisible, setErrorVisible] = React.useState(false);
 
   const articlePermission = group?.preload
     ? null
@@ -54,9 +36,6 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
   const eventPermission = group?.preload
     ? null
     : group?.permissions?.find((p) => p.permission === Permissions.EVENT_ADD)?.scope;
-  const petitionPermission = group?.preload
-    ? null
-    : group?.permissions?.find((p) => p.permission === Permissions.PETITION_ADD)?.scope;
   const placePermission = group?.preload
     ? null
     : group?.permissions?.find((p) => p.permission === Permissions.PLACE_ADD)?.scope;
@@ -91,12 +70,6 @@ const ChangeGroupLocationModal: React.FC<ChangeGroupLocationModalProps> = ({
       key: 'events',
       name: 'Évènements',
       data: eventPermission,
-      callback: (l) => {},
-    },
-    {
-      key: 'petitions',
-      name: 'Petition',
-      data: petitionPermission,
       callback: (l) => {},
     },
     {

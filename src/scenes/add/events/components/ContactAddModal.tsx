@@ -1,16 +1,15 @@
 import { Formik } from 'formik';
 import React from 'react';
 import { View, Platform, TextInput as RNTextInput } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 import * as Yup from 'yup';
 
-import { FormTextInput, Modal, TabChipList } from '@components/index';
+import { FormTextInput, Modal, TabChipList } from '@components';
 import { ModalProps, State } from '@ts/types';
-import { useTheme } from '@utils';
 
-import getEventStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type ContactAddModalProps = ModalProps & {
   add: (contact: CustomContactType) => void;
@@ -57,14 +56,8 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
 
   const [predefinedType, setPredefinedType] = React.useState<string | null>(null);
 
-  function blurInputs() {
-    keyInput.current?.blur();
-    valueInput.current?.blur();
-    linkInput.current?.blur();
-  }
-
   const theme = useTheme();
-  const eventStyles = getEventStyles(theme);
+  const styles = getStyles(theme);
 
   const ContactSchema = Yup.object().shape({
     key: predefinedType ? Yup.string() : Yup.string().required('Titre requis'),
@@ -79,7 +72,7 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
         selected={predefinedType || 'none'}
         setSelected={(val) => (val !== 'none' ? setPredefinedType(val) : setPredefinedType(null))}
       />
-      <View style={eventStyles.formContainer}>
+      <View style={styles.formContainer}>
         <Formik
           initialValues={{ key: '', value: '', link: '' }}
           onSubmit={({ key, value, link }) => {
@@ -116,7 +109,7 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
                   onChangeText={handleChange('key')}
                   onBlur={handleBlur('key')}
                   onSubmitEditing={() => valueInput.current!.focus()}
-                  style={eventStyles.textInput}
+                  style={styles.textInput}
                   autoCorrect={false}
                   autoCapitalize="none"
                   autoFocus
@@ -137,7 +130,7 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
                     linkInput.current?.focus();
                   }
                 }}
-                style={eventStyles.textInput}
+                style={styles.textInput}
                 autoCorrect={false}
                 autoCapitalize="none"
               />
@@ -151,13 +144,13 @@ const ContactAddModal: React.FC<ContactAddModalProps> = ({ visible, setVisible, 
                   onChangeText={handleChange('link')}
                   onBlur={handleBlur('link')}
                   onSubmitEditing={() => handleSubmit()}
-                  style={eventStyles.textInput}
+                  style={styles.textInput}
                   autoCorrect={false}
                   autoCapitalize="none"
                 />
               )}
               <View style={{ height: 10 }} />
-              <View style={eventStyles.buttonContainer}>
+              <View style={styles.buttonContainer}>
                 <Button
                   mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                   uppercase={Platform.OS !== 'ios'}

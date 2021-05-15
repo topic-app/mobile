@@ -9,10 +9,10 @@ import { Platform } from 'react-native';
 
 import { AppScreenNavigationProp } from '@src/index';
 
-import LandingBeta from './views/Beta';
-import LandingInfo from './views/Info';
-import SelectLocation from './views/SelectLocation';
-import LandingWelcome from './views/Welcome';
+import LandingBeta from './Beta';
+import LandingInfo from './Info';
+import SelectLocation from './SelectLocation';
+import LandingWelcome from './Welcome';
 
 export type LandingStackParams = {
   Welcome: undefined;

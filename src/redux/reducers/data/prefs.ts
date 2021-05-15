@@ -1,6 +1,4 @@
-import { Platform } from 'react-native';
-
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import {
   PrefActionTypes,
   SET_PREFS,
@@ -18,7 +16,7 @@ const initialState: PreferencesState = {
   syncHistory: true,
   syncLists: true,
   fontSize: 14,
-  fontFamily: 'Roboto',
+  fontFamily: 'system',
   stripFormatting: false,
   themeEasterEggDiscovered: false,
   youtubeConsent: false,

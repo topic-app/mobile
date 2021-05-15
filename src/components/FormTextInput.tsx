@@ -1,9 +1,7 @@
 import React, { forwardRef } from 'react';
 import { View, TextInput as NativeTextInput, Platform } from 'react-native';
-import { HelperText, TextInput as PaperTextInput } from 'react-native-paper';
+import { HelperText, TextInput as PaperTextInput, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { useTheme } from '@utils/index';
 
 type Props = Omit<Omit<React.ComponentProps<typeof PaperTextInput>, 'error'>, 'render'> & {
   error?: string;
@@ -19,6 +17,7 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
     info: infoString,
     disableFullscreenUI = true,
     value,
+    label,
     autoFocus,
     ...rest
   } = props;
@@ -35,6 +34,8 @@ const FormTextInput = forwardRef<NativeTextInput, Props>((props, ref) => {
           ref={ref}
           error={error}
           mode={mode}
+          label={label}
+          accessibilityLabel={label}
           disableFullscreenUI={disableFullscreenUI}
           value={value}
           render={

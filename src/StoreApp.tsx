@@ -1,45 +1,83 @@
+import {
+  RobotoMono_400Regular,
+  RobotoMono_400Regular_Italic,
+} from '@expo-google-fonts/roboto-mono';
+import { RobotoSlab_400Regular } from '@expo-google-fonts/roboto-slab';
+import {
+  useFonts,
+  Rubik_300Light,
+  Rubik_300Light_Italic,
+  Rubik_400Regular,
+  Rubik_400Regular_Italic,
+} from '@expo-google-fonts/rubik';
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import Color from 'color';
 import AppLoading from 'expo-app-loading';
+import decode from 'jwt-decode';
 import React from 'react';
 import { Platform, Appearance, ColorSchemeName, View, Text } from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Config } from '@constants';
-import { updateArticleParams } from '@redux/actions/contentData/articles';
-import { updateEventParams } from '@redux/actions/contentData/events';
-import { fetchGroups, fetchWaitingGroups, fetchAccount } from '@redux/actions/data/account';
+import { fetchGroups, fetchWaitingGroups, fetchAccount, logout } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
-import Store from '@redux/store';
-import themes from '@styles/Theme';
-import { Preferences, PreferencesState, State } from '@ts/types';
-import { logger, useSafeAreaInsets } from '@utils/index';
+import themes from '@styles/helpers/theme';
+import { Preferences, State } from '@ts/types';
+import { logger, Alert, setUpMessagingLoaded } from '@utils';
+import { migrateReduxDB } from '@utils/compat/migrate';
 import { trackPageview } from '@utils/plausible';
 
 import AppNavigator from './index';
 import screens from './screens';
 
+const OpenDyslexic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Regular.otf');
+const OpenDyslexic_Italic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Italic.otf');
+
 type Props = {
   useSystemTheme: boolean;
   theme: Preferences['theme'];
+  accountToken?: string;
+  fontFamily: Preferences['fontFamily'];
   useDevServer: boolean;
-  reduxVersion: number;
   appOpens: number;
-  preferences: PreferencesState;
 };
 
 const StoreApp: React.FC<Props> = ({
   useSystemTheme,
   theme: themeName,
+  accountToken,
   useDevServer,
-  reduxVersion,
   appOpens,
-  preferences,
+  fontFamily,
 }) => {
+  const [fontsLoaded] = useFonts({
+    'Rubik-Light': Rubik_300Light,
+    'Rubik-Light_Italic': Rubik_300Light_Italic,
+    Rubik: Rubik_400Regular,
+    Rubik_Italic: Rubik_400Regular_Italic,
+    ...(fontFamily === 'Roboto-Slab'
+      ? {
+          'Roboto-Slab': RobotoSlab_400Regular,
+        }
+      : {}),
+    ...(fontFamily === 'Roboto-Mono'
+      ? {
+          'Roboto-Mono': RobotoMono_400Regular,
+          'Roboto-Mono_Italic': RobotoMono_400Regular_Italic,
+        }
+      : {}),
+    ...(fontFamily === 'OpenDyslexic'
+      ? {
+          OpenDyslexic,
+          OpenDyslexic_Italic,
+        }
+      : {}),
+  });
+
   const [colorScheme, setColorScheme] = React.useState<ColorSchemeName>(
     useSystemTheme ? Appearance.getColorScheme() : 'light',
   );
@@ -53,49 +91,52 @@ const StoreApp: React.FC<Props> = ({
   };
 
   React.useEffect(() => {
-    // Redux db migration
-    let currentVersion = reduxVersion;
-    if (currentVersion < Config.reduxVersion || !currentVersion) {
-      logger.warn(`StoreApp: Migrating Redux DB from ${currentVersion} to ${Config.reduxVersion}`);
-      if (!currentVersion) {
-        logger.warn('StoreApp: No current redux version, assuming version 0');
-        currentVersion = 0;
-      }
-      if (currentVersion < 2) {
-        updatePrefs({ analytics: true });
-      }
-      if (currentVersion < 3) {
-        updatePrefs({
-          completedFeedback: preferences.completedFeedback || [],
-          appOpens: preferences.appOpens || 0,
-        });
-      }
-      if (currentVersion < 4) {
-        updateArticleParams({
-          departments: Store.getState().articleData.params.departments?.filter((d) => !!d) || [],
-          ...Store.getState().articleData.params,
-        });
-
-        updateEventParams({
-          departments: Store.getState().eventData.params.departments?.filter((d) => !!d) || [],
-          ...Store.getState().eventData.params,
-        });
-      }
-      // Add all migration scripts here in descending order
-      updatePrefs({ reduxVersion: Config.reduxVersion });
-    }
-
-    // Increase app opens
-    updatePrefs({ appOpens: appOpens + 1 });
-
-    // Theme
     Appearance.addChangeListener(handleAppearanceChange);
     return () => {
       Appearance.removeChangeListener(handleAppearanceChange);
     };
   }, [useSystemTheme]);
 
+  const routeNameRef = React.useRef<string | undefined>();
+  const navigationRef = React.useRef<NavigationContainerRef>(null);
+
   React.useEffect(() => {
+    migrateReduxDB();
+
+    setUpMessagingLoaded();
+
+    // Increase app opens
+    updatePrefs({ appOpens: appOpens + 1 });
+
+    if (accountToken) {
+      let decoded;
+      try {
+        decoded = decode(accountToken) as { exp?: number } | null;
+      } catch (error) {
+        logger.warn('JWT decode failed');
+      }
+      if (
+        typeof decoded !== 'object' ||
+        typeof decoded?.exp !== 'number' ||
+        decoded?.exp > new Date().valueOf()
+      ) {
+        logger.warn('Token expired, logging out');
+        logout();
+        Alert.alert(
+          'Vous avez été déconnectés',
+          'Votre session a expiré',
+          [
+            { text: 'Fermer' },
+            {
+              text: 'Se connecter',
+              onPress: () => navigationRef.current?.navigate('Auth', { screen: 'Login' }),
+            },
+          ],
+          { cancelable: true },
+        );
+      }
+    }
+
     fetchLocationData().catch((e) => logger.warn(`fetchLocationData err ${e}`));
     fetchGroups().catch((e) => logger.warn(`fetchGroups err ${e}`));
     fetchWaitingGroups().catch((e) => logger.warn(`fetchWaitingGroups err ${e}`));
@@ -132,17 +173,18 @@ const StoreApp: React.FC<Props> = ({
     },
   };
 
-  const routeNameRef = React.useRef<string | undefined>();
-  const navigationRef = React.useRef<NavigationContainerRef>(null);
-
   const insets = useSafeAreaInsets();
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
 
   return (
     <PaperProvider theme={theme}>
       <>
         <NavigationContainer
-          ref={navigationRef}
           linking={linking}
+          ref={navigationRef}
           fallback={<AppLoading />}
           theme={navTheme}
           onStateChange={async () => {
@@ -214,9 +256,10 @@ const StoreApp: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { preferences } = state;
-  const { useSystemTheme, theme, useDevServer, reduxVersion, appOpens } = preferences;
-  return { useSystemTheme, theme, useDevServer, reduxVersion, appOpens, preferences };
+  const { useSystemTheme, theme, useDevServer, appOpens, fontFamily } = state.preferences;
+  const { accountInfo } = state.account;
+  const { accountToken } = accountInfo || {};
+  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily, accountToken };
 };
 
 export default connect(mapStateToProps)(StoreApp);

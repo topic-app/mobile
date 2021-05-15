@@ -9,7 +9,14 @@ export * from './tags';
 export * from './hooks';
 export * from './permissions';
 export * from './plausible';
-export { default as Alert } from './alert';
 export { default as shareContent } from './share';
+export { default as getContentParams } from './params';
 export { Location } from './deviceLocation';
 export { Errors };
+
+export { default as Alert } from './compat/alert';
+export * from './compat/messageHandler';
+export { hashPassword } from './compat/crypto';
+export * from './compat/firebase';
+export { default as YouTube } from './compat/youtube';
+export * from './compat/youtube';

@@ -1,23 +1,14 @@
 import moment from 'moment';
 import React from 'react';
 import { View, Platform, ScrollView, TextInput as RNTextInput } from 'react-native';
-import { Button, Menu, HelperText, TextInput, List, Card, ThemeProvider } from 'react-native-paper';
+import { Button, HelperText, TextInput, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-import { Modal, TabChipList } from '@components/index';
-import getStyles from '@styles/Styles';
-import {
-  ModalProps,
-  State,
-  EventPlace,
-  EventCreationData,
-  Duration,
-  ProgramEntry,
-} from '@ts/types';
-import { useTheme } from '@utils/index';
+import { Modal, TabChipList } from '@components';
+import { ModalProps, State, EventCreationData, ProgramEntry } from '@ts/types';
 
-import getEventStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type ProgramAddModalProps = ModalProps & {
   date: Date;
@@ -149,13 +140,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
   function validateTitleInput(title: string) {
     let validation: Partial<InputStateType> = { valid: false, error: false };
     if (title !== '') {
-      if (title.length <= 10) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'Le titre doit contenir au moins 10 caractères',
-        };
-      } else if (title.length >= 100) {
+      if (title.length >= 100) {
         validation = {
           valid: false,
           error: true,
@@ -189,12 +174,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
           valid: false,
           error: true,
           message: 'La description doit contenir moins de 500 caractères',
-        };
-      } else if (description.length <= 10) {
-        validation = {
-          valid: false,
-          error: true,
-          message: 'La description doit contenir au moins 10 caractères',
         };
       } else {
         validation = { valid: true, error: false };
@@ -352,7 +331,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const eventStyles = getEventStyles(theme);
+  const styles = getStyles(theme);
 
   return (
     <Modal
@@ -364,9 +343,9 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
         setVisible(val);
       }}
     >
-      <View style={eventStyles.formContainer}>
+      <View style={styles.formContainer}>
         <ScrollView>
-          <View style={eventStyles.textInputContainer}>
+          <View style={styles.textInputContainer}>
             <List.Subheader> Informations </List.Subheader>
             <TextInput
               ref={titleInput}
@@ -385,7 +364,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
               autoFocus
               theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
               mode="outlined"
-              style={eventStyles.textInput}
+              style={styles.textInput}
               onChangeText={(text) => {
                 setTitle({ value: text });
                 preValidateTitleInput(text);
@@ -397,7 +376,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
               {currentTitle.message}
             </HelperText>
           )}
-          <View style={eventStyles.textInputContainer}>
+          <View style={styles.textInputContainer}>
             <TextInput
               ref={descriptionInput}
               label="Description (facultatif)"
@@ -410,7 +389,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
               }}
               theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
               mode="outlined"
-              style={eventStyles.textInput}
+              style={styles.textInput}
               onEndEditing={({ nativeEvent }) => {
                 validateDescriptionInput(nativeEvent.text);
               }}
@@ -425,7 +404,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
               </HelperText>
             )}
           </View>
-          <View style={eventStyles.textInputContainer}>
+          <View style={styles.textInputContainer}>
             <TextInput
               ref={addressInput}
               label="Lieu (facultatif)"
@@ -438,7 +417,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
               autoCorrect={false}
               theme={{ colors: { primary: colors.primary, placeholder: colors.valid } }}
               mode="outlined"
-              style={eventStyles.textInput}
+              style={styles.textInput}
               onChangeText={(text) => {
                 setAddress({ value: text });
               }}
@@ -446,7 +425,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
           </View>
           <View style={{ height: 10 }} />
           <List.Subheader> Début </List.Subheader>
-          <View style={eventStyles.textInputContainer}>
+          <View style={styles.textInputContainer}>
             <Button
               mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
               uppercase={Platform.OS !== 'ios'}
@@ -487,7 +466,7 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
           </View>
         </ScrollView>
         <View style={{ height: 20 }} />
-        <View style={eventStyles.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <Button
             mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
             uppercase={Platform.OS !== 'ios'}

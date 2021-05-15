@@ -1,16 +1,20 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Divider, Button, HelperText, TextInput as PaperTextInput } from 'react-native-paper';
+import {
+  Divider,
+  Button,
+  HelperText,
+  TextInput as PaperTextInput,
+  useTheme,
+} from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Modal } from '@components/index';
+import { Modal } from '@components';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { groupModify } from '@redux/actions/apiActions/groups';
-import getStyles from '@styles/Styles';
 import { ModalProps, State, Group, GroupPreload } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type EditGroupModalProps = ModalProps & {
   group: Group | GroupPreload | null;
@@ -39,7 +43,6 @@ const EditGroupModal: React.FC<EditGroupModalProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [errorVisible, setErrorVisible] = React.useState(false);
@@ -47,14 +50,14 @@ const EditGroupModal: React.FC<EditGroupModalProps> = ({
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <PaperTextInput mode="outlined" label="Nom" disabled value={group?.name} />
           <HelperText type="info">
             Pour des raisons de sécurité, nous n&amp;autorisons pas le changement de nom. Envoyez un
             email à moderation@topicapp.fr si vous voulez changer
           </HelperText>
         </View>
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <PaperTextInput
             mode="outlined"
             autoFocus

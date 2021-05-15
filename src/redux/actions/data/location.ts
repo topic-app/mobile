@@ -11,7 +11,7 @@ import {
   AppThunk,
   LocationState,
 } from '@ts/types';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 /**
  * @docs actionCreators

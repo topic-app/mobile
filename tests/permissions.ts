@@ -1,6 +1,5 @@
-import { Permissions } from '@constants/index';
 import { Account } from '@ts/types';
-import { checkPermission } from '@utils/permissions';
+import { checkPermission, Permissions } from '@utils';
 
 test('it should give permission with groups', () => {
   const check = checkPermission(

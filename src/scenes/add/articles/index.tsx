@@ -1,13 +1,13 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { ArticleCreationData, ReduxLocation } from '@ts/redux';
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { ArticleCreationData } from '@ts/redux';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { AddScreenNavigationProp } from '..';
-import ArticleAdd from './views/Add';
-import ArticleAddContent from './views/AddContent';
-import ArticleAddSuccess from './views/AddSuccess';
+import ArticleAdd from './Add';
+import ArticleAddContent from './AddContent';
+import ArticleAddSuccess from './AddSuccess';
 
 export type ArticleAddStackParams = {
   Add: undefined;
@@ -16,12 +16,6 @@ export type ArticleAddStackParams = {
     id?: string;
     creationData?: ArticleCreationData;
     editing?: boolean;
-  };
-  Location: {
-    hideSearch: boolean;
-    type: 'schools' | 'departements' | 'regions' | 'other';
-    initialData?: ReduxLocation;
-    callback: (location: ReduxLocation) => any;
   };
 };
 

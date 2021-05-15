@@ -1,16 +1,20 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Divider, Button, HelperText, TextInput as PaperTextInput } from 'react-native-paper';
+import {
+  Divider,
+  Button,
+  HelperText,
+  TextInput as PaperTextInput,
+  useTheme,
+} from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, Modal } from '@components/index';
+import { CollapsibleView, Modal } from '@components';
 import { modifyArticleList } from '@redux/actions/contentData/articles';
 import { modifyEventList } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { ModalProps, State, ArticleListItem, EventListItem } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getArticleStyles from './styles/Styles';
+import getStyles from './styles';
 
 type EditModalProps = ModalProps & {
   articleLists: ArticleListItem[];
@@ -31,7 +35,6 @@ function EditModal({
 }: EditModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const lists = type === 'articles' ? articleLists : eventLists;
@@ -43,7 +46,7 @@ function EditModal({
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <PaperTextInput
             autoFocus
             mode="outlined"
@@ -78,7 +81,7 @@ function EditModal({
             </HelperText>
           </CollapsibleView>
         </View>
-        <View style={articleStyles.activeCommentContainer}>
+        <View style={styles.activeCommentContainer}>
           <PaperTextInput
             mode="outlined"
             multiline

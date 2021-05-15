@@ -1,12 +1,12 @@
 import React from 'react';
 import { Linking, View } from 'react-native';
-import { Button, IconButton, Text } from 'react-native-paper';
+import { Button, IconButton, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import updatePrefs from '@redux/actions/data/prefs';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { PreferencesState, State, Account } from '@ts/types';
-import { useLayout, useTheme } from '@utils';
+import { useLayout } from '@utils';
 
 import Illustration from './Illustration';
 import { PlatformTouchable } from './PlatformComponents';
@@ -47,7 +47,7 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
                 style={{ marginRight: 10 }}
               />
               <Text style={{ fontSize: mobile ? 18 : 22, color: colors.muted }}>
-                Rejoignez la bêta {!mobile && "de l'application"}
+                Téléchargez l&apos;appli{!mobile && 'cation'}
               </Text>
             </View>
           </View>
@@ -60,12 +60,13 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
                   icon="download"
                   onPress={() => Linking.openURL('https://beta.topicapp.fr')}
                 >
-                  Plus d&apos;infos
+                  Télécharger
                 </Button>
               </View>
               <View style={styles.container}>
                 <IconButton
                   icon="close"
+                  accessibilityLabel="Cacher la bannière"
                   color={colors.disabled}
                   onPress={() => updatePrefs({ showDownloadBanner: false })}
                 />
@@ -74,8 +75,8 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
           ) : (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={styles.container}>
-                <Button
-                  mode="outlined"
+                <IconButton
+                  accessibilityLabel="Android"
                   color={colors.primary}
                   icon="android"
                   onPress={() =>
@@ -83,23 +84,20 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
                       'https://play.google.com/store/apps/details?id=fr.topicapp.topic',
                     )
                   }
-                >
-                  Android
-                </Button>
+                />
               </View>
               <View style={styles.container}>
-                <Button
-                  mode="outlined"
+                <IconButton
+                  accessibilityLabel="iOS"
                   color={colors.primary}
                   icon="apple"
                   onPress={() => Linking.openURL('https://testflight.apple.com/join/87FfV2f8')}
-                >
-                  iOS
-                </Button>
+                />
               </View>
               <View style={styles.container}>
                 <IconButton
                   icon="close"
+                  accessibilityLabel="Cacher la bannière"
                   color={colors.disabled}
                   onPress={() => updatePrefs({ showDownloadBanner: false })}
                 />

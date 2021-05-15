@@ -102,7 +102,7 @@ function schoolReducer(state = initialState, action: SchoolsActionTypes): School
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
         near: action.data.near ? [] : state.near,
-        item: null,
+        item: action.data.item ? null : state.item,
         items: [],
         state: state.state,
       };

@@ -9,14 +9,13 @@ import {
   TouchableNativeFeedbackProps,
 } from 'react-native';
 import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
-import { IconButton } from 'react-native-paper';
+import { IconButton, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { useTheme } from '@utils/index';
 
 type PlatformIconButtonProps = {
   // TODO: find a way to accept either `icon`, or `iosIcon` and `androidIcon`
   icon: string;
+  accessibilityLabel: string;
   iosIcon?: string;
   androidIcon?: string;
   size?: number;
@@ -29,6 +28,7 @@ type PlatformIconButtonProps = {
 
 const PlatformIconButton: React.FC<PlatformIconButtonProps> = ({
   icon,
+  accessibilityLabel,
   iosIcon,
   androidIcon,
   size = 25,
@@ -59,6 +59,7 @@ const PlatformIconButton: React.FC<PlatformIconButtonProps> = ({
       size={androidSize || size}
       onPress={onPress}
       style={style}
+      accessibilityLabel={accessibilityLabel}
     />
   );
 };
@@ -82,6 +83,7 @@ const PlatformBackButton: React.FC<PlatformBackButtonProps> = ({ onPress }) =>
     <View />
   ) : (
     <PlatformIconButton
+      accessibilityLabel="Retour"
       icon="arrow-left"
       androidIcon="arrow-left"
       iosIcon="chevron-left"

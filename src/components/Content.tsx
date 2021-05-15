@@ -1,19 +1,16 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
-import { ImageStyle, View, Dimensions, Platform, Linking } from 'react-native';
+import { ImageStyle, View, Dimensions, Platform } from 'react-native';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
-import { Text, Card, Title, Button } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Button, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import config from '@constants/config';
-import updatePrefs from '@redux/actions/data/prefs';
-import getStyles from '@styles/Styles';
+import { AutoHeightImage } from '@components';
+import { Config } from '@constants';
+import getStyles from '@styles/global';
 import { Content as ContentType, State, Preferences } from '@ts/types';
-import AutoHeightImage from '@utils/autoHeightImage';
-import { useTheme, getImageUrl, handleUrl } from '@utils/index';
-import { NativeStackNavigationProp } from '@utils/stack';
-import YouTube from '@utils/youtube';
+import { getImageUrl, handleUrl, YouTube } from '@utils';
+import { NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { PlatformTouchable } from './PlatformComponents';
 
@@ -42,7 +39,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
           body: {
             ...styles.text,
             fontSize: preferences.fontSize,
-            fontFamily: preferences.fontFamily,
+            fontFamily: preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
           },
           link: styles.primaryText,
           heading1: { fontSize: Math.floor(preferences.fontSize * 2) },
@@ -98,25 +95,56 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
               if (Platform.OS === 'web') {
                 if (!loaded) return null;
                 return (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${src.substring(10)}`}
-                    title="youtube"
-                    style={{ width: '100%', height: 480 }}
-                  />
+                  <View style={{ flex: 1 }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${src.substring(
+                        10,
+                      )}?modestbranding=1&rel=0`}
+                      title="youtube"
+                      style={{ width: '100%', height: 480 }}
+                      allow="fullscreen"
+                    />
+                    <View style={{ flex: 1 }}>
+                      <Button
+                        onPress={() =>
+                          handleUrl(`https://youtube.com/watch?v=${src.substring(10)}`)
+                        }
+                        mode="text"
+                        uppercase={false}
+                        icon="open-in-new"
+                      >
+                        Ouvrir sur Youtube
+                      </Button>
+                    </View>
+                  </View>
                 );
-              } else if (!config.google.youtubeKey) {
+              } else if (!Config.google.youtubeKey) {
                 return null;
               } else {
                 return (
                   <View style={{ flex: 1 }}>
                     <YouTube
-                      // apiKey is an Android-specific prop but does not
-                      // appear in prop types but is required
+                      // apiKey is an Android-specific prop that does not
+                      // appear in prop types and is required
                       // @ts-expect-error
-                      apiKey={config.google.youtubeKey}
+                      apiKey={Config.google.youtubeKey}
                       videoId={src.substring(10)}
                       style={{ alignSelf: 'stretch', height: 300 }}
+                      modestbranding
+                      rel={false}
                     />
+                    <View style={{ flex: 1 }}>
+                      <Button
+                        onPress={() =>
+                          handleUrl(`https://youtube.com/watch?v=${src.substring(10)}`)
+                        }
+                        mode="text"
+                        uppercase={false}
+                        icon="open-in-new"
+                      >
+                        Ouvrir sur Youtube
+                      </Button>
+                    </View>
                   </View>
                 );
               }
@@ -124,10 +152,10 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
               return <Text>[CONTENU NON VALIDE]</Text>;
             }
           },
-          textgroup: (node, children, parent, textStyles) => (
+          textgroup: ({ key }, children, parent, textStyles) => (
             <Text
               selectable
-              key={node.key}
+              key={key}
               style={[
                 textStyles.textgroup,
                 { textAlign: Platform.OS === 'android' ? 'left' : 'justify' },
@@ -150,7 +178,10 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
     return (
       <Text
         selectable
-        style={{ fontSize: preferences.fontSize, fontFamily: preferences.fontFamily }}
+        style={{
+          fontSize: preferences.fontSize,
+          fontFamily: preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
+        }}
       >
         {data}
       </Text>

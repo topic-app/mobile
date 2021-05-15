@@ -1,3 +1,5 @@
+import shortid from 'shortid';
+
 import Store from '@redux/store';
 import {
   UPDATE_ARTICLES_QUICKS,
@@ -6,12 +8,10 @@ import {
   UPDATE_ARTICLES_LISTS,
   UPDATE_ARTICLES_STATE,
   UPDATE_ARTICLES_PREFS,
-  UPDATE_ARTICLES_PARAMS,
   CLEAR_ARTICLES,
   ArticlePrefs,
   ArticleCreationData,
   Article,
-  ArticleParams,
 } from '@ts/types';
 
 import { clearCreator } from '../api/ActionCreator';
@@ -24,7 +24,6 @@ import {
   addReadCreator,
   deleteReadCreator,
   clearReadCreator,
-  updateParamsCreator,
   updatePrefsCreator,
   addQuickCreator,
   deleteQuickCreator,
@@ -32,6 +31,7 @@ import {
   clearCreationDataCreator,
   reorderQuickCreator,
   reorderListCreator,
+  deleteReadAllCreator,
 } from './ActionCreator';
 
 /**
@@ -77,7 +77,11 @@ async function removeArticleFromList(articleId: string, listId: string) {
  * @param icon
  * @param description
  */
-async function addArticleList(name: string, icon: string = '', description: string = '') {
+async function addArticleList(
+  name: string,
+  icon: string = 'bookmark-outline',
+  description: string = '',
+) {
   Store.dispatch(
     addListCreator({
       update: UPDATE_ARTICLES_LISTS,
@@ -143,22 +147,37 @@ async function deleteArticleList(listId: string) {
   );
 }
 
-async function addArticleRead(articleId: string, title: string, marked: boolean = false) {
+async function addArticleRead(
+  articleId: string,
+  title?: string,
+  marked: boolean = false,
+  date?: Date,
+) {
   Store.dispatch(
     addReadCreator({
       update: UPDATE_ARTICLES_READ,
       dataType: 'articleData',
-      data: { id: articleId, title, date: new Date(), marked },
+      data: { key: shortid(), id: articleId, title, date: date || new Date(), marked },
     }),
   );
 }
 
-async function deleteArticleRead(articleId: string) {
+async function deleteArticleRead(key: string) {
   Store.dispatch(
     deleteReadCreator({
       update: UPDATE_ARTICLES_READ,
       dataType: 'articleData',
-      id: articleId,
+      key,
+    }),
+  );
+}
+
+async function deleteArticleReadAll(id: string) {
+  Store.dispatch(
+    deleteReadAllCreator({
+      update: UPDATE_ARTICLES_READ,
+      dataType: 'articleData',
+      id,
     }),
   );
 }
@@ -168,25 +187,6 @@ async function clearArticlesRead() {
     clearReadCreator({
       update: UPDATE_ARTICLES_READ,
       dataType: 'articleData',
-    }),
-  );
-}
-
-/**
- * @docs actions
- * Change les parametres de requete pour un article
- * @param articleId L'id de l'article à récuperer
- */
-async function updateArticleParams(params: Partial<ArticleParams>) {
-  Store.dispatch(
-    updateParamsCreator({
-      updateParams: UPDATE_ARTICLES_PARAMS,
-      params,
-    }),
-  );
-  Store.dispatch(
-    clearCreator({
-      clear: CLEAR_ARTICLES,
     }),
   );
 }
@@ -261,8 +261,8 @@ export {
   deleteArticleList,
   addArticleRead,
   deleteArticleRead,
+  deleteArticleReadAll,
   clearArticlesRead,
-  updateArticleParams,
   updateArticlePrefs,
   addArticleQuick,
   deleteArticleQuick,

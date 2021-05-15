@@ -3,7 +3,7 @@ import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ReanimatedBottomSheet from 'reanimated-bottom-sheet';
 
-import { logger } from '@utils/index';
+import { logger } from '@utils';
 
 export type BottomSheetRef = ReanimatedBottomSheet;
 

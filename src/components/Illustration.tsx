@@ -1,8 +1,11 @@
-import * as Assets from '@assets/index';
 import React from 'react';
+import { View } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import { SvgProps } from 'react-native-svg';
 
-import { useTheme, logger } from '@utils/index';
+import * as Assets from '@assets/index';
+import getStyles from '@styles/global';
+import { logger } from '@utils';
 
 const illustrationList = {
   // Topic Icon
@@ -96,16 +99,6 @@ const illustrationList = {
     dark: Assets.GroupDark,
   },
 
-  // Petition Illustrations
-  petition: {
-    light: Assets.PetitionLight,
-    dark: Assets.PetitionDark,
-  },
-  'petition-greyed': {
-    light: Assets.PetitionGreyedLight,
-    dark: Assets.PetitionGreyedDark,
-  },
-
   // Select Location
   'location-select': {
     light: Assets.LocationSelectLight,
@@ -160,10 +153,18 @@ const illustrations: {
 
 export type IllustrationName = keyof typeof illustrationList;
 
-type Props = SvgProps & { name: IllustrationName };
+type Props = SvgProps & { name: IllustrationName; label?: string; centered?: boolean };
 
-const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, ...rest }) => {
-  const { dark } = useTheme();
+const Illustration: React.FC<Props> = ({
+  name,
+  height = 200,
+  width = 200,
+  centered = false,
+  label,
+  ...rest
+}) => {
+  const theme = useTheme();
+  const styles = getStyles(theme);
 
   if (!(name in illustrations)) {
     logger.warn(`Error: ${name} not found in list of artwork`);
@@ -171,10 +172,20 @@ const Illustration: React.FC<Props> = ({ name, height = 200, width = 200, ...res
   }
 
   const item = illustrations[name];
-  const IllustrationComponent = item.all || (dark ? item.dark : item.light);
+  const IllustrationComponent = item.all || (theme.dark ? item.dark : item.light);
 
   if (IllustrationComponent) {
-    return <IllustrationComponent height={height} width={width} {...rest} />;
+    return (
+      <View
+        accessibilityLabel={label}
+        accessibilityElementsHidden={!label}
+        importantForAccessibility={label ? undefined : 'no-hide-descendants'}
+        aria-hidden={!label}
+        style={centered && styles.centerIllustrationContainer}
+      >
+        <IllustrationComponent height={height} width={width} {...rest} />
+      </View>
+    );
   }
 
   return null;

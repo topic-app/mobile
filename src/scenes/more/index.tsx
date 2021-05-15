@@ -1,12 +1,11 @@
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/core';
 import React from 'react';
-import { Platform } from 'react-native';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { MainScreenNavigationProp } from '../Main';
 import AboutStackNavigator, { AboutStackParams } from './about/index';
-import LocationScreen, { LocationStackParams } from './location/views/LocationPage';
+import LocationScreen, { LocationStackParams } from './location/LocationPage';
 import ModerationStackNavigator, { ModerationStackParams } from './moderation/index';
 import MyGroupStackNavigator, { MyGroupsStackParams } from './myGroups/index';
 import ProfileStackNavigator, { ProfileStackParams } from './profile/index';

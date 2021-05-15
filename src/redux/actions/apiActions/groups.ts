@@ -1,6 +1,6 @@
 import Store from '@redux/store';
 import { UPDATE_GROUPS_STATE, AppThunk, GroupCreationData, Avatar } from '@ts/types';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 import { reportCreator, approveCreator, deverifyCreator } from './ActionCreator';
 

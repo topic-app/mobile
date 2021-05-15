@@ -1,31 +1,32 @@
 import React from 'react';
 import { View, Dimensions, Platform } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { EventCard, PlatformTouchable } from '@components/index';
+import { EventCard, PlatformTouchable } from '@components';
 import {
   addEventRead,
-  deleteEventRead,
   addEventToList,
   removeEventFromList,
+  deleteEventReadAll,
 } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { AnyEvent, EventListItem } from '@ts/types';
-import { useTheme, Alert } from '@utils/index';
+import { Alert } from '@utils';
 
-import getEventStyles from '../styles/Styles';
+import getStyles from './styles';
 
 type EventListCardProps = {
   event: AnyEvent;
   group?: string;
+  setAddToListModalEvent: (id: string) => void;
+  setAddToListModalVisible: (val: boolean) => void;
   sectionKey: string;
   isRead: boolean;
   historyActive: boolean;
   lists: EventListItem[];
   navigate: () => void;
-  overrideImageWidth: number;
+  overrideImageWidth?: number;
 };
 
 const EventListCard: React.FC<EventListCardProps> = ({
@@ -35,59 +36,24 @@ const EventListCard: React.FC<EventListCardProps> = ({
   isRead,
   historyActive,
   lists,
+  setAddToListModalEvent,
+  setAddToListModalVisible,
   navigate,
   overrideImageWidth,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
-  const eventStyles = getEventStyles(theme);
 
   const swipeRef = React.createRef<Swipeable>();
 
-  const maxLeftActions = (Dimensions.get('window').width - 100) / 120;
+  const maxLeftActions = (Dimensions.get('window').width - (100 + 120 * 2)) / 120;
 
-  const renderRightActions = (id: string) => {
-    return (
-      <View style={[styles.centerIllustrationContainer, { width: '100%', alignItems: 'flex-end' }]}>
-        {group !== 'lists' ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginRight: 20,
-            }}
-          >
-            <Text style={eventStyles.captionText}>Marquer comme {isRead ? 'non lu' : 'lu'}</Text>
-            <Icon
-              name={isRead ? 'eye-off' : 'eye'}
-              size={32}
-              style={{ marginHorizontal: 10 }}
-              color={colors.disabled}
-            />
-          </View>
-        ) : (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginRight: 20,
-            }}
-          >
-            <Text style={eventStyles.captionText}>Retirer</Text>
-            <Icon
-              name="delete"
-              color={colors.disabled}
-              size={32}
-              style={{ marginHorizontal: 10 }}
-            />
-          </View>
-        )}
-      </View>
-    );
-  };
+  if (Platform.OS === 'web') {
+    return <EventCard event={event} navigate={navigate} overrideImageWidth={overrideImageWidth} />;
+  }
 
-  const renderLeftActions = (id: string, swipePropRef: React.RefObject<Swipeable>) => {
+  const renderLeftActions = (id: string, title: string) => {
     return (
       <View
         style={[
@@ -95,81 +61,104 @@ const EventListCard: React.FC<EventListCardProps> = ({
           { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
         ]}
       >
-        {lists.slice(0, maxLeftActions).map((l) => (
-          <View key={l.id} style={{ width: 120 }}>
+        {group !== 'lists' ? (
+          historyActive ? (
+            <View key="read" style={{ width: 120 }}>
+              <PlatformTouchable
+                onPress={() => {
+                  if (isRead) deleteEventReadAll(id);
+                  else addEventRead(id, title, true);
+                }}
+              >
+                <View style={{ alignItems: 'center', margin: 10 }}>
+                  <Icon name={isRead ? 'eye-off' : 'eye'} color={colors.disabled} size={32} />
+                  <Text style={{ color: colors.disabled, textAlign: 'center' }}>
+                    Marquer {isRead ? 'non lu' : 'lu'}
+                  </Text>
+                </View>
+              </PlatformTouchable>
+            </View>
+          ) : null
+        ) : (
+          <View key="delete" style={{ width: 120 }}>
             <PlatformTouchable
               onPress={() => {
-                if (l.items.some((i) => i._id === id)) {
+                removeEventFromList(id, sectionKey);
+              }}
+            >
+              <View style={{ alignItems: 'center', margin: 10 }}>
+                <Icon name="delete" color={colors.disabled} size={32} />
+                <Text style={{ color: colors.disabled, textAlign: 'center' }}>Retirer</Text>
+              </View>
+            </PlatformTouchable>
+          </View>
+        )}
+        {lists.length === 1 && group !== 'lists' ? (
+          <View key="firstlist" style={{ width: 120 }}>
+            <PlatformTouchable
+              onPress={() => {
+                if (lists[0].items.some((i) => i._id === event._id)) {
                   Alert.alert(
-                    `Retirer l'article de la liste ${l.name} ?`,
-                    "L'article ne sera plus disponible hors-ligne",
+                    'Voulez vous vraiment retirer cet évènement de la liste ?',
+                    event.title,
                     [
                       { text: 'Annuler' },
                       {
                         text: 'Retirer',
-                        onPress: () => removeEventFromList(id, l.id),
+                        onPress: () => removeEventFromList(event._id, lists[0].id),
                       },
                     ],
                     { cancelable: true },
                   );
                 } else {
-                  addEventToList(id, l.id);
+                  addEventToList(event._id, lists[0].id);
                 }
-                swipePropRef.current?.close();
               }}
             >
               <View style={{ alignItems: 'center', margin: 10 }}>
                 <Icon
-                  name={l.icon || 'playlist-plus'}
+                  name={lists[0].icon}
+                  color={
+                    lists[0].items.some((i) => i._id === event._id)
+                      ? colors.primary
+                      : colors.disabled
+                  }
                   size={32}
-                  color={l.items.some((i) => i._id === id) ? colors.primary : colors.disabled}
                 />
                 <Text
                   style={{
-                    color: l.items.some((i) => i._id === id) ? colors.primary : colors.disabled,
+                    color: lists[0].items.some((i) => i._id === event._id)
+                      ? colors.primary
+                      : colors.disabled,
+                    textAlign: 'center',
                   }}
                 >
-                  {l.name}
+                  {lists[0].name}
                 </Text>
               </View>
             </PlatformTouchable>
           </View>
-        ))}
+        ) : (
+          <View key="add" style={{ width: 120 }}>
+            <PlatformTouchable
+              onPress={() => {
+                setAddToListModalEvent(id);
+                setAddToListModalVisible(true);
+              }}
+            >
+              <View style={{ alignItems: 'center', margin: 10 }}>
+                <Icon name="playlist-plus" color={colors.disabled} size={32} />
+                <Text style={{ color: colors.disabled, textAlign: 'center' }}>Sauvegarder</Text>
+              </View>
+            </PlatformTouchable>
+          </View>
+        )}
       </View>
     );
   };
 
-  const swipeRightAction = (
-    id: string,
-    title: string,
-    swipePropRef: React.RefObject<Swipeable>,
-  ) => {
-    swipePropRef.current?.close();
-    if (group === 'lists') {
-      removeEventFromList(id, sectionKey);
-    } else {
-      if (isRead) deleteEventRead(id);
-      else addEventRead(id, title, true);
-    }
-  };
-
-  if (Platform.OS === 'web') {
-    return <EventCard event={event} navigate={navigate} overrideImageWidth={overrideImageWidth} />;
-  }
-
   return (
-    <Swipeable
-      ref={swipeRef}
-      renderLeftActions={() => renderLeftActions(event._id, swipeRef)}
-      renderRightActions={
-        historyActive || group !== 'lists' ? () => renderRightActions(event._id) : undefined
-      }
-      onSwipeableRightOpen={
-        historyActive || group !== 'lists'
-          ? () => swipeRightAction(event._id, event.title, swipeRef)
-          : undefined
-      }
-    >
+    <Swipeable ref={swipeRef} renderLeftActions={() => renderLeftActions(event._id, event.title)}>
       <EventCard event={event} navigate={navigate} overrideImageWidth={overrideImageWidth} />
     </Swipeable>
   );

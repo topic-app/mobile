@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
-import { View, Platform, UIManager, LayoutAnimation, ViewStyle, StyleProp } from 'react-native';
-
-const { configureNext, create } = LayoutAnimation;
-
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
+import { View, ViewStyle, StyleProp } from 'react-native';
+import Collapsible from 'react-native-collapsible';
 
 type Props = {
   collapsed: boolean;
   style?: StyleProp<ViewStyle>;
+  align?: 'top' | 'center' | 'bottom';
   duration?: number;
   children?: React.ReactNode;
+  renderChildrenCollapsed?: boolean;
 };
 
 const CollapsibleView: React.FC<Props> = ({
   collapsed,
   style,
+  align = 'top',
   duration = 200,
   children,
+  renderChildrenCollapsed = true,
   ...viewProps
 }) => {
-  const [collapsedState, setCollapsedState] = useState(collapsed);
-  if (collapsedState !== collapsed) {
-    configureNext(create(duration, 'easeInEaseOut', 'opacity'));
-    setCollapsedState(collapsed);
-  }
-  return collapsedState ? null : (
-    <View style={style} {...viewProps}>
-      {children}
-    </View>
+  return (
+    <Collapsible
+      collapsed={collapsed}
+      renderChildrenCollapsed={renderChildrenCollapsed}
+      align={align}
+    >
+      <View style={style} {...viewProps}>
+        {children}
+      </View>
+    </Collapsible>
   );
 };
 

@@ -60,9 +60,8 @@ export default {
               Settings: {
                 screens: {
                   List: '/parametres',
-                  Theme: '/parametres/theme',
                   Privacy: '/parametres/confidentialite',
-                  Content: '/parametres/contenu',
+                  Appearance: '/parametres/apparence',
                   Dev: '/parametres/beta',
                 },
               },
@@ -155,12 +154,6 @@ export default {
                   Explore: '/carte',
                 },
               },
-            },
-          },
-          Pages: {
-            screens: {
-              Sandbox: '/pages/sandbox',
-              Display: '/pages/:group',
             },
           },
           NotFound: '*',

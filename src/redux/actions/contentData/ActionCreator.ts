@@ -16,7 +16,7 @@ import {
   EventListItem,
   ArticleListItem,
 } from '@ts/types';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 type ContentItemWithListsString = 'articleData' | 'eventData';
 
@@ -283,13 +283,29 @@ function addReadCreator<T extends ContentItemWithListsString>({
 type DeleteReadCreatorParams<T extends ContentItemWithListsString> = {
   dataType: T;
   update: ContentAction.TypeMap[T];
-  id: string;
+  key: string;
 };
 function deleteReadCreator<T extends ContentItemWithListsString>({
   update,
   dataType,
-  id,
+  key,
 }: DeleteReadCreatorParams<T>): AnyAction {
+  return {
+    type: update,
+    data: Store.getState()[dataType].read.filter((i) => i.key !== key),
+  };
+}
+
+type DeleteReadAllCreatorParams<T extends ContentItemWithListsString> = {
+  dataType: T;
+  update: ContentAction.TypeMap[T];
+  id: string;
+};
+function deleteReadAllCreator<T extends ContentItemWithListsString>({
+  update,
+  dataType,
+  id,
+}: DeleteReadAllCreatorParams<T>): AnyAction {
   return {
     type: update,
     data: Store.getState()[dataType].read.filter((i) => i.id !== id),
@@ -307,27 +323,6 @@ function clearReadCreator<T extends ContentItemWithListsString>({
   return {
     type: update,
     data: [],
-  };
-}
-
-/**
- * @docs actionCreators
- * Créateur d'action pour mettre à jour les paramètres de requete
- * @param updateParams L'action pour clear la db
- * @param params Les paramètres à mettre à jour
- * @returns Action
- */
-type UpdateParamsCreatorParams<T extends ContentItemWithListsString> = {
-  updateParams: ContentAction.UpdateParamsTypeMap[T];
-  params: ContentAction.UpdateParamsDataMap[T];
-};
-function updateParamsCreator<T extends ContentItemWithListsString>({
-  updateParams,
-  params,
-}: UpdateParamsCreatorParams<T>): AnyAction {
-  return {
-    type: updateParams,
-    data: params,
   };
 }
 
@@ -524,8 +519,8 @@ export {
   deleteListCreator,
   addReadCreator,
   deleteReadCreator,
+  deleteReadAllCreator,
   clearReadCreator,
-  updateParamsCreator,
   updatePrefsCreator,
   addQuickCreator,
   deleteQuickCreator,

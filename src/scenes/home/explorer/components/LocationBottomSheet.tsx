@@ -8,8 +8,9 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
+import { Divider, Text, useTheme } from 'react-native-paper';
 import Animated, { call, cond, greaterThan, lessThan, useCode } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
@@ -20,14 +21,14 @@ import {
   ContentTabView,
   InlineCard,
   PlatformBackButton,
-} from '@components/index';
+} from '@components';
 import { updateMapLocations } from '@redux/actions/api/places';
-import { GroupsState, MapLocation, PlaceRequestState, State } from '@ts/types';
-import { useTheme, logger, useSafeAreaInsets } from '@utils/index';
+import { MapLocation, PlaceRequestState, State } from '@ts/types';
+import { logger } from '@utils';
 
-import getExplorerStyles from '../styles/Styles';
+import type { MapMarkerDataType } from '../Map';
+import getExplorerStyles from '../styles';
 import { getStrings } from '../utils/getStrings';
-import type { MapMarkerDataType } from '../views/Map';
 
 const bottomSheetPortraitSnapPoints = [0, '40%', '100%'];
 const bottomSheetLandscapeSnapPoints = [0, '60%', '100%'];

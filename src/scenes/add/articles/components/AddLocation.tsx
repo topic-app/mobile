@@ -1,9 +1,18 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, HelperText, List, Text, Checkbox, Divider, ProgressBar } from 'react-native-paper';
+import {
+  Button,
+  HelperText,
+  List,
+  Text,
+  Checkbox,
+  Divider,
+  ProgressBar,
+  useTheme,
+} from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { StepperViewPageProps, ErrorMessage } from '@components';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
@@ -18,10 +27,10 @@ import {
   GroupRolePermission,
   GroupRole,
 } from '@ts/types';
-import { trackEvent, useTheme } from '@utils/index';
+import { trackEvent } from '@utils';
 
 import { CheckboxListItem } from '../../components/ListItems';
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type ArticleAddPageLocationProps = StepperViewPageProps & {
   account: Account;
@@ -72,7 +81,7 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const articleStyles = getAuthStyles(theme);
+  const styles = getStyles(theme);
 
   const submit = () => {
     if (schools.length !== 0 || departments.length !== 0 || global) {
@@ -110,8 +119,8 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
   }, [null]);
 
   return (
-    <View style={articleStyles.formContainer}>
-      <View style={articleStyles.listContainer}>
+    <View style={styles.formContainer}>
+      <View style={styles.listContainer}>
         {selectedGroupLocation?.schools?.map((sId) => {
           const s = schoolItems.find((t) => t._id === sId);
           if (!s) return null;
@@ -309,7 +318,7 @@ const ArticleAddPageLocation: React.FC<ArticleAddPageLocationProps> = ({
           Vous devez sélectionner au moins une localisation
         </HelperText>
       </View>
-      <View style={articleStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         {!creationData.editing && (
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}

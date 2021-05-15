@@ -1,9 +1,9 @@
 import React from 'react';
 import { Platform, Animated, View, ViewStyle, StyleProp } from 'react-native';
 
-import { CustomHeaderBar, CustomHeaderBarProps } from './Header';
+import { HeaderBar, HeaderBarProps } from './Header';
 
-type AnimatingHeaderProps = CustomHeaderBarProps['scene']['descriptor']['options'] & {
+type AnimatingHeaderProps = HeaderBarProps & {
   value: Animated.Value;
   maxElevation?: number;
   children?: React.ReactNode;
@@ -26,30 +26,12 @@ const AnimatingHeader: React.FC<AnimatingHeaderProps> = ({
 
   return Platform.OS !== 'ios' ? (
     <Animated.View style={{ backgroundColor: 'white', elevation: headerElevation, zIndex: 10 }}>
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              headerStyle: [headerStyle, { elevation: 0 }], // elevation takes precedence
-              ...rest,
-            },
-          },
-        }}
-      />
+      <HeaderBar headerStyle={[headerStyle, { elevation: 0 }]} {...rest} />
       {children}
     </Animated.View>
   ) : (
     <View>
-      <CustomHeaderBar
-        scene={{
-          descriptor: {
-            options: {
-              headerStyle,
-              ...rest,
-            },
-          },
-        }}
-      />
+      <HeaderBar headerStyle={headerStyle} {...rest} />
       {children}
     </View>
   );

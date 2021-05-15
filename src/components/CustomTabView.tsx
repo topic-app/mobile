@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Dimensions } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import { TabView, TabBar, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
-
-import { useTheme } from '@utils/index';
 
 type TabBarProps = SceneRendererProps & {
   navigationState: NavigationState<Route>;

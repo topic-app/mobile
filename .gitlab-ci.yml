@@ -6,25 +6,38 @@ stages:
   - test
   - build
 
+cache:
+  paths:
+    - node_modules/
+  key:
+    files:
+      - package.json
+
 typescript test:
   stage: test
   image: node:12
+  before_script:
+    - echo "unsafe-perm = true" > .npmrc
+    - npm install --prefer-offline
   script:
-    - npm install
     - npm run tsc
 
 eslint test:
   stage: test
   image: node:12
+  before_script:
+    - echo "unsafe-perm = true" > .npmrc
+    - npm install --prefer-offline
   script:
-    - npm install
     - npm run lint
 
 unit test:
   stage: test
   image: node:12
+  before_script:
+    - echo "unsafe-perm = true" > .npmrc
+    - npm install --prefer-offline
   script:
-    - npm install
     - npm run test
 
 build app android:
@@ -37,6 +50,7 @@ build app android:
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
     - echo $ANDROID_KEYSTORE | base64 -d > android/app/topic.keystore
     - sh gitlab/generate-dotenv.sh > .ENV
+    - echo "unsafe-perm = true" > .npmrc
     - npm install
     - cd android/scripts
     - './genapks-gitlab.sh'

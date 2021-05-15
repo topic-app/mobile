@@ -8,17 +8,17 @@ import {
   List,
   IconButton,
   HelperText,
+  useTheme,
 } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, Illustration, Modal } from '@components/index';
+import { CollapsibleView, Illustration, Modal } from '@components';
 import { addArticleToList, addArticleList } from '@redux/actions/contentData/articles';
 import { addEventToList, addEventList } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { ModalProps, State, ArticleListItem, EventListItem, Article, Event } from '@ts/types';
-import { trackEvent, useTheme } from '@utils/index';
+import { trackEvent } from '@utils';
 
-import getArticleStyles from './styles/Styles';
+import getStyles from './styles';
 
 type AddToListModalProps = ModalProps & {
   id: string;
@@ -37,7 +37,6 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const lists = (type === 'article' ? articleLists : eventLists) as (
@@ -126,6 +125,7 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
                 left={() =>
                   Platform.OS !== 'ios' && (
                     <IconButton
+                      accessibilityLabel="Créer une liste"
                       style={{ width: 24, height: 24 }}
                       color={colors.primary}
                       icon="plus"
@@ -140,12 +140,12 @@ const AddToListModal: React.FC<AddToListModalProps> = ({
               <CollapsibleView collapsed={!createList}>
                 <Divider />
 
-                <View style={articleStyles.activeCommentContainer}>
+                <View style={styles.activeCommentContainer}>
                   <TextInput
                     autoFocus
                     placeholder="Nom de la liste"
                     placeholderTextColor={colors.disabled}
-                    style={articleStyles.commentInput}
+                    style={styles.commentInput}
                     value={createListText}
                     onChangeText={(text) => {
                       setErrorVisible(false);

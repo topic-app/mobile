@@ -1,7 +1,6 @@
 import Store from '@redux/store';
-import { AppThunk, UPDATE_ACCOUNT_STATE, UPDATE_LINKING_STATE, User } from '@ts/types';
-import { hashPassword } from '@utils/crypto';
-import { request } from '@utils/index';
+import { AppThunk, Avatar, UPDATE_ACCOUNT_STATE, UPDATE_LINKING_STATE, User } from '@ts/types';
+import { request } from '@utils';
 
 /**
  * @docs actionCreators
@@ -52,8 +51,55 @@ function updateDataCreator(fields: Partial<User['data']>): AppThunk {
   };
 }
 
+function updateTokenCreator(token: string): AppThunk {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateToken: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+
+    try {
+      await request('profile/modify/token', 'post', { token }, true, 'auth');
+    } catch (error) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          updateToken: {
+            loading: false,
+            success: false,
+            error,
+          },
+        },
+      });
+      throw error;
+    }
+
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        updateToken: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    return true;
+  };
+}
+
 type UpdateStringCreatorParams = {
-  url: 'profile/modify/username' | 'profile/modify/email' | 'profile/modify/password';
+  url:
+    | 'profile/modify/username'
+    | 'profile/modify/email'
+    | 'profile/modify/password'
+    | 'profile/modify/avatar';
   params: { [key: string]: any };
   authServer?: boolean;
 };
@@ -198,7 +244,6 @@ type ExtraParams = {
   articles: boolean;
   events: boolean;
   places: boolean;
-  petitions: boolean;
   comments: boolean;
 };
 
@@ -341,6 +386,10 @@ function resendVerificationCreator(): AppThunk {
   };
 }
 
+async function updateToken(token: string) {
+  await Store.dispatch(updateTokenCreator(token));
+}
+
 async function updateData(fields: Partial<User['data']>) {
   await Store.dispatch(updateDataCreator(fields));
 }
@@ -350,6 +399,15 @@ async function updateUsername(username: string) {
     updateProfileStringCreator({
       url: 'profile/modify/username',
       params: { username },
+    }),
+  );
+}
+
+async function updateAvatar(avatar: Avatar) {
+  await Store.dispatch(
+    updateProfileStringCreator({
+      url: 'profile/modify/avatar',
+      params: { avatar },
     }),
   );
 }
@@ -365,11 +423,10 @@ async function updateEmail(email: string) {
 }
 
 async function updatePassword(password: string) {
-  const hashedPassword = await hashPassword(password);
   await Store.dispatch(
     updateProfileStringCreator({
       url: 'profile/modify/password',
-      params: { password: hashedPassword },
+      params: { password },
       authServer: true,
     }),
   );
@@ -388,8 +445,7 @@ async function accountDelete(id: string, token: string, extra: ExtraParams) {
 }
 
 async function passwordReset(id: string, token: string, password: string) {
-  const hashedPassword = await hashPassword(password);
-  await Store.dispatch(passwordResetCreator({ id, token, password: hashedPassword }));
+  await Store.dispatch(passwordResetCreator({ id, token, password }));
 }
 
 async function resendVerification() {
@@ -398,9 +454,11 @@ async function resendVerification() {
 
 export {
   updateData,
+  updateToken,
   updateUsername,
   updateEmail,
   updatePassword,
+  updateAvatar,
   emailChange,
   emailVerify,
   accountDelete,

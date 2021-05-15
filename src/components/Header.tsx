@@ -2,11 +2,12 @@ import { useNavigation } from '@react-navigation/core';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React from 'react';
 import { StatusBar, View, StatusBarProps, ViewStyle, StyleProp, Platform } from 'react-native';
-import { Appbar, Menu } from 'react-native-paper';
+import { Appbar, Menu, useTheme } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import shortid from 'shortid';
 
-import getNavigatorStyles from '@styles/NavStyles';
-import { useTheme, useSafeAreaInsets, useLayout } from '@utils/index';
+import getStyles from '@styles/navigators';
+import { useLayout } from '@utils';
 
 const TranslucentStatusBar: React.FC<StatusBarProps> = ({ barStyle, ...rest }) => {
   const theme = useTheme();
@@ -25,63 +26,67 @@ type OverflowItem = {
 
 type ActionItem = {
   icon: string;
+  label: string;
   onPress: () => void;
 };
 
-export type CustomHeaderBarProps = {
-  scene: {
-    descriptor: {
-      options: {
-        title: string;
-        subtitle?: string;
-        headerStyle?: StyleProp<ViewStyle>;
-        primary?: () => void;
-        home?: boolean;
-        actions?: ActionItem[];
-        overflow?: OverflowItem[];
-        hideBack?: boolean;
-      };
-    };
-  };
+export type HeaderBarProps = {
+  title: string;
+  subtitle?: string;
+  headerStyle?: StyleProp<ViewStyle>;
+  primary?: () => void;
+  home?: boolean;
+  actions?: ActionItem[];
+  overflow?: OverflowItem[];
+  hideBack?: boolean;
 };
 
-const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
+const HeaderBar: React.FC<HeaderBarProps> = ({
+  title,
+  subtitle,
+  headerStyle,
+  primary,
+  home,
+  actions = [],
+  overflow,
+  hideBack,
+}) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
 
-  const navigatorStyles = getNavigatorStyles(useTheme());
-  const { colors } = useTheme();
-  const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
 
-  const {
-    title,
-    subtitle,
-    headerStyle,
-    primary,
-    home = false,
-    actions = [],
-    overflow,
-    hideBack = false,
-  } = scene.descriptor.options;
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   const layout = useLayout();
 
   let primaryAction;
   if (primary) {
     primaryAction = <Appbar.BackAction onPress={primary} />;
+  } else if (layout === 'desktop') {
+    primaryAction = null;
   } else if (home) {
-    primaryAction =
-      layout === 'desktop' ? null : <Appbar.Action icon="menu" onPress={navigation.openDrawer} />;
+    primaryAction = (
+      <Appbar.Action
+        icon="menu"
+        onPress={navigation.openDrawer}
+        accessibilityLabel="Menu principal"
+      />
+    );
+  } else if (hideBack || Platform.OS === 'web') {
+    primaryAction = <View />;
   } else {
-    primaryAction =
-      hideBack || Platform.OS === 'web' ? (
-        <View />
-      ) : (
-        <Appbar.BackAction onPress={navigation.goBack} />
-      );
+    primaryAction = <Appbar.BackAction onPress={navigation.goBack} accessibilityLabel="Retour" />;
   }
 
   const secondaryActions = actions.map((item) => (
-    <Appbar.Action key={shortid()} icon={item.icon} onPress={item.onPress} />
+    <Appbar.Action
+      key={shortid()}
+      icon={item.icon}
+      onPress={item.onPress}
+      accessibilityLabel={item.label}
+    />
   ));
 
   const insets = useSafeAreaInsets();
@@ -95,6 +100,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
           icon="dots-vertical"
           onPress={() => setMenuVisible(true)}
           color={colors.drawerContent}
+          accessibilityLabel="Options supplémentaires"
         />
       }
       statusBarHeight={insets.top}
@@ -117,7 +123,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   return (
     <View>
       <TranslucentStatusBar />
-      <Appbar.Header style={[navigatorStyles.header, headerStyle]} statusBarHeight={insets.top}>
+      <Appbar.Header style={[styles.header, headerStyle]} statusBarHeight={insets.top}>
         {primaryAction}
         <Appbar.Content title={title} subtitle={subtitle} />
         {secondaryActions}
@@ -127,4 +133,4 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ scene }) => {
   );
 };
 
-export { TranslucentStatusBar, CustomHeaderBar };
+export { TranslucentStatusBar, HeaderBar };

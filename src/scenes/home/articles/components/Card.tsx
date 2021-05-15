@@ -1,21 +1,20 @@
 import React from 'react';
 import { View, Dimensions, Platform } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { ArticleCard, PlatformTouchable } from '@components/index';
+import { ArticleCard, PlatformTouchable } from '@components';
 import {
   addArticleRead,
-  deleteArticleRead,
   addArticleToList,
+  deleteArticleReadAll,
   removeArticleFromList,
 } from '@redux/actions/contentData/articles';
-import getStyles from '@styles/Styles';
 import { ArticleListItem, Article, ArticlePreload } from '@ts/types';
-import { useTheme, Alert } from '@utils/index';
+import { Alert } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from './styles';
 
 type ArticleListCardProps = {
   article: ArticlePreload | Article;
@@ -27,7 +26,7 @@ type ArticleListCardProps = {
   historyActive: boolean;
   lists: ArticleListItem[];
   navigate: () => void;
-  overrideImageWidth: number;
+  overrideImageWidth?: number;
 };
 
 const ArticleListCard: React.FC<ArticleListCardProps> = ({
@@ -45,11 +44,8 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
 
   const swipeRef = React.createRef<Swipeable>();
-
-  const maxLeftActions = (Dimensions.get('window').width - (100 + 120 * 2)) / 120;
 
   if (Platform.OS === 'web') {
     return (
@@ -62,11 +58,7 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
     );
   }
 
-  const renderLeftActions = (
-    id: string,
-    title: string,
-    swipePropRef: React.RefObject<Swipeable>,
-  ) => {
+  const renderLeftActions = (id: string, title: string) => {
     return (
       <View
         style={[
@@ -75,21 +67,23 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
         ]}
       >
         {group !== 'lists' ? (
-          <View key="read" style={{ width: 120 }}>
-            <PlatformTouchable
-              onPress={() => {
-                if (isRead) deleteArticleRead(id);
-                else addArticleRead(id, title, true);
-              }}
-            >
-              <View style={{ alignItems: 'center', margin: 10 }}>
-                <Icon name={isRead ? 'eye-off' : 'eye'} color={colors.disabled} size={32} />
-                <Text style={{ color: colors.disabled, textAlign: 'center' }}>
-                  Marquer {isRead ? 'non lu' : 'lu'}
-                </Text>
-              </View>
-            </PlatformTouchable>
-          </View>
+          historyActive ? (
+            <View key="read" style={{ width: 120 }}>
+              <PlatformTouchable
+                onPress={() => {
+                  if (isRead) deleteArticleReadAll(id);
+                  else addArticleRead(id, title, true);
+                }}
+              >
+                <View style={{ alignItems: 'center', margin: 10 }}>
+                  <Icon name={isRead ? 'eye-off' : 'eye'} color={colors.disabled} size={32} />
+                  <Text style={{ color: colors.disabled, textAlign: 'center' }}>
+                    Marquer {isRead ? 'non lu' : 'lu'}
+                  </Text>
+                </View>
+              </PlatformTouchable>
+            </View>
+          ) : null
         ) : (
           <View key="delete" style={{ width: 120 }}>
             <PlatformTouchable
@@ -104,19 +98,66 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
             </PlatformTouchable>
           </View>
         )}
-        <View key="add" style={{ width: 120 }}>
-          <PlatformTouchable
-            onPress={() => {
-              setAddToListModalArticle(id);
-              setAddToListModalVisible(true);
-            }}
-          >
-            <View style={{ alignItems: 'center', margin: 10 }}>
-              <Icon name="playlist-plus" color={colors.disabled} size={32} />
-              <Text style={{ color: colors.disabled, textAlign: 'center' }}>Sauvegarder</Text>
-            </View>
-          </PlatformTouchable>
-        </View>
+        {lists.length === 1 && group !== 'lists' ? (
+          <View key="firstlist" style={{ width: 120 }}>
+            <PlatformTouchable
+              onPress={() => {
+                if (lists[0].items.some((i) => i._id === article._id)) {
+                  Alert.alert(
+                    'Voulez vous vraiment retirer cet article de la liste ?',
+                    article.title,
+                    [
+                      { text: 'Annuler' },
+                      {
+                        text: 'Retirer',
+                        onPress: () => removeArticleFromList(article._id, lists[0].id),
+                      },
+                    ],
+                    { cancelable: true },
+                  );
+                } else {
+                  addArticleToList(article._id, lists[0].id);
+                }
+              }}
+            >
+              <View style={{ alignItems: 'center', margin: 10 }}>
+                <Icon
+                  name={lists[0].icon}
+                  color={
+                    lists[0].items.some((i) => i._id === article._id)
+                      ? colors.primary
+                      : colors.disabled
+                  }
+                  size={32}
+                />
+                <Text
+                  style={{
+                    color: lists[0].items.some((i) => i._id === article._id)
+                      ? colors.primary
+                      : colors.disabled,
+                    textAlign: 'center',
+                  }}
+                >
+                  {lists[0].name}
+                </Text>
+              </View>
+            </PlatformTouchable>
+          </View>
+        ) : (
+          <View key="add" style={{ width: 120 }}>
+            <PlatformTouchable
+              onPress={() => {
+                setAddToListModalArticle(id);
+                setAddToListModalVisible(true);
+              }}
+            >
+              <View style={{ alignItems: 'center', margin: 10 }}>
+                <Icon name="playlist-plus" color={colors.disabled} size={32} />
+                <Text style={{ color: colors.disabled, textAlign: 'center' }}>Sauvegarder</Text>
+              </View>
+            </PlatformTouchable>
+          </View>
+        )}
       </View>
     );
   };
@@ -124,15 +165,7 @@ const ArticleListCard: React.FC<ArticleListCardProps> = ({
   return (
     <Swipeable
       ref={swipeRef}
-      renderLeftActions={() => renderLeftActions(article._id, article.title, swipeRef)}
-      // renderRightActions={
-      //  historyActive || group !== 'lists' ? () => renderRightActions(article._id) : undefined
-      // }
-      // onSwipeableRightOpen={
-      //   historyActive || group !== 'lists'
-      //     ? () => swipeRightAction(article._id, article.title, swipeRef)
-      //     : undefined
-      // }
+      renderLeftActions={() => renderLeftActions(article._id, article.title)}
     >
       <ArticleCard
         unread={!isRead || sectionKey !== 'all'}

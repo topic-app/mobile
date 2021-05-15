@@ -1,10 +1,10 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { DisplayScreenNavigationProp } from '../index';
-import EventDisplay from './views/Display';
+import EventDisplay from './Display';
 
 export type EventDisplayStackParams = {
   Display: { id: string; title: string; useLists: boolean; verification: boolean };
