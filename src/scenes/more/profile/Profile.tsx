@@ -1,6 +1,6 @@
 import randomColor from 'randomcolor';
 import React from 'react';
-import { View, ScrollView, FlatList } from 'react-native';
+import { View, ScrollView, FlatList, Platform } from 'react-native';
 import {
   Text,
   Title,
@@ -37,7 +37,7 @@ import {
   AccountRequestState,
   User,
 } from '@ts/types';
-import { logger, Alert } from '@utils';
+import { logger, Alert, messaging } from '@utils';
 
 import type { ProfileScreenNavigationProp } from '.';
 import EmailModal from './components/EmailModal';
@@ -91,21 +91,6 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
     fetchEmail();
   }, []);
 
-  if (!account.loggedIn) return <Text>Non autorisé</Text>;
-
-  const deleteAccountFunc = () => {
-    deleteAccount().then(() =>
-      Alert.alert(
-        'Vérifiez vos emails',
-        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
-        [{ text: 'Fermer' }],
-        { cancelable: true },
-      ),
-    );
-  };
-
-  const [avatarsVisible, setAvatarsVisible] = React.useState(false);
-
   const generateAvatars = () =>
     ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((i) => {
       return {
@@ -119,6 +104,20 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
     });
 
   const [avatars, setAvatars] = React.useState(generateAvatars());
+  const [avatarsVisible, setAvatarsVisible] = React.useState(false);
+
+  if (!account.loggedIn) return <Text>Non autorisé</Text>;
+
+  const deleteAccountFunc = () => {
+    deleteAccount().then(() =>
+      Alert.alert(
+        'Vérifiez vos emails',
+        `Un lien de confirmation à été envoyé à ${account.accountInfo?.email || 'votre email'}.`,
+        [{ text: 'Fermer' }],
+        { cancelable: true },
+      ),
+    );
+  };
 
   const addAvatars = () => setAvatars([...avatars, ...generateAvatars()]);
 
@@ -321,7 +320,9 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                   },
                   {
                     text: 'Se déconnecter',
-                    onPress: logout,
+                    onPress: () => {
+                      logout();
+                    },
                   },
                 ],
                 { cancelable: true },

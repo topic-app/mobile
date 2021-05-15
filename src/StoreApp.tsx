@@ -25,10 +25,9 @@ import { connect } from 'react-redux';
 import { fetchGroups, fetchWaitingGroups, fetchAccount, logout } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import updatePrefs from '@redux/actions/data/prefs';
-import { updateToken } from '@redux/actions/data/profile';
 import themes from '@styles/helpers/theme';
 import { Preferences, State } from '@ts/types';
-import { logger, messaging, Alert } from '@utils';
+import { logger, Alert, setUpMessagingLoaded } from '@utils';
 import { migrateReduxDB } from '@utils/compat/migrate';
 import { trackPageview } from '@utils/plausible';
 
@@ -41,7 +40,6 @@ const OpenDyslexic_Italic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Ita
 type Props = {
   useSystemTheme: boolean;
   theme: Preferences['theme'];
-  loggedIn: boolean;
   accountToken?: string;
   fontFamily: Preferences['fontFamily'];
   useDevServer: boolean;
@@ -51,7 +49,6 @@ type Props = {
 const StoreApp: React.FC<Props> = ({
   useSystemTheme,
   theme: themeName,
-  loggedIn,
   accountToken,
   useDevServer,
   appOpens,
@@ -106,10 +103,7 @@ const StoreApp: React.FC<Props> = ({
   React.useEffect(() => {
     migrateReduxDB();
 
-    if (loggedIn && Platform.OS !== 'web') {
-      messaging?.().getToken().then(updateToken);
-      messaging?.().onTokenRefresh(updateToken);
-    }
+    setUpMessagingLoaded();
 
     // Increase app opens
     updatePrefs({ appOpens: appOpens + 1 });
@@ -189,8 +183,8 @@ const StoreApp: React.FC<Props> = ({
     <PaperProvider theme={theme}>
       <>
         <NavigationContainer
-          ref={navigationRef}
           linking={linking}
+          ref={navigationRef}
           fallback={<AppLoading />}
           theme={navTheme}
           onStateChange={async () => {
@@ -263,9 +257,9 @@ const StoreApp: React.FC<Props> = ({
 
 const mapStateToProps = (state: State) => {
   const { useSystemTheme, theme, useDevServer, appOpens, fontFamily } = state.preferences;
-  const { loggedIn, accountInfo } = state.account;
+  const { accountInfo } = state.account;
   const { accountToken } = accountInfo || {};
-  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily, loggedIn, accountToken };
+  return { useSystemTheme, theme, useDevServer, appOpens, fontFamily, accountToken };
 };
 
 export default connect(mapStateToProps)(StoreApp);

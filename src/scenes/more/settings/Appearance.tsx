@@ -1,3 +1,9 @@
+import {
+  useFonts,
+  RobotoMono_400Regular,
+  RobotoMono_400Regular_Italic,
+} from '@expo-google-fonts/roboto-mono';
+import { RobotoSlab_400Regular } from '@expo-google-fonts/roboto-slab';
 import Slider from '@react-native-community/slider';
 import React from 'react';
 import { View, Appearance, TouchableWithoutFeedback } from 'react-native';
@@ -21,11 +27,8 @@ import { trackEvent } from '@utils';
 import type { SettingsScreenNavigationProp } from '.';
 import getStyles from './styles';
 
-const testData = `
-## Lorem ipsum dolor sit amet
-Quis nostrud exercitation ullamco laboris nisi ut aliquip ex *ea commodo consequat*. **Duis aute irure dolor** in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia deserunt mollit anim id est laborum.
-`;
+const OpenDyslexic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Regular.otf');
+const OpenDyslexic_Italic = require('@assets/fonts/OpenDyslexic/OpenDyslexic-Italic.otf');
 
 type SettingsAppearance = {
   preferences: Preferences;
@@ -43,6 +46,22 @@ const SettingsAppearance: React.FC<SettingsAppearance> = ({ preferences }) => {
     : Object.values(themes).filter((t) => !t.egg);
 
   const [presses, setPresses] = React.useState(0);
+
+  useFonts({
+    'Roboto-Slab': RobotoSlab_400Regular,
+
+    'Roboto-Mono': RobotoMono_400Regular,
+    'Roboto-Mono_Italic': RobotoMono_400Regular_Italic,
+
+    OpenDyslexic,
+    OpenDyslexic_Italic,
+  });
+
+  const testData = `
+  ## Lorem ipsum dolor sit amet
+  Quis nostrud exercitation ullamco laboris nisi ut aliquip ex *ea commodo consequat*. **Duis aute irure dolor** in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+  Excepteur sint occaecat cupidatat ~~non proident~~, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  `;
 
   return (
     <PageContainer headerOptions={{ title: 'Apparence', subtitle: 'Paramètres' }} centered scroll>

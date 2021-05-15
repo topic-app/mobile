@@ -89,8 +89,12 @@ class Logger {
 
       logEntry += `to ${server}:${endpoint} `;
 
-      if (sent && params) logEntry += `with params ${JSON.stringify(params)}`;
-      if (!sent && data) logEntry += `with data ${JSON.stringify(data)}`;
+      if (sent && params)
+        logEntry += `with params ${
+          this.shouldLog('debug') ? JSON.stringify(params) : logObj(params)
+        }`;
+      if (!sent && data)
+        logEntry += `with data ${this.shouldLog('debug') ? JSON.stringify(data) : logObj(data)}`;
 
       console.log(logEntry);
     }

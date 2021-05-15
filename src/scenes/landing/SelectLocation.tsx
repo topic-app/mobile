@@ -245,12 +245,13 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         </View>
       );
     }
-    if (!relevantStates.some((s) => s?.loading.initial) && searchText)
+    if (!relevantStates.some((s) => s?.loading.initial) && searchText) {
       return (
         <View style={styles.centerIllustrationContainer}>
           <Text>Aucun résultat</Text>
         </View>
       );
+    }
     return null;
   };
 
@@ -341,7 +342,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         />
         <CollapsibleView collapsed={!!(searchText || searchFocused)}>
           <Divider />
-          <View style={[styles.container, styles.buttonContainer]}>
+          <View style={[styles.container, styles.buttonContainer, { marginBottom: insets.bottom }]}>
             <Button
               mode="text"
               uppercase={Platform.OS !== 'ios'}

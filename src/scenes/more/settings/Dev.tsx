@@ -325,7 +325,7 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
                 );
               }}
             />
-            {Platform.OS === 'web' && (
+            {Platform.OS !== 'web' && (
               <List.Item
                 title="Copier le jeton FCM"
                 onPress={async () => {
@@ -333,6 +333,32 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
                 }}
               />
             )}
+          </SettingSection>
+          <SettingSection title="Navigation" bottomDivider>
+            <List.Item
+              title="Ouvrir topic:///legal?page=conditions"
+              onPress={async () => {
+                Linking.openURL('topic:///legal?page=conditions');
+              }}
+            />
+            <List.Item
+              title="Ouvrir https://www.topicapp.fr/legal?page=conditions"
+              onPress={async () => {
+                Linking.openURL('https://www.topicapp.fr/legal?page=conditions');
+              }}
+            />
+            <List.Item
+              title="Ouvrir topic:///nonexistent"
+              onPress={async () => {
+                Linking.openURL('topic:///nonexistent');
+              }}
+            />
+            <List.Item
+              title="Naviguer vers une page non existente"
+              onPress={async () => {
+                navigation.navigate('NonExistentScreen');
+              }}
+            />
           </SettingSection>
         </>
       )}
