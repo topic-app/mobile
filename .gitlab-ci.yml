@@ -5,7 +5,7 @@
 stages:
   - test
   - build
-  - deploy_dev
+  - deploy dev
 
 cache:
   paths:
@@ -42,7 +42,6 @@ unit test:
     - npm run test
 
 build app android:
-  when: manual
   only:
     - tags
   image: reactnativecommunity/react-native-android
@@ -50,14 +49,15 @@ build app android:
   script:
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
     - echo $ANDROID_KEYSTORE | base64 -d > android/app/topic.keystore
-    - sh gitlab/generate-dotenv.sh > .ENV
     - echo "unsafe-perm = true" > .npmrc
     - npm install
-    - cd android/scripts
-    - './genapks-gitlab.sh'
+    - cd android/
+    - ./gradlew assembleRelease
+    - ./gradlew bundleRelease
   artifacts:
     paths:
-      - './android/scripts/apks'
+      - './android/app/build/outputs/apk/release'
+      - './android/app/build/outputs/bundle/release'
 
 build web:
   only:
@@ -73,7 +73,9 @@ build web:
     - docker push $IMG_FULLNAME
 
 deploy web dev:
-  stage: deploy_dev
+  stage: deploy dev
+  needs:
+    - build web
   image: alpine
   tags:
     - devserver
