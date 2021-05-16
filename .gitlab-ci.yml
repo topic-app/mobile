@@ -44,11 +44,15 @@ unit test:
 build app android:
   only:
     - tags
+  needs:
+    - typescript test
+    - eslint test
+    - unit test
   image: reactnativecommunity/react-native-android
   stage: build
   script:
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
-    - echo $ANDROID_KEYSTORE | base64 -d > android/app/topic.keystore
+    - echo "$ANDROID_KEYSTORE" | base64 -d > ./android/app/topic.keystore
     - echo "unsafe-perm = true" > .npmrc
     - npm install
     - cd android/
@@ -63,6 +67,10 @@ build web:
   only:
     - tags
   image: docker:stable
+  needs:
+    - unit test
+    - eslint test
+    - typescript test
   stage: build
   services:
     - docker:dind
