@@ -5,6 +5,7 @@
 stages:
   - test
   - build
+  - deploy_dev
 
 cache:
   paths:
@@ -70,6 +71,28 @@ build web:
     - docker build -t $IMG_FULLNAME .
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $IMG_FULLNAME
+
+deploy web dev:
+  image: alpine
+  only:
+    - tags
+  environment:
+    name: dev
+    url: https://dev.topicapp.fr
+  resource_group: devdeploy
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh gitlab@ssh-dev.topicapp.fr
+    - cd /home/topic/config/dev_main/topic
+    - python <<< "import envreplacer; envreplacer.replace('TOPIC_VERSION_MOBILE','$CI_COMMIT_TAG')"
+    - ./deploy.sh
 
 sast:
   variables:
