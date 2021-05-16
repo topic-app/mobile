@@ -73,6 +73,7 @@ build web:
     - docker push $IMG_FULLNAME
 
 deploy web dev:
+  stage: deploy_dev
   image: alpine
   only:
     - tags
