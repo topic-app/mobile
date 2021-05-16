@@ -92,7 +92,7 @@ deploy web dev:
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - ssh gitlab@ssh-dev.topicapp.fr "cd /home/topic/config/dev_main/topic && python <<< \"import envreplacer; envreplacer.replace('TOPIC_VERSION_MOBILE','$CI_COMMIT_TAG')\" && sudo -u topic /home/topic/config/dev_main/topic/deploy.sh"
+    - ssh gitlab@ssh-dev.topicapp.fr "cd /home/topic/config/dev_main/topic && python <<< \"import envreplacer; envreplacer.replace('VERSION_TOPIC_MOBILE','$CI_COMMIT_TAG')\" && sudo -u topic /home/topic/config/dev_main/topic/deploy.sh"
 
 sast:
   variables:
