@@ -11,7 +11,7 @@ import {
   ListRenderItemInfo,
   ActivityIndicator,
 } from 'react-native';
-import { Subheading, Text, useTheme } from 'react-native-paper';
+import { Button, Subheading, Text, useTheme } from 'react-native-paper';
 
 import getStyles from '@styles/global';
 
@@ -27,6 +27,7 @@ export type Section<T extends any> = {
   loading?: {
     next?: boolean;
     refresh?: boolean;
+    initial?: boolean;
   };
   onLoad?: (type: 'initial' | 'next' | 'refresh') => unknown;
 };
@@ -168,7 +169,7 @@ const ContentFlatList = <T extends any>({
     : undefined;
 
   const shouldRenderTabChipList = sections.length > 1;
-  let onEndReachedCalledDuringMomentum = false;
+  let callOnEndReached = false;
 
   const ListHeaderComponentDefault = React.useMemo(
     () => (
@@ -236,8 +237,15 @@ const ContentFlatList = <T extends any>({
         )}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {currentSection.loading?.next && (
+            {currentSection.loading?.next ? (
               <ActivityIndicator size="large" color={colors.primary} />
+            ) : (
+              Platform.OS === 'web' &&
+              !(currentSection.loading?.initial || currentSection.loading?.refresh) && (
+                <Button mode="text" onPress={() => currentSection.onLoad?.('next')}>
+                  Charger plus
+                </Button>
+              )
             )}
           </View>
         }
@@ -259,15 +267,14 @@ const ContentFlatList = <T extends any>({
         )}
         getItemLayout={getItemLayout}
         onMomentumScrollBegin={() => {
-          onEndReachedCalledDuringMomentum = true;
+          callOnEndReached = true;
         }}
-        onMomentumScrollEnd={() => {
-          onEndReachedCalledDuringMomentum = false;
-        }}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={1}
         onEndReached={() => {
-          if (onEndReachedCalledDuringMomentum) {
+          if (callOnEndReached && Platform.OS !== 'web') {
+            // Web has lots of issues with onEndReached, making it a button for now
             currentSection.onLoad?.('next');
+            callOnEndReached = false;
           }
         }}
         {...extraFlatListProps}
