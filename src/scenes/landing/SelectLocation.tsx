@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Animated,
   KeyboardAvoidingView,
+  useWindowDimensions,
 } from 'react-native';
 import { Text, Button, Divider, List, ProgressBar, useTheme, Title } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,7 +22,10 @@ import {
   Searchbar,
   PlatformBackButton,
 } from '@components';
+import { clearArticles } from '@redux/actions/api/articles';
 import { updateDepartments, searchDepartments } from '@redux/actions/api/departments';
+import { clearEvents } from '@redux/actions/api/events';
+import { clearGroups } from '@redux/actions/api/groups';
 import { updateNearSchools, searchSchools } from '@redux/actions/api/schools';
 import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { addEventQuick } from '@redux/actions/contentData/events';
@@ -52,8 +56,8 @@ type WelcomeLocationProps = {
     departments: DepartmentRequestState;
     location: LocationRequestState;
   };
-  navigation: LandingScreenNavigationProp<'SelectLocation'>;
-  route: { params?: { goBack?: boolean } };
+  navigation: LandingScreenNavigationProp<any>;
+  mode?: 'web' | 'mobile';
 };
 
 const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
@@ -62,13 +66,14 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   departmentsSearch,
   state,
   navigation,
-  route,
+  mode = 'mobile',
 }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
 
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
 
   const [searchText, setSearchText] = React.useState('');
   const scrollRef = React.createRef<FlatList>();
@@ -114,6 +119,9 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
       | { type: 'department'; element: DepartmentPreload | Department }
       | { type: 'global'; element: undefined }
   >(type: T['type'], element: T['element']) {
+    clearArticles(true, true);
+    clearEvents(true, true);
+    clearGroups(true, true);
     Promise.all(
       type === 'school'
         ? [
@@ -188,11 +196,6 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
 
   const ListHeaderComponent = (
     <View>
-      {relevantStates.some((s) => s?.loading.initial) ? (
-        <ProgressBar indeterminate />
-      ) : (
-        <View style={{ height: 4 }} />
-      )}
       {relevantStates.some((s) => s?.error) && (
         <ErrorMessage
           type="axios"
@@ -286,9 +289,13 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
         >
           <CollapsibleView collapsed={!!(searchText || searchFocused)}>
             <View style={styles.centerIllustrationContainer}>
-              <CollapsibleView collapsed={schoolsNear.length > 0}>
-                <Illustration name="location-select" />
-              </CollapsibleView>
+              {mode === 'web' ? (
+                <View style={{ height: 'calc(45vh - 210px)' }} />
+              ) : (
+                <CollapsibleView collapsed={schoolsNear.length > 0}>
+                  <Illustration name="location-select" />
+                </CollapsibleView>
+              )}
               <Title style={{ fontSize: 24, paddingTop: schoolsNear.length ? 20 : 0 }}>
                 Choisissez votre école
               </Title>
@@ -305,6 +312,16 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
             />
+            {relevantStates.some((s) => s?.loading.initial) && (
+              <ProgressBar
+                indeterminate
+                style={{
+                  marginTop: -4,
+                  borderBottomLeftRadius: 12,
+                  borderBottomRightRadius: 12,
+                }}
+              />
+            )}
           </View>
         </Animated.View>
         <Animated.FlatList<
@@ -317,6 +334,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
           })}
           keyExtractor={(item) => item._id}
           data={data}
+          style={width >= 1200 ? { width: 560, alignSelf: 'center' } : {}}
           ListHeaderComponent={ListHeaderComponent}
           ListEmptyComponent={ListEmptyComponent}
           renderItem={({ item }) => (
@@ -340,18 +358,22 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="none"
         />
-        <CollapsibleView collapsed={!!(searchText || searchFocused)}>
-          <Divider />
-          <View style={[styles.container, styles.buttonContainer, { marginBottom: insets.bottom }]}>
-            <Button
-              mode="text"
-              uppercase={Platform.OS !== 'ios'}
-              onPress={() => done('global', undefined)}
+        {mode === 'mobile' && (
+          <CollapsibleView collapsed={!!(searchText || searchFocused)}>
+            <Divider />
+            <View
+              style={[styles.container, styles.buttonContainer, { marginBottom: insets.bottom }]}
             >
-              Passer
-            </Button>
-          </View>
-        </CollapsibleView>
+              <Button
+                mode="text"
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() => done('global', undefined)}
+              >
+                Passer
+              </Button>
+            </View>
+          </CollapsibleView>
+        )}
       </KeyboardAvoidingView>
     </View>
   );

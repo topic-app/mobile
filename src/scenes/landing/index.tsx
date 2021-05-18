@@ -41,21 +41,9 @@ function LandingStackNavigator() {
         component={SelectLocation}
         options={{ title: 'Localisation' }}
       />
-      <Stack.Screen
-        name="Welcome"
-        component={LandingWelcome}
-        options={{ title: 'Bienvenue sur Topic' }}
-      />
-      <Stack.Screen
-        name="Info"
-        component={LandingInfo}
-        options={{ title: 'Bienvenue sur Topic' }}
-      />
-      <Stack.Screen
-        name="Beta"
-        component={LandingBeta}
-        options={{ title: 'Bienvenue sur Topic' }}
-      />
+      <Stack.Screen name="Welcome" component={LandingWelcome} options={{ title: 'Bienvenue' }} />
+      <Stack.Screen name="Info" component={LandingInfo} options={{ title: 'Bienvenue' }} />
+      <Stack.Screen name="Beta" component={LandingBeta} options={{ title: 'Bienvenue' }} />
     </Stack.Navigator>
   );
 }
