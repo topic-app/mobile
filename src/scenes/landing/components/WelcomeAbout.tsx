@@ -1,34 +1,118 @@
+import { useNavigation } from '@react-navigation/core';
 import React from 'react';
-import { View, Platform, FlatList } from 'react-native';
+import { View, Platform, FlatList, useWindowDimensions } from 'react-native';
 import { List, Checkbox, useTheme, Title, Text, Divider, Button } from 'react-native-paper';
+import Svg, { Path } from 'react-native-svg';
+import { connect } from 'react-redux';
 
 import { WelcomeWavesBottom, WelcomeWavesTop } from '@assets/index';
-import { GroupCard, Illustration } from '@components';
+import { ArticleCard, GroupCard, Illustration } from '@components';
+import { updateArticles } from '@redux/actions/api/articles';
+import { updateGroups } from '@redux/actions/api/groups';
 import getStyles from '@styles/global';
-import { GroupPreload } from '@ts/types';
+import {
+  Article,
+  ArticlePreload,
+  ArticleRequestState,
+  Group,
+  GroupPreload,
+  GroupRequestState,
+  State,
+} from '@ts/types';
 
-const groups: GroupPreload[] = Array(30).fill({
-  preload: true,
-  _id: 'test',
-  name: 'Topic',
-  displayName: 'Topic',
-  type: 'administrateur',
-  cache: {
-    members: 8,
-    followers: 1000,
-  },
-  summary: 'Un groupe de test, pas le vrai groupe Topic',
-});
+type Props = {
+  groups: (GroupPreload | Group)[];
+  articles: (ArticlePreload | Article)[];
+  state: {
+    groups: GroupRequestState;
+    articles: ArticleRequestState;
+  };
+};
 
-const WelcomeAbout: React.FC = () => {
+const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
+  const navigation = useNavigation();
+
+  const { width } = useWindowDimensions();
+
+  React.useEffect(() => {
+    updateGroups('initial', { global: true, number: 30 }, false);
+    updateArticles('initial', { global: true, number: 30 }, false);
+  }, []);
+
+  const menuItems = [
+    {
+      key: 'about',
+      text: 'À propos',
+      navigate: () =>
+        navigation.navigate('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'More',
+            params: { screen: 'About', params: { screen: 'List' } },
+          },
+        }),
+    },
+    {
+      key: 'sponsors',
+      text: 'Partenaires',
+      navigate: () =>
+        navigation.navigate('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'More',
+            params: { screen: 'About', params: { screen: 'List', params: { page: 'sponsors' } } },
+          },
+        }),
+    },
+    {
+      key: 'mentions',
+      text: 'Mentions légales',
+      navigate: () =>
+        navigation.navigate('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'More',
+            params: { screen: 'About', params: { screen: 'Legal', params: { page: 'mentions' } } },
+          },
+        }),
+    },
+    {
+      key: 'conditions',
+      text: "Conditions d'utilisation",
+      navigate: () =>
+        navigation.navigate('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'More',
+            params: {
+              screen: 'About',
+              params: { screen: 'Legal', params: { page: 'conditions' } },
+            },
+          },
+        }),
+    },
+    {
+      key: 'privacy',
+      text: 'Vie privée',
+      navigate: () =>
+        navigation.navigate('Root', {
+          screen: 'Main',
+          params: {
+            screen: 'More',
+            params: { screen: 'About', params: { screen: 'Legal', params: { page: 'privacy' } } },
+          },
+        }),
+    },
+  ];
+
   return (
     <View style={{ flex: 1 }}>
-      <WelcomeWavesTop width="100%" height="150" />
-      <View style={{ backgroundColor: '#592989', marginVertical: -13 }}>
+      <WelcomeWavesTop width="100%" height={width * 0.08} />
+      <View style={{ backgroundColor: '#592989', marginVertical: -(width * 0.03) }}>
         <View
           style={{
             flexDirection: 'row',
@@ -37,46 +121,87 @@ const WelcomeAbout: React.FC = () => {
             marginVertical: 60,
           }}
         >
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', width: 400 }}>
             <Illustration name="article" />
             <Title style={[styles.title, { color: 'white' }]}>Actus</Title>
-            <Text style={[{ color: 'white' }]}>
-              Découvrez machin chose et l'actu citoyenne et blabla
+            <Text style={[{ color: 'white', textAlign: 'center' }]}>
+              Découvrez et partagez votre actualité
             </Text>
           </View>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', width: 400 }}>
             <Illustration name="event" />
             <Title style={[styles.title, { color: 'white' }]}>Évènements</Title>
-            <Text style={[{ color: 'white' }]}>
-              Découvrez machin chose et l'actu citoyenne et blabla
+            <Text style={[{ color: 'white', textAlign: 'center' }]}>
+              Retrouvez et participez aux activités autour de vous
             </Text>
           </View>
-          <View style={{ alignItems: 'center' }}>
+          {/*<View style={{ alignItems: 'center' }}>
             <Illustration name="explore" />
             <Title style={[styles.title, { color: 'white' }]}>Carte</Title>
             <Text style={[{ color: 'white' }]}>
-              Découvrez machin chose et l'actu citoyenne et blabla
             </Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
+          </View>*/}
+          <View style={{ alignItems: 'center', width: 400 }}>
             <Illustration name="group" />
             <Title style={[styles.title, { color: 'white' }]}>Groupes</Title>
-            <Text style={[{ color: 'white' }]}>
-              Découvrez machin chose et l'actu citoyenne et blabla
+            <Text style={[{ color: 'white', textAlign: 'center' }]}>
+              Le réseau d'engagement pour clubs et associations
             </Text>
           </View>
         </View>
       </View>
-      <WelcomeWavesBottom width="100%" height="150" />
+      <WelcomeWavesBottom width="100%" height={width * 0.08} />
       <View style={[{ marginTop: 60 }]}>
         <View style={[styles.centerIllustrationContainer, { marginBottom: 30 }]}>
           <Title style={styles.title}>Groupes populaires</Title>
         </View>
-        <FlatList
-          horizontal
-          data={groups}
-          renderItem={({ item }) => <GroupCard group={item} navigate={() => {}} />}
-        />
+        <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap' }}>
+          {groups.map((g) => (
+            <View style={{ width: 400 }}>
+              <GroupCard
+                group={g}
+                navigate={() =>
+                  navigation.navigate('Root', {
+                    screen: 'Main',
+                    params: {
+                      screen: 'Display',
+                      params: {
+                        screen: 'Group',
+                        params: { screen: 'Display', params: { id: g._id } },
+                      },
+                    },
+                  })
+                }
+              />
+            </View>
+          ))}
+        </View>
+      </View>
+      <View style={[{ marginTop: 100 }]}>
+        <View style={[styles.centerIllustrationContainer, { marginBottom: 30 }]}>
+          <Title style={styles.title}>Articles du moment</Title>
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap' }}>
+          {articles.map((a) => (
+            <View style={{ width: 400 }}>
+              <ArticleCard
+                article={a}
+                navigate={() =>
+                  navigation.navigate('Root', {
+                    screen: 'Main',
+                    params: {
+                      screen: 'Display',
+                      params: {
+                        screen: 'Article',
+                        params: { screen: 'Display', params: { id: a._id } },
+                      },
+                    },
+                  })
+                }
+              />
+            </View>
+          ))}
+        </View>
       </View>
       <View style={{ marginBottom: 30 }}></View>
       <Divider />
@@ -93,24 +218,23 @@ const WelcomeAbout: React.FC = () => {
         <View style={{ flex: 1, alignContent: 'center', marginTop: -5 }}>
           <Illustration name="topic-icon-text" height="50" />
         </View>
-        <Button mode="text" color={colors.disabled} uppercase={false}>
-          À propos
-        </Button>
-        <Button mode="text" color={colors.disabled} uppercase={false}>
-          Partenaires
-        </Button>
-        <Button mode="text" color={colors.disabled} uppercase={false}>
-          Mentions légales
-        </Button>
-        <Button mode="text" color={colors.disabled} uppercase={false}>
-          Conditions d'utilisation
-        </Button>
-        <Button mode="text" color={colors.disabled} uppercase={false}>
-          Vie privée
-        </Button>
+        {menuItems.map((m) => (
+          <Button key={m.key} mode="text" uppercase={false} onPress={m.navigate}>
+            {m.text}
+          </Button>
+        ))}
       </View>
     </View>
   );
 };
 
-export default WelcomeAbout;
+const mapStateToProps = (state: State) => {
+  const { groups, articles } = state;
+  return {
+    groups: groups.data,
+    articles: articles.data,
+    state: { groups: groups.state, articles: articles.state },
+  };
+};
+
+export default connect(mapStateToProps)(WelcomeAbout);

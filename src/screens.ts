@@ -9,7 +9,7 @@ export default {
   Landing: {
     screens: {
       SelectLocation: '/localisation',
-      Welcome: '/accueil',
+      Welcome: '/acceuil',
     },
   },
   Linking: {
