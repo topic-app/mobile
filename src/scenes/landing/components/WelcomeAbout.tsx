@@ -135,17 +135,17 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
               Retrouvez et participez aux activités autour de vous
             </Text>
           </View>
-          {/*<View style={{ alignItems: 'center' }}>
+          {/* <View style={{ alignItems: 'center' }}>
             <Illustration name="explore" />
             <Title style={[styles.title, { color: 'white' }]}>Carte</Title>
             <Text style={[{ color: 'white' }]}>
             </Text>
-          </View>*/}
+          </View> */}
           <View style={{ alignItems: 'center', width: 400 }}>
             <Illustration name="group" />
             <Title style={[styles.title, { color: 'white' }]}>Groupes</Title>
             <Text style={[{ color: 'white', textAlign: 'center' }]}>
-              Le réseau d'engagement pour clubs et associations
+              Le réseau d&apos;engagement pour clubs et associations
             </Text>
           </View>
         </View>
