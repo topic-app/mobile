@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { LegacyRef } from 'react';
 import { View, ScrollView, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 import {
   Button,
@@ -154,7 +154,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const [viewing, setViewing] = React.useState(false);
 
-  const textEditorRef = React.createRef<RichEditor>();
+  const textEditorRef = React.useRef<RichEditor>();
 
   if (!account.loggedIn) return null;
 
@@ -248,128 +248,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
             </View>
           </View>
           <Divider />
-          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
-            <View style={styles.formContainer}>
-              <View style={styles.textInputContainer}>
-                {viewing && (
-                  <View>
-                    <View style={{ marginBottom: 20 }}>
-                      <Card
-                        elevation={0}
-                        style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
-                      >
-                        <View style={[styles.container, { flexDirection: 'row' }]}>
-                          <Icon
-                            name="information-outline"
-                            style={{ alignSelf: 'center', marginRight: 10 }}
-                            size={24}
-                            color={colors.primary}
-                          />
-                          <Text style={{ color: colors.text, alignSelf: 'center', flex: 1 }}>
-                            Ci-dessous, l&apos;article tel qu&apos;il s&apos;affichera après
-                            l&apos;avoir publié.
-                          </Text>
-                        </View>
-                      </Card>
-                    </View>
-                    <Content
-                      parser={editor === 'plaintext' ? 'plaintext' : 'markdown'}
-                      data={markdown}
-                    />
-                  </View>
-                )}
-                <View
-                  style={{
-                    marginTop: 20,
-                    // HACK: RichEditor does not play well with being unmounted
-                    height: viewing ? 0 : undefined,
-                    opacity: viewing ? 0 : 1,
-                  }}
-                >
-                  {editor === 'rich' && (
-                    <RichEditor
-                      onHeightChange={() => {}}
-                      ref={textEditorRef}
-                      onChangeMarkdown={(data: string) =>
-                        setMarkdown(
-                          data
-                            .replace(
-                              new RegExp(Config.google.youtubePlaceholder, 'g'),
-                              'youtube://',
-                            )
-                            .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://'),
-                        )
-                      }
-                      editorStyle={{
-                        backgroundColor: colors.background,
-                        color: colors.text,
-                        placeholderColor: colors.disabled,
-                      }}
-                      placeholder="Écrivez votre article"
-                      editorInitializedCallback={() => {
-                        logger.debug('Editor toolbar initialized');
-                        trackEvent('articleadd:content-editor-loaded');
-                        setToolbarInitialized(true);
-                      }}
-                    />
-                  )}
-                  {(editor === 'source' || editor === 'plaintext') && (
-                    <TextInput
-                      placeholder="Écrivez votre article"
-                      multiline
-                      numberOfLines={20}
-                      mode="outlined"
-                      value={markdown}
-                      onChangeText={(data: string) => setMarkdown(data)}
-                      style={styles.textInput}
-                    />
-                  )}
-                </View>
-              </View>
-            </View>
-          </ScrollView>
           <View style={{ backgroundColor: colors.surface }}>
-            <CollapsibleView collapsed={!menuVisible}>
-              <View>
-                {editorTypes.map((i) => (
-                  <List.Item
-                    key={i.type}
-                    title={i.name}
-                    description={i.description}
-                    onPress={() => {
-                      trackEvent('editor:switch-editor', { props: { type: i.type } });
-                      if (markdown) {
-                        Alert.alert(
-                          "Voulez-vous vraiment changer d'éditeur ?",
-                          'Vous pourrez perdre le formattage, les images etc.',
-                          [
-                            { text: 'Annuler', onPress: () => setMenuVisible(false) },
-                            {
-                              text: 'Changer',
-                              onPress: () => {
-                                setEditor(i.type);
-                                setMenuVisible(false);
-                              },
-                            },
-                          ],
-                          { cancelable: true },
-                        );
-                      } else {
-                        setEditor(i.type);
-                        setMenuVisible(false);
-                      }
-                    }}
-                    left={() => (
-                      <RadioButton
-                        color={colors.primary}
-                        value=""
-                        status={editor === i.type ? 'checked' : 'unchecked'}
-                      />
-                    )}
-                  />
-                ))}
-              </View>
-            </CollapsibleView>
             <View
               style={{
                 flexDirection: 'row',
@@ -384,7 +263,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 color={colors.text}
                 onPress={() => setMenuVisible(!menuVisible)}
               />
-              {toolbarInitialized && editor === 'rich' ? (
+              {toolbarInitialized && editor === 'rich' && textEditorRef.current ? (
                 <RichToolbar
                   getEditor={() => textEditorRef.current!}
                   actions={[
@@ -447,7 +326,129 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 Veuillez ajouter un contenu
               </HelperText>
             )}
+            <CollapsibleView collapsed={!menuVisible}>
+              <View>
+                {editorTypes.map((i) => (
+                  <List.Item
+                    key={i.type}
+                    title={i.name}
+                    description={i.description}
+                    onPress={() => {
+                      trackEvent('editor:switch-editor', { props: { type: i.type } });
+                      if (markdown) {
+                        Alert.alert(
+                          "Voulez-vous vraiment changer d'éditeur ?",
+                          'Vous pourrez perdre le formattage, les images etc.',
+                          [
+                            { text: 'Annuler', onPress: () => setMenuVisible(false) },
+                            {
+                              text: 'Changer',
+                              onPress: () => {
+                                setEditor(i.type);
+                                setMenuVisible(false);
+                              },
+                            },
+                          ],
+                          { cancelable: true },
+                        );
+                      } else {
+                        setEditor(i.type);
+                        setMenuVisible(false);
+                      }
+                    }}
+                    left={() => (
+                      <RadioButton
+                        color={colors.primary}
+                        value=""
+                        status={editor === i.type ? 'checked' : 'unchecked'}
+                      />
+                    )}
+                  />
+                ))}
+              </View>
+            </CollapsibleView>
           </View>
+          <Divider />
+          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+            <View style={styles.formContainer}>
+              <View style={styles.textInputContainer}>
+                {viewing && (
+                  <View>
+                    <View style={{ marginBottom: 20 }}>
+                      <Card
+                        elevation={0}
+                        style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+                      >
+                        <View style={[styles.container, { flexDirection: 'row' }]}>
+                          <Icon
+                            name="information-outline"
+                            style={{ alignSelf: 'center', marginRight: 10 }}
+                            size={24}
+                            color={colors.primary}
+                          />
+                          <Text style={{ color: colors.text, alignSelf: 'center', flex: 1 }}>
+                            Ci-dessous, l&apos;article tel qu&apos;il s&apos;affichera après
+                            l&apos;avoir publié.
+                          </Text>
+                        </View>
+                      </Card>
+                    </View>
+                    <Content
+                      parser={editor === 'plaintext' ? 'plaintext' : 'markdown'}
+                      data={markdown}
+                    />
+                  </View>
+                )}
+                <View
+                  style={{
+                    marginTop: 20,
+                    // HACK: RichEditor does not play well with being unmounted
+                    height: viewing ? 0 : undefined,
+                    opacity: viewing ? 0 : 1,
+                  }}
+                >
+                  {editor === 'rich' && (
+                    <RichEditor
+                      onHeightChange={() => {}}
+                      ref={textEditorRef as LegacyRef<RichEditor>}
+                      onChangeMarkdown={(data: string) =>
+                        setMarkdown(
+                          data
+                            .replace(
+                              new RegExp(Config.google.youtubePlaceholder, 'g'),
+                              'youtube://',
+                            )
+                            .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://'),
+                        )
+                      }
+                      editorStyle={{
+                        backgroundColor: colors.background,
+                        color: colors.text,
+                        placeholderColor: colors.disabled,
+                      }}
+                      placeholder="Écrivez votre article"
+                      editorInitializedCallback={() => {
+                        logger.debug('Editor toolbar initialized');
+                        trackEvent('articleadd:content-editor-loaded');
+                        setToolbarInitialized(true);
+                      }}
+                    />
+                  )}
+                  {(editor === 'source' || editor === 'plaintext') && (
+                    <TextInput
+                      placeholder="Écrivez votre article"
+                      multiline
+                      numberOfLines={20}
+                      mode="outlined"
+                      value={markdown}
+                      onChangeText={(data: string) => setMarkdown(data)}
+                      style={styles.textInput}
+                    />
+                  )}
+                </View>
+              </View>
+            </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
       <LinkAddModal
