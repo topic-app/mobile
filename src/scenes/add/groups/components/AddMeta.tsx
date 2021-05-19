@@ -55,7 +55,7 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
               <FormTextInput
                 ref={nameInput}
                 label="Nom du groupe"
-                info="Donnez un nom reconnaissable à votre groupe, sans abréviations ou acronymes. Pour des raisons de sécurité, vous devrez nous contacter pour changer le nom du groupe après sa création."
+                info="Donnez un nom reconnaissable à votre groupe, sans abréviation ou acronyme. Pour des raisons de sécurité, vous devrez nous contacter pour changer le nom du groupe après sa création."
                 value={values.name}
                 touched={touched.name}
                 error={errors.name}
@@ -69,8 +69,8 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
             <View style={{ marginBottom: 20 }}>
               <FormTextInput
                 ref={shortNameInput}
-                label="Acronyme ou nom raccourci"
-                info="Si vous avez un acronyme ou une abréviation reconnaissable, fournissez-la ici. Ce nom sera affiché en priorité, donc laissez-le vide si vous préférez afficher le nom complet sur vos publications."
+                label="Acronyme ou abréviation (facultatif)"
+                info="Acronyme ou abréviation reconnaissable, qui sera affichée en priorité sur vos contenus"
                 value={values.shortName}
                 touched={touched.shortName}
                 error={errors.shortName}
@@ -99,8 +99,8 @@ const ArticleAddPageMeta: React.FC<Props> = ({ next, prev }) => {
             <View style={{ marginBottom: 20 }}>
               <FormTextInput
                 ref={descriptionInput}
-                label="Description longue"
-                info="Cette description sera affichée sur votre page groupe, elle peut être aussi longue que vous le voulez et vous pouvez la modifier à tout moment."
+                label="Description longue (facultatif)"
+                info="Cette description sera affichée sur votre page de groupe"
                 multiline
                 numberOfLines={6}
                 value={values.description}
