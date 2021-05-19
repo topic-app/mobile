@@ -210,7 +210,7 @@ const ArticleAddPageProof: React.FC<Props> = ({ next, prev, creationData, state,
                         })
                       }
                     >
-                      conditions d'utilisation
+                      conditions d&apos;utilisation
                     </Text>{' '}
                     avant de créer le groupe.{'\n'}
                     <Text style={{ fontWeight: 'bold' }}>
