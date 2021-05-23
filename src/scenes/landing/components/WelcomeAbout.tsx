@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { View, Platform, FlatList, useWindowDimensions } from 'react-native';
-import { List, Checkbox, useTheme, Title, Text, Divider, Button } from 'react-native-paper';
+import { List, Subheading, useTheme, Title, Text, Divider, Button } from 'react-native-paper';
 import Svg, { Path } from 'react-native-svg';
 import { connect } from 'react-redux';
 
@@ -19,6 +19,7 @@ import {
   GroupRequestState,
   State,
 } from '@ts/types';
+import { handleUrl } from '@utils';
 
 type Props = {
   groups: (GroupPreload | Group)[];
@@ -39,9 +40,27 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
   const { width } = useWindowDimensions();
 
   React.useEffect(() => {
-    updateGroups('initial', { global: true, number: 30 }, false);
-    updateArticles('initial', { global: true, number: 30 }, false);
+    updateGroups('initial', { global: true, number: 12 }, false);
+    updateArticles('initial', { global: true, number: 12 }, false);
   }, []);
+
+  const detectOS = () => {
+    var userAgent = navigator.userAgent || navigator.vendor || '';
+
+    // Windows Phone must come first because its UA also contains "Android"
+    if (/windows phone/i.test(userAgent)) {
+      return;
+    }
+
+    if (/android/i.test(userAgent)) {
+      return 'android';
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      return 'ios';
+    }
+  };
 
   const menuItems = [
     {
@@ -151,6 +170,41 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
         </View>
       </View>
       <WelcomeWavesBottom width="100%" height={width * 0.08} />
+      <View style={{ marginTop: 60 }}>
+        <View style={styles.centerIllustrationContainer}>
+          <Title style={[styles.title, { textAlign: 'center' }]}>
+            Téléchargez l&apos;application
+          </Title>
+          <Subheading style={[styles.subtitle, { textAlign: 'center' }]}>
+            Retrouvez l&apos;actualité engagée et découvrez ce qui se passe autour de vous,
+            directement sur votre téléphone
+          </Subheading>
+          <View style={{ marginTop: 20, flexDirection: 'row' }}>
+            <Button
+              mode={detectOS() === 'android' ? 'contained' : 'outlined'}
+              onPress={() =>
+                handleUrl('https://play.google.com/store/apps/details?id=fr.topicapp.topic', {
+                  trusted: true,
+                })
+              }
+              icon="android"
+              style={{ marginRight: 10 }}
+              uppercase={false}
+            >
+              Android
+            </Button>
+            <Button
+              mode={detectOS() === 'ios' ? 'contained' : 'outlined'}
+              onPress={() => handleUrl('https://get.topicapp.fr', { trusted: true })}
+              icon="apple"
+              style={{ marginLeft: 10 }}
+              uppercase={false}
+            >
+              iOS
+            </Button>
+          </View>
+        </View>
+      </View>
       <View style={[{ marginTop: 60 }]}>
         <View style={[styles.centerIllustrationContainer, { marginBottom: 30 }]}>
           <Title style={styles.title}>Groupes populaires</Title>
@@ -212,17 +266,20 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
             marginTop: 20,
             flexDirection: 'row',
             justifyContent: 'space-between',
+            flexWrap: 'wrap',
           },
         ]}
       >
         <View style={{ flex: 1, alignContent: 'center', marginTop: -5 }}>
           <Illustration name="topic-icon-text" height="50" />
         </View>
-        {menuItems.map((m) => (
-          <Button key={m.key} mode="text" uppercase={false} onPress={m.navigate}>
-            {m.text}
-          </Button>
-        ))}
+        <View style={{ flex: 1, flexGrow: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
+          {menuItems.map((m) => (
+            <Button key={m.key} mode="text" uppercase={false} onPress={m.navigate}>
+              {m.text}
+            </Button>
+          ))}
+        </View>
       </View>
     </View>
   );
