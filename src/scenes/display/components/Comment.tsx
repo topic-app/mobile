@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import { Avatar, Content } from '@components';
 import { commentDelete } from '@redux/actions/apiActions/comments';
-import { Comment, Account, State, CommentReply } from '@ts/types';
+import { Comment, Account, State, CommentReply, PreferencesState } from '@ts/types';
 import { checkPermission, Errors, Alert, Permissions } from '@utils';
 import { NativeStackNavigationProp } from '@utils/compat/stack';
 
@@ -21,6 +21,7 @@ type CommentInlineCardPropsBase = {
   navigation: NativeStackNavigationProp<any, any>;
   reply: (id: string | null) => void;
   authors?: string[];
+  preferences: PreferencesState;
 };
 type CommentInlineCardPropsComment = CommentInlineCardPropsBase & {
   isReply: false;
@@ -42,6 +43,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
   navigation,
   reply,
   authors,
+  preferences,
 }) => {
   const { publisher, content, date, _id: id } = comment;
   const { displayName } = publisher
@@ -97,10 +99,15 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
 
   if (!id || !content) return null;
 
+  if (
+    preferences.blocked.includes(publisher?.group?._id || '') ||
+    preferences.blocked.includes(publisher?.user?._id || '')
+  )
+    return null;
+
   return (
     <View style={styles.container}>
       <View style={[{ flexDirection: 'row' }, isReply ? { marginLeft: 20 } : {}]}>
-        {}
         <Avatar
           avatar={
             publisher?.type === 'user' ? publisher?.user?.info?.avatar : publisher?.group?.avatar
@@ -198,8 +205,8 @@ const CommentItem: React.FC<CommentInlineCardPropsComment> = (props) => {
 };
 
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { account };
+  const { account, preferences } = state;
+  return { account, preferences };
 };
 
 export default connect(mapStateToProps)(CommentItem);

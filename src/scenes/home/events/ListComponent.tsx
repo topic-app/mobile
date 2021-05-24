@@ -53,6 +53,7 @@ type EventListComponentProps = {
   eventPrefs: EventPrefs;
   state: EventRequestState;
   account: Account;
+  blocked: string[];
 };
 
 const EventListComponent: React.FC<EventListComponentProps> = ({
@@ -72,6 +73,7 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
   onConfigurePressed,
   onEventCreatePressed,
   initialTabKey,
+  blocked,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -252,6 +254,7 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
         )}
         ListEmptyComponent={(props) => <EventEmptyList reqState={state} {...props} />}
         onConfigurePress={onConfigurePressed}
+        blocked={blocked}
       />
       {checkPermission(account, {
         permission: Permissions.EVENT_ADD,
@@ -289,6 +292,7 @@ const mapStateToProps = (state: State) => {
     state: events.state,
     account,
     historyEnabled: preferences.history,
+    blocked: preferences.blocked,
   };
 };
 

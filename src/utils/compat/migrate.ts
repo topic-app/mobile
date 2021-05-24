@@ -49,6 +49,10 @@ export const migrateReduxDB = () => {
       });
     }
 
+    if (currentVersion < 7) {
+      updatePrefs({ blocked: [] });
+    }
+
     // Add all migration scripts here in descending order
     updatePrefs({ reduxVersion: Config.reduxVersion });
   }
