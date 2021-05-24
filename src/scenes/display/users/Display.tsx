@@ -29,6 +29,7 @@ import {
 import { fetchUser } from '@redux/actions/api/users';
 import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
 import { fetchAccount } from '@redux/actions/data/account';
+import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/global';
 import {
   Account,
@@ -38,8 +39,9 @@ import {
   UserPreload,
   User,
   UserRequestState,
+  PreferencesState,
 } from '@ts/types';
-import { logger, Format, Errors, shareContent } from '@utils';
+import { logger, Format, Errors, shareContent, Alert } from '@utils';
 
 import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '.';
 
@@ -65,9 +67,17 @@ type UserDisplayProps = {
   account: Account;
   state: UserRequestState;
   users: UsersState;
+  preferences: PreferencesState;
 };
 
-const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, route, state }) => {
+const UserDisplay: React.FC<UserDisplayProps> = ({
+  account,
+  users,
+  navigation,
+  route,
+  state,
+  preferences,
+}) => {
   const { id } = route.params || {};
 
   const user: User | UserPreload | null =
@@ -201,6 +211,33 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                     setUserReportModalVisible(true);
                   }}
                 />
+                <Menu.Item
+                  key="block"
+                  title={preferences.blocked.includes(user._id) ? 'Débloquer' : 'Bloquer'}
+                  onPress={() => {
+                    if (preferences.blocked.includes(user._id)) {
+                      updatePrefs({
+                        blocked: preferences.blocked.filter((g) => g !== user._id),
+                      });
+                    } else {
+                      Alert.alert(
+                        'Bloquer cet utilisateur ?',
+                        'Vous ne verrez plus de contenus écrits par cet utilisateur',
+                        [
+                          { text: 'Annuler' },
+                          {
+                            text: 'Bloquer',
+                            onPress: () =>
+                              updatePrefs({
+                                blocked: [...preferences.blocked, user._id],
+                              }),
+                          },
+                        ],
+                        { cancelable: true },
+                      );
+                    }
+                  }}
+                />
               </Menu>
             </View>
 
@@ -226,6 +263,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                         @{user.info.username}
                       </Subheading>
                     )}
+                    {preferences.blocked.includes(user._id) ? (
+                      <Subheading style={{ textAlign: 'center', color: colors.invalid }}>
+                        Utilisateur bloqué
+                      </Subheading>
+                    ) : null}
                   </View>
                 ) : (
                   <Title style={{ textAlign: 'center' }}>@{user.info.username}</Title>
@@ -527,13 +569,14 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
 };
 
 const mapStateToProps = (state: State) => {
-  const { users, account, groups } = state;
+  const { users, account, groups, preferences } = state;
   return {
     account,
     users,
     state: users.state,
     groups: groups.search,
     groupsState: groups.state,
+    preferences,
   };
 };
 

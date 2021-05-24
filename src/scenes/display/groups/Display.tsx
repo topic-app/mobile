@@ -44,6 +44,7 @@ import {
   groupDeverify,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
+import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/global';
 import {
   GroupPreload,
@@ -58,6 +59,7 @@ import {
   UserPreload,
   GroupVerification,
   Avatar as AvatarType,
+  PreferencesState,
 } from '@ts/types';
 import {
   logger,
@@ -83,6 +85,7 @@ type GroupDisplayProps = {
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
+  preferences: PreferencesState;
 };
 
 const GroupDisplay: React.FC<GroupDisplayProps> = ({
@@ -91,6 +94,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   groups,
   account,
   state,
+  preferences,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -328,6 +332,33 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       setGroupReportModalVisible(true);
                     }}
                   />
+                  <Menu.Item
+                    key="block"
+                    title={preferences.blocked.includes(group._id) ? 'Débloquer' : 'Bloquer'}
+                    onPress={() => {
+                      if (preferences.blocked.includes(group._id)) {
+                        updatePrefs({
+                          blocked: preferences.blocked.filter((g) => g !== group._id),
+                        });
+                      } else {
+                        Alert.alert(
+                          'Bloquer ce groupe ?',
+                          'Vous ne verrez plus de contenus écrits par ce groupe',
+                          [
+                            { text: 'Annuler' },
+                            {
+                              text: 'Bloquer',
+                              onPress: () =>
+                                updatePrefs({
+                                  blocked: [...preferences.blocked, group._id],
+                                }),
+                            },
+                          ],
+                          { cancelable: true },
+                        );
+                      }
+                    }}
+                  />
                   {checkPermission(account, {
                     permission: Permissions.GROUP_VERIFICATION_DEVERIFY,
                     scope: { everywhere: true },
@@ -410,6 +441,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   >
                     Groupe {group.type}
                   </Subheading>
+                  {preferences.blocked.includes(group._id) ? (
+                    <Subheading style={{ textAlign: 'center', color: colors.invalid }}>
+                      Groupe bloqué
+                    </Subheading>
+                  ) : null}
                 </View>
               </View>
             </View>
@@ -1054,11 +1090,12 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups, account } = state;
+  const { groups, account, preferences } = state;
   return {
     groups,
     account,
     state: groups.state,
+    preferences,
   };
 };
 

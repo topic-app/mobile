@@ -197,6 +197,7 @@ export type Preferences = {
   completedFeedback: string[];
   reduxVersion: number;
   advancedMode: boolean;
+  blocked: string[];
 };
 
 export type PreferencesState = Preferences;

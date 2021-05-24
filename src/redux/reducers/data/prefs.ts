@@ -27,6 +27,7 @@ const initialState: PreferencesState = {
   reduxVersion: Config.reduxVersion,
   showDownloadBanner: !__DEV__,
   advancedMode: !!__DEV__,
+  blocked: [],
   ...Config.seedDb.preferences,
 };
 

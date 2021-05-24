@@ -51,6 +51,7 @@ type ArticleListComponentProps = {
   articlePrefs: ArticlePrefs;
   state: ArticleRequestState;
   account: Account;
+  blocked: string[];
 };
 
 const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
@@ -69,6 +70,7 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
   onConfigurePressed,
   onArticleCreatePressed,
   initialTabKey,
+  blocked,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -245,6 +247,7 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         }}
         ListEmptyComponent={(props) => <ArticleEmptyList reqState={state} {...props} />}
         onConfigurePress={onConfigurePressed}
+        blocked={blocked}
       />
       {checkPermission(account, {
         permission: Permissions.ARTICLE_ADD,
@@ -281,6 +284,7 @@ const mapStateToProps = (state: State) => {
     state: articles.state,
     account,
     historyEnabled: preferences.history,
+    blocked: preferences.blocked,
   };
 };
 
