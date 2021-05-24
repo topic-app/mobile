@@ -311,16 +311,23 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
               onIdle={onSearchChange}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
+              style={
+                relevantStates.some((s) => s?.loading.initial)
+                  ? { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }
+                  : undefined
+              }
             />
-            {relevantStates.some((s) => s?.loading.initial) && (
+            {relevantStates.some((s) => s?.loading.initial) ? (
               <ProgressBar
                 indeterminate
                 style={{
-                  marginTop: -4,
+                  marginTop: Platform.OS === 'web' ? -4 : 0,
                   borderBottomLeftRadius: 12,
                   borderBottomRightRadius: 12,
                 }}
               />
+            ) : (
+              <View style={{ height: 4 }} />
             )}
           </View>
         </Animated.View>
