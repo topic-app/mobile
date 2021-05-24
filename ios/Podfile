@@ -27,7 +27,12 @@ target 'Topic' do
   # you should disable these next few lines.
   # use_flipper!()
   
+  pre_install do |installer|
+    $RNMBGL.pre_install(installer)
+  end
+  
   post_install do |installer|
+    $RNMBGL.post_install(installer)
     react_native_post_install(installer)
   end
 end
