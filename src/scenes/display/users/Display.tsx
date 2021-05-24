@@ -80,6 +80,21 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
 }) => {
   const { id } = route.params || {};
 
+  React.useEffect(() => {
+    if (id !== account.accountInfo?.accountId) {
+      fetchUser(id);
+    } else {
+      fetchAccount();
+    }
+  }, [id]);
+
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
+
+  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [isUserReportModalVisible, setUserReportModalVisible] = React.useState(false);
+
   const user: User | UserPreload | null =
     id === account.accountInfo?.accountId
       ? account.accountInfo.user
@@ -114,21 +129,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
         );
     }
   };
-
-  React.useEffect(() => {
-    if (id !== account.accountInfo?.accountId) {
-      fetchUser(id);
-    } else {
-      fetchAccount();
-    }
-  }, [id]);
-
-  const theme = useTheme();
-  const styles = getStyles(theme);
-  const { colors } = theme;
-
-  const [menuVisible, setMenuVisible] = React.useState(false);
-  const [isUserReportModalVisible, setUserReportModalVisible] = React.useState(false);
 
   if (!user) {
     return (
