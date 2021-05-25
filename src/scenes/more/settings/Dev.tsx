@@ -76,11 +76,7 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
         );
 
   return (
-    <PageContainer
-      headerOptions={{ title: 'Développement', subtitle: 'Paramètres' }}
-      centered
-      scroll
-    >
+    <PageContainer headerOptions={{ title: 'Avancé', subtitle: 'Paramètres' }} centered scroll>
       <Illustration centered name="beta-bugs" />
       <SettingSection title="Informations">
         <List.Item
