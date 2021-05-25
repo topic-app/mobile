@@ -69,12 +69,10 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
             retry={submit}
           />
         )}
-        <View>
-          <View style={[styles.contentContainer, { height: 200, marginBottom: 30 }]}>
-            <View style={styles.centerIllustrationContainer}>
-              <Illustration name="tag" height={200} width={200} />
-              <Title>Créer un tag</Title>
-            </View>
+        <View style={{ flex: 1 }}>
+          <View style={styles.centerIllustrationContainer}>
+            <Illustration name="tag" height={200} width={200} />
+            <Title>Créer un tag</Title>
           </View>
           <Divider />
         </View>
@@ -123,7 +121,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
           />
         </View>
         <Divider />
-        <View style={styles.contentContainer}>
+        <View style={styles.container}>
           <Button
             mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
             color={colors.primary}

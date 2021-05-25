@@ -595,7 +595,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     key={dep._id}
                     icon="domain"
                     title={dep.displayName}
-                    subtitle="Département"
+                    subtitle={
+                      dep.type === 'departement'
+                        ? 'Département'
+                        : dep.type === 'region'
+                        ? 'Région'
+                        : 'Zone'
+                    }
                     onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                   />
                 ))}
