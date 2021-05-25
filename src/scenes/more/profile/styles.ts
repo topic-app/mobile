@@ -9,7 +9,7 @@ export default createStyleSheet(
       alignItems: 'center',
     },
     keyText: { color: colors.disabled },
-    valueText: { fontSize: 24, fontFamily: 'Rubik-Medium' },
+    valueText: { fontSize: 24, fontFamily: 'Rubik' },
     inputContainer: {
       paddingHorizontal: 15,
       paddingBottom: 0,

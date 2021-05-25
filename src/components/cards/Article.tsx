@@ -100,7 +100,13 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
           >
             <Paragraph
               numberOfLines={6}
-              style={[readStyle, { fontFamily: preferences.fontFamily }]}
+              style={[
+                readStyle,
+                {
+                  fontFamily:
+                    preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
+                },
+              ]}
             >
               {article.summary}
             </Paragraph>

@@ -95,7 +95,15 @@ const EventCard: React.FC<EventCardProps> = ({
               maxHeight: overrideImageWidth,
             }}
           >
-            <Paragraph numberOfLines={4} style={[{ fontFamily: preferences.fontFamily }]}>
+            <Paragraph
+              numberOfLines={4}
+              style={[
+                {
+                  fontFamily:
+                    preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
+                },
+              ]}
+            >
               {event?.summary}
             </Paragraph>
             {Array.isArray(event?.places) &&
