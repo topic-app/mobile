@@ -6,6 +6,7 @@ stages:
   - test
   - build
   - deploy dev
+  - deploy prod
 
 cache:
   paths:
@@ -103,6 +104,32 @@ deploy web dev:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - ssh gitlab@ssh-dev.topicapp.fr "cd /home/topic/config/dev_main/topic && python <<< \"import envreplacer; envreplacer.replace('VERSION_TOPIC_MOBILE','$CI_COMMIT_TAG')\" && sudo -u topic /home/topic/config/dev_main/topic/deploy.sh"
+
+deploy web prod:
+  stage: deploy prod
+  needs:
+    - build web
+    - deploy web dev
+  image: alpine
+  tags:
+    - devserver
+  only:
+    - tags
+  when: manual
+  environment:
+    name: prod
+    url: https://topicapp.fr
+  resource_group: proddeploy
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh gitlab@ssh.topicapp.fr "cd /home/topic/config/prod_main/topic && python <<< \"import envreplacer; envreplacer.replace('VERSION_TOPIC_MOBILE','$CI_COMMIT_TAG')\" && sudo -u topic /home/topic/config/prod_main/topic/deploy.sh"
 
 sast:
   variables:
