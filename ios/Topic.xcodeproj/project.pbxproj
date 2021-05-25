@@ -129,7 +129,6 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				9C22097D4465B85C3274C1E8 /* [CP-User] [RNFB] Core Configuration */,
 				060B7B3FD714FCEB23748337 /* [CP-User] [RNFB] Crashlytics Configuration */,
-				788C1257701CB650E89C6254 /* [CP] Embed Pods Frameworks */,
 				A6DEFE4BF25FA9368F8D327E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -137,6 +136,9 @@
 			dependencies = (
 			);
 			name = Topic;
+			packageProductDependencies = (
+				FCA44A6EB1590F9D76516387 /* SwiftPackageProductDependency */,
+			);
 			productName = Topic;
 			productReference = 13B07F961A680F5B00A75B9A /* Topic.app */;
 			productType = "com.apple.product-type.application";
@@ -164,6 +166,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -240,26 +245,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		788C1257701CB650E89C6254 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Topic/Pods-Topic-frameworks.sh",
-				"${PODS_ROOT}/@react-native-mapbox-gl-mapbox-static/dynamic/MapboxMobileEvents.framework",
-				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MapboxMobileEvents.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Topic/Pods-Topic-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		9C22097D4465B85C3274C1E8 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -280,7 +265,6 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Topic/Pods-Topic-resources.sh",
-				"${PODS_ROOT}/MapboxMobileEvents/MapboxMobileEvents/Resources/logger.html",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
@@ -304,7 +288,6 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/logger.html",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
@@ -579,6 +562,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.11.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FCA44A6EB1590F9D76516387 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */;
+			productName = Mapbox;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

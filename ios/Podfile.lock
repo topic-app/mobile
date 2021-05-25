@@ -1,5 +1,4 @@
 PODS:
-  - "@react-native-mapbox-gl-mapbox-static (5.9.0)"
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
     - React
@@ -104,9 +103,6 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.4.1):
     - GoogleUtilities/Logger
-  - Mapbox-iOS-SDK (5.9.0):
-    - MapboxMobileEvents (= 0.10.2)
-  - MapboxMobileEvents (0.10.2)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -319,20 +315,17 @@ PODS:
     - React
   - react-native-geolocation-service (5.3.0-beta.1):
     - React
-  - react-native-mapbox-gl (8.1.0-rc.4):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
-    - Mapbox-iOS-SDK (~> 5.8)
+  - react-native-mapbox-gl (8.2.0-beta2):
     - React
-    - react-native-mapbox-gl/DynamicLibrary (= 8.1.0-rc.4)
-    - react-native-mapbox-gl/StaticLibraryFixer (= 8.1.0-rc.4)
-  - react-native-mapbox-gl/DynamicLibrary (8.1.0-rc.4):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
-    - Mapbox-iOS-SDK (~> 5.8)
+    - React-Core
+    - react-native-mapbox-gl/DynamicLibrary (= 8.2.0-beta2)
+    - react-native-mapbox-gl/StaticLibraryFixer (= 8.2.0-beta2)
+  - react-native-mapbox-gl/DynamicLibrary (8.2.0-beta2):
     - React
-  - react-native-mapbox-gl/StaticLibraryFixer (8.1.0-rc.4):
-    - "@react-native-mapbox-gl-mapbox-static (~> 5.8)"
-    - Mapbox-iOS-SDK (~> 5.8)
+    - React-Core
+  - react-native-mapbox-gl/StaticLibraryFixer (8.2.0-beta2):
     - React
+    - React-Core
   - react-native-netinfo (6.0.0):
     - React-Core
   - react-native-pager-view (5.1.7):
@@ -596,7 +589,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - "@react-native-mapbox-gl-mapbox-static"
     - boost-for-react-native
     - Firebase
     - FirebaseCore
@@ -607,8 +599,6 @@ SPEC REPOS:
     - FirebaseMessaging
     - GoogleDataTransport
     - GoogleUtilities
-    - Mapbox-iOS-SDK
-    - MapboxMobileEvents
     - nanopb
     - PromisesObjC
     - TOCropViewController
@@ -781,7 +771,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  "@react-native-mapbox-gl-mapbox-static": 83c0e0ba33597bb694735ffb136d3d96780af37d
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
@@ -807,8 +796,6 @@ SPEC CHECKSUMS:
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
   GoogleDataTransport: cd9db2180fcecd8da1b561aea31e3e56cf834aa7
   GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
-  Mapbox-iOS-SDK: a5915700ec84bc1a7f8b3e746d474789e35b7956
-  MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   Permission-LocationWhenInUse: 5c878c0de1a55558fe978cda69908327e6a07f31
   Permission-MediaLibrary: 5da8d6cdc18fcea48f9dd900f852bce112d68754
@@ -828,7 +815,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-geolocation-service: 4030de78cdeb93ebef1fdc1971668bea6c0bc59b
-  react-native-mapbox-gl: b2e4cee6a40cb713cd72846c9573cd5bc468c3d5
+  react-native-mapbox-gl: 0526d39f805b57b36cdea9d756ec0e329bfca882
   react-native-netinfo: 34f4d7a42f49157f3b45c14217d256bce7dc9682
   react-native-pager-view: a10e94628bf100ff9a377ebc63690c8c05358ab7
   react-native-safe-area-context: e471852c5ed67eea4b10c5d9d43c1cebae3b231d
@@ -881,6 +868,6 @@ SPEC CHECKSUMS:
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
   YoutubePlayer-in-WKWebView: cfbf46da51d7370662a695a8f351e5fa1d3e1008
 
-PODFILE CHECKSUM: 2f597fe1037eadb1b0b995c39d9dde31250c8f1c
+PODFILE CHECKSUM: 6f4118c70328fd494d6a262834433817cbf343e5
 
 COCOAPODS: 1.10.1
