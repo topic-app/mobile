@@ -3,6 +3,7 @@ import PushNotification from 'react-native-push-notification';
 import parseUrl from 'url-parse';
 
 import { updateToken } from '@redux/actions/data/profile';
+import Store from '@redux/store';
 import { logger, messaging } from '@utils';
 
 const onNotification = (
@@ -82,8 +83,10 @@ const channels = [
 const setUpMessagingLoaded = () => {
   if (Platform.OS !== 'web' && messaging) {
     // Handle fcm token
-    messaging().getToken().then(updateToken);
-    messaging().onTokenRefresh(updateToken);
+    if (Store.getState().account.loggedIn) {
+      messaging().getToken().then(updateToken);
+      messaging().onTokenRefresh(updateToken);
+    }
 
     // PushNotification.getChannels((i) => i.forEach((j) => PushNotification.deleteChannel(j)));
     // Create channels
