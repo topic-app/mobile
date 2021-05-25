@@ -12,6 +12,7 @@ import { Text, Button, Divider, List, ProgressBar, useTheme, Title } from 'react
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
+import { WelcomeSearchBlob } from '@assets/';
 import {
   TranslucentStatusBar,
   Illustration,
@@ -84,6 +85,23 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   );
   const [searchFocused, setSearchFocused] = React.useState(false);
 
+  const transitionVal = React.useRef(new Animated.Value(0)).current;
+  const blobOpacity = transitionVal.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+  const inAnim = Animated.timing(transitionVal, {
+    toValue: 1,
+    duration: 200,
+    useNativeDriver: false,
+  });
+  const outAnim = Animated.timing(transitionVal, {
+    toValue: 0,
+    duration: 200,
+    useNativeDriver: false,
+  });
+
   React.useEffect(() => {
     searchNearSchools(false);
   }, []);
@@ -101,6 +119,9 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
     if (text) {
       searchSchools('initial', text);
       searchDepartments('initial', text);
+      inAnim.start();
+    } else {
+      outAnim.start();
     }
   };
 
@@ -291,7 +312,21 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
             backgroundColor: colors.background,
           }}
         >
-          <CollapsibleView collapsed={!!(searchText || searchFocused)}>
+          {mode === 'web' && (
+            <Animated.View
+              style={{
+                position: 'absolute',
+                alignSelf: 'center',
+                marginTop: 'calc(42vh - 480px)',
+                opacity: blobOpacity,
+              }}
+            >
+              <WelcomeSearchBlob style={{ width: 800 }} />
+            </Animated.View>
+          )}
+          <CollapsibleView
+            collapsed={mode === 'web' ? !!searchText : !!(searchText || searchFocused)}
+          >
             <View style={styles.centerIllustrationContainer}>
               {mode === 'web' ? (
                 <View style={{ height: 'calc(45vh - 210px)' }} />
@@ -300,7 +335,13 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                   <Illustration name="location-select" />
                 </CollapsibleView>
               )}
-              <Title style={{ fontSize: 24, paddingTop: schoolsNear.length ? 20 : 0 }}>
+              <Title
+                style={{
+                  fontSize: 24,
+                  paddingTop: schoolsNear.length ? 20 : 0,
+                  color: mode === 'web' ? 'white' : undefined,
+                }}
+              >
                 Choisissez votre école
               </Title>
             </View>
@@ -331,7 +372,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                 }}
               />
             ) : (
-              <View style={{ height: 4 }} />
+              <View style={{ height: Platform.OS === 'web' ? 0 : 4 }} />
             )}
           </View>
         </Animated.View>

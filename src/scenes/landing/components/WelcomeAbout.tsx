@@ -19,7 +19,7 @@ import {
   GroupRequestState,
   State,
 } from '@ts/types';
-import { handleUrl } from '@utils';
+import { handleUrl, trackEvent } from '@utils';
 
 type Props = {
   groups: (GroupPreload | Group)[];
@@ -182,11 +182,12 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
           <View style={{ marginTop: 20, flexDirection: 'row' }}>
             <Button
               mode={detectOS() === 'android' ? 'contained' : 'outlined'}
-              onPress={() =>
+              onPress={() => {
+                trackEvent('homepage:download-button', { props: { os: 'android' } });
                 handleUrl('https://play.google.com/store/apps/details?id=fr.topicapp.topic', {
                   trusted: true,
-                })
-              }
+                });
+              }}
               icon="android"
               style={{ marginRight: 10 }}
               uppercase={false}
@@ -195,7 +196,10 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
             </Button>
             <Button
               mode={detectOS() === 'ios' ? 'contained' : 'outlined'}
-              onPress={() => handleUrl('https://get.topicapp.fr', { trusted: true })}
+              onPress={() => {
+                trackEvent('homepage:download-button', { props: { os: 'ios' } });
+                handleUrl('https://apps.apple.com/us/app/topic/id1545178171', { trusted: true });
+              }}
               icon="apple"
               style={{ marginLeft: 10 }}
               uppercase={false}
