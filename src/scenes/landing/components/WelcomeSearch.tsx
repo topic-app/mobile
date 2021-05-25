@@ -71,10 +71,8 @@ const WelcomeSearch: React.FC = () => {
             onChangeText={(text) => {
               setText(text);
               if (text) {
-                console.log('Timing start to 1');
                 toAnimation.start();
               } else {
-                console.log('Timing start to 0');
                 fromAnimation.start();
               }
             }}

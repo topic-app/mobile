@@ -64,7 +64,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     const navigation = useNavigation();
 
     React.useEffect(() => {
-      console.log('ContentTabView useEffect');
       if (types.includes('articles')) {
         clearArticles(false, true, false, false, false);
         searchArticles('initial', '', searchParams, false);

@@ -12,7 +12,6 @@ const config: DevAppConfig = {
     exclude: [],
   },
   api: {
-    timeout: 3000,
     // Enable if working on web and have nginx setup
     // url: {
     //   base: 'http://localhost/api/api/v1',

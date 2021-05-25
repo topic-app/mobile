@@ -75,8 +75,6 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
               setError('Cet utilisateur est déjà dans le groupe');
               return;
             }
-            console.log('USER');
-            console.log(user);
             if (user) {
               next(user);
               setVisible(false);
