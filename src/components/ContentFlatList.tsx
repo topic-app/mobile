@@ -245,7 +245,8 @@ const ContentFlatList = <T extends any>({
               <ActivityIndicator size="large" color={colors.primary} />
             ) : (
               Platform.OS === 'web' &&
-              !(currentSection.loading?.initial || currentSection.loading?.refresh) && (
+              !(currentSection.loading?.initial || currentSection.loading?.refresh) &&
+              !!currentSection.data.length && (
                 <Button mode="text" onPress={() => currentSection.onLoad?.('next')}>
                   Charger plus
                 </Button>
