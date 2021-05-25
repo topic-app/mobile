@@ -226,10 +226,14 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
     ) {
       return (
         <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 50 }]}>
-          <Text>
+          <Text style={{ textAlign: 'center' }}>
             {locationStatus === 'no'
               ? 'Appuyez ci-dessous pour trouver les écoles autour de vous'
               : 'Erreur lors de la recherche des écoles autour de vous'}
+          </Text>
+          <Text style={{ textAlign: 'center', color: colors.disabled }}>
+            Votre localisation n&apos;est pas stockée et est utilisée uniquement pour trouver des
+            écoles
           </Text>
           <View style={styles.container}>
             <Button

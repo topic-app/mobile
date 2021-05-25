@@ -65,7 +65,10 @@ export namespace Location {
    */
   export async function getCoordinates(): Promise<Coordinates> {
     const info = await new Promise<LocationService.GeoPosition>((resolve, reject) =>
-      LocationService.getCurrentPosition(resolve, reject),
+      LocationService.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: false,
+        timeout: 15000,
+      }),
     );
     return info.coords;
   }
