@@ -198,7 +198,7 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
               mode={detectOS() === 'ios' ? 'contained' : 'outlined'}
               onPress={() => {
                 trackEvent('homepage:download-button', { props: { os: 'ios' } });
-                handleUrl('https://apps.apple.com/us/app/topic/id1545178171', { trusted: true });
+                handleUrl('https://apps.apple.com/fr/app/topic/id1545178171', { trusted: true });
               }}
               icon="apple"
               style={{ marginLeft: 10 }}
