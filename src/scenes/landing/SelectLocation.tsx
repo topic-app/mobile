@@ -12,7 +12,7 @@ import { Text, Button, Divider, List, ProgressBar, useTheme, Title } from 'react
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
-import { WelcomeSearchBlob } from '@assets/';
+import { WelcomeSearchBlob } from '@assets/index';
 import {
   TranslucentStatusBar,
   Illustration,
