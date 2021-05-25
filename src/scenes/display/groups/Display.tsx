@@ -572,13 +572,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     <Divider />
                   </View>
                 )}
-                {group.location.global && (
-                  <InlineCard
-                    icon="map-marker"
-                    title="France Entière"
-                    onPress={() => logger.warn('global pressed')}
-                  />
-                )}
+                {group.location.global && <InlineCard icon="map-marker" title="France Entière" />}
                 {group.location.schools?.map((school) => (
                   <InlineCard
                     key={school._id}
@@ -587,7 +581,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     subtitle={
                       school?.address ? Format.shortAddress(school.address) : school?.shortName
                     }
-                    onPress={() => logger.warn(`school ${school._id} pressed!`)}
                   />
                 ))}
                 {group.location.departments?.map((dep) => (
@@ -602,7 +595,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         ? 'Région'
                         : 'Zone'
                     }
-                    onPress={() => logger.warn(`department ${dep._id} pressed!`)}
                   />
                 ))}
                 <Divider />

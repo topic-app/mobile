@@ -205,12 +205,7 @@ const LocationBottomSheet: React.FC<LocationBottomSheetProps> = ({
                 <Divider />
               </View>
             ))}
-            {description ? (
-              <InlineCard
-                title={description}
-                onPress={() => logger.verbose('Pressed location description')}
-              />
-            ) : null}
+            {description ? <InlineCard title={description} /> : null}
             {place.type === 'school' ? (
               <ContentTabView
                 searchParams={{ schools: [place.id] }}

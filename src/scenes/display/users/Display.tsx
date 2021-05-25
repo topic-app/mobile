@@ -417,11 +417,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                     <Divider />
                     <View style={{ marginVertical: 10 }}>
                       {user.data.location?.global && (
-                        <InlineCard
-                          icon="map-marker"
-                          title="France Entière"
-                          onPress={() => logger.warn('global pressed')}
-                        />
+                        <InlineCard icon="map-marker" title="France Entière" />
                       )}
                       {user.data.location?.schools?.map((school) => (
                         <InlineCard
@@ -440,7 +436,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                                 }`
                               : ' '
                           }`}
-                          onPress={() => logger.warn(`school ${school._id} pressed!`)}
                         />
                       ))}
                       {user.data.location?.departments?.map((dep) => (
@@ -448,10 +443,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                           key={dep._id}
                           icon="map-marker-radius"
                           title={dep.name}
-                          subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
-                            dep.code
-                          }`}
-                          onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                          subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'}`}
                         />
                       ))}
                     </View>

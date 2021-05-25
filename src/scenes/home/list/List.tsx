@@ -92,9 +92,6 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
               key={school._id}
               left={() => <List.Icon icon="school" />}
               title={school.shortName || school.name}
-              onPress={() => {
-                logger.warn('School pressed');
-              }}
             />
           ))}
           {location.departmentData.map((departement) => (

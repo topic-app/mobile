@@ -249,13 +249,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
           <List.Subheader>Localisation</List.Subheader>
           <Divider />
           <View>
-            {location.global && (
-              <InlineCard
-                icon="map-marker"
-                title="France Entière"
-                onPress={() => logger.warn('global pressed')}
-              />
-            )}
+            {location.global && <InlineCard icon="map-marker" title="France Entière" />}
             {location.schoolData?.map((school) => (
               <InlineCard
                 key={school._id}
@@ -270,7 +264,6 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                     ? `, ${school.departments[0].displayName || school.departments[0].name}`
                     : ''
                 }`}
-                onPress={() => logger.warn(`school ${school._id} pressed!`)}
               />
             ))}
             {location.departmentData?.map((dep) => (
@@ -278,8 +271,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                 key={dep._id}
                 icon="map-marker-radius"
                 title={dep.name}
-                subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${dep.code}`}
-                onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'}`}
               />
             ))}
             <View style={styles.container}>
