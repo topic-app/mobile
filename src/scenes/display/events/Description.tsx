@@ -233,6 +233,9 @@ function EventDisplayDescriptionHeader({
             justifyContent: 'space-around',
           }}
         >
+          <Button mode="text" icon="eye" style={{ flex: 1, marginRight: 5 }} color={colors.muted}>
+            {typeof event.cache?.views === 'number' ? event.cache.views : ''} Vues
+          </Button>
           <Button
             mode="text"
             icon={eventMy?.liked ? 'thumb-up' : 'thumb-up-outline'}

@@ -339,6 +339,7 @@ type ArticleBase = {
   opinion?: boolean;
   cache?: {
     likes?: number;
+    views?: number;
   };
 };
 export type ArticlePreload = ArticleBase & {
@@ -416,6 +417,7 @@ type EventBase = {
   location: Location; // why exactly is there places AND locations?
   cache?: {
     likes?: number;
+    views?: number;
   };
 };
 

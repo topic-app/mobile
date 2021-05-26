@@ -59,7 +59,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             <Title numberOfLines={2} style={[readStyle]}>
               {article.title}
             </Title>
-            <Caption>{`Publié ${moment(article.date).fromNow()}`}</Caption>
+            <Caption>
+              Publié {moment(article.date).fromNow()} ·{' '}
+              <Icon name="eye" color={colors.subtext} size={12} /> {article.cache?.views || '?'} ·{' '}
+              <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
+              {article.cache?.likes || '?'}
+            </Caption>
           </View>
           {verification && articleVerification.verification && (
             <View

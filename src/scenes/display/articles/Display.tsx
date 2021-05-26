@@ -210,16 +210,21 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
             >
               <Button
                 mode="text"
+                icon="eye"
+                style={{ flex: 1, marginRight: 5 }}
+                color={colors.muted}
+              >
+                {typeof article.cache?.views === 'number' ? article.cache.views : ''} Vues
+              </Button>
+              <Button
+                mode="text"
                 icon={articleMy?.liked ? 'thumb-up' : 'thumb-up-outline'}
                 loading={reqState.articles.my?.loading || reqState.articles.like?.loading}
-                style={{ flex: 1, marginRight: 5 }}
+                style={{ flex: 1, marginHorizontal: 5 }}
                 color={articleMy?.liked ? colors.primary : colors.muted}
                 onPress={account.loggedIn ? likeArticle : showLikeLoginAlert}
               >
-                {typeof article.cache?.likes === 'number'
-                  ? article.cache.likes + (articleMy?.liked ? 1 : 0)
-                  : ''}{' '}
-                Likes
+                {typeof article.cache?.likes === 'number' ? article.cache.likes : ''} Likes
               </Button>
               <Button
                 mode="text"
