@@ -21,7 +21,6 @@ import {
 import getStyles from '@styles/global';
 import {
   State,
-  EventListItem,
   EventReadItem,
   EventPreload,
   EventPrefs,
@@ -32,13 +31,12 @@ import {
 } from '@ts/types';
 import { checkPermission, Permissions } from '@utils';
 
-import AddToListModal from '../../display/components/AddToListModal';
 import EventListCard from './components/Card';
 import EventEmptyList from './components/EmptyList';
 
 type EventListComponentProps = {
   scrollY: Animated.Value;
-  onEventPress: (event: { id: string; title: string; useLists: boolean }) => any;
+  onEventPress: (event: { id: string; title: string }) => any;
   onConfigurePressed?: () => void;
   onEventCreatePressed: () => void;
   historyEnabled: boolean;
@@ -47,7 +45,6 @@ type EventListComponentProps = {
   passedEvents: EventPreload[];
   followingEvents: EventPreload[];
   search: EventPreload[];
-  lists: EventListItem[];
   read: EventReadItem[];
   quicks: EventQuickItem[];
   eventPrefs: EventPrefs;
@@ -62,7 +59,6 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
   passedEvents,
   followingEvents,
   search,
-  lists,
   read,
   quicks,
   state,
@@ -128,17 +124,6 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
     }
   });
 
-  lists.forEach((l) => {
-    sections.push({
-      key: l.id,
-      title: l.name,
-      description: l.description,
-      icon: l.icon,
-      data: l.items,
-      group: 'lists',
-    });
-  });
-
   quicks.forEach((q) => {
     let params = {};
     let icon = 'alert-decagram';
@@ -200,9 +185,6 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
     updateEventsFollowing('initial');
   }, [null]);
 
-  const [addToListModalVisible, setAddToListModalVisible] = React.useState(false);
-  const [addToListModalEvent, setAddToListModalEvent] = React.useState('');
-
   const itemHeight = EVENT_CARD_HEIGHT;
 
   return (
@@ -215,18 +197,13 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
         renderItem={({ item: event, sectionKey, group }) => (
           <EventListCard
             event={event}
-            group={group}
             sectionKey={sectionKey}
             isRead={read.some((r) => r.id === event._id)}
             historyActive={historyEnabled}
-            lists={lists}
-            setAddToListModalEvent={setAddToListModalEvent}
-            setAddToListModalVisible={setAddToListModalVisible}
             navigate={() =>
               onEventPress({
                 id: event._id,
                 title: event.title,
-                useLists: group === 'lists',
               })
             }
           />
@@ -267,13 +244,6 @@ const EventListComponent: React.FC<EventListComponentProps> = ({
           accessibilityLabel="Créer un évènement"
         />
       )}
-
-      <AddToListModal
-        visible={addToListModalVisible}
-        setVisible={setAddToListModalVisible}
-        id={addToListModalEvent}
-        type="event"
-      />
     </View>
   );
 };
@@ -286,7 +256,6 @@ const mapStateToProps = (state: State) => {
     followingEvents: events.following,
     search: events.search,
     eventPrefs: eventData.prefs,
-    lists: eventData.lists,
     quicks: eventData.quicks,
     read: eventData.read,
     state: events.state,

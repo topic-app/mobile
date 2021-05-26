@@ -184,7 +184,6 @@ export type Preferences = {
   history: boolean;
   recommendations: boolean;
   syncHistory: boolean;
-  syncLists: boolean;
   fontSize: number;
   stripFormatting: boolean;
   fontFamily: 'system' | 'Roboto-Slab' | 'Roboto-Mono' | 'OpenDyslexic';

@@ -14,7 +14,6 @@ const initialState: PreferencesState = {
   history: true,
   recommendations: false,
   syncHistory: true,
-  syncLists: true,
   fontSize: 14,
   fontFamily: 'system',
   stripFormatting: false,

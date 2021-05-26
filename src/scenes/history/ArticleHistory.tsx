@@ -65,7 +65,6 @@ const ArticleHistory: React.FC<ArticleHistoryProps> = ({ navigation, read, prefe
                       params: {
                         id: item.id,
                         title: item.title,
-                        useLists: false,
                       },
                     },
                   },

@@ -30,8 +30,7 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
 
   if (
     (group === 'categories' && reqState.list.success) ||
-    (group === 'quicks' && reqState.search?.success) ||
-    group === 'lists'
+    (group === 'quicks' && reqState.search?.success)
   ) {
     if (sectionKey === 'passed') {
       return (
@@ -66,13 +65,6 @@ const EventEmptyList: React.FC<EventEmptyListProps> = ({
       return (
         <FullscreenIllustration illustration="event" style={{ height }}>
           Vous verrez içi les évènements des groupes et utilisateurs que vous suivez
-        </FullscreenIllustration>
-      );
-    } else if (group === 'lists') {
-      return (
-        <FullscreenIllustration illustration="article-lists" style={{ height }}>
-          Aucun évènement dans cette liste{'\n'}Ajoutez les grâce à l&apos;icône{' '}
-          <Icon name="playlist-plus" size={20} />
         </FullscreenIllustration>
       );
     } else {

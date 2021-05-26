@@ -7,7 +7,7 @@ import { DisplayScreenNavigationProp } from '../index';
 import EventDisplay from './Display';
 
 export type EventDisplayStackParams = {
-  Display: { id: string; title: string; useLists: boolean; verification: boolean };
+  Display: { id: string; title: string; verification: boolean };
 };
 
 export type EventDisplayScreenNavigationProp<

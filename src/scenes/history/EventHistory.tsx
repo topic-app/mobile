@@ -63,7 +63,6 @@ const EventHistory: React.FC<EventHistoryProps> = ({ navigation, read, preferenc
                       params: {
                         id: item.id,
                         title: item.title,
-                        useLists: false,
                       },
                     },
                   },

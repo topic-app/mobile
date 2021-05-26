@@ -32,10 +32,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
   const [article, setArticle] = React.useState<{
     id: string;
     title: string;
-    useLists: boolean;
-  } | null>(
-    route.params?.article ? { id: route.params.article, title: '', useLists: false } : null,
-  );
+  } | null>(route.params?.article ? { id: route.params.article, title: '' } : null);
 
   const theme = useTheme();
   const deviceWidth = useWindowDimensions().width;
@@ -148,7 +145,6 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
                   params: {
                     id: article.id,
                     title: article.title,
-                    useLists: article.useLists,
                     verification: false,
                   },
                 }}

@@ -3,7 +3,6 @@ import { Platform } from 'react-native';
 import {
   ArticlesContentState,
   ArticlesContentActionTypes,
-  UPDATE_ARTICLES_LISTS,
   UPDATE_ARTICLES_READ,
   UPDATE_ARTICLES_PREFS,
   UPDATE_ARTICLES_QUICKS,
@@ -15,17 +14,6 @@ import {
 const initialState: ArticlesContentState = {
   read: [],
   creationData: {},
-  lists:
-    Platform.OS === 'web'
-      ? []
-      : [
-          {
-            id: '0',
-            name: 'Favoris',
-            icon: 'star-outline',
-            items: [],
-          },
-        ],
   quicks: [],
   prefs: {
     categories: ['unread', 'all', 'following'],
@@ -52,11 +40,6 @@ function articleDataReducer(
   action: ArticlesContentActionTypes,
 ): ArticlesContentState {
   switch (action.type) {
-    case UPDATE_ARTICLES_LISTS:
-      return {
-        ...state,
-        lists: action.data,
-      };
     case UPDATE_ARTICLES_READ:
       return {
         ...state,

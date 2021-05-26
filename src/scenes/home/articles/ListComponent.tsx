@@ -20,7 +20,6 @@ import {
 import getStyles from '@styles/global';
 import {
   State,
-  ArticleListItem,
   ArticleReadItem,
   ArticlePreload,
   ArticlePrefs,
@@ -31,13 +30,12 @@ import {
 } from '@ts/types';
 import { checkPermission, Permissions } from '@utils';
 
-import AddToListModal from '../../display/components/AddToListModal';
 import ArticleListCard from './components/Card';
 import ArticleEmptyList from './components/EmptyList';
 
 type ArticleListComponentProps = {
   scrollY: Animated.Value;
-  onArticlePress: (article: { id: string; title: string; useLists: boolean }) => any;
+  onArticlePress: (article: { id: string; title: string }) => any;
   onConfigurePressed?: () => void;
   onArticleCreatePressed: () => void;
   historyEnabled: boolean;
@@ -45,7 +43,6 @@ type ArticleListComponentProps = {
   articles: ArticlePreload[];
   followingArticles: ArticlePreload[];
   search: ArticlePreload[];
-  lists: ArticleListItem[];
   read: ArticleReadItem[];
   quicks: ArticleQuickItem[];
   articlePrefs: ArticlePrefs;
@@ -59,7 +56,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
   articles,
   followingArticles,
   search,
-  lists,
   read,
   quicks,
   state,
@@ -118,17 +114,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         });
       }
     }
-  });
-
-  lists.forEach((l) => {
-    sections.push({
-      key: l.id,
-      title: l.name,
-      description: l.description,
-      icon: l.icon,
-      data: l.items,
-      group: 'lists',
-    });
   });
 
   quicks.forEach((q) => {
@@ -191,9 +176,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
     updateArticlesFollowing('initial');
   }, [null]);
 
-  const [addToListModalVisible, setAddToListModalVisible] = React.useState(false);
-  const [addToListModalArticle, setAddToListModalArticle] = React.useState('');
-
   const itemHeight = ARTICLE_CARD_HEIGHT;
 
   return (
@@ -206,18 +188,13 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
         renderItem={({ item: article, sectionKey, group }) => (
           <ArticleListCard
             article={article}
-            group={group}
             sectionKey={sectionKey}
             isRead={read.some((r) => r.id === article._id)}
             historyActive={historyEnabled}
-            lists={lists}
-            setAddToListModalArticle={setAddToListModalArticle}
-            setAddToListModalVisible={setAddToListModalVisible}
             navigate={() =>
               onArticlePress({
                 id: article._id,
                 title: article.title,
-                useLists: group === 'lists',
               })
             }
           />
@@ -260,13 +237,6 @@ const ArticleListComponent: React.FC<ArticleListComponentProps> = ({
           accessibilityLabel="Écrire un article"
         />
       )}
-
-      <AddToListModal
-        visible={addToListModalVisible}
-        setVisible={setAddToListModalVisible}
-        id={addToListModalArticle}
-        type="article"
-      />
     </View>
   );
 };
@@ -278,7 +248,6 @@ const mapStateToProps = (state: State) => {
     followingArticles: articles.following,
     search: articles.search,
     articlePrefs: articleData.prefs,
-    lists: articleData.lists,
     quicks: articleData.quicks,
     read: articleData.read,
     state: articles.state,

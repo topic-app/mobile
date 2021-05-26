@@ -5,7 +5,6 @@ import {
   UPDATE_ARTICLES_QUICKS,
   UPDATE_ARTICLES_CREATION_DATA,
   UPDATE_ARTICLES_READ,
-  UPDATE_ARTICLES_LISTS,
   UPDATE_ARTICLES_STATE,
   UPDATE_ARTICLES_PREFS,
   CLEAR_ARTICLES,
@@ -16,11 +15,6 @@ import {
 
 import { clearCreator } from '../api/ActionCreator';
 import {
-  addToListCreator,
-  removeFromListCreator,
-  addListCreator,
-  modifyListCreator,
-  deleteListCreator,
   addReadCreator,
   deleteReadCreator,
   clearReadCreator,
@@ -30,122 +24,8 @@ import {
   updateCreationDataCreator,
   clearCreationDataCreator,
   reorderQuickCreator,
-  reorderListCreator,
   deleteReadAllCreator,
 } from './ActionCreator';
-
-/**
- * @docs actions
- * Ajoute un article à une list
- * @param articleId L'id de l'article à récuperer
- */
-async function addArticleToList(articleId: string, listId: string) {
-  await Store.dispatch(
-    addToListCreator({
-      update: UPDATE_ARTICLES_LISTS,
-      stateUpdate: UPDATE_ARTICLES_STATE,
-      url: 'articles/info',
-      dataType: 'articleData',
-      resType: 'articles',
-      params: { articleId },
-      id: listId,
-    }),
-  );
-}
-
-/**
- * @docs actions
- * Enleve un article d'une list
- * @param articleId L'id de l'article à récuperer
- * @param listId La liste de laquelle il faut enlever l'article
- */
-async function removeArticleFromList(articleId: string, listId: string) {
-  Store.dispatch(
-    removeFromListCreator({
-      update: UPDATE_ARTICLES_LISTS,
-      dataType: 'articleData',
-      itemId: articleId,
-      id: listId,
-    }),
-  );
-}
-
-/**
- * @docs actions
- * Ajoute une liste
- * @param name Le nom de la liste
- * @param icon
- * @param description
- */
-async function addArticleList(
-  name: string,
-  icon: string = 'bookmark-outline',
-  description: string = '',
-) {
-  Store.dispatch(
-    addListCreator({
-      update: UPDATE_ARTICLES_LISTS,
-      dataType: 'articleData',
-      name,
-      icon,
-      description,
-    }),
-  );
-}
-
-/**
- * @docs actions
- * Modifie une liste
- * @param listId L'id de la liste
- * @param name Le nom de la liste
- * @param icon
- * @param description
- */
-async function modifyArticleList(
-  listId: string,
-  name: string,
-  icon: string | undefined,
-  description: string | undefined,
-  items?: Article[],
-) {
-  Store.dispatch(
-    modifyListCreator({
-      update: UPDATE_ARTICLES_LISTS,
-      dataType: 'articleData',
-      id: listId,
-      name,
-      icon,
-      description,
-      items,
-    }),
-  );
-}
-
-async function reorderArticleList(from: string, to: string) {
-  Store.dispatch(
-    reorderListCreator({
-      update: UPDATE_ARTICLES_LISTS,
-      dataType: 'articleData',
-      from,
-      to,
-    }),
-  );
-}
-
-/**
- * @docs actions
- * Supprime une liste
- * @param listId L'id de la liste
- */
-async function deleteArticleList(listId: string) {
-  Store.dispatch(
-    deleteListCreator({
-      update: UPDATE_ARTICLES_LISTS,
-      dataType: 'articleData',
-      id: listId,
-    }),
-  );
-}
 
 async function addArticleRead(
   articleId: string,
@@ -253,12 +133,6 @@ async function clearArticleCreationData() {
 }
 
 export {
-  addArticleToList,
-  removeArticleFromList,
-  addArticleList,
-  modifyArticleList,
-  reorderArticleList,
-  deleteArticleList,
   addArticleRead,
   deleteArticleRead,
   deleteArticleReadAll,

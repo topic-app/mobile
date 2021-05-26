@@ -19,6 +19,7 @@ type EventCardProps = {
   event: AnyEvent;
   navigate: NativeStackNavigationProp<any, any>['navigate'];
   verification?: boolean;
+  unread?: boolean;
   preferences: Preferences;
   overrideImageWidth?: number;
 };
@@ -28,6 +29,7 @@ const EventCard: React.FC<EventCardProps> = ({
   navigate,
   verification,
   preferences,
+  unread = true,
   overrideImageWidth = 140,
 }) => {
   const eventVerification = event as EventVerificationPreload;
@@ -48,12 +50,16 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const verificationColors = ['green', 'yellow', 'yellow', 'orange', 'orange', 'orange'];
 
+  const readStyle = !unread && { color: colors.disabled };
+
   return (
     <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
       <Card.Content>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
           <View style={{ flex: 1 }}>
-            <Title numberOfLines={2}>{event?.title}</Title>
+            <Title numberOfLines={2} style={[readStyle]}>
+              {event?.title}
+            </Title>
             <Caption>{Format.shortEventDate(event.duration)}</Caption>
           </View>
           {verification && eventVerification?.verification && (

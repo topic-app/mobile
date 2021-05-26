@@ -30,10 +30,7 @@ const EventListScreen: React.FC<EventListProps> = ({
   const [event, setEvent] = React.useState<{
     id: string;
     title: string;
-    useLists: boolean;
-  } | null>(
-    route.params?.evenement ? { id: route.params.evenement, title: '', useLists: false } : null,
-  );
+  } | null>(route.params?.evenement ? { id: route.params.evenement, title: '' } : null);
 
   const theme = useTheme();
   const deviceWidth = useWindowDimensions().width;
@@ -146,7 +143,6 @@ const EventListScreen: React.FC<EventListProps> = ({
                   params: {
                     id: event.id,
                     title: event.title,
-                    useLists: event.useLists,
                     verification: false,
                   },
                 }}

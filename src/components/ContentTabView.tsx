@@ -133,7 +133,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                               params: {
                                 id: item._id,
                                 title: item.title,
-                                useLists: false,
                               },
                             },
                           },
@@ -198,7 +197,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                               params: {
                                 id: item._id,
                                 title: item.title,
-                                useLists: false,
                               },
                             },
                           },

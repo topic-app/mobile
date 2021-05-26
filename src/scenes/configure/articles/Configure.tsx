@@ -7,34 +7,21 @@ import { connect } from 'react-redux';
 
 import { PlatformTouchable, Illustration, PageContainer } from '@components';
 import {
-  deleteArticleList,
   updateArticlePrefs,
   addArticleQuick,
   deleteArticleQuick,
   reorderArticleQuick,
-  reorderArticleList,
 } from '@redux/actions/contentData/articles';
-import {
-  State,
-  ArticleListItem,
-  ArticleQuickItem,
-  ArticlePrefs,
-  Account,
-  Preferences,
-  EventListItem,
-} from '@ts/types';
+import { State, ArticleQuickItem, ArticlePrefs, Account, Preferences } from '@ts/types';
 import { Alert } from '@utils';
 
 import type { ArticleConfigureScreenNavigationProp } from '.';
-import CreateModal from '../components/CreateModal';
-import EditModal from '../components/EditModal';
 import QuickLocationTypeModal from '../components/QuickLocationTypeModal';
 import QuickSelectModal from '../components/QuickSelectModal';
 import QuickTypeModal from '../components/QuickTypeModal';
 import getStyles from './styles';
 
 type ArticleListsProps = {
-  lists: ArticleListItem[];
   quicks: ArticleQuickItem[];
   preferences: Preferences;
   articlePrefs: ArticlePrefs;
@@ -47,10 +34,10 @@ type Category = {
   name: string;
   navigate: () => any;
   disable?: boolean;
+  disableReason?: string;
 };
 
 function ArticleLists({
-  lists,
   quicks,
   preferences,
   articlePrefs,
@@ -61,11 +48,6 @@ function ArticleLists({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
-  const [isEditModalVisible, setEditModalVisible] = React.useState(false);
-  const [editingList, setEditingList] = React.useState<ArticleListItem | EventListItem | null>(
-    null,
-  );
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
   const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);
@@ -102,6 +84,7 @@ function ArticleLists({
           },
         }),
       disable: !preferences.history,
+      disableReason: 'Indisponible - Historique désactivé',
     },
     {
       id: 'all',
@@ -133,6 +116,7 @@ function ArticleLists({
           },
         }),
       disable: !account.loggedIn,
+      disableReason: 'Indisponible - non connecté',
     },
   ];
 
@@ -152,7 +136,7 @@ function ArticleLists({
   return (
     <PageContainer headerOptions={{ title: 'Configurer', subtitle: 'Actus' }}>
       <FlatList
-        data={['categories', 'lists', 'tags']}
+        data={['categories', 'tags']}
         keyExtractor={(s) => s}
         renderItem={({ item: section }) => {
           switch (section) {
@@ -191,7 +175,7 @@ function ArticleLists({
                         <List.Item
                           key={item.id}
                           title={item.name}
-                          description={item.disable ? 'Indisponible' : null}
+                          description={item.disable ? item.disableReason : null}
                           left={() => <View style={{ width: 56, height: 56 }} />}
                           onPress={() => {}}
                           onLongPress={move}
@@ -233,117 +217,6 @@ function ArticleLists({
                     }}
                   />
                 </View>
-              );
-
-            case 'lists':
-              // TEMP: While lists are not synced to server
-              if (Platform.OS === 'web') return null;
-              return (
-                <DraggableFlatList
-                  data={lists}
-                  scrollPercent={5}
-                  ListHeaderComponent={() => (
-                    <View>
-                      <View style={styles.listSpacer} />
-                      <List.Subheader>Listes</List.Subheader>
-                      <View style={styles.subheaderDescriptionContainer}>
-                        <Text>
-                          Ajoutez vos articles à des listes afin de pouvoir y accéder rapidement.
-                        </Text>
-                      </View>
-                      <Divider />
-                    </View>
-                  )}
-                  ItemSeparatorComponent={() => <Divider />}
-                  keyExtractor={(item: ArticleListItem) => item.id}
-                  renderItem={({ item, move }: { item: ArticleListItem; move: () => any }) => {
-                    return (
-                      <List.Item
-                        title={item.name}
-                        description={`${
-                          item.items.length
-                            ? `${item.items.length} article${item.items.length === 1 ? '' : 's'}`
-                            : 'Aucun article'
-                        }${item.description ? `\n${item.description}` : ''}`}
-                        descriptionNumberOfLines={100}
-                        onPress={() => {}}
-                        onLongPress={move}
-                        left={() => <List.Icon icon={item.icon} />}
-                        right={() => (
-                          <View style={{ flexDirection: 'row' }}>
-                            <View onStartShouldSetResponder={() => true}>
-                              <PlatformTouchable
-                                onPress={() => {
-                                  setEditingList(item);
-                                  setEditModalVisible(true);
-                                }}
-                                accessibilityLabel="Modifier"
-                              >
-                                <List.Icon icon="pencil" />
-                              </PlatformTouchable>
-                            </View>
-                            <View onStartShouldSetResponder={() => true}>
-                              <PlatformTouchable
-                                disabled={
-                                  lists.length === 1 && articlePrefs.categories?.length === 0
-                                }
-                                accessibilityLabel="Supprimer"
-                                onPress={() => {
-                                  Alert.alert(
-                                    `Voulez-vous vraiment supprimer la liste ${item.name} ?`,
-                                    'Cette action est irréversible',
-                                    [
-                                      {
-                                        text: 'Annuler',
-                                        onPress: () => {},
-                                      },
-                                      {
-                                        text: 'Supprimer',
-                                        onPress: () => deleteArticleList(item.id),
-                                      },
-                                    ],
-                                    {
-                                      cancelable: true,
-                                    },
-                                  );
-                                }}
-                              >
-                                <List.Icon
-                                  icon="delete"
-                                  color={
-                                    lists.length === 1 && articlePrefs.categories?.length === 0
-                                      ? colors.disabled
-                                      : colors.text
-                                  }
-                                />
-                              </PlatformTouchable>
-                            </View>
-                          </View>
-                        )}
-                      />
-                    );
-                  }}
-                  onMoveEnd={({ from, to }: { from: number; to: number }) => {
-                    const fromList = lists[from];
-                    const toList = lists[to];
-
-                    reorderArticleList(fromList.id, toList.id);
-                  }}
-                  ListFooterComponent={() => (
-                    <View>
-                      <Divider />
-                      <View style={styles.container}>
-                        <Button
-                          mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
-                          uppercase={Platform.OS !== 'ios'}
-                          onPress={() => setCreateModalVisible(true)}
-                        >
-                          Créer
-                        </Button>
-                      </View>
-                    </View>
-                  )}
-                />
               );
 
             case 'tags':
@@ -453,19 +326,6 @@ function ArticleLists({
           }
         }}
       />
-
-      <CreateModal
-        visible={isCreateModalVisible}
-        setVisible={setCreateModalVisible}
-        type="articles"
-      />
-      <EditModal
-        visible={isEditModalVisible}
-        setVisible={setEditModalVisible}
-        editingList={editingList}
-        setEditingList={setEditingList}
-        type="articles"
-      />
       <QuickTypeModal
         type="articles"
         visible={isQuickTypeModalVisible}
@@ -490,7 +350,6 @@ function ArticleLists({
 const mapStateToProps = (state: State) => {
   const { articleData, preferences, account } = state;
   return {
-    lists: articleData.lists,
     quicks: articleData.quicks,
     articlePrefs: articleData.prefs,
     preferences,
