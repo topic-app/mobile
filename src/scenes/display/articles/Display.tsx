@@ -578,7 +578,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  let article: Article | ArticlePreload | undefined | null =
+  const article: Article | ArticlePreload | undefined | null =
     item?._id === id
       ? item
       : data.find((a) => a._id === id) || search.find((a) => a._id === id) || null;

@@ -103,7 +103,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   const { colors } = theme;
   const dimensions = useWindowDimensions();
 
-  let event: Event | EventPreload | undefined | null =
+  const event: Event | EventPreload | undefined | null =
     item?._id === id
       ? item
       : dataUpcoming.find((a) => a._id === id) ||
