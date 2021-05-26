@@ -61,9 +61,10 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             </Title>
             <Caption>
               Publié {moment(article.date).fromNow()} ·{' '}
-              <Icon name="eye" color={colors.subtext} size={12} /> {article.cache?.views || '?'} ·{' '}
+              <Icon name="eye" color={colors.subtext} size={12} />{' '}
+              {typeof article.cache?.views === 'number' ? article.cache.views : '?'} ·{' '}
               <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
-              {article.cache?.likes || '?'}
+              {typeof article.cache?.likes === 'number' ? article.cache.likes : '?'}
             </Caption>
           </View>
           {verification && articleVerification.verification && (

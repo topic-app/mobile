@@ -62,8 +62,10 @@ const EventCard: React.FC<EventCardProps> = ({
             </Title>
             <Caption>
               {Format.shortEventDate(event.duration)} ·{' '}
-              <Icon name="eye" color={colors.subtext} size={12} /> {event.cache?.views || '?'} ·{' '}
-              <Icon name="thumb-up" color={colors.subtext} size={12} /> {event.cache?.likes || '?'}
+              <Icon name="eye" color={colors.subtext} size={12} />{' '}
+              {typeof event.cache?.views === 'number' ? event.cache.views : '?'} ·{' '}
+              <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
+              {typeof event.cache?.likes === 'number' ? event.cache.likes : '?'}
             </Caption>
           </View>
           {verification && eventVerification?.verification && (
