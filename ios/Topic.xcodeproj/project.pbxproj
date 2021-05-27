@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,7 @@
 		FAE6C182258A818400051E30 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAE6C181258A818400051E30 /* GoogleService-Info.plist */; };
 		FAE8A860256C07EE0030C550 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		FAEDA30C25693C4200699F75 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAEDA30B25693C4200699F75 /* GoogleService-Info.plist */; };
+		FAFB244F265D1BA80042C339 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = FCA44A6EB1590F9D76516387 /* Mapbox */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				12861B146AEEB7840B5F92BC /* libPods-Topic.a in Frameworks */,
+				FAFB244F265D1BA80042C339 /* Mapbox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,7 +139,7 @@
 			);
 			name = Topic;
 			packageProductDependencies = (
-				FCA44A6EB1590F9D76516387 /* SwiftPackageProductDependency */,
+				FCA44A6EB1590F9D76516387 /* Mapbox */,
 			);
 			productName = Topic;
 			productReference = 13B07F961A680F5B00A75B9A /* Topic.app */;
@@ -167,7 +169,7 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */,
+				6E3FFDE5B6F71B31C5105F28 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -368,7 +370,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Topic/Topic.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = 3CT5X8A6GD;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -377,8 +379,11 @@
 				);
 				INFOPLIST_FILE = Topic/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.24.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.25.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -402,12 +407,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Topic/Topic.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = 3CT5X8A6GD;
 				INFOPLIST_FILE = Topic/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.24.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.25.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -473,7 +481,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
@@ -528,7 +539,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
@@ -564,7 +578,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */ = {
+		6E3FFDE5B6F71B31C5105F28 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
 			requirement = {
@@ -575,9 +589,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FCA44A6EB1590F9D76516387 /* SwiftPackageProductDependency */ = {
+		FCA44A6EB1590F9D76516387 /* Mapbox */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */;
+			package = 6E3FFDE5B6F71B31C5105F28 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
 			productName = Mapbox;
 		};
 /* End XCSwiftPackageProductDependency section */
