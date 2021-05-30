@@ -22,7 +22,7 @@ type CommentInlineCardPropsBase = {
   reply: (id: string | null) => void;
   authors?: string[];
   preferences: PreferencesState;
-  parentId: string;
+  parentId?: string;
 };
 type CommentInlineCardPropsComment = CommentInlineCardPropsBase & {
   isReply: false;
