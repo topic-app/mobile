@@ -37,8 +37,8 @@ const defaultConfig: AppConfig = {
     administrator: 'https://topicapp.fr/legal/administrateurs',
   },
   cdn: {
-    baseUrl: 'https://cdn.topicapp.fr/file/get/',
-    uploadUrl: 'https://cdn.topicapp.fr/file/upload',
+    baseUrl: 'https://cdn-dev.topicapp.fr/file/get/',
+    uploadUrl: 'https://cdn-dev.topicapp.fr/file/upload',
     timeout: 10000,
     image: {
       defaultSize: 'small',
