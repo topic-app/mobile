@@ -12,6 +12,7 @@ export const Permissions = {
   COMMENT_ADD: 'comment.add',
   COMMENT_MODIFY: 'comment.modify',
   COMMENT_DELETE: 'comment.delete',
+  COMMENT_VERIFICATION_VIEW: 'comment.verification.view',
 
   GROUP_MODIFY: 'group.modify',
   GROUP_MODIFY_LOCATION: 'group.modify.location',
@@ -48,6 +49,8 @@ export const Permissions = {
 
   TAG_ADD: 'tag.add',
   TAG_DELETE: 'tag.delete',
+
+  USER_VERIFICATION_VIEW: 'user.verification.view',
 };
 
 export function checkPermission(

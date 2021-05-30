@@ -12,6 +12,7 @@ import { checkPermission, Permissions } from '@utils';
 
 import type { ModerationScreenNavigationProp, ModerationStackParams } from '.';
 import ModerationArticles from './components/ModerationArticles';
+import ModerationComments from './components/ModerationComments';
 import ModerationEvents from './components/ModerationEvents';
 import ModerationGroups from './components/ModerationGroups';
 
@@ -42,6 +43,16 @@ const ModerationList: React.FC<Props> = ({ navigation, account, route }) => {
 
   const allowedGroups = checkPermission(account, {
     permission: Permissions.GROUP_VERIFICATION_VIEW,
+    scope: {},
+  });
+
+  const allowedComments = checkPermission(account, {
+    permission: Permissions.COMMENT_VERIFICATION_VIEW,
+    scope: {},
+  });
+
+  const allowedUsers = checkPermission(account, {
+    permission: Permissions.USER_VERIFICATION_VIEW,
     scope: {},
   });
 
@@ -130,6 +141,15 @@ const ModerationList: React.FC<Props> = ({ navigation, account, route }) => {
                   key: 'groups',
                   title: 'Groupes',
                   component: <ModerationGroups navigation={navigation} type={type} />,
+                },
+              ]
+            : []),
+          ...(allowedComments && (type === 'reported' || type === 'deverified' || type === 'extra')
+            ? [
+                {
+                  key: 'comments',
+                  title: 'Commentaires',
+                  component: <ModerationComments navigation={navigation} type={type} />,
                 },
               ]
             : []),

@@ -122,11 +122,13 @@ export type ArticlesActionTypes =
 export const UPDATE_COMMENTS_STATE = 'UPDATE_COMMENTS_STATE';
 export const UPDATE_COMMENTS_DATA = 'UPDATE_COMMENTS_DATA';
 export const UPDATE_COMMENTS_SEARCH = 'UPDATE_COMMENTS_SEARCH';
+export const UPDATE_COMMENTS_VERIFICATION = 'UPDATE_COMMENTS_VERIFICATION';
 export const CLEAR_COMMENTS = 'CLEAR_COMMENTS';
 
 export type CommentsState = {
   data: Comment[];
   search: Comment[];
+  verification: Comment[];
   state: CommentRequestState;
 };
 
@@ -140,6 +142,11 @@ type UpdateCommentsDataAction = {
   data: Comment[];
 };
 
+type UpdateCommentsVerificationAction = {
+  type: typeof UPDATE_COMMENTS_VERIFICATION;
+  data: Comment[];
+};
+
 type UpdateCommentsSearchAction = {
   type: typeof UPDATE_COMMENTS_SEARCH;
   data: Comment[];
@@ -147,12 +154,13 @@ type UpdateCommentsSearchAction = {
 
 type ClearCommentsAction = {
   type: typeof CLEAR_COMMENTS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; verification?: boolean };
 };
 
-export type CommentsActionTypes =
+export type CommentsActionTypes = 
   | UpdateCommentsStateAction
   | UpdateCommentsDataAction
+  | UpdateCommentsVerificationAction
   | UpdateCommentsSearchAction
   | ClearCommentsAction
   | FullClearAction;

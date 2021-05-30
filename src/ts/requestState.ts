@@ -72,6 +72,7 @@ export type LegalRequestState = {
 
 export type CommentRequestState = {
   list: RequestStateComplex;
+  verification_list: RequestStateComplex;
   search: RequestStateComplex;
   add: RequestState;
   report: RequestState;

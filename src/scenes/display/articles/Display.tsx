@@ -915,9 +915,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           parent: string,
           isReplying: boolean = false,
         ) =>
-          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'article').then(() =>
-            updateComments('initial', { parentId: id }),
-          )
+          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'article').then(() => {
+            updateComments('initial', { parentId: id });
+          })
         }
       />
       <ReportModal
