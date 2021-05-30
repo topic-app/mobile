@@ -278,9 +278,9 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
               <Button
                 mode="outlined"
                 onPress={() =>
-                  navigation.navigate('Landing', {
-                    screen: 'SelectLocation',
-                    params: { goBack: true },
+                  navigation.push('Main', {
+                    screen: 'More',
+                    params: { screen: 'Settings', params: { screen: 'SelectLocation' } },
                   })
                 }
               >
