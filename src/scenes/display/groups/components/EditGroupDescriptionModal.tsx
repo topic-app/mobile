@@ -110,9 +110,10 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
     <Modal visible={visible} setVisible={setVisible}>
       <Formik
         initialValues={{
-          shortName: editingGroup.shortName,
+          shortName: editingGroup.shortName || '',
           summary: editingGroup.summary || '',
           description: editingGroup.description,
+          file: editingGroup.avatar?.type === 'image' ? editingGroup.avatar.image.image || '' : '',
         }}
         validationSchema={GroupSchema}
         onSubmit={submit}
@@ -129,7 +130,7 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
                 setFile={(file) => {
                   handleChange('file')(file || '');
                 }}
-                title={Platform.OS === 'web' ? "Changer l'avatar" : 'Avatar'}
+                title={Platform.OS === 'web' ? "Changer l'avatar" : undefined}
                 allowDelete={false}
                 group={editingGroup.id || ''}
                 resizeMode="avatar"
