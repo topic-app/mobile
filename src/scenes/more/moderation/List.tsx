@@ -116,6 +116,7 @@ const ModerationList: React.FC<Props> = ({ navigation, account, route }) => {
         </View>
       )}
       <CustomTabView
+        scrollEnabled={false}
         pages={[
           ...(allowedArticles
             ? [
