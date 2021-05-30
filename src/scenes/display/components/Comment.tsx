@@ -22,6 +22,7 @@ type CommentInlineCardPropsBase = {
   reply: (id: string | null) => void;
   authors?: string[];
   preferences: PreferencesState;
+  parentId: string;
 };
 type CommentInlineCardPropsComment = CommentInlineCardPropsBase & {
   isReply: false;
@@ -44,6 +45,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
   reply,
   authors,
   preferences,
+  parentId,
 }) => {
   const { publisher, content, date, _id: id } = comment;
   const { displayName } = publisher
@@ -168,7 +170,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                 />
               }
             >
-              <Menu.Item onPress={() => reply(id)} title="Répondre" />
+              <Menu.Item onPress={() => reply(parentId || id)} title="Répondre" />
               <Menu.Item onPress={() => report(id)} title="Signaler" />
               {canDelete ? (
                 <Menu.Item
@@ -198,7 +200,7 @@ const CommentItem: React.FC<CommentInlineCardPropsComment> = (props) => {
       <CommentInlineCard {...props} />
       {!!comment?.cache?.replies &&
         comment.cache.replies.map((c) => {
-          return <CommentInlineCard {...props} comment={c} isReply />;
+          return <CommentInlineCard {...props} comment={c} isReply parentId={comment?._id} />;
         })}
     </View>
   );
