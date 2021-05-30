@@ -94,11 +94,11 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
               title={school.shortName || school.name}
             />
           ))}
-          {location.departmentData.map((departement) => (
+          {location.departmentData.map((department) => (
             <List.Item
-              key={departement._id}
+              key={department._id}
               left={() => <List.Icon icon="home-city" />}
-              title={departement.shortName || departement.name}
+              title={department.shortName || department.name}
             />
           ))}
           {location.global && (

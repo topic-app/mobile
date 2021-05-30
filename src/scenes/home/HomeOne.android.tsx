@@ -98,11 +98,11 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
       <Drawer.Item key={school._id} label={school?.shortName || school?.name} icon="school" />,
     );
   });
-  location.departmentData.forEach((departement) => {
+  location.departmentData.forEach((department) => {
     locationAccordionItems.push(
       <Drawer.Item
-        key={departement._id}
-        label={departement.shortName || departement.name}
+        key={department._id}
+        label={department.shortName || department.name}
         icon="home-city"
       />,
     );
