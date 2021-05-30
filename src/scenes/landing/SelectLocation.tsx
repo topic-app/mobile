@@ -337,9 +337,10 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
               )}
               <Title
                 style={{
-                  fontSize: 24,
+                  fontSize: 28,
+                  textAlign: 'center',
                   paddingTop: schoolsNear.length ? 20 : 0,
-                  color: mode === 'web' ? 'white' : undefined,
+                  color: mode === 'web' ? 'white' : colors.text,
                 }}
               >
                 Choisissez votre école
@@ -414,7 +415,11 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
           <CollapsibleView collapsed={!!(searchText || searchFocused)}>
             <Divider />
             <View
-              style={[styles.container, styles.buttonContainer, { marginBottom: insets.bottom }]}
+              style={[
+                styles.container,
+                styles.buttonContainer,
+                { marginBottom: insets.bottom + 10 },
+              ]}
             >
               <Button
                 mode="text"

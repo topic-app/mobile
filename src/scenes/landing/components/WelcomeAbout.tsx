@@ -175,7 +175,7 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
           <Title style={[styles.title, { textAlign: 'center' }]}>
             Téléchargez l&apos;application
           </Title>
-          <Subheading style={[styles.subtitle, { textAlign: 'center' }]}>
+          <Subheading style={[styles.subtitle, { textAlign: 'center', color: colors.text }]}>
             Retrouvez l&apos;actualité engagée et découvrez ce qui se passe autour de vous,
             directement sur votre téléphone
           </Subheading>
