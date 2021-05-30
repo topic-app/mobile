@@ -94,12 +94,12 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   const inAnim = Animated.timing(transitionVal, {
     toValue: 1,
     duration: 200,
-    useNativeDriver: false,
+    useNativeDriver: true,
   });
   const outAnim = Animated.timing(transitionVal, {
     toValue: 0,
     duration: 200,
-    useNativeDriver: false,
+    useNativeDriver: true,
   });
 
   React.useEffect(() => {
