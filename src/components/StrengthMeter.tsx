@@ -24,7 +24,7 @@ const StrengthMeter: React.FC<StrengthMeterProps> = ({
       'StrengthMeter: levels must be the same value of labels.length, please make sure you have defined a label for each level',
     );
   }
-  const barWidth = deviceWindow.width * 0.9;
+  const barWidth = deviceWindow.width < 600 ? deviceWindow.width * 0.9 : 550;
   const animateVal = useRef(new Animated.Value(0)).current;
   const animateColor = useRef(new Animated.Value(0)).current;
 
