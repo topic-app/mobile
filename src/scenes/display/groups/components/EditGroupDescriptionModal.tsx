@@ -62,9 +62,9 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
   }) => {
     if (group) {
       groupModify(group?._id, {
-        shortName: shortName ? shortName : undefined,
-        summary: summary ? summary : undefined,
-        description: description ? { parser: 'markdown', data: description } : undefined,
+        ...(shortName ? { shortName } : {}),
+        ...(summary ? { summary } : {}),
+        ...(description ? { description: { parser: 'markdown', data: description } } : {}),
         avatar: editingGroup?.avatar,
         ...(file
           ? {

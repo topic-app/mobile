@@ -22,7 +22,7 @@ type Props = {
   type?: 'content' | 'avatar';
   title?: string;
   allowDelete?: boolean;
-  resizeMode: 'content-primary' | 'avatar' | 'content-inline';
+  resizeMode?: 'content-primary' | 'avatar' | 'content-inline';
 };
 
 const FileUpload: React.FC<Props> = ({
