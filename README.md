@@ -27,7 +27,7 @@ Voila quelques exemples :
 - [S'inscrire à la bêta](https://beta.topicapp.fr) et trouver des bugs
 - Encourager votre lycée ou des associations à rejoindre Topic
 
-N'hésitez pas à créer un compte sur [chat.topicapp.fr](https://chat.topicapp.fr/register) pour communiquer avec les développeurs.
+N'hésitez pas à créer un compte sur [chat.topicapp.fr](https://chat.topicapp.fr/) pour communiquer avec les développeurs.
 
 #### Développer sur Gitpod
 
