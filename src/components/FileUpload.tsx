@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform, ScrollView, View, Image } from 'react-native';
 import ModalComponent from 'react-native-modal';
-import { Card, Text, Button, useTheme, ProgressBar } from 'react-native-paper';
+import { Card, Text, Button, useTheme, ProgressBar, Title } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -19,9 +19,23 @@ type Props = {
   group: string;
   state: UploadRequestState;
   account: Account;
+  type?: 'content' | 'avatar';
+  title?: string;
+  allowDelete?: boolean;
+  resizeMode: 'content-primary' | 'avatar' | 'content-inline';
 };
 
-const FileUpload: React.FC<Props> = ({ file, setFile, group, state, account }) => {
+const FileUpload: React.FC<Props> = ({
+  file,
+  setFile,
+  group,
+  state,
+  title,
+  account,
+  allowDelete = true,
+  type = 'content',
+  resizeMode = 'content-primary',
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -31,6 +45,11 @@ const FileUpload: React.FC<Props> = ({ file, setFile, group, state, account }) =
     scope: { groups: [group || ''] },
   }) ? (
     <View>
+      {title ? (
+        <View style={[styles.container, styles.centerIllustrationContainer]}>
+          <Title style={{ textAlign: 'center', fontSize: 18 }}>{title}</Title>
+        </View>
+      ) : null}
       {file && !state.upload?.loading && (
         <View style={styles.container}>
           <Card style={{ minHeight: 100 }}>
@@ -57,7 +76,7 @@ const FileUpload: React.FC<Props> = ({ file, setFile, group, state, account }) =
               contentSingular: "L'image",
             }}
             type="axios"
-            retry={() => upload(group).then(setFile)}
+            retry={() => upload(group, resizeMode).then(setFile)}
           />
         )}
         {state.upload?.loading ? (
@@ -78,13 +97,13 @@ const FileUpload: React.FC<Props> = ({ file, setFile, group, state, account }) =
               uppercase={false}
               onPress={() => {
                 trackEvent(file ? 'articleadd:meta-image-replace' : 'articleadd-meta-image-upload');
-                upload(group).then(setFile);
+                upload(group, resizeMode, type === 'avatar').then(setFile);
               }}
               style={{ flex: 1, marginRight: 5 }}
             >
               {file ? 'Remplacer' : 'Séléctionner une image'}
             </Button>
-            {file ? (
+            {file && allowDelete ? (
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={false}

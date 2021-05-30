@@ -76,6 +76,7 @@ import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '
 import AddUserRoleModal from './components/AddUserRoleModal';
 import AddUserSelectModal from './components/AddUserSelectModal';
 import EditGroupDescriptionModal from './components/EditGroupDescriptionModal';
+import EditGroupLegalModal from './components/EditGroupLegalModal';
 
 // import ChangeGroupLocationModal from '../components/ChangeGroupLocationModal';
 
@@ -191,19 +192,10 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   const [legalCollapsed, setLegalCollapsed] = React.useState(true);
 
-  const [editingGroup, setEditingGroup] = React.useState<{
-    id?: string;
-    name?: string;
-    summary?: string;
-    description?: string;
-    avatar?: AvatarType;
-  } | null>(null);
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
     false,
   );
-  const [isChangeGroupLocationModalVisible, setChangeGroupLocationModalVisible] = React.useState(
-    false,
-  );
+  const [isEditGroupLegalModalVisible, setEditGroupLegalModalVisible] = React.useState(false);
   const [descriptionVisible, setDescriptionVisible] = React.useState(verification || false);
 
   const deverifyGroup = () =>
@@ -287,13 +279,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       icon="pencil"
                       accessibilityLabel="Modifier le groupe"
                       onPress={() => {
-                        setEditingGroup({
-                          id: group._id,
-                          name: group.name,
-                          summary: group.summary,
-                          description: group.description?.data,
-                          avatar: group.avatar,
-                        });
                         setEditGroupDescriptionModalVisible(true);
                       }}
                     />
@@ -927,6 +912,16 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         </View>
                       ) : null}
                     </View>
+                    {checkPermission(account, {
+                      permission: Permissions.GROUP_MODIFY,
+                      scope: { groups: [id] },
+                    }) ? (
+                      <View style={styles.container}>
+                        <Button mode="outlined" onPress={() => setEditGroupLegalModalVisible(true)}>
+                          Modifier
+                        </Button>
+                      </View>
+                    ) : null}
                   </CollapsibleView>
                 </View>
                 <View style={{ height: 20 }} />
@@ -995,7 +990,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           )
                         }
                       >
-                        Supprrimer
+                        Supprimer
                       </Button>
                       <Button
                         mode="contained"
@@ -1072,8 +1067,33 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           visible={isEditGroupDescriptionModalVisible}
           setVisible={setEditGroupDescriptionModalVisible}
           group={group}
-          editingGroup={editingGroup}
-          setEditingGroup={setEditingGroup}
+          editingGroup={
+            group.preload
+              ? null
+              : {
+                  id: group._id,
+                  name: group.name,
+                  shortName: group.shortName,
+                  summary: group.summary,
+                  description: group.description?.data,
+                  avatar: group.avatar,
+                }
+          }
+        />
+
+        <EditGroupLegalModal
+          visible={isEditGroupLegalModalVisible}
+          setVisible={setEditGroupLegalModalVisible}
+          group={group}
+          editingGroup={
+            group.preload
+              ? null
+              : {
+                  id: group._id,
+                  name: group.name,
+                  legal: group.legal,
+                }
+          }
         />
 
         {/* <ChangeGroupLocationModal

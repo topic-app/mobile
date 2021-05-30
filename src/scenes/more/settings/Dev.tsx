@@ -48,7 +48,7 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
               useDevServer: !preferences.useDevServer,
             });
             Store.dispatch({ type: FULL_CLEAR, data: {} });
-            setTimeout(BackHandler.exitApp, 1000); // Because React native bug
+            Alert.alert("Merci de redémarrer l'application", '', [], { cancelable: false });
           },
         },
       ],

@@ -8,7 +8,7 @@ import React from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Platform, ScrollView, View, Image } from 'react-native';
 import ModalComponent from 'react-native-modal';
-import { Card, Text, Button, useTheme, ProgressBar } from 'react-native-paper';
+import { Card, Text, Button, useTheme, ProgressBar, Title } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -26,7 +26,9 @@ type Props = {
   setFile: (id: string | null) => void;
   group: string;
   state: UploadRequestState;
+  type?: 'content' | 'avatar';
   account: Account;
+  title?: string;
   resizeMode: 'content-primary' | 'avatar' | 'content-inline';
 };
 
@@ -34,7 +36,9 @@ const FileUpload: React.FC<Props> = ({
   file,
   setFile,
   group,
+  title,
   state,
+  type = 'content',
   account,
   resizeMode = 'content-primary',
 }) => {
@@ -53,6 +57,11 @@ const FileUpload: React.FC<Props> = ({
     scope: { groups: [group || ''] },
   }) ? (
     <View>
+      {title ? (
+        <View style={[styles.container, styles.centerIllustrationContainer]}>
+          <Title style={{ textAlign: 'center' }}>{title}</Title>
+        </View>
+      ) : null}
       <FilePond
         allowImagePreview
         allowFileSizeValidation
@@ -76,6 +85,9 @@ const FileUpload: React.FC<Props> = ({
         labelMaxFileSize="Maximum 5MB"
         labelFileTypeNotAllowed="Ce fichier n'est pas une image"
         fileValidateTypeLabelExpectedTypes="Fichiers autorisés: .jpg, .png"
+        stylePanelLayout={type === 'avatar' ? 'circle' : undefined}
+        styleLoadIndicatorPosition={type === 'avatar' ? 'center bottom' : undefined}
+        styleButtonRemoveItemPosition={type === 'avatar' ? 'center bottom' : undefined}
         onremovefile={() => setFile(null)}
         server={{
           process: ((async (
