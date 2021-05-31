@@ -8,53 +8,52 @@ import getStyles from '@styles/Styles';
 import { useTheme } from '@utils';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { AccountRequestState, Notifications, State} from '@ts/types';
+import { connect } from 'react-redux';
+import { fetchNotifications } from '@redux/actions/data/account';
 
-const exampleNotifications = [
-  {
-    _id: '412384razejrl4312812394',
-    date: new Date(2020, 11, 24),
-    priority: 'urgent',
-    content: {
-      title: 'Nouvel Article Publié: Les pingouins, finalement sur Mars',
-      description: "Les pingouins se différencient des manchots par leurs capacité de voler et Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-      icon: 'newspaper', // Nom des icones sur https://materialdesignicons.com/
-      color: 'gray',
-      actions: [
-        {
-          name: 'Marquer comme lu',
-          action: "euh, demande à alex ce qu'est action :)",
-          important: false,
-        },
-        { name: 'Partager', action: "euh, demande à alex ce qu'est action :)", important: false },
-        { name: 'hello world this is a big string', action: "just any url", important: false },
-      ],
-    },
-  },
-  {
-    _id: '41233124razejrl43128123',
-    date: new Date(2020, 11, 22),
-    priority: 'medium',
-    content: {
-      title: 'Nouvel évènement: portes ouvertes du CIV (virtuel)',
-      description: 'Cette année, nous vous acceuillons au portes ouvertes du civ sur Jitsi ...',
-      icon: 'radioactive',
-      color: 'gold',
-      actions: [
-        {
-          name: 'Ajouter au calendrier',
-          action: "/event",
-          icon: 'event',
-          color: 'blue',
-          actions: [
-            {
-              name: 'Ajouter au calendrier',
-              action: "euh, demande à alex ce qu'est action :)",
-              important: true,
-            },
-          ],
-        },
-  },
-];
+// const exampleNotifications = [
+//   {
+//     _id: '412384razejrl4312812394',
+//     date: new Date(2020, 11, 24),
+//     priority: 'urgent',
+//     content: {
+//       title: 'Nouvel Article Publié: Les pingouins, finalement sur Mars',
+//       description: "Les pingouins se différencient des manchots par leurs capacités à voler et Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+//       icon: 'newspaper', // Nom des icones sur https://materialdesignicons.com/
+//       color: 'gray',
+//       actions: [
+//         {
+//           name: 'Marquer comme lu',
+//           action: "url",
+//           important: false,
+//         },
+//         { name: 'Partager', action: "url", important: false },
+//         { name: 'hello world this is a big string', action: "just any url", important: false },
+//         { name: "well, the one before wasn't long enough so... " , action: "just any url", important: false },
+//       ],
+//     },
+//   },
+//   {
+//     _id: '41233124razejrl43128123',
+//     date: new Date(2020, 11, 22),
+//     priority: 'medium',
+//     content: {
+//       title: 'Nouvel événement: portes ouvertes du CIV (virtuel)',
+//       description: 'Cette année, nous vous acceuillons aux portes ouvertes du civ sur Jitsi ...',
+//       icon: 'calendar',
+//       color: 'gold',
+//       actions: [
+//         {
+//           name: 'Ajouter au calendrier',
+//           action: "/event",
+//           icon: 'event',
+//           color: 'blue',
+//         },
+//       ]
+//     },
+//   }
+// ];
 
 type NotificationProps = {
   notification: { _id: string; date: Date; priority: string; content: { title: string; description: string; icon: string; color: string; actions: { name: string; action: string; important: boolean; }[] } }
@@ -73,13 +72,14 @@ const Notification: React.FC<NotificationProps> = ({ notification, expanded, onP
         titleNumberOfLines={expanded ? 1e4 : 2}
         descriptionNumberOfLines={expanded ? 1e4 : 3}
         onPress={onPress}
-        descriptionStyle={{ textAlign: 'justify' }}
+        descriptionStyle={{ textAlign: 'justify', marginRight: 50 }}
         titleStyle={{ textAlign: 'justify', marginRight: 50 }}
       />
       <CollapsibleView collapsed={!expanded}>
         {expanded && (
-          <View style={{ flex: 1, flexDirection: 'row', maxWidth: '100%' }}>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
             <FlatList horizontal
+            style={{marginHorizontal:50, overflow: 'visible'}}
               data={notification.content.actions}
               keyExtractor={action => action.name}
               showsHorizontalScrollIndicator={false}
@@ -96,13 +96,20 @@ const Notification: React.FC<NotificationProps> = ({ notification, expanded, onP
   )
 }
 
-type NotificationsProps = {};
+type NotificationsProps = {
+  notifications: Notifications[];
+  state: AccountRequestState;
+};
 
-const Notifications: React.FC<NotificationsProps> = () => {
+const NotificationsDisplay: React.FC<NotificationsProps> = ({notifications, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const [selectedID, setSelectedID] = React.useState('')
+  const [selectedID, setSelectedID] = React.useState('');
+
+  React.useEffect(()=>{fetchNotifications()}, [null]);
+  console.log(notifications);
+  console.log(state.notifications)
 
   return (
     <View style={styles.page}>
@@ -138,7 +145,7 @@ const Notifications: React.FC<NotificationsProps> = () => {
         te montrer les autres possibilités
       */}
       <FlatList
-        data={exampleNotifications}
+        data={notifications}
         keyExtractor={(notification) => notification._id}
         renderItem={({ item }) => (
           <View>
@@ -150,4 +157,9 @@ const Notifications: React.FC<NotificationsProps> = () => {
   );
 };
 
-export default Notifications;
+const mapStateToProps = (state:State)=>{
+  const {account} = state;
+  return {notifications:account.notifications, state: account.state};
+}
+
+export default connect(mapStateToProps)(NotificationsDisplay);

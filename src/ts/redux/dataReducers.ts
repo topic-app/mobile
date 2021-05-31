@@ -2,6 +2,7 @@ import themes from '@styles/Theme';
 
 import {
   WaitingGroup,
+  Notifications,
   GroupWithMembership,
   SchoolPreload,
   DepartmentPreload,
@@ -17,6 +18,7 @@ export const UPDATE_ACCOUNT_GROUPS = 'UPDATE_ACCOUNT_GROUPS';
 export const UPDATE_ACCOUNT_PERMISSIONS = 'UPDATE_ACCOUNT_PERMISSIONS';
 export const UPDATE_ACCOUNT_STATE = 'UPDATE_ACCOUNT_STATE';
 export const UPDATE_ACCOUNT_WAITING_GROUPS = 'UPDATE_ACCOUNT_WAITING_GROUPS';
+export const UPDATE_ACCOUNT_NOTIFICATIONS = 'UPDATE_UCCOUNT_NOTIFICATIONS';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN = 'LOGIN';
 export const UPDATE_ACCOUNT_USER = 'UPDATE_ACCOUNT_USER';
@@ -33,6 +35,7 @@ export type Account =
       groups: GroupWithMembership[];
       permissions: AccountPermission[];
       waitingGroups: WaitingGroup[];
+      notifications: Notifications[];
     }
   | {
       loggedIn: false;
@@ -42,6 +45,7 @@ export type Account =
       groups: never[];
       permissions: never[];
       waitingGroups: never[];
+      notifications: never[];
     };
 
 export type AccountState = Account;
@@ -122,6 +126,11 @@ type ClearAccountCreationDataAction = {
   data: {};
 };
 
+type UpdateNotificationsAction = {
+  type: typeof UPDATE_ACCOUNT_NOTIFICATIONS;
+  data: Notifications[];
+};
+
 export type AccountActionTypes =
   | UpdateAccountGroupsAction
   | UpdateAccountPermissionsAction
@@ -133,7 +142,8 @@ export type AccountActionTypes =
   | UpdateAccountEmailAction
   | UpdateAccountCreationDataAction
   | ClearAccountCreationDataAction
-  | FullClearAction;
+  | FullClearAction
+  | UpdateNotificationsAction;
 
 // Location
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';

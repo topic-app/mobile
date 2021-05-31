@@ -11,6 +11,7 @@ import {
   UPDATE_ACCOUNT_PERMISSIONS,
   UPDATE_ACCOUNT_STATE,
   UPDATE_ACCOUNT_WAITING_GROUPS,
+  UPDATE_ACCOUNT_NOTIFICATIONS,
   LOGOUT,
   UPDATE_ACCOUNT_USER,
   UPDATE_LOCATION,
@@ -550,6 +551,61 @@ function requestPasswordResetCreator({ username }: { username: string }): AppThu
   };
 }
 
+function fetchNotificationsCreator(): AppThunk {
+  return async (dispatch, getState) => {
+    console.log('mushroom')
+    if (!getState().account.loggedIn) {
+      console.log('if')
+      return null;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        notifications: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    console.log('hello1')
+    let result;
+    try {
+      result = await request('notifications/get', 'get', {}, true, 'data');
+    } catch (err) {
+      console.log('hello2')
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          notifications: {
+            success: false,
+            loading: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    };
+    console.log("Request done")
+    console.log(result)
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        notifications: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    dispatch({
+      type: UPDATE_ACCOUNT_NOTIFICATIONS,
+      data: result.data?.notifications,
+    });
+    return true;
+  };
+}
+
 /* Actions */
 
 function login(fields: LoginFields) {
@@ -561,9 +617,9 @@ function updateState(fields: {
   success?: boolean | null;
   error?: any;
   check?:
-    | { success: boolean; error: any; loading: boolean }
-    | { success: boolean; error: any; loading: boolean }
-    | { loading: boolean; success: null; error: null };
+  | { success: boolean; error: any; loading: boolean }
+  | { success: boolean; error: any; loading: boolean }
+  | { loading: boolean; success: null; error: null };
 }) {
   Store.dispatch(updateStateCreator(fields));
 }
@@ -612,6 +668,10 @@ async function requestPasswordReset(username: string) {
   await Store.dispatch(requestPasswordResetCreator({ username }));
 }
 
+async function fetchNotifications() {
+  await Store.dispatch(fetchNotificationsCreator());
+}
+
 export {
   updateCreationData,
   clearCreationData,
@@ -626,4 +686,5 @@ export {
   deleteAccount,
   exportAccount,
   requestPasswordReset,
+  fetchNotifications,
 };
