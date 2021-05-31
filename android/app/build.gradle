@@ -179,8 +179,6 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            // TODO: Remove once beta is complete
-            versionNameSuffix "-beta"
         }
     }
 
