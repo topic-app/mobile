@@ -148,7 +148,6 @@ const FileUpload: React.FC<Props> = ({
             } catch (err) {
               error('Erreur pendant le televersement');
               updateUploadState({ upload: { loading: false, success: false, error: true } });
-              return;
             }
           }) as unknown) as ProcessServerConfigFunction,
           revert: null,
