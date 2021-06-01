@@ -40,6 +40,7 @@ import {
 import { logger, Alert, messaging } from '@utils';
 
 import type { ProfileScreenNavigationProp } from '.';
+import BioModal from './components/BioModal';
 import EmailModal from './components/EmailModal';
 import NameModal from './components/NameModal';
 import PasswordModal from './components/PasswordModal';
@@ -83,6 +84,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
   const [isVisibilityVisible, setVisibilityVisible] = React.useState(false);
   const [isNameVisible, setNameVisible] = React.useState(false);
   const [isUsernameVisible, setUsernameVisible] = React.useState(false);
+  const [isBioVisible, setBioVisible] = React.useState(false);
   const [isEmailVisible, setEmailVisible] = React.useState(false);
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
 
@@ -234,6 +236,15 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                 disabled={!genName(account.accountInfo.user)}
                 type="public"
                 onPress={() => setNameVisible(true)}
+              />
+              <ProfileItem
+                item="Bio"
+                value={account.accountInfo.user?.data?.description || 'Non spécifié'}
+                editable
+                disabled={!account.accountInfo.user?.data?.description}
+                small={!!account.accountInfo.user?.data?.description}
+                type="public"
+                onPress={() => setBioVisible(true)}
               />
             </View>
           )}
@@ -396,6 +407,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
       <UsernameModal visible={isUsernameVisible} setVisible={setUsernameVisible} />
       <EmailModal visible={isEmailVisible} setVisible={setEmailVisible} />
       <PasswordModal visible={isPasswordVisible} setVisible={setPasswordVisible} />
+      <BioModal visible={isBioVisible} setVisible={setBioVisible} />
     </PageContainer>
   );
 };

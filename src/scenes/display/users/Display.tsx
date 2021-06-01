@@ -368,10 +368,15 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                 {(user.data?.public || id === account.accountInfo?.accountId) &&
                   !!user.data?.description && (
                     <View>
-                      <List.Subheader>Description</List.Subheader>
+                      <List.Subheader>Biographie</List.Subheader>
                       <Divider />
                       <View
-                        style={{ alignItems: 'stretch', marginVertical: 20, marginHorizontal: 10 }}
+                        style={{
+                          alignItems: 'stretch',
+                          marginTop: 5,
+                          marginBottom: 20,
+                          marginHorizontal: 10,
+                        }}
                       >
                         <Text>{user.data.description}</Text>
                       </View>

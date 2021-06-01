@@ -12,6 +12,7 @@ type Props = {
   type?: 'public' | 'private' | 'none';
   onPress: () => any;
   loading?: boolean;
+  small?: boolean;
 };
 
 const ProfileItem: React.FC<Props> = ({
@@ -22,6 +23,7 @@ const ProfileItem: React.FC<Props> = ({
   type = 'public',
   onPress,
   loading = false,
+  small = false,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -32,7 +34,13 @@ const ProfileItem: React.FC<Props> = ({
       <View style={{ flex: 1 }}>
         {item?.length > 0 && <Text style={styles.keyText}>{item}</Text>}
         {value?.length > 0 && (
-          <Text style={[styles.valueText, { color: disabled ? colors.disabled : colors.text }]}>
+          <Text
+            style={[
+              styles.valueText,
+              { color: disabled ? colors.disabled : colors.text },
+              small ? { fontSize: 16 } : {},
+            ]}
+          >
             {value}
           </Text>
         )}
