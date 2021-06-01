@@ -128,7 +128,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
                 mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
                 uppercase={Platform.OS !== 'ios'}
                 onPress={handleSubmit}
-                disabled={state.upload?.loading}
+                disabled={state.permission.loading || state.upload.loading}
                 style={{ flex: 1, marginLeft: 5 }}
               >
                 Suivant

@@ -917,6 +917,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         ) =>
           commentAdd(publisher, content, parent, isReplying ? 'comment' : 'article').then(() => {
             updateComments('initial', { parentId: id });
+            if (account.loggedIn) {
+              fetchArticleMy(id);
+            }
           })
         }
       />

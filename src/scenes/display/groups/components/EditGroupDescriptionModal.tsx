@@ -184,6 +184,7 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
                 mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
                 color={colors.primary}
                 loading={state.modify?.loading}
+                disabled={uploadState.upload.loading || uploadState.permission.loading}
                 uppercase={Platform.OS !== 'ios'}
                 onPress={() => handleSubmit()}
               >

@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { Config } from '@constants';
-import { upload } from '@redux/actions/apiActions/upload';
+import { updateUploadState, upload } from '@redux/actions/apiActions/upload';
 import getStyles from '@styles/global';
 import { State, UploadRequestState, Account } from '@ts/types';
 import { checkPermission, getImageUrl, trackEvent, Permissions, logger, request } from '@utils';
@@ -56,7 +56,7 @@ const FileUpload: React.FC<Props> = ({
     permission: Permissions.CONTENT_UPLOAD,
     scope: { groups: [group || ''] },
   }) ? (
-    <View>
+    <View style={type === 'avatar' ? { height: 100, width: 100 } : {}}>
       {title ? (
         <View style={[styles.container, styles.centerIllustrationContainer]}>
           <Title style={{ textAlign: 'center' }}>{title}</Title>
@@ -101,6 +101,7 @@ const FileUpload: React.FC<Props> = ({
             transfer: any,
             options: any,
           ) => {
+            updateUploadState({ permission: { loading: true, success: null, error: null } });
             let permission;
             try {
               permission = await request(
@@ -113,8 +114,13 @@ const FileUpload: React.FC<Props> = ({
               );
             } catch (error) {
               error('Erreur de permission');
+              updateUploadState({ permission: { loading: false, success: false, error: true } });
               return;
             }
+            updateUploadState({
+              permission: { loading: false, success: true, error: null },
+              upload: { loading: true, success: null, error: null },
+            });
             try {
               logger.debug('Trying image upload');
               const data = new FormData();
@@ -132,13 +138,17 @@ const FileUpload: React.FC<Props> = ({
                 logger.info(`File ${responseJson.fileId} uploaded`);
                 setFile(responseJson.fileId);
                 load(responseJson.fileId);
+                updateUploadState({ upload: { loading: false, success: true, error: null } });
                 return;
               } else {
                 error('Erreur pendant le téléversement');
+                updateUploadState({ upload: { loading: false, success: false, error: true } });
                 return;
               }
             } catch (err) {
               error('Erreur pendant le televersement');
+              updateUploadState({ upload: { loading: false, success: false, error: true } });
+              return;
             }
           }) as unknown) as ProcessServerConfigFunction,
           revert: null,
