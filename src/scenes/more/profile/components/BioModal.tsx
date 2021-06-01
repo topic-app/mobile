@@ -70,7 +70,7 @@ const BioModal: React.FC<BioModalProps> = ({ visible, setVisible, account, state
             style={{ alignSelf: 'flex-end', marginRight: 10 }}
           >
             {(description?.length || 0) > bioLength ? 'Bio trop longue - ' : ''}
-            {description?.length || '?'}/{bioLength}
+            {description?.length || '0'}/{bioLength}
           </HelperText>
         </View>
         <Divider style={{ marginTop: 10 }} />

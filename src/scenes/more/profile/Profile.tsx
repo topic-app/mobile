@@ -238,7 +238,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                 onPress={() => setNameVisible(true)}
               />
               <ProfileItem
-                item="Bio"
+                item="Biographie"
                 value={account.accountInfo.user?.data?.description || 'Non spécifié'}
                 editable
                 disabled={!account.accountInfo.user?.data?.description}
