@@ -151,6 +151,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
               size={120}
               avatar={account.accountInfo?.user.info.avatar}
               onPress={() => setAvatarsVisible(!avatarsVisible)}
+              editing
             />
           </View>
           <CollapsibleView collapsed={!avatarsVisible}>
