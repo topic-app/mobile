@@ -594,9 +594,12 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           parent: string,
           isReplying: boolean,
         ) =>
-          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'event').then(() =>
-            updateComments('initial', { parentId: id }),
-          )
+          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'event').then(() => {
+            updateComments('initial', { parentId: id });
+            if (account.loggedIn) {
+              fetchEventMy(id);
+            }
+          })
         }
       />
       <AddMessageModal
