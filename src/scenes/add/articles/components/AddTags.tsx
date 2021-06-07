@@ -92,10 +92,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   const ListEmptyComponent = () => {
     return (
       <View style={{ alignItems: 'flex-start' }}>
-        {searchText !== '' &&
-        state.search?.success &&
-        !selectedData.some((t) => t.name?.toLowerCase() === searchText?.toLowerCase()) &&
-        checkPermission(account, {
+        {checkPermission(account, {
           permission: Permissions.TAG_ADD,
           scope: {},
         }) ? (
