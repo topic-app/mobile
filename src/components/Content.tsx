@@ -5,14 +5,15 @@ import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import { Button, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { AutoHeightImage } from '@components';
 import { Config } from '@constants';
 import getStyles from '@styles/global';
 import { Content as ContentType, State, Preferences } from '@ts/types';
 import { getImageUrl, handleUrl, YouTube } from '@utils';
 import { NativeStackNavigationProp } from '@utils/compat/stack';
 
+import AutoHeightImage from './AutoHeightImage';
 import { PlatformTouchable } from './PlatformComponents';
+import YoutubeVideo from './YoutubeVideo';
 
 type Props = ContentType & { preferences: Preferences; trustLinks?: boolean };
 
@@ -22,10 +23,6 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
   const { colors } = theme;
 
   const navigation = useNavigation<NativeStackNavigationProp<any, any>>();
-
-  const [loaded, setLoaded] = React.useState(false);
-
-  React.useEffect(() => setLoaded(true), [null]);
 
   if (parser === 'markdown') {
     return (
@@ -92,62 +89,7 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
                 </View>
               );
             } else if (src.startsWith('youtube://')) {
-              if (Platform.OS === 'web') {
-                if (!loaded) return null;
-                return (
-                  <View style={{ flex: 1 }}>
-                    <iframe
-                      src={`https://www.youtube.com/embed/${src.substring(
-                        10,
-                      )}?modestbranding=1&rel=0`}
-                      title="youtube"
-                      style={{ width: '100%', height: 480 }}
-                      allow="fullscreen"
-                    />
-                    <View style={{ flex: 1 }}>
-                      <Button
-                        onPress={() =>
-                          handleUrl(`https://youtube.com/watch?v=${src.substring(10)}`)
-                        }
-                        mode="text"
-                        uppercase={false}
-                        icon="open-in-new"
-                      >
-                        Ouvrir sur Youtube
-                      </Button>
-                    </View>
-                  </View>
-                );
-              } else if (!Config.google.youtubeKey) {
-                return null;
-              } else {
-                return (
-                  <View style={{ flex: 1 }}>
-                    <YouTube
-                      // apiKey is an Android-specific prop that does not
-                      // appear in prop types and is required
-                      // @ts-expect-error
-                      apiKey={Config.google.youtubeKey}
-                      videoId={src.substring(10)}
-                      style={{ alignSelf: 'stretch', height: 300 }}
-                      modestbranding
-                      rel={false}
-                    />
-                    <View style={{ flex: 1 }}>
-                      <Button
-                        onPress={() =>
-                          handleUrl(`https://youtube.com/watch?v=${src.substring(10)}`)
-                        }
-                        mode="text"
-                        uppercase={false}
-                        icon="open-in-new"
-                      >
-                        Ouvrir sur Youtube
-                      </Button>
-                    </View>
-                  </View>
-                );
-              }
+              return <YoutubeVideo videoId={src.substring(10)} />;
             } else {
               return <Text>[CONTENU NON VALIDE]</Text>;
             }

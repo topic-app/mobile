@@ -1,4 +1,4 @@
-import Youtube, { YouTubeProps } from 'react-native-youtube';
+import Youtube, { YoutubeIframeRef } from 'react-native-youtube-iframe';
 
 export default Youtube;
-export { YouTubeProps };
+export { YoutubeIframeRef };
