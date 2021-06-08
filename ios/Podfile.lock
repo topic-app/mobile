@@ -130,9 +130,6 @@ PODS:
     - RCT-Folly (= 2020.01.13.00)
     - RCTRequired (= 0.64.1)
     - React-Core (= 0.64.1)
-  - RCTYouTube (2.0.1):
-    - React
-    - YoutubePlayer-in-WKWebView (~> 0.3.1)
   - React (0.64.1):
     - React-Core (= 0.64.1)
     - React-Core/DevSupport (= 0.64.1)
@@ -499,7 +496,6 @@ PODS:
   - UMTaskManagerInterface (6.1.0):
     - UMCore
   - Yoga (1.14.0)
-  - YoutubePlayer-in-WKWebView (0.3.5)
 
 DEPENDENCIES:
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
@@ -523,7 +519,6 @@ DEPENDENCIES:
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
-  - RCTYouTube (from `../node_modules/react-native-youtube`)
   - React (from `../node_modules/react-native/`)
   - React-callinvoker (from `../node_modules/react-native/ReactCommon/callinvoker`)
   - React-Core (from `../node_modules/react-native/`)
@@ -602,7 +597,6 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - TOCropViewController
-    - YoutubePlayer-in-WKWebView
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -647,8 +641,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
     :path: "../node_modules/react-native/Libraries/TypeSafety"
-  RCTYouTube:
-    :path: "../node_modules/react-native-youtube"
   React:
     :path: "../node_modules/react-native/"
   React-callinvoker:
@@ -804,7 +796,6 @@ SPEC CHECKSUMS:
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: ec2ebc96b7bfba3ca5c32740f5a0c6a014a274d2
   RCTTypeSafety: 22567f31e67c3e088c7ac23ea46ab6d4779c0ea5
-  RCTYouTube: 7ff7d42f5ed42d185198681e967fd2c2b661375d
   React: a241e3dbb1e91d06332f1dbd2b3ab26e1a4c4b9d
   React-callinvoker: da4d1c6141696a00163960906bc8a55b985e4ce4
   React-Core: 46ba164c437d7dac607b470c83c8308b05799748
@@ -866,7 +857,6 @@ SPEC CHECKSUMS:
   UMSensorsInterface: 50439b47826e716a514cbd7384aebe9ab4fde5f4
   UMTaskManagerInterface: 482155764886069beb1bc7fcf6036f12e4ad0751
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
-  YoutubePlayer-in-WKWebView: cfbf46da51d7370662a695a8f351e5fa1d3e1008
 
 PODFILE CHECKSUM: 6f4118c70328fd494d6a262834433817cbf343e5
 
