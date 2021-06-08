@@ -42,7 +42,7 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
             }}
           >
             <SelectLocation navigation={navigation} mode="web" />
-            {width > 1400 && <WelcomeSlides />}
+            {width > 1000 && <WelcomeSlides />}
           </View>
         </View>
         <View style={{ flex: 1 }}>
