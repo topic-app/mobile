@@ -164,7 +164,7 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
             <Illustration name="group" />
             <Title style={[styles.title, { color: 'white' }]}>Groupes</Title>
             <Text style={[{ color: 'white', textAlign: 'center' }]}>
-              Le réseau d&apos;engagement pour clubs et associations
+              Le réseau d&apos;engagement pour clubs, associations...
             </Text>
           </View>
         </View>
