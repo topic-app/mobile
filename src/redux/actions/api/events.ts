@@ -112,6 +112,7 @@ async function searchEvents(
   params = {},
   search = true,
   useDefaultParams = false,
+  sort?: 'asc' | 'desc',
 ) {
   await Store.dispatch(
     updateCreator({
@@ -120,6 +121,7 @@ async function searchEvents(
       url: 'events/list',
       dataType: 'events',
       type,
+      sort: sort === 'desc' ? dateDescSort : sort === 'asc' ? dateAscSort : undefined,
       params: useDefaultParams
         ? { ...getContentParams(), ...params, search, terms }
         : { ...params, search, terms },

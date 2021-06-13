@@ -148,7 +148,7 @@ function updateCreator<T extends ApiItemString>({
           }
           data = sort(data);
         } else {
-          data = result.data ? result.data[dataType] : [];
+          data = result.data ? sort(result.data[dataType]) : [];
         }
         dispatch({
           type: update,

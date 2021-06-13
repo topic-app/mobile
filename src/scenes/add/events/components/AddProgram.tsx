@@ -32,7 +32,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
   const [startDateShow, setStartDateShow] = React.useState(false);
   const [startTimeShow, setStartTimeShow] = React.useState(false);
   const [eventProgram, setProgram] = React.useState<ProgramEntry[]>([]);
-  const [startDate, setStartDate] = React.useState<Date>(new Date(0));
+  const [startDate, setStartDate] = React.useState<moment.Moment | undefined>(undefined);
 
   const dismissStartDateModal = React.useCallback(() => {
     setStartDateShow(false);
@@ -49,20 +49,22 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
   };
   const addProgram = (program: ProgramEntry) => {
     setProgram([...eventProgram, program]);
-    setStartDate(new Date(0));
+    setStartDate(undefined);
   };
 
   const changeStartDate = React.useCallback(({ date }: { date?: Date }) => {
     setStartDateShow(false);
     setStartTimeShow(true);
-    if (date) setStartDate(date);
+    if (date) setStartDate(moment(date));
   }, []);
 
   const changeStartTime = ({ hours, minutes }: { hours: number; minutes: number }) => {
-    const currentDate = new Date(startDate.valueOf() + 3.6e6 * hours + 6e4 * minutes);
-    setStartTimeShow(false);
-    setStartDate(currentDate);
-    setProgramAddModalVisible(true);
+    if (startDate) {
+      const newDate = moment(startDate).add(hours, 'hours').add(minutes, 'minutes');
+      setStartTimeShow(false);
+      setStartDate(newDate);
+      setProgramAddModalVisible(true);
+    }
   };
 
   const DescriptionSchema = Yup.object().shape({
@@ -160,7 +162,7 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
               mode="single"
               visible={startDateShow}
               onDismiss={dismissStartDateModal}
-              date={startDate}
+              date={moment(startDate).toDate()}
               onConfirm={changeStartDate}
               saveLabel="Enregistrer"
               label="Choisissez une date"
@@ -176,8 +178,8 @@ const EventAddPageProgram: React.FC<Props> = ({ prev, add, account, creationData
             <ProgramAddModal
               visible={isProgramAddModalVisible}
               setVisible={setProgramAddModalVisible}
-              date={startDate}
-              resetDate={() => setStartDate(new Date(0))}
+              date={moment(startDate).toDate()}
+              resetDate={() => setStartDate(undefined)}
               setDate={() => showStartDateModal()}
               add={(program) => {
                 addProgram(program);
