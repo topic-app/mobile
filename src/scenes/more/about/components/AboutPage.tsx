@@ -1,8 +1,8 @@
-import contributors from '@assets/json/contributors.json';
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { Divider, List, Subheading, Text, useTheme } from 'react-native-paper';
 
+import contributors from '@assets/json/contributors.json';
 import { Illustration } from '@components';
 import { handleUrl } from '@utils';
 
@@ -71,6 +71,12 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
         description="topicapp"
         onPress={() => handleUrl('https://gitlab.com/topicapp', { trusted: true })}
         right={() => <List.Icon icon="gitlab" />}
+      />
+      <List.Item
+        title="Serveur de communication"
+        description="chat.topicapp.fr"
+        onPress={() => handleUrl('https://chat.topicapp.fr', { trusted: true })}
+        right={() => <List.Icon icon="comment-outline" />}
       />
       <View style={{ height: 40 }} />
       <Divider />
