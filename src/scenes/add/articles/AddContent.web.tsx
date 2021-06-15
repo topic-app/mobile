@@ -152,154 +152,152 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} enabled={Platform.OS === 'ios'}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', flex: 1, alignContent: 'center' }}>
-              <PlatformBackButton
-                onPress={() => {
-                  Alert.alert(
-                    'Supprimer cet article?',
-                    'Vous ne pourrez plus y revenir.',
-                    [
-                      {
-                        text: 'Annuler',
-                      },
-                      {
-                        text: 'Quitter',
-                        onPress: navigation.goBack,
-                      },
-                    ],
-                    { cancelable: true },
-                  );
-                }}
-              />
-              <View style={styles.container}>
-                <Title numberOfLines={1}>
-                  {creationData.editing ? 'Modification de ' : ''}
-                  {creationData?.title}
-                </Title>
-              </View>
-            </View>
-            <View style={{ alignSelf: 'center' }}>
-              <IconButton
-                accessibilityLabel={viewing ? 'Mode éditeur' : 'Mode relecture'}
-                onPress={() => {
-                  if (!viewing) {
-                    Keyboard.dismiss();
-                  }
-                  setMarkdown(
-                    textEditorRef.current
-                      ?.getInstance()
-                      ?.getMarkdown()
-                      ?.replace(/<br>/g, '\n')
-                      .replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
-                      .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://') || markdown,
-                  );
-                  setViewing(!viewing);
-                }}
-                icon={viewing ? 'pencil' : 'eye'}
-                style={{ marginLeft: 5 }}
-              />
-            </View>
-            <View style={[styles.container, { alignSelf: 'flex-end' }]}>
-              <Button
-                mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-                uppercase={Platform.OS !== 'ios'}
-                loading={creationData.editing ? reqState.modify?.loading : reqState.add?.loading}
-                onPress={() => {
-                  const md =
-                    textEditorRef.current
-                      ?.getInstance()
-                      ?.getMarkdown()
-                      ?.replace(/<br>/g, '\n')
-                      .replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
-                      .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://') || markdown;
-                  setMarkdown(md);
-                  submit(md);
-                }}
-                style={{ flex: 1 }}
-              >
-                Publier
-              </Button>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', flex: 1, alignContent: 'center' }}>
+            <PlatformBackButton
+              onPress={() => {
+                Alert.alert(
+                  'Supprimer cet article?',
+                  'Vous ne pourrez plus y revenir.',
+                  [
+                    {
+                      text: 'Annuler',
+                    },
+                    {
+                      text: 'Quitter',
+                      onPress: navigation.goBack,
+                    },
+                  ],
+                  { cancelable: true },
+                );
+              }}
+            />
+            <View style={styles.container}>
+              <Title numberOfLines={1}>
+                {creationData.editing ? 'Modification de ' : ''}
+                {creationData?.title}
+              </Title>
             </View>
           </View>
-          <Divider />
-          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
-            <View style={styles.formContainer}>
-              <View style={styles.textInputContainer}>
-                {viewing && (
-                  <View>
-                    <View style={{ marginBottom: 20 }}>
-                      <Card
-                        elevation={0}
-                        style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
-                      >
-                        <View style={[styles.container, { flexDirection: 'row' }]}>
-                          <Icon
-                            name="information-outline"
-                            style={{ alignSelf: 'center', marginRight: 10 }}
-                            size={24}
-                            color={colors.primary}
-                          />
-                          <Text style={{ color: colors.text, alignSelf: 'center', flex: 1 }}>
-                            Ci-dessous, l&apos;article tel qu&apos;il s&apos;affichera après
-                            l&apos;avoir publié.
-                          </Text>
-                        </View>
-                      </Card>
-                    </View>
-                    <Content
-                      parser={editor === 'plaintext' ? 'plaintext' : 'markdown'}
-                      data={markdown}
-                    />
+          <View style={{ alignSelf: 'center' }}>
+            <IconButton
+              accessibilityLabel={viewing ? 'Mode éditeur' : 'Mode relecture'}
+              onPress={() => {
+                if (!viewing) {
+                  Keyboard.dismiss();
+                }
+                setMarkdown(
+                  textEditorRef.current
+                    ?.getInstance()
+                    ?.getMarkdown()
+                    ?.replace(/<br>/g, '\n')
+                    .replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
+                    .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://') || markdown,
+                );
+                setViewing(!viewing);
+              }}
+              icon={viewing ? 'pencil' : 'eye'}
+              style={{ marginLeft: 5 }}
+            />
+          </View>
+          <View style={[styles.container, { alignSelf: 'flex-end' }]}>
+            <Button
+              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+              uppercase={Platform.OS !== 'ios'}
+              loading={creationData.editing ? reqState.modify?.loading : reqState.add?.loading}
+              onPress={() => {
+                const md =
+                  textEditorRef.current
+                    ?.getInstance()
+                    ?.getMarkdown()
+                    ?.replace(/<br>/g, '\n')
+                    .replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
+                    .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://') || markdown;
+                setMarkdown(md);
+                submit(md);
+              }}
+              style={{ flex: 1 }}
+            >
+              Publier
+            </Button>
+          </View>
+        </View>
+        <Divider />
+        <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+          <View style={styles.formContainer}>
+            <View style={styles.textInputContainer}>
+              {viewing && (
+                <View>
+                  <View style={{ marginBottom: 20 }}>
+                    <Card
+                      elevation={0}
+                      style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+                    >
+                      <View style={[styles.container, { flexDirection: 'row' }]}>
+                        <Icon
+                          name="information-outline"
+                          style={{ alignSelf: 'center', marginRight: 10 }}
+                          size={24}
+                          color={colors.primary}
+                        />
+                        <Text style={{ color: colors.text, alignSelf: 'center', flex: 1 }}>
+                          Ci-dessous, l&apos;article tel qu&apos;il s&apos;affichera après
+                          l&apos;avoir publié.
+                        </Text>
+                      </View>
+                    </Card>
                   </View>
-                )}
-                <View
-                  style={{
-                    marginTop: 20,
-                    // HACK: RichEditor does not play well with being unmounted
-                    height: viewing ? 0 : undefined,
-                    opacity: viewing ? 0 : 1,
-                  }}
-                >
-                  <Editor
-                    ref={textEditorRef}
-                    initialValue={markdown}
-                    previewStyle="vertical"
-                    usageStatistics={false}
-                    height={`${dimensions.height - 200}px`}
-                    initialEditType="wysiwyg"
-                    useCommandShortcut
-                    language="fr"
-                    placeholder="Écrivez votre article..."
-                    events={{}}
-                    toolbarItems={[
-                      'heading',
-                      'bold',
-                      'italic',
-                      'strike',
-                      'divider',
-                      'hr',
-                      'quote',
-                      'divider',
-                      'ul',
-                      'ol',
-                      'indent',
-                      'outdent',
-                      'divider',
-                      'table',
-                      'link',
-                      'divider',
-                      'code',
-                      'codeblock',
-                      'divider',
-                    ]}
+                  <Content
+                    parser={editor === 'plaintext' ? 'plaintext' : 'markdown'}
+                    data={markdown}
                   />
                 </View>
+              )}
+              <View
+                style={{
+                  marginTop: 20,
+                  // HACK: RichEditor does not play well with being unmounted
+                  height: viewing ? 0 : undefined,
+                  opacity: viewing ? 0 : 1,
+                }}
+              >
+                <Editor
+                  ref={textEditorRef}
+                  initialValue={markdown}
+                  previewStyle="vertical"
+                  usageStatistics={false}
+                  height={`${dimensions.height - 200}px`}
+                  initialEditType="wysiwyg"
+                  useCommandShortcut
+                  language="fr"
+                  placeholder="Écrivez votre article..."
+                  events={{}}
+                  toolbarItems={[
+                    'heading',
+                    'bold',
+                    'italic',
+                    'strike',
+                    'divider',
+                    'hr',
+                    'quote',
+                    'divider',
+                    'ul',
+                    'ol',
+                    'indent',
+                    'outdent',
+                    'divider',
+                    'table',
+                    'link',
+                    'divider',
+                    'code',
+                    'codeblock',
+                    'divider',
+                  ]}
+                />
               </View>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
       </SafeAreaView>
       <LinkAddModal
         visible={linkAddModalVisible}

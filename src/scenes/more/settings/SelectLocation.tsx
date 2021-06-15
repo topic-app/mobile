@@ -421,7 +421,10 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
   return (
     <View style={styles.page}>
       <TranslucentStatusBar backgroundColor={colors.background} />
-      <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'} style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
         <View style={{ height: insets.top }} />
         <Animated.View
           style={{

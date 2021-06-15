@@ -75,7 +75,7 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           {reqState.register.loading || reqState.check.loading ? (
             <ProgressBar indeterminate />
           ) : (

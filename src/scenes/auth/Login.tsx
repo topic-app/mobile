@@ -92,7 +92,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <PlatformBackButton onPress={navigation.goBack} />
             <View style={styles.stepIndicatorContainer}>
