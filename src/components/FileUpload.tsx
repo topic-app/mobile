@@ -78,17 +78,18 @@ const FileUpload: React.FC<Props> = ({
               />
             </View>
           )}
-          {state.upload?.error && (
-            <ErrorMessage
-              error={state.upload?.error}
-              strings={{
-                what: "l'upload de l'image",
-                contentSingular: "L'image",
-              }}
-              type="axios"
-              retry={() => upload(group, resizeMode, true).then(setFile)}
-            />
-          )}
+          {state.upload?.error ||
+            (state.permission?.error && (
+              <ErrorMessage
+                error={(state.upload?.error, state.permission?.error)}
+                strings={{
+                  what: "l'upload de l'image",
+                  contentSingular: "L'image",
+                }}
+                type="axios"
+                retry={() => upload(group, resizeMode, true).then(setFile)}
+              />
+            ))}
           {!!state.upload?.loading && (
             <View
               style={{
