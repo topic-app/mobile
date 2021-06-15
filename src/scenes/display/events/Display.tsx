@@ -367,7 +367,11 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                 ? `Du ${moment(event.duration?.start).format('DD/MM/YYYY')} au ${moment(
                     event.duration?.end,
                   ).format('DD/MM/YYYY')}`
-                : 'Aucune date spécifiée'}
+                : 'Aucune date spécifiée'}{' '}
+              · <Icon name="eye" color={colors.subtext} size={12} />
+              {typeof event.cache?.views === 'number' ? event.cache.views : '?'} ·{' '}
+              <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
+              {typeof event.cache?.likes === 'number' ? event.cache.likes : '?'}
             </Text>
           </View>
           <TagList item={event} scrollable />

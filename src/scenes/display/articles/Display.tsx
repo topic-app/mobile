@@ -185,7 +185,11 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
       <View style={styles.contentContainer}>
         <Title style={styles.title}>{article.title}</Title>
         <Text style={styles.subtitle}>
-          Le {moment(article.date).format('LL')} à {moment(article.date).format('LT')}
+          Le {moment(article.date).format('LL')} à {moment(article.date).format('LT')} ·{' '}
+          <Icon name="eye" color={colors.subtext} size={12} />{' '}
+          {typeof article.cache?.views === 'number' ? article.cache.views : '?'} ·{' '}
+          <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
+          {typeof article.cache?.likes === 'number' ? article.cache.likes : '?'}
         </Text>
       </View>
       <TagList item={article} scrollable />
@@ -209,28 +213,20 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               }}
             >
               <Button
-                mode="text"
-                icon="eye"
-                style={{ flex: 1, marginRight: 5 }}
-                color={colors.muted}
-              >
-                {typeof article.cache?.views === 'number' ? article.cache.views : ''} Vues
-              </Button>
-              <Button
-                mode="text"
+                mode="outlined"
                 icon={articleMy?.liked ? 'thumb-up' : 'thumb-up-outline'}
                 loading={reqState.articles.my?.loading || reqState.articles.like?.loading}
-                style={{ flex: 1, marginHorizontal: 5 }}
-                color={articleMy?.liked ? colors.primary : colors.muted}
+                style={{ flex: 1, marginHorizontal: 5, borderRadius: 20 }}
+                color={articleMy?.liked ? colors.primary : colors.text}
                 onPress={account.loggedIn ? likeArticle : showLikeLoginAlert}
               >
-                {typeof article.cache?.likes === 'number' ? article.cache.likes : ''} Likes
+                Liker
               </Button>
               <Button
-                mode="text"
+                mode="outlined"
                 icon="share-variant"
-                style={{ flex: 1, marginLeft: 5 }}
-                color={colors.muted}
+                style={{ flex: 1, marginHorizontal: 5, borderRadius: 20 }}
+                color={colors.text}
                 onPress={() => {
                   shareContent({
                     title: article.title,

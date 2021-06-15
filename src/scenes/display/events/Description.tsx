@@ -233,27 +233,21 @@ function EventDisplayDescriptionHeader({
             justifyContent: 'space-around',
           }}
         >
-          <Button mode="text" icon="eye" style={{ flex: 1, marginRight: 5 }} color={colors.muted}>
-            {typeof event.cache?.views === 'number' ? event.cache.views : ''} Vues
-          </Button>
           <Button
-            mode="text"
+            mode="outlined"
             icon={eventMy?.liked ? 'thumb-up' : 'thumb-up-outline'}
             loading={reqState.events.my?.loading || reqState.events.like?.loading}
-            style={{ flex: 1, marginRight: 5 }}
-            color={eventMy?.liked ? colors.primary : colors.muted}
+            style={{ flex: 1, marginRight: 5, borderRadius: 20 }}
+            color={eventMy?.liked ? colors.primary : colors.text}
             onPress={account.loggedIn ? likeEvent : undefined}
           >
-            {typeof event.cache?.likes === 'number'
-              ? event.cache.likes + (eventMy?.liked ? 1 : 0)
-              : ''}{' '}
-            Likes
+            Liker
           </Button>
           <Button
-            mode="text"
+            mode="outlined"
             icon="share-variant"
-            style={{ flex: 1, marginLeft: 5 }}
-            color={colors.muted}
+            style={{ flex: 1, marginLeft: 5, borderRadius: 20 }}
+            color={colors.text}
             onPress={() => {
               shareContent({
                 title: `Évènement ${event.title}`,
