@@ -5,6 +5,7 @@ import {
   UPDATE_TAGS_ITEM,
   UPDATE_TAGS_STATE,
   CLEAR_TAGS,
+  UPDATE_TAGS_ITEMS,
 } from '@ts/redux';
 import { Tag } from '@ts/types';
 
@@ -59,9 +60,22 @@ async function fetchTag(tagId: string) {
       update: UPDATE_TAGS_ITEM,
       stateUpdate: UPDATE_TAGS_STATE,
       stateName: 'info',
-      url: 'tags/list',
+      url: 'tags/info',
       dataType: 'tags',
       params: { tagId },
+    }),
+  );
+}
+async function fetchMultiTag(tagId: string) {
+  await Store.dispatch(
+    fetchCreator({
+      update: UPDATE_TAGS_ITEMS,
+      stateUpdate: UPDATE_TAGS_STATE,
+      stateName: 'info',
+      url: 'tags/info',
+      dataType: 'tags',
+      params: { tagId },
+      useArray: true,
     }),
   );
 }
@@ -74,4 +88,4 @@ function clearTags(data = true, search = true, items = false, item = false) {
   Store.dispatch(clearCreator({ clear: CLEAR_TAGS, data, search, item, items }));
 }
 
-export { updateTags, clearTags, fetchTag, searchTags };
+export { updateTags, clearTags, fetchTag, searchTags, fetchMultiTag };

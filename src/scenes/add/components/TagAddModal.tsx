@@ -1,7 +1,15 @@
 import randomColor from 'randomcolor';
 import React from 'react';
 import { View, Platform, FlatList, TouchableOpacity } from 'react-native';
-import { Divider, Button, TextInput, Title, ProgressBar, useTheme } from 'react-native-paper';
+import {
+  Divider,
+  Button,
+  TextInput,
+  Title,
+  ProgressBar,
+  useTheme,
+  HelperText,
+} from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
@@ -14,17 +22,16 @@ import getStyles from './styles';
 
 type TagAddModalProps = ModalProps & {
   state: TagRequestState;
-  name: string;
   add: (tag: TagPreload) => any;
 };
 
-function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps) {
+function TagAddModal({ visible, setVisible, state, add }: TagAddModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [descriptionText, setDescriptionText] = React.useState('');
-  const [errorVisible, setErrorVisible] = React.useState(false);
+  const [nameText, setNameText] = React.useState('');
+  const [error, setError] = React.useState<string | null>(null);
 
   let initialColor = randomColor();
 
@@ -39,15 +46,19 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
   const [colorList, setColorList] = React.useState([initialColor, ...generateColors()]);
 
   const submit = () => {
+    if (nameText.length > 20) {
+      setError('Le nom doit faire moins de 20 lettres');
+      return;
+    }
     trackEvent('articleadd:tags-create');
     tagAdd({
-      name,
+      name: nameText.toLowerCase(),
       color,
       parser: 'plaintext',
-      data: descriptionText,
+      data: '',
     }).then(({ _id }) => {
-      add({ _id, name, color, displayName: name });
-      setDescriptionText('');
+      add({ _id, name: nameText, color, displayName: nameText });
+      setNameText('');
       initialColor = randomColor();
       setColor(initialColor);
       setVisible(false);
@@ -57,7 +68,6 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <View>
-        {state.add?.loading && <ProgressBar indeterminate />}
         {state.add?.error && (
           <ErrorMessage
             type="axios"
@@ -78,24 +88,23 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
         </View>
         <Divider />
         <View style={styles.activeCommentContainer}>
-          <TextInput mode="outlined" label="Nom" value={name} disabled />
-        </View>
-
-        <View style={styles.activeCommentContainer}>
           <TextInput
-            autoFocus
             mode="outlined"
-            label="Description (facultatif)"
-            multiline
-            numberOfLines={3}
-            value={descriptionText}
+            label="Nom"
+            value={nameText}
+            error={!!error}
+            autoCapitalize="none"
             onChangeText={(text) => {
-              setErrorVisible(false);
-              setDescriptionText(text);
+              setError(null);
+              setNameText(text);
             }}
           />
+          <HelperText type="error" visible={!!error}>
+            {error}
+          </HelperText>
         </View>
-        <View style={[styles.activeCommentContainer, { marginVertical: 20 }]}>
+
+        <View style={{ marginBottom: 20 }}>
           <FlatList
             horizontal
             onEndReached={() => setColorList([...colorList, ...generateColors()])}
@@ -127,6 +136,7 @@ function TagAddModal({ visible, setVisible, state, name, add }: TagAddModalProps
             color={colors.primary}
             uppercase={Platform.OS !== 'ios'}
             onPress={submit}
+            loading={state.add?.loading}
           >
             Créer le tag
           </Button>

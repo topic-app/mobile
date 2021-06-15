@@ -157,7 +157,7 @@ type ClearCommentsAction = {
   data: { data?: boolean; search?: boolean; verification?: boolean };
 };
 
-export type CommentsActionTypes = 
+export type CommentsActionTypes =
   | UpdateCommentsStateAction
   | UpdateCommentsDataAction
   | UpdateCommentsVerificationAction
@@ -497,12 +497,14 @@ export const UPDATE_TAGS_STATE = 'UPDATE_TAGS_STATE';
 export const UPDATE_TAGS_DATA = 'UPDATE_TAGS_DATA';
 export const UPDATE_TAGS_ITEM = 'UPDATE_TAGS_ITEM';
 export const UPDATE_TAGS_SEARCH = 'UPDATE_TAGS_SEARCH';
+export const UPDATE_TAGS_ITEMS = 'UPDATE_TAGS_ITEMS';
 export const CLEAR_TAGS = 'CLEAR_TAGS';
 
 export type TagsState = {
   data: (Tag | TagPreload)[];
   search: TagPreload[];
   item: Tag | null;
+  items: Tag[] | null;
   state: TagRequestState;
 };
 
@@ -521,6 +523,11 @@ type UpdateTagsItemAction = {
   data: Tag;
 };
 
+type UpdateTagsItemsAction = {
+  type: typeof UPDATE_TAGS_ITEMS;
+  data: Tag[];
+};
+
 type UpdateTagsSearchAction = {
   type: typeof UPDATE_TAGS_SEARCH;
   data: TagPreload[];
@@ -535,6 +542,7 @@ export type TagsActionTypes =
   | UpdateTagsStateAction
   | UpdateTagsDataAction
   | UpdateTagsItemAction
+  | UpdateTagsItemsAction
   | UpdateTagsSearchAction
   | ClearTagsAction
   | FullClearAction;
