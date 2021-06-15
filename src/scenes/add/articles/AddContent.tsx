@@ -17,6 +17,7 @@ import { RichToolbar, RichEditor } from 'react-native-pell-rich-editor';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
+// @ts-expect-error
 import TurndownService from 'turndown-rn';
 
 import { TranslucentStatusBar, PlatformBackButton, CollapsibleView, Content } from '@components';
@@ -357,24 +358,28 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     icon="format-bold"
                     accessibilityLabel="Gras"
                     color={selectedItems.includes('bold') ? colors.primary : colors.text}
+                    // @ts-expect-error Wrong type defs in library
                     onPress={() => textEditorRef.current?.sendAction('bold', 'result')}
                   />
                   <IconButton
                     icon="format-italic"
                     accessibilityLabel="Italique"
                     color={selectedItems.includes('italic') ? colors.primary : colors.text}
+                    // @ts-expect-error Wrong type defs in library
                     onPress={() => textEditorRef.current?.sendAction('italic', 'result')}
                   />
                   <IconButton
                     icon="undo-variant"
                     accessibilityLabel="Défaire"
                     color={colors.text}
+                    // @ts-expect-error Wrong type defs in library
                     onPress={() => textEditorRef.current?.sendAction('undo', 'result')}
                   />
                   <IconButton
                     icon="redo-variant"
                     accessibilityLabel="Refaire"
                     color={colors.text}
+                    // @ts-expect-error Wrong type defs in library
                     onPress={() => textEditorRef.current?.sendAction('redo', 'result')}
                   />
                 </View>
@@ -435,6 +440,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                           title={h.title}
                           key={h.id}
                           onPress={() => {
+                            // @ts-expect-error Wrong type defs in library
                             textEditorRef.current?.sendAction(h.id, 'result');
                           }}
                           left={() => (
@@ -487,6 +493,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                               } else if (i.id === 'youtube') {
                                 setYoutubeAddModalVisible(true);
                               } else {
+                                // @ts-expect-error Wrong type defs in library
                                 textEditorRef.current?.sendAction(i.id, 'result');
                               }
                             }}

@@ -147,7 +147,7 @@ const EventAddPageTags: React.FC<EventAddPageTagsProps> = ({
             <View style={{ flexGrow: 1, marginRight: 10 }}>
               <Searchbar
                 ref={inputRef}
-                placeholder={`Rechercher un tag`}
+                placeholder="Rechercher un tag"
                 value={searchText}
                 onChangeText={setSearchText}
                 style={loading ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 } : {}}
