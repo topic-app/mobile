@@ -17,6 +17,8 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
+  const [lpCount, setLpCount] = React.useState(0);
+
   return (
     <View>
       <View style={styles.contentContainer}>
@@ -61,10 +63,32 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
         right={() => <List.Icon icon="twitter" />}
       />
       <List.Item
-        title="Instagram"
+        title={lpCount > 2 ? 'Amstramgram' : 'Instagram'}
         description="@topic_application"
-        onPress={() => handleUrl('https://instagram.com/topic_application', { trusted: true })}
-        right={() => <List.Icon icon="instagram" />}
+        onPress={() =>
+          handleUrl(
+            lpCount > 2
+              ? 'https://youtu.be/ZJD1zoAaCmo?t=2'
+              : 'https://instagram.com/topic_application',
+            { trusted: true },
+          )
+        }
+        onLongPress={() => setLpCount(lpCount + 1)}
+        right={() => <List.Icon icon={lpCount > 2 ? 'youtube' : 'instagram'} />}
+      />
+      <List.Item
+        title={lpCount > 2 ? 'Face de book' : 'Facebook'}
+        description="Topic App"
+        onPress={() =>
+          handleUrl(
+            lpCount > 2
+              ? 'https://youtu.be/uFpKj3JbORs?t=160'
+              : 'https://www.facebook.com/Topic-App-108062684848019/',
+            { trusted: true },
+          )
+        }
+        right={() => <List.Icon icon={lpCount > 2 ? 'youtube' : 'facebook'} />}
+        onLongPress={() => setLpCount(lpCount + 1)}
       />
       <List.Item
         title="Gitlab (code source)"
@@ -73,7 +97,7 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
         right={() => <List.Icon icon="gitlab" />}
       />
       <List.Item
-        title="Serveur de communication"
+        title={lpCount > 2 ? 'Vous avez découvert un easter egg :)' : 'Serveur de communication'}
         description="chat.topicapp.fr"
         onPress={() => handleUrl('https://chat.topicapp.fr', { trusted: true })}
         right={() => <List.Icon icon="comment-outline" />}
