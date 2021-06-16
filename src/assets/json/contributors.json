@@ -12,16 +12,16 @@
     "icon": "gitlab"
   },
   {
-    "name": "Axel Martin",
-    "description": "Secrétaire général, DPO",
-    "link": "https://twitter.com/Axel_Grm",
-    "icon": "twitter"
-  },
-  {
     "name": "Benjamin Sengupta",
     "description": "Secrétaire général adjoint, développeur, responsable frontend",
     "link": "https://gitlab.com/bensengupta",
     "icon": "gitlab"
+  },
+  {
+    "name": "Axel Martin",
+    "description": "Secrétaire général, DPO",
+    "link": "https://twitter.com/Axel_Grm",
+    "icon": "twitter"
   },
   {
     "name": "Ysée Laplanche",
@@ -42,14 +42,21 @@
     "icon": "gitlab"
   },
   {
+    "name": "Bêritan Aksoy",
+    "description": "Communication",
+    "link": "https://instagram.com/beri_tan._",
+    "icon": "instagram"
+  },
+  {
+    "name": "David Huberdeau",
+    "description": "Communication",
+    "link": "https://twitter.com/DavidHuberdeau",
+    "icon": "twitter"
+  },
+  {
     "name": "Baptiste Zigmann",
     "description": "Développeur, frontend",
     "link": "https://gitlab.com/BAZIG060",
     "icon": "gitlab"
-  },
-  {
-    "name": "Jérémy Hendrikse",
-    "description": "Développeur, frontend",
-    "link": ""
   }
 ]
