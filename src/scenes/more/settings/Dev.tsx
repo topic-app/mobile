@@ -99,22 +99,28 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
           descriptionNumberOfLines={3}
         />
         <List.Item
-          title="Canal Telegram"
+          title="Rejoindre chat.topicapp.fr"
           description="Recevez les dernières infos et discutez avec l'équipe Topic App et les autres utilisateurs"
           left={() => (
             <View
               style={{
-                margin: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <Illustration name="telegram" height={40} width={40} />
+              <List.Icon
+                color={colors.background}
+                style={{
+                  backgroundColor: colors.primary,
+                  borderRadius: 20,
+                }}
+                icon="comment-outline"
+              />
             </View>
           )}
           right={() => <List.Icon icon="open-in-new" color={colors.subtext} />}
           descriptionNumberOfLines={3}
-          onPress={() => Linking.openURL('https://t.me/joinchat/AAAAAEfRz29dT2eYy9w_7A')}
+          onPress={() => Linking.openURL('https://chat.topicapp.fr')}
         />
         <List.Item
           title="Bêta"
