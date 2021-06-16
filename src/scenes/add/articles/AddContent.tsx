@@ -1,3 +1,4 @@
+// @ts-expect-error
 import MarkdownIt from 'markdown-it';
 import React, { LegacyRef } from 'react';
 import { View, ScrollView, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
