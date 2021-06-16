@@ -1,3 +1,4 @@
+import MarkdownIt from 'markdown-it';
 import React, { LegacyRef } from 'react';
 import { View, ScrollView, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 import {
@@ -206,7 +207,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const [markdown, setMarkdown] = React.useState(creationData.data || '');
   const [editor, setEditor] = React.useState<'plaintext' | 'source' | 'rich'>(
-    creationData.editing ? (creationData.parser === 'markdown' ? 'source' : 'plaintext') : 'rich',
+    creationData.editing ? (creationData.parser === 'markdown' ? 'rich' : 'plaintext') : 'rich',
   );
   const [youtubeAddModalVisible, setYoutubeAddModalVisible] = React.useState(false);
 
@@ -221,6 +222,9 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const textEditorRef = React.useRef<RichEditor>();
 
   const turndownService = new TurndownService();
+  const markdownItService = new MarkdownIt({
+    html: false,
+  });
 
   if (!account.loggedIn) return null;
 
@@ -245,7 +249,10 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   const submit = async () => {
     const contentValid = markdown.length && markdown.length > 0;
     if (contentValid) {
-      updateArticleCreationData({ parser: 'markdown', data: markdown });
+      updateArticleCreationData({
+        parser: editor === 'plaintext' ? 'plaintext' : 'markdown',
+        data: markdown,
+      });
       add(editor === 'plaintext' ? 'plaintext' : 'markdown', markdown);
     } else {
       setValid(false);
@@ -262,24 +269,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
         >
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row', flex: 1, alignContent: 'center' }}>
-              <PlatformBackButton
-                onPress={() => {
-                  Alert.alert(
-                    'Supprimer cet article?',
-                    'Vous ne pourrez plus y revenir.',
-                    [
-                      {
-                        text: 'Annuler',
-                      },
-                      {
-                        text: 'Quitter',
-                        onPress: navigation.goBack,
-                      },
-                    ],
-                    { cancelable: true },
-                  );
-                }}
-              />
+              <PlatformBackButton onPress={() => navigation.goBack()} />
               <View style={styles.container}>
                 <Title numberOfLines={1}>
                   {creationData?.editing ? 'Modification de ' : ''}
@@ -566,23 +556,24 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     <RichEditor
                       onHeightChange={() => {}}
                       ref={textEditorRef as LegacyRef<RichEditor>}
-                      onChange={(data: string) =>
-                        setMarkdown(
-                          turndownService
-                            .turndown(data)
-                            .replace(
-                              new RegExp(Config.google.youtubePlaceholder, 'g'),
-                              'youtube://',
-                            )
-                            .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://'),
-                        )
-                      }
+                      onChange={(data: string) => {
+                        const md = turndownService
+                          .turndown(data)
+                          .replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
+                          .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://');
+                        setMarkdown(md);
+                        updateArticleCreationData({ parser: 'markdown', data: md });
+                      }}
                       editorStyle={{
                         backgroundColor: colors.background,
                         color: colors.text,
                         placeholderColor: colors.disabled,
                       }}
                       placeholder="Écrivez votre article"
+                      initialContentHTML={markdownItService
+                        .render(markdown)
+                        .replace(new RegExp('youtube://', 'g'), Config.google.youtubePlaceholder)
+                        .replace(new RegExp('cdn://', 'g'), Config.cdn.baseUrl)}
                       editorInitializedCallback={() => {
                         logger.debug('Editor toolbar initialized');
                         trackEvent('articleadd:content-editor-loaded');
