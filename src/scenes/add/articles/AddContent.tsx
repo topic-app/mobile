@@ -326,14 +326,6 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     alignItems: 'center',
                   }}
                 >
-                  <IconButton
-                    icon="cog"
-                    accessibilityLabel="Changer le type d'éditeur"
-                    color={colors.text}
-                    onPress={() =>
-                      menuVisible === 'editor' ? setMenuVisible(null) : setMenuVisible('editor')
-                    }
-                  />
                   <Button
                     uppercase={false}
                     mode={menuVisible === 'heading' ? 'outlined' : 'text'}
@@ -381,6 +373,15 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     color={colors.text}
                     // @ts-expect-error Wrong type defs in library
                     onPress={() => textEditorRef.current?.sendAction('redo', 'result')}
+                  />
+                  <IconButton
+                    icon="cog"
+                    style={{ marginLeft: 20 }}
+                    accessibilityLabel="Changer le type d'éditeur"
+                    color={colors.text}
+                    onPress={() =>
+                      menuVisible === 'editor' ? setMenuVisible(null) : setMenuVisible('editor')
+                    }
                   />
                 </View>
               </ScrollView>
@@ -440,6 +441,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                           title={h.title}
                           key={h.id}
                           onPress={() => {
+                            setMenuVisible(null);
                             // @ts-expect-error Wrong type defs in library
                             textEditorRef.current?.sendAction(h.id, 'result');
                           }}
@@ -479,6 +481,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                               />
                             )}
                             onPress={() => {
+                              setMenuVisible(null);
                               if (i.id === 'image') {
                                 trackEvent('articleadd:content-image-upload');
                                 trackEvent('editor:image-upload-start');

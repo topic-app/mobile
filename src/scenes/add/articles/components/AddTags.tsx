@@ -63,7 +63,11 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   };
 
   const addNewTag = (tag: { _id: string; displayName: string; color: string }) => {
-    setSelectedTags([...selectedTags, tag._id]);
+    if (!selectedTags.includes(tag._id)) setSelectedTags([...selectedTags, tag._id]);
+  };
+
+  const removeTag = (tag: { _id: string; displayName: string; color: string }) => {
+    setSelectedTags(selectedTags.filter((s) => s !== tag._id));
   };
 
   const inputRef = React.useRef(null);
@@ -120,10 +124,10 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
             onPress={() => {
               if (selectedTags.includes(item._id)) {
                 trackEvent('articleadd:tags-remove');
-                setSelectedTags(selectedTags.filter((s) => s !== item._id));
+                removeTag(item);
               } else {
                 trackEvent('articleadd:tags-add');
-                setSelectedTags([...selectedTags, item._id]);
+                addNewTag(item);
               }
             }}
             icon={selectedTags.includes(item._id) ? 'check' : 'pound'}
