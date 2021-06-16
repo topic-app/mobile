@@ -329,6 +329,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                   <Button
                     uppercase={false}
                     mode={menuVisible === 'heading' ? 'outlined' : 'text'}
+                    style={{ marginLeft: 10 }}
                     color={colors.text}
                     onPress={() =>
                       menuVisible === 'heading' ? setMenuVisible(null) : setMenuVisible('heading')
@@ -350,6 +351,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     icon="format-bold"
                     accessibilityLabel="Gras"
                     color={selectedItems.includes('bold') ? colors.primary : colors.text}
+                    style={{ marginLeft: 30 }}
                     // @ts-expect-error Wrong type defs in library
                     onPress={() => textEditorRef.current?.sendAction('bold', 'result')}
                   />
@@ -361,9 +363,21 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     onPress={() => textEditorRef.current?.sendAction('italic', 'result')}
                   />
                   <IconButton
+                    icon="format-clear"
+                    accessibilityLabel="Retirer le formattage"
+                    color={colors.text}
+                    onPress={() => {
+                      // @ts-expect-error Wrong type defs in library
+                      textEditorRef.current?.sendAction('removeFormat', 'result');
+                      // @ts-expect-error Wrong type defs in library
+                      textEditorRef.current?.sendAction('paragraph', 'result');
+                    }}
+                  />
+                  <IconButton
                     icon="undo-variant"
                     accessibilityLabel="Défaire"
                     color={colors.text}
+                    style={{ marginLeft: 30 }}
                     // @ts-expect-error Wrong type defs in library
                     onPress={() => textEditorRef.current?.sendAction('undo', 'result')}
                   />
@@ -376,7 +390,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                   />
                   <IconButton
                     icon="cog"
-                    style={{ marginLeft: 20 }}
+                    style={{ marginLeft: 30 }}
                     accessibilityLabel="Changer le type d'éditeur"
                     color={colors.text}
                     onPress={() =>
