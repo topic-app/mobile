@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { View, FlatList, ActivityIndicator, Platform, Clipboard } from 'react-native';
+import { View, FlatList, ActivityIndicator, Platform, Clipboard, Alert } from 'react-native';
 import { Text, Divider, List, Button, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -184,6 +184,21 @@ function EventDisplayDescriptionHeader({
       );
   };
 
+  const showLikeLoginAlert = () =>
+    Alert.alert(
+      'Connectez vous pour liker cet évènement',
+      'Avec un compte Topic, vous pourrez liker les articles, suivre vos groupes préférés et en rejoindre.',
+      [
+        { text: 'Se connecter', onPress: () => navigation.navigate('Auth', { screen: 'Login' }) },
+        {
+          text: 'Créer un compte',
+          onPress: () => navigation.navigate('Auth', { screen: 'Create' }),
+        },
+        { text: 'Annuler' },
+      ],
+      { cancelable: true },
+    );
+
   return (
     <View>
       {Array.isArray(event.places) &&
@@ -239,7 +254,7 @@ function EventDisplayDescriptionHeader({
             loading={reqState.events.my?.loading || reqState.events.like?.loading}
             style={{ flex: 1, marginRight: 5, borderRadius: 20 }}
             color={eventMy?.liked ? colors.primary : colors.text}
-            onPress={account.loggedIn ? likeEvent : undefined}
+            onPress={account.loggedIn ? likeEvent : showLikeLoginAlert}
           >
             Liker
           </Button>
