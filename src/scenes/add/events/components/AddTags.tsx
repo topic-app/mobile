@@ -14,26 +14,25 @@ import {
   Searchbar,
 } from '@components';
 import { updateTags, searchTags, fetchMultiTag } from '@redux/actions/api/tags';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { Account, State, TagRequestState, TagPreload, ArticleCreationData, Tag } from '@ts/types';
+import { updateEventCreationData } from '@redux/actions/contentData/events';
+import { Account, State, TagRequestState, TagPreload, EventCreationData, Tag } from '@ts/types';
 import { checkPermission, trackEvent, Permissions, logger } from '@utils';
 
 import TagAddModal from '../../components/TagAddModal';
 import getStyles from '../styles';
 
-type ArticleAddPageTagsProps = StepperViewPageProps & {
+type EventAddPageTagsProps = StepperViewPageProps & {
   account: Account;
   tagsData: TagPreload[];
   tagsSearch: TagPreload[];
   tagsItems: Tag[] | null;
   state: TagRequestState;
-  navigate: () => void;
-  creationData: ArticleCreationData;
+  creationData: EventCreationData;
 };
 
-const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
+const EventAddPageTags: React.FC<EventAddPageTagsProps> = ({
   prev,
-  navigate,
+  next,
   account,
   tagsData,
   tagsItems,
@@ -57,9 +56,9 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   };
 
   const submit = () => {
-    trackEvent('articleadd:page-content');
-    updateArticleCreationData({ tags: selectedTags });
-    navigate();
+    trackEvent('eventadd:page-content');
+    updateEventCreationData({ tags: selectedTags });
+    next();
   };
 
   const addNewTag = (tag: { _id: string; displayName: string; color: string }) => {
@@ -121,10 +120,10 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
             containerStyle={{ borderColor: item.color }}
             onPress={() => {
               if (selectedTags.includes(item._id)) {
-                trackEvent('articleadd:tags-remove');
+                trackEvent('eventadd:tags-remove');
                 setSelectedTags(selectedTags.filter((s) => s !== item._id));
               } else {
-                trackEvent('articleadd:tags-add');
+                trackEvent('eventadd:tags-add');
                 setSelectedTags([...selectedTags, item._id]);
               }
             }}
@@ -236,7 +235,7 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
               color={colors.primary}
             />
             <Text style={{ color: colors.text, flex: 1 }}>
-              Les tags permettent aux utilisateurs de trouver plus facilement vos articles,et nous
+              Les tags permettent aux utilisateurs de trouver plus facilement vos évènements,et nous
               les utilisons pour pouvoir faire des recommandations aux utilisateurs.{'\n'}Tapez pour
               rechercher ou pour créer un nouveau tag si aucun ne correspond.
             </Text>
@@ -275,15 +274,15 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, tags, articleData } = state;
+  const { account, tags, eventData } = state;
   return {
     account,
     tagsData: tags.data,
     tagsSearch: tags.search,
     tagsItems: tags.items,
     state: tags.state,
-    creationData: articleData.creationData,
+    creationData: eventData.creationData,
   };
 };
 
-export default connect(mapStateToProps)(ArticleAddPageTags);
+export default connect(mapStateToProps)(EventAddPageTags);
