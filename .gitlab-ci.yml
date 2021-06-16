@@ -134,6 +134,7 @@ deploy web prod:
 variables:
   DS_DEFAULT_ANALYZERS: 'retire.js, gemnasium'
   SAST_DEFAULT_ANALYZERS: nodejs-scan
+  SAST_EXCLUDED_ANALYZERS: 'semgrep, spotbugs, eslint'
 
 include:
   - template: Security/SAST.gitlab-ci.yml
