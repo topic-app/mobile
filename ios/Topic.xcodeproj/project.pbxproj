@@ -16,7 +16,7 @@
 		FAE6C182258A818400051E30 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAE6C181258A818400051E30 /* GoogleService-Info.plist */; };
 		FAE8A860256C07EE0030C550 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		FAEDA30C25693C4200699F75 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAEDA30B25693C4200699F75 /* GoogleService-Info.plist */; };
-		FAFB244F265D1BA80042C339 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = FCA44A6EB1590F9D76516387 /* Mapbox */; };
+		FAFB244F265D1BA80042C339 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FCA44A6EB1590F9D76516387 /* SwiftPackageProductDependency */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,7 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				12861B146AEEB7840B5F92BC /* libPods-Topic.a in Frameworks */,
-				FAFB244F265D1BA80042C339 /* Mapbox in Frameworks */,
+				FAFB244F265D1BA80042C339 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,7 +139,7 @@
 			);
 			name = Topic;
 			packageProductDependencies = (
-				FCA44A6EB1590F9D76516387 /* Mapbox */,
+				FCA44A6EB1590F9D76516387 /* SwiftPackageProductDependency */,
 			);
 			productName = Topic;
 			productReference = 13B07F961A680F5B00A75B9A /* Topic.app */;
@@ -169,7 +169,7 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				6E3FFDE5B6F71B31C5105F28 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+				6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -381,7 +381,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.26.11;
+				MARKETING_VERSION = 0.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -413,7 +413,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.26.11;
+				MARKETING_VERSION = 0.2;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -576,7 +576,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		6E3FFDE5B6F71B31C5105F28 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+		6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
 			requirement = {
@@ -587,9 +587,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FCA44A6EB1590F9D76516387 /* Mapbox */ = {
+		FCA44A6EB1590F9D76516387 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6E3FFDE5B6F71B31C5105F28 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			package = 6E3FFDE5B6F71B31C5105F28 /* RemoteSwiftPackageReference */;
 			productName = Mapbox;
 		};
 /* End XCSwiftPackageProductDependency section */
