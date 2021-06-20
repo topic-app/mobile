@@ -8,7 +8,7 @@ import AboutStackNavigator, { AboutStackParams } from './about/index';
 import LocationScreen, { LocationStackParams } from './location/LocationPage';
 import ModerationStackNavigator, { ModerationStackParams } from './moderation/index';
 import MyGroupStackNavigator, { MyGroupsStackParams } from './myGroups/index';
-import NotificationsScreen from './notifications/views/Notifications';
+import NotificationsStackNavigator, { NotificationsStackParams } from './notifications/index';
 import ProfileStackNavigator, { ProfileStackParams } from './profile/index';
 import SettingsStackNavigator, { SettingsStackParams } from './settings/index';
 
@@ -19,7 +19,7 @@ export type MoreStackParams = {
   Moderation: NavigatorScreenParams<ModerationStackParams>;
   About: NavigatorScreenParams<AboutStackParams>;
   List: undefined;
-  Notifications: undefined;
+  Notifications: NavigatorScreenParams<NotificationsStackParams>;
   Location: LocationStackParams;
 };
 
@@ -55,7 +55,7 @@ function MoreStackNavigator() {
       />
       <Stack.Screen
         name="Notifications"
-        component={NotificationsScreen}
+        component={NotificationsStackNavigator}
         options={{ headerShown: false }}
       />
       <Stack.Screen name="About" component={AboutStackNavigator} options={{ headerShown: false }} />

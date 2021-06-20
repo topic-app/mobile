@@ -216,6 +216,17 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               });
             }}
           />
+          <Drawer.Item
+            label="Notifications"
+            icon="bell-outline"
+            onPress={() => {
+              navigation.closeDrawer();
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: { screen: 'Notifications', params: { screen: 'Notifications' } },
+              });
+            }}
+          />
           {(checkPermission(account, {
             permission: Permissions.ARTICLE_VERIFICATION_VIEW,
             scope: {},
