@@ -186,7 +186,7 @@ export type Preferences = {
   syncHistory: boolean;
   fontSize: number;
   stripFormatting: boolean;
-  fontFamily: 'system' | 'Roboto-Slab' | 'Roboto-Mono' | 'OpenDyslexic';
+  fontFamily: 'system' | 'Roboto' | 'Roboto-Slab' | 'Roboto-Mono' | 'OpenDyslexic';
   themeEasterEggDiscovered: boolean;
   youtubeConsent: boolean;
   useDevServer: boolean;

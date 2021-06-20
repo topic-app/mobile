@@ -1,3 +1,4 @@
+import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 import {
   RobotoMono_400Regular,
   RobotoMono_400Regular_Italic,
@@ -59,6 +60,11 @@ const StoreApp: React.FC<Props> = ({
     'Rubik-Light_Italic': Rubik_300Light_Italic,
     Rubik: Rubik_400Regular,
     Rubik_Italic: Rubik_400Regular_Italic,
+    ...(fontFamily === 'Roboto'
+      ? {
+          Roboto: Roboto_400Regular,
+        }
+      : {}),
     ...(fontFamily === 'Roboto-Slab'
       ? {
           'Roboto-Slab': RobotoSlab_400Regular,

@@ -6,9 +6,10 @@
     "url": "https://mgen.fr"
   },
   {
-    "id": "jtac",
-    "name": "JTAC",
-    "description": "La Jeunesse des Territoires pour l’Action Culturelle (JTAC) est une fédération dont le but est de promouvoir l’accès à la culture et l’engagement lycéen. C’est une association qui s’aligne parfaitement avec les buts de notre application, et nous avons donc décidé de développer l’application en partenariat avec celle-ci."
+    "id": "solidarsport",
+    "name": "Solidarsport",
+    "description": "L'association Solidarsport, fondée le 2 mai 1994 à Nice, a pour objet d'être un lien pour tous ceux qui se reconnaissent dans la charte du Respect et d'en faire partager les valeurs aux jeunes générations.",
+    "url": "https://www.solidarsport.fr"
   },
   {
     "id": "edtech",
@@ -22,10 +23,4 @@
     "description": "L'ESPER est un regroupement d'organisations qui agissent dans les domaines de la santé, l'assurance, la banque, le médico-social, l'éducation populaire ou les activités de loisirs. L'ESPER place l'économie sociale au service de l'éducation.",
     "url": "https://lesper.fr"
   },
-  {
-    "id": "solidarsport",
-    "name": "Solidarsport",
-    "description": "L'association Solidarsport, fondée le 2 mai 1994 à Nice, a pour objet d'être un lien pour tous ceux qui se reconnaissent dans la charte du Respect et d'en faire partager les valeurs aux jeunes générations.",
-    "url": "https://www.solidarsport.fr"
-  }
 ]

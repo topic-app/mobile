@@ -22,13 +22,12 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
   return (
     <View>
       <View style={styles.contentContainer}>
-        <View style={[styles.centerIllustrationContainer, { marginTop: 60, marginBottom: 10 }]}>
-          <Illustration name="topic-icon" style={{ height: 200, width: 200 }} />
+        <View style={styles.centerIllustrationContainer}>
+          <Illustration name="topic-icon-text" height={100} />
         </View>
       </View>
       <View style={styles.headerContainer}>
         <View style={styles.centerIllustrationContainer}>
-          <Text style={[styles.topic, { fontSize: 60 }]}>Topic</Text>
           <Subheading>La mallette à outils de l&apos;engagement citoyen</Subheading>
         </View>
       </View>
@@ -104,7 +103,7 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
       />
       <View style={{ height: 40 }} />
       <Divider />
-      <View style={styles.contentContainer}>
+      <View style={styles.container}>
         <Subheading>Équipe et contributeurs</Subheading>
       </View>
       {contributors.map((c) => (
