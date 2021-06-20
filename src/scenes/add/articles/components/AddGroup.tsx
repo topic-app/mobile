@@ -1,26 +1,59 @@
 import React from 'react';
-import { View, Platform } from 'react-native';
-import { Button, RadioButton, HelperText, List, Text, useTheme } from 'react-native-paper';
+import { View, Platform, Alert } from 'react-native';
+import {
+  Button,
+  RadioButton,
+  HelperText,
+  List,
+  Text,
+  useTheme,
+  Divider,
+  Card,
+} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
 import { StepperViewPageProps } from '@components';
-import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { Account, State } from '@ts/types';
+import {
+  clearArticleCreationData,
+  updateArticleCreationData,
+} from '@redux/actions/contentData/articles';
+import { Account, ArticleCreationData, State } from '@ts/types';
 import { checkPermission, trackEvent, Permissions } from '@utils';
 
 import getStyles from '../styles';
 
-type ArticleAddPageGroupProps = StepperViewPageProps & { account: Account };
+type ArticleAddPageGroupProps = StepperViewPageProps & {
+  account: Account;
+  creationData: ArticleCreationData;
+};
 
-const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account }) => {
+const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({
+  next,
+  account,
+  creationData,
+}) => {
   const [group, setGroup] = React.useState<string | null>(null);
   const [showError, setError] = React.useState(false);
   const theme = useTheme();
 
-  const submit = () => {
-    if (group !== null) {
+  const submitDraft = () => {
+    trackEvent('articleadd:page-location');
+    next();
+  };
+
+  const submitNew = async (showAlert = false) => {
+    if (showAlert) {
+      Alert.alert(
+        'Supprimer le brouillon précédent ?',
+        `En créant un nouvel article, vous supprimerez le brouillon de "${creationData.title}"`,
+        [{ text: 'Annuler' }, { text: 'Continuer', onPress: () => submitNew() }],
+        { cancelable: true },
+      );
+    } else if (group !== null) {
       trackEvent('articleadd:page-location');
-      updateArticleCreationData({ group });
+      await clearArticleCreationData();
+      await updateArticleCreationData({ group });
       next();
     } else {
       setError(true);
@@ -106,16 +139,61 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
           </Text>
         )}
       </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
-          uppercase={Platform.OS !== 'ios'}
-          onPress={submit}
-          style={{ flex: 1 }}
-        >
-          Suivant
-        </Button>
-      </View>
+      {!(creationData.title && creationData.group) ? (
+        <View style={styles.buttonContainer}>
+          <Button
+            mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+            uppercase={Platform.OS !== 'ios'}
+            onPress={() => submitNew(false)}
+            style={{ flex: 1 }}
+          >
+            Suivant
+          </Button>
+        </View>
+      ) : (
+        <View>
+          <View style={styles.buttonContainer}>
+            <Button
+              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={() => submitNew(true)}
+              style={{ flex: 1 }}
+            >
+              Nouvel article
+            </Button>
+          </View>
+          <Divider style={{ marginTop: 60 }} />
+          <View style={{ marginVertical: 20 }}>
+            <Card
+              elevation={0}
+              style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
+              onPress={submitDraft}
+            >
+              <View style={[styles.container, { flexDirection: 'row', alignItems: 'center' }]}>
+                <Icon name="file-document-edit-outline" color={colors.text} size={24} />
+                <View style={{ marginLeft: 10 }}>
+                  <Text>{creationData.title}</Text>
+                  <Text style={{ fontSize: 14, color: colors.muted }}>
+                    Brouillon -{' '}
+                    {groupsWithPermission.find((g) => g._id === creationData.group)?.displayName ||
+                      'Groupe inconnu'}
+                  </Text>
+                </View>
+              </View>
+            </Card>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={submitDraft}
+              style={{ flex: 1 }}
+            >
+              Reprendre
+            </Button>
+          </View>
+        </View>
+      )}
       {/* Platform.OS !== 'web' && (
         <View style={[styles.container, { marginTop: 40 }]}>
           <Card
@@ -141,8 +219,8 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({ next, account
 };
 
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { account };
+  const { account, articleData } = state;
+  return { account, creationData: articleData.creationData };
 };
 
 export default connect(mapStateToProps)(ArticleAddPageGroup);

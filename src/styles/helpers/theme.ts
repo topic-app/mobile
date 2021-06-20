@@ -12,6 +12,7 @@ type BaseThemeType = typeof DefaultTheme & {
     primaryLighter: string;
     primaryDarker: string;
     primaryBackground: string;
+    onPrimaryText: string;
     secondary: string;
     solid: typeof paletteLight;
     appBar: string;
@@ -57,6 +58,7 @@ const common = {
     primaryLighter: '#6a31a3',
     primaryDarker: '#4e2478',
     primaryBackground: '#592989',
+    onPrimaryText: '#ffffff',
     secondary: '#892989',
   },
 };

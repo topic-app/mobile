@@ -220,9 +220,17 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
 
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
 
+  const [suggestions, setSuggestions] = React.useState<{ text: string; icon: string }[]>([]);
+
+  const [publishWarning, setPublishWarning] = React.useState(false);
+
   const textEditorRef = React.useRef<RichEditor>();
 
-  const turndownService = new TurndownService();
+  const turndownService = new TurndownService({
+    headingStyle: 'atx',
+    bulletListMarker: '-',
+    codeBlockStyle: 'fenced',
+  });
   const markdownItService = new MarkdownIt({
     html: false,
   });
@@ -247,14 +255,50 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     );
   };
 
+  const showSuggestions = async (data: string) => {
+    let tempSuggestions: { text: string; icon: string }[] = [];
+    setPublishWarning(false);
+
+    if (data.length > 700 && !data.match(/#/g) && editor !== 'plaintext') {
+      tempSuggestions.push({
+        icon: 'information-outline',
+        text:
+          'Vous pouvez utiliser des titres via le menu "Paragraphe" pour organiser votre article',
+      });
+    }
+
+    setSuggestions(tempSuggestions);
+  };
+
+  const showWarnings = (data: string) => {
+    let tempSuggestions: { text: string; icon: string }[] = [];
+    setPublishWarning(false);
+
+    // Length
+    if (data.length < 500) {
+      tempSuggestions.push({
+        icon: 'alert-circle-outline',
+        text:
+          "Votre article est plutôt court. N'hésitez pas à rajouter quelques phrases pour donner plus de détails",
+      });
+    }
+
+    if (tempSuggestions.length) setPublishWarning(true);
+    setSuggestions(tempSuggestions);
+
+    return !!tempSuggestions.length;
+  };
+
   const submit = async () => {
     const contentValid = markdown.length && markdown.length > 0;
     if (contentValid) {
-      updateArticleCreationData({
-        parser: editor === 'plaintext' ? 'plaintext' : 'markdown',
-        data: markdown,
-      });
-      add(editor === 'plaintext' ? 'plaintext' : 'markdown', markdown);
+      if (publishWarning || !showWarnings(markdown)) {
+        updateArticleCreationData({
+          parser: editor === 'plaintext' ? 'plaintext' : 'markdown',
+          data: markdown,
+        });
+        add(editor === 'plaintext' ? 'plaintext' : 'markdown', markdown);
+      }
     } else {
       setValid(false);
     }
@@ -303,82 +347,123 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 }}
                 style={{ flex: 1 }}
               >
-                Publier
+                {publishWarning ? 'Publier quand même' : 'Publier'}
               </Button>
             </View>
           </View>
+          <CollapsibleView collapsed={!suggestions.length}>
+            <Divider />
+            {suggestions.map((s) => (
+              <View
+                style={{
+                  backgroundColor: publishWarning ? colors.primaryBackground : colors.surface,
+                }}
+              >
+                <View
+                  style={[
+                    styles.container,
+                    {
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginHorizontal: 15,
+                    },
+                  ]}
+                >
+                  <Icon
+                    name={s.icon}
+                    size={24}
+                    color={publishWarning ? colors.onPrimaryText : colors.text}
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      flex: 1,
+                      color: publishWarning ? colors.onPrimaryText : colors.text,
+                    }}
+                  >
+                    {s.text}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </CollapsibleView>
           <Divider />
           <View style={{ backgroundColor: colors.surface }}>
             <CollapsibleView collapsed={viewing}>
               <ScrollView horizontal>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Button
-                    uppercase={false}
-                    mode={menuVisible === 'heading' ? 'outlined' : 'text'}
-                    style={{ marginLeft: 10 }}
-                    color={colors.text}
-                    onPress={() =>
-                      menuVisible === 'heading' ? setMenuVisible(null) : setMenuVisible('heading')
-                    }
-                  >
-                    {headings.find((h) => selectedItems.includes(h.id))?.title || 'Paragraphe'}
-                  </Button>
-                  <Button
-                    uppercase={false}
-                    mode={menuVisible === 'insert' ? 'outlined' : 'text'}
-                    color={colors.text}
-                    onPress={() =>
-                      menuVisible === 'insert' ? setMenuVisible(null) : setMenuVisible('insert')
-                    }
-                  >
-                    Insérer
-                  </Button>
-                  <IconButton
-                    icon="format-bold"
-                    accessibilityLabel="Gras"
-                    color={selectedItems.includes('bold') ? colors.primary : colors.text}
-                    style={{ marginLeft: 30 }}
-                    // @ts-expect-error Wrong type defs in library
-                    onPress={() => textEditorRef.current?.sendAction('bold', 'result')}
-                  />
-                  <IconButton
-                    icon="format-italic"
-                    accessibilityLabel="Italique"
-                    color={selectedItems.includes('italic') ? colors.primary : colors.text}
-                    // @ts-expect-error Wrong type defs in library
-                    onPress={() => textEditorRef.current?.sendAction('italic', 'result')}
-                  />
-                  <IconButton
-                    icon="format-clear"
-                    accessibilityLabel="Retirer le formattage"
-                    color={colors.text}
-                    onPress={() => {
-                      // @ts-expect-error Wrong type defs in library
-                      textEditorRef.current?.sendAction('removeFormat', 'result');
-                      // @ts-expect-error Wrong type defs in library
-                      textEditorRef.current?.sendAction('paragraph', 'result');
+                {editor === 'rich' ? (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
                     }}
-                  />
-                  <IconButton
-                    icon="undo-variant"
-                    accessibilityLabel="Défaire"
-                    color={colors.text}
-                    style={{ marginLeft: 30 }}
-                    // @ts-expect-error Wrong type defs in library
-                    onPress={() => textEditorRef.current?.sendAction('undo', 'result')}
-                  />
-                  <IconButton
-                    icon="redo-variant"
-                    accessibilityLabel="Refaire"
-                    color={colors.text}
-                    // @ts-expect-error Wrong type defs in library
-                    onPress={() => textEditorRef.current?.sendAction('redo', 'result')}
-                  />
+                  >
+                    <Button
+                      uppercase={false}
+                      mode={menuVisible === 'heading' ? 'outlined' : 'text'}
+                      style={{ marginLeft: 10 }}
+                      color={colors.text}
+                      onPress={() =>
+                        menuVisible === 'heading' ? setMenuVisible(null) : setMenuVisible('heading')
+                      }
+                    >
+                      {headings.find((h) => selectedItems.includes(h.id))?.title || 'Paragraphe'}
+                    </Button>
+                    <Button
+                      uppercase={false}
+                      mode={menuVisible === 'insert' ? 'outlined' : 'text'}
+                      color={colors.text}
+                      onPress={() =>
+                        menuVisible === 'insert' ? setMenuVisible(null) : setMenuVisible('insert')
+                      }
+                    >
+                      Insérer
+                    </Button>
+                    <IconButton
+                      icon="format-bold"
+                      accessibilityLabel="Gras"
+                      color={selectedItems.includes('bold') ? colors.primary : colors.text}
+                      style={{ marginLeft: 30 }}
+                      // @ts-expect-error Wrong type defs in library
+                      onPress={() => textEditorRef.current?.sendAction('bold', 'result')}
+                    />
+                    <IconButton
+                      icon="format-italic"
+                      accessibilityLabel="Italique"
+                      color={selectedItems.includes('italic') ? colors.primary : colors.text}
+                      // @ts-expect-error Wrong type defs in library
+                      onPress={() => textEditorRef.current?.sendAction('italic', 'result')}
+                    />
+                    <IconButton
+                      icon="format-clear"
+                      accessibilityLabel="Retirer le formattage"
+                      color={colors.text}
+                      onPress={() => {
+                        // @ts-expect-error Wrong type defs in library
+                        textEditorRef.current?.sendAction('removeFormat', 'result');
+                        // @ts-expect-error Wrong type defs in library
+                        textEditorRef.current?.sendAction('paragraph', 'result');
+                      }}
+                    />
+                    <IconButton
+                      icon="undo-variant"
+                      accessibilityLabel="Défaire"
+                      color={colors.text}
+                      style={{ marginLeft: 30 }}
+                      // @ts-expect-error Wrong type defs in library
+                      onPress={() => textEditorRef.current?.sendAction('undo', 'result')}
+                    />
+                    <IconButton
+                      icon="redo-variant"
+                      accessibilityLabel="Refaire"
+                      color={colors.text}
+                      // @ts-expect-error Wrong type defs in library
+                      onPress={() => textEditorRef.current?.sendAction('redo', 'result')}
+                    />
+                  </View>
+                ) : null}
+                <View>
                   <IconButton
                     icon="cog"
                     style={{ marginLeft: 30 }}
@@ -563,6 +648,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                           .replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
                           .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://');
                         setMarkdown(md);
+                        showSuggestions(md);
                         updateArticleCreationData({ parser: 'markdown', data: md });
                       }}
                       editorStyle={{
@@ -589,7 +675,10 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                       numberOfLines={20}
                       mode="outlined"
                       value={markdown}
-                      onChangeText={(data: string) => setMarkdown(data)}
+                      onChangeText={(data: string) => {
+                        showSuggestions(data);
+                        setMarkdown(data);
+                      }}
                       style={styles.textInput}
                     />
                   )}

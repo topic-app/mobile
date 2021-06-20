@@ -36,12 +36,44 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
 
   const [isOpinion, setOpinion] = React.useState(creationData.opinion || false);
 
+  const [titleSuggestions, setTitleSuggestions] = React.useState<string[]>([]);
+
   if (!account.loggedIn) return null;
 
   const MetaSchema = Yup.object().shape({
     title: Yup.string()
       .min(10, 'Le titre doit contenir au moins 10 caractères.')
       .max(100, 'Le titre doit contenir moins de 100 caractères.')
+      .test('suggestions', '', async (title) => {
+        if (!title) return true;
+        let tempSuggestions = [];
+
+        // Uppercase
+        let uppercaseCount = 0;
+        Array.from(title.toUpperCase()).forEach((letter, i) => {
+          if (letter === Array.from(title)[i]) {
+            uppercaseCount++;
+          }
+        });
+        if (title.length >= 10 && uppercaseCount / title.length > 0.5) {
+          tempSuggestions.push('Évitez les titres en majuscules');
+        }
+
+        // Special characters
+        let specialCount = 0;
+        Array.from(title).forEach((letter) => {
+          if (!letter.match(/[A-Za-z ]/g)) {
+            specialCount++;
+          }
+        });
+        if (title.length >= 10 && specialCount > 5) {
+          tempSuggestions.push("Évitez de mettre trop d'émojis et de charactères spéciaux");
+        }
+
+        setTitleSuggestions(tempSuggestions);
+
+        return true;
+      })
       .required('Titre requis'),
     summary: Yup.string().max(500, 'Le résumé doit contenir moins de 500 caractères.'),
     file: Yup.mixed(),
@@ -73,6 +105,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
               ref={titleInput}
               label="Titre"
               value={values.title}
+              info={titleSuggestions.join('\n')}
               touched={touched.title}
               error={errors.title}
               onChangeText={handleChange('title')}
