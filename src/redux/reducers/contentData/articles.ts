@@ -16,7 +16,7 @@ const initialState: ArticlesContentState = {
   creationData: {},
   quicks: [],
   prefs: {
-    categories: ['unread', 'all', 'following'],
+    categories: ['all', 'unread', 'following'],
     hidden: [],
   },
   recommendations: {

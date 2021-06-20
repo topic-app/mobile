@@ -1,5 +1,9 @@
 import { Config } from '@constants';
-import { addArticleRead, clearArticlesRead } from '@redux/actions/contentData/articles';
+import {
+  addArticleRead,
+  clearArticlesRead,
+  updateArticlePrefs,
+} from '@redux/actions/contentData/articles';
 import { addEventRead, clearEventsRead } from '@redux/actions/contentData/events';
 import updatePrefs from '@redux/actions/data/prefs';
 import Store from '@redux/store';
@@ -51,6 +55,12 @@ export const migrateReduxDB = () => {
 
     if (currentVersion < 7) {
       updatePrefs({ blocked: [] });
+    }
+
+    if (currentVersion < 8) {
+      if (Store.getState().articleData.prefs.categories?.toString() === 'unread,all,following') {
+        updateArticlePrefs({ categories: ['all', 'unread', 'following'] });
+      }
     }
 
     // Add all migration scripts here in descending order

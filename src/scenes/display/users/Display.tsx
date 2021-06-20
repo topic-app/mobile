@@ -289,7 +289,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                         ? user.data.cache.followers
                         : ' '}
                     </Text>
-                    <Text>Abonnés </Text>
+                    <Text>Abonnés</Text>
                   </View>
                   <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: 40 }}>
@@ -297,7 +297,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                         ? user.data.cache.following
                         : ' '}
                     </Text>
-                    <Text>Abonnements </Text>
+                    <Text>Abonnements</Text>
                   </View>
                   <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: 40 }}>
