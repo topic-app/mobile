@@ -84,7 +84,7 @@ const SettingsAppearance: React.FC<SettingsAppearance> = ({ preferences }) => {
   Vous pouvez tester les paramètres ici. Voila du **gras**, de _l'italique_, du ~~barré~~
 
   > Qui sera affiché par défaut ?
-  > - Tom Ruchier-Berquet, fondateur de Topic App
+  > - Tom Ruchier-Berquet, fondateur de Topic App
   `;
 
   return (
