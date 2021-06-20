@@ -46,7 +46,7 @@ const ArticleAddPageMeta: React.FC<ArticleAddPageMetaProps> = ({
       .max(100, 'Le titre doit contenir moins de 100 caractères.')
       .test('suggestions', '', async (title) => {
         if (!title) return true;
-        let tempSuggestions = [];
+        const tempSuggestions = [];
 
         // Uppercase
         let uppercaseCount = 0;
