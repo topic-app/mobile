@@ -1,4 +1,4 @@
-import themes from '@styles/Theme';
+import themes from '@styles/helpers/theme';
 
 import {
   WaitingGroup,
@@ -69,7 +69,6 @@ export type AccountUser = User & { verification?: { verified?: boolean } };
 
 export type AccountInfo = {
   accountId: string;
-  device?: string;
   accountToken: string;
   accountTokenExpiry: string;
   user: AccountUser;
@@ -195,10 +194,9 @@ export type Preferences = {
   history: boolean;
   recommendations: boolean;
   syncHistory: boolean;
-  syncLists: boolean;
   fontSize: number;
   stripFormatting: boolean;
-  fontFamily: string;
+  fontFamily: 'system' | 'Roboto' | 'Roboto-Slab' | 'Roboto-Mono' | 'OpenDyslexic';
   themeEasterEggDiscovered: boolean;
   youtubeConsent: boolean;
   useDevServer: boolean;
@@ -208,6 +206,7 @@ export type Preferences = {
   completedFeedback: string[];
   reduxVersion: number;
   advancedMode: boolean;
+  blocked: string[];
 };
 
 export type PreferencesState = Preferences;

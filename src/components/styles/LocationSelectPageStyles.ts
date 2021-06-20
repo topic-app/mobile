@@ -1,8 +1,7 @@
-import { Theme } from '@ts/types';
-import { StyleSheet } from 'react-native';
+import { createStyleSheet } from '@styles/helpers';
 
-function getArticleStyles(_theme: Theme) {
-  return StyleSheet.create({
+export default createStyleSheet(
+  () => ({
     listItem: { padding: 6 },
     searchContainer: {
       paddingHorizontal: 20,
@@ -16,7 +15,6 @@ function getArticleStyles(_theme: Theme) {
       marginHorizontal: 10,
       marginVertical: 10,
     },
-  });
-}
-
-export default getArticleStyles;
+  }),
+  { global: true },
+);

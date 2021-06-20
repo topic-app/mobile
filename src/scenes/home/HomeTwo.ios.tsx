@@ -1,22 +1,18 @@
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
+import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useTheme } from '@utils/index';
-
 import { HomeOneScreenNavigationProp } from './HomeOne';
-import ArticleList from './articles/views/List';
-import EventList from './events/views/List';
-import ExplorerList from './explorer/views/List';
-import ListScreen from './list/views/List';
-
-// import PetitionList from './petitions/views/List';
+import ArticleList from './articles/ArticleList';
+import EventList from './events/List';
+import ExplorerList from './explorer/List';
+import ListScreen from './list/List';
 
 export type HomeTwoNavParams = {
-  Article: { initialList?: string } | undefined;
-  Event: { initialList?: string } | undefined;
-  Petition: undefined;
+  Article: { initialList?: string; article?: string } | undefined;
+  Event: { initialList?: string; evenement?: string } | undefined;
   Explorer: undefined;
   Tests: undefined;
   List: undefined;
@@ -52,9 +48,6 @@ function HomeTwoNavigator() {
             case 'Event':
               iconName = 'calendar';
               break;
-            case 'Petition':
-              iconName = 'comment-check-outline';
-              break;
             case 'Explorer':
               iconName = 'compass-outline';
               break;
@@ -71,7 +64,6 @@ function HomeTwoNavigator() {
     >
       <Tab.Screen name="Article" component={ArticleList} options={{ title: 'Actus' }} />
       <Tab.Screen name="Event" component={EventList} options={{ title: 'Évènements' }} />
-      {/* <Tab.Screen name="Petition" component={PetitionList} options={{ title: 'Pétitions' }} /> */}
       <Tab.Screen name="Explorer" component={ExplorerList} options={{ title: 'Explorer' }} />
       <Tab.Screen name="List" component={ListScreen} options={{ title: 'Plus' }} />
     </Tab.Navigator>

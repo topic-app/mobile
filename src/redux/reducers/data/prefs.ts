@@ -1,6 +1,4 @@
-import { Platform } from 'react-native';
-
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import {
   PrefActionTypes,
   SET_PREFS,
@@ -16,9 +14,8 @@ const initialState: PreferencesState = {
   history: true,
   recommendations: false,
   syncHistory: true,
-  syncLists: true,
   fontSize: 14,
-  fontFamily: 'Roboto',
+  fontFamily: 'system',
   stripFormatting: false,
   themeEasterEggDiscovered: false,
   youtubeConsent: false,
@@ -29,6 +26,7 @@ const initialState: PreferencesState = {
   reduxVersion: Config.reduxVersion,
   showDownloadBanner: !__DEV__,
   advancedMode: !!__DEV__,
+  blocked: [],
   ...Config.seedDb.preferences,
 };
 

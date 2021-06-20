@@ -11,7 +11,6 @@ import eventReducer from './api/events';
 import groupReducer from './api/groups';
 import legalReducer from './api/legal';
 import linkingReducer from './api/linking';
-import petitionReducer from './api/petitions';
 import placeReducer from './api/places';
 import schoolReducer from './api/schools';
 import tagReducer from './api/tags';
@@ -43,7 +42,6 @@ const rootReducer = combineReducers({
   departments: departmentReducer,
   events: eventReducer,
   groups: groupReducer,
-  petitions: petitionReducer,
   places: placeReducer,
   schools: schoolReducer,
   tags: tagReducer,

@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
-import { Divider, Button, RadioButton, List } from 'react-native-paper';
+import { Divider, Button, RadioButton, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Modal } from '@components/index';
-import getStyles from '@styles/Styles';
+import { Modal } from '@components';
 import { ModalProps, ArticleQuickItem, State } from '@ts/types';
-import { useTheme } from '@utils/index';
+
+import getStyles from './styles';
 
 type QuickTypeModalProps = ModalProps & {
   next: (type: string) => void;

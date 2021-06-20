@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useLayout } from '@utils/index';
+import { useLayout } from '@utils';
 
 import AndroidNavigator from './HomeOne.android';
 import IosNavigator from './HomeOne.ios';

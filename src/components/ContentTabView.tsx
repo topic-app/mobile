@@ -2,13 +2,13 @@ import { useNavigation } from '@react-navigation/core';
 import _ from 'lodash';
 import React from 'react';
 import { View, ActivityIndicator, FlatList } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { clearArticles, searchArticles } from '@redux/actions/api/articles';
 import { clearEvents, searchEvents } from '@redux/actions/api/events';
 import { clearGroups, searchGroups } from '@redux/actions/api/groups';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import {
   ArticlePreload,
   EventPreload,
@@ -20,7 +20,6 @@ import {
   Group,
   Account,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
 
 import { InlineCard } from './Cards';
 import CustomTabView from './CustomTabView';
@@ -65,14 +64,13 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     const navigation = useNavigation();
 
     React.useEffect(() => {
-      console.log('ContentTabView useEffect');
       if (types.includes('articles')) {
-        clearArticles(false, true, false, false);
+        clearArticles(false, true, false, false, false);
         searchArticles('initial', '', searchParams, false);
       }
       if (types.includes('events')) {
         clearEvents(false, true);
-        searchEvents('initial', '', searchParams, false);
+        searchEvents('initial', '', searchParams, false, false, 'desc');
       }
       if (types.includes('groups')) {
         clearGroups(false, true, false);
@@ -135,7 +133,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                               params: {
                                 id: item._id,
                                 title: item.title,
-                                useLists: false,
                               },
                             },
                           },
@@ -165,7 +162,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                   contentPlural: 'les évènements',
                 }}
                 error={eventsState.search?.error}
-                retry={() => searchEvents('initial', '', searchParams, false)}
+                retry={() => searchEvents('initial', '', searchParams, false, false, 'desc')}
               />
             )}
             {eventsState.search?.loading.initial && (
@@ -200,7 +197,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                               params: {
                                 id: item._id,
                                 title: item.title,
-                                useLists: false,
                               },
                             },
                           },

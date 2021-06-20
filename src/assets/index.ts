@@ -33,10 +33,6 @@ export { default as ExploreGreyedLight } from '@assets/images/illustrations/expl
 export { default as ExploreLight } from '@assets/images/illustrations/explore/explore_light.svg';
 export { default as GroupDark } from '@assets/images/illustrations/groups/groups_dark.svg';
 export { default as GroupLight } from '@assets/images/illustrations/groups/groups_light.svg';
-export { default as PetitionDark } from '@assets/images/illustrations/petitions/petitions_dark.svg';
-export { default as PetitionGreyedDark } from '@assets/images/illustrations/petitions/petitions_greyed_dark.svg';
-export { default as PetitionGreyedLight } from '@assets/images/illustrations/petitions/petitions_greyed_light.svg';
-export { default as PetitionLight } from '@assets/images/illustrations/petitions/petitions_light.svg';
 export { default as SearchDark } from '@assets/images/illustrations/search/search_dark.svg';
 export { default as SearchLight } from '@assets/images/illustrations/search/search_light.svg';
 export { default as LocationSelectDark } from '@assets/images/illustrations/select_location/select_location_dark.svg';
@@ -50,3 +46,6 @@ export { default as TopicIcon } from '@assets/images/topic-icon.svg';
 export { default as TopicIconTextLight } from '@assets/images/topic-icon-text-light.svg';
 export { default as TopicIconTextDark } from '@assets/images/topic-icon-text-dark.svg';
 export { default as Telegram } from '@assets/images/misc/telegram.svg';
+export { default as WelcomeSearchBlob } from '@assets/images/welcome/search-blob.svg';
+export { default as WelcomeWavesTop } from '@assets/images/welcome/waves-top.svg';
+export { default as WelcomeWavesBottom } from '@assets/images/welcome/waves-bottom.svg';

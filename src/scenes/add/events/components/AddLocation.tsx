@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Button, HelperText, List, Text, Divider, ProgressBar } from 'react-native-paper';
+import { Button, HelperText, List, Text, Divider, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { StepperViewPageProps, ErrorMessage, FullscreenIllustration } from '@components/index';
+import { StepperViewPageProps, ErrorMessage, FullscreenIllustration } from '@components';
 import { fetchMultiDepartment } from '@redux/actions/api/departments';
 import { fetchMultiSchool } from '@redux/actions/api/schools';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
@@ -16,10 +16,9 @@ import {
   ReduxLocation,
   RequestState,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
 
 import { CheckboxListItem } from '../../components/ListItems';
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps & {
   account: Account;
@@ -62,7 +61,7 @@ const EventAddPageLocation: React.FC<Props> = ({
   };
 
   const theme = useTheme();
-  const eventStyles = getAuthStyles(theme);
+  const styles = getStyles(theme);
 
   const selectedGroup = account.groups.find((g) => g._id === creationData.group);
   const selectedGroupLocation = selectedGroup?.roles
@@ -98,8 +97,8 @@ const EventAddPageLocation: React.FC<Props> = ({
   };
 
   return (
-    <View style={eventStyles.formContainer}>
-      <View style={eventStyles.listContainer}>
+    <View style={styles.formContainer}>
+      <View style={styles.listContainer}>
         {selectedGroupLocation.schools?.map((sId) => {
           const s = schoolItems.find((t) => t._id === sId);
           if (!s) return null;
@@ -263,7 +262,7 @@ const EventAddPageLocation: React.FC<Props> = ({
           Vous devez sélectionner au moins une localisation
         </HelperText>
       </View>
-      <View style={eventStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
           uppercase={Platform.OS !== 'ios'}

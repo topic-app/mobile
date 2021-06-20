@@ -2,8 +2,6 @@ import { Platform } from 'react-native';
 
 import {
   EventsContentState,
-  UPDATE_EVENTS_PARAMS,
-  UPDATE_EVENTS_LISTS,
   UPDATE_EVENTS_READ,
   UPDATE_EVENTS_PREFS,
   UPDATE_EVENTS_QUICKS,
@@ -13,20 +11,8 @@ import {
 } from '@ts/redux';
 
 const initialState: EventsContentState = {
-  params: {},
   read: [],
   creationData: {},
-  lists:
-    Platform.OS === 'web'
-      ? []
-      : [
-          {
-            id: '0',
-            name: 'Favoris',
-            icon: 'star-outline',
-            items: [],
-          },
-        ],
   quicks: [],
   prefs: {
     categories: ['upcoming', 'passed', 'following'],
@@ -53,16 +39,6 @@ function eventDataReducer(
   action: EventsContentActionTypes,
 ): EventsContentState {
   switch (action.type) {
-    case UPDATE_EVENTS_PARAMS:
-      return {
-        ...state,
-        params: action.data,
-      };
-    case UPDATE_EVENTS_LISTS:
-      return {
-        ...state,
-        lists: action.data,
-      };
     case UPDATE_EVENTS_READ:
       return {
         ...state,

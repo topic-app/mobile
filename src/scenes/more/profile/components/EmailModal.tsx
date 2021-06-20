@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, Platform, TextInput } from 'react-native';
-import { Divider, Button, HelperText, ProgressBar } from 'react-native-paper';
+import { Divider, Button, HelperText, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, ErrorMessage, Modal } from '@components/index';
+import { CollapsibleView, Modal } from '@components';
 import { fetchEmail } from '@redux/actions/data/account';
 import { updateEmail } from '@redux/actions/data/profile';
-import getStyles from '@styles/Styles';
 import { ModalProps, State } from '@ts/types';
-import { useTheme, request, Alert, Errors } from '@utils/index';
+import { request, Alert, Errors } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 // import LocalAuthentication from 'rn-local-authentication';
 
@@ -21,7 +20,6 @@ type EmailModalProps = ModalProps & {
 const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const profileStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const emailInput = React.useRef<TextInput>(null);
@@ -136,7 +134,7 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
     <Modal visible={visible} setVisible={setVisible}>
       <View>
         <View>
-          <View style={profileStyles.inputContainer}>
+          <View style={styles.inputContainer}>
             <TextInput
               ref={emailInput}
               autoFocus
@@ -148,7 +146,7 @@ const EmailModal: React.FC<EmailModalProps> = ({ visible, setVisible, state }) =
               autoCorrect={false}
               textContentType="emailAddress"
               placeholderTextColor={colors.disabled}
-              style={profileStyles.borderlessInput}
+              style={styles.borderlessInput}
               value={email}
               onChangeText={(text) => {
                 setEmail(text);

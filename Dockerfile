@@ -3,8 +3,10 @@ FROM node:12-alpine AS builder
 WORKDIR /data
 
 COPY package*.json ./
+COPY patches patches
 
 RUN apk update && apk add git
+RUN echo "unsafe-perm" > .npmrc
 RUN npm install && npm install --save react-native-web react-native-linear-gradient
 
 COPY . .

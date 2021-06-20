@@ -1,13 +1,13 @@
 import React from 'react';
 import { Clipboard } from 'react-native';
-import { Banner, Avatar } from 'react-native-paper';
+import { useTheme, Banner, Avatar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { Error as ErrorType, RequestState, State } from '@ts/types';
+import { trackEvent } from '@utils';
 import { processError } from '@utils/errors';
-import { useTheme, trackEvent } from '@utils/index';
 
-type Props = {
+export type ErrorMessageProps = {
   /* Please change me if 'app' is too vague! */
   type: 'axios' | 'app';
   strings: {
@@ -21,10 +21,9 @@ type Props = {
   retry?: () => any;
   restart?: () => any;
   back?: () => any;
-  advancedMode: boolean;
 };
 
-const ErrorMessage: React.FC<Props> = ({
+const ErrorMessage: React.FC<ErrorMessageProps & { advancedMode: boolean }> = ({
   type,
   strings = {
     what: 'la récupération des données',
@@ -97,6 +96,7 @@ const ErrorMessage: React.FC<Props> = ({
       actions={actions}
       icon={({ size }) => (
         <Avatar.Icon
+          accessibilityRole="none"
           style={{ backgroundColor: colors.invalid }}
           size={size}
           icon={errorInfo.message.icon}

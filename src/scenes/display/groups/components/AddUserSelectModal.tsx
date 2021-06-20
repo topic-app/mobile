@@ -1,26 +1,24 @@
 import { Formik } from 'formik';
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Divider, Button } from 'react-native-paper';
+import { Divider, Button, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import { Illustration, ErrorMessage, Modal, FormTextInput } from '@components/index';
+import { Illustration, ErrorMessage, Modal, FormTextInput } from '@components';
 import { fetchUserByUsername } from '@redux/actions/api/users';
 import { updateState } from '@redux/actions/data/account';
-import getStyles from '@styles/Styles';
 import {
   State,
   ModalProps,
   GroupMember,
-  UserPreload,
   UserRequestState,
   AccountRequestState,
   User,
 } from '@ts/types';
-import { logger, request, useTheme } from '@utils/index';
+import { request } from '@utils';
 
-import getGroupStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type AddUserSelectModalProps = ModalProps & {
   state: UserRequestState;
@@ -39,7 +37,6 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const groupStyles = getGroupStyles(theme);
 
   const RegisterSchema = Yup.object().shape({
     username: Yup.string()
@@ -78,8 +75,6 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
               setError('Cet utilisateur est déjà dans le groupe');
               return;
             }
-            console.log('USER');
-            console.log(user);
             if (user) {
               next(user);
               setVisible(false);
@@ -124,7 +119,7 @@ const AddUserSelectModal: React.FC<AddUserSelectModalProps> = ({
                   onChangeText={handleChange('username')}
                   onBlur={handleBlur('username')}
                   onSubmitEditing={() => handleSubmit()}
-                  style={groupStyles.textInput}
+                  style={styles.textInput}
                   textContentType="username"
                   autoCorrect={false}
                   autoCapitalize="none"

@@ -1,11 +1,11 @@
 import { Platform } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import Store from '@redux/store';
 import { UPDATE_UPLOAD_STATE } from '@ts/redux';
-import { AppThunk } from '@ts/types';
-import { request, logger } from '@utils/index';
+import { AppThunk, RequestState } from '@ts/types';
+import { request, logger } from '@utils';
 
 function uploadCreator(
   groupId: string,
@@ -184,6 +184,13 @@ function uploadCreator(
   };
 }
 
+function updateUploadStateCreator(state: { permission?: RequestState; upload?: RequestState }) {
+  return {
+    type: UPDATE_UPLOAD_STATE,
+    data: state,
+  };
+}
+
 async function upload(
   groupId: string,
   resizeMode?: 'content-primary' | 'content-inline' | 'avatar',
@@ -193,5 +200,9 @@ async function upload(
   return Store.dispatch(uploadCreator(groupId, resizeMode, avatar, camera));
 }
 
+async function updateUploadState(state: { permission?: RequestState; upload?: RequestState }) {
+  return Store.dispatch(updateUploadStateCreator(state));
+}
+
 export default upload;
-export { upload };
+export { upload, updateUploadState };

@@ -2,17 +2,17 @@ import { Formik } from 'formik';
 import randomColor from 'randomcolor';
 import React from 'react';
 import { View, Platform, FlatList, TextInput as RNTextInput } from 'react-native';
-import { Button, Card, Divider, Subheading, Title } from 'react-native-paper';
+import { Button, Card, Divider, Subheading, Title, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 import * as Yup from 'yup';
 
-import { Avatar, CollapsibleView, FormTextInput, StepperViewPageProps } from '@components/index';
+import { Avatar, CollapsibleView, FormTextInput, StepperViewPageProps } from '@components';
 import { updateCreationData } from '@redux/actions/data/account';
 import { Avatar as AvatarType, State, LocationList } from '@ts/types';
-import { trackEvent, useTheme } from '@utils/index';
+import { trackEvent } from '@utils';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps & {
   username: string;
@@ -60,7 +60,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
 
   const theme = useTheme();
   const { colors } = theme;
-  const authStyles = getAuthStyles(theme);
+  const styles = getStyles(theme);
 
   const ProfileSchema = Yup.object().shape({
     firstname: Yup.string().max(100, 'Le nom doit contenir moins de 100 caractères'),
@@ -70,7 +70,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
   return (
     <View>
       <View>
-        <View style={authStyles.centerAvatarContainer}>
+        <View style={styles.centerAvatarContainer}>
           {activeAvatar.type === 'gradient' && (
             <Avatar
               size={100}
@@ -99,7 +99,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
               return (
                 <View
                   style={[
-                    authStyles.avatarContainer,
+                    styles.avatarContainer,
                     item.key === activeAvatar.key
                       ? { backgroundColor: colors.primary }
                       : { borderRadius: 55 },
@@ -127,7 +127,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
           <Divider />
         </CollapsibleView>
       </View>
-      <View style={authStyles.formContainer}>
+      <View style={styles.formContainer}>
         <Formik
           initialValues={{ firstname: '', lastname: '' }}
           validationSchema={ProfileSchema}
@@ -159,7 +159,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                     onChangeText={handleChange('firstname')}
                     onBlur={handleBlur('firstname')}
                     onSubmitEditing={() => lastnameInput.current?.focus()}
-                    style={authStyles.textInput}
+                    style={styles.textInput}
                     textContentType="givenName"
                     autoCompleteType="name"
                     autoCorrect={false}
@@ -174,7 +174,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                     onChangeText={handleChange('lastname')}
                     onBlur={handleBlur('lastname')}
                     onSubmitEditing={() => handleSubmit()}
-                    style={authStyles.textInput}
+                    style={styles.textInput}
                     textContentType="givenName"
                     autoCompleteType="name"
                     autoCorrect={false}
@@ -208,12 +208,12 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                   </Card.Content>
                 </Card>
               )}
-              <View style={[authStyles.changeButtonContainer, { marginBottom: 40 }]}>
+              <View style={[styles.changeButtonContainer, { marginBottom: 40 }]}>
                 <Button mode="text" onPress={landing}>
                   Changer
                 </Button>
               </View>
-              <View style={authStyles.buttonContainer}>
+              <View style={styles.buttonContainer}>
                 <Button
                   mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                   uppercase={Platform.OS !== 'ios'}

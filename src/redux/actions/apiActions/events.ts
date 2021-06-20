@@ -1,7 +1,7 @@
 import Store from '@redux/store';
 import { AppThunk, EventCreationData, UPDATE_EVENTS_STATE } from '@ts/redux';
 import { Content } from '@ts/types';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 import {
   reportCreator,

@@ -1,4 +1,4 @@
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import { Image } from '@ts/types';
 
 import logger from './logger';

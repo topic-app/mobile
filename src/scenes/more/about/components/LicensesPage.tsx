@@ -1,14 +1,11 @@
 import React from 'react';
-import { View, ScrollView, ActivityIndicator, Image } from 'react-native';
-import { Divider, List, Subheading, Text } from 'react-native-paper';
+import { View } from 'react-native';
+import { Divider, List, Subheading, Text, useTheme } from 'react-native-paper';
 
-import { Content, ErrorMessage, PlatformTouchable } from '@components/index';
-import getStyles from '@styles/Styles';
-import { RequestState } from '@ts/types';
-import { handleUrl, useTheme } from '@utils/index';
+import getStyles from '@styles/global';
+import { handleUrl } from '@utils';
 
 import { AboutScreenNavigationProp } from '../index';
-import getLocalStyles from '../styles/Styles';
 
 type props = {
   navigation: AboutScreenNavigationProp<'Legal'>;
@@ -17,7 +14,6 @@ type props = {
 const LicensesPage: React.FC<props> = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const localStyles = getLocalStyles(theme);
 
   return (
     <View>

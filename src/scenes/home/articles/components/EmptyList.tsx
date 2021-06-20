@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { ActivityIndicator, useWindowDimensions } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { FullscreenIllustration } from '@components/index';
+import { FullscreenIllustration } from '@components';
 import { ArticleRequestState } from '@ts/types';
-import { useTheme } from '@utils';
 
 import { HomeTwoScreenNavigationProp } from '../../HomeTwo';
 
@@ -30,8 +30,7 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
 
   if (
     (group === 'categories' && reqState.list.success) ||
-    (group === 'quicks' && reqState.search?.success) ||
-    group === 'lists'
+    (group === 'quicks' && reqState.search?.success)
   ) {
     if (sectionKey === 'unread') {
       return (
@@ -60,13 +59,6 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
           }
         >
           Aucun article pour cette localisation
-        </FullscreenIllustration>
-      );
-    } else if (group === 'lists') {
-      return (
-        <FullscreenIllustration illustration="article-lists" style={{ height }}>
-          Aucun article dans cette liste{'\n'}Ajoutez les grâce à l&apos;icone{' '}
-          <Icon name="playlist-plus" size={20} />
         </FullscreenIllustration>
       );
     } else if (sectionKey === 'following') {

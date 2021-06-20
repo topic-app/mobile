@@ -1,10 +1,8 @@
 import React from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { IconButton, useTheme } from 'react-native-paper';
 
-import { useTheme } from '@utils/index';
-
-import getProfileStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = {
   item: string;
@@ -14,6 +12,7 @@ type Props = {
   type?: 'public' | 'private' | 'none';
   onPress: () => any;
   loading?: boolean;
+  small?: boolean;
 };
 
 const ProfileItem: React.FC<Props> = ({
@@ -24,18 +23,23 @@ const ProfileItem: React.FC<Props> = ({
   type = 'public',
   onPress,
   loading = false,
+  small = false,
 }) => {
   const theme = useTheme();
-  const profileStyles = getProfileStyles(theme);
+  const styles = getStyles(theme);
   const { colors } = theme;
 
   return (
-    <View style={profileStyles.profileItem}>
+    <View style={styles.profileItem}>
       <View style={{ flex: 1 }}>
-        {item?.length > 0 && <Text style={profileStyles.keyText}>{item}</Text>}
+        {item?.length > 0 && <Text style={styles.keyText}>{item}</Text>}
         {value?.length > 0 && (
           <Text
-            style={[profileStyles.valueText, { color: disabled ? colors.disabled : colors.text }]}
+            style={[
+              styles.valueText,
+              { color: disabled ? colors.disabled : colors.text },
+              small ? { fontSize: 16 } : {},
+            ]}
           >
             {value}
           </Text>
@@ -46,14 +50,31 @@ const ProfileItem: React.FC<Props> = ({
         {type !== 'none' && (
           <View>
             {type === 'private' ? (
-              <IconButton color={colors.disabled} icon="lock-outline" />
+              <IconButton
+                color={colors.disabled}
+                icon="lock-outline"
+                accessibilityLabel="Privé"
+                accessibilityRole="text"
+              />
             ) : (
-              <IconButton color={colors.disabled} icon="eye-outline" />
+              <IconButton
+                color={colors.disabled}
+                icon="eye-outline"
+                accessibilityLabel="Privé"
+                accessibilityRole="text"
+              />
             )}
           </View>
         )}
         <View>
-          {editable && <IconButton icon="pencil" color={colors.text} onPress={onPress} />}
+          {editable && (
+            <IconButton
+              icon="pencil"
+              color={colors.text}
+              onPress={onPress}
+              accessibilityLabel="Modifier"
+            />
+          )}
         </View>
       </View>
     </View>

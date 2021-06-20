@@ -1,10 +1,10 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { MainScreenNavigationProp } from '../Main';
-import Search from './views/Search';
+import Search from './Search';
 
 export type SearchStackParams = {
   Search: {

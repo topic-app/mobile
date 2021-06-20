@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, Platform } from 'react-native';
-import { Checkbox, List } from 'react-native-paper';
-
-import { useTheme } from '@utils';
+import { Checkbox, List, useTheme } from 'react-native-paper';
 
 type PlatformListItemProps = React.ComponentPropsWithoutRef<typeof List.Item> &
   React.ComponentPropsWithoutRef<typeof Checkbox>;

@@ -49,5 +49,10 @@
         <data android:scheme="http" android:host="www.topicapp.fr"/>
       </intent-filter>
     </activity>
-  </application>
+    <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
+    <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+    <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/primary" tools:replace="android:resource" />
+    <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@mipmap/ic_notification" tools:replace="android:resource" />
+
+    </application>
 </manifest>

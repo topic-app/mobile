@@ -1,12 +1,12 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { MainScreenNavigationProp } from '../Main';
-import ArticleHistory from './articles/views/History';
-import EventHistory from './events/views/History';
-import MainHistory from './main/views/History';
+import ArticleHistory from './ArticleHistory';
+import EventHistory from './EventHistory';
+import MainHistory from './MainHistory';
 
 export type HistoryStackParams = {
   Main: undefined;

@@ -1,4 +1,4 @@
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import {
   LocationActionTypes,
   UPDATE_LOCATION,

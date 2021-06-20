@@ -5,6 +5,7 @@ require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
 platform :ios, '11.0'
 
 target 'Topic' do
+  
   config = use_native_modules!
   use_react_native!(
       :path => config[:reactNativePath],
@@ -12,25 +13,36 @@ target 'Topic' do
       :hermes_enabled => false
     )
   use_unimodules!
-  
+    
   permissions_path = "../node_modules/react-native-permissions/ios"
   pod "Permission-LocationWhenInUse", :path => "#{permissions_path}/LocationWhenInUse"
   pod "Permission-MediaLibrary", :path => "#{permissions_path}/MediaLibrary"
   pod "Permission-Notifications", :path => "#{permissions_path}/Notifications"
   
-  $ReactNativeMapboxGLIOSVersion = "~> 5.9.0"
+  # $ReactNativeMapboxGLIOSVersion = "~> 5.9.0"
   
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  use_flipper!()
+  # use_flipper!()
+  
+  $RNMBGL_Use_SPM = {
+    url: "https://github.com/maplibre/maplibre-gl-native-distribution",
+    requirement: {
+      kind: "upToNextMajorVersion",
+      minimumVersion: "5.11.0"
+    },
+    product_name: "Mapbox"
+  }
+  
   
   pre_install do |installer|
-     $RNMBGL.pre_install(installer)
+    $RNMBGL.pre_install(installer)
   end
   
   post_install do |installer|
+    $RNMBGL.post_install(installer)
     react_native_post_install(installer)
   end
 end

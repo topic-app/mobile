@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import { Button, Text, Divider, Card } from 'react-native-paper';
+import { Button, Text, Divider, Card, useTheme, ProgressBar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 
 import {
   StepperViewPageProps,
@@ -11,69 +12,74 @@ import {
   CollapsibleView,
   CategoryTitle,
   Searchbar,
-} from '@components/index';
-import { Permissions } from '@constants/index';
-import { updateTags, searchTags } from '@redux/actions/api/tags';
+} from '@components';
+import { updateTags, searchTags, fetchMultiTag } from '@redux/actions/api/tags';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
-import { Account, State, TagRequestState, TagPreload } from '@ts/types';
-import { checkPermission, useTheme } from '@utils/index';
+import { Account, State, TagRequestState, TagPreload, EventCreationData, Tag } from '@ts/types';
+import { checkPermission, trackEvent, Permissions, logger } from '@utils';
 
 import TagAddModal from '../../components/TagAddModal';
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 
-type Props = StepperViewPageProps & {
+type EventAddPageTagsProps = StepperViewPageProps & {
   account: Account;
   tagsData: TagPreload[];
   tagsSearch: TagPreload[];
+  tagsItems: Tag[] | null;
   state: TagRequestState;
+  creationData: EventCreationData;
 };
 
-const EventAddPageTags: React.FC<Props> = ({
+const EventAddPageTags: React.FC<EventAddPageTagsProps> = ({
   prev,
   next,
   account,
   tagsData,
+  tagsItems,
   tagsSearch,
   state,
+  creationData,
 }) => {
-  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
-  const [selectedData, setSelectedData] = React.useState<TagPreload[]>([]);
+  const [selectedTags, setSelectedTags] = React.useState<string[]>(creationData.tags || []);
   const [searchText, setSearchText] = React.useState('');
 
   const [tagAddModalVisible, setTagAddModalVisible] = React.useState(false);
-  const [tagName, setTagName] = React.useState<string>('');
+
+  const fetchTags = () => {
+    if (state.info?.loading) return;
+    selectedTags.forEach((t) => {
+      if (!tagsItems?.some((i) => i._id === t)) {
+        logger.debug(`Fetching tag ${t}`);
+        fetchMultiTag(t);
+      }
+    });
+  };
 
   const submit = () => {
+    trackEvent('eventadd:page-content');
     updateEventCreationData({ tags: selectedTags });
     next();
   };
 
   const addNewTag = (tag: { _id: string; displayName: string; color: string }) => {
-    setSelectedTags([...selectedTags, tag._id]);
-    setSelectedData([...selectedData, tag]);
+    if (!selectedTags.includes(tag._id)) setSelectedTags([...selectedTags, tag._id]);
   };
 
-  const searchbarRef = React.createRef<Searchbar>();
+  const removeTag = (tag: { _id: string; displayName: string; color: string }) => {
+    setSelectedTags(selectedTags.filter((s) => s !== tag._id));
+  };
+
+  const inputRef = React.useRef(null);
 
   const theme = useTheme();
   const { colors } = theme;
-  const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   const fetch = () => {
     if (searchText === '') {
-      updateTags('initial');
+      updateTags('initial', { number: 500 });
     } else {
       searchTags('initial', searchText);
-    }
-  };
-
-  const fetchNext = () => {
-    if (searchText === '') {
-      updateTags('next');
-    } else {
-      searchTags('next', searchText);
     }
   };
 
@@ -87,67 +93,42 @@ const EventAddPageTags: React.FC<Props> = ({
     fetch();
   }, [null]);
 
+  React.useEffect(fetchTags, [selectedTags]);
+
   const ListEmptyComponent = () => {
     return (
       <View style={{ alignItems: 'flex-start' }}>
-        {searchText !== '' &&
-        state.search?.success &&
-        !selectedData.some((t) => t.name?.toLowerCase() === searchText?.toLowerCase()) &&
-        checkPermission(account, {
-          permission: Permissions.TAG_ADD,
-          scope: {},
-        }) ? (
-          <TextChip
-            title={`Créer "${searchText.toLowerCase()}"`}
-            icon="plus"
-            onPress={() => {
-              setTagName(searchText.toLowerCase());
-              setTagAddModalVisible(true);
-            }}
-          />
-        ) : (
-          searchText !== '' &&
-          state.search?.success && (
-            <View
-              style={[styles.centerIllustrationContainer, { height: 40, justifyContent: 'center' }]}
-            >
-              <Text>Aucun résultat</Text>
-            </View>
-          )
+        {searchText !== '' && state.search?.success && (
+          <View
+            style={[styles.centerIllustrationContainer, { height: 40, justifyContent: 'center' }]}
+          >
+            <Text>Aucun résultat</Text>
+          </View>
         )}
       </View>
     );
   };
 
-  const ListHeaderComponent = () =>
-    (searchText === '' && state.list.loading.initial) ||
-    (searchText !== '' && state.search?.loading.initial) ? (
-      <View style={{ marginVertical: 5, height: 40, justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    ) : null;
-
-  const ListFooterComponent = () =>
-    (searchText === '' && state.list.loading.next) ||
-    (searchText !== '' && state.search?.loading.next) ? (
-      <View style={{ marginVertical: 5, height: 40, width: 40, justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    ) : null;
+  logger.info(tagsSearch);
 
   const renderItem = React.useCallback(
-    ({ item = { name: 'INCONNU' } }) => {
+    ({
+      item = { _id: shortid(), displayName: 'INCONNU', color: '#ffffff' },
+    }: {
+      item: TagPreload;
+    }) => {
       return (
         <View style={{ marginHorizontal: 5, alignItems: 'flex-start' }}>
           <TextChip
-            title={item.name}
+            title={item.displayName}
             containerStyle={{ borderColor: item.color }}
             onPress={() => {
               if (selectedTags.includes(item._id)) {
-                setSelectedTags(selectedTags.filter((s) => s !== item._id));
+                trackEvent('eventadd:tags-remove');
+                removeTag(item);
               } else {
-                setSelectedTags([...selectedTags, item._id]);
-                setSelectedData([...selectedData, item]);
+                trackEvent('eventadd:tags-add');
+                addNewTag(item);
               }
             }}
             icon={selectedTags.includes(item._id) ? 'check' : 'pound'}
@@ -159,27 +140,41 @@ const EventAddPageTags: React.FC<Props> = ({
     [selectedTags],
   );
 
+  const loading =
+    (searchText === '' && (state.list.loading.next || state.list.loading.initial)) ||
+    (searchText !== '' && (state.search?.loading.next || state.search?.loading.initial));
+
   return (
-    <View style={eventStyles.formContainer}>
+    <View style={styles.formContainer}>
       <View>
         <View>
-          <View>
-            <Searchbar
-              ref={searchbarRef}
-              placeholder={`Rechercher ${
-                checkPermission(account, {
-                  permission: Permissions.TAG_ADD,
-                  scope: {},
-                })
-                  ? 'ou créer '
-                  : ''
-              }un tag`}
-              value={searchText}
-              onChangeText={(props) => {
-                setSearchText(props);
-                searchChange(props);
-              }}
-            />
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexGrow: 1, marginRight: 10 }}>
+              <Searchbar
+                ref={inputRef}
+                placeholder="Rechercher un tag"
+                value={searchText}
+                onChangeText={setSearchText}
+                style={loading ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 } : {}}
+                onIdle={searchChange}
+              />
+              {loading ? (
+                <ProgressBar
+                  indeterminate
+                  style={{ borderBottomLeftRadius: 4, borderBottomRightRadius: 4 }}
+                />
+              ) : (
+                <View style={{ height: 4 }} />
+              )}
+            </View>
+            <Button
+              mode="outlined"
+              icon="plus"
+              style={{ justifyContent: 'center', marginBottom: 4 }}
+              onPress={() => setTagAddModalVisible(true)}
+            >
+              Créer
+            </Button>
           </View>
           {((searchText === '' && state.list.error) ||
             (searchText !== '' && state.search?.error)) && (
@@ -189,8 +184,7 @@ const EventAddPageTags: React.FC<Props> = ({
               retry={fetch}
               strings={{
                 what: 'la récupération des tags',
-                contentPlural: 'des tags',
-                contentSingular: 'La liste des tags',
+                contentPlural: 'Les tags',
               }}
             />
           )}
@@ -199,32 +193,40 @@ const EventAddPageTags: React.FC<Props> = ({
       <View style={{ marginTop: 20, height: 40 }}>
         <FlatList
           horizontal
-          // onEndReached={fetchNext}
-          // onEndReachedThreshold={0.1}
+          onEndReachedThreshold={0.1}
           data={(searchText === '' ? tagsData : tagsSearch).filter(
             (t) => !selectedTags.includes(t._id),
           )}
           ListEmptyComponent={ListEmptyComponent}
-          ListHeaderComponent={ListHeaderComponent}
-          ListFooterComponent={ListFooterComponent}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(i) => i._id}
         />
       </View>
-      <CollapsibleView collapsed={selectedTags.length === 0} style={{ marginTop: 20 }}>
+      <CollapsibleView
+        collapsed={selectedTags.length === 0}
+        style={{ marginTop: 20, marginBottom: 20 }}
+      >
         <View style={{ marginBottom: 15 }}>
           <CategoryTitle>Tags sélectionnés</CategoryTitle>
         </View>
         <FlatList
           horizontal
-          data={selectedTags.map((t) => selectedData.find((u) => u._id === t)!).filter((s) => !!s)}
+          data={selectedTags.map(
+            (t) =>
+              tagsItems?.find((u) => u?._id === t) || {
+                _id: t,
+                name: 'Chargement...',
+                color: colors.text,
+                displayName: 'Chargement...',
+              },
+          )}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(i) => i?._id}
         />
       </CollapsibleView>
-      <View style={[styles.container, { marginTop: 40 }]}>
+      <View style={[styles.container, { marginTop: 20 }]}>
         <Card
           elevation={0}
           style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
@@ -237,16 +239,16 @@ const EventAddPageTags: React.FC<Props> = ({
               color={colors.primary}
             />
             <Text style={{ color: colors.text, flex: 1 }}>
-              Les tags permettent aux utilisateurs de trouver plus facilement vos évènements, et
-              nous les utilisons pour pouvoir faire des recommendations aux utilisateurs.{'\n'}Tapez
-              pour rechercher ou pour créer un nouveau tag si aucun ne correspond.
+              Les tags permettent aux utilisateurs de trouver plus facilement vos évènements,et nous
+              les utilisons pour pouvoir faire des recommandations aux utilisateurs.{'\n'}Tapez pour
+              rechercher ou pour créer un nouveau tag si aucun ne correspond.
             </Text>
           </View>
         </Card>
       </View>
       <View style={{ marginTop: 30 }}>
         <Divider />
-        <View style={eventStyles.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <Button
             mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
             uppercase={Platform.OS !== 'ios'}
@@ -267,7 +269,6 @@ const EventAddPageTags: React.FC<Props> = ({
       </View>
 
       <TagAddModal
-        name={tagName}
         visible={tagAddModalVisible}
         setVisible={setTagAddModalVisible}
         add={addNewTag}
@@ -277,13 +278,14 @@ const EventAddPageTags: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, eventData, tags } = state;
+  const { account, tags, eventData } = state;
   return {
     account,
-    creationData: eventData.creationData,
     tagsData: tags.data,
     tagsSearch: tags.search,
+    tagsItems: tags.items,
     state: tags.state,
+    creationData: eventData.creationData,
   };
 };
 

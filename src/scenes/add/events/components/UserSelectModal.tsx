@@ -1,15 +1,12 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { Divider, ProgressBar, Text, List } from 'react-native-paper';
+import { Divider, ProgressBar, Text, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import Avatar from '@components/Avatar';
-import Illustration from '@components/Illustration';
-import { Modal, ErrorMessage, Searchbar } from '@components/index';
+import { Modal, ErrorMessage, Searchbar, Avatar, Illustration } from '@components';
 import { searchUsers } from '@redux/actions/api/users';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { ModalProps, State, UsersState, UserRequestState, Account, UserPreload } from '@ts/types';
-import { useTheme } from '@utils';
 
 type UserSelectModalProps = ModalProps & {
   users: UsersState;

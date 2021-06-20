@@ -11,10 +11,11 @@ import {
   ListRenderItemInfo,
   ActivityIndicator,
 } from 'react-native';
-import { Subheading, Text } from 'react-native-paper';
+import { Button, Subheading, Text, useTheme } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-import getStyles from '@styles/Styles';
-import { useTheme } from '@utils';
+import getStyles from '@styles/global';
+import { ArticlePreload, PreferencesState, State } from '@ts/types';
 
 import Banner from './Banner';
 import TabChipList from './TabChipList';
@@ -28,6 +29,7 @@ export type Section<T extends any> = {
   loading?: {
     next?: boolean;
     refresh?: boolean;
+    initial?: boolean;
   };
   onLoad?: (type: 'initial' | 'next' | 'refresh') => unknown;
 };
@@ -67,6 +69,7 @@ type Props<T extends any> = Omit<
     changeTab: (newTab: string) => Promise<void>;
   }>;
   renderItem: React.ComponentType<ListRenderItemInfo<T> & { group?: string; sectionKey: string }>;
+  blocked: string[];
 };
 
 const ContentFlatList = <T extends any>({
@@ -79,6 +82,7 @@ const ContentFlatList = <T extends any>({
   onConfigurePress,
   renderItem: Item,
   initialSection,
+  blocked,
   ...props
 }: Props<T>) => {
   const theme = useTheme();
@@ -169,7 +173,7 @@ const ContentFlatList = <T extends any>({
     : undefined;
 
   const shouldRenderTabChipList = sections.length > 1;
-  let onEndReachedCalledDuringMomentum = false;
+  let callOnEndReached = false;
 
   const ListHeaderComponentDefault = React.useMemo(
     () => (
@@ -237,38 +241,53 @@ const ContentFlatList = <T extends any>({
         )}
         ListFooterComponent={
           <View style={[styles.container, { height: 50 }]}>
-            {currentSection.loading?.next && (
+            {currentSection.loading?.next ? (
               <ActivityIndicator size="large" color={colors.primary} />
+            ) : (
+              Platform.OS === 'web' &&
+              !(currentSection.loading?.initial || currentSection.loading?.refresh) &&
+              !!currentSection.data.length && (
+                <Button mode="text" onPress={() => currentSection.onLoad?.('next')}>
+                  Charger plus
+                </Button>
+              )
             )}
           </View>
         }
-        renderItem={(itemProps) => (
-          <>
-            <Item {...itemProps} sectionKey={tabKey} group={currentSection.group} />
-            {Platform.OS === 'android' && (
-              <Animated.View
-                style={{
-                  opacity: renderItemFadeAnim,
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  backgroundColor: colors.background,
-                }}
-              />
-            )}
-          </>
-        )}
+        renderItem={(itemProps) => {
+          if (
+            blocked.includes((itemProps.item as any)?.group?._id) ||
+            blocked.some((b) => (itemProps.item as any)?.authors?.some((a: any) => a?._id === b))
+          ) {
+            return null;
+          }
+          return (
+            <>
+              <Item {...itemProps} sectionKey={tabKey} group={currentSection.group} />
+              {Platform.OS === 'android' && (
+                <Animated.View
+                  style={{
+                    opacity: renderItemFadeAnim,
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: colors.background,
+                  }}
+                />
+              )}
+            </>
+          );
+        }}
         getItemLayout={getItemLayout}
         onMomentumScrollBegin={() => {
-          onEndReachedCalledDuringMomentum = true;
+          callOnEndReached = true;
         }}
-        onMomentumScrollEnd={() => {
-          onEndReachedCalledDuringMomentum = false;
-        }}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={1}
         onEndReached={() => {
-          if (onEndReachedCalledDuringMomentum) {
+          if (callOnEndReached && Platform.OS !== 'web') {
+            // Web has lots of issues with onEndReached, making it a button for now
             currentSection.onLoad?.('next');
+            callOnEndReached = false;
           }
         }}
         {...extraFlatListProps}

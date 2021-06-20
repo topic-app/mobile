@@ -3,11 +3,11 @@ import { View } from 'react-native';
 import { Text, Subheading, ProgressBar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Config } from '@constants/index';
+import { Config } from '@constants';
 import { groupMemberAccept, groupMemberReject } from '@redux/actions/apiActions/groups';
 import { fetchWaitingGroups, fetchGroups } from '@redux/actions/data/account';
 import { State, Account, GroupRequestState } from '@ts/types';
-import { handleUrl, Alert, trackEvent } from '@utils/index';
+import { handleUrl, Alert, trackEvent } from '@utils';
 
 import Avatar from './Avatar';
 import Banner from './Banner';
@@ -87,12 +87,8 @@ const GroupsBanner: React.FC<Props> = ({ account, state }) => {
               ) {
                 Alert.alert(
                   'Rejoindre le groupe ?',
-                  "Un rôle légalement responsable vous a été attribué.\n\nVous êtes en partie responsable de tous les contenus que vous acceptez. En cliquant sur Accepter, vous confirmez avoir lu et accepté la Charte des Administrateurs, qui détaille les modalités d'acceptation ou de refus des contenus.",
+                  "Un rôle légalement responsable vous a été attribué.\n\nVous êtes en partie responsable de tous les contenus que vous acceptez. En cliquant sur Accepter, vous confirmez avoir lu et accepté les Conditions Générales d’Utilisation, qui détaillent les modalités d'acceptation ou de refus des contenus.",
                   [
-                    {
-                      text: 'Voir la charte des Administrateurs',
-                      onPress: () => handleUrl(Config.links.administrator),
-                    },
                     {
                       text: 'Annuler',
                     },

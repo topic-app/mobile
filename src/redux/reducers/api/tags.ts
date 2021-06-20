@@ -11,6 +11,7 @@ import {
 const initialState: TagsState = {
   data: [],
   item: null,
+  items: [],
   search: [],
   state: {
     list: {
@@ -78,7 +79,8 @@ function tagReducer(state = initialState, action: TagsActionTypes): TagsState {
       return {
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
-        item: null,
+        item: action.data.item ? null : state.item,
+        items: action.data.item ? [] : state.items,
         state: state.state,
       };
     default:

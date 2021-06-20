@@ -7,24 +7,17 @@ import {
 } from '@react-navigation/drawer';
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import React from 'react';
-import { View, Linking, Platform } from 'react-native';
-import { Drawer, Title, ProgressBar, Subheading } from 'react-native-paper';
+import { View, Platform } from 'react-native';
+import { Drawer, Title, ProgressBar, Subheading, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import {
-  ErrorMessage,
-  Avatar,
-  Illustration,
-  CollapsibleView,
-  MainFeedback,
-} from '@components/index';
-import { Permissions } from '@constants/index';
+import { ErrorMessage, Avatar, Illustration, CollapsibleView, MainFeedback } from '@components';
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
-import getNavigatorStyles from '@styles/NavStyles';
+import getStyles from '@styles/navigators';
 import { Account, LocationList, State } from '@ts/types';
-import { checkPermission, Format, useTheme } from '@utils/index';
+import { checkPermission, Format, Permissions } from '@utils';
 
 import { MainScreenNavigationProp } from '../Main';
 import HomeTwoNavigator, { HomeTwoNavParams } from './HomeTwo';
@@ -88,7 +81,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
 }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const navigatorStyles = getNavigatorStyles(theme);
+  const styles = getStyles(theme);
 
   const retryFetch = () => {
     fetchLocationData();
@@ -105,11 +98,11 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
       <Drawer.Item key={school._id} label={school?.shortName || school?.name} icon="school" />,
     );
   });
-  location.departmentData.forEach((departement) => {
+  location.departmentData.forEach((department) => {
     locationAccordionItems.push(
       <Drawer.Item
-        key={departement._id}
-        label={departement.shortName || departement.name}
+        key={department._id}
+        label={department.shortName || department.name}
         icon="home-city"
       />,
     );
@@ -122,7 +115,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
   return (
     <DrawerContentScrollView contentContainerStyle={{ paddingTop: 0 }}>
       <Drawer.Section>
-        <View style={[navigatorStyles.profileBackground, { marginBottom: -4 }]}>
+        <View style={[styles.profileBackground, { marginBottom: -4 }]}>
           {(location.state.fetch?.loading ||
             account.state.fetchAccount?.loading ||
             account.state.fetchGroups?.loading ||
@@ -147,21 +140,21 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               retry={retryFetch}
             />
           )}
-          <View style={navigatorStyles.profileIconContainer}>
+          <View style={styles.profileIconContainer}>
             {account.loggedIn ? (
               <View>
                 <View>
                   <Avatar
                     avatar={account.accountInfo?.user?.info.avatar}
                     size={60}
-                    style={navigatorStyles.avatar}
+                    style={styles.avatar}
                   />
                 </View>
-                <Title style={navigatorStyles.title} numberOfLines={1}>
+                <Title style={styles.title} numberOfLines={1}>
                   {Format.fullUserName(account.accountInfo.user)}
                 </Title>
                 <Subheading
-                  style={[navigatorStyles.subtitle, { flex: 1 }]}
+                  style={[styles.subtitle, { flex: 1 }]}
                   ellipsizeMode="tail"
                   numberOfLines={1}
                 >
@@ -173,7 +166,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
                 <View style={{ marginRight: 10 }}>
                   <Illustration name="topic-icon" height={60} width={60} />
                 </View>
-                <Title style={navigatorStyles.topic}>Topic</Title>
+                <Title style={styles.topic}>Topic</Title>
               </View>
             )}
           </View>
@@ -264,18 +257,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
               });
             }}
           />
-          {Platform.OS !== 'web' && (
-            <Drawer.Item
-              label="Créer un compte"
-              icon="account-plus-outline"
-              onPress={() => {
-                navigation.closeDrawer();
-                navigation.navigate('Auth', {
-                  screen: 'Create',
-                });
-              }}
-            />
-          )}
+          <Drawer.Item
+            label="Créer un compte"
+            icon="account-plus-outline"
+            onPress={() => {
+              navigation.closeDrawer();
+              navigation.navigate('Auth', {
+                screen: 'Create',
+              });
+            }}
+          />
         </Drawer.Section>
       )}
       <Drawer.Section>
@@ -326,12 +317,12 @@ const mapStateToProps = (state: State) => {
 const CustomDrawerContentRedux = connect(mapStateToProps)(CustomDrawerContent);
 
 function HomeOneNavigator() {
-  const navigatorStyles = getNavigatorStyles(useTheme());
+  const styles = getStyles(useTheme());
   return (
     <DrawerNav.Navigator
       initialRouteName="Home2"
       drawerContent={({ navigation }) => <CustomDrawerContentRedux navigation={navigation} />}
-      drawerStyle={navigatorStyles.drawerStyle}
+      drawerStyle={styles.drawerStyle}
       edgeWidth={100}
     >
       <DrawerNav.Screen name="Home2" component={HomeTwoNavigator} />

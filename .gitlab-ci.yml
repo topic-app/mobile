@@ -5,49 +5,73 @@
 stages:
   - test
   - build
+  - deploy dev
+  - deploy prod
+
+cache:
+  paths:
+    - node_modules/
+  key:
+    files:
+      - package.json
 
 typescript test:
   stage: test
   image: node:12
+  before_script:
+    - echo "unsafe-perm = true" > .npmrc
+    - npm install --prefer-offline
   script:
-    - npm install
     - npm run tsc
 
 eslint test:
   stage: test
   image: node:12
+  before_script:
+    - echo "unsafe-perm = true" > .npmrc
+    - npm install --prefer-offline
   script:
-    - npm install
     - npm run lint
 
 unit test:
   stage: test
   image: node:12
+  before_script:
+    - echo "unsafe-perm = true" > .npmrc
+    - npm install --prefer-offline
   script:
-    - npm install
     - npm run test
 
 build app android:
-  when: manual
   only:
     - tags
+  needs:
+    - typescript test
+    - eslint test
+    - unit test
   image: reactnativecommunity/react-native-android
   stage: build
   script:
     - echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
-    - echo $ANDROID_KEYSTORE | base64 -d > android/app/topic.keystore
-    - sh gitlab/generate-dotenv.sh > .ENV
+    - echo "$ANDROID_KEYSTORE" | base64 -d > ./android/app/topic.keystore
+    - echo "unsafe-perm = true" > .npmrc
     - npm install
-    - cd android/scripts
-    - './genapks-gitlab.sh'
+    - cd android/
+    - ./gradlew assembleRelease
+    - ./gradlew bundleRelease
   artifacts:
     paths:
-      - './android/scripts/apks'
+      - './android/app/build/outputs/apk/release'
+      - './android/app/build/outputs/bundle/release'
 
 build web:
   only:
     - tags
   image: docker:stable
+  needs:
+    - unit test
+    - eslint test
+    - typescript test
   stage: build
   services:
     - docker:dind
@@ -57,13 +81,60 @@ build web:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $IMG_FULLNAME
 
-sast:
-  variables:
-    SAST_DEFAULT_ANALYZERS: nodejs-scan
-  stage: test
+deploy web dev:
+  stage: deploy dev
+  needs:
+    - build web
+  image: alpine
+  tags:
+    - devserver
+  only:
+    - tags
+  environment:
+    name: dev
+    url: https://dev.topicapp.fr
+  resource_group: devdeploy
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh gitlab@ssh-dev.topicapp.fr "cd /home/topic/config/dev_main/topic && python <<< \"import envreplacer; envreplacer.replace('VERSION_TOPIC_MOBILE','$CI_COMMIT_TAG')\" && sudo -u topic /home/topic/config/dev_main/topic/deploy.sh"
+
+deploy web prod:
+  stage: deploy prod
+  needs:
+    - build web
+    - deploy web dev
+  image: alpine
+  tags:
+    - devserver
+  only:
+    - tags
+  when: manual
+  environment:
+    name: prod
+    url: https://topicapp.fr
+  resource_group: proddeploy
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh gitlab@ssh.topicapp.fr "cd /home/topic/config/prod_main/topic && python <<< \"import envreplacer; envreplacer.replace('VERSION_TOPIC_MOBILE','$CI_COMMIT_TAG')\" && sudo -u topic /home/topic/config/prod_main/topic/deploy.sh"
 
 variables:
   DS_DEFAULT_ANALYZERS: 'retire.js, gemnasium'
+  SAST_DEFAULT_ANALYZERS: nodejs-scan
+  SAST_EXCLUDED_ANALYZERS: 'semgrep, spotbugs, eslint'
 
 include:
   - template: Security/SAST.gitlab-ci.yml

@@ -1,21 +1,24 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
-import { MoreScreenNavigationProp } from '../index';
-import SettingsContent from './views/Content';
-import SettingsDev from './views/Dev';
-import SettingsList from './views/List';
-import SettingsPrivacy from './views/Privacy';
-import SettingsTheme from './views/Theme';
+import { MoreScreenNavigationProp } from '..';
+import SettingsContent from './Content';
+import SettingsDev from './Dev';
+import SettingsList from './List';
+import SettingsPrivacy from './Privacy';
+import SettingsSelectLocation from './SelectLocation';
+import SettingsTheme from './Theme';
 
 export type SettingsStackParams = {
   List: undefined;
   Theme: undefined;
-  Privacy: undefined;
   Content: undefined;
+  Privacy: undefined;
+  Appearance: undefined;
   Dev: undefined;
+  SelectLocation: undefined;
 };
 
 export type SettingsScreenNavigationProp<
@@ -34,10 +37,15 @@ const SettingsStackNavigator: React.FC<{}> = () => {
       screenOptions={{ headerShown: false, title: 'Paramètres' }}
     >
       <Stack.Screen name="List" component={SettingsList} />
-      <Stack.Screen name="Theme" component={SettingsTheme} />
       <Stack.Screen name="Privacy" component={SettingsPrivacy} />
+      <Stack.Screen name="Theme" component={SettingsTheme} />
       <Stack.Screen name="Content" component={SettingsContent} />
       <Stack.Screen name="Dev" component={SettingsDev} />
+      <Stack.Screen
+        name="SelectLocation"
+        component={SettingsSelectLocation}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

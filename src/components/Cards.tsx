@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, ViewStyle, StyleProp } from 'react-native';
-import { Text, Card } from 'react-native-paper';
+import { Text, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { Avatar as AvatarType } from '@ts/types';
-import { useTheme } from '@utils/index';
 
 import Avatar from './Avatar';
 import { PlatformTouchable } from './PlatformComponents';
@@ -15,8 +14,10 @@ type InlineCardProps = {
   subtitle?: string | null;
   onPress?: () => void;
   badge?: string;
+  badgeLabel?: string;
   badgeColor?: string;
   icon?: string;
+  iconLabel?: string;
   iconColor?: string;
   imageUrl?: string;
   avatar?: AvatarType;
@@ -31,8 +32,10 @@ const InlineCard: React.FC<InlineCardProps> = ({
   subtitle,
   onPress,
   badge,
+  badgeLabel,
   badgeColor,
   icon,
+  iconLabel,
   iconColor,
   imageUrl,
   avatar,
@@ -45,7 +48,9 @@ const InlineCard: React.FC<InlineCardProps> = ({
 
   let IconElement: React.FC | null = null;
   if (compact && icon) {
-    IconElement = () => <Icon name={icon} size={25} color={iconColor ?? colors.icon} />;
+    IconElement = () => (
+      <Icon name={icon} size={25} color={iconColor ?? colors.icon} accessibilityLabel={iconLabel} />
+    );
   } else if (icon || imageUrl || avatar) {
     IconElement = () => <Avatar size={50} imageUrl={imageUrl} icon={icon} avatar={avatar} />;
   }
@@ -67,7 +72,14 @@ const InlineCard: React.FC<InlineCardProps> = ({
         <Text style={{ fontSize: 16 }} numberOfLines={titleNumberOfLines}>
           {title}
           {'  '}
-          {badge && <Icon color={badgeColor ?? colors.icon} name={badge} size={16} />}
+          {badge && (
+            <Icon
+              color={badgeColor ?? colors.icon}
+              name={badge}
+              size={16}
+              accessibilityLabel={badgeLabel}
+            />
+          )}
         </Text>
         {subtitle ? (
           <Text style={{ color: colors.subtext }} numberOfLines={subtitleNumberOfLines}>

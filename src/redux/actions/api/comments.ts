@@ -1,6 +1,11 @@
 import Store from '@redux/store';
+import {
+  UPDATE_COMMENTS_DATA,
+  UPDATE_COMMENTS_STATE,
+  CLEAR_COMMENTS,
+  UPDATE_COMMENTS_VERIFICATION,
+} from '@ts/redux';
 import { Comment } from '@ts/types';
-import { UPDATE_COMMENTS_DATA, UPDATE_COMMENTS_STATE, CLEAR_COMMENTS } from '@ts/redux';
 
 import { clearCreator, updateCreator } from './ActionCreator';
 
@@ -27,12 +32,29 @@ async function updateComments(type: 'initial' | 'refresh' | 'next', params = {})
   );
 }
 
+async function updateCommentsVerification(type: 'initial' | 'refresh' | 'next', params = {}) {
+  await Store.dispatch(
+    updateCreator({
+      update: UPDATE_COMMENTS_VERIFICATION,
+      stateName: 'verification_list',
+      stateUpdate: UPDATE_COMMENTS_STATE,
+      url: 'comments/verification/list',
+      listName: 'verification',
+      sort: dateDescSort,
+      dataType: 'comments',
+      type,
+      params,
+      auth: true,
+    }),
+  );
+}
+
 /**
  * @docs actions
  * Vide la database redux complètement
  */
-function clearComments(data = true, search = true) {
+function clearComments(data = false, search = false) {
   Store.dispatch(clearCreator({ clear: CLEAR_COMMENTS, data, search }));
 }
 
-export { updateComments, clearComments };
+export { updateComments, updateCommentsVerification, clearComments };

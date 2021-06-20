@@ -1,6 +1,6 @@
 import Store from '@redux/store';
 import { AppThunk, UPDATE_TAGS_STATE } from '@ts/redux';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 type TagAddProps = {
   name: string;

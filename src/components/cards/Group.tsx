@@ -1,12 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Paragraph, Title, Card } from 'react-native-paper';
+import { Text, Paragraph, Title, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { AnyGroup } from '@ts/types';
-import { useTheme } from '@utils/index';
 
 import Avatar from '../Avatar';
 import { PlatformTouchable } from '../PlatformComponents';
@@ -40,7 +39,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
                   <Title numberOfLines={1}>{group?.displayName || group?.name}</Title>
                   <View style={{ marginLeft: 5 }}>
                     {group?.official && (
-                      <Icon name="check-decagram" color={colors.primary} size={20} />
+                      <Icon
+                        name="check-decagram"
+                        color={colors.primary}
+                        size={20}
+                        accessibilityLabel="Vérifié"
+                      />
                     )}
                   </View>
                 </View>
@@ -50,8 +54,17 @@ const GroupCard: React.FC<GroupCardProps> = ({
                 </Paragraph>
               </View>
               <View>
-                {following && <Icon name="heart" color={colors.primary} size={32} />}
-                {member && <Icon name="account-outline" color={colors.primary} size={32} />}
+                {following && (
+                  <Icon name="heart" color={colors.primary} size={32} accessibilityLabel="Suivi" />
+                )}
+                {member && (
+                  <Icon
+                    name="account-outline"
+                    color={colors.primary}
+                    size={32}
+                    accessibilityLabel="Membre"
+                  />
+                )}
               </View>
             </View>
             <Paragraph numberOfLines={3} style={{ paddingTop: 7, paddingHorizontal: 5 }}>

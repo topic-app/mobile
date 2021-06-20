@@ -11,6 +11,7 @@ import {
   UPDATE_EVENTS_MY_INFO,
 } from '@ts/redux';
 import { Event, ApiItem } from '@ts/types';
+import { getContentParams } from '@utils';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -42,7 +43,7 @@ async function updateUpcomingEvents(
       dataType: 'events',
       type,
       params: useDefaultParams
-        ? { ...Store.getState().eventData.params, durationEndRangeStart: Date.now(), ...params }
+        ? { ...getContentParams(), durationEndRangeStart: Date.now(), ...params }
         : params,
     }),
   );
@@ -63,7 +64,7 @@ async function updatePassedEvents(
       dataType: 'events',
       type,
       params: useDefaultParams
-        ? { ...Store.getState().eventData.params, durationStartRangeEnd: Date.now(), ...params }
+        ? { ...getContentParams(), durationStartRangeEnd: Date.now(), ...params }
         : params,
     }),
   );
@@ -111,6 +112,7 @@ async function searchEvents(
   params = {},
   search = true,
   useDefaultParams = false,
+  sort?: 'asc' | 'desc',
 ) {
   await Store.dispatch(
     updateCreator({
@@ -119,8 +121,9 @@ async function searchEvents(
       url: 'events/list',
       dataType: 'events',
       type,
+      sort: sort === 'desc' ? dateDescSort : sort === 'asc' ? dateAscSort : undefined,
       params: useDefaultParams
-        ? { ...Store.getState().eventData.params, ...params, search, terms }
+        ? { ...getContentParams(), ...params, search, terms }
         : { ...params, search, terms },
       stateName: 'search',
       listName: 'search',
@@ -211,8 +214,8 @@ async function updateEventsVerification(
  * @docs actions
  * Vide la database redux complètement
  */
-function clearEvents(data = true, search = true) {
-  Store.dispatch(clearCreator({ clear: CLEAR_EVENTS, data, search }));
+function clearEvents(data = false, search = false, verification = false, item = false) {
+  Store.dispatch(clearCreator({ clear: CLEAR_EVENTS, data, search, verification, item }));
 }
 
 export {

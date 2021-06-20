@@ -2,10 +2,10 @@ import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
 import { ModerationTypes } from '@ts/types';
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
-import { MoreScreenNavigationProp } from '../index';
-import ModerationList from './views/List';
+import { MoreScreenNavigationProp } from '..';
+import ModerationList from './List';
 
 export type ModerationStackParams = {
   List: { type: ModerationTypes };

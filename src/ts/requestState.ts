@@ -39,7 +39,6 @@ export type StandardRequestState = {
 };
 
 export type ArticleRequestState = StandardRequestState;
-export type PetitionRequestState = StandardRequestState;
 export type PlaceRequestState = StandardRequestState & {
   near: RequestStateComplex;
   map: RequestState;
@@ -63,7 +62,6 @@ export type GroupRequestState = StandardRequestState & {
   modify: RequestState;
   templates: RequestStateComplex;
   verification_delete: RequestState;
-  pages: RequestState;
 };
 
 export type LegalRequestState = {
@@ -74,6 +72,7 @@ export type LegalRequestState = {
 
 export type CommentRequestState = {
   list: RequestStateComplex;
+  verification_list: RequestStateComplex;
   search: RequestStateComplex;
   add: RequestState;
   report: RequestState;
@@ -88,6 +87,7 @@ export type AccountRequestState = {
   fetchWaitingGroups: RequestState; 
   fetchEmail: RequestState;
   updateProfile: RequestState;
+  updateToken: RequestState;
   export: RequestState;
   delete: RequestState;
   passwordRequest: RequestState;
@@ -106,6 +106,7 @@ export type LinkingRequestState = {
   emailVerify: RequestState;
   accountDelete: RequestState;
   resetPassword: RequestState;
+  feedback: RequestState;
 };
 export type UploadRequestState = {
   upload: RequestState;

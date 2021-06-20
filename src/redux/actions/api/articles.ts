@@ -9,6 +9,7 @@ import {
   CLEAR_ARTICLES,
 } from '@ts/redux';
 import { UPDATE_ARTICLES_VERIFICATION, Article } from '@ts/types';
+import { getContentParams } from '@utils';
 
 import { clearCreator, fetchCreator, updateCreator } from './ActionCreator';
 
@@ -35,7 +36,7 @@ async function updateArticles(
       sort: dateDescSort,
       dataType: 'articles',
       type,
-      params: useDefaultParams ? { ...Store.getState().articleData.params, ...params } : params,
+      params: useDefaultParams ? { ...getContentParams(), ...params } : params,
     }),
   );
 }
@@ -77,8 +78,16 @@ async function updateArticlesFollowing(
  * @docs actions
  * Vide la database redux complètement
  */
-function clearArticles(data = true, search = true, verification = true, following = true) {
-  Store.dispatch(clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following }));
+function clearArticles(
+  data = false,
+  search = false,
+  verification = false,
+  following = false,
+  item = false,
+) {
+  Store.dispatch(
+    clearCreator({ clear: CLEAR_ARTICLES, data, search, verification, following, item }),
+  );
 }
 
 /**
@@ -103,7 +112,7 @@ async function searchArticles(
       dataType: 'articles',
       type,
       params: useDefaultParams
-        ? { ...Store.getState().articleData.params, ...params, search, terms }
+        ? { ...getContentParams(), ...params, search, terms }
         : { ...params, search, terms },
       stateName: 'search',
       listName: 'search',

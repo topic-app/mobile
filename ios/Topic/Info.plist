@@ -25,9 +25,11 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>topic</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fr.topicapp.Topic</string>
+				<string>topic</string>
 			</array>
 		</dict>
 	</array>
@@ -60,6 +62,11 @@
 	<string>Trouvez les écoles, évènements et lieux culturels autour de vous</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Ajoutez des photos aux articles et évènements que vous écrivez</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

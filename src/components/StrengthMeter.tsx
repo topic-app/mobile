@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Dimensions, Animated, StyleSheet } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
-import { logger, useTheme } from '@utils/index';
+import { logger } from '@utils';
 
 const deviceWindow = Dimensions.get('window');
 
@@ -23,7 +24,7 @@ const StrengthMeter: React.FC<StrengthMeterProps> = ({
       'StrengthMeter: levels must be the same value of labels.length, please make sure you have defined a label for each level',
     );
   }
-  const barWidth = deviceWindow.width * 0.9;
+  const barWidth = deviceWindow.width < 600 ? deviceWindow.width * 0.9 : 550;
   const animateVal = useRef(new Animated.Value(0)).current;
   const animateColor = useRef(new Animated.Value(0)).current;
 

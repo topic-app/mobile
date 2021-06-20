@@ -1,6 +1,6 @@
 import Store from '@redux/store';
 import { UPDATE_COMMENTS_STATE, Publisher, Content, AppThunk, Comment } from '@ts/types';
-import { request } from '@utils/index';
+import { request } from '@utils';
 
 import { reportCreator } from './ActionCreator';
 

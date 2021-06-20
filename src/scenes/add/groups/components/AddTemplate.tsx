@@ -1,16 +1,14 @@
 import React from 'react';
 import { View, Platform, ActivityIndicator } from 'react-native';
-import { HelperText, Button, ProgressBar, RadioButton, Text, List, Card } from 'react-native-paper';
+import { HelperText, Button, RadioButton, Text, List, Card, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { StepperViewPageProps, ErrorMessage } from '@components/index';
+import { StepperViewPageProps, ErrorMessage } from '@components';
 import { updateGroupTemplates } from '@redux/actions/api/groups';
 import { updateGroupCreationData } from '@redux/actions/contentData/groups';
-import getStyles from '@styles/Styles';
 import { GroupTemplate, GroupRequestState } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getGroupStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type Props = StepperViewPageProps & { templates: GroupTemplate[]; state: GroupRequestState };
 
@@ -33,11 +31,10 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
 
   const theme = useTheme();
   const { colors } = theme;
-  const groupStyles = getGroupStyles(theme);
   const styles = getStyles(theme);
 
   return (
-    <View style={groupStyles.formContainer}>
+    <View style={styles.formContainer}>
       <View style={[styles.container, { marginTop: 40 }]}>
         <Card
           elevation={0}
@@ -73,7 +70,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
           retry={updateGroupTemplates}
         />
       )}
-      <View style={groupStyles.listContainer}>
+      <View style={styles.listContainer}>
         {templates?.map((t) => (
           <List.Item
             key={t.type}
@@ -119,7 +116,7 @@ const ArticleAddPageTemplate: React.FC<Props> = ({ next, prev, templates, state 
           Vous devez sélectionner un type de groupe
         </HelperText>
       </View>
-      <View style={groupStyles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button
           mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
           uppercase={Platform.OS !== 'ios'}

@@ -1,19 +1,17 @@
 import moment from 'moment';
 import React from 'react';
 import { View, Platform, TouchableOpacity } from 'react-native';
-import { Text, IconButton, Menu } from 'react-native-paper';
+import { Text, IconButton, Menu, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { Avatar, Content } from '@components/index';
-import { Permissions } from '@constants/index';
+import { Avatar, Content } from '@components';
 import { commentDelete } from '@redux/actions/apiActions/comments';
-import getStyles from '@styles/Styles';
-import { Comment, Account, State, CommentReply } from '@ts/types';
-import { checkPermission, Errors, useTheme, Alert } from '@utils/index';
-import { NativeStackNavigationProp } from '@utils/stack';
+import { Comment, Account, State, CommentReply, PreferencesState } from '@ts/types';
+import { checkPermission, Errors, Alert, Permissions } from '@utils';
+import { NativeStackNavigationProp } from '@utils/compat/stack';
 
-import getCommentStyles from './styles/Styles';
+import getStyles from './styles';
 
 type CommentInlineCardPropsBase = {
   report: (id: string) => void;
@@ -23,6 +21,8 @@ type CommentInlineCardPropsBase = {
   navigation: NativeStackNavigationProp<any, any>;
   reply: (id: string | null) => void;
   authors?: string[];
+  preferences: PreferencesState;
+  parentId?: string;
 };
 type CommentInlineCardPropsComment = CommentInlineCardPropsBase & {
   isReply: false;
@@ -44,6 +44,8 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
   navigation,
   reply,
   authors,
+  preferences,
+  parentId,
 }) => {
   const { publisher, content, date, _id: id } = comment;
   const { displayName } = publisher
@@ -52,7 +54,6 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
 
   const theme = useTheme();
   const styles = getStyles(theme);
-  const commentStyles = getCommentStyles(theme);
   const { colors } = theme;
 
   const navigateToPublisher = () =>
@@ -100,10 +101,15 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
 
   if (!id || !content) return null;
 
+  if (
+    preferences.blocked.includes(publisher?.group?._id || '') ||
+    preferences.blocked.includes(publisher?.user?._id || '')
+  )
+    return null;
+
   return (
     <View style={styles.container}>
       <View style={[{ flexDirection: 'row' }, isReply ? { marginLeft: 20 } : {}]}>
-        {}
         <Avatar
           avatar={
             publisher?.type === 'user' ? publisher?.user?.info?.avatar : publisher?.group?.avatar
@@ -119,7 +125,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
             >
               <Text
                 style={[
-                  commentStyles.username,
+                  styles.username,
                   comment.publisher?.user?._id === account.accountInfo?.accountId
                     ? { color: colors.primary }
                     : {},
@@ -128,16 +134,26 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                 {isReply ? 'Réponse de ' : ''}
                 {displayName}{' '}
                 {publisher?.group?.official && (
-                  <Icon name="check-decagram" color={colors.primary} size={12} />
+                  <Icon
+                    name="check-decagram"
+                    color={colors.primary}
+                    size={12}
+                    accessibilityLabel="Groupe vérifié"
+                  />
                 )}
                 {authors &&
                   (authors.includes(publisher?.group?._id || '') ||
                     authors.includes(publisher?.user?._id || '')) && (
-                    <Icon name="account-edit" color={colors.primary} size={12} />
+                    <Icon
+                      name="account-edit"
+                      color={colors.primary}
+                      size={12}
+                      accessibilityLabel="Auteur"
+                    />
                   )}
               </Text>
             </TouchableOpacity>
-            <Text style={commentStyles.username}> · {moment(date).fromNow()}</Text>
+            <Text style={styles.username}> · {moment(date).fromNow()}</Text>
           </View>
           <Content data={content.data} parser={content.parser} />
         </View>
@@ -146,15 +162,21 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
             <Menu
               visible={menuVisible === 'main'}
               onDismiss={() => setMenuVisible(null)}
-              anchor={<IconButton icon="dots-vertical" onPress={() => setMenuVisible('main')} />}
+              anchor={
+                <IconButton
+                  icon="dots-vertical"
+                  accessibilityLabel="Options pour ce commentaire"
+                  onPress={() => setMenuVisible('main')}
+                />
+              }
             >
-              <Menu.Item onPress={() => reply(id)} title="Répondre" />
+              <Menu.Item onPress={() => reply(parentId || id)} title="Répondre" />
               <Menu.Item onPress={() => report(id)} title="Signaler" />
               {canDelete ? (
                 <Menu.Item
                   onPress={() =>
                     Alert.alert(
-                      'Voulez vous vraiment supprimer ce commentaire ?',
+                      'Voulez-vous vraiment supprimer ce commentaire ?',
                       'Cette action est irréversible',
                       [{ text: 'Annuler' }, { text: 'Supprimer', onPress: deleteComment }],
                       { cancelable: true },
@@ -178,17 +200,15 @@ const CommentItem: React.FC<CommentInlineCardPropsComment> = (props) => {
       <CommentInlineCard {...props} />
       {!!comment?.cache?.replies &&
         comment.cache.replies.map((c) => {
-          return <CommentInlineCard {...props} comment={c} isReply />;
+          return <CommentInlineCard {...props} comment={c} isReply parentId={comment?._id} />;
         })}
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, comments } = state;
-  return {
-    account,
-  };
+  const { account, preferences } = state;
+  return { account, preferences };
 };
 
 export default connect(mapStateToProps)(CommentItem);

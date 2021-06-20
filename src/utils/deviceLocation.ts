@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import LocationService from 'react-native-geolocation-service';
 
 import logger from './logger';
+import { trackEvent } from './plausible';
 
 export namespace Location {
   /**
@@ -45,10 +46,13 @@ export namespace Location {
     const { status, canAskAgain } = result;
     // User previously granted permission
     if (status === Permissions.PermissionStatus.GRANTED) {
+      trackEvent('landing:locate-accept-permission');
       return 'yes';
     } else if (canAskAgain) {
+      trackEvent('landing:locate-reject-permission');
       return 'no';
     } else {
+      trackEvent('landing:locate-reject-permission');
       return 'never';
     }
   }
@@ -61,7 +65,10 @@ export namespace Location {
    */
   export async function getCoordinates(): Promise<Coordinates> {
     const info = await new Promise<LocationService.GeoPosition>((resolve, reject) =>
-      LocationService.getCurrentPosition(resolve, reject),
+      LocationService.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: false,
+        timeout: 15000,
+      }),
     );
     return info.coords;
   }

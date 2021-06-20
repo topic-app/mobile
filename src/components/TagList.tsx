@@ -1,9 +1,9 @@
 import React from 'react';
 import { FlatList, View } from 'react-native';
-import { Chip } from 'react-native-paper';
+import { Chip, useTheme } from 'react-native-paper';
 
-import getStyles from '@styles/Styles';
-import { useTheme, genTagListData, ItemData } from '@utils/index';
+import getStyles from '@styles/global';
+import { genTagListData, ItemData } from '@utils';
 
 import Avatar from './Avatar';
 
@@ -18,6 +18,16 @@ const TagList: React.FC<Props> = ({ item, scrollable }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
+
+  const accessibilityValues = {
+    tag: 'Tag',
+    group: 'Groupe',
+    author: 'Author',
+    global: 'Publié en',
+    school: "Publié dans l'école",
+    department: 'Publié dans la zone',
+    opinion: 'Article',
+  };
 
   return (
     <View onStartShouldSetResponder={() => true}>
@@ -37,6 +47,8 @@ const TagList: React.FC<Props> = ({ item, scrollable }) => {
           >
             <Chip
               mode="outlined"
+              accessibilityLabel={`${accessibilityValues[tag.type] || 'Info'} ${tag.label}`}
+              accessibilityRole="text"
               icon={tag.image || tag.avatar ? undefined : tag.icon}
               avatar={
                 tag.image || tag.avatar ? (

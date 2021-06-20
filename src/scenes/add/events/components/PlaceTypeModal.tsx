@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
-import { Divider, Button, RadioButton, List } from 'react-native-paper';
+import { Divider, Button, RadioButton, List, useTheme } from 'react-native-paper';
 
-import { Modal } from '@components/index';
-import getStyles from '@styles/Styles';
+import { Modal } from '@components';
+import getStyles from '@styles/global';
 import { ModalProps } from '@ts/types';
-import { useTheme } from '@utils/index';
 
 type PlaceType = 'school' | 'place' | 'standalone' | 'online';
 

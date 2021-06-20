@@ -1,20 +1,13 @@
+import { Formik } from 'formik';
 import React from 'react';
 import { View, Platform, ActivityIndicator } from 'react-native';
-import {
-  Divider,
-  Button,
-  HelperText,
-  TextInput as PaperTextInput,
-  ProgressBar,
-  Title,
-} from 'react-native-paper';
+import { Divider, Button, Title, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
+import * as Yup from 'yup';
 
-import { ErrorMessage, Modal, Avatar } from '@components/index';
+import { Modal, Avatar, FileUpload, FormTextInput } from '@components';
 import { fetchGroup } from '@redux/actions/api/groups';
 import { groupModify } from '@redux/actions/apiActions/groups';
-import { upload } from '@redux/actions/apiActions/upload';
-import getStyles from '@styles/Styles';
 import {
   ModalProps,
   State,
@@ -24,32 +17,20 @@ import {
   Avatar as AvatarType,
   UploadRequestState,
 } from '@ts/types';
-import { Errors, useTheme } from '@utils/index';
+import { Errors } from '@utils';
 
-import getArticleStyles from '../styles/Styles';
+import getStyles from '../styles';
 
 type EditGroupDescriptionModalProps = ModalProps & {
   group: Group | GroupPreload | null;
   editingGroup: {
     id?: string;
     name?: string;
+    shortName?: string;
     summary?: string;
     description?: string;
     avatar?: AvatarType;
   } | null;
-  setEditingGroup: ({
-    id,
-    name,
-    summary,
-    description,
-    avatar,
-  }: {
-    id?: string;
-    name?: string;
-    summary?: string;
-    description?: string;
-    avatar?: AvatarType;
-  }) => any;
   state: GroupRequestState;
   uploadState: UploadRequestState;
 };
@@ -59,25 +40,43 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
   setVisible,
   group,
   editingGroup,
-  setEditingGroup,
   state,
   uploadState,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
   const { colors } = theme;
 
   const [errorVisible, setErrorVisible] = React.useState(false);
 
-  const uploadImage = () => upload(editingGroup?.id || '', 'avatar', true);
-
-  const add = () => {
+  const submit = ({
+    shortName,
+    summary,
+    description,
+    file,
+  }: {
+    shortName?: string;
+    summary: string;
+    description?: string;
+    file?: string;
+  }) => {
     if (group) {
       groupModify(group?._id, {
-        summary: editingGroup?.summary,
-        description: { parser: 'markdown', data: editingGroup?.description || '' },
+        ...(shortName ? { shortName } : {}),
+        ...(summary ? { summary } : {}),
+        ...(description ? { description: { parser: 'markdown', data: description } } : {}),
         avatar: editingGroup?.avatar,
+        ...(file
+          ? {
+              avatar: {
+                type: 'image',
+                image: {
+                  image: file,
+                  thumbnails: { small: true, medium: false, large: true },
+                },
+              },
+            }
+          : {}),
       })
         .then(() => {
           fetchGroup(group?._id);
@@ -88,107 +87,113 @@ const EditGroupDescriptionModal: React.FC<EditGroupDescriptionModalProps> = ({
             type: 'axios',
             what: 'la modification du groupe',
             error,
-            retry: add,
+            retry: () => submit({ shortName, summary, description, file }),
           }),
         );
     }
   };
 
-  const editAvatar = () =>
-    uploadImage()
-      .then((id) => {
-        console.log(id);
-        setEditingGroup({
-          ...editingGroup,
-          avatar: {
-            type: 'image',
-            image: {
-              image: id,
-              thumbnails: { small: true, medium: false, large: true },
-            },
-          },
-        });
-      })
-      .catch((error) =>
-        Errors.showPopup({
-          type: 'axios',
-          what: "l'upload de l'image",
-          error,
-          retry: editAvatar,
-        }),
-      );
+  const GroupSchema = Yup.object().shape({
+    shortName: Yup.string()
+      .min(2, "L'acronyme doit contenir au moins 2 caractères")
+      .max(20, "L'acronyme doit contenir moins de 20 caractères"),
+    description: Yup.string(),
+    summary: Yup.string()
+      .max(200, 'La description courte doit contenir moins de 200 caractères.')
+      .required('Description courte requise'),
+    file: Yup.mixed(),
+  });
+
+  if (!editingGroup) return null;
 
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      <View>
-        {state.modify?.loading && <ProgressBar indeterminate style={{ marginTop: -4 }} />}
-        <View>
-          <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 30 }]}>
-            <Title>{editingGroup?.name}</Title>
-          </View>
-          <View
-            style={[
-              styles.centerIllustrationContainer,
-              {
-                marginBottom: 120,
-                marginTop: 20,
-              },
-            ]}
-          >
-            {uploadState.upload?.loading ? (
-              <View style={{ height: 120, alignContent: 'center', flex: 1 }}>
-                <ActivityIndicator size="large" color={colors.primary} />
-              </View>
-            ) : (
-              <Avatar
-                size={120}
-                imageSize="large"
-                avatar={editingGroup?.avatar}
-                onPress={editAvatar}
-                editing
+      <Formik
+        initialValues={{
+          shortName: editingGroup.shortName || '',
+          summary: editingGroup.summary || '',
+          description: editingGroup.description,
+          file: editingGroup.avatar?.type === 'image' ? editingGroup.avatar.image.image || '' : '',
+        }}
+        validationSchema={GroupSchema}
+        onSubmit={submit}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          <View>
+            <View style={[styles.centerIllustrationContainer, styles.container, { marginTop: 30 }]}>
+              <Title style={{ fontSize: 24 }}>{editingGroup.name}</Title>
+            </View>
+            <Divider />
+            <View style={styles.container}>
+              <FileUpload
+                file={values.file || null}
+                setFile={(file) => {
+                  handleChange('file')(file || '');
+                }}
+                title={Platform.OS === 'web' ? "Changer l'avatar" : undefined}
+                allowDelete={false}
+                group={editingGroup.id || ''}
+                resizeMode="avatar"
+                type="avatar"
               />
-            )}
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  label="Acronyme ou abréviation (facultatif)"
+                  info="Acronyme ou abréviation reconnaissable, qui sera affichée en priorité sur vos contenus"
+                  value={values.shortName}
+                  touched={touched.shortName}
+                  error={errors.shortName}
+                  onChangeText={handleChange('shortName')}
+                  onBlur={handleBlur('shortName')}
+                  style={styles.textInput}
+                />
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  label="Description courte"
+                  info="Décrivez votre groupe en une ou deux phrases"
+                  multiline
+                  numberOfLines={3}
+                  value={values.summary}
+                  touched={touched.summary}
+                  error={errors.summary}
+                  onChangeText={handleChange('summary')}
+                  onBlur={handleBlur('summary')}
+                  style={styles.textInput}
+                />
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  label="Description longue (facultatif)"
+                  info="Cette description sera affichée sur votre page de groupe"
+                  multiline
+                  numberOfLines={6}
+                  value={values.description}
+                  touched={touched.description}
+                  error={errors.description}
+                  onChangeText={handleChange('description')}
+                  onBlur={handleBlur('description')}
+                  onSubmitEditing={() => handleSubmit()}
+                  style={styles.textInput}
+                />
+              </View>
+            </View>
+            <Divider style={{ marginTop: 10 }} />
+            <View style={styles.contentContainer}>
+              <Button
+                mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+                color={colors.primary}
+                loading={state.modify?.loading}
+                disabled={uploadState.upload.loading || uploadState.permission.loading}
+                uppercase={Platform.OS !== 'ios'}
+                onPress={() => handleSubmit()}
+              >
+                Mettre à jour
+              </Button>
+            </View>
           </View>
-          <View style={articleStyles.activeCommentContainer}>
-            <PaperTextInput
-              mode="outlined"
-              multiline
-              label="Résumé"
-              value={editingGroup?.summary}
-              onChangeText={(text) => {
-                setEditingGroup({ ...editingGroup, summary: text });
-              }}
-            />
-            <HelperText type="info">Décrivez ce que vous faites en une ou deux lignes</HelperText>
-          </View>
-          <View style={articleStyles.activeCommentContainer}>
-            <PaperTextInput
-              mode="outlined"
-              label="Description"
-              multiline
-              numberOfLines={5}
-              value={editingGroup?.description}
-              onChangeText={(text) => {
-                setEditingGroup({ ...editingGroup, description: text });
-              }}
-            />
-            <HelperText type="info">
-              Présentez votre groupe, ce que vous faites, sans limite de taille.
-            </HelperText>
-          </View>
-          <Divider style={{ marginTop: 10 }} />
-          <View style={styles.contentContainer}>
-            <Button
-              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-              color={colors.primary}
-              uppercase={Platform.OS !== 'ios'}
-              onPress={add}
-            >
-              Mettre à jour
-            </Button>
-          </View>
-        </View>
-      </View>
+        )}
+      </Formik>
     </Modal>
   );
 };

@@ -11,7 +11,7 @@ import {
   School,
   Department,
 } from '@ts/types';
-import { request, logger } from '@utils/index';
+import { request, logger } from '@utils';
 
 type UpdateCreatorParams<T extends ApiItemString> = {
   dataType: T;
@@ -148,7 +148,7 @@ function updateCreator<T extends ApiItemString>({
           }
           data = sort(data);
         } else {
-          data = result.data ? result.data[dataType] : [];
+          data = result.data ? sort(result.data[dataType]) : [];
         }
         dispatch({
           type: update,

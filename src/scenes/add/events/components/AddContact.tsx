@@ -1,17 +1,15 @@
 import { Formik } from 'formik';
 import React, { createRef } from 'react';
 import { View, Platform, TextInput as RNTextInput } from 'react-native';
-import { TextInput, Button, IconButton, List, Text } from 'react-native-paper';
+import { Button, IconButton, List, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 
-import { StepperViewPageProps, InlineCard, FormTextInput } from '@components/index';
+import { StepperViewPageProps, InlineCard, FormTextInput } from '@components';
 import { updateEventCreationData } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import { Account, State, UserPreload } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getAuthStyles from '../styles/Styles';
+import getStyles from '../styles';
 import ContactAddModal from './ContactAddModal';
 import UserSelectModal from './UserSelectModal';
 
@@ -26,7 +24,6 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
   const [customContact, setCustomContact] = React.useState<CustomContactType[]>([]);
 
   const theme = useTheme();
-  const eventStyles = getAuthStyles(theme);
   const styles = getStyles(theme);
 
   const phoneInput = createRef<RNTextInput>();
@@ -69,7 +66,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
   });
 
   return (
-    <View style={eventStyles.formContainer}>
+    <View style={styles.formContainer}>
       <View style={styles.container}>
         <Text>
           Les moyens de contact ci-dessous seront visibles publiquement. Vérifiez que vous avez bien
@@ -100,7 +97,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
               onChangeText={handleChange('phone')}
               onBlur={handleBlur('phone')}
               onSubmitEditing={() => emailInput.current!.focus()}
-              style={eventStyles.textInput}
+              style={styles.textInput}
               autoCorrect={false}
               autoCapitalize="none"
               keyboardType="phone-pad"
@@ -117,7 +114,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               onSubmitEditing={() => handleSubmit()}
-              style={eventStyles.textInput}
+              style={styles.textInput}
               autoCorrect={false}
               autoCapitalize="none"
               keyboardType="email-address"
@@ -146,6 +143,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
                   </View>
                   <View style={{ flexGrow: 1 }}>
                     <IconButton
+                      accessibilityLabel="Supprimer cet élément"
                       icon="delete"
                       size={30}
                       style={{ marginRight: 20, flexGrow: 1 }}
@@ -189,6 +187,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
                   </View>
                   <View style={{ flexGrow: 1 }}>
                     <IconButton
+                      accessibilityLabel="Supprimer l'organisateur"
                       icon="delete"
                       size={30}
                       style={{ marginRight: 20, flexGrow: 1 }}
@@ -227,7 +226,7 @@ const EventAddPageContact: React.FC<Props> = ({ next, prev, account }) => {
               }}
             />
             <View style={{ height: 20 }} />
-            <View style={eventStyles.buttonContainer}>
+            <View style={styles.buttonContainer}>
               <Button
                 mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}
                 uppercase={Platform.OS !== 'ios'}

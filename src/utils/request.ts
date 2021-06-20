@@ -1,12 +1,17 @@
 /* eslint-disable no-throw-literal */
-import { AxiosResponse } from 'axios';
+import axiosCreator, { AxiosResponse } from 'axios';
+import { Platform } from 'react-native';
 
+import { Config } from '@constants';
 import Store from '@redux/store';
 
-import { Config } from '../constants';
-import axios from './axiosInstance';
-import { crashlytics } from './firebase';
+import { crashlytics } from './compat/firebase';
 import logger from './logger';
+
+const axios = axiosCreator.create({
+  baseURL: Config.api.url.base,
+  timeout: Config.api.timeout,
+});
 
 type ApiDataType = {
   success: boolean;
@@ -23,14 +28,17 @@ async function request(
   server: 'base' | 'auth' | 'data' = 'base',
 ) {
   let url;
-  if (Store.getState().preferences.useDevServer) {
+  const { useDevServer } = Store.getState().preferences;
+
+  if (useDevServer) {
     url = Config.api.devUrl[server];
   } else {
     url = Config.api.url[server];
   }
+
   logger.http({
     method,
-    endpoint: `${url}/${endpoint}`,
+    endpoint,
     params,
     sent: true,
   });
@@ -46,12 +54,12 @@ async function request(
       logger.http({
         status: error?.status,
         method,
-        endpoint: `${url}/${endpoint}`,
+        endpoint,
         params,
         data: error?.response,
       });
-      if (!__DEV__) {
-        crashlytics()?.recordError(
+      if (!__DEV__ && Platform.OS !== 'web') {
+        crashlytics!().recordError(
           new Error(
             `GET Request failed ${JSON.stringify({
               status: error?.status,
@@ -73,7 +81,7 @@ async function request(
       logger.http({
         status: res.status,
         method,
-        endpoint: `${url}/${endpoint}`,
+        endpoint,
         params,
         data: res.data.info,
       });
@@ -89,8 +97,8 @@ async function request(
       params,
       data: res?.data?.info,
     });
-    if (!__DEV__) {
-      crashlytics()?.recordError(
+    if (!__DEV__ && Platform.OS !== 'web') {
+      crashlytics!().recordError(
         new Error(
           `GET Request server failure ${JSON.stringify({
             status: res?.status,
@@ -110,12 +118,12 @@ async function request(
       logger.http({
         status: error.status,
         method,
-        endpoint: `${url}/${endpoint}`,
+        endpoint,
         params,
         data: error.response,
       });
-      if (!__DEV__) {
-        crashlytics()?.recordError(
+      if (!__DEV__ && Platform.OS !== 'web') {
+        crashlytics!().recordError(
           new Error(
             `POST Request failed ${JSON.stringify({
               status: error?.status,
@@ -137,7 +145,7 @@ async function request(
       logger.http({
         status: res.status,
         method,
-        endpoint: `${url}/${endpoint}`,
+        endpoint,
         params,
         data: res.data.info,
       });
@@ -149,17 +157,17 @@ async function request(
     logger.http({
       status: res.status,
       method,
-      endpoint: `${url}/${endpoint}`,
+      endpoint,
       params,
       data: res.data.info,
     });
-    if (!__DEV__) {
-      crashlytics()?.recordError(
+    if (!__DEV__ && Platform.OS !== 'web') {
+      crashlytics!().recordError(
         new Error(
           `POST Request server failure ${JSON.stringify({
             status: res?.status,
             method,
-            endpoint: `${url}/${endpoint}`,
+            endpoint,
             data: res?.data?.info,
           })}`,
         ),

@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, SectionList, Platform } from 'react-native';
-import { IconButton } from 'react-native-paper';
-
-import { useTheme } from '@utils/index';
+import { IconButton, useTheme } from 'react-native-paper';
 
 import { TextChip } from './ChipLists';
 
@@ -59,6 +57,7 @@ const TabChipList = <T extends ListItem>({
             ? () => (
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                   <IconButton
+                    accessibilityLabel="Configurer"
                     icon="pencil"
                     size={26}
                     style={{ marginLeft: 5, margin: 0 }}

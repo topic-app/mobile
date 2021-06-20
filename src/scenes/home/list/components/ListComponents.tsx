@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, TouchableHighlight } from 'react-native';
-import { Subheading } from 'react-native-paper';
+import { Subheading, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { useTheme } from '@utils/index';
 
 type ListItemProps = {
   label: string;

@@ -306,9 +306,6 @@ export type Group = GroupBase & {
     website?: string;
     extra?: string;
   };
-  pages?: {
-    enabled?: boolean;
-  };
 };
 
 export type GroupVerification = Group & {
@@ -342,6 +339,7 @@ type ArticleBase = {
   opinion?: boolean;
   cache?: {
     likes?: number;
+    views?: number;
   };
 };
 export type ArticlePreload = ArticleBase & {
@@ -419,6 +417,7 @@ type EventBase = {
   location: Location; // why exactly is there places AND locations?
   cache?: {
     likes?: number;
+    views?: number;
   };
 };
 
@@ -522,73 +521,11 @@ export namespace MapLocation {
   };
 }
 
-// Petition Types
 export type Publisher = {
   _id?: string; // Note: Not really useful
   type: 'user' | 'group';
   user?: UserPreload;
   group?: GroupPreload;
-};
-
-export type PetitionMessage = {
-  _id: string;
-  type: 'answer' | 'group' | 'publisher' | 'system' | 'closure';
-  date: string;
-  publisher: Publisher;
-  content: Content;
-  important: boolean;
-};
-
-export type PetitionStatus = 'open' | 'waiting' | 'answered' | 'closed';
-
-export type PetitionVoteDataMultiple = {
-  multiple: { title: string; votes: number }[];
-};
-export type PetitionVoteDataDouble = {
-  double: {
-    for: number;
-    against: number;
-  };
-};
-export type PetitionVoteDataGoal = {
-  signatures: number;
-  goals: number[];
-};
-export type PetitionVoteDataNoGoal = {
-  signatures: number;
-};
-
-export type PetitionVoteData = {
-  // Also change types above when changing PetitionVoteData
-  multiple?: { title: string; votes: number }[];
-  double?: {
-    for: number;
-    against: number;
-  };
-  signatures?: number;
-  goals?: number[];
-};
-
-export type PetitionPreload = {
-  _id: string;
-  title: string;
-  summary: string;
-  type: 'goal' | 'sign' | 'opinion' | 'multiple';
-  status: PetitionStatus;
-  duration: Duration;
-  location: Location;
-  publisher: Publisher;
-  tags: TagPreload[];
-  cache: PetitionVoteData & { followers?: number; likes?: number };
-};
-
-export type Petition = PetitionPreload & {
-  image: Image;
-  description: Content;
-  messages: PetitionMessage[];
-  preferences: {
-    comments: boolean;
-  };
 };
 
 export type CommentReply = {
@@ -604,7 +541,7 @@ export type Comment = {
   date: string;
   publisher: Publisher;
   content: Content;
-  parentType: 'article' | 'event' | 'petition' | 'place' | 'comment';
+  parentType: 'article' | 'event' | 'place' | 'comment';
   parent: string;
   cache?: {
     replies?: CommentReply[];

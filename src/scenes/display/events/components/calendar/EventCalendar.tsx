@@ -1,19 +1,15 @@
 // @ts-nocheck
-
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { VirtualizedList, View, TouchableOpacity, Dimensions } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
 import shortid from 'shortid';
 
-import { ProgramEntry } from '@ts/types';
-import { useTheme } from '@utils/index';
-
 import DayView from './DayView';
-import getCalendarStyles from './Styles';
+import getStyles from './styles';
 
 function EventCalendar({
   start,
@@ -37,7 +33,7 @@ function EventCalendar({
   eventTapped,
 }) {
   const calendarRef = React.createRef();
-  const styles = getCalendarStyles(useTheme(), (end - start) * 100);
+  const styles = getStyles(useTheme(), (end - start) * 100);
   const [currentIndex, setCurrentIndex] = React.useState(size);
 
   const goToPage = (index) => {

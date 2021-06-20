@@ -8,8 +8,6 @@ import {
   EventPreload,
   Group,
   GroupPreload,
-  Petition,
-  PetitionPreload,
   Place,
   PlacePreload,
   School,
@@ -26,14 +24,12 @@ import {
   ArticleMyInfo,
   EventMyInfo,
 } from '../api';
-import { Footer, Header, Page } from '../groupPages';
 import {
   ArticleRequestState,
   CommentRequestState,
   DepartmentRequestState,
   EventRequestState,
   GroupRequestState,
-  PetitionRequestState,
   PlaceRequestState,
   SchoolRequestState,
   TagRequestState,
@@ -102,7 +98,13 @@ type UpdateArticlesVerificationAction = {
 
 type ClearArticlesAction = {
   type: typeof CLEAR_ARTICLES;
-  data: { data?: boolean; search?: boolean; verification?: boolean; following?: boolean };
+  data: {
+    data?: boolean;
+    search?: boolean;
+    verification?: boolean;
+    following?: boolean;
+    item?: boolean;
+  };
 };
 
 export type ArticlesActionTypes =
@@ -120,11 +122,13 @@ export type ArticlesActionTypes =
 export const UPDATE_COMMENTS_STATE = 'UPDATE_COMMENTS_STATE';
 export const UPDATE_COMMENTS_DATA = 'UPDATE_COMMENTS_DATA';
 export const UPDATE_COMMENTS_SEARCH = 'UPDATE_COMMENTS_SEARCH';
+export const UPDATE_COMMENTS_VERIFICATION = 'UPDATE_COMMENTS_VERIFICATION';
 export const CLEAR_COMMENTS = 'CLEAR_COMMENTS';
 
 export type CommentsState = {
   data: Comment[];
   search: Comment[];
+  verification: Comment[];
   state: CommentRequestState;
 };
 
@@ -138,6 +142,11 @@ type UpdateCommentsDataAction = {
   data: Comment[];
 };
 
+type UpdateCommentsVerificationAction = {
+  type: typeof UPDATE_COMMENTS_VERIFICATION;
+  data: Comment[];
+};
+
 type UpdateCommentsSearchAction = {
   type: typeof UPDATE_COMMENTS_SEARCH;
   data: Comment[];
@@ -145,12 +154,13 @@ type UpdateCommentsSearchAction = {
 
 type ClearCommentsAction = {
   type: typeof CLEAR_COMMENTS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; verification?: boolean };
 };
 
 export type CommentsActionTypes =
   | UpdateCommentsStateAction
   | UpdateCommentsDataAction
+  | UpdateCommentsVerificationAction
   | UpdateCommentsSearchAction
   | ClearCommentsAction
   | FullClearAction;
@@ -198,7 +208,7 @@ type UpdateDepartmentsSearchAction = {
 
 type ClearDepartmentsAction = {
   type: typeof CLEAR_DEPARTMENTS;
-  data: { data?: boolean; search?: boolean; items?: boolean };
+  data: { data?: boolean; search?: boolean; items?: boolean; item?: boolean };
 };
 
 export type DepartmentsActionTypes =
@@ -274,7 +284,13 @@ type UpdateEventsVerificationAction = {
 
 type ClearEventsAction = {
   type: typeof CLEAR_EVENTS;
-  data: { data?: boolean; search?: boolean; verification?: boolean; following?: boolean };
+  data: {
+    data?: boolean;
+    search?: boolean;
+    verification?: boolean;
+    following?: boolean;
+    item?: boolean;
+  };
 };
 
 export type EventsActionTypes =
@@ -296,7 +312,6 @@ export const UPDATE_GROUPS_ITEM = 'UPDATE_GROUPS_ITEM';
 export const UPDATE_GROUPS_SEARCH = 'UPDATE_GROUPS_SEARCH';
 export const UPDATE_GROUPS_TEMPLATES = 'UPDATE_GROUPS_TEMPLATES';
 export const UPDATE_GROUPS_VERIFICATION = 'UPDATE_GROUPS_VERIFICATION';
-export const UPDATE_GROUPS_PAGES = 'UPDATE_GROUPS_PAGES';
 export const CLEAR_GROUPS = 'CLEAR_GROUPS';
 
 export type GroupsState = {
@@ -306,11 +321,6 @@ export type GroupsState = {
   verification: (Group | GroupPreload)[];
   state: GroupRequestState;
   templates: GroupTemplate[];
-  pages: {
-    headers: Header[];
-    footers: Footer[];
-    pages: Page[];
-  };
 };
 
 type UpdateGroupsStateAction = {
@@ -343,15 +353,6 @@ type UpdateGroupsSearchAction = {
   data: GroupPreload[];
 };
 
-type UpdateGroupsPagesAction = {
-  type: typeof UPDATE_GROUPS_PAGES;
-  data: {
-    headers: Header[];
-    footers: Footer[];
-    pages: Page[];
-  };
-};
-
 type ClearGroupsAction = {
   type: typeof CLEAR_GROUPS;
   data: {
@@ -359,7 +360,7 @@ type ClearGroupsAction = {
     search?: boolean;
     templates?: boolean;
     verification?: boolean;
-    pages?: boolean;
+    item?: boolean;
   };
 };
 
@@ -370,55 +371,7 @@ export type GroupsActionTypes =
   | UpdateGroupsSearchAction
   | UpdateGroupsTemplatesAction
   | UpdateGroupsVerificationAction
-  | UpdateGroupsPagesAction
   | ClearGroupsAction
-  | FullClearAction;
-
-// Petitions
-export const UPDATE_PETITIONS_STATE = 'UPDATE_PETITIONS_STATE';
-export const UPDATE_PETITIONS_DATA = 'UPDATE_PETITIONS_DATA';
-export const UPDATE_PETITIONS_ITEM = 'UPDATE_PETITIONS_ITEM';
-export const UPDATE_PETITIONS_SEARCH = 'UPDATE_PETITIONS_SEARCH';
-export const CLEAR_PETITIONS = 'CLEAR_PETITIONS';
-
-export type PetitionsState = {
-  data: (Petition | PetitionPreload)[];
-  search: PetitionPreload[];
-  item: Petition | null;
-  state: PetitionRequestState;
-};
-
-type UpdatePetitionsStateAction = {
-  type: typeof UPDATE_PETITIONS_STATE;
-  data: Partial<PetitionRequestState>;
-};
-
-type UpdatePetitionsDataAction = {
-  type: typeof UPDATE_PETITIONS_DATA;
-  data: (Petition | PetitionPreload)[];
-};
-
-type UpdatePetitionsItemAction = {
-  type: typeof UPDATE_PETITIONS_ITEM;
-  data: Petition;
-};
-
-type UpdatePetitionsSearchAction = {
-  type: typeof UPDATE_PETITIONS_SEARCH;
-  data: PetitionPreload[];
-};
-
-type ClearPetitionsAction = {
-  type: typeof CLEAR_PETITIONS;
-  data: { data?: boolean; search?: boolean };
-};
-
-export type PetitionsActionTypes =
-  | UpdatePetitionsStateAction
-  | UpdatePetitionsDataAction
-  | UpdatePetitionsItemAction
-  | UpdatePetitionsSearchAction
-  | ClearPetitionsAction
   | FullClearAction;
 
 // Places
@@ -464,7 +417,7 @@ type UpdatePlacesSearchAction = {
 
 type ClearPlacesAction = {
   type: typeof CLEAR_PLACES;
-  data: { data?: boolean; search?: boolean; mapData?: boolean };
+  data: { data?: boolean; search?: boolean; mapData?: boolean; item?: boolean };
 };
 
 export type PlacesActionTypes =
@@ -526,7 +479,7 @@ type UpdateSchoolsNearAction = {
 
 type ClearSchoolsAction = {
   type: typeof CLEAR_SCHOOLS;
-  data: { data?: boolean; search?: boolean; near?: boolean };
+  data: { data?: boolean; search?: boolean; near?: boolean; item?: boolean };
 };
 
 export type SchoolsActionTypes =
@@ -544,12 +497,14 @@ export const UPDATE_TAGS_STATE = 'UPDATE_TAGS_STATE';
 export const UPDATE_TAGS_DATA = 'UPDATE_TAGS_DATA';
 export const UPDATE_TAGS_ITEM = 'UPDATE_TAGS_ITEM';
 export const UPDATE_TAGS_SEARCH = 'UPDATE_TAGS_SEARCH';
+export const UPDATE_TAGS_ITEMS = 'UPDATE_TAGS_ITEMS';
 export const CLEAR_TAGS = 'CLEAR_TAGS';
 
 export type TagsState = {
   data: (Tag | TagPreload)[];
   search: TagPreload[];
   item: Tag | null;
+  items: Tag[] | null;
   state: TagRequestState;
 };
 
@@ -568,6 +523,11 @@ type UpdateTagsItemAction = {
   data: Tag;
 };
 
+type UpdateTagsItemsAction = {
+  type: typeof UPDATE_TAGS_ITEMS;
+  data: Tag[];
+};
+
 type UpdateTagsSearchAction = {
   type: typeof UPDATE_TAGS_SEARCH;
   data: TagPreload[];
@@ -575,13 +535,14 @@ type UpdateTagsSearchAction = {
 
 type ClearTagsAction = {
   type: typeof CLEAR_TAGS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; item?: boolean };
 };
 
 export type TagsActionTypes =
   | UpdateTagsStateAction
   | UpdateTagsDataAction
   | UpdateTagsItemAction
+  | UpdateTagsItemsAction
   | UpdateTagsSearchAction
   | ClearTagsAction
   | FullClearAction;
@@ -622,7 +583,7 @@ type UpdateUsersSearchAction = {
 
 type ClearUsersAction = {
   type: typeof CLEAR_USERS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; item?: boolean };
 };
 
 export type UsersActionTypes =
@@ -688,7 +649,6 @@ export namespace ApiAction {
     departments: DepartmentsActionTypes;
     groups: GroupsActionTypes;
     events: EventsActionTypes;
-    petitions: PetitionsActionTypes;
     places: PlacesActionTypes;
     tags: TagsActionTypes;
     schools: SchoolsActionTypes;
@@ -706,7 +666,6 @@ export namespace ApiAction {
     departments: UpdateDepartmentsStateAction;
     groups: UpdateGroupsStateAction;
     events: UpdateEventsStateAction;
-    petitions: UpdatePetitionsStateAction;
     places: UpdatePlacesStateAction;
     tags: UpdateTagsStateAction;
     schools: UpdateSchoolsStateAction;
@@ -729,7 +688,6 @@ export namespace ApiAction {
     departments: ClearDepartmentsAction;
     groups: ClearGroupsAction;
     events: ClearEventsAction;
-    petitions: ClearPetitionsAction;
     places: ClearPlacesAction;
     tags: ClearTagsAction;
     schools: ClearSchoolsAction;

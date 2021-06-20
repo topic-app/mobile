@@ -1,29 +1,13 @@
-import { Article, Event, EventPlace, Image, ProgramEntry, Address, TagPreload } from '../api';
+import { Article, Event, Image, ProgramEntry, Address, TagPreload } from '../api';
 import { FullClearAction } from './actions';
 import { ApiAction } from './apiReducers';
 
 // Articles
-export const UPDATE_ARTICLES_PARAMS = 'UPDATE_ARTICLES_PARAMS';
-export const UPDATE_ARTICLES_LISTS = 'UPDATE_ARTICLES_LISTS';
 export const UPDATE_ARTICLES_READ = 'UPDATE_ARTICLES_READ';
 export const UPDATE_ARTICLES_PREFS = 'UPDATE_ARTICLES_PREFS';
 export const UPDATE_ARTICLES_QUICKS = 'UPDATE_ARTICLES_QUICKS';
 export const UPDATE_ARTICLES_RECOMMENDATIONS = 'UPDATE_ARTICLES_RECOMMENDATIONS';
 export const UPDATE_ARTICLES_CREATION_DATA = 'UPDATE_ARTICLES_CREATION_DATA';
-
-export type ArticleListItem = {
-  id: string;
-  name: string;
-  description?: string;
-  icon: string;
-  items: Article[]; // a besoin d'un refactor
-};
-
-export type ArticleParams = {
-  schools?: string[];
-  departments?: string[];
-  global?: boolean;
-};
 
 export type ArticleQuickItem = {
   type: 'tag' | 'user' | 'group' | 'school' | 'departement' | 'region' | 'global';
@@ -38,6 +22,7 @@ export type ArticlePrefs = {
 
 export type ArticleReadItem = {
   id: string;
+  key: string;
   title?: string;
   date?: Date;
   marked: boolean;
@@ -79,23 +64,11 @@ export type ArticleCreationData = {
 };
 
 export type ArticlesContentState = {
-  params: ArticleParams;
-  lists: ArticleListItem[];
   prefs: ArticlePrefs;
   read: ArticleReadItem[];
   quicks: ArticleQuickItem[];
   creationData: ArticleCreationData;
   recommendations: ArticleRecommendations;
-};
-
-type UpdateArticlesParamsAction = {
-  type: typeof UPDATE_ARTICLES_PARAMS;
-  data: Partial<ArticleParams>;
-};
-
-type UpdateArticlesListsAction = {
-  type: typeof UPDATE_ARTICLES_LISTS;
-  data: ArticleListItem[];
 };
 
 type UpdateArticlesReadAction = {
@@ -124,8 +97,6 @@ type UpdateArticlesCreationDataAction = {
 };
 
 export type ArticlesContentActionTypes =
-  | UpdateArticlesParamsAction
-  | UpdateArticlesListsAction
   | UpdateArticlesReadAction
   | UpdateArticlesPrefsAction
   | UpdateArticlesQuicksAction
@@ -134,27 +105,11 @@ export type ArticlesContentActionTypes =
   | FullClearAction;
 
 // Events
-export const UPDATE_EVENTS_PARAMS = 'UPDATE_EVENTS_PARAMS';
-export const UPDATE_EVENTS_LISTS = 'UPDATE_EVENTS_LISTS';
 export const UPDATE_EVENTS_READ = 'UPDATE_EVENTS_READ';
 export const UPDATE_EVENTS_PREFS = 'UPDATE_EVENTS_PREFS';
 export const UPDATE_EVENTS_QUICKS = 'UPDATE_EVENTS_QUICKS';
 export const UPDATE_EVENTS_RECOMMENDATIONS = 'UPDATE_EVENTS_RECOMMENDATIONS';
 export const UPDATE_EVENTS_CREATION_DATA = 'UPDATE_EVENTS_CREATION_DATA';
-
-export type EventListItem = {
-  id: string;
-  name: string;
-  description?: string;
-  icon: string;
-  items: Event[]; // a besoin d'un refactor
-};
-
-export type EventParams = {
-  schools?: string[];
-  departments?: string[];
-  global?: boolean;
-};
 
 export type EventQuickItem = {
   type: 'tag' | 'user' | 'group' | 'school' | 'departement' | 'region' | 'global';
@@ -181,6 +136,7 @@ export type EventRecommendations = {
 
 export type EventReadItem = {
   id: string;
+  key: string;
   title?: string;
   date?: Date;
   marked: boolean;
@@ -260,23 +216,11 @@ export type EventCreationData = {
 };
 
 export type EventsContentState = {
-  params: EventParams;
-  lists: EventListItem[];
   prefs: EventPrefs;
   read: EventReadItem[];
   quicks: EventQuickItem[];
   creationData: EventCreationData;
   recommendations: EventRecommendations;
-};
-
-type UpdateEventsParamsAction = {
-  type: typeof UPDATE_EVENTS_PARAMS;
-  data: Partial<EventParams>;
-};
-
-type UpdateEventsListsAction = {
-  type: typeof UPDATE_EVENTS_LISTS;
-  data: EventListItem[];
 };
 
 type UpdateEventsReadAction = {
@@ -305,8 +249,6 @@ type UpdateEventsCreationDataAction = {
 };
 
 export type EventsContentActionTypes =
-  | UpdateEventsParamsAction
-  | UpdateEventsListsAction
   | UpdateEventsReadAction
   | UpdateEventsPrefsAction
   | UpdateEventsQuicksAction
@@ -384,18 +326,6 @@ export namespace ContentAction {
     articleData: ApiAction.UpdateStateNameMap['articles'];
     eventData: ApiAction.UpdateStateNameMap['events'];
     groupData: ApiAction.UpdateStateNameMap['groups'];
-  };
-
-  type UpdateParamsActionMap = {
-    articleData: UpdateArticlesParamsAction;
-    eventData: UpdateEventsParamsAction;
-  };
-
-  export type UpdateParamsTypeMap = {
-    [K in keyof UpdateParamsActionMap]: UpdateParamsActionMap[K]['type'];
-  };
-  export type UpdateParamsDataMap = {
-    [K in keyof UpdateParamsActionMap]: UpdateParamsActionMap[K]['data'];
   };
 
   type UpdateRecommendationsActionMap = {

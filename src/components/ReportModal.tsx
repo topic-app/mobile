@@ -1,21 +1,12 @@
 import React from 'react';
 import { View, Platform, FlatList } from 'react-native';
-import {
-  Divider,
-  Button,
-  Text,
-  TextInput,
-  RadioButton,
-  List,
-  ProgressBar,
-} from 'react-native-paper';
+import { Divider, Button, Text, TextInput, RadioButton, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import { ModalProps, Account, State, RequestState } from '@ts/types';
-import { Errors, trackEvent, useTheme } from '@utils/index';
+import { Errors, trackEvent } from '@utils';
 
-import ErrorMessage from './ErrorMessage';
 import Modal from './Modal';
 
 type ReportModalProps = ModalProps & {

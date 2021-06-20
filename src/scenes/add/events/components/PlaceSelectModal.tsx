@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { Divider, ProgressBar, Text, List } from 'react-native-paper';
+import { Divider, ProgressBar, Text, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Modal, Searchbar, Illustration, ErrorMessage } from '@components/index';
+import { Modal, Searchbar, Illustration, ErrorMessage } from '@components';
 import { searchPlaces, updatePlaces } from '@redux/actions/api/places';
 import { searchSchools, updateSchools } from '@redux/actions/api/schools';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import {
   ModalProps,
   State,
@@ -16,10 +16,10 @@ import {
   RequestStateComplex,
   EventCreationDataPlace,
 } from '@ts/types';
-import { Format, useTheme } from '@utils/index';
+import { Format } from '@utils';
 
 type EventPlaceSelectModalProps = ModalProps & {
-  type: 'school' | 'place' | 'standalone'|'online';
+  type: 'school' | 'place' | 'standalone' | 'online';
   schools: SchoolsState;
   places: PlacesState;
   add: (place: EventCreationDataPlace) => void;

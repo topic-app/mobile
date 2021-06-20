@@ -1,23 +1,21 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { Text, ProgressBar } from 'react-native-paper';
+import { Text, ProgressBar, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { ChipAddList, ErrorMessage, ArticleCard } from '@components/index';
-import { Permissions } from '@constants/index';
+import { ChipAddList, ErrorMessage, ArticleCard } from '@components';
 import { updateArticlesVerification } from '@redux/actions/api/articles';
-import getStyles from '@styles/Styles';
+import getStyles from '@styles/global';
 import {
   State,
   Account,
   ArticleRequestState,
-  AccountPermission,
   ArticleVerificationPreload,
   ModerationTypes,
 } from '@ts/types';
-import { checkPermission, getPermissionGroups, useTheme } from '@utils/index';
+import { checkPermission, getPermissionGroups, Permissions } from '@utils';
 
-import type { ModerationScreenNavigationProp } from '../index';
+import type { ModerationScreenNavigationProp } from '..';
 
 type Props = {
   navigation: ModerationScreenNavigationProp<'List'>;
@@ -135,7 +133,6 @@ const ModerationArticles: React.FC<Props> = ({
                         params: {
                           id: item._id,
                           title: item.title,
-                          useLists: false,
                           verification: true,
                         },
                       },

@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, ScrollView, ActivityIndicator } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
+import { Content, ErrorMessage } from '@components';
+import getStyles from '@styles/global';
 import { RequestState } from '@ts/types';
-import { Content, ErrorMessage } from '@components/index';
-import { useTheme } from '@utils/index';
-import getStyles from '@styles/Styles';
 
 type LegalPageProps = {
   content: string;

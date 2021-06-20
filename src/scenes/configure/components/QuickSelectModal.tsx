@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { Divider, ProgressBar, Text, List } from 'react-native-paper';
+import { Divider, ProgressBar, Text, List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
-import { Searchbar, Illustration, Avatar, ErrorMessage, Modal } from '@components/index';
+import { Searchbar, Illustration, Avatar, ErrorMessage, Modal } from '@components';
 import { searchDepartments, updateDepartments } from '@redux/actions/api/departments';
 import { searchGroups, updateGroups } from '@redux/actions/api/groups';
 import { searchSchools, updateSchools } from '@redux/actions/api/schools';
@@ -11,7 +11,6 @@ import { searchTags, updateTags } from '@redux/actions/api/tags';
 import { searchUsers, updateUsers } from '@redux/actions/api/users';
 import { addArticleQuick } from '@redux/actions/contentData/articles';
 import { addEventQuick } from '@redux/actions/contentData/events';
-import getStyles from '@styles/Styles';
 import {
   ModalProps,
   State,
@@ -35,9 +34,8 @@ import {
   Avatar as AvatarType,
   Address,
 } from '@ts/types';
-import { useTheme } from '@utils/index';
 
-import getArticleStyles from './styles/Styles';
+import getStyles from './styles';
 
 type QuickSelectModalProps = ModalProps & {
   articleQuicks: ArticleQuickItem[];
@@ -66,7 +64,7 @@ function QuickSelectModal({
 }: QuickSelectModalProps) {
   const theme = useTheme();
   const styles = getStyles(theme);
-  const articleStyles = getArticleStyles(theme);
+  const articleStyles = getStyles(theme);
   const { colors } = theme;
 
   const [searchText, setSearchText] = React.useState('');

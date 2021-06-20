@@ -9,10 +9,10 @@ import { Platform } from 'react-native';
 
 import { AppScreenNavigationProp } from '@src/index';
 
-import LandingBeta from './views/Beta';
-import LandingInfo from './views/Info';
-import SelectLocation from './views/SelectLocation';
-import LandingWelcome from './views/Welcome';
+import LandingBeta from './Beta';
+import LandingInfo from './Info';
+import SelectLocation from './SelectLocation';
+import LandingWelcome from './Welcome';
 
 export type LandingStackParams = {
   Welcome: undefined;
@@ -33,7 +33,7 @@ const Stack = createStackNavigator<LandingStackParams>();
 function LandingStackNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName={Platform.OS === 'web' ? 'SelectLocation' : 'Welcome'}
+      initialRouteName="Welcome"
       screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}
     >
       <Stack.Screen
@@ -41,21 +41,9 @@ function LandingStackNavigator() {
         component={SelectLocation}
         options={{ title: 'Localisation' }}
       />
-      <Stack.Screen
-        name="Welcome"
-        component={LandingWelcome}
-        options={{ title: 'Bienvenue sur Topic' }}
-      />
-      <Stack.Screen
-        name="Info"
-        component={LandingInfo}
-        options={{ title: 'Bienvenue sur Topic' }}
-      />
-      <Stack.Screen
-        name="Beta"
-        component={LandingBeta}
-        options={{ title: 'Bienvenue sur Topic' }}
-      />
+      <Stack.Screen name="Welcome" component={LandingWelcome} options={{ title: 'Bienvenue' }} />
+      <Stack.Screen name="Info" component={LandingInfo} options={{ title: 'Bienvenue' }} />
+      <Stack.Screen name="Beta" component={LandingBeta} options={{ title: 'Bienvenue' }} />
     </Stack.Navigator>
   );
 }

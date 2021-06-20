@@ -1,13 +1,13 @@
 import { CompositeNavigationProp } from '@react-navigation/core';
 import React from 'react';
 
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@utils/compat/stack';
 
-import { DisplayScreenNavigationProp } from '../index';
-import ArticleDisplay from './views/Display';
+import { DisplayScreenNavigationProp } from '..';
+import ArticleDisplay from './Display';
 
 export type ArticleDisplayStackParams = {
-  Display: { id: string; useLists: boolean; verification: boolean };
+  Display: { id: string; verification: boolean };
 };
 
 export type ArticleDisplayScreenNavigationProp<
