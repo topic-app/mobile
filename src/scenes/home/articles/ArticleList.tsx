@@ -105,7 +105,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
           scrollY={scrollY}
           initialTabKey={route.params?.initialList}
           onArticleCreatePressed={() => {
-            updateArticleCreationData({ editing: false, id: undefined });
+            updateArticleCreationData({ editing: false });
             navigation.navigate('Main', {
               screen: 'Add',
               params: { screen: 'Article', params: { screen: 'Add' } },

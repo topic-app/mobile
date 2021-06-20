@@ -103,7 +103,7 @@ const EventListScreen: React.FC<EventListProps> = ({
           scrollY={scrollY}
           initialTabKey={route.params?.initialList}
           onEventCreatePressed={() => {
-            updateEventCreationData({ editing: false, id: undefined });
+            updateEventCreationData({ editing: false });
             navigation.navigate('Main', {
               screen: 'Add',
               params: { screen: 'Event', params: { screen: 'Add' } },

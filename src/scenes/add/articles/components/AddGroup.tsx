@@ -43,20 +43,20 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({
   };
 
   const submitNew = async (showAlert = false) => {
-    if (showAlert) {
+    if (!group) {
+      setError(true);
+    } else if (showAlert) {
       Alert.alert(
         'Supprimer le brouillon précédent ?',
         `En créant un nouvel article, vous supprimerez le brouillon de "${creationData.title}"`,
         [{ text: 'Annuler' }, { text: 'Continuer', onPress: () => submitNew() }],
         { cancelable: true },
       );
-    } else if (group !== null) {
+    } else {
       trackEvent('articleadd:page-location');
       await clearArticleCreationData();
       await updateArticleCreationData({ group });
       next();
-    } else {
-      setError(true);
     }
   };
 
@@ -156,7 +156,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({
             <Button
               mode={Platform.OS !== 'ios' ? 'contained' : 'outlined'}
               uppercase={Platform.OS !== 'ios'}
-              onPress={() => submitNew(true)}
+              onPress={() => submitNew(!creationData.id)}
               style={{ flex: 1 }}
             >
               Nouvel article
@@ -174,7 +174,7 @@ const ArticleAddPageGroup: React.FC<ArticleAddPageGroupProps> = ({
                 <View style={{ marginLeft: 10 }}>
                   <Text>{creationData.title}</Text>
                   <Text style={{ fontSize: 14, color: colors.muted }}>
-                    Brouillon -{' '}
+                    {creationData.id ? 'Modification' : `Brouillon`} -{' '}
                     {groupsWithPermission.find((g) => g._id === creationData.group)?.displayName ||
                       'Groupe inconnu'}
                   </Text>
