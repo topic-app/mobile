@@ -20,6 +20,7 @@ const initialState: PreferencesState = {
   themeEasterEggDiscovered: false,
   youtubeConsent: false,
   useDevServer: !!__DEV__,
+  quickDevServer: false,
   analytics: true,
   completedFeedback: [],
   appOpens: 0,
@@ -55,7 +56,12 @@ function prefReducer(state = initialState, action: PrefActionTypes): Preferences
       // Return the default preferences
       return initialState;
     case FULL_CLEAR:
-      return { ...initialState, useDevServer: state.useDevServer };
+      return {
+        ...initialState,
+        useDevServer: state.useDevServer,
+        advancedMode: state.advancedMode,
+        quickDevServer: state.quickDevServer,
+      };
     default:
       return state;
   }

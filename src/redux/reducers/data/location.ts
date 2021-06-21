@@ -46,8 +46,6 @@ function locationReducer(state = initialState, action: LocationActionTypes): Loc
       return { ...state, ...action.data };
     case CLEAR_LOCATION:
       return initialState;
-    case FULL_CLEAR:
-      return initialState;
     case UPDATE_LOCATION_STATE:
       return { ...state, state: { ...state.state, ...action.data } };
     default:

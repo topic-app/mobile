@@ -1,4 +1,10 @@
-import { LegalActionTypes, LegalState, UPDATE_LEGAL_STATE, UPDATE_LEGAL } from '@ts/redux';
+import {
+  LegalActionTypes,
+  LegalState,
+  UPDATE_LEGAL_STATE,
+  UPDATE_LEGAL,
+  FULL_CLEAR,
+} from '@ts/redux';
 
 const initialState: LegalState = {
   conditions: 'Chargement...',
@@ -35,6 +41,8 @@ function legalReducer(state = initialState, action: LegalActionTypes): LegalStat
         ...state,
         ...action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     default:
       return state;
   }

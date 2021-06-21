@@ -12,8 +12,8 @@ import {
   SettingTooltip,
 } from '@components';
 import { updatePrefs } from '@redux/actions/data/prefs';
-import Store from '@redux/store';
-import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
+import Store, { Persistor } from '@redux/store';
+import { Preferences, State, AccountState, FULL_CLEAR, CLEAR_LOCATION } from '@ts/types';
 import { Alert, crashlytics, messaging } from '@utils';
 
 import type { SettingsScreenNavigationProp } from '.';
@@ -48,6 +48,7 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
               useDevServer: !preferences.useDevServer,
             });
             Store.dispatch({ type: FULL_CLEAR, data: {} });
+            Store.dispatch({ type: CLEAR_LOCATION, data: {} });
             Alert.alert("Merci de redémarrer l'application", '', [], { cancelable: false });
           },
         },
@@ -206,6 +207,12 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
               description="Publiez des articles et des évènements de test, cette option efface les données et redémarre l'application"
               value={preferences.useDevServer}
               onPress={toggleDevServer}
+            />
+            <SettingToggle
+              title="Activer le serveur de développement temporaire"
+              description="Ajoute un bouton dans le menu pour passer temporairement sur le serveur de développement"
+              value={preferences.quickDevServer}
+              onPress={() => updatePrefs({ quickDevServer: !preferences.quickDevServer })}
             />
             <SettingTooltip
               icon="alert-circle-outline"

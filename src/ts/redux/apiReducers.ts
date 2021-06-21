@@ -614,7 +614,7 @@ type UpdateLegalAction = {
   data: Partial<LegalState>;
 };
 
-export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction;
+export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction | FullClearAction;
 
 // Linking
 export const UPDATE_LINKING_STATE = 'UPDATE_LINKING_STATE';
@@ -626,7 +626,7 @@ type UpdateLinkingStateAction = {
   type: typeof UPDATE_LINKING_STATE;
   data: Partial<LinkingRequestState>;
 };
-export type LinkingActionTypes = UpdateLinkingStateAction;
+export type LinkingActionTypes = UpdateLinkingStateAction | FullClearAction;
 
 // Upload
 export const UPDATE_UPLOAD_STATE = 'UPDATE_UPLOAD_STATE';
@@ -639,7 +639,7 @@ type UpdateUploadStateAction = {
   data: Partial<UploadRequestState>;
 };
 
-export type UploadActionTypes = UpdateUploadStateAction;
+export type UploadActionTypes = UpdateUploadStateAction | FullClearAction;
 
 export namespace ApiAction {
   // Not exported

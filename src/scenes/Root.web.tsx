@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 import { Avatar, Illustration, MainFeedback } from '@components';
 import DownloadBanner from '@components/DownloadBanner';
 import getStyles from '@styles/global';
-import { State, Account } from '@ts/types';
-import { useLayout, checkPermission, Permissions } from '@utils';
+import { State, Account, Preferences } from '@ts/types';
+import { useLayout, checkPermission, Permissions, quickDevServer, Alert } from '@utils';
 import { NativeStackNavigationProp } from '@utils/compat/stack';
 
 import { AppScreenNavigationProp } from '..';
@@ -21,6 +21,7 @@ type DrawerContentProps = {
   drawerExpanded: boolean;
   setDrawerExpanded: (state: boolean) => any;
   account: Account;
+  preferences: Preferences;
 };
 
 const DrawerContent: React.FC<DrawerContentProps> = ({
@@ -28,6 +29,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
   drawerExpanded,
   setDrawerExpanded,
   account,
+  preferences,
 }) => {
   const items = [
     {
@@ -198,6 +200,23 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
           params: { screen: 'About', params: { screen: 'List' } },
         }),
     },
+    ...(preferences.quickDevServer
+      ? [
+          {
+            key: 'devserver',
+            text: 'Serveur de dev',
+            type: 'button',
+            icon: 'wrench-outline',
+            navigate: () => {
+              if (preferences.useDevServer) {
+                Alert.alert('Rechargez la page pour retourner au serveur principal');
+              } else {
+                quickDevServer();
+              }
+            },
+          },
+        ]
+      : []),
   ];
 
   const [active, setActive] = React.useState(items[0].key);
@@ -313,8 +332,8 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { account };
+  const { account, preferences } = state;
+  return { account, preferences };
 };
 
 const ReduxDrawerContent = connect(mapStateToProps)(DrawerContent);

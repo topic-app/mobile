@@ -16,8 +16,8 @@ import { ErrorMessage, Avatar, Illustration, CollapsibleView, MainFeedback } fro
 import { fetchAccount, fetchGroups, fetchWaitingGroups } from '@redux/actions/data/account';
 import { fetchLocationData } from '@redux/actions/data/location';
 import getStyles from '@styles/navigators';
-import { Account, LocationList, State } from '@ts/types';
-import { checkPermission, Format, Permissions } from '@utils';
+import { Account, LocationList, Preferences, State } from '@ts/types';
+import { checkPermission, Format, Permissions, Alert, quickDevServer } from '@utils';
 
 import { MainScreenNavigationProp } from '../Main';
 import HomeTwoNavigator, { HomeTwoNavParams } from './HomeTwo';
@@ -72,12 +72,14 @@ type CustomDrawerContentProps = {
   navigation: DrawerNavigationHelpers;
   account: Account;
   location: LocationList;
+  preferences: Preferences;
 };
 
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
   navigation,
   account,
   location,
+  preferences,
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -311,6 +313,19 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
             });
           }}
         />
+        {preferences.quickDevServer ? (
+          <Drawer.Item
+            label="Serveur de dev"
+            icon="wrench-outline"
+            onPress={() => {
+              if (preferences.useDevServer) {
+                Alert.alert("Redémarrez l'application pour retourner");
+              } else {
+                quickDevServer();
+              }
+            }}
+          />
+        ) : null}
       </Drawer.Section>
       <MainFeedback visible={feedbackVisible} setVisible={setFeedbackVisible} />
     </DrawerContentScrollView>
@@ -318,10 +333,11 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, location } = state;
+  const { account, location, preferences } = state;
   return {
     account,
     location,
+    preferences,
   };
 };
 

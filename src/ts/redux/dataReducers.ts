@@ -200,6 +200,7 @@ export type Preferences = {
   themeEasterEggDiscovered: boolean;
   youtubeConsent: boolean;
   useDevServer: boolean;
+  quickDevServer: boolean;
   analytics: boolean;
   appOpens: number;
   showDownloadBanner: boolean;

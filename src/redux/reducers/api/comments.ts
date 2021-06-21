@@ -5,6 +5,7 @@ import {
   UPDATE_COMMENTS_DATA,
   UPDATE_COMMENTS_VERIFICATION,
   CLEAR_COMMENTS,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: CommentsState = {
@@ -78,6 +79,8 @@ function commentReducer(state = initialState, action: CommentsActionTypes): Comm
         ...state,
         verification: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_COMMENTS:
       return {
         data: action.data.data ? [] : state.data,

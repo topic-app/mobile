@@ -21,3 +21,4 @@ export { hashPassword } from './compat/crypto';
 export * from './compat/firebase';
 export { default as YouTube } from './compat/youtube';
 export * from './compat/youtube';
+export { default as quickDevServer } from './devServer';
