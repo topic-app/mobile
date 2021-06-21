@@ -256,7 +256,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   };
 
   const showSuggestions = async (data: string) => {
-    let tempSuggestions: { text: string; icon: string }[] = [];
+    const tempSuggestions: { text: string; icon: string }[] = [];
     setPublishWarning(false);
 
     if (data.length > 700 && !data.match(/#/g) && editor !== 'plaintext') {
@@ -271,7 +271,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
   };
 
   const showWarnings = (data: string) => {
-    let tempSuggestions: { text: string; icon: string }[] = [];
+    const tempSuggestions: { text: string; icon: string }[] = [];
     setPublishWarning(false);
 
     // Length
