@@ -105,6 +105,18 @@ const DrawerContent: React.FC<DrawerContentProps> = ({
                 params: { screen: 'MyGroups', params: { screen: 'List' } },
               }),
           },
+          {
+            key: 'notifications',
+            type: 'button',
+            icon: 'bell-outline',
+            text: 'Notifications',
+            path: '/notifications',
+            navigate: () =>
+              navigation.navigate('Main', {
+                screen: 'More',
+                params: { screen: 'Notifications', params: { screen: 'Notifications' } },
+              }),
+          },
           ...(checkPermission(account, {
             permission: Permissions.ARTICLE_VERIFICATION_VIEW,
             scope: {},

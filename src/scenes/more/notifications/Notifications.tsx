@@ -1,3 +1,4 @@
+import { useLinkTo } from '@react-navigation/native';
 import moment from 'moment';
 import React from 'react';
 import { View } from 'react-native';
@@ -6,10 +7,11 @@ import { Text, List, Button, Divider, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 
-import { CollapsibleView, PageContainer } from '@components';
+import { CollapsibleView, FullscreenIllustration, PageContainer } from '@components';
 import { fetchNotifications } from '@redux/actions/data/account';
 import getStyles from '@styles/global';
 import { AccountRequestState, Notifications, State } from '@ts/types';
+import { handleAction } from '@utils';
 
 type NotificationProps = {
   notification: {
@@ -21,7 +23,7 @@ type NotificationProps = {
       description: string;
       icon: string;
       color: string;
-      actions: { name: string; action: string; important: boolean }[];
+      actions: { name: string; action: { type: string; data: string }; important: boolean }[];
     };
   };
   expanded: boolean;
@@ -29,39 +31,37 @@ type NotificationProps = {
 };
 
 const Notification: React.FC<NotificationProps> = ({ notification, expanded, onPress }) => {
+  const linkTo = useLinkTo();
+  const theme = useTheme();
+  const styles = getStyles(theme);
+
   return (
     <View>
       <List.Item
         left={() => (
-          <Icon name={notification.content.icon} color={notification.content.color} size={50} />
+          <View style={{ width: 50, alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name={notification.content.icon} color={notification.content.color} size={28} />
+          </View>
         )}
         title={notification.content.title}
-        description={notification.content.description}
+        description={
+          notification.content.description + JSON.stringify(notification.content.actions)
+        }
         titleNumberOfLines={expanded ? 1e4 : 2}
         descriptionNumberOfLines={expanded ? 1e4 : 3}
         onPress={onPress}
-        descriptionStyle={{ textAlign: 'justify', marginRight: 50 }}
-        titleStyle={{ textAlign: 'justify', marginRight: 50 }}
       />
       <CollapsibleView collapsed={!expanded}>
         {expanded && (
-          <View style={{ flex: 1, flexDirection: 'row' }}>
-            <FlatList
-              horizontal
-              style={{ marginHorizontal: 50, overflow: 'visible' }}
-              data={notification.content.actions}
-              keyExtractor={(action) => action.name}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <Button
-                  mode={item.important ? 'contained' : 'text'}
-                  onPress={() => console.log(item.action)}
-                >
-                  {item.name}
-                </Button>
-              )}
-            />
-            {/* notification.content.actions.map(action => <Button mode={action.important ? 'contained' : 'text'} onPress={() => console.log(action.action)}>{action.name}</Button>) */}
+          <View style={[styles.container, { flex: 1, flexDirection: 'row' }]}>
+            {notification.content.actions?.map((a) => (
+              <Button
+                mode={a.important ? 'contained' : 'text'}
+                onPress={() => handleAction(a.action.type, a.action.data, linkTo)}
+              >
+                {a.name}
+              </Button>
+            ))}
           </View>
         )}
       </CollapsibleView>
@@ -84,8 +84,6 @@ const NotificationsDisplay: React.FC<NotificationsProps> = ({ notifications, sta
   React.useEffect(() => {
     fetchNotifications();
   }, [null]);
-  console.log(notifications);
-  console.log(state.notifications);
 
   return (
     <PageContainer
@@ -107,8 +105,15 @@ const NotificationsDisplay: React.FC<NotificationsProps> = ({ notifications, sta
       centered
     >
       <FlatList
-        data={notifications}
+        data={notifications.sort((a, b) => (a.date > b.date ? -1 : 1))}
         keyExtractor={(notification) => notification._id}
+        ListEmptyComponent={
+          state.notifications.loading || !state.notifications.success ? null : (
+            <FullscreenIllustration illustration="auth-register">
+              Aucune notification
+            </FullscreenIllustration>
+          )
+        }
         renderItem={({ item }) => (
           <View>
             <Notification

@@ -4,6 +4,7 @@ export default {
     screens: {
       Login: '/auth/connexion',
       Create: '/auth/creation',
+      CreateSuccess: '/auth/fin',
     },
   },
   Landing: {
@@ -76,6 +77,11 @@ export default {
                   List: '/a_propos',
                   Legal: '/legal',
                   Licenses: '/legal/licenses',
+                },
+              },
+              Notifications: {
+                screens: {
+                  Notifications: '/notifications',
                 },
               },
             },

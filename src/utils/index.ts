@@ -11,6 +11,7 @@ export * from './permissions';
 export * from './plausible';
 export { default as shareContent } from './share';
 export { default as getContentParams } from './params';
+export { default as handleAction } from './handleAction';
 export { Location } from './deviceLocation';
 export { Errors };
 

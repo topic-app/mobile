@@ -137,6 +137,16 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
                 });
               }}
             />
+            <List.Item
+              title="Notifications"
+              left={() => <List.Icon icon="bell-outline" />}
+              onPress={() => {
+                navigation.navigate('Main', {
+                  screen: 'More',
+                  params: { screen: 'Notifications', params: { screen: 'Notifications' } },
+                });
+              }}
+            />
             {(checkPermission(account, {
               permission: Permissions.ARTICLE_VERIFICATION_VIEW,
               scope: {},
