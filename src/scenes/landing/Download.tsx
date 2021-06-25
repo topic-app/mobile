@@ -22,7 +22,7 @@ const LandingWelcome: React.FC = () => {
 
   return (
     <View style={styles.page}>
-      <Text>Vous avez déjà téléchargé l'application :)</Text>
+      <Text>Vous avez déjà téléchargé l&apos;application :)</Text>
     </View>
   );
 };
