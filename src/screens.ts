@@ -11,6 +11,7 @@ export default {
     screens: {
       SelectLocation: '/localisation',
       Welcome: '/accueil',
+      Download: '/telecharger',
     },
   },
   Linking: {

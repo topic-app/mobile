@@ -28,9 +28,10 @@ type Props = {
     groups: GroupRequestState;
     articles: ArticleRequestState;
   };
+  showDownload?: boolean;
 };
 
-const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
+const WelcomeAbout: React.FC<Props> = ({ groups, articles, state, showDownload = true }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -170,45 +171,47 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state }) => {
         </View>
       </View>
       <WelcomeWavesBottom width="100%" height={width * 0.08} />
-      <View style={{ marginTop: 60 }}>
-        <View style={styles.centerIllustrationContainer}>
-          <Title style={[styles.title, { textAlign: 'center' }]}>
-            Téléchargez l&apos;application
-          </Title>
-          <Subheading style={[styles.subtitle, { textAlign: 'center', color: colors.text }]}>
-            Retrouvez l&apos;actualité engagée et découvrez ce qui se passe autour de vous,
-            directement sur votre téléphone
-          </Subheading>
-          <View style={{ marginTop: 20, flexDirection: 'row' }}>
-            <Button
-              mode={detectOS() === 'android' ? 'contained' : 'outlined'}
-              onPress={() => {
-                trackEvent('homepage:download-button', { props: { os: 'android' } });
-                handleUrl('https://play.google.com/store/apps/details?id=fr.topicapp.topic', {
-                  trusted: true,
-                });
-              }}
-              icon="android"
-              style={{ marginRight: 10 }}
-              uppercase={false}
-            >
-              Android
-            </Button>
-            <Button
-              mode={detectOS() === 'ios' ? 'contained' : 'outlined'}
-              onPress={() => {
-                trackEvent('homepage:download-button', { props: { os: 'ios' } });
-                handleUrl('https://apps.apple.com/fr/app/topic/id1545178171', { trusted: true });
-              }}
-              icon="apple"
-              style={{ marginLeft: 10 }}
-              uppercase={false}
-            >
-              iOS
-            </Button>
+      {showDownload && (
+        <View style={{ marginTop: 60 }}>
+          <View style={styles.centerIllustrationContainer}>
+            <Title style={[styles.title, { textAlign: 'center' }]}>
+              Téléchargez l&apos;application
+            </Title>
+            <Subheading style={[styles.subtitle, { textAlign: 'center', color: colors.text }]}>
+              Retrouvez l&apos;actualité engagée et découvrez ce qui se passe autour de vous,
+              directement sur votre téléphone
+            </Subheading>
+            <View style={{ marginTop: 20, flexDirection: 'row' }}>
+              <Button
+                mode={detectOS() === 'android' ? 'contained' : 'outlined'}
+                onPress={() => {
+                  trackEvent('homepage:download-button', { props: { os: 'android' } });
+                  handleUrl('https://play.google.com/store/apps/details?id=fr.topicapp.topic', {
+                    trusted: true,
+                  });
+                }}
+                icon="android"
+                style={{ marginRight: 10 }}
+                uppercase={false}
+              >
+                Android
+              </Button>
+              <Button
+                mode={detectOS() === 'ios' ? 'contained' : 'outlined'}
+                onPress={() => {
+                  trackEvent('homepage:download-button', { props: { os: 'ios' } });
+                  handleUrl('https://apps.apple.com/fr/app/topic/id1545178171', { trusted: true });
+                }}
+                icon="apple"
+                style={{ marginLeft: 10 }}
+                uppercase={false}
+              >
+                iOS
+              </Button>
+            </View>
           </View>
         </View>
-      </View>
+      )}
       <View style={[{ marginTop: 60 }]}>
         <View style={[styles.centerIllustrationContainer, { marginBottom: 30 }]}>
           <Title style={styles.title}>Groupes populaires</Title>
