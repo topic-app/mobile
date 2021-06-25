@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Image, useWindowDimensions } from 'react-native';
+import { View, ScrollView, Image, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { Divider, Subheading, Title, Button, useTheme } from 'react-native-paper';
 
 import { Illustration } from '@components';
@@ -57,7 +57,9 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
         <View style={{ height: 'calc(100vh - 110px)', width: '100%' }}>
           <View style={styles.centerIllustrationContainer}>
             <View style={styles.container}>
-              <Illustration name="topic-icon-text" height={50} />
+              <TouchableOpacity onPress={() => navigation.navigate('Landing')}>
+                <Illustration name="topic-icon-text" height={50} />
+              </TouchableOpacity>
             </View>
           </View>
           <View
