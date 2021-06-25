@@ -123,7 +123,10 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state, showDownload =
           screen: 'Main',
           params: {
             screen: 'More',
-            params: { screen: 'About', params: { screen: 'Legal', params: { page: 'privacy' } } },
+            params: {
+              screen: 'About',
+              params: { screen: 'Legal', params: { page: 'confidentialite' } },
+            },
           },
         }),
     },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, useWindowDimensions } from 'react-native';
+import { View, ScrollView, Image, useWindowDimensions } from 'react-native';
 import { Divider, Subheading, Title, Button, useTheme } from 'react-native-paper';
 
 import { Illustration } from '@components';
@@ -22,6 +22,8 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
+
+  const homepage_illustration = require('@assets/images/bigillustrations/homepage.png');
 
   const { width } = useWindowDimensions();
 
@@ -64,7 +66,21 @@ const LandingWelcome: React.FC<LandingWelcomeProps> = ({ navigation }) => {
               flexDirection: 'row',
             }}
           >
-            <View style={[styles.container, { flex: 1, alignSelf: 'center' }]}>
+            <View
+              style={[
+                styles.container,
+                { flex: 1, alignSelf: width > 1000 ? 'center' : 'flex-start' },
+              ]}
+            >
+              {width <= 1000 && (
+                <View style={{ marginTop: 10, marginBottom: 20 }}>
+                  <Image
+                    resizeMode="contain"
+                    style={{ height: 'calc(65vh - 250px)' }}
+                    source={homepage_illustration}
+                  />
+                </View>
+              )}
               <View style={styles.centerIllustrationContainer}>
                 <Title style={[styles.title, { textAlign: 'center', fontSize: 24 }]}>
                   Téléchargez l&apos;application Topic
