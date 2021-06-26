@@ -23,11 +23,12 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
     <View>
       <View style={styles.contentContainer}>
         <View style={styles.centerIllustrationContainer}>
-          <Illustration name="topic-icon-text" height={100} />
+          <Illustration name="topic-icon" height={100} />
         </View>
       </View>
       <View style={styles.headerContainer}>
         <View style={styles.centerIllustrationContainer}>
+          <Text style={[styles.topic, { fontSize: 50 }]}>Topic</Text>
           <Subheading>La mallette à outils de l&apos;engagement citoyen</Subheading>
         </View>
       </View>

@@ -512,9 +512,7 @@ function requestPasswordResetCreator({ username }: { username: string }): AppThu
 
 function fetchNotificationsCreator(): AppThunk {
   return async (dispatch, getState) => {
-    console.log('mushroom')
     if (!getState().account.loggedIn) {
-      console.log('if')
       return null;
     }
     dispatch({
@@ -527,12 +525,10 @@ function fetchNotificationsCreator(): AppThunk {
         },
       },
     });
-    console.log('hello1')
     let result;
     try {
       result = await request('notifications/get', 'get', {}, true, 'data');
     } catch (err) {
-      console.log('hello2')
       dispatch({
         type: UPDATE_ACCOUNT_STATE,
         data: {
@@ -544,9 +540,7 @@ function fetchNotificationsCreator(): AppThunk {
         },
       });
       throw err;
-    };
-    console.log("Request done")
-    console.log(result)
+    }
     dispatch({
       type: UPDATE_ACCOUNT_STATE,
       data: {
@@ -576,9 +570,9 @@ function updateState(fields: {
   success?: boolean | null;
   error?: any;
   check?:
-  | { success: boolean; error: any; loading: boolean }
-  | { success: boolean; error: any; loading: boolean }
-  | { loading: boolean; success: null; error: null };
+    | { success: boolean; error: any; loading: boolean }
+    | { success: boolean; error: any; loading: boolean }
+    | { loading: boolean; success: null; error: null };
 }) {
   Store.dispatch(updateStateCreator(fields));
 }

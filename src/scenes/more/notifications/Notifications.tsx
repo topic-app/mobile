@@ -44,9 +44,7 @@ const Notification: React.FC<NotificationProps> = ({ notification, expanded, onP
           </View>
         )}
         title={notification.content.title}
-        description={
-          notification.content.description + JSON.stringify(notification.content.actions)
-        }
+        description={notification.content.description}
         titleNumberOfLines={expanded ? 1e4 : 2}
         descriptionNumberOfLines={expanded ? 1e4 : 3}
         onPress={onPress}
