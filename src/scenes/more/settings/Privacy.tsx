@@ -160,7 +160,7 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, navigati
             )
           }
         />
-        <Setting
+        {/* <Setting
           disabled={!preferences.recommendations}
           title="Supprimer les centres d'intérêt"
           onPress={() =>
@@ -173,15 +173,15 @@ const SettingsPrivacy: React.FC<SettingsPrivacyProps> = ({ preferences, navigati
                   onPress: () => {},
                   style: 'cancel',
                 },
-                /* {
-                    text: 'Supprimer',
-                    onPress: () =>   trackEvent('prefs:delete-recommendations'); console.log('Delete interests'),
-                  }, */
+                {
+                  text: 'Supprimer',
+                  onPress: () =>   trackEvent('prefs:delete-recommendations'); console.log('Delete interests'),
+                },
               ],
               { cancelable: true },
             )
           }
-        />
+        /> */}
       </SettingSection>
       <SettingSection title="Données analytiques" bottomDivider>
         <SettingToggle
