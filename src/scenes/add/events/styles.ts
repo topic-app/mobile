@@ -17,7 +17,6 @@ export default createStyleSheet(
       alignSelf: 'stretch',
     },
     buttonContainer: {
-      alignSelf: 'center',
       flexDirection: 'row',
     },
     listContainer: {

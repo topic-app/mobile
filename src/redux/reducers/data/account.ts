@@ -22,10 +22,10 @@ const initialState: AccountState = {
   ...(_.isEmpty(Config.seedDb.account)
     ? (Config.seedDb.account as AccountState)
     : {
-      loggedIn: false,
-      accountInfo: null,
-      creationData: {},
-    }),
+        loggedIn: false,
+        accountInfo: null,
+        creationData: {},
+      }),
   permissions: [],
   groups: [],
   waitingGroups: [],

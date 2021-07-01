@@ -9,7 +9,7 @@ export default createStyleSheet(
       justifyContent: 'center',
     },
     buttonContainer: {
-      alignSelf: 'center',
+      // alignSelf: 'center',
       flexDirection: 'row',
     },
     title: {

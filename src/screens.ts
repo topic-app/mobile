@@ -66,6 +66,7 @@ export default {
                   Privacy: '/parametres/confidentialite',
                   Appearance: '/parametres/apparence',
                   Dev: '/parametres/beta',
+                  SelectLocation: '/profil/localisation',
                 },
               },
               Moderation: {
