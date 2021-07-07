@@ -150,23 +150,23 @@ export type Address = {
 
 export type Avatar =
   | {
-      type: 'color';
-      color: string;
-      text: string;
-    }
+    type: 'color';
+    color: string;
+    text: string;
+  }
   | {
-      type: 'gradient';
-      gradient: {
-        start: string;
-        end: string;
-        angle: number;
-      };
-      text: string;
-    }
-  | {
-      type: 'image';
-      image: Image;
+    type: 'gradient';
+    gradient: {
+      start: string;
+      end: string;
+      angle: number;
     };
+    text: string;
+  }
+  | {
+    type: 'image';
+    image: Image;
+  };
 
 export type UserPreload = {
   preload: true;
@@ -339,6 +339,7 @@ type ArticleBase = {
   opinion?: boolean;
   cache?: {
     likes?: number;
+    views?: number;
   };
 };
 export type ArticlePreload = ArticleBase & {
@@ -394,13 +395,13 @@ type EventMessageBase = {
 export type EventMessage = EventMessageBase &
   (
     | {
-        type: 'system';
-        group: null;
-      }
+      type: 'system';
+      group: null;
+    }
     | {
-        type: 'high' | 'medium' | 'low';
-        group: GroupPreload;
-      }
+      type: 'high' | 'medium' | 'low';
+      group: GroupPreload;
+    }
   );
 
 type EventBase = {
@@ -416,6 +417,7 @@ type EventBase = {
   location: Location; // why exactly is there places AND locations?
   cache?: {
     likes?: number;
+    views?: number;
   };
 };
 
@@ -570,3 +572,23 @@ export type Error = {
 };
 
 export type ModerationTypes = 'unverified' | 'extra' | 'reported' | 'deverified';
+
+export type Notifications = {
+  _id: string,
+  date: Date,
+  priority?: 'urgent' | 'high' | 'medium' | 'low',
+  content: {
+    title: string,
+    description: string,
+    icon: string,
+    color: string,
+  },
+  actions: {
+    name: string,
+    important: boolean,
+    action: {
+      type: string, 
+      data: string,
+    },
+  }
+};

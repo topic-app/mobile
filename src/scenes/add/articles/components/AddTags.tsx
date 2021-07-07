@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Platform, FlatList, ActivityIndicator } from 'react-native';
-import { Button, Text, Divider, Card, useTheme } from 'react-native-paper';
+import { Button, Text, Divider, Card, useTheme, ProgressBar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
@@ -13,10 +13,10 @@ import {
   CategoryTitle,
   Searchbar,
 } from '@components';
-import { updateTags, searchTags } from '@redux/actions/api/tags';
+import { updateTags, searchTags, fetchMultiTag } from '@redux/actions/api/tags';
 import { updateArticleCreationData } from '@redux/actions/contentData/articles';
-import { Account, State, TagRequestState, TagPreload, ArticleCreationData } from '@ts/types';
-import { checkPermission, trackEvent, Permissions } from '@utils';
+import { Account, State, TagRequestState, TagPreload, ArticleCreationData, Tag } from '@ts/types';
+import { checkPermission, trackEvent, Permissions, logger } from '@utils';
 
 import TagAddModal from '../../components/TagAddModal';
 import getStyles from '../styles';
@@ -25,6 +25,7 @@ type ArticleAddPageTagsProps = StepperViewPageProps & {
   account: Account;
   tagsData: TagPreload[];
   tagsSearch: TagPreload[];
+  tagsItems: Tag[] | null;
   state: TagRequestState;
   navigate: () => void;
   creationData: ArticleCreationData;
@@ -35,16 +36,25 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   navigate,
   account,
   tagsData,
+  tagsItems,
   tagsSearch,
   state,
   creationData,
 }) => {
   const [selectedTags, setSelectedTags] = React.useState<string[]>(creationData.tags || []);
-  const [selectedData, setSelectedData] = React.useState<TagPreload[]>(creationData.tagData || []);
   const [searchText, setSearchText] = React.useState('');
 
   const [tagAddModalVisible, setTagAddModalVisible] = React.useState(false);
-  const [tagName, setTagName] = React.useState<string>('');
+
+  const fetchTags = () => {
+    if (state.info?.loading) return;
+    selectedTags.forEach((t) => {
+      if (!tagsItems?.some((i) => i._id === t)) {
+        logger.debug(`Fetching tag ${t}`);
+        fetchMultiTag(t);
+      }
+    });
+  };
 
   const submit = () => {
     trackEvent('articleadd:page-content');
@@ -53,8 +63,11 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
   };
 
   const addNewTag = (tag: { _id: string; displayName: string; color: string }) => {
-    setSelectedTags([...selectedTags, tag._id]);
-    setSelectedData([...selectedData, tag]);
+    if (!selectedTags.includes(tag._id)) setSelectedTags([...selectedTags, tag._id]);
+  };
+
+  const removeTag = (tag: { _id: string; displayName: string; color: string }) => {
+    setSelectedTags(selectedTags.filter((s) => s !== tag._id));
   };
 
   const inputRef = React.useRef(null);
@@ -65,17 +78,9 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
 
   const fetch = () => {
     if (searchText === '') {
-      updateTags('initial');
+      updateTags('initial', { number: 500 });
     } else {
       searchTags('initial', searchText);
-    }
-  };
-
-  const fetchNext = () => {
-    if (searchText === '') {
-      updateTags('next');
-    } else {
-      searchTags('next', searchText);
     }
   };
 
@@ -89,66 +94,21 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
     fetch();
   }, [null]);
 
+  React.useEffect(fetchTags, [selectedTags]);
+
   const ListEmptyComponent = () => {
     return (
       <View style={{ alignItems: 'flex-start' }}>
-        {searchText !== '' &&
-        state.search?.success &&
-        !selectedData.some((t) => t.name?.toLowerCase() === searchText?.toLowerCase()) &&
-        checkPermission(account, {
-          permission: Permissions.TAG_ADD,
-          scope: {},
-        }) ? (
-          <TextChip
-            title={`Créer "${searchText
-              .toLowerCase()
-              .replace(/[^a-zA-Z0-9ùúûüéèêëàáâä]/g, '')
-              .replace(/[éèêë]/g, 'e')
-              .replace(/[àáâä]/g, 'a')
-              .replace(/[ùúûü]/g, 'u')}"`}
-            icon="plus"
-            onPress={() => {
-              trackEvent('articleadd:tags-create-start');
-              setTagName(
-                searchText
-                  .toLowerCase()
-                  .replace(/[^a-zA-Z0-9ùúûüéèêëàáâä]/g, '')
-                  .replace(/[éèêë]/g, 'e')
-                  .replace(/[àáâä]/g, 'a')
-                  .replace(/[ùúûü]/g, 'u'),
-              );
-              setTagAddModalVisible(true);
-            }}
-          />
-        ) : (
-          searchText !== '' &&
-          state.search?.success && (
-            <View
-              style={[styles.centerIllustrationContainer, { height: 40, justifyContent: 'center' }]}
-            >
-              <Text>Aucun résultat</Text>
-            </View>
-          )
+        {searchText !== '' && state.search?.success && (
+          <View
+            style={[styles.centerIllustrationContainer, { height: 40, justifyContent: 'center' }]}
+          >
+            <Text>Aucun résultat</Text>
+          </View>
         )}
       </View>
     );
   };
-
-  const ListHeaderComponent = () =>
-    (searchText === '' && state.list.loading.initial) ||
-    (searchText !== '' && state.search?.loading.initial) ? (
-      <View style={{ marginVertical: 5, height: 40, justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    ) : null;
-
-  const ListFooterComponent = () =>
-    (searchText === '' && state.list.loading.next) ||
-    (searchText !== '' && state.search?.loading.next) ? (
-      <View style={{ marginVertical: 5, height: 40, width: 40, justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    ) : null;
 
   const renderItem = React.useCallback(
     ({
@@ -164,11 +124,10 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
             onPress={() => {
               if (selectedTags.includes(item._id)) {
                 trackEvent('articleadd:tags-remove');
-                setSelectedTags(selectedTags.filter((s) => s !== item._id));
+                removeTag(item);
               } else {
                 trackEvent('articleadd:tags-add');
-                setSelectedTags([...selectedTags, item._id]);
-                setSelectedData([...selectedData, item]);
+                addNewTag(item);
               }
             }}
             icon={selectedTags.includes(item._id) ? 'check' : 'pound'}
@@ -180,27 +139,41 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
     [selectedTags],
   );
 
-  let onEndReachedCalledDuringMomentum = false;
+  const loading =
+    (searchText === '' && (state.list.loading.next || state.list.loading.initial)) ||
+    (searchText !== '' && (state.search?.loading.next || state.search?.loading.initial));
 
   return (
     <View style={styles.formContainer}>
       <View>
         <View>
-          <View>
-            <Searchbar
-              ref={inputRef}
-              placeholder={`Rechercher ${
-                checkPermission(account, {
-                  permission: Permissions.TAG_ADD,
-                  scope: {},
-                })
-                  ? 'ou créer '
-                  : ''
-              }un tag`}
-              value={searchText}
-              onChangeText={setSearchText}
-              onIdle={searchChange}
-            />
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexGrow: 1, marginRight: 10 }}>
+              <Searchbar
+                ref={inputRef}
+                placeholder="Rechercher un tag"
+                value={searchText}
+                onChangeText={setSearchText}
+                style={loading ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 } : {}}
+                onIdle={searchChange}
+              />
+              {loading ? (
+                <ProgressBar
+                  indeterminate
+                  style={{ borderBottomLeftRadius: 4, borderBottomRightRadius: 4 }}
+                />
+              ) : (
+                <View style={{ height: 4 }} />
+              )}
+            </View>
+            <Button
+              mode="outlined"
+              icon="plus"
+              style={{ justifyContent: 'center', marginBottom: 4 }}
+              onPress={() => setTagAddModalVisible(true)}
+            >
+              Créer
+            </Button>
           </View>
           {((searchText === '' && state.list.error) ||
             (searchText !== '' && state.search?.error)) && (
@@ -219,42 +192,40 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
       <View style={{ marginTop: 20, height: 40 }}>
         <FlatList
           horizontal
-          onMomentumScrollBegin={() => {
-            onEndReachedCalledDuringMomentum = true;
-          }}
-          onMomentumScrollEnd={() => {
-            onEndReachedCalledDuringMomentum = false;
-          }}
-          onEndReached={() => {
-            if (onEndReachedCalledDuringMomentum) {
-              fetchNext();
-            }
-          }}
           onEndReachedThreshold={0.1}
           data={(searchText === '' ? tagsData : tagsSearch).filter(
             (t) => !selectedTags.includes(t._id),
           )}
           ListEmptyComponent={ListEmptyComponent}
-          ListHeaderComponent={ListHeaderComponent}
-          ListFooterComponent={ListFooterComponent}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(i) => i._id}
         />
       </View>
-      <CollapsibleView collapsed={selectedTags.length === 0} style={{ marginTop: 20 }}>
+      <CollapsibleView
+        collapsed={selectedTags.length === 0}
+        style={{ marginTop: 20, marginBottom: 20 }}
+      >
         <View style={{ marginBottom: 15 }}>
           <CategoryTitle>Tags sélectionnés</CategoryTitle>
         </View>
         <FlatList
           horizontal
-          data={selectedTags.map((t) => selectedData.find((u) => u?._id === t)!).filter((s) => !!s)}
+          data={selectedTags.map(
+            (t) =>
+              tagsItems?.find((u) => u?._id === t) || {
+                _id: t,
+                name: 'Chargement...',
+                color: colors.text,
+                displayName: 'Chargement...',
+              },
+          )}
           renderItem={renderItem}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(i) => i?._id}
         />
       </CollapsibleView>
-      <View style={[styles.container, { marginTop: 40 }]}>
+      <View style={[styles.container, { marginTop: 20 }]}>
         <Card
           elevation={0}
           style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 5 }}
@@ -297,7 +268,6 @@ const ArticleAddPageTags: React.FC<ArticleAddPageTagsProps> = ({
       </View>
 
       <TagAddModal
-        name={tagName}
         visible={tagAddModalVisible}
         setVisible={setTagAddModalVisible}
         add={addNewTag}
@@ -312,6 +282,7 @@ const mapStateToProps = (state: State) => {
     account,
     tagsData: tags.data,
     tagsSearch: tags.search,
+    tagsItems: tags.items,
     state: tags.state,
     creationData: articleData.creationData,
   };

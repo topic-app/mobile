@@ -24,7 +24,6 @@ import {
   TagsState,
   UsersState,
 } from './apiReducers';
-import { ArticleListItem, EventListItem } from './contentReducers';
 import { AccountActionTypes, LocationActionTypes, PrefActionTypes } from './dataReducers';
 
 // Actions
@@ -81,8 +80,6 @@ export type ContentItemMap = {
   eventData: Event;
   groupData: Group;
 };
-
-export type ListItem = ArticleListItem | EventListItem;
 
 export type AppThunk<ReturnType = unknown> = ThunkAction<ReturnType, State, unknown, AnyAction>;
 

@@ -14,7 +14,7 @@ export type ItemData = {
 
 type TagData = {
   key: string;
-  type: 'group' | 'author' | 'tag' | 'likes' | 'global' | 'school' | 'department' | 'opinion';
+  type: 'group' | 'author' | 'tag' | 'global' | 'school' | 'department' | 'opinion';
   label: string;
   avatar?: Avatar;
   image?: string;
@@ -90,15 +90,6 @@ function genTagListData({ cache, publisher, authors, group, tags, location, opin
         icon: 'pound',
       }),
     );
-  }
-
-  if (cache && cache.likes) {
-    data.push({
-      key: 'likes',
-      type: 'likes',
-      label: cache.likes.toString(),
-      icon: 'thumb-up-outline',
-    });
   }
 
   if (location) {

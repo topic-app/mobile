@@ -29,6 +29,7 @@ import {
 import { fetchUser } from '@redux/actions/api/users';
 import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
 import { fetchAccount } from '@redux/actions/data/account';
+import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/global';
 import {
   Account,
@@ -38,8 +39,9 @@ import {
   UserPreload,
   User,
   UserRequestState,
+  PreferencesState,
 } from '@ts/types';
-import { logger, Format, Errors, shareContent } from '@utils';
+import { logger, Format, Errors, shareContent, Alert } from '@utils';
 
 import type { UserDisplayScreenNavigationProp, UserDisplayStackParams } from '.';
 
@@ -65,10 +67,33 @@ type UserDisplayProps = {
   account: Account;
   state: UserRequestState;
   users: UsersState;
+  preferences: PreferencesState;
 };
 
-const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, route, state }) => {
+const UserDisplay: React.FC<UserDisplayProps> = ({
+  account,
+  users,
+  navigation,
+  route,
+  state,
+  preferences,
+}) => {
   const { id } = route.params || {};
+
+  React.useEffect(() => {
+    if (id !== account.accountInfo?.accountId) {
+      fetchUser(id);
+    } else {
+      fetchAccount();
+    }
+  }, [id]);
+
+  const theme = useTheme();
+  const styles = getStyles(theme);
+  const { colors } = theme;
+
+  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [isUserReportModalVisible, setUserReportModalVisible] = React.useState(false);
 
   const user: User | UserPreload | null =
     id === account.accountInfo?.accountId
@@ -104,21 +129,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
         );
     }
   };
-
-  React.useEffect(() => {
-    if (id !== account.accountInfo?.accountId) {
-      fetchUser(id);
-    } else {
-      fetchAccount();
-    }
-  }, [id]);
-
-  const theme = useTheme();
-  const styles = getStyles(theme);
-  const { colors } = theme;
-
-  const [menuVisible, setMenuVisible] = React.useState(false);
-  const [isUserReportModalVisible, setUserReportModalVisible] = React.useState(false);
 
   if (!user) {
     return (
@@ -201,6 +211,33 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                     setUserReportModalVisible(true);
                   }}
                 />
+                <Menu.Item
+                  key="block"
+                  title={preferences.blocked.includes(user._id) ? 'Débloquer' : 'Bloquer'}
+                  onPress={() => {
+                    if (preferences.blocked.includes(user._id)) {
+                      updatePrefs({
+                        blocked: preferences.blocked.filter((g) => g !== user._id),
+                      });
+                    } else {
+                      Alert.alert(
+                        'Bloquer cet utilisateur ?',
+                        'Vous ne verrez plus de contenus écrits par cet utilisateur',
+                        [
+                          { text: 'Annuler' },
+                          {
+                            text: 'Bloquer',
+                            onPress: () =>
+                              updatePrefs({
+                                blocked: [...preferences.blocked, user._id],
+                              }),
+                          },
+                        ],
+                        { cancelable: true },
+                      );
+                    }
+                  }}
+                />
               </Menu>
             </View>
 
@@ -226,6 +263,11 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                         @{user.info.username}
                       </Subheading>
                     )}
+                    {preferences.blocked.includes(user._id) ? (
+                      <Subheading style={{ textAlign: 'center', color: colors.invalid }}>
+                        Utilisateur bloqué
+                      </Subheading>
+                    ) : null}
                   </View>
                 ) : (
                   <Title style={{ textAlign: 'center' }}>@{user.info.username}</Title>
@@ -247,7 +289,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                         ? user.data.cache.followers
                         : ' '}
                     </Text>
-                    <Text>Abonnés </Text>
+                    <Text>Abonnés</Text>
                   </View>
                   <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: 40 }}>
@@ -255,7 +297,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                         ? user.data.cache.following
                         : ' '}
                     </Text>
-                    <Text>Abonnements </Text>
+                    <Text>Abonnements</Text>
                   </View>
                   <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: 40 }}>
@@ -326,10 +368,15 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                 {(user.data?.public || id === account.accountInfo?.accountId) &&
                   !!user.data?.description && (
                     <View>
-                      <List.Subheader>Description</List.Subheader>
+                      <List.Subheader>Biographie</List.Subheader>
                       <Divider />
                       <View
-                        style={{ alignItems: 'stretch', marginVertical: 20, marginHorizontal: 10 }}
+                        style={{
+                          alignItems: 'stretch',
+                          marginTop: 5,
+                          marginBottom: 20,
+                          marginHorizontal: 10,
+                        }}
                       >
                         <Text>{user.data.description}</Text>
                       </View>
@@ -375,11 +422,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                     <Divider />
                     <View style={{ marginVertical: 10 }}>
                       {user.data.location?.global && (
-                        <InlineCard
-                          icon="map-marker"
-                          title="France Entière"
-                          onPress={() => logger.warn('global pressed')}
-                        />
+                        <InlineCard icon="map-marker" title="France Entière" />
                       )}
                       {user.data.location?.schools?.map((school) => (
                         <InlineCard
@@ -398,7 +441,6 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                                 }`
                               : ' '
                           }`}
-                          onPress={() => logger.warn(`school ${school._id} pressed!`)}
                         />
                       ))}
                       {user.data.location?.departments?.map((dep) => (
@@ -406,10 +448,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
                           key={dep._id}
                           icon="map-marker-radius"
                           title={dep.name}
-                          subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${
-                            dep.code
-                          }`}
-                          onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                          subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'}`}
                         />
                       ))}
                     </View>
@@ -527,13 +566,14 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ account, users, navigation, r
 };
 
 const mapStateToProps = (state: State) => {
-  const { users, account, groups } = state;
+  const { users, account, groups, preferences } = state;
   return {
     account,
     users,
     state: users.state,
     groups: groups.search,
     groupsState: groups.state,
+    preferences,
   };
 };
 

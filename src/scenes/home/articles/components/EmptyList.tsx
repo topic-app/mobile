@@ -30,8 +30,7 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
 
   if (
     (group === 'categories' && reqState.list.success) ||
-    (group === 'quicks' && reqState.search?.success) ||
-    group === 'lists'
+    (group === 'quicks' && reqState.search?.success)
   ) {
     if (sectionKey === 'unread') {
       return (
@@ -60,13 +59,6 @@ const ArticleEmptyList: React.FC<ArticleEmptyListProps> = ({
           }
         >
           Aucun article pour cette localisation
-        </FullscreenIllustration>
-      );
-    } else if (group === 'lists') {
-      return (
-        <FullscreenIllustration illustration="article-lists" style={{ height }}>
-          Aucun article dans cette liste{'\n'}Ajoutez les grâce à l&apos;icone{' '}
-          <Icon name="playlist-plus" size={20} />
         </FullscreenIllustration>
       );
     } else if (sectionKey === 'following') {

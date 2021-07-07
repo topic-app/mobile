@@ -165,7 +165,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
           <View style={{ maxWidth: Math.floor(Dimensions.get('window').width * 0.6) }}>
             <Appbar.Content
               title={title}
-              titleStyle={{ fontFamily: 'Rubik-Medium', color: colors.appBarText, fontSize: 24 }}
+              titleStyle={{ fontFamily: 'Rubik', color: colors.appBarText, fontSize: 24 }}
             />
           </View>
         </View>

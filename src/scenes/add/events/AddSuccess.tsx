@@ -61,15 +61,17 @@ const EventAddSuccess: React.FC<EventAddSuccessProps> = ({
           style={[styles.centerIllustrationContainer, styles.contentContainer, { marginTop: 40 }]}
         >
           <Illustration name="auth-register-success" height={200} width={200} />
-          <Text style={styles.title}>
+          <Text style={[styles.title, { textAlign: 'center' }]}>
             Évènement {approved ? 'publié' : 'en attente de modération'}
           </Text>
           {!approved && (
             <View>
-              <Text style={{ marginTop: 40 }}>
+              <Text style={{ marginTop: 40, textAlign: 'center' }}>
                 Votre évènement doit être approuvé par un administrateur de {groupName}.
               </Text>
-              <Text>Vous serez notifiés par email dès que l&apos;évènement est approuvé.</Text>
+              <Text style={{ textAlign: 'center' }}>
+                Vous serez notifié dès que l&apos;évènement est approuvé.
+              </Text>
             </View>
           )}
           {checkPermission(account, {

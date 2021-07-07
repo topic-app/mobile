@@ -44,6 +44,7 @@ import {
   groupDeverify,
 } from '@redux/actions/apiActions/groups';
 import { fetchAccount, fetchGroups } from '@redux/actions/data/account';
+import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/global';
 import {
   GroupPreload,
@@ -58,6 +59,7 @@ import {
   UserPreload,
   GroupVerification,
   Avatar as AvatarType,
+  PreferencesState,
 } from '@ts/types';
 import {
   logger,
@@ -74,6 +76,7 @@ import type { GroupDisplayStackParams, GroupDisplayScreenNavigationProp } from '
 import AddUserRoleModal from './components/AddUserRoleModal';
 import AddUserSelectModal from './components/AddUserSelectModal';
 import EditGroupDescriptionModal from './components/EditGroupDescriptionModal';
+import EditGroupLegalModal from './components/EditGroupLegalModal';
 
 // import ChangeGroupLocationModal from '../components/ChangeGroupLocationModal';
 
@@ -83,6 +86,7 @@ type GroupDisplayProps = {
   groups: GroupsState;
   account: Account;
   state: GroupRequestState;
+  preferences: PreferencesState;
 };
 
 const GroupDisplay: React.FC<GroupDisplayProps> = ({
@@ -91,6 +95,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
   groups,
   account,
   state,
+  preferences,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -187,19 +192,10 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 
   const [legalCollapsed, setLegalCollapsed] = React.useState(true);
 
-  const [editingGroup, setEditingGroup] = React.useState<{
-    id?: string;
-    name?: string;
-    summary?: string;
-    description?: string;
-    avatar?: AvatarType;
-  } | null>(null);
   const [isEditGroupDescriptionModalVisible, setEditGroupDescriptionModalVisible] = React.useState(
     false,
   );
-  const [isChangeGroupLocationModalVisible, setChangeGroupLocationModalVisible] = React.useState(
-    false,
-  );
+  const [isEditGroupLegalModalVisible, setEditGroupLegalModalVisible] = React.useState(false);
   const [descriptionVisible, setDescriptionVisible] = React.useState(verification || false);
 
   const deverifyGroup = () =>
@@ -283,13 +279,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                       icon="pencil"
                       accessibilityLabel="Modifier le groupe"
                       onPress={() => {
-                        setEditingGroup({
-                          id: group._id,
-                          name: group.name,
-                          summary: group.summary,
-                          description: group.description?.data,
-                          avatar: group.avatar,
-                        });
                         setEditGroupDescriptionModalVisible(true);
                       }}
                     />
@@ -326,6 +315,33 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     onPress={() => {
                       setMenuVisible(false);
                       setGroupReportModalVisible(true);
+                    }}
+                  />
+                  <Menu.Item
+                    key="block"
+                    title={preferences.blocked.includes(group._id) ? 'Débloquer' : 'Bloquer'}
+                    onPress={() => {
+                      if (preferences.blocked.includes(group._id)) {
+                        updatePrefs({
+                          blocked: preferences.blocked.filter((g) => g !== group._id),
+                        });
+                      } else {
+                        Alert.alert(
+                          'Bloquer ce groupe ?',
+                          'Vous ne verrez plus de contenus écrits par ce groupe',
+                          [
+                            { text: 'Annuler' },
+                            {
+                              text: 'Bloquer',
+                              onPress: () =>
+                                updatePrefs({
+                                  blocked: [...preferences.blocked, group._id],
+                                }),
+                            },
+                          ],
+                          { cancelable: true },
+                        );
+                      }
                     }}
                   />
                   {checkPermission(account, {
@@ -410,6 +426,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   >
                     Groupe {group.type}
                   </Subheading>
+                  {preferences.blocked.includes(group._id) ? (
+                    <Subheading style={{ textAlign: 'center', color: colors.invalid }}>
+                      Groupe bloqué
+                    </Subheading>
+                  ) : null}
                 </View>
               </View>
             </View>
@@ -428,11 +449,11 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         <Text style={{ fontSize: 40 }}>
                           {typeof group.cache?.followers === 'number' ? group.cache.followers : ''}
                         </Text>
-                        <Text>Abonnés </Text>
+                        <Text>Abonnés</Text>
                       </View>
                       <View style={{ alignItems: 'center' }}>
                         <Text style={{ fontSize: 40 }}>{group.members?.length}</Text>
-                        <Text>Membres </Text>
+                        <Text>Membres</Text>
                       </View>
                     </View>
                     <Divider style={{ marginVertical: 10 }} />
@@ -536,13 +557,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     <Divider />
                   </View>
                 )}
-                {group.location.global && (
-                  <InlineCard
-                    icon="map-marker"
-                    title="France Entière"
-                    onPress={() => logger.warn('global pressed')}
-                  />
-                )}
+                {group.location.global && <InlineCard icon="map-marker" title="France Entière" />}
                 {group.location.schools?.map((school) => (
                   <InlineCard
                     key={school._id}
@@ -551,7 +566,6 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     subtitle={
                       school?.address ? Format.shortAddress(school.address) : school?.shortName
                     }
-                    onPress={() => logger.warn(`school ${school._id} pressed!`)}
                   />
                 ))}
                 {group.location.departments?.map((dep) => (
@@ -559,8 +573,13 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                     key={dep._id}
                     icon="domain"
                     title={dep.displayName}
-                    subtitle="Département"
-                    onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                    subtitle={
+                      dep.type === 'departement'
+                        ? 'Département'
+                        : dep.type === 'region'
+                        ? 'Région'
+                        : 'Zone'
+                    }
                   />
                 ))}
                 <Divider />
@@ -893,6 +912,16 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         </View>
                       ) : null}
                     </View>
+                    {checkPermission(account, {
+                      permission: Permissions.GROUP_MODIFY,
+                      scope: { groups: [id] },
+                    }) ? (
+                      <View style={styles.container}>
+                        <Button mode="outlined" onPress={() => setEditGroupLegalModalVisible(true)}>
+                          Modifier
+                        </Button>
+                      </View>
+                    ) : null}
                   </CollapsibleView>
                 </View>
                 <View style={{ height: 20 }} />
@@ -961,7 +990,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           )
                         }
                       >
-                        Supprrimer
+                        Supprimer
                       </Button>
                       <Button
                         mode="contained"
@@ -1038,8 +1067,33 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
           visible={isEditGroupDescriptionModalVisible}
           setVisible={setEditGroupDescriptionModalVisible}
           group={group}
-          editingGroup={editingGroup}
-          setEditingGroup={setEditingGroup}
+          editingGroup={
+            group.preload
+              ? null
+              : {
+                  id: group._id,
+                  name: group.name,
+                  shortName: group.shortName,
+                  summary: group.summary,
+                  description: group.description?.data,
+                  avatar: group.avatar,
+                }
+          }
+        />
+
+        <EditGroupLegalModal
+          visible={isEditGroupLegalModalVisible}
+          setVisible={setEditGroupLegalModalVisible}
+          group={group}
+          editingGroup={
+            group.preload
+              ? null
+              : {
+                  id: group._id,
+                  name: group.name,
+                  legal: group.legal,
+                }
+          }
         />
 
         {/* <ChangeGroupLocationModal
@@ -1054,11 +1108,12 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups, account } = state;
+  const { groups, account, preferences } = state;
   return {
     groups,
     account,
     state: groups.state,
+    preferences,
   };
 };
 

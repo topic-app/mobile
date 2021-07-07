@@ -7,11 +7,6 @@ export default createStyleSheet(
       marginBottom: 5,
       fontWeight: 'bold',
     },
-    subtitle: {
-      fontSize: 19,
-      marginBottom: 5,
-      marginLeft: 20,
-    },
     description: {
       marginTop: 20,
       marginHorizontal: 20,

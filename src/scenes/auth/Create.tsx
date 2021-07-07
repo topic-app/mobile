@@ -75,7 +75,7 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           {reqState.register.loading || reqState.check.loading ? (
             <ProgressBar indeterminate />
           ) : (
@@ -119,9 +119,12 @@ const AuthCreate: React.FC<AuthCreateProps> = ({ navigation, reqState, creationD
                   component: (props) => (
                     <AuthCreatePageProfile
                       landing={() =>
-                        navigation.push('Landing', {
-                          screen: 'SelectLocation',
-                          params: { goBack: true },
+                        navigation.push('Root', {
+                          screen: 'Main',
+                          params: {
+                            screen: 'More',
+                            params: { screen: 'Settings', params: { screen: 'SelectLocation' } },
+                          },
                         })
                       }
                       username={creationData.username || ''}

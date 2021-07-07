@@ -8,6 +8,7 @@ import {
   UPDATE_GROUPS_TEMPLATES,
   UPDATE_GROUPS_VERIFICATION,
   CLEAR_GROUPS,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: GroupsState = {
@@ -149,6 +150,8 @@ function groupReducer(state = initialState, action: GroupsActionTypes): GroupsSt
         item: action.data.item ? null : state.item,
         state: state.state,
       };
+    case FULL_CLEAR:
+      return initialState;
     default:
       return state;
   }

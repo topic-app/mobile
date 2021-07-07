@@ -23,7 +23,6 @@ const TagList: React.FC<Props> = ({ item, scrollable }) => {
     tag: 'Tag',
     group: 'Groupe',
     author: 'Author',
-    likes: 'Nombre de likes',
     global: 'Publié en',
     school: "Publié dans l'école",
     department: 'Publié dans la zone',

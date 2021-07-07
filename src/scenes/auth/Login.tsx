@@ -92,7 +92,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <PlatformBackButton onPress={navigation.goBack} />
             <View style={styles.stepIndicatorContainer}>
@@ -111,6 +111,8 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                 validationSchema={LoginSchema}
                 onSubmit={handleLogin}
                 validateOnMount={false}
+                validateOnChange={false}
+                validateOnBlur={false}
               >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                   <View>
@@ -169,7 +171,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                         uppercase={Platform.OS !== 'ios'}
                         onPress={handleSubmit}
                         style={{ flex: 1 }}
-                        loading={reqState.login.loading}
+                        loading={reqState.login.loading || reqState.fetchAccount?.loading}
                       >
                         Se connecter
                       </Button>

@@ -1,8 +1,10 @@
 import React from 'react';
+import { Appearance } from 'react-native';
 import { List, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import { PageContainer } from '@components';
+import themes from '@styles/helpers/theme';
 import { Account, Preferences, State } from '@ts/types';
 
 import type { SettingsScreenNavigationProp } from '.';
@@ -14,7 +16,7 @@ type SettingsListProps = {
   navigation: SettingsScreenNavigationProp<'List'>;
 };
 
-const SettingsList: React.FC<SettingsListProps> = ({ navigation, account }) => {
+const SettingsList: React.FC<SettingsListProps> = ({ navigation, account, preferences }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -22,11 +24,23 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, account }) => {
     <PageContainer headerOptions={{ title: 'Paramètres' }} centered scroll>
       <List.Section>
         <List.Item
-          title="Apparence"
-          description="Thème, taille du texte, accessibilité"
+          title="Thème"
+          description={
+            preferences.useSystemTheme
+              ? `Système (${Appearance.getColorScheme() === 'dark' ? 'Sombre' : 'Clair'})`
+              : themes[preferences.theme]?.name
+          }
           right={() => <List.Icon icon="chevron-right" />}
           left={() => <List.Icon icon="brightness-6" />}
-          onPress={() => navigation.navigate('Appearance')}
+          onPress={() => navigation.navigate('Theme')}
+          style={styles.listItem}
+        />
+        <List.Item
+          title="Contenu"
+          description="Police, taille du texte"
+          right={() => <List.Icon icon="chevron-right" />}
+          left={() => <List.Icon icon="format-letter-case" />}
+          onPress={() => navigation.navigate('Content')}
           style={styles.listItem}
         />
         <List.Item
@@ -74,8 +88,8 @@ const SettingsList: React.FC<SettingsListProps> = ({ navigation, account }) => {
 };
 
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { account };
+  const { account, preferences } = state;
+  return { account, preferences };
 };
 
 export default connect(mapStateToProps)(SettingsList);

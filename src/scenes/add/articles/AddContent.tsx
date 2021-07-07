@@ -1,3 +1,5 @@
+// @ts-expect-error
+import MarkdownIt from 'markdown-it';
 import React, { LegacyRef } from 'react';
 import { View, ScrollView, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 import {
@@ -13,12 +15,14 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
+import { RichToolbar, RichEditor } from 'react-native-pell-rich-editor';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
+// @ts-expect-error
+import TurndownService from 'turndown-rn';
 
 import { TranslucentStatusBar, PlatformBackButton, CollapsibleView, Content } from '@components';
-import { RichToolbar, RichEditor } from '@components/richEditor';
 import { Config } from '@constants';
 import { articleAdd, articleModify } from '@redux/actions/apiActions/articles';
 import { upload } from '@redux/actions/apiActions/upload';
@@ -139,22 +143,97 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     },
   ];
 
-  const [toolbarInitialized, setToolbarInitialized] = React.useState(false);
+  const headings = [
+    {
+      title: 'Paragraphe',
+      id: 'paragraph',
+    },
+    {
+      title: 'Titre 1',
+      id: 'heading1',
+    },
+    {
+      title: 'Titre 2',
+      id: 'heading2',
+    },
+    {
+      title: 'Titre 3',
+      id: 'heading3',
+    },
+  ];
+
+  const inserts: (
+    | { title: string; id: string; icon: string; divider?: false }
+    | { divider: true }
+  )[] = [
+    {
+      title: 'Image',
+      id: 'image',
+      icon: 'image-outline',
+    },
+    {
+      title: 'Lien',
+      id: 'link',
+      icon: 'link',
+    },
+    {
+      title: 'Vidéo youtube',
+      id: 'youtube',
+      icon: 'youtube',
+    },
+    {
+      divider: true,
+    },
+    {
+      title: 'Citation',
+      id: 'quote',
+      icon: 'format-quote-close',
+    },
+    {
+      divider: true,
+    },
+    {
+      title: 'Liste simple',
+      id: 'unorderedList',
+      icon: 'format-list-bulleted',
+    },
+    {
+      title: 'Liste ordonnée',
+      id: 'orderedList',
+      icon: 'format-list-numbered',
+    },
+  ];
+
   const [valid, setValid] = React.useState(true);
 
   const [markdown, setMarkdown] = React.useState(creationData.data || '');
   const [editor, setEditor] = React.useState<'plaintext' | 'source' | 'rich'>(
-    creationData.editing ? (creationData.parser === 'markdown' ? 'source' : 'plaintext') : 'rich',
+    creationData.editing ? (creationData.parser === 'markdown' ? 'rich' : 'plaintext') : 'rich',
   );
   const [youtubeAddModalVisible, setYoutubeAddModalVisible] = React.useState(false);
 
   const [linkAddModalVisible, setLinkAddModalVisible] = React.useState(false);
 
-  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [menuVisible, setMenuVisible] = React.useState<string | null>(null);
 
   const [viewing, setViewing] = React.useState(false);
 
+  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+
+  const [suggestions, setSuggestions] = React.useState<{ text: string; icon: string }[]>([]);
+
+  const [publishWarning, setPublishWarning] = React.useState(false);
+
   const textEditorRef = React.useRef<RichEditor>();
+
+  const turndownService = new TurndownService({
+    headingStyle: 'atx',
+    bulletListMarker: '-',
+    codeBlockStyle: 'fenced',
+  });
+  const markdownItService = new MarkdownIt({
+    html: false,
+  });
 
   if (!account.loggedIn) return null;
 
@@ -171,16 +250,55 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
       <Icon
         name={name}
         color={disabled ? colors.disabled : selected ? colors.primary : colors.text}
-        size={iconSize / 2}
+        size={24}
       />
     );
+  };
+
+  const showSuggestions = async (data: string) => {
+    const tempSuggestions: { text: string; icon: string }[] = [];
+    setPublishWarning(false);
+
+    if (data.length > 700 && !data.match(/#/g) && editor !== 'plaintext') {
+      tempSuggestions.push({
+        icon: 'information-outline',
+        text:
+          'Vous pouvez utiliser des titres via le menu "Paragraphe" pour organiser votre article',
+      });
+    }
+
+    setSuggestions(tempSuggestions);
+  };
+
+  const showWarnings = (data: string) => {
+    const tempSuggestions: { text: string; icon: string }[] = [];
+    setPublishWarning(false);
+
+    // Length
+    if (data.length < 500) {
+      tempSuggestions.push({
+        icon: 'alert-circle-outline',
+        text:
+          "Votre article est plutôt court. N'hésitez pas à rajouter quelques phrases pour donner plus de détails",
+      });
+    }
+
+    if (tempSuggestions.length) setPublishWarning(true);
+    setSuggestions(tempSuggestions);
+
+    return !!tempSuggestions.length;
   };
 
   const submit = async () => {
     const contentValid = markdown.length && markdown.length > 0;
     if (contentValid) {
-      updateArticleCreationData({ parser: 'markdown', data: markdown });
-      add(editor === 'plaintext' ? 'plaintext' : 'markdown', markdown);
+      if (publishWarning || !showWarnings(markdown)) {
+        updateArticleCreationData({
+          parser: editor === 'plaintext' ? 'plaintext' : 'markdown',
+          data: markdown,
+        });
+        add(editor === 'plaintext' ? 'plaintext' : 'markdown', markdown);
+      }
     } else {
       setValid(false);
     }
@@ -190,27 +308,13 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} enabled={Platform.OS === 'ios'}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row', flex: 1, alignContent: 'center' }}>
-              <PlatformBackButton
-                onPress={() => {
-                  Alert.alert(
-                    'Supprimer cet article?',
-                    'Vous ne pourrez plus y revenir.',
-                    [
-                      {
-                        text: 'Annuler',
-                      },
-                      {
-                        text: 'Quitter',
-                        onPress: navigation.goBack,
-                      },
-                    ],
-                    { cancelable: true },
-                  );
-                }}
-              />
+              <PlatformBackButton onPress={() => navigation.goBack()} />
               <View style={styles.container}>
                 <Title numberOfLines={1}>
                   {creationData?.editing ? 'Modification de ' : ''}
@@ -243,136 +347,263 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                 }}
                 style={{ flex: 1 }}
               >
-                Publier
+                {publishWarning ? 'Publier quand même' : 'Publier'}
               </Button>
             </View>
           </View>
+          <CollapsibleView collapsed={!suggestions.length}>
+            <Divider />
+            {suggestions.map((s) => (
+              <View
+                style={{
+                  backgroundColor: publishWarning ? colors.primaryBackground : colors.surface,
+                }}
+              >
+                <View
+                  style={[
+                    styles.container,
+                    {
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginHorizontal: 15,
+                    },
+                  ]}
+                >
+                  <Icon
+                    name={s.icon}
+                    size={24}
+                    color={publishWarning ? colors.onPrimaryText : colors.text}
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      flex: 1,
+                      color: publishWarning ? colors.onPrimaryText : colors.text,
+                    }}
+                  >
+                    {s.text}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </CollapsibleView>
           <Divider />
           <View style={{ backgroundColor: colors.surface }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                // HACK: RichToolbar does not play well with being unmounted
-                height: viewing ? 0 : undefined,
-                opacity: viewing ? 0 : 1,
-              }}
-            >
-              <IconButton
-                icon="cog"
-                accessibilityLabel="Changer le type d'éditeur"
-                color={colors.text}
-                onPress={() => setMenuVisible(!menuVisible)}
-              />
-              {toolbarInitialized && editor === 'rich' && textEditorRef.current ? (
-                <RichToolbar
-                  getEditor={() => textEditorRef.current!}
-                  actions={[
-                    ...(checkPermission(
-                      account,
-                      {
-                        permission: Permissions.CONTENT_UPLOAD,
-                        scope: {},
-                      },
-                      creationData.group || '',
-                    )
-                      ? ['insertImage']
-                      : []),
-                    'insertLink',
-                    'insertYoutube',
-                    'bold',
-                    'italic',
-                    // 'strikeThrough',
-                    'heading1',
-                    'heading2',
-                    'heading3',
-                    'orderedList',
-                    'unorderedList',
-                    'SET_PARAGRAPH',
-                  ]}
-                  style={{ backgroundColor: colors.surface, marginHorizontal: 20 }}
-                  iconMap={{
-                    heading1: icon('format-header-1'),
-                    heading2: icon('format-header-2'),
-                    heading3: icon('format-header-3'),
-                    bold: icon('format-bold'),
-                    italic: icon('format-italic'),
-                    // strikeThrough: icon('format-strikethrough'),
-                    unorderedList: icon('format-list-bulleted'),
-                    orderedList: icon('format-list-numbered'),
-                    insertImage: icon('image-outline'),
-                    insertYoutube: icon('youtube'),
-                    insertLink: icon('link'),
-                    SET_PARAGRAPH: icon('format-clear'),
-                  }}
-                  // RichEditor accepts props for custom actions
-                  // @ts-expect-error
-                  insertLink={() => {
-                    setLinkAddModalVisible(true);
-                  }}
-                  insertImage={() => {
-                    trackEvent('articleadd:content-image-upload');
-                    trackEvent('editor:image-upload-start');
-                    upload(creationData.group || '').then((fileId: string) => {
-                      trackEvent('editor:image-upload-end');
-                      textEditorRef.current?.insertImage(`${Config.cdn.baseUrl}${fileId}`);
-                    });
-                  }}
-                  insertYoutube={() => setYoutubeAddModalVisible(true)}
-                />
-              ) : null}
-            </View>
-            {!valid && (
-              <HelperText type="error" visible={!valid}>
-                Veuillez ajouter un contenu
-              </HelperText>
-            )}
-            <CollapsibleView collapsed={!menuVisible}>
-              <View>
-                {editorTypes.map((i) => (
-                  <List.Item
-                    key={i.type}
-                    title={i.name}
-                    description={i.description}
-                    onPress={() => {
-                      trackEvent('editor:switch-editor', { props: { type: i.type } });
-                      if (markdown) {
-                        Alert.alert(
-                          "Voulez-vous vraiment changer d'éditeur ?",
-                          'Vous pourrez perdre le formattage, les images etc.',
-                          [
-                            { text: 'Annuler', onPress: () => setMenuVisible(false) },
-                            {
-                              text: 'Changer',
-                              onPress: () => {
-                                setEditor(i.type);
-                                setMenuVisible(false);
-                              },
-                            },
-                          ],
-                          { cancelable: true },
-                        );
-                      } else {
-                        setEditor(i.type);
-                        setMenuVisible(false);
-                      }
+            <CollapsibleView collapsed={viewing}>
+              <ScrollView horizontal>
+                {editor === 'rich' ? (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
                     }}
-                    left={() => (
-                      <RadioButton
-                        color={colors.primary}
-                        value=""
-                        status={editor === i.type ? 'checked' : 'unchecked'}
-                      />
-                    )}
+                  >
+                    <Button
+                      uppercase={false}
+                      mode={menuVisible === 'heading' ? 'outlined' : 'text'}
+                      style={{ marginLeft: 10 }}
+                      color={colors.text}
+                      onPress={() =>
+                        menuVisible === 'heading' ? setMenuVisible(null) : setMenuVisible('heading')
+                      }
+                    >
+                      {headings.find((h) => selectedItems.includes(h.id))?.title || 'Paragraphe'}
+                    </Button>
+                    <Button
+                      uppercase={false}
+                      mode={menuVisible === 'insert' ? 'outlined' : 'text'}
+                      color={colors.text}
+                      onPress={() =>
+                        menuVisible === 'insert' ? setMenuVisible(null) : setMenuVisible('insert')
+                      }
+                    >
+                      Insérer
+                    </Button>
+                    <IconButton
+                      icon="format-bold"
+                      accessibilityLabel="Gras"
+                      color={selectedItems.includes('bold') ? colors.primary : colors.text}
+                      style={{ marginLeft: 30 }}
+                      // @ts-expect-error Wrong type defs in library
+                      onPress={() => textEditorRef.current?.sendAction('bold', 'result')}
+                    />
+                    <IconButton
+                      icon="format-italic"
+                      accessibilityLabel="Italique"
+                      color={selectedItems.includes('italic') ? colors.primary : colors.text}
+                      // @ts-expect-error Wrong type defs in library
+                      onPress={() => textEditorRef.current?.sendAction('italic', 'result')}
+                    />
+                    <IconButton
+                      icon="format-clear"
+                      accessibilityLabel="Retirer le formattage"
+                      color={colors.text}
+                      onPress={() => {
+                        // @ts-expect-error Wrong type defs in library
+                        textEditorRef.current?.sendAction('removeFormat', 'result');
+                        // @ts-expect-error Wrong type defs in library
+                        textEditorRef.current?.sendAction('paragraph', 'result');
+                      }}
+                    />
+                    <IconButton
+                      icon="undo-variant"
+                      accessibilityLabel="Défaire"
+                      color={colors.text}
+                      style={{ marginLeft: 30 }}
+                      // @ts-expect-error Wrong type defs in library
+                      onPress={() => textEditorRef.current?.sendAction('undo', 'result')}
+                    />
+                    <IconButton
+                      icon="redo-variant"
+                      accessibilityLabel="Refaire"
+                      color={colors.text}
+                      // @ts-expect-error Wrong type defs in library
+                      onPress={() => textEditorRef.current?.sendAction('redo', 'result')}
+                    />
+                  </View>
+                ) : null}
+                <View>
+                  <IconButton
+                    icon="cog"
+                    style={{ marginLeft: 30 }}
+                    accessibilityLabel="Changer le type d'éditeur"
+                    color={colors.text}
+                    onPress={() =>
+                      menuVisible === 'editor' ? setMenuVisible(null) : setMenuVisible('editor')
+                    }
                   />
-                ))}
-              </View>
+                </View>
+              </ScrollView>
+              {!valid && (
+                <HelperText type="error" visible={!valid}>
+                  Veuillez ajouter un contenu
+                </HelperText>
+              )}
+              <CollapsibleView collapsed={!menuVisible}>
+                <View>
+                  <Divider />
+                  {menuVisible === 'editor' && (
+                    <View>
+                      {editorTypes.map((i) => (
+                        <List.Item
+                          key={i.type}
+                          title={i.name}
+                          description={i.description}
+                          onPress={() => {
+                            trackEvent('editor:switch-editor', { props: { type: i.type } });
+                            if (markdown) {
+                              Alert.alert(
+                                "Voulez-vous vraiment changer d'éditeur ?",
+                                'Vous pourrez perdre le formattage, les images etc.',
+                                [
+                                  { text: 'Annuler', onPress: () => setMenuVisible(null) },
+                                  {
+                                    text: 'Changer',
+                                    onPress: () => {
+                                      setEditor(i.type);
+                                      setMenuVisible(null);
+                                    },
+                                  },
+                                ],
+                                { cancelable: true },
+                              );
+                            } else {
+                              setEditor(i.type);
+                              setMenuVisible(null);
+                            }
+                          }}
+                          left={() => (
+                            <RadioButton
+                              color={colors.primary}
+                              value=""
+                              status={editor === i.type ? 'checked' : 'unchecked'}
+                            />
+                          )}
+                        />
+                      ))}
+                    </View>
+                  )}
+                  {menuVisible === 'heading' && (
+                    <View>
+                      {headings.map((h) => (
+                        <List.Item
+                          title={h.title}
+                          key={h.id}
+                          onPress={() => {
+                            setMenuVisible(null);
+                            // @ts-expect-error Wrong type defs in library
+                            textEditorRef.current?.sendAction(h.id, 'result');
+                          }}
+                          left={() => (
+                            <RadioButton
+                              color={colors.primary}
+                              value=""
+                              status={
+                                selectedItems.includes(h.id) ||
+                                (h.id === 'paragraph' &&
+                                  !selectedItems.some((i) => i.startsWith('heading')))
+                                  ? 'checked'
+                                  : 'unchecked'
+                              }
+                            />
+                          )}
+                        />
+                      ))}
+                    </View>
+                  )}
+                  {menuVisible === 'insert' && (
+                    <View>
+                      {inserts.map((i) => {
+                        if (i.divider) {
+                          return <Divider />;
+                        }
+                        return (
+                          <List.Item
+                            title={i.title}
+                            key={i.id}
+                            left={() => (
+                              <Icon
+                                name={i.icon}
+                                color={colors.text}
+                                size={24}
+                                style={{ alignSelf: 'center' }}
+                              />
+                            )}
+                            onPress={() => {
+                              setMenuVisible(null);
+                              if (i.id === 'image') {
+                                trackEvent('articleadd:content-image-upload');
+                                trackEvent('editor:image-upload-start');
+                                upload(creationData.group || '').then((fileId: string) => {
+                                  trackEvent('editor:image-upload-end');
+                                  textEditorRef.current?.insertImage(
+                                    `${Config.cdn.baseUrl}${fileId}`,
+                                  );
+                                });
+                              } else if (i.id === 'link') {
+                                setLinkAddModalVisible(true);
+                              } else if (i.id === 'youtube') {
+                                setYoutubeAddModalVisible(true);
+                              } else {
+                                // @ts-expect-error Wrong type defs in library
+                                textEditorRef.current?.sendAction(i.id, 'result');
+                              }
+                            }}
+                          />
+                        );
+                      })}
+                    </View>
+                  )}
+                </View>
+              </CollapsibleView>
             </CollapsibleView>
           </View>
           <Divider />
           <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
             <View style={styles.formContainer}>
               <View style={styles.textInputContainer}>
-                {viewing && (
+                <CollapsibleView collapsed={!viewing}>
                   <View>
                     <View style={{ marginBottom: 20 }}>
                       <Card
@@ -398,7 +629,7 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                       data={markdown}
                     />
                   </View>
-                )}
+                </CollapsibleView>
                 <View
                   style={{
                     marginTop: 20,
@@ -411,37 +642,43 @@ const ArticleAddContent: React.FC<ArticleAddContentProps> = ({
                     <RichEditor
                       onHeightChange={() => {}}
                       ref={textEditorRef as LegacyRef<RichEditor>}
-                      onChangeMarkdown={(data: string) =>
-                        setMarkdown(
-                          data
-                            .replace(
-                              new RegExp(Config.google.youtubePlaceholder, 'g'),
-                              'youtube://',
-                            )
-                            .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://'),
-                        )
-                      }
+                      onChange={(data: string) => {
+                        const md = turndownService
+                          .turndown(data)
+                          .replace(new RegExp(Config.google.youtubePlaceholder, 'g'), 'youtube://')
+                          .replace(new RegExp(Config.cdn.baseUrl, 'g'), 'cdn://');
+                        setMarkdown(md);
+                        showSuggestions(md);
+                        updateArticleCreationData({ parser: 'markdown', data: md });
+                      }}
                       editorStyle={{
                         backgroundColor: colors.background,
                         color: colors.text,
                         placeholderColor: colors.disabled,
                       }}
                       placeholder="Écrivez votre article"
+                      initialContentHTML={markdownItService
+                        .render(markdown)
+                        .replace(new RegExp('youtube://', 'g'), Config.google.youtubePlaceholder)
+                        .replace(new RegExp('cdn://', 'g'), Config.cdn.baseUrl)}
                       editorInitializedCallback={() => {
                         logger.debug('Editor toolbar initialized');
                         trackEvent('articleadd:content-editor-loaded');
-                        setToolbarInitialized(true);
+                        textEditorRef.current?.registerToolbar((i) => setSelectedItems(i));
                       }}
                     />
                   )}
                   {(editor === 'source' || editor === 'plaintext') && (
                     <TextInput
-                      placeholder="Écrivez votre article"
+                      placeholder="Écrivez votre article..."
                       multiline
                       numberOfLines={20}
                       mode="outlined"
                       value={markdown}
-                      onChangeText={(data: string) => setMarkdown(data)}
+                      onChangeText={(data: string) => {
+                        showSuggestions(data);
+                        setMarkdown(data);
+                      }}
                       style={styles.textInput}
                     />
                   )}

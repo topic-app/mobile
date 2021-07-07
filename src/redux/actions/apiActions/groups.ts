@@ -497,6 +497,14 @@ type GroupModifyCreatorParams = {
     data: string;
   };
   avatar?: Avatar;
+  legal?: {
+    id?: string;
+    name?: string;
+    admin: string;
+    address?: string;
+    email: string;
+    extra?: string;
+  };
 };
 
 function groupModifyCreator({
@@ -506,6 +514,7 @@ function groupModifyCreator({
   summary,
   description,
   avatar,
+  legal,
 }: GroupModifyCreatorParams): AppThunk {
   return async (dispatch) => {
     dispatch({
@@ -531,6 +540,7 @@ function groupModifyCreator({
             summary,
             description,
             avatar,
+            legal,
           },
         },
         true,
@@ -716,6 +726,14 @@ async function groupModify(
     summary?: string;
     description?: { parser: 'markdown' | 'plaintext'; data: string };
     avatar?: Avatar;
+    legal?: {
+      id?: string;
+      name?: string;
+      admin: string;
+      address?: string;
+      email: string;
+      extra?: string;
+    };
   },
 ) {
   await Store.dispatch(groupModifyCreator({ group, ...fields }));

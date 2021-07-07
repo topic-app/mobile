@@ -12,8 +12,8 @@ import {
   SettingTooltip,
 } from '@components';
 import { updatePrefs } from '@redux/actions/data/prefs';
-import Store from '@redux/store';
-import { Preferences, State, AccountState, FULL_CLEAR } from '@ts/types';
+import Store, { Persistor } from '@redux/store';
+import { Preferences, State, AccountState, FULL_CLEAR, CLEAR_LOCATION } from '@ts/types';
 import { Alert, crashlytics, messaging } from '@utils';
 
 import type { SettingsScreenNavigationProp } from '.';
@@ -48,7 +48,8 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
               useDevServer: !preferences.useDevServer,
             });
             Store.dispatch({ type: FULL_CLEAR, data: {} });
-            setTimeout(BackHandler.exitApp, 1000); // Because React native bug
+            Store.dispatch({ type: CLEAR_LOCATION, data: {} });
+            Alert.alert("Merci de redémarrer l'application", '', [], { cancelable: false });
           },
         },
       ],
@@ -76,11 +77,7 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
         );
 
   return (
-    <PageContainer
-      headerOptions={{ title: 'Développement', subtitle: 'Paramètres' }}
-      centered
-      scroll
-    >
+    <PageContainer headerOptions={{ title: 'Avancé', subtitle: 'Paramètres' }} centered scroll>
       <Illustration centered name="beta-bugs" />
       <SettingSection title="Informations">
         <List.Item
@@ -103,22 +100,28 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
           descriptionNumberOfLines={3}
         />
         <List.Item
-          title="Canal Telegram"
+          title="Rejoindre chat.topicapp.fr"
           description="Recevez les dernières infos et discutez avec l'équipe Topic App et les autres utilisateurs"
           left={() => (
             <View
               style={{
-                margin: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <Illustration name="telegram" height={40} width={40} />
+              <List.Icon
+                color={colors.background}
+                style={{
+                  backgroundColor: colors.primary,
+                  borderRadius: 20,
+                }}
+                icon="comment-outline"
+              />
             </View>
           )}
           right={() => <List.Icon icon="open-in-new" color={colors.subtext} />}
           descriptionNumberOfLines={3}
-          onPress={() => Linking.openURL('https://t.me/joinchat/AAAAAEfRz29dT2eYy9w_7A')}
+          onPress={() => Linking.openURL('https://chat.topicapp.fr')}
         />
         <List.Item
           title="Bêta"
@@ -204,6 +207,12 @@ const SettingsDev: React.FC<SettingsDevProps> = ({ preferences, navigation }) =>
               description="Publiez des articles et des évènements de test, cette option efface les données et redémarre l'application"
               value={preferences.useDevServer}
               onPress={toggleDevServer}
+            />
+            <SettingToggle
+              title="Activer le serveur de développement temporaire"
+              description="Ajoute un bouton dans le menu pour passer temporairement sur le serveur de développement"
+              value={preferences.quickDevServer}
+              onPress={() => updatePrefs({ quickDevServer: !preferences.quickDevServer })}
             />
             <SettingTooltip
               icon="alert-circle-outline"

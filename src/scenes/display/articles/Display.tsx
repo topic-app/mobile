@@ -42,7 +42,6 @@ import {
   Account,
   ArticleRequestState,
   Comment,
-  ArticleListItem,
   Preferences,
   Content as ContentType,
   ArticleMyInfo,
@@ -61,7 +60,6 @@ import {
 
 import type { ArticleDisplayScreenNavigationProp, ArticleDisplayStackParams } from '.';
 import AddCommentModal from '../components/AddCommentModal';
-import AddToListModal from '../components/AddToListModal';
 import CommentInlineCard from '../components/Comment';
 import getStyles from './styles';
 
@@ -77,7 +75,6 @@ type CombinedReqState = {
 type ArticleDisplayHeaderProps = {
   article: Article | ArticlePreload;
   articleMy: ArticleMyInfo | null;
-  offline: boolean;
   navigation: Navigation;
   reqState: CombinedReqState;
   account: Account;
@@ -98,7 +95,6 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
   setCommentModalVisible,
   setArticleReportModalVisible,
   setReplyingToComment,
-  offline,
   verification,
 }) => {
   const theme = useTheme();
@@ -189,26 +185,14 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
       <View style={styles.contentContainer}>
         <Title style={styles.title}>{article.title}</Title>
         <Text style={styles.subtitle}>
-          Le {moment(article.date).format('LL')} à {moment(article.date).format('LT')}
+          Le {moment(article.date).format('LL')} à {moment(article.date).format('LT')} ·{' '}
+          <Icon name="eye" color={colors.subtext} size={12} />{' '}
+          {typeof article.cache?.views === 'number' ? article.cache.views : '?'} ·{' '}
+          <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
+          {typeof article.cache?.likes === 'number' ? article.cache.likes : '?'}
         </Text>
       </View>
       <TagList item={article} scrollable />
-      {offline && (
-        <View
-          style={[
-            styles.contentContainer,
-            { flexDirection: 'row', marginBottom: 0, alignItems: 'center' },
-          ]}
-        >
-          <Icon
-            style={{ marginRight: 10 }}
-            color={colors.disabled}
-            size={24}
-            name="cloud-off-outline"
-          />
-          <Title style={{ color: colors.disabled }}>Hors ligne</Title>
-        </View>
-      )}
       {(reqState.articles.info.loading ||
         reqState.articles.delete?.loading ||
         reqState.articles.verification_deverify?.loading) && (
@@ -229,23 +213,20 @@ const ArticleDisplayHeader: React.FC<ArticleDisplayHeaderProps> = ({
               }}
             >
               <Button
-                mode="text"
+                mode="outlined"
                 icon={articleMy?.liked ? 'thumb-up' : 'thumb-up-outline'}
                 loading={reqState.articles.my?.loading || reqState.articles.like?.loading}
-                style={{ flex: 1, marginRight: 5 }}
-                color={articleMy?.liked ? colors.primary : colors.muted}
+                style={{ flex: 1, marginHorizontal: 5, borderRadius: 20 }}
+                color={articleMy?.liked ? colors.primary : colors.text}
                 onPress={account.loggedIn ? likeArticle : showLikeLoginAlert}
               >
-                {typeof article.cache?.likes === 'number'
-                  ? article.cache.likes + (articleMy?.liked ? 1 : 0)
-                  : ''}{' '}
-                Likes
+                Liker
               </Button>
               <Button
-                mode="text"
+                mode="outlined"
                 icon="share-variant"
-                style={{ flex: 1, marginLeft: 5 }}
-                color={colors.muted}
+                style={{ flex: 1, marginHorizontal: 5, borderRadius: 20 }}
+                color={colors.text}
                 onPress={() => {
                   shareContent({
                     title: article.title,
@@ -567,7 +548,6 @@ type ArticleDisplayProps = {
   comments: Comment[];
   reqState: CombinedReqState;
   account: Account;
-  lists: ArticleListItem[];
   preferences: Preferences;
   dual?: boolean;
 };
@@ -583,11 +563,10 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   reqState,
   account,
   preferences,
-  lists,
   dual = false,
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
-  const { id, useLists = false, verification = false } = route.params;
+  const { id, verification = false } = route.params;
 
   const [commentsDisplayed, setCommentsDisplayed] = React.useState(false);
 
@@ -595,17 +574,10 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  let article: Article | ArticlePreload | undefined | null;
-  if (useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id))) {
-    article = lists
-      .find((l: ArticleListItem) => l.items.some((i) => i._id === id))
-      ?.items.find((i) => i._id === id);
-  } else {
-    article =
-      item?._id === id
-        ? item
-        : data.find((a) => a._id === id) || search.find((a) => a._id === id) || null;
-  }
+  const article: Article | ArticlePreload | undefined | null =
+    item?._id === id
+      ? item
+      : data.find((a) => a._id === id) || search.find((a) => a._id === id) || null;
   const articleMy: ArticleMyInfo | null = my?._id === id ? my : null;
 
   const articleComments = comments.filter(
@@ -615,19 +587,17 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   );
 
   const fetch = () => {
-    if (!(useLists && lists?.some((l: ArticleListItem) => l.items?.some((i) => i._id === id)))) {
-      if (verification) {
-        fetchArticleVerification(id).then(() => setCommentsDisplayed(true));
-      } else {
-        fetchArticle(id).then(() => {
-          if (preferences.history) {
-            addArticleRead(id, article?.title || 'Article inconnu');
-          }
-          setCommentsDisplayed(true);
-        });
-        if (account.loggedIn) {
-          fetchArticleMy(id);
+    if (verification) {
+      fetchArticleVerification(id).then(() => setCommentsDisplayed(true));
+    } else {
+      fetchArticle(id).then(() => {
+        if (preferences.history) {
+          addArticleRead(id, article?.title || 'Article inconnu');
         }
+        setCommentsDisplayed(true);
+      });
+      if (account.loggedIn) {
+        fetchArticleMy(id);
       }
     }
   };
@@ -709,7 +679,6 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
 
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
   const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
-  const [isListModalVisible, setListModalVisible] = React.useState(false);
 
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
   const [focusedComment, setFocusedComment] = React.useState<string | null>(null);
@@ -747,12 +716,7 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
   };
 
   const { title } = article;
-  const subtitle =
-    useLists && lists.some((l) => l.items.some((a) => a._id === id))
-      ? 'Actus · Hors-ligne'
-      : verification
-      ? 'Actus · Modération'
-      : 'Actus';
+  const subtitle = verification ? 'Actus · Modération' : 'Actus';
 
   navigation.setOptions({ title });
 
@@ -762,19 +726,9 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         hideBack: dual,
         title: Platform.OS === 'ios' ? '' : title,
         subtitle,
-        actions:
-          !verification && Platform.OS !== 'web'
-            ? [
-                {
-                  icon: 'playlist-plus',
-                  onPress: () => setListModalVisible(true),
-                  label: 'Ajouter à une liste',
-                },
-              ]
-            : undefined,
-        overflow: [
+        actions: [
           {
-            title: 'Partager',
+            icon: 'share-variant',
             onPress: () => {
               if (!article) return;
               shareContent({
@@ -785,7 +739,10 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               });
               trackEvent('articledisplay:share', { props: { button: 'header' } });
             },
+            label: 'Partager',
           },
+        ],
+        overflow: [
           {
             title: 'Signaler',
             onPress: () => {
@@ -870,7 +827,6 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
               articleMy={articleMy}
               commentsDisplayed={commentsDisplayed}
               verification={verification}
-              offline={useLists && lists?.some((l) => l.items?.some((i) => i._id === id))}
               reqState={reqState}
               account={account}
               navigation={navigation}
@@ -955,9 +911,12 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
           parent: string,
           isReplying: boolean = false,
         ) =>
-          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'article').then(() =>
-            updateComments('initial', { parentId: id }),
-          )
+          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'article').then(() => {
+            updateComments('initial', { parentId: id });
+            if (account.loggedIn) {
+              fetchArticleMy(id);
+            }
+          })
         }
       />
       <ReportModal
@@ -976,12 +935,6 @@ const ArticleDisplay: React.FC<ArticleDisplayProps> = ({
         state={reqState.comments.report}
         navigation={navigation}
       />
-      <AddToListModal
-        visible={isListModalVisible}
-        setVisible={setListModalVisible}
-        id={id}
-        type="article"
-      />
     </PageContainer>
   );
 };
@@ -996,7 +949,6 @@ const mapStateToProps = (state: State) => {
     comments: comments.data,
     reqState: { articles: articles.state, comments: comments.state },
     preferences,
-    lists: articleData.lists,
     account,
   };
 };

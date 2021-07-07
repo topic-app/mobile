@@ -3,7 +3,8 @@ import PushNotification from 'react-native-push-notification';
 import parseUrl from 'url-parse';
 
 import { updateToken } from '@redux/actions/data/profile';
-import { logger, messaging } from '@utils';
+import Store from '@redux/store';
+import { handleAction, logger, messaging } from '@utils';
 
 const onNotification = (
   notification: { data?: { actionType?: string; actionData?: string } } | null,
@@ -12,17 +13,10 @@ const onNotification = (
   if (notification) {
     logger.info('Notification clicked, executing action');
     const { actionType, actionData } = notification.data || {};
-    if (!actionType || !actionData) {
-      logger.warn('No action on notification');
-      return;
-    }
-    if (actionType === 'link') {
-      const { pathname, query } = parseUrl(actionData);
-      linkTo(`${pathname}${query}`);
-    } else if (actionType === 'share') {
-      Share.share({ message: actionData });
+    if (actionType) {
+      handleAction(actionType, actionData, linkTo);
     } else {
-      logger.warn(`Action ${actionType} cannot be handled`);
+      logger.warn('Action has no type');
     }
   }
 };
@@ -82,8 +76,10 @@ const channels = [
 const setUpMessagingLoaded = () => {
   if (Platform.OS !== 'web' && messaging) {
     // Handle fcm token
-    messaging().getToken().then(updateToken);
-    messaging().onTokenRefresh(updateToken);
+    if (Store.getState().account.loggedIn) {
+      messaging().getToken().then(updateToken);
+      messaging().onTokenRefresh(updateToken);
+    }
 
     // PushNotification.getChannels((i) => i.forEach((j) => PushNotification.deleteChannel(j)));
     // Create channels

@@ -139,8 +139,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         /* DO NOT REMOVE - SCRIPT MARKER: androidVersion */
-        versionCode 92
-        versionName "0.23.4"
+        versionCode 115
+        versionName "0.27.7"
         setProperty("archivesBaseName", "Topic-$versionName")
     }
     splits {
@@ -179,18 +179,6 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            // TODO: Remove once beta is complete
-            versionNameSuffix "-beta"
-        }
-    }
-
-    def betaTesterName = System.getenv("BETA_TESTER_NAME")
-    if (betaTesterName) {
-        flavorDimensions "name"
-        productFlavors {
-            "$betaTesterName" {
-                versionNameSuffix "-$betaTesterName"
-            }
         }
     }
 

@@ -7,34 +7,21 @@ import { connect } from 'react-redux';
 
 import { PlatformTouchable, Illustration, PageContainer } from '@components';
 import {
-  deleteEventList,
   updateEventPrefs,
   addEventQuick,
   deleteEventQuick,
   reorderEventQuick,
-  reorderEventList,
 } from '@redux/actions/contentData/events';
-import {
-  State,
-  Account,
-  Preferences,
-  EventListItem,
-  EventQuickItem,
-  EventPrefs,
-  ArticleListItem,
-} from '@ts/types';
+import { State, Account, Preferences, EventQuickItem, EventPrefs } from '@ts/types';
 import { Alert } from '@utils';
 
 import type { EventConfigureScreenNavigationProp } from '.';
-import CreateModal from '../components/CreateModal';
-import EditModal from '../components/EditModal';
 import QuickLocationTypeModal from '../components/QuickLocationTypeModal';
 import QuickSelectModal from '../components/QuickSelectModal';
 import QuickTypeModal from '../components/QuickTypeModal';
 import getStyles from './styles';
 
 type EventConfigureProps = {
-  lists: EventListItem[];
   quicks: EventQuickItem[];
   preferences: Preferences;
   eventPrefs: EventPrefs;
@@ -47,10 +34,10 @@ type Category = {
   name: string;
   navigate: () => any;
   disable?: boolean;
+  disableReason?: string;
 };
 
 function EventConfigure({
-  lists,
   quicks,
   preferences,
   eventPrefs,
@@ -61,11 +48,6 @@ function EventConfigure({
   const styles = getStyles(theme);
   const { colors } = theme;
 
-  const [isCreateModalVisible, setCreateModalVisible] = React.useState(false);
-  const [isEditModalVisible, setEditModalVisible] = React.useState(false);
-  const [editingList, setEditingList] = React.useState<ArticleListItem | EventListItem | null>(
-    null,
-  );
   const [isQuickTypeModalVisible, setQuickTypeModalVisible] = React.useState(false);
   const [isQuickSelectModalVisible, setQuickSelectModalVisible] = React.useState(false);
   const [isQuickLocationTypeModalVisible, setQuickLocationTypeModalVisible] = React.useState(false);
@@ -129,6 +111,7 @@ function EventConfigure({
           },
         }),
       disable: !account.loggedIn,
+      disableReason: 'Indisponible - non connecté',
     },
   ];
 
@@ -148,7 +131,7 @@ function EventConfigure({
   return (
     <PageContainer headerOptions={{ title: 'Configurer', subtitle: 'Évènements' }}>
       <FlatList
-        data={['categories', 'lists', 'tags']}
+        data={['categories', 'tags']}
         keyExtractor={(s) => s}
         renderItem={({ item: section }) => {
           switch (section) {
@@ -187,7 +170,7 @@ function EventConfigure({
                         <List.Item
                           key={item.id}
                           title={item.name}
-                          description={item.disable ? 'Indisponible' : null}
+                          description={item.disable ? item.disableReason : null}
                           left={() => <View style={{ width: 56, height: 56 }} />}
                           onPress={() => {}}
                           onLongPress={move}
@@ -229,114 +212,6 @@ function EventConfigure({
                     }}
                   />
                 </View>
-              );
-
-            case 'lists':
-              if (Platform.OS === 'web') return null;
-              return (
-                <DraggableFlatList
-                  data={lists}
-                  scrollPercent={5}
-                  ListHeaderComponent={() => (
-                    <View>
-                      <View style={styles.listSpacer} />
-                      <List.Subheader>Listes</List.Subheader>
-                      <View style={styles.subheaderDescriptionContainer}>
-                        <Text>
-                          Ajoutez vos évènements à des listes afin de pouvoir y accéder rapidement.
-                        </Text>
-                      </View>
-                      <Divider />
-                    </View>
-                  )}
-                  ItemSeparatorComponent={() => <Divider />}
-                  keyExtractor={(item: EventListItem) => item.id}
-                  renderItem={({ item, move }: { item: EventListItem; move: () => any }) => {
-                    return (
-                      <List.Item
-                        title={item.name}
-                        description={`${
-                          item.items.length
-                            ? `${item.items.length} évènement${item.items.length === 1 ? '' : 's'}`
-                            : 'Aucun évènement'
-                        }${item.description ? `\n${item.description}` : ''}`}
-                        descriptionNumberOfLines={100}
-                        onPress={() => {}}
-                        onLongPress={move}
-                        left={() => <List.Icon icon={item.icon} />}
-                        right={() => (
-                          <View style={{ flexDirection: 'row' }}>
-                            <View onStartShouldSetResponder={() => true}>
-                              <PlatformTouchable
-                                onPress={() => {
-                                  setEditingList(item);
-                                  setEditModalVisible(true);
-                                }}
-                                accessibilityLabel="Modifier"
-                              >
-                                <List.Icon icon="pencil" />
-                              </PlatformTouchable>
-                            </View>
-                            <View onStartShouldSetResponder={() => true}>
-                              <PlatformTouchable
-                                disabled={lists.length === 1 && eventPrefs.categories?.length === 0}
-                                accessibilityLabel="Supprimer"
-                                onPress={() => {
-                                  Alert.alert(
-                                    `Voulez-vous vraiment supprimer la liste ${item.name} ?`,
-                                    'Cette action est irréversible',
-                                    [
-                                      {
-                                        text: 'Annuler',
-                                        onPress: () => {},
-                                      },
-                                      {
-                                        text: 'Supprimer',
-                                        onPress: () => deleteEventList(item.id),
-                                      },
-                                    ],
-                                    {
-                                      cancelable: true,
-                                    },
-                                  );
-                                }}
-                              >
-                                <List.Icon
-                                  icon="delete"
-                                  color={
-                                    lists.length === 1 && eventPrefs.categories?.length === 0
-                                      ? colors.disabled
-                                      : colors.text
-                                  }
-                                />
-                              </PlatformTouchable>
-                            </View>
-                          </View>
-                        )}
-                      />
-                    );
-                  }}
-                  onMoveEnd={({ from, to }: { from: number; to: number }) => {
-                    const fromList = lists[from];
-                    const toList = lists[to];
-
-                    reorderEventList(fromList.id, toList.id);
-                  }}
-                  ListFooterComponent={() => (
-                    <View>
-                      <Divider />
-                      <View style={styles.container}>
-                        <Button
-                          mode={Platform.OS === 'ios' ? 'text' : 'outlined'}
-                          uppercase={Platform.OS !== 'ios'}
-                          onPress={() => setCreateModalVisible(true)}
-                        >
-                          Créer
-                        </Button>
-                      </View>
-                    </View>
-                  )}
-                />
               );
 
             case 'tags':
@@ -446,18 +321,6 @@ function EventConfigure({
         }}
       />
 
-      <CreateModal
-        visible={isCreateModalVisible}
-        setVisible={setCreateModalVisible}
-        type="events"
-      />
-      <EditModal
-        visible={isEditModalVisible}
-        setVisible={setEditModalVisible}
-        editingList={editingList}
-        setEditingList={setEditingList}
-        type="events"
-      />
       <QuickTypeModal
         type="events"
         visible={isQuickTypeModalVisible}
@@ -482,7 +345,6 @@ function EventConfigure({
 const mapStateToProps = (state: State) => {
   const { eventData, preferences, account } = state;
   return {
-    lists: eventData.lists,
     quicks: eventData.quicks,
     eventPrefs: eventData.prefs,
     preferences,

@@ -3,14 +3,26 @@ import {
   CommentsActionTypes,
   UPDATE_COMMENTS_STATE,
   UPDATE_COMMENTS_DATA,
+  UPDATE_COMMENTS_VERIFICATION,
   CLEAR_COMMENTS,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: CommentsState = {
   data: [],
   search: [],
+  verification: [],
   state: {
     list: {
+      success: null,
+      error: null,
+      loading: {
+        initial: false,
+        refresh: false,
+        next: false,
+      },
+    },
+    verification_list: {
       success: null,
       error: null,
       loading: {
@@ -62,10 +74,18 @@ function commentReducer(state = initialState, action: CommentsActionTypes): Comm
         ...state,
         data: action.data,
       };
+    case UPDATE_COMMENTS_VERIFICATION:
+      return {
+        ...state,
+        verification: action.data,
+      };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_COMMENTS:
       return {
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
+        verification: action.data.verification ? [] : state.verification,
         state: state.state,
       };
     default:

@@ -59,7 +59,13 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             <Title numberOfLines={2} style={[readStyle]}>
               {article.title}
             </Title>
-            <Caption>{`Publié ${moment(article.date).fromNow()}`}</Caption>
+            <Caption>
+              Publié {moment(article.date).fromNow()} ·{' '}
+              <Icon name="eye" color={colors.subtext} size={12} />{' '}
+              {typeof article.cache?.views === 'number' ? article.cache.views : '?'} ·{' '}
+              <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
+              {typeof article.cache?.likes === 'number' ? article.cache.likes : '?'}
+            </Caption>
           </View>
           {verification && articleVerification.verification && (
             <View
@@ -100,7 +106,13 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
           >
             <Paragraph
               numberOfLines={6}
-              style={[readStyle, { fontFamily: preferences.fontFamily }]}
+              style={[
+                readStyle,
+                {
+                  fontFamily:
+                    preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
+                },
+              ]}
             >
               {article.summary}
             </Paragraph>

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { View, FlatList, ActivityIndicator, Platform, Clipboard } from 'react-native';
+import { View, FlatList, ActivityIndicator, Platform, Clipboard, Alert } from 'react-native';
 import { Text, Divider, List, Button, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
@@ -184,6 +184,21 @@ function EventDisplayDescriptionHeader({
       );
   };
 
+  const showLikeLoginAlert = () =>
+    Alert.alert(
+      'Connectez vous pour liker cet évènement',
+      'Avec un compte Topic, vous pourrez liker les articles, suivre vos groupes préférés et en rejoindre.',
+      [
+        { text: 'Se connecter', onPress: () => navigation.navigate('Auth', { screen: 'Login' }) },
+        {
+          text: 'Créer un compte',
+          onPress: () => navigation.navigate('Auth', { screen: 'Create' }),
+        },
+        { text: 'Annuler' },
+      ],
+      { cancelable: true },
+    );
+
   return (
     <View>
       {Array.isArray(event.places) &&
@@ -234,23 +249,20 @@ function EventDisplayDescriptionHeader({
           }}
         >
           <Button
-            mode="text"
+            mode="outlined"
             icon={eventMy?.liked ? 'thumb-up' : 'thumb-up-outline'}
             loading={reqState.events.my?.loading || reqState.events.like?.loading}
-            style={{ flex: 1, marginRight: 5 }}
-            color={eventMy?.liked ? colors.primary : colors.muted}
-            onPress={account.loggedIn ? likeEvent : undefined}
+            style={{ flex: 1, marginRight: 5, borderRadius: 20 }}
+            color={eventMy?.liked ? colors.primary : colors.text}
+            onPress={account.loggedIn ? likeEvent : showLikeLoginAlert}
           >
-            {typeof event.cache?.likes === 'number'
-              ? event.cache.likes + (eventMy?.liked ? 1 : 0)
-              : ''}{' '}
-            Likes
+            Liker
           </Button>
           <Button
-            mode="text"
+            mode="outlined"
             icon="share-variant"
-            style={{ flex: 1, marginLeft: 5 }}
-            color={colors.muted}
+            style={{ flex: 1, marginLeft: 5, borderRadius: 20 }}
+            color={colors.text}
             onPress={() => {
               shareContent({
                 title: `Évènement ${event.title}`,

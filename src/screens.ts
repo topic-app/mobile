@@ -4,11 +4,14 @@ export default {
     screens: {
       Login: '/auth/connexion',
       Create: '/auth/creation',
+      CreateSuccess: '/auth/fin',
     },
   },
   Landing: {
     screens: {
       SelectLocation: '/localisation',
+      Welcome: '/accueil',
+      Download: '/telecharger',
     },
   },
   Linking: {
@@ -61,8 +64,10 @@ export default {
                 screens: {
                   List: '/parametres',
                   Privacy: '/parametres/confidentialite',
-                  Appearance: '/parametres/apparence',
-                  Dev: '/parametres/beta',
+                  Theme: '/parametres/theme',
+                  Content: '/parametres/contenu',
+                  Dev: '/parametres/dev',
+                  SelectLocation: '/profil/localisation',
                 },
               },
               Moderation: {
@@ -75,6 +80,11 @@ export default {
                   List: '/a_propos',
                   Legal: '/legal',
                   Licenses: '/legal/licenses',
+                },
+              },
+              Notifications: {
+                screens: {
+                  Notifications: '/notifications',
                 },
               },
             },

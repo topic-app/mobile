@@ -40,6 +40,7 @@ import {
 import { logger, Alert, messaging } from '@utils';
 
 import type { ProfileScreenNavigationProp } from '.';
+import BioModal from './components/BioModal';
 import EmailModal from './components/EmailModal';
 import NameModal from './components/NameModal';
 import PasswordModal from './components/PasswordModal';
@@ -83,6 +84,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
   const [isVisibilityVisible, setVisibilityVisible] = React.useState(false);
   const [isNameVisible, setNameVisible] = React.useState(false);
   const [isUsernameVisible, setUsernameVisible] = React.useState(false);
+  const [isBioVisible, setBioVisible] = React.useState(false);
   const [isEmailVisible, setEmailVisible] = React.useState(false);
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
 
@@ -149,6 +151,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
               size={120}
               avatar={account.accountInfo?.user.info.avatar}
               onPress={() => setAvatarsVisible(!avatarsVisible)}
+              editing
             />
           </View>
           <CollapsibleView collapsed={!avatarsVisible}>
@@ -235,6 +238,15 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                 type="public"
                 onPress={() => setNameVisible(true)}
               />
+              <ProfileItem
+                item="Biographie"
+                value={account.accountInfo.user?.data?.description || 'Non spécifié'}
+                editable
+                disabled={!account.accountInfo.user?.data?.description}
+                small={!!account.accountInfo.user?.data?.description}
+                type="public"
+                onPress={() => setBioVisible(true)}
+              />
             </View>
           )}
           <ProfileItem
@@ -249,13 +261,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
           <List.Subheader>Localisation</List.Subheader>
           <Divider />
           <View>
-            {location.global && (
-              <InlineCard
-                icon="map-marker"
-                title="France Entière"
-                onPress={() => logger.warn('global pressed')}
-              />
-            )}
+            {location.global && <InlineCard icon="map-marker" title="France Entière" />}
             {location.schoolData?.map((school) => (
               <InlineCard
                 key={school._id}
@@ -270,7 +276,6 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                     ? `, ${school.departments[0].displayName || school.departments[0].name}`
                     : ''
                 }`}
-                onPress={() => logger.warn(`school ${school._id} pressed!`)}
               />
             ))}
             {location.departmentData?.map((dep) => (
@@ -278,17 +283,16 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
                 key={dep._id}
                 icon="map-marker-radius"
                 title={dep.name}
-                subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'} ${dep.code}`}
-                onPress={() => logger.warn(`department ${dep._id} pressed!`)}
+                subtitle={`${dep.type === 'departement' ? 'Département' : 'Région'}`}
               />
             ))}
             <View style={styles.container}>
               <Button
                 mode="outlined"
                 onPress={() =>
-                  navigation.navigate('Landing', {
-                    screen: 'SelectLocation',
-                    params: { goBack: true },
+                  navigation.push('Main', {
+                    screen: 'More',
+                    params: { screen: 'Settings', params: { screen: 'SelectLocation' } },
                   })
                 }
               >
@@ -404,6 +408,7 @@ const Profile: React.FC<ProfileProps> = ({ account, location, navigation, state 
       <UsernameModal visible={isUsernameVisible} setVisible={setUsernameVisible} />
       <EmailModal visible={isEmailVisible} setVisible={setEmailVisible} />
       <PasswordModal visible={isPasswordVisible} setVisible={setPasswordVisible} />
+      <BioModal visible={isBioVisible} setVisible={setBioVisible} />
     </PageContainer>
   );
 };

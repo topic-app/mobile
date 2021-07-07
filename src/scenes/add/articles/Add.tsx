@@ -41,9 +41,8 @@ const ArticleAdd: React.FC<ArticleAddProps> = ({ navigation, creationData }) => 
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
         <KeyboardAvoidingView
-          behavior="padding"
-          enabled={Platform.OS === 'ios'}
           style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>
             <PlatformBackButton onPress={navigation.goBack} />

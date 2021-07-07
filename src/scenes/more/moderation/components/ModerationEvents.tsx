@@ -132,7 +132,6 @@ const ModerationEvents: React.FC<Props> = ({
                         params: {
                           id: item._id,
                           title: item.title,
-                          useLists: false,
                           verification: true,
                         },
                       },

@@ -64,15 +64,17 @@ const ArticleAddSuccess: React.FC<ArticleAddSuccessProps> = ({
           style={[styles.centerIllustrationContainer, styles.contentContainer, { marginTop: 40 }]}
         >
           <Illustration name="auth-register-success" height={200} width={200} />
-          <Text style={styles.title}>
+          <Text style={[styles.title, { textAlign: 'center' }]}>
             Article {editing ? 'Modifié' : approved ? 'publié' : 'en attente de modération'}
           </Text>
           {!approved && !editing && (
             <View>
-              <Text style={{ marginTop: 40 }}>
+              <Text style={{ marginTop: 40, textAlign: 'center' }}>
                 Votre article doit être approuvé par un administrateur de {groupName}.
               </Text>
-              <Text>Vous serez notifié par email dès que l&apos;article sera approuvé.</Text>
+              <Text style={{ textAlign: 'center' }}>
+                Vous serez notifié dès que l&apos;article sera approuvé.
+              </Text>
             </View>
           )}
           {checkPermission(account, {

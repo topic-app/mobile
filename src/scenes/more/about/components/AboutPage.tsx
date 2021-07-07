@@ -1,8 +1,8 @@
-import contributors from '@assets/json/contributors.json';
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { Divider, List, Subheading, Text, useTheme } from 'react-native-paper';
 
+import contributors from '@assets/json/contributors.json';
 import { Illustration } from '@components';
 import { handleUrl } from '@utils';
 
@@ -17,16 +17,18 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
+  const [lpCount, setLpCount] = React.useState(0);
+
   return (
     <View>
       <View style={styles.contentContainer}>
-        <View style={[styles.centerIllustrationContainer, { marginTop: 60, marginBottom: 10 }]}>
-          <Illustration name="topic-icon" style={{ height: 200, width: 200 }} />
+        <View style={styles.centerIllustrationContainer}>
+          <Illustration name="topic-icon" height={100} />
         </View>
       </View>
       <View style={styles.headerContainer}>
         <View style={styles.centerIllustrationContainer}>
-          <Text style={[styles.topic, { fontSize: 60 }]}>Topic</Text>
+          <Text style={[styles.topic, { fontSize: 50 }]}>Topic</Text>
           <Subheading>La mallette à outils de l&apos;engagement citoyen</Subheading>
         </View>
       </View>
@@ -61,10 +63,32 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
         right={() => <List.Icon icon="twitter" />}
       />
       <List.Item
-        title="Instagram"
+        title={lpCount > 2 ? 'Amstramgram' : 'Instagram'}
         description="@topic_application"
-        onPress={() => handleUrl('https://instagram.com/topic_application', { trusted: true })}
-        right={() => <List.Icon icon="instagram" />}
+        onPress={() =>
+          handleUrl(
+            lpCount > 2
+              ? 'https://youtu.be/ZJD1zoAaCmo?t=2'
+              : 'https://instagram.com/topic_application',
+            { trusted: true },
+          )
+        }
+        onLongPress={() => setLpCount(lpCount + 1)}
+        right={() => <List.Icon icon={lpCount > 2 ? 'youtube' : 'instagram'} />}
+      />
+      <List.Item
+        title={lpCount > 2 ? 'Face de book' : 'Facebook'}
+        description="Topic App"
+        onPress={() =>
+          handleUrl(
+            lpCount > 2
+              ? 'https://youtu.be/uFpKj3JbORs?t=160'
+              : 'https://www.facebook.com/Topic-App-108062684848019/',
+            { trusted: true },
+          )
+        }
+        right={() => <List.Icon icon={lpCount > 2 ? 'youtube' : 'facebook'} />}
+        onLongPress={() => setLpCount(lpCount + 1)}
       />
       <List.Item
         title="Gitlab (code source)"
@@ -72,9 +96,15 @@ const AboutPage: React.FC<props> = ({ navigation }) => {
         onPress={() => handleUrl('https://gitlab.com/topicapp', { trusted: true })}
         right={() => <List.Icon icon="gitlab" />}
       />
+      <List.Item
+        title={lpCount > 2 ? 'Vous avez découvert un easter egg :)' : 'Serveur de communication'}
+        description="chat.topicapp.fr"
+        onPress={() => handleUrl('https://chat.topicapp.fr', { trusted: true })}
+        right={() => <List.Icon icon="comment-outline" />}
+      />
       <View style={{ height: 40 }} />
       <Divider />
-      <View style={styles.contentContainer}>
+      <View style={styles.container}>
         <Subheading>Équipe et contributeurs</Subheading>
       </View>
       {contributors.map((c) => (

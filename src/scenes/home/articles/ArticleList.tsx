@@ -32,10 +32,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
   const [article, setArticle] = React.useState<{
     id: string;
     title: string;
-    useLists: boolean;
-  } | null>(
-    route.params?.article ? { id: route.params.article, title: '', useLists: false } : null,
-  );
+  } | null>(route.params?.article ? { id: route.params.article, title: '' } : null);
 
   const theme = useTheme();
   const deviceWidth = useWindowDimensions().width;
@@ -108,7 +105,7 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
           scrollY={scrollY}
           initialTabKey={route.params?.initialList}
           onArticleCreatePressed={() => {
-            updateArticleCreationData({ editing: false, id: undefined });
+            updateArticleCreationData({ editing: false });
             navigation.navigate('Main', {
               screen: 'Add',
               params: { screen: 'Article', params: { screen: 'Add' } },
@@ -148,7 +145,6 @@ const ArticleListScreen: React.FC<ArticleListProps> = ({
                   params: {
                     id: article.id,
                     title: article.title,
-                    useLists: article.useLists,
                     verification: false,
                   },
                 }}

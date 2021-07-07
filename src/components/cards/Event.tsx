@@ -19,6 +19,7 @@ type EventCardProps = {
   event: AnyEvent;
   navigate: NativeStackNavigationProp<any, any>['navigate'];
   verification?: boolean;
+  unread?: boolean;
   preferences: Preferences;
   overrideImageWidth?: number;
 };
@@ -28,6 +29,7 @@ const EventCard: React.FC<EventCardProps> = ({
   navigate,
   verification,
   preferences,
+  unread = true,
   overrideImageWidth = 140,
 }) => {
   const eventVerification = event as EventVerificationPreload;
@@ -48,13 +50,23 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const verificationColors = ['green', 'yellow', 'yellow', 'orange', 'orange', 'orange'];
 
+  const readStyle = !unread && { color: colors.disabled };
+
   return (
     <CardBase onPress={navigate} contentContainerStyle={{ paddingTop: 0, paddingBottom: 0 }}>
       <Card.Content>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
           <View style={{ flex: 1 }}>
-            <Title numberOfLines={2}>{event?.title}</Title>
-            <Caption>{Format.shortEventDate(event.duration)}</Caption>
+            <Title numberOfLines={2} style={[readStyle]}>
+              {event?.title}
+            </Title>
+            <Caption>
+              {Format.shortEventDate(event.duration)} ·{' '}
+              <Icon name="eye" color={colors.subtext} size={12} />{' '}
+              {typeof event.cache?.views === 'number' ? event.cache.views : '?'} ·{' '}
+              <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
+              {typeof event.cache?.likes === 'number' ? event.cache.likes : '?'}
+            </Caption>
           </View>
           {verification && eventVerification?.verification && (
             <View
@@ -95,7 +107,15 @@ const EventCard: React.FC<EventCardProps> = ({
               maxHeight: overrideImageWidth,
             }}
           >
-            <Paragraph numberOfLines={4} style={[{ fontFamily: preferences.fontFamily }]}>
+            <Paragraph
+              numberOfLines={4}
+              style={[
+                {
+                  fontFamily:
+                    preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
+                },
+              ]}
+            >
               {event?.summary}
             </Paragraph>
             {Array.isArray(event?.places) &&

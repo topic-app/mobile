@@ -454,7 +454,6 @@ const ProgramAddModal: React.FC<ProgramAddModalProps> = ({
               sections={[{ key: 'main', data: durations }]}
               selected={currentDuration.value}
               setSelected={(data) => {
-                console.log(data);
                 setDuration({ value: data });
               }}
             />

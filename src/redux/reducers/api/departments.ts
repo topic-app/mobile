@@ -7,6 +7,7 @@ import {
   UPDATE_DEPARTMENTS_ITEMS,
   UPDATE_DEPARTMENTS_SEARCH,
   CLEAR_DEPARTMENTS,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: DepartmentsState = {
@@ -81,6 +82,8 @@ function departmentReducer(state = initialState, action: DepartmentsActionTypes)
         ...state,
         search: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_DEPARTMENTS:
       return {
         data: action.data.data ? [] : state.data,

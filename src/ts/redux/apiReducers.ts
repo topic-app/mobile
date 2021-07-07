@@ -122,11 +122,13 @@ export type ArticlesActionTypes =
 export const UPDATE_COMMENTS_STATE = 'UPDATE_COMMENTS_STATE';
 export const UPDATE_COMMENTS_DATA = 'UPDATE_COMMENTS_DATA';
 export const UPDATE_COMMENTS_SEARCH = 'UPDATE_COMMENTS_SEARCH';
+export const UPDATE_COMMENTS_VERIFICATION = 'UPDATE_COMMENTS_VERIFICATION';
 export const CLEAR_COMMENTS = 'CLEAR_COMMENTS';
 
 export type CommentsState = {
   data: Comment[];
   search: Comment[];
+  verification: Comment[];
   state: CommentRequestState;
 };
 
@@ -140,6 +142,11 @@ type UpdateCommentsDataAction = {
   data: Comment[];
 };
 
+type UpdateCommentsVerificationAction = {
+  type: typeof UPDATE_COMMENTS_VERIFICATION;
+  data: Comment[];
+};
+
 type UpdateCommentsSearchAction = {
   type: typeof UPDATE_COMMENTS_SEARCH;
   data: Comment[];
@@ -147,12 +154,13 @@ type UpdateCommentsSearchAction = {
 
 type ClearCommentsAction = {
   type: typeof CLEAR_COMMENTS;
-  data: { data?: boolean; search?: boolean };
+  data: { data?: boolean; search?: boolean; verification?: boolean };
 };
 
 export type CommentsActionTypes =
   | UpdateCommentsStateAction
   | UpdateCommentsDataAction
+  | UpdateCommentsVerificationAction
   | UpdateCommentsSearchAction
   | ClearCommentsAction
   | FullClearAction;
@@ -489,12 +497,14 @@ export const UPDATE_TAGS_STATE = 'UPDATE_TAGS_STATE';
 export const UPDATE_TAGS_DATA = 'UPDATE_TAGS_DATA';
 export const UPDATE_TAGS_ITEM = 'UPDATE_TAGS_ITEM';
 export const UPDATE_TAGS_SEARCH = 'UPDATE_TAGS_SEARCH';
+export const UPDATE_TAGS_ITEMS = 'UPDATE_TAGS_ITEMS';
 export const CLEAR_TAGS = 'CLEAR_TAGS';
 
 export type TagsState = {
   data: (Tag | TagPreload)[];
   search: TagPreload[];
   item: Tag | null;
+  items: Tag[] | null;
   state: TagRequestState;
 };
 
@@ -513,6 +523,11 @@ type UpdateTagsItemAction = {
   data: Tag;
 };
 
+type UpdateTagsItemsAction = {
+  type: typeof UPDATE_TAGS_ITEMS;
+  data: Tag[];
+};
+
 type UpdateTagsSearchAction = {
   type: typeof UPDATE_TAGS_SEARCH;
   data: TagPreload[];
@@ -527,6 +542,7 @@ export type TagsActionTypes =
   | UpdateTagsStateAction
   | UpdateTagsDataAction
   | UpdateTagsItemAction
+  | UpdateTagsItemsAction
   | UpdateTagsSearchAction
   | ClearTagsAction
   | FullClearAction;
@@ -598,7 +614,7 @@ type UpdateLegalAction = {
   data: Partial<LegalState>;
 };
 
-export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction;
+export type LegalActionTypes = UpdateLegalAction | UpdateLegalStateAction | FullClearAction;
 
 // Linking
 export const UPDATE_LINKING_STATE = 'UPDATE_LINKING_STATE';
@@ -610,7 +626,7 @@ type UpdateLinkingStateAction = {
   type: typeof UPDATE_LINKING_STATE;
   data: Partial<LinkingRequestState>;
 };
-export type LinkingActionTypes = UpdateLinkingStateAction;
+export type LinkingActionTypes = UpdateLinkingStateAction | FullClearAction;
 
 // Upload
 export const UPDATE_UPLOAD_STATE = 'UPDATE_UPLOAD_STATE';
@@ -623,7 +639,7 @@ type UpdateUploadStateAction = {
   data: Partial<UploadRequestState>;
 };
 
-export type UploadActionTypes = UpdateUploadStateAction;
+export type UploadActionTypes = UpdateUploadStateAction | FullClearAction;
 
 export namespace ApiAction {
   // Not exported

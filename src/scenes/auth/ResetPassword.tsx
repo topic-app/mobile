@@ -49,7 +49,7 @@ const AuthResetPassword: React.FC<AuthResetPasswordProps> = ({
     <View style={styles.page}>
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
-        <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           {reqState.passwordRequest?.loading ? (
             <ProgressBar indeterminate />
           ) : (

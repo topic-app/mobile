@@ -12,8 +12,10 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Button, Subheading, Text, useTheme } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import getStyles from '@styles/global';
+import { ArticlePreload, PreferencesState, State } from '@ts/types';
 
 import Banner from './Banner';
 import TabChipList from './TabChipList';
@@ -67,6 +69,7 @@ type Props<T extends any> = Omit<
     changeTab: (newTab: string) => Promise<void>;
   }>;
   renderItem: React.ComponentType<ListRenderItemInfo<T> & { group?: string; sectionKey: string }>;
+  blocked: string[];
 };
 
 const ContentFlatList = <T extends any>({
@@ -79,6 +82,7 @@ const ContentFlatList = <T extends any>({
   onConfigurePress,
   renderItem: Item,
   initialSection,
+  blocked,
   ...props
 }: Props<T>) => {
   const theme = useTheme();
@@ -241,7 +245,8 @@ const ContentFlatList = <T extends any>({
               <ActivityIndicator size="large" color={colors.primary} />
             ) : (
               Platform.OS === 'web' &&
-              !(currentSection.loading?.initial || currentSection.loading?.refresh) && (
+              !(currentSection.loading?.initial || currentSection.loading?.refresh) &&
+              !!currentSection.data.length && (
                 <Button mode="text" onPress={() => currentSection.onLoad?.('next')}>
                   Charger plus
                 </Button>
@@ -249,22 +254,30 @@ const ContentFlatList = <T extends any>({
             )}
           </View>
         }
-        renderItem={(itemProps) => (
-          <>
-            <Item {...itemProps} sectionKey={tabKey} group={currentSection.group} />
-            {Platform.OS === 'android' && (
-              <Animated.View
-                style={{
-                  opacity: renderItemFadeAnim,
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  backgroundColor: colors.background,
-                }}
-              />
-            )}
-          </>
-        )}
+        renderItem={(itemProps) => {
+          if (
+            blocked.includes((itemProps.item as any)?.group?._id) ||
+            blocked.some((b) => (itemProps.item as any)?.authors?.some((a: any) => a?._id === b))
+          ) {
+            return null;
+          }
+          return (
+            <>
+              <Item {...itemProps} sectionKey={tabKey} group={currentSection.group} />
+              {Platform.OS === 'android' && (
+                <Animated.View
+                  style={{
+                    opacity: renderItemFadeAnim,
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: colors.background,
+                  }}
+                />
+              )}
+            </>
+          );
+        }}
         getItemLayout={getItemLayout}
         onMomentumScrollBegin={() => {
           callOnEndReached = true;

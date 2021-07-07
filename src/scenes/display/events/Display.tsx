@@ -41,7 +41,6 @@ import {
   Event,
   Preferences,
   EventPreload,
-  EventListItem,
   Content,
   EventVerification,
 } from '@ts/types';
@@ -57,7 +56,6 @@ import {
 
 import type { EventDisplayScreenNavigationProp, EventDisplayStackParams } from '.';
 import AddCommentModal from '../components/AddCommentModal';
-import AddToListModal from '../components/AddToListModal';
 import EventDisplayContact from './Contact';
 import EventDisplayDescription from './Description';
 import EventDisplayProgram from './Program';
@@ -81,7 +79,6 @@ type EventDisplayProps = {
   search: EventPreload[];
   reqState: CombinedReqState;
   account: Account;
-  lists: EventListItem[];
   preferences: Preferences;
   dual?: boolean;
 };
@@ -96,48 +93,38 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   reqState,
   account,
   preferences,
-  lists,
   dual = false,
 }) => {
   // Pour changer le type de route.params, voir ../index.tsx
-  const { id, useLists = false, verification = false } = route.params;
+  const { id, verification = false } = route.params;
 
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
   const dimensions = useWindowDimensions();
 
-  let event: Event | EventPreload | undefined | null;
-  if (useLists && lists?.some((l: EventListItem) => l.items?.some((i) => i._id === id))) {
-    event = lists
-      .find((l: EventListItem) => l.items.some((i) => i._id === id))
-      ?.items.find((i) => i._id === id);
-  } else {
-    event =
-      item?._id === id
-        ? item
-        : dataUpcoming.find((a) => a._id === id) ||
-          dataPassed.find((a) => a._id === id) ||
-          search.find((a) => a._id === id) ||
-          null;
-  }
+  const event: Event | EventPreload | undefined | null =
+    item?._id === id
+      ? item
+      : dataUpcoming.find((a) => a._id === id) ||
+        dataPassed.find((a) => a._id === id) ||
+        search.find((a) => a._id === id) ||
+        null;
 
   const [commentsDisplayed, setCommentsDisplayed] = React.useState(false);
 
   const fetch = () => {
-    if (!(useLists && lists?.some((l: EventListItem) => l.items?.some((i) => i._id === id)))) {
-      if (verification) {
-        fetchEventVerification(id);
-      } else {
-        fetchEvent(id).then(() => {
-          if (preferences.history && event) {
-            addEventRead(id, event.title);
-          }
-          setCommentsDisplayed(true);
-        });
-        if (account.loggedIn) {
-          fetchEventMy(id);
+    if (verification) {
+      fetchEventVerification(id);
+    } else {
+      fetchEvent(id).then(() => {
+        if (preferences.history && event) {
+          addEventRead(id, event.title);
         }
+        setCommentsDisplayed(true);
+      });
+      if (account.loggedIn) {
+        fetchEventMy(id);
       }
     }
   };
@@ -151,7 +138,6 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
 
   const [isCommentModalVisible, setCommentModalVisible] = React.useState(false);
   const [isArticleReportModalVisible, setArticleReportModalVisible] = React.useState(false);
-  const [isListModalVisible, setListModalVisible] = React.useState(false);
   const [isMessageModalVisible, setMessageModalVisible] = React.useState(false);
 
   const [isCommentReportModalVisible, setCommentReportModalVisible] = React.useState(false);
@@ -248,12 +234,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
   }
 
   const { title } = event;
-  const subtitle =
-    useLists && lists.some((l) => l.items.some((a) => a._id === id))
-      ? 'Évènement · Hors-ligne'
-      : verification
-      ? 'Évènement · Modération'
-      : 'Évènement';
+  const subtitle = verification ? 'Évènement · Modération' : 'Évènement';
 
   navigation.setOptions({ title });
 
@@ -264,20 +245,9 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         value={scrollY}
         title={Platform.OS === 'ios' ? '' : title}
         subtitle={Platform.OS === 'ios' ? 'Évènements' : subtitle}
-        actions={
-          verification || Platform.OS === 'web'
-            ? undefined
-            : [
-                {
-                  icon: 'playlist-plus',
-                  onPress: () => setListModalVisible(true),
-                  label: 'Ajouter à une liste',
-                },
-              ]
-        }
-        overflow={[
+        actions={[
           {
-            title: 'Partager',
+            icon: 'share-variant',
             onPress: () => {
               if (!event) return;
               shareContent({
@@ -287,7 +257,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                 id: event._id,
               });
             },
+            label: 'Partager',
           },
+        ]}
+        overflow={[
           {
             title: 'Signaler',
             onPress: () => setArticleReportModalVisible(true),
@@ -394,26 +367,14 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
                 ? `Du ${moment(event.duration?.start).format('DD/MM/YYYY')} au ${moment(
                     event.duration?.end,
                   ).format('DD/MM/YYYY')}`
-                : 'Aucune date spécifiée'}
+                : 'Aucune date spécifiée'}{' '}
+              · <Icon name="eye" color={colors.subtext} size={12} />
+              {typeof event.cache?.views === 'number' ? event.cache.views : '?'} ·{' '}
+              <Icon name="thumb-up" color={colors.subtext} size={12} />{' '}
+              {typeof event.cache?.likes === 'number' ? event.cache.likes : '?'}
             </Text>
           </View>
           <TagList item={event} scrollable />
-          {useLists && (
-            <View
-              style={[
-                styles.contentContainer,
-                { flexDirection: 'row', marginBottom: 0, alignItems: 'center' },
-              ]}
-            >
-              <Icon
-                style={{ marginRight: 10 }}
-                color={colors.disabled}
-                size={24}
-                name="cloud-off-outline"
-              />
-              <Title style={{ color: colors.disabled }}>Hors ligne</Title>
-            </View>
-          )}
           {(reqState.events.info.loading ||
             reqState.events.delete?.loading ||
             reqState.events.verification_deverify?.loading) && (
@@ -637,9 +598,12 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
           parent: string,
           isReplying: boolean,
         ) =>
-          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'event').then(() =>
-            updateComments('initial', { parentId: id }),
-          )
+          commentAdd(publisher, content, parent, isReplying ? 'comment' : 'event').then(() => {
+            updateComments('initial', { parentId: id });
+            if (account.loggedIn) {
+              fetchEventMy(id);
+            }
+          })
         }
       />
       <AddMessageModal
@@ -669,12 +633,6 @@ const EventDisplay: React.FC<EventDisplayProps> = ({
         state={reqState.comments.report}
         navigation={navigation}
       />
-      <AddToListModal
-        visible={isListModalVisible}
-        setVisible={setListModalVisible}
-        id={id}
-        type="event"
-      />
     </View>
   );
 };
@@ -688,7 +646,6 @@ const mapStateToProps = (state: State) => {
     item: events.item,
     reqState: { events: events.state, comments: comments.state },
     preferences,
-    lists: eventData.lists,
     account,
   };
 };

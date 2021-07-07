@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import { Avatar, Content } from '@components';
 import { commentDelete } from '@redux/actions/apiActions/comments';
-import { Comment, Account, State, CommentReply } from '@ts/types';
+import { Comment, Account, State, CommentReply, PreferencesState } from '@ts/types';
 import { checkPermission, Errors, Alert, Permissions } from '@utils';
 import { NativeStackNavigationProp } from '@utils/compat/stack';
 
@@ -21,6 +21,8 @@ type CommentInlineCardPropsBase = {
   navigation: NativeStackNavigationProp<any, any>;
   reply: (id: string | null) => void;
   authors?: string[];
+  preferences: PreferencesState;
+  parentId?: string;
 };
 type CommentInlineCardPropsComment = CommentInlineCardPropsBase & {
   isReply: false;
@@ -42,6 +44,8 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
   navigation,
   reply,
   authors,
+  preferences,
+  parentId,
 }) => {
   const { publisher, content, date, _id: id } = comment;
   const { displayName } = publisher
@@ -97,10 +101,15 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
 
   if (!id || !content) return null;
 
+  if (
+    preferences.blocked.includes(publisher?.group?._id || '') ||
+    preferences.blocked.includes(publisher?.user?._id || '')
+  )
+    return null;
+
   return (
     <View style={styles.container}>
       <View style={[{ flexDirection: 'row' }, isReply ? { marginLeft: 20 } : {}]}>
-        {}
         <Avatar
           avatar={
             publisher?.type === 'user' ? publisher?.user?.info?.avatar : publisher?.group?.avatar
@@ -161,7 +170,7 @@ const CommentInlineCard: React.FC<CommentInlineCardProps> = ({
                 />
               }
             >
-              <Menu.Item onPress={() => reply(id)} title="Répondre" />
+              <Menu.Item onPress={() => reply(parentId || id)} title="Répondre" />
               <Menu.Item onPress={() => report(id)} title="Signaler" />
               {canDelete ? (
                 <Menu.Item
@@ -191,15 +200,15 @@ const CommentItem: React.FC<CommentInlineCardPropsComment> = (props) => {
       <CommentInlineCard {...props} />
       {!!comment?.cache?.replies &&
         comment.cache.replies.map((c) => {
-          return <CommentInlineCard {...props} comment={c} isReply />;
+          return <CommentInlineCard {...props} comment={c} isReply parentId={comment?._id} />;
         })}
     </View>
   );
 };
 
 const mapStateToProps = (state: State) => {
-  const { account } = state;
-  return { account };
+  const { account, preferences } = state;
+  return { account, preferences };
 };
 
 export default connect(mapStateToProps)(CommentItem);

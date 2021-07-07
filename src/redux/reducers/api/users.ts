@@ -6,6 +6,7 @@ import {
   UPDATE_USERS_ITEM,
   UPDATE_USERS_SEARCH,
   CLEAR_USERS,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: UsersState = {
@@ -79,6 +80,8 @@ function userReducer(state = initialState, action: UsersActionTypes): UsersState
         ...state,
         search: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_USERS:
       return {
         data: action.data.data ? [] : state.data,

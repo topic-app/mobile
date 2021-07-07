@@ -40,8 +40,7 @@ const GroupAdd: React.FC<Props> = ({ navigation, templates, groupState }) => {
       <SafeAreaView style={{ flex: 1 }}>
         <TranslucentStatusBar />
         <KeyboardAvoidingView
-          behavior="padding"
-          enabled={Platform.OS === 'ios'}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{ flex: 1 }}
         >
           <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled ref={scrollViewRef}>

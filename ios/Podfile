@@ -19,7 +19,7 @@ target 'Topic' do
   pod "Permission-MediaLibrary", :path => "#{permissions_path}/MediaLibrary"
   pod "Permission-Notifications", :path => "#{permissions_path}/Notifications"
   
-  $ReactNativeMapboxGLIOSVersion = "~> 5.9.0"
+  # $ReactNativeMapboxGLIOSVersion = "~> 5.9.0"
   
   # Enables Flipper.
   #
@@ -27,7 +27,22 @@ target 'Topic' do
   # you should disable these next few lines.
   # use_flipper!()
   
+  $RNMBGL_Use_SPM = {
+    url: "https://github.com/maplibre/maplibre-gl-native-distribution",
+    requirement: {
+      kind: "upToNextMajorVersion",
+      minimumVersion: "5.11.0"
+    },
+    product_name: "Mapbox"
+  }
+  
+  
+  pre_install do |installer|
+    $RNMBGL.pre_install(installer)
+  end
+  
   post_install do |installer|
+    $RNMBGL.post_install(installer)
     react_native_post_install(installer)
   end
 end

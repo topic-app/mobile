@@ -140,7 +140,7 @@ const AuthCreatePageProfile: React.FC<Props> = ({
               avatar: activeAvatar,
               schools: location.schools,
               departments: location.departments,
-              global: location.global,
+              global: location.selected ? location.global : true,
             });
             trackEvent('auth:create-page-legal');
             next();
@@ -181,38 +181,50 @@ const AuthCreatePageProfile: React.FC<Props> = ({
                   />
                 </View>
               )}
-              <View style={{ marginBottom: 10, marginTop: 20 }}>
-                <Subheading>Localisation</Subheading>
-              </View>
-              {location.schoolData.map((s) => (
-                <Card key={s._id} style={{ marginBottom: 10 }}>
-                  <Card.Content>
-                    <Title>{s?.name}</Title>
-                    <Subheading>{s?.address?.shortName || s?.address?.address?.city}</Subheading>
-                  </Card.Content>
-                </Card>
-              ))}
-              {location.departmentData.map((d) => (
-                <Card key={d._id} style={{ marginBottom: 10 }}>
-                  <Card.Content>
-                    <Title>{d?.name}</Title>
-                    <Subheading>{d?.type === 'region' ? 'Région' : 'Département'}</Subheading>
-                  </Card.Content>
-                </Card>
-              ))}
-              {location.global && (
-                <Card style={{ marginBottom: 10 }}>
-                  <Card.Content>
-                    <Title>France entière</Title>
-                    <Subheading>Pas d&apos;école ou département spécifique</Subheading>
-                  </Card.Content>
-                </Card>
+              {location.selected ? (
+                <View>
+                  <View style={{ marginBottom: 10, marginTop: 20 }}>
+                    <Subheading>Localisation</Subheading>
+                  </View>
+                  {location.schoolData.map((s) => (
+                    <Card key={s._id} style={{ marginBottom: 10 }}>
+                      <Card.Content>
+                        <Title>{s?.name}</Title>
+                        <Subheading>
+                          {s?.address?.shortName || s?.address?.address?.city}
+                        </Subheading>
+                      </Card.Content>
+                    </Card>
+                  ))}
+                  {location.departmentData.map((d) => (
+                    <Card key={d._id} style={{ marginBottom: 10 }}>
+                      <Card.Content>
+                        <Title>{d?.name}</Title>
+                        <Subheading>{d?.type === 'region' ? 'Région' : 'Département'}</Subheading>
+                      </Card.Content>
+                    </Card>
+                  ))}
+                  {location.global && (
+                    <Card style={{ marginBottom: 10 }}>
+                      <Card.Content>
+                        <Title>France entière</Title>
+                        <Subheading>Pas d&apos;école ou département spécifique</Subheading>
+                      </Card.Content>
+                    </Card>
+                  )}
+                  <View style={{ marginBottom: 40 }}>
+                    <Button mode="text" onPress={landing}>
+                      Changer
+                    </Button>
+                  </View>
+                </View>
+              ) : (
+                <View style={{ marginBottom: 60, alignItems: 'center' }}>
+                  <Button mode="contained" onPress={landing} style={{ flex: 1 }}>
+                    Choisir une localisation
+                  </Button>
+                </View>
               )}
-              <View style={[styles.changeButtonContainer, { marginBottom: 40 }]}>
-                <Button mode="text" onPress={landing}>
-                  Changer
-                </Button>
-              </View>
               <View style={styles.buttonContainer}>
                 <Button
                   mode={Platform.OS !== 'ios' ? 'outlined' : 'text'}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clipboard } from 'react-native';
+import { Alert, Clipboard, TouchableWithoutFeedback } from 'react-native';
 import { useTheme, Banner, Avatar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
@@ -95,12 +95,26 @@ const ErrorMessage: React.FC<ErrorMessageProps & { advancedMode: boolean }> = ({
       visible
       actions={actions}
       icon={({ size }) => (
-        <Avatar.Icon
-          accessibilityRole="none"
-          style={{ backgroundColor: colors.invalid }}
-          size={size}
-          icon={errorInfo.message.icon}
-        />
+        <TouchableWithoutFeedback
+          onLongPress={() => {
+            Clipboard.setString(errorInfo.details);
+            Alert.alert(
+              'Infos de déboguage copiées',
+              errorInfo.message.code,
+              [{ text: 'Fermer' }],
+              {
+                cancelable: true,
+              },
+            );
+          }}
+        >
+          <Avatar.Icon
+            accessibilityRole="none"
+            style={{ backgroundColor: colors.invalid }}
+            size={size}
+            icon={errorInfo.message.icon}
+          />
+        </TouchableWithoutFeedback>
       )}
     >
       {`${errorInfo.message.text} (${

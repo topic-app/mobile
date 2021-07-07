@@ -14,19 +14,20 @@ const initialState: PreferencesState = {
   history: true,
   recommendations: false,
   syncHistory: true,
-  syncLists: true,
   fontSize: 14,
   fontFamily: 'system',
   stripFormatting: false,
   themeEasterEggDiscovered: false,
   youtubeConsent: false,
   useDevServer: !!__DEV__,
+  quickDevServer: false,
   analytics: true,
   completedFeedback: [],
   appOpens: 0,
   reduxVersion: Config.reduxVersion,
   showDownloadBanner: !__DEV__,
   advancedMode: !!__DEV__,
+  blocked: [],
   ...Config.seedDb.preferences,
 };
 
@@ -55,7 +56,12 @@ function prefReducer(state = initialState, action: PrefActionTypes): Preferences
       // Return the default preferences
       return initialState;
     case FULL_CLEAR:
-      return { ...initialState, useDevServer: state.useDevServer };
+      return {
+        ...initialState,
+        useDevServer: state.useDevServer,
+        advancedMode: state.advancedMode,
+        quickDevServer: state.quickDevServer,
+      };
     default:
       return state;
   }

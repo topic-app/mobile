@@ -6,11 +6,13 @@ import {
   UPDATE_TAGS_ITEM,
   UPDATE_TAGS_SEARCH,
   CLEAR_TAGS,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: TagsState = {
   data: [],
   item: null,
+  items: [],
   search: [],
   state: {
     list: {
@@ -74,11 +76,14 @@ function tagReducer(state = initialState, action: TagsActionTypes): TagsState {
         ...state,
         search: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_TAGS:
       return {
         data: action.data.data ? [] : state.data,
         search: action.data.search ? [] : state.search,
         item: action.data.item ? null : state.item,
+        items: action.data.item ? [] : state.items,
         state: state.state,
       };
     default:

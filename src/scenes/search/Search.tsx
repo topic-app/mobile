@@ -124,7 +124,6 @@ const Search: React.FC<SearchProps> = ({
                   params: {
                     id: article._id,
                     title: article.title,
-                    useLists: false,
                   },
                 },
               },
@@ -156,7 +155,6 @@ const Search: React.FC<SearchProps> = ({
                   params: {
                     id: event._id,
                     title: event.title,
-                    useLists: false,
                   },
                 },
               },

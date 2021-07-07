@@ -7,6 +7,7 @@ import {
   UPDATE_PLACES_SEARCH,
   CLEAR_PLACES,
   UPDATE_PLACES_MAP_DATA,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: PlacesState = {
@@ -95,6 +96,8 @@ function placeReducer(state = initialState, action: PlacesActionTypes): PlacesSt
         ...state,
         search: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_PLACES:
       return {
         data: action.data.data ? [] : state.data,

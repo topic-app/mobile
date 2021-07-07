@@ -64,14 +64,13 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
     const navigation = useNavigation();
 
     React.useEffect(() => {
-      console.log('ContentTabView useEffect');
       if (types.includes('articles')) {
         clearArticles(false, true, false, false, false);
         searchArticles('initial', '', searchParams, false);
       }
       if (types.includes('events')) {
         clearEvents(false, true);
-        searchEvents('initial', '', searchParams, false);
+        searchEvents('initial', '', searchParams, false, false, 'desc');
       }
       if (types.includes('groups')) {
         clearGroups(false, true, false);
@@ -134,7 +133,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                               params: {
                                 id: item._id,
                                 title: item.title,
-                                useLists: false,
                               },
                             },
                           },
@@ -164,7 +162,7 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                   contentPlural: 'les évènements',
                 }}
                 error={eventsState.search?.error}
-                retry={() => searchEvents('initial', '', searchParams, false)}
+                retry={() => searchEvents('initial', '', searchParams, false, false, 'desc')}
               />
             )}
             {eventsState.search?.loading.initial && (
@@ -199,7 +197,6 @@ const ContentTabView: React.FC<ContentTabViewProps> = React.memo(
                               params: {
                                 id: item._id,
                                 title: item.title,
-                                useLists: false,
                               },
                             },
                           },
