@@ -64,8 +64,9 @@ export default {
                 screens: {
                   List: '/parametres',
                   Privacy: '/parametres/confidentialite',
-                  Appearance: '/parametres/apparence',
-                  Dev: '/parametres/beta',
+                  Theme: '/parametres/theme',
+                  Content: '/parametres/contenu',
+                  Dev: '/parametres/dev',
                   SelectLocation: '/profil/localisation',
                 },
               },
