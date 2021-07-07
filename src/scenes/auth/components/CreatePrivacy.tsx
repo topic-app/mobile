@@ -88,35 +88,7 @@ const AuthCreatePagePrivacy: React.FC<Props> = ({ prev, next }) => {
       </View>
       <View style={styles.descriptionContainer}>
         <View style={styles.descriptionPartContainer}>
-          <ListHeading label="Vous pouvez" />
-          <ListItem
-            icon={always.icon}
-            iconColor={always.iconColor}
-            label="Voir tous les articles et évènements"
-          />
-          <ListItem
-            icon={always.icon}
-            iconColor={always.iconColor}
-            label="Suivre des utilisateurs et des groupes"
-          />
-          <ListItem
-            icon={always.icon}
-            iconColor={always.iconColor}
-            label="Écrire des commentaires"
-          />
-          <ListItem
-            icon={always.icon}
-            iconColor={always.iconColor}
-            label="Rejoindre et créer des groupes"
-          />
-          <ListItem
-            icon={always.icon}
-            iconColor={always.iconColor}
-            label="Écrire des articles et créer des évènements si vous appartenez à un groupe"
-          />
-        </View>
-        <View style={styles.descriptionPartContainer}>
-          <ListHeading label="Les autres utilisateurs peuvent" />
+          <ListHeading label="Les autres utilisateurs peuvent :" />
           <ListItem
             icon={always.icon}
             iconColor={always.iconColor}

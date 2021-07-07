@@ -59,10 +59,6 @@ const AuthCreatePageLegal: React.FC<Props> = ({
               />
               <ListItem
                 icon="check"
-                label="Nous partageons vos données privées le moins possible"
-              />
-              <ListItem
-                icon="check"
                 label="Vos données restent en Europe et sont soumises aux lois françaises"
               />
               <ListItem
@@ -70,12 +66,8 @@ const AuthCreatePageLegal: React.FC<Props> = ({
                 label="Vous pouvez supprimer votre compte et exercer vos droits à tout moment via l'onglet Profil"
               />
               <ListItem
-                icon="close"
+                icon="check"
                 label="Vos données ne sont pas vendues, et nous n'utilisons pas de traçage publicitaire"
-              />
-              <ListItem
-                icon="close"
-                label="Vos données ne sont pas gardées quand elles ne sont plus nécessaires"
               />
               <ListItem
                 icon="information-outline"
@@ -126,7 +118,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({
               />
               <ListItem
                 icon="close"
-                label="Vous n'avez pas le droit d'interférer avec le fonctionnement des services ou de causer des dommages au service et aux autres utilisateurs"
+                label="Vous n'avez pas le droit d'interférer avec le fonctionnement des services ou de causer des dommages au service ou aux autres utilisateurs"
               />
               <ListItem
                 icon="alert-outline"
@@ -135,10 +127,6 @@ const AuthCreatePageLegal: React.FC<Props> = ({
               <ListItem
                 icon="information-outline"
                 label="Vous pouvez signaler un contenu qui contrevient à ces conditions"
-              />
-              <ListItem
-                icon="information-outline"
-                label="Nous ne garantissons pas que le service fonctionne correctement, et il peut y avoir des pannes"
               />
               <ListItem
                 icon="information-outline"
@@ -166,7 +154,7 @@ const AuthCreatePageLegal: React.FC<Props> = ({
           <View style={authStyles.descriptionPartContainer}>
             <ListItem
               icon="information-outline"
-              label="Ces résumés n'ont aucune valeur légale et ne remplacent pas les conditions d'utilisation et la politique de vie privée"
+              label="Ces résumés n'ont pas de valeur légale et ne remplacent pas les conditions d'utilisation et la politique de vie privée"
               textStyle={{ fontWeight: 'bold' }}
             />
           </View>

@@ -82,7 +82,7 @@ const VisibilityModal: React.FC<VisibilityModalProps> = ({
         />
         <List.Item
           title="Compte privé"
-          description="Les autres utilisateurs peuvent voir les groupes auquels vous appartenez. Vous ne pouvez pas être administrateur d'un groupe."
+          description="Les autres utilisateurs peuvent voir les groupes auquels vous appartenez."
           onPress={() => {
             setPublic(false);
           }}
