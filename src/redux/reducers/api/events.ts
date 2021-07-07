@@ -10,6 +10,7 @@ import {
   CLEAR_EVENTS,
   UPDATE_EVENTS_VERIFICATION,
   UPDATE_EVENTS_MY_INFO,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: EventsState = {
@@ -131,6 +132,8 @@ function eventReducer(state = initialState, action: EventsActionTypes): EventsSt
         ...state,
         my: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_EVENTS:
       return {
         dataUpcoming: action.data.data ? [] : state.dataUpcoming,

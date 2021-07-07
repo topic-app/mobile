@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { ProgressBar, Title, List, Divider, Subheading, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
 import { Avatar, ErrorMessage, Illustration, MainFeedback } from '@components';
 import { fetchLocationData } from '@redux/actions/data/location';
-import { Account, LocationList, State } from '@ts/types';
-import { logger, Format, checkPermission, Permissions } from '@utils';
+import { Account, LocationList, Preferences, State } from '@ts/types';
+import { logger, Format, checkPermission, Permissions, quickDevServer } from '@utils';
 
 import { HomeTwoScreenNavigationProp } from '../HomeTwo';
 import getStyles from './styles';
@@ -16,9 +16,10 @@ type MoreListProps = {
   navigation: HomeTwoScreenNavigationProp<'List'>;
   location: LocationList;
   account: Account;
+  preferences: Preferences;
 };
 
-const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) => {
+const MoreList: React.FC<MoreListProps> = ({ navigation, location, account, preferences }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -137,6 +138,16 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
                 });
               }}
             />
+            <List.Item
+              title="Notifications"
+              left={() => <List.Icon icon="bell-outline" />}
+              onPress={() => {
+                navigation.navigate('Main', {
+                  screen: 'More',
+                  params: { screen: 'Notifications', params: { screen: 'Notifications' } },
+                });
+              }}
+            />
             {(checkPermission(account, {
               permission: Permissions.ARTICLE_VERIFICATION_VIEW,
               scope: {},
@@ -216,6 +227,19 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
               });
             }}
           />
+          {preferences.quickDevServer ? (
+            <List.Item
+              title="Serveur de dev"
+              left={() => <List.Icon icon="wrench-outline" />}
+              onPress={() => {
+                if (preferences.useDevServer) {
+                  Alert.alert("Redémarrez l'application pour retourner");
+                } else {
+                  quickDevServer();
+                }
+              }}
+            />
+          ) : null}
         </List.Section>
       </ScrollView>
       <MainFeedback visible={feedbackVisible} setVisible={setFeedbackVisible} />
@@ -224,10 +248,11 @@ const MoreList: React.FC<MoreListProps> = ({ navigation, location, account }) =>
 };
 
 const mapStateToProps = (state: State) => {
-  const { account, location } = state;
+  const { account, location, preferences } = state;
   return {
     account,
     location,
+    preferences,
   };
 };
 

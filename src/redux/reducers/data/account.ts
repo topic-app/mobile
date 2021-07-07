@@ -10,6 +10,7 @@ import {
   UPDATE_ACCOUNT_STATE,
   UPDATE_ACCOUNT_GROUPS,
   UPDATE_ACCOUNT_WAITING_GROUPS,
+  UPDATE_ACCOUNT_NOTIFICATIONS,
   UPDATE_ACCOUNT_CREATION_DATA,
   UPDATE_ACCOUNT_EMAIL,
   AccountActionTypes,
@@ -28,6 +29,7 @@ const initialState: AccountState = {
   permissions: [],
   groups: [],
   waitingGroups: [],
+  notifications: [],
   state: {
     login: {
       loading: false,
@@ -100,6 +102,11 @@ const initialState: AccountState = {
       success: null,
       error: null,
     },
+    notifications: {
+      loading: false,
+      success: null,
+      error: null,
+    },
   },
 };
 
@@ -136,6 +143,17 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
         };
       }
       console.warn('accountReducer: Attempted to update account groups while not logged in');
+      return state;
+    case UPDATE_ACCOUNT_NOTIFICATIONS:
+      if (state.loggedIn) {
+        return {
+          ...state,
+          notifications: action.data,
+        };
+      }
+      console.warn(
+        'accountReducer: Attempted to update account waiting groups while not logged in',
+      );
       return state;
     case UPDATE_ACCOUNT_WAITING_GROUPS:
       if (state.loggedIn) {
@@ -184,6 +202,7 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
         permissions: [],
         groups: [],
         waitingGroups: [],
+        notifications: [],
       };
     case FULL_CLEAR:
       return initialState;
@@ -196,6 +215,7 @@ function accountReducer(state = initialState, action: AccountActionTypes): Accou
         groups: [],
         waitingGroups: [],
         state: state.state,
+        notifications: [],
       };
     default:
       return state;

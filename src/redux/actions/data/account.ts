@@ -9,6 +9,7 @@ import {
   UPDATE_ACCOUNT_PERMISSIONS,
   UPDATE_ACCOUNT_STATE,
   UPDATE_ACCOUNT_WAITING_GROUPS,
+  UPDATE_ACCOUNT_NOTIFICATIONS,
   LOGOUT,
   UPDATE_ACCOUNT_USER,
   UPDATE_LOCATION,
@@ -153,10 +154,6 @@ function fetchWaitingGroupsCreator(): AppThunk {
 function fetchAccountCreator(): AppThunk {
   return async (dispatch, getState) => {
     if (!getState().account.loggedIn) {
-      dispatch({
-        type: LOGOUT,
-        data: null,
-      });
       return null;
     }
     dispatch({
@@ -218,10 +215,6 @@ function fetchAccountCreator(): AppThunk {
 function fetchEmailCreator(): AppThunk {
   return async (dispatch, getState) => {
     if (!getState().account.loggedIn) {
-      dispatch({
-        type: LOGOUT,
-        data: null,
-      });
       return null;
     }
     dispatch({
@@ -509,6 +502,55 @@ function requestPasswordResetCreator({ username }: { username: string }): AppThu
   };
 }
 
+function fetchNotificationsCreator(): AppThunk {
+  return async (dispatch, getState) => {
+    if (!getState().account.loggedIn) {
+      return null;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        notifications: {
+          loading: true,
+          success: null,
+          error: null,
+        },
+      },
+    });
+    let result;
+    try {
+      result = await request('notifications/get', 'get', {}, true, 'data');
+    } catch (err) {
+      dispatch({
+        type: UPDATE_ACCOUNT_STATE,
+        data: {
+          notifications: {
+            success: false,
+            loading: false,
+            error: err,
+          },
+        },
+      });
+      throw err;
+    }
+    dispatch({
+      type: UPDATE_ACCOUNT_STATE,
+      data: {
+        notifications: {
+          loading: false,
+          success: true,
+          error: null,
+        },
+      },
+    });
+    dispatch({
+      type: UPDATE_ACCOUNT_NOTIFICATIONS,
+      data: result.data?.notifications,
+    });
+    return true;
+  };
+}
+
 /* Actions */
 
 function login(fields: LoginFields) {
@@ -571,6 +613,10 @@ async function requestPasswordReset(username: string) {
   await Store.dispatch(requestPasswordResetCreator({ username }));
 }
 
+async function fetchNotifications() {
+  await Store.dispatch(fetchNotificationsCreator());
+}
+
 export {
   updateCreationData,
   clearCreationData,
@@ -585,4 +631,5 @@ export {
   deleteAccount,
   exportAccount,
   requestPasswordReset,
+  fetchNotifications,
 };

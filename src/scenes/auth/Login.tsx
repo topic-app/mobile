@@ -111,6 +111,8 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                 validationSchema={LoginSchema}
                 onSubmit={handleLogin}
                 validateOnMount={false}
+                validateOnChange={false}
+                validateOnBlur={false}
               >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                   <View>

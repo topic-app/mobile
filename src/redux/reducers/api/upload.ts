@@ -1,4 +1,4 @@
-import { UploadState, UploadActionTypes, UPDATE_UPLOAD_STATE } from '@ts/redux';
+import { UploadState, UploadActionTypes, UPDATE_UPLOAD_STATE, FULL_CLEAR } from '@ts/redux';
 
 const initialState: UploadState = {
   state: {
@@ -31,6 +31,8 @@ function uploadReducer(state = initialState, action: UploadActionTypes): UploadS
         ...state,
         state: { ...state.state, ...action.data },
       };
+    case FULL_CLEAR:
+      return initialState;
     default:
       return state;
   }

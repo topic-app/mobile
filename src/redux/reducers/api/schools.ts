@@ -8,6 +8,7 @@ import {
   UPDATE_SCHOOLS_SEARCH,
   UPDATE_SCHOOLS_NEAR,
   CLEAR_SCHOOLS,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: SchoolsState = {
@@ -97,6 +98,8 @@ function schoolReducer(state = initialState, action: SchoolsActionTypes): School
         ...state,
         search: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_SCHOOLS:
       return {
         data: action.data.data ? [] : state.data,

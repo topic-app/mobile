@@ -4,7 +4,7 @@ import parseUrl from 'url-parse';
 
 import { updateToken } from '@redux/actions/data/profile';
 import Store from '@redux/store';
-import { logger, messaging } from '@utils';
+import { handleAction, logger, messaging } from '@utils';
 
 const onNotification = (
   notification: { data?: { actionType?: string; actionData?: string } } | null,
@@ -13,17 +13,10 @@ const onNotification = (
   if (notification) {
     logger.info('Notification clicked, executing action');
     const { actionType, actionData } = notification.data || {};
-    if (!actionType || !actionData) {
-      logger.warn('No action on notification');
-      return;
-    }
-    if (actionType === 'link') {
-      const { pathname, query } = parseUrl(actionData);
-      linkTo(`${pathname}${query}`);
-    } else if (actionType === 'share') {
-      Share.share({ message: actionData });
+    if (actionType) {
+      handleAction(actionType, actionData, linkTo);
     } else {
-      logger.warn(`Action ${actionType} cannot be handled`);
+      logger.warn('Action has no type');
     }
   }
 };

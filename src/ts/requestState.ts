@@ -84,7 +84,7 @@ export type AccountRequestState = {
   check: RequestState;
   fetchGroups: RequestState;
   fetchAccount: RequestState;
-  fetchWaitingGroups: RequestState;
+  fetchWaitingGroups: RequestState; 
   fetchEmail: RequestState;
   updateProfile: RequestState;
   updateToken: RequestState;
@@ -93,6 +93,7 @@ export type AccountRequestState = {
   passwordRequest: RequestState;
   passwordReset: RequestState;
   resend: RequestState;
+  notifications: RequestState;
 };
 
 export type LocationRequestState = {

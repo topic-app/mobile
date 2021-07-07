@@ -9,6 +9,7 @@ import {
   UPDATE_ARTICLES_SEARCH,
   CLEAR_ARTICLES,
   UPDATE_ARTICLES_MY_INFO,
+  FULL_CLEAR,
 } from '@ts/redux';
 
 const initialState: ArticlesState = {
@@ -139,6 +140,8 @@ function articleReducer(state = initialState, action: ArticlesActionTypes): Arti
         ...state,
         my: action.data,
       };
+    case FULL_CLEAR:
+      return initialState;
     case CLEAR_ARTICLES:
       return {
         data: action.data.data ? [] : state.data,

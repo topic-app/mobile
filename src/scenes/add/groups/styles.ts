@@ -18,7 +18,6 @@ export default createStyleSheet(
       marginBottom: 30,
     },
     buttonContainer: {
-      alignSelf: 'center',
       flexDirection: 'row',
     },
     listContainer: {

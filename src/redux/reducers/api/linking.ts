@@ -1,4 +1,4 @@
-import { LinkingState, LinkingActionTypes, UPDATE_LINKING_STATE } from '@ts/redux';
+import { LinkingState, LinkingActionTypes, UPDATE_LINKING_STATE, FULL_CLEAR } from '@ts/redux';
 
 const initialState: LinkingState = {
   state: {
@@ -46,6 +46,8 @@ function linkingReducer(state = initialState, action: LinkingActionTypes): Linki
         ...state,
         state: { ...state.state, ...action.data },
       };
+    case FULL_CLEAR:
+      return initialState;
     default:
       return state;
   }

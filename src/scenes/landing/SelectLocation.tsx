@@ -379,6 +379,15 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
               <View style={{ height: Platform.OS === 'web' ? 0 : 4 }} />
             )}
           </View>
+          {mode === 'web' && (
+            <CollapsibleView collapsed={!!searchText}>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Button mode="text" color="white" onPress={() => done('global', undefined)}>
+                  Passer
+                </Button>
+              </View>
+            </CollapsibleView>
+          )}
         </Animated.View>
         <Animated.FlatList<
           | ((SchoolPreload | School) & { element: 'school' })
