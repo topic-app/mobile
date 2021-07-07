@@ -2,11 +2,17 @@ import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { Button, Divider, IconButton, Text, useTheme } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import { Illustration } from '@components';
 import getStyles from '@styles/global';
+import { State, Account } from '@ts/types';
 
-const WelcomeAppBar: React.FC = () => {
+type props = {
+  account: Account;
+};
+
+const WelcomeAppBar: React.FC<props> = ({ account }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -20,7 +26,27 @@ const WelcomeAppBar: React.FC = () => {
           <Illustration name="topic-icon" height={50} width={50} />
         </View>
         <Text style={[styles.title, { fontSize: 30 }]}>Topic</Text>
-        {width > 1200 ? (
+        {account.loggedIn ? (
+          <View
+            style={[{ flexDirection: 'row', flex: 1, justifyContent: 'flex-end', marginRight: 10 }]}
+          >
+            <Button
+              style={{ height: 35, margin: 5 }}
+              mode="text"
+              onPress={() =>
+                navigation.navigate('Root', {
+                  screen: 'Main',
+                  params: {
+                    screen: 'Home1',
+                    params: { screen: 'Home2', params: { screen: 'Article' } },
+                  },
+                })
+              }
+            >
+              @{account.accountInfo.user?.info?.username}
+            </Button>
+          </View>
+        ) : width > 1200 ? (
           <View
             style={[{ flexDirection: 'row', flex: 1, justifyContent: 'flex-end', marginRight: 10 }]}
           >
@@ -83,4 +109,9 @@ const WelcomeAppBar: React.FC = () => {
   );
 };
 
-export default WelcomeAppBar;
+const mapStateToProps = (state: State) => {
+  const { account } = state;
+  return { account };
+};
+
+export default connect(mapStateToProps)(WelcomeAppBar);

@@ -17,6 +17,7 @@ import {
   Group,
   GroupPreload,
   GroupRequestState,
+  LocationState,
   State,
 } from '@ts/types';
 import { handleUrl, trackEvent } from '@utils';
@@ -29,9 +30,16 @@ type Props = {
     articles: ArticleRequestState;
   };
   showDownload?: boolean;
+  location: LocationState;
 };
 
-const WelcomeAbout: React.FC<Props> = ({ groups, articles, state, showDownload = true }) => {
+const WelcomeAbout: React.FC<Props> = ({
+  groups,
+  articles,
+  state,
+  location,
+  showDownload = true,
+}) => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const { colors } = theme;
@@ -41,8 +49,13 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state, showDownload =
   const { width } = useWindowDimensions();
 
   React.useEffect(() => {
-    updateGroups('initial', { global: true, number: 12 }, false);
-    updateArticles('initial', { global: true, number: 12 }, false);
+    if (location.selected) {
+      updateGroups('initial');
+      updateArticles('initial');
+    } else {
+      updateGroups('initial', { global: true, number: 12 }, false);
+      updateArticles('initial', { global: true, number: 12 }, false);
+    }
   }, []);
 
   const detectOS = () => {
@@ -296,8 +309,9 @@ const WelcomeAbout: React.FC<Props> = ({ groups, articles, state, showDownload =
 };
 
 const mapStateToProps = (state: State) => {
-  const { groups, articles } = state;
+  const { groups, articles, location } = state;
   return {
+    location,
     groups: groups.data,
     articles: articles.data,
     state: { groups: groups.state, articles: articles.state },

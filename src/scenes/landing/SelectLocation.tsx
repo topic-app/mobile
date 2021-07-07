@@ -42,6 +42,7 @@ import {
   LocationRequestState,
   LocationList,
   Account,
+  LocationState,
 } from '@ts/types';
 import { logger, Location, Format, Alert, Errors, trackEvent } from '@utils';
 
@@ -49,6 +50,7 @@ import type { LandingScreenNavigationProp } from '.';
 import getStyles from './styles';
 
 type WelcomeLocationProps = {
+  location: LocationState;
   schoolsNear: (School | SchoolPreload)[];
   schoolsSearch: SchoolPreload[];
   departmentsSearch: DepartmentPreload[];
@@ -62,6 +64,7 @@ type WelcomeLocationProps = {
 };
 
 const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
+  location,
   schoolsNear,
   schoolsSearch,
   departmentsSearch,
@@ -346,40 +349,87 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
                   color: mode === 'web' ? 'white' : colors.text,
                 }}
               >
-                Choisissez votre école
+                {location.selected
+                  ? location.schoolData.length
+                    ? location.schoolData[0].name
+                    : location.departmentData.length
+                    ? location.departmentData[0].name
+                    : location.global
+                    ? 'France entière'
+                    : 'Localisation selectionnée'
+                  : 'Choisissez votre école'}
               </Title>
             </View>
           </CollapsibleView>
-          <View style={styles.searchContainer}>
-            <Searchbar
-              ref={inputRef}
-              icon="magnify"
-              placeholder="Rechercher"
-              value={searchText}
-              onChangeText={setSearchText}
-              onIdle={onSearchChange}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              style={
-                relevantStates.some((s) => s?.loading.initial)
-                  ? { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }
-                  : undefined
-              }
-            />
-            {relevantStates.some((s) => s?.loading.initial) ? (
-              <ProgressBar
-                indeterminate
-                style={{
-                  marginTop: Platform.OS === 'web' ? -4 : 0,
-                  borderBottomLeftRadius: 12,
-                  borderBottomRightRadius: 12,
-                }}
+          {Platform.OS !== 'web' || !location.selected ? (
+            <View style={styles.searchContainer}>
+              <Searchbar
+                ref={inputRef}
+                icon="magnify"
+                placeholder="Rechercher"
+                value={searchText}
+                onChangeText={setSearchText}
+                onIdle={onSearchChange}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                style={
+                  relevantStates.some((s) => s?.loading.initial)
+                    ? { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }
+                    : undefined
+                }
               />
-            ) : (
-              <View style={{ height: Platform.OS === 'web' ? 0 : 4 }} />
-            )}
-          </View>
-          {mode === 'web' && (
+              {relevantStates.some((s) => s?.loading.initial) ? (
+                <ProgressBar
+                  indeterminate
+                  style={{
+                    marginTop: Platform.OS === 'web' ? -4 : 0,
+                    borderBottomLeftRadius: 12,
+                    borderBottomRightRadius: 12,
+                  }}
+                />
+              ) : (
+                <View style={{ height: Platform.OS === 'web' ? 0 : 4 }} />
+              )}
+            </View>
+          ) : (
+            <View
+              style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}
+            >
+              <Button
+                mode="contained"
+                color="white"
+                style={{ marginRight: 5 }}
+                onPress={() =>
+                  navigation.navigate('Root', {
+                    screen: 'Main',
+                    params: {
+                      screen: 'Home1',
+                      params: { screen: 'Home2', params: { screen: 'Article' } },
+                    },
+                  })
+                }
+              >
+                Accéder à Topic
+              </Button>
+              <Button
+                mode="outlined"
+                color="white"
+                style={{ marginLeft: 5 }}
+                onPress={() =>
+                  navigation.navigate('Root', {
+                    screen: 'Main',
+                    params: {
+                      screen: 'More',
+                      params: { screen: 'Settings', params: { screen: 'SelectLocation' } },
+                    },
+                  })
+                }
+              >
+                Changer
+              </Button>
+            </View>
+          )}
+          {mode === 'web' && !location.selected && (
             <CollapsibleView collapsed={!!searchText}>
               <View style={{ flex: 1, alignItems: 'center' }}>
                 <Button mode="text" color="white" onPress={() => done('global', undefined)}>
@@ -451,6 +501,7 @@ const WelcomeLocation: React.FC<WelcomeLocationProps> = ({
 const mapStateToProps = (state: State) => {
   const { schools, departments, location } = state;
   return {
+    location,
     schoolsNear: schools.near,
     schoolsSearch: schools.search,
     departmentsSearch: departments.search,
