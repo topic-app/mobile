@@ -171,7 +171,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
                         uppercase={Platform.OS !== 'ios'}
                         onPress={handleSubmit}
                         style={{ flex: 1 }}
-                        loading={reqState.login.loading}
+                        loading={reqState.login.loading || reqState.fetchAccount?.loading}
                       >
                         Se connecter
                       </Button>
