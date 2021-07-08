@@ -35,6 +35,7 @@ export { default as MainFeedback } from './MainFeedback';
 export { default as PageContainer } from './PageContainer';
 export { default as AutoHeightImage } from './AutoHeightImage';
 export { default as FileUpload } from './FileUpload';
+export { default as ContentEditor } from './richEditor/Content';
 
 export { default as BottomSheet } from './BottomSheet';
 export * from './BottomSheet';
