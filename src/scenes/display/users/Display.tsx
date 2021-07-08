@@ -25,6 +25,7 @@ import {
   ReportModal,
   CustomTabView,
   ContentTabView,
+  Content,
 } from '@components';
 import { fetchUser } from '@redux/actions/api/users';
 import { userFollow, userUnfollow, userReport } from '@redux/actions/apiActions/users';
@@ -378,7 +379,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({
                           marginHorizontal: 10,
                         }}
                       >
-                        <Text>{user.data.description}</Text>
+                        <Content parser="plaintext" data={user.data.description} />
                       </View>
                       <View style={{ height: 20 }} />
                     </View>
