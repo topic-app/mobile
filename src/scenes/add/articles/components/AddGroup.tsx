@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform, Alert } from 'react-native';
+import { View, Platform } from 'react-native';
 import {
   Button,
   RadioButton,
@@ -19,7 +19,7 @@ import {
   updateArticleCreationData,
 } from '@redux/actions/contentData/articles';
 import { Account, ArticleCreationData, State } from '@ts/types';
-import { checkPermission, trackEvent, Permissions } from '@utils';
+import { checkPermission, trackEvent, Permissions, Alert } from '@utils';
 
 import getStyles from '../styles';
 
