@@ -109,6 +109,12 @@ export default function getGlobalStyles(theme: Theme) {
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
       maxHeight: '90%',
+      ...(width <= 800 || Platform.OS !== 'web'
+        ? {}
+        : {
+            width: 800,
+            alignSelf: 'center',
+          }),
     },
     centeredPage:
       width <= 800 || Platform.OS !== 'web'
