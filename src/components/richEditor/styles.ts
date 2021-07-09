@@ -100,6 +100,9 @@ function getComponentStyles(theme: Theme) {
     listSpacer: {
       height: 20,
     },
+    container: {
+      margin: 10,
+    },
   });
 }
 

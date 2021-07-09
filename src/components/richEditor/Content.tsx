@@ -177,7 +177,9 @@ const AddContent: React.FC<AddContentProps> = ({
 
   const [publishWarning, setPublishWarning] = React.useState(false);
 
-  const textEditorRef = React.useRef<RichEditor>();
+  const textEditorRef = React.useRef<RichEditor>(null);
+
+  const scrollViewRef = React.useRef<ScrollView>(null);
 
   const turndownService = new TurndownService({
     headingStyle: 'atx',
@@ -375,15 +377,25 @@ const AddContent: React.FC<AddContentProps> = ({
                     <IconButton
                       icon="format-bold"
                       accessibilityLabel="Gras"
-                      color={selectedItems.includes('bold') ? colors.primary : colors.text}
-                      style={{ marginLeft: 30 }}
+                      color={colors.text}
+                      style={[
+                        { marginLeft: 30 },
+                        selectedItems.includes('bold')
+                          ? { borderColor: colors.disabled, borderWidth: 1 }
+                          : {},
+                      ]}
                       // @ts-expect-error Wrong type defs in library
                       onPress={() => textEditorRef.current?.sendAction('bold', 'result')}
                     />
                     <IconButton
                       icon="format-italic"
                       accessibilityLabel="Italique"
-                      color={selectedItems.includes('italic') ? colors.primary : colors.text}
+                      color={colors.text}
+                      style={
+                        selectedItems.includes('italic')
+                          ? { borderColor: colors.disabled, borderWidth: 1 }
+                          : {}
+                      }
                       // @ts-expect-error Wrong type defs in library
                       onPress={() => textEditorRef.current?.sendAction('italic', 'result')}
                     />
@@ -557,7 +569,11 @@ const AddContent: React.FC<AddContentProps> = ({
             </CollapsibleView>
           </View>
           <Divider />
-          <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            scrollEventThrottle={20}
+            ref={scrollViewRef}
+          >
             <View style={styles.formContainer}>
               <View style={styles.textInputContainer}>
                 <CollapsibleView collapsed={!viewing}>
@@ -589,7 +605,6 @@ const AddContent: React.FC<AddContentProps> = ({
                 </CollapsibleView>
                 <View
                   style={{
-                    marginTop: 20,
                     // HACK: RichEditor does not play well with being unmounted
                     height: viewing ? 0 : undefined,
                     opacity: viewing ? 0 : 1,
@@ -597,7 +612,6 @@ const AddContent: React.FC<AddContentProps> = ({
                 >
                   {editor === 'rich' && (
                     <RichEditor
-                      onHeightChange={() => {}}
                       ref={textEditorRef as LegacyRef<RichEditor>}
                       onChange={(data: string) => {
                         const md = turndownService
@@ -623,7 +637,12 @@ const AddContent: React.FC<AddContentProps> = ({
                         trackEvent('articleadd:content-editor-loaded');
                         textEditorRef.current?.registerToolbar((i) => setSelectedItems(i));
                       }}
-                      useContainer={false}
+                      useContainer={Platform.OS !== 'web'}
+                      initialFocus
+                      pasteAsPlainText
+                      onCursorPosition={(y) =>
+                        scrollViewRef.current?.scrollTo({ y: y - 30, animated: true })
+                      }
                     />
                   )}
                   {(editor === 'source' || editor === 'plaintext') && (
