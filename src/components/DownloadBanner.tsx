@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import updatePrefs from '@redux/actions/data/prefs';
 import getStyles from '@styles/global';
 import { PreferencesState, State, Account } from '@ts/types';
-import { trackEvent, useLayout } from '@utils';
+import { trackEvent } from '@utils';
 
 import Illustration from './Illustration';
 import { PlatformTouchable } from './PlatformComponents';
@@ -21,8 +21,6 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = getStyles(theme);
-
-  const layout = useLayout();
 
   if (!preferences.showDownloadBanner || account.loggedIn) {
     return null;
@@ -46,6 +44,8 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
     }
   };
 
+  if (detectOS() !== 'android' && detectOS() !== 'ios') return null;
+
   return (
     <View
       style={{
@@ -54,19 +54,16 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
     >
       <Divider />
       <PlatformTouchable
-        disabled={detectOS() !== 'android' && detectOS() !== 'ios'}
         onPress={
           detectOS() === 'android'
             ? () => {
                 trackEvent('banner:download-banner', { props: { os: 'android' } });
                 Linking.openURL('https://play.google.com/store/apps/details?id=fr.topicapp.topic');
               }
-            : detectOS() === 'ios'
-            ? () => {
+            : () => {
                 trackEvent('banner:download-button', { props: { os: 'ios' } });
                 Linking.openURL('https://apps.apple.com/fr/app/topic/id1545178171');
               }
-            : undefined
         }
       >
         <View style={{ flexDirection: 'row', alignItems: 'stretch', flex: 1 }}>
@@ -79,91 +76,48 @@ const DownloadBanner: React.FC<Props> = ({ preferences, mobile, account }) => {
                 style={{ marginRight: 10 }}
               />
               <Text style={{ fontSize: mobile ? 18 : 22, color: colors.muted }}>
-                Téléchargez l&apos;appli{!mobile && 'cation'}
+                Téléchargez l&apos;appli
               </Text>
             </View>
           </View>
-          {layout === 'desktop' ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {detectOS() !== 'ios' && (
               <View style={styles.container}>
-                <Button
-                  mode="outlined"
+                <IconButton
+                  accessibilityLabel="Android"
                   color={colors.primary}
                   icon="android"
-                  uppercase={false}
                   onPress={() => {
                     trackEvent('banner:download-button', { props: { os: 'android' } });
                     Linking.openURL(
                       'https://play.google.com/store/apps/details?id=fr.topicapp.topic',
                     );
                   }}
-                >
-                  Android
-                </Button>
+                />
               </View>
+            )}
+            {detectOS() !== 'android' && (
               <View style={styles.container}>
-                <Button
-                  mode="outlined"
+                <IconButton
+                  accessibilityLabel="iOS"
                   color={colors.primary}
                   icon="apple"
-                  uppercase={false}
                   onPress={() => {
                     trackEvent('banner:download-button', { props: { os: 'ios' } });
                     Linking.openURL('https://apps.apple.com/fr/app/topic/id1545178171');
                   }}
-                >
-                  iOS
-                </Button>
-              </View>
-              <View style={styles.container}>
-                <IconButton
-                  icon="close"
-                  accessibilityLabel="Cacher la bannière"
-                  color={colors.disabled}
-                  onPress={() => updatePrefs({ showDownloadBanner: false })}
                 />
               </View>
+            )}
+            <View style={styles.container}>
+              <IconButton
+                icon="close"
+                accessibilityLabel="Cacher la bannière"
+                color={colors.disabled}
+                onPress={() => updatePrefs({ showDownloadBanner: false })}
+              />
             </View>
-          ) : (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {detectOS() !== 'ios' && (
-                <View style={styles.container}>
-                  <IconButton
-                    accessibilityLabel="Android"
-                    color={colors.primary}
-                    icon="android"
-                    onPress={() => {
-                      trackEvent('banner:download-button', { props: { os: 'android' } });
-                      Linking.openURL(
-                        'https://play.google.com/store/apps/details?id=fr.topicapp.topic',
-                      );
-                    }}
-                  />
-                </View>
-              )}
-              {detectOS() !== 'android' && (
-                <View style={styles.container}>
-                  <IconButton
-                    accessibilityLabel="iOS"
-                    color={colors.primary}
-                    icon="apple"
-                    onPress={() => {
-                      trackEvent('banner:download-button', { props: { os: 'ios' } });
-                      Linking.openURL('https://apps.apple.com/fr/app/topic/id1545178171');
-                    }}
-                  />
-                </View>
-              )}
-              <View style={styles.container}>
-                <IconButton
-                  icon="close"
-                  accessibilityLabel="Cacher la bannière"
-                  color={colors.disabled}
-                  onPress={() => updatePrefs({ showDownloadBanner: false })}
-                />
-              </View>
-            </View>
-          )}
+          </View>
         </View>
       </PlatformTouchable>
     </View>
