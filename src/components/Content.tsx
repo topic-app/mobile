@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { ImageStyle, View, Dimensions, Platform } from 'react-native';
+import Autolink from 'react-native-autolink';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 import { Button, Text, useTheme } from 'react-native-paper';
 import { connect } from 'react-redux';
@@ -25,13 +26,17 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
   const navigation = useNavigation<NativeStackNavigationProp<any, any>>();
 
   if (parser === 'markdown') {
+    const md = MarkdownIt({
+      html: false,
+      breaks: true,
+      linkify: true,
+    });
+    md.disable(['html_block', 'html_inline']);
+    md.linkify.set({ fuzzyLink: false, fuzzyIp: false, fuzzyEmail: false });
+
     return (
       <Markdown
-        markdownit={MarkdownIt({
-          html: false,
-          breaks: true,
-          linkify: true,
-        }).disable(['html_block', 'html_inline'])}
+        markdownit={md}
         style={{
           body: {
             ...styles.text,
@@ -118,15 +123,27 @@ const Content: React.FC<Props> = ({ parser, data, preferences, trustLinks = fals
   }
   if (parser === 'plaintext') {
     return (
-      <Text
-        selectable
-        style={{
-          fontSize: preferences.fontSize,
-          fontFamily: preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
+      <Autolink
+        onPress={(url: string) => handleUrl(url, { trusted: trustLinks })}
+        linkStyle={[styles.primaryText, { textDecorationLine: 'underline' }]}
+        textProps={{
+          selectable: true,
+          style: {
+            fontSize: preferences.fontSize,
+            color: colors.text,
+            fontFamily: preferences.fontFamily !== 'system' ? preferences.fontFamily : undefined,
+          },
         }}
-      >
-        {data}
-      </Text>
+        url={{
+          schemeMatches: true,
+          wwwMatches: false,
+          tldMatches: false,
+        }}
+        stripPrefix={false}
+        stripTrailingSlash={false}
+        truncate={0}
+        text={data}
+      />
     );
   }
   return null;

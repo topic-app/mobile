@@ -103,11 +103,6 @@ function getComponentStyles(theme: Theme) {
     container: {
       margin: 10,
     },
-    centerIllustrationContainer: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
   });
 }
 

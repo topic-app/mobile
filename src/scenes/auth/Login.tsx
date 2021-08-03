@@ -71,18 +71,14 @@ const AuthLogin: React.FC<AuthLoginProps> = ({
     }
     if (didLogin) {
       trackEvent('auth:login-success');
-      if (Platform.OS === 'web') {
-        await fetchAccount();
-        setTimeout(() => window.location.replace('/'), 200); // HACK : Because otherwise it doesnt redirect properly
-      } else {
-        navigation.navigate('Root', {
-          screen: 'Main',
-          params: {
-            screen: 'Home1',
-            params: { screen: 'Home2', params: { screen: 'Article' } },
-          },
-        });
-      }
+      await fetchAccount();
+      navigation.navigate('Root', {
+        screen: 'Main',
+        params: {
+          screen: 'Home1',
+          params: { screen: 'Home2', params: { screen: 'Article' } },
+        },
+      });
     } else {
       trackEvent('auth:login-wrong');
     }

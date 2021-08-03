@@ -503,7 +503,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                         <Paragraph style={{ color: colors.disabled }}>
                           Groupe {group.type}
                         </Paragraph>
-                        <Paragraph numberOfLines={5}>{group.summary}</Paragraph>
+                        <Content parser="plaintext" data={group.summary || ''} />
                       </View>
                     </View>
                     {group.description?.data ? (
@@ -523,7 +523,7 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                   </View>
                 </PlatformTouchable>
                 <CollapsibleView collapsed={!descriptionVisible}>
-                  <View style={styles.contentContainer}>
+                  <View style={styles.container}>
                     <Content parser={group.description?.parser} data={group.description?.data} />
                   </View>
                 </CollapsibleView>

@@ -17,6 +17,7 @@ jest.mock('react-native-push-notification', () => ({
   addEventListener: jest.fn(),
   requestPermissions: jest.fn(),
 }));
+jest.mock('react-native-autolink', () => ({}));
 jest.mock('@react-native-community/push-notification-ios', () => ({
   FetchResult: {
     NoData: null,

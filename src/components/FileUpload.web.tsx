@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 
 import { Config } from '@constants';
 import { updateUploadState, upload } from '@redux/actions/apiActions/upload';
+import Store from '@redux/store';
 import getStyles from '@styles/global';
 import { State, UploadRequestState, Account } from '@ts/types';
 import { checkPermission, getImageUrl, trackEvent, Permissions, logger, request } from '@utils';

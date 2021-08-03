@@ -1,0 +1,39 @@
+diff --git a/node_modules/react-native-pell-rich-editor/src/RichEditor.js b/node_modules/react-native-pell-rich-editor/src/RichEditor.js
+index 57eb129..d44fc56 100755
+--- a/node_modules/react-native-pell-rich-editor/src/RichEditor.js
++++ b/node_modules/react-native-pell-rich-editor/src/RichEditor.js
+@@ -145,7 +145,7 @@ export default class RichTextEditor extends Component {
+             onCursorPosition,
+         } = that.props;
+         try {
+-            const message = JSON.parse(event.nativeEvent.data);
++            const message = JSON.parse(Platform.OS === 'web' ? event.data : event.nativeEvent.data);
+             const data = message.data;
+             switch (message.type) {
+                 case messages.CONTENT_HTML_RESPONSE:
+@@ -250,6 +250,25 @@ export default class RichTextEditor extends Component {
+         const {html: viewHTML} = that.state;
+         // webview dark theme bug
+         const opacity = that.state.isInit ? 1 : 0;
++
++        if (Platform.OS === 'web') {
++          window.addEventListener('message', that.onMessage)
++          return (
++            <>
++              <iframe
++                id="contenteditor"
++                srcdoc={viewHTML.html}
++                onLoad={() => {
++                  this.webviewBridge = document.getElementById('contenteditor').contentWindow; 
++                  that.init();
++                }}
++                style={{ height: 'calc(90vh - 100px)', border: 'none' }}
++              />
++            </>
++          )
++
++        }
++
+         return (
+             <>
+                 <WebView
