@@ -150,23 +150,23 @@ export type Address = {
 
 export type Avatar =
   | {
-    type: 'color';
-    color: string;
-    text: string;
-  }
+      type: 'color';
+      color: string;
+      text: string;
+    }
   | {
-    type: 'gradient';
-    gradient: {
-      start: string;
-      end: string;
-      angle: number;
+      type: 'gradient';
+      gradient: {
+        start: string;
+        end: string;
+        angle: number;
+      };
+      text: string;
+    }
+  | {
+      type: 'image';
+      image: Image;
     };
-    text: string;
-  }
-  | {
-    type: 'image';
-    image: Image;
-  };
 
 export type UserPreload = {
   preload: true;
@@ -252,7 +252,7 @@ export type GroupMember = {
   _id: string; // Note: Not really useful
   user: UserPreload;
   role: string;
-  secondaryRoles: string[];
+  description: string;
   expiry: {
     permanent: boolean;
     expires?: string;
@@ -395,13 +395,13 @@ type EventMessageBase = {
 export type EventMessage = EventMessageBase &
   (
     | {
-      type: 'system';
-      group: null;
-    }
+        type: 'system';
+        group: null;
+      }
     | {
-      type: 'high' | 'medium' | 'low';
-      group: GroupPreload;
-    }
+        type: 'high' | 'medium' | 'low';
+        group: GroupPreload;
+      }
   );
 
 type EventBase = {
@@ -574,21 +574,21 @@ export type Error = {
 export type ModerationTypes = 'unverified' | 'extra' | 'reported' | 'deverified';
 
 export type Notifications = {
-  _id: string,
-  date: Date,
-  priority?: 'urgent' | 'high' | 'medium' | 'low',
+  _id: string;
+  date: Date;
+  priority?: 'urgent' | 'high' | 'medium' | 'low';
   content: {
-    title: string,
-    description: string,
-    icon: string,
-    color: string,
-  },
+    title: string;
+    description: string;
+    icon: string;
+    color: string;
+  };
   actions: {
-    name: string,
-    important: boolean,
+    name: string;
+    important: boolean;
     action: {
-      type: string, 
-      data: string,
-    },
-  }
+      type: string;
+      data: string;
+    };
+  };
 };

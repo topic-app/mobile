@@ -62,32 +62,20 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   const [primaryRole, setPrimaryRole] = React.useState<string | null>(
     modifying ? members.find((m) => m.user._id === user?._id)?.role || null : null,
   );
-  const [secondaryRoles, setSecondaryRoles] = React.useState<string[]>(
-    modifying ? members.find((m) => m.user._id === user?._id)?.secondaryRoles || [] : [],
-  );
+  const [description, setDescription] = React.useState<string>('');
+  const [descriptionErrorVisible, setDescriptionErrorVisible] = React.useState(false);
   const [expiryDate, setExpiryDate] = React.useState<number>(0);
-  const [errorVisible, setErrorVisible] = React.useState(false);
-
-  const sections = [
-    {
-      key: 'primary',
-      title: 'Rôle principal',
-      data: roles.filter((r) => r.primary),
-    },
-    {
-      key: 'secondary',
-      title: 'Rôles secondaires',
-      data: roles.filter((r) => !r.primary),
-    },
-  ];
+  const [roleErrorVisible, setRoleErrorVisible] = React.useState(false);
 
   const add = () => {
     if (!primaryRole) {
-      setErrorVisible(true);
+      setRoleErrorVisible(true);
+    } else if (description.length > 50) {
+      setDescriptionErrorVisible(true);
     } else {
       if (!user) return;
       if (modifying) {
-        groupMemberModify(group, user._id, primaryRole, secondaryRoles)
+        groupMemberModify(group, user._id, primaryRole, description)
           .then(() => {
             setVisible(false);
             fetchGroup(group);
@@ -104,13 +92,7 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
       } else {
         const date = new Date();
         const expiry = new Date(date.setMonth(date.getMonth() + expiryDate));
-        groupMemberAdd(
-          group,
-          user._id,
-          primaryRole,
-          secondaryRoles,
-          expiryDate ? expiry : undefined,
-        )
+        groupMemberAdd(group, user._id, primaryRole, description, expiryDate ? expiry : undefined)
           .then(() => {
             setVisible(false);
             fetchGroup(group);
@@ -132,216 +114,166 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
     return null;
   }
 
+  const setRole = (id: string) => {
+    if (account.accountInfo.accountId !== user?._id || !modifying) {
+      setRoleErrorVisible(false);
+      setPrimaryRole(id);
+    }
+  };
+
+  const setExpiry = () => {
+    if (expiryDate) {
+      setExpiryDate(0);
+    } else {
+      setExpiryDate(12);
+    }
+  };
+
   return (
     <Modal visible={visible} setVisible={setVisible}>
-      <SectionList
-        sections={sections}
-        ListHeaderComponent={() => (
-          <View>
-            <View style={styles.contentContainer}>
-              <View style={styles.centerIllustrationContainer}>
-                <Title>
-                  {modifying ? 'Modifier' : 'Ajouter'} @{user?.info?.username || user?.displayName}
-                </Title>
-              </View>
-            </View>
-            {(modifying ? state.member_modify?.loading : state.member_add?.loading) && (
-              <ProgressBar indeterminate style={{ marginTop: -4 }} />
-            )}
+      <View>
+        <View style={styles.contentContainer}>
+          <View style={styles.centerIllustrationContainer}>
+            <Title>
+              {modifying ? 'Modifier' : 'Ajouter'} @{user?.info?.username || user?.displayName}
+            </Title>
           </View>
-        )}
-        renderSectionHeader={({ section: { title } }) => (
-          <View>
-            <Divider />
-            <View style={styles.container}>
-              <CategoryTitle>{title}</CategoryTitle>
-            </View>
-          </View>
-        )}
-        renderItem={({ item, section: { key } }) => {
-          const set = () => {
-            if (key === 'primary' && (account.accountInfo.accountId !== user?._id || !modifying)) {
-              setErrorVisible(false);
-              setPrimaryRole(item._id);
-            } else if (secondaryRoles.includes(item._id)) {
-              setSecondaryRoles(secondaryRoles.filter((i) => i !== item._id));
-            } else {
-              setSecondaryRoles([...secondaryRoles, item._id]);
+        </View>
+        {roles.map((item) => (
+          <List.Item
+            title={item.name}
+            description={
+              item.legalAdmin
+                ? `Rôle${item.admin ? ' administrateur' : ''} légalement responsable`
+                : null
             }
-          };
-          return (
+            onPress={() => setRole(item._id)}
+            disabled={account.accountInfo.accountId === user?._id && modifying}
+            left={() =>
+              Platform.OS !== 'ios' && (
+                <RadioButton
+                  value=""
+                  disabled={account.accountInfo.accountId === user?._id && modifying}
+                  color={colors.primary}
+                  status={item._id === primaryRole ? 'checked' : 'unchecked'}
+                  onPress={() => setRole(item._id)}
+                />
+              )
+            }
+            right={() =>
+              Platform.OS === 'ios' && (
+                <RadioButton
+                  value=""
+                  color={colors.primary}
+                  disabled={account.accountInfo.accountId === user?._id && modifying}
+                  status={item._id === primaryRole ? 'checked' : 'unchecked'}
+                  onPress={() => setRole(item._id)}
+                />
+              )
+            }
+          />
+        ))}
+        <HelperText visible={roleErrorVisible} type="error">
+          Vous devez spécifier un rôle principal
+        </HelperText>
+        <View>
+          <Divider />
+          <View style={styles.container}>
+            <TextInput
+              mode="outlined"
+              label="Description (facultatif)"
+              value={description}
+              error={descriptionErrorVisible}
+              onChangeText={(text) => {
+                setDescription(text);
+                setDescriptionErrorVisible(text.length > 50);
+              }}
+            />
+            <CollapsibleView collapsed={!descriptionErrorVisible}>
+              <HelperText visible={descriptionErrorVisible} type="error">
+                La description doit faire moins de 50 caractères
+              </HelperText>
+            </CollapsibleView>
+          </View>
+          <Divider />
+          {!modifying && (
             <View>
               <List.Item
-                title={item.name}
-                description={
-                  item.legalAdmin
-                    ? `Rôle${item.admin ? ' administrateur' : ''} légalement responsable`
-                    : null
-                }
-                onPress={set}
-                disabled={
-                  key === 'primary' && account.accountInfo.accountId === user?._id && modifying
-                }
-                left={() =>
-                  Platform.OS !== 'ios' &&
-                  (key === 'primary' ? (
-                    <RadioButton
-                      value=""
-                      disabled={account.accountInfo.accountId === user?._id && modifying}
-                      color={colors.primary}
-                      status={item._id === primaryRole ? 'checked' : 'unchecked'}
-                      onPress={set}
-                    />
-                  ) : (
-                    <Checkbox
-                      color={colors.primary}
-                      status={secondaryRoles.includes(item._id) ? 'checked' : 'unchecked'}
-                      onPress={set}
-                    />
-                  ))
-                }
-                right={() =>
-                  Platform.OS === 'ios' &&
-                  (key === 'primary' ? (
-                    <RadioButton
-                      value=""
-                      color={colors.primary}
-                      disabled={account.accountInfo.accountId === user?._id && modifying}
-                      status={item._id === primaryRole ? 'checked' : 'unchecked'}
-                      onPress={set}
-                    />
-                  ) : (
-                    <Checkbox
-                      color={colors.primary}
-                      status={secondaryRoles.includes(item._id) ? 'checked' : 'unchecked'}
-                      onPress={set}
-                    />
-                  ))
-                }
-              />
-            </View>
-          );
-        }}
-        renderSectionFooter={({ section: { key } }) => (
-          <View>
-            {key === 'secondary' && (
-              <List.Item
-                title="Créer un rôle"
-                titleStyle={{ color: colors.disabled }}
-                descriptionStyle={{ color: colors.disabled }}
-                description="Non disponible"
+                title="Expire"
+                description="Retirer l'utilisateur du groupe au bout d'un certain temps"
+                onPress={setExpiry}
                 left={() =>
                   Platform.OS !== 'ios' && (
-                    <IconButton
-                      style={{ width: 24, height: 24 }}
-                      color={colors.disabled}
-                      icon="plus"
+                    <Checkbox
+                      color={colors.primary}
+                      status={expiryDate ? 'checked' : 'unchecked'}
+                      onPress={setExpiry}
+                    />
+                  )
+                }
+                right={() =>
+                  Platform.OS === 'ios' && (
+                    <Checkbox
+                      color={colors.primary}
+                      status={expiryDate ? 'checked' : 'unchecked'}
+                      onPress={setExpiry}
                     />
                   )
                 }
               />
-            )}
-            {key === 'primary' && (
-              <HelperText visible={errorVisible} type="error">
-                Vous devez spécifier un rôle principal
-              </HelperText>
-            )}
-          </View>
-        )}
-        ListFooterComponent={() => {
-          const setExpiry = () => {
-            if (expiryDate) {
-              setExpiryDate(0);
-            } else {
-              setExpiryDate(12);
-            }
-          };
-          return (
-            <View>
-              <Divider />
-              {!modifying && (
-                <View>
-                  <List.Item
-                    title="Expire"
-                    description="Retirer l'utilisateur du groupe au bout d'un certain temps"
-                    onPress={setExpiry}
-                    left={() =>
-                      Platform.OS !== 'ios' && (
-                        <Checkbox
-                          color={colors.primary}
-                          status={expiryDate ? 'checked' : 'unchecked'}
-                          onPress={setExpiry}
-                        />
-                      )
-                    }
-                    right={() =>
-                      Platform.OS === 'ios' && (
-                        <Checkbox
-                          color={colors.primary}
-                          status={expiryDate ? 'checked' : 'unchecked'}
-                          onPress={setExpiry}
-                        />
-                      )
-                    }
-                  />
-                  <CollapsibleView collapsed={!expiryDate}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: 10,
-                      }}
-                    >
-                      <IconButton
-                        icon="minus"
-                        onPress={() => expiryDate && setExpiryDate(expiryDate - 1)}
-                      />
-                      <TextInput
-                        mode="outlined"
-                        style={{ minWidth: 80 }}
-                        dense
-                        render={(props) => (
-                          <View
-                            style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}
-                          >
-                            <NativeTextInput
-                              {...props}
-                              value={expiryDate.toString()}
-                              autoCorrect={false}
-                              onChangeText={(text) => setExpiryDate(parseInt(text, 10) || 0)}
-                              keyboardType="number-pad"
-                            />
-                            <Text style={{ color: colors.disabled }}>mois</Text>
-                          </View>
-                        )}
-                      />
-                      <IconButton
-                        icon="plus"
-                        onPress={() => expiryDate && setExpiryDate(expiryDate + 1)}
-                      />
-                    </View>
-                  </CollapsibleView>
-                </View>
-              )}
-              <Divider />
-              <View style={styles.contentContainer}>
-                <Button
-                  mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
-                  color={colors.primary}
-                  uppercase={Platform.OS !== 'ios'}
-                  onPress={add}
-                  style={{ flex: 1 }}
-                  loading={modifying ? state.member_modify?.loading : state.member_add?.loading}
+              <CollapsibleView collapsed={!expiryDate}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: 10,
+                  }}
                 >
-                  {modifying ? 'Modifier' : 'Ajouter'}
-                </Button>
-              </View>
+                  <IconButton
+                    icon="minus"
+                    onPress={() => expiryDate && setExpiryDate(expiryDate - 1)}
+                  />
+                  <TextInput
+                    mode="outlined"
+                    style={{ minWidth: 80 }}
+                    dense
+                    render={(props) => (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}>
+                        <NativeTextInput
+                          {...props}
+                          value={expiryDate.toString()}
+                          autoCorrect={false}
+                          onChangeText={(text) => setExpiryDate(parseInt(text, 10) || 0)}
+                          keyboardType="number-pad"
+                        />
+                        <Text style={{ color: colors.disabled }}>mois</Text>
+                      </View>
+                    )}
+                  />
+                  <IconButton
+                    icon="plus"
+                    onPress={() => expiryDate && setExpiryDate(expiryDate + 1)}
+                  />
+                </View>
+              </CollapsibleView>
             </View>
-          );
-        }}
-        keyExtractor={(item) => item._id}
-      />
+          )}
+          <Divider />
+          <View style={styles.contentContainer}>
+            <Button
+              mode={Platform.OS === 'ios' ? 'outlined' : 'contained'}
+              color={colors.primary}
+              uppercase={Platform.OS !== 'ios'}
+              onPress={add}
+              style={{ flex: 1 }}
+              loading={modifying ? state.member_modify?.loading : state.member_add?.loading}
+            >
+              {modifying ? 'Modifier' : 'Ajouter'}
+            </Button>
+          </View>
+        </View>
+      </View>
     </Modal>
   );
 };

@@ -660,14 +660,17 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                                     (m) => m.user?._id === account.accountInfo?.accountId,
                                   )?.role,
                               )?.name
-                            }${group.roles
-                              ?.filter((r) =>
-                                group.members
-                                  ?.find((m) => m.user?._id === account.accountInfo?.accountId)
-                                  ?.secondaryRoles?.includes(r._id),
-                              )
-                              ?.map((r) => `, ${r?.name}`)
-                              .join('')}`}
+                            }${
+                              group.members?.find(
+                                (m) => m.user?._id === account.accountInfo?.accountId,
+                              )?.description
+                                ? ` - ${
+                                    group.members?.find(
+                                      (m) => m.user?._id === account.accountInfo?.accountId,
+                                    )?.description
+                                  }`
+                                : ''
+                            }`}
                             badge={
                               group.roles?.find(
                                 (r) =>
@@ -741,10 +744,9 @@ const GroupDisplay: React.FC<GroupDisplayProps> = ({
                           }
                           subtitle={`${
                             mem.user?.data?.public ? `@${mem.user?.info?.username} - ` : ''
-                          }${group.roles?.find((r) => mem.role === r._id)?.name}${group.roles
-                            ?.filter((r) => mem.secondaryRoles?.includes(r._id))
-                            ?.map((r) => `, ${r?.name}`)
-                            .join('')}`}
+                          }${group.roles?.find((r) => mem.role === r._id)?.name}${
+                            mem.description ? ` - ${mem.description}` : ''
+                          }`}
                           subtitleNumberOfLines={2}
                           badge={
                             group.roles?.find((r) => r._id === mem.role)?.admin ? 'star' : undefined

@@ -68,16 +68,6 @@ function fetchGroupsCreator(): AppThunk {
           return { ...p, group: g._id };
         }),
       ];
-      const userSecondaryPermissions = g?.roles
-        .filter((r: GroupRole) => user?.secondaryRoles?.includes(r._id))
-        .map((i: GroupRole) => i?.permissions)
-        .flat();
-      permissions = [
-        ...permissions,
-        ...(userSecondaryPermissions || [])?.map((p: GroupRolePermission) => {
-          return { ...p, group: g._id };
-        }),
-      ];
     });
     permissions = permissions.flat();
     dispatch({
