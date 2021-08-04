@@ -108,7 +108,7 @@ type GroupAddMemberCreatorParams = {
   user: string;
   group: string;
   role: string;
-  secondaryRoles: string[];
+  description: string;
   expires?: Date | number;
 };
 
@@ -116,7 +116,7 @@ function groupAddMemberCreator({
   group,
   user,
   role,
-  secondaryRoles,
+  description,
   expires,
 }: GroupAddMemberCreatorParams): AppThunk {
   return async (dispatch) => {
@@ -138,7 +138,7 @@ function groupAddMemberCreator({
           group,
           user,
           role,
-          secondaryRoles,
+          description,
           expires,
           permanent: !expires,
         },
@@ -167,7 +167,7 @@ function groupAddMemberCreator({
         },
       },
     });
-    return { user, group, role, secondaryRoles };
+    return { user, group, role, description };
   };
 }
 
@@ -175,13 +175,13 @@ type GroupModifyMemberCreatorParams = {
   user: string;
   group: string;
   role: string;
-  secondaryRoles: string[];
+  description: string;
 };
 function groupModifyMemberCreator({
   group,
   user,
   role,
-  secondaryRoles,
+  description,
 }: GroupModifyMemberCreatorParams): AppThunk {
   return async (dispatch) => {
     dispatch({
@@ -203,7 +203,7 @@ function groupModifyMemberCreator({
           group,
           user,
           role,
-          secondaryRoles,
+          description,
         },
         true,
       );
@@ -230,7 +230,7 @@ function groupModifyMemberCreator({
         },
       },
     });
-    return { user, group, role, secondaryRoles };
+    return { user, group, role, description };
   };
 }
 
@@ -667,7 +667,7 @@ async function groupMemberAdd(
   group: string,
   user: string,
   role: string,
-  secondaryRoles: string[],
+  description: string,
   expires?: Date | number, // not sure about how this works exactly
 ) {
   await Store.dispatch(
@@ -675,24 +675,19 @@ async function groupMemberAdd(
       user,
       role,
       group,
-      secondaryRoles,
+      description,
       expires,
     }),
   );
 }
 
-async function groupMemberModify(
-  group: string,
-  user: string,
-  role: string,
-  secondaryRoles: string[],
-) {
+async function groupMemberModify(group: string, user: string, role: string, description: string) {
   await Store.dispatch(
     groupModifyMemberCreator({
       user,
       role,
       group,
-      secondaryRoles,
+      description,
     }),
   );
 }
