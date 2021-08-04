@@ -62,7 +62,9 @@ const AddUserRoleModal: React.FC<AddUserRoleModalProps> = ({
   const [primaryRole, setPrimaryRole] = React.useState<string | null>(
     modifying ? members.find((m) => m.user._id === user?._id)?.role || null : null,
   );
-  const [description, setDescription] = React.useState<string>('');
+  const [description, setDescription] = React.useState<string>(
+    modifying ? members.find((m) => m.user._id === user?._id)?.description || '' : '',
+  );
   const [descriptionErrorVisible, setDescriptionErrorVisible] = React.useState(false);
   const [expiryDate, setExpiryDate] = React.useState<number>(0);
   const [roleErrorVisible, setRoleErrorVisible] = React.useState(false);
